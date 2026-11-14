@@ -195,9 +195,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: void _set(Map base, def path, def value) {\n    if (path.length == 0) return;\n    for (int i = 0; i < path.length - 1; i++) {\n        String c = path[i];\n        if (base[c] == null) base[c] = new HashMap();\n        base = base[c];\n    }\n    base[path[path.length - 1]] = value;\n} void set(Map base, String path, def value) {\n    _set(base, path.splitOnToken(\".\"), value);\n} def mapping = params[ctx.json.type.toLowerCase()]; if (mapping == null) return; set(ctx, \"threat.indicator.type\", mapping.type); def value = ctx.json.value; if (value == null) return; set(ctx, mapping.target, value);\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -238,9 +236,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def hashes = new ArrayList();\nhashes.add(ctx.threat.indicator.file.hash.md5);\nfor (hash in ctx.json.associated_hashes) {\n  if (hash == null) {\n    return;\n  }\n    if (hash.containsKey(\"type\") && hash[\"type\"] == \"sha1\" && hash.containsKey(\"value\")) {\n    ctx.threat.indicator.file.hash.sha1 = hash[\"value\"];\n    hashes.add(hash[\"value\"]);\n  }\n    else if (hash.containsKey(\"type\") && hash[\"type\"] == \"sha256\" && hash.containsKey(\"value\")) {\n    ctx.threat.indicator.file.hash.sha256 = hash[\"value\"];\n    hashes.add(hash[\"value\"]);\n  }\n}\nif (ctx.json.hashes == null) {\n  ctx.json.hashes = new HashMap();\n}\nctx.json.hashes = hashes;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -527,9 +523,7 @@ impl Transform for Default {
                 event.has_value("json.sources") && event.get("json.sources").is_some_and(|v| v.is_array()) && event.get("json.sources").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
-                // Painless script
-                // Source: def providers = new ArrayList();\ndef categories = new ArrayList();\ndef is_osint = true;\nfor (source in ctx.json.sources) {\n  if (source == null) {\n    return;\n  }\n  if (source.containsKey(\"source_name\") && source[\"source_name\"] != null && !providers.contains(source[\"source_name\"])) {\n    providers.add(source[\"source_name\"]);\n  }\n  if (source.containsKey(\"category\") && source[\"category\"] != null) {\n    categories.addAll(source[\"category\"]);\n  }\n  if (source.containsKey(\"osint\") && !source[\"osint\"]) {\n    is_osint = false;\n  }\n}\nif (providers.size() > 0) {\n  if (ctx.threat.indicator.provider == null) {\n    ctx.threat.indicator.provider = new HashMap();\n  }\n  ctx.threat.indicator.provider = providers;\n}\nif (categories.size() > 0) {\n  if (ctx.indicator_categories == null) {\n    ctx.indicator_categories = new HashMap();\n  }\n  ctx.indicator_categories = categories;\n}\nif (is_osint) {\n  ctx.tlp_color = \"GREEN\";\n}\nelse {\n  ctx.tlp_color = \"RED\";\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -542,9 +536,7 @@ impl Transform for Default {
                 event.has_value("json.attributed_associations") && event.get("json.attributed_associations").is_some_and(|v| v.is_array()) && event.get("json.attributed_associations").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
-                // Painless script
-                // Source: def groups = new ArrayList();\ndef software = new ArrayList();\nfor (association in ctx.json.attributed_associations) {\n  if (association == null) {\n    return;\n  }\n  if (association.containsKey(\"type\") && association[\"type\"] == \"threat-actor\" && !groups.contains(association[\"name\"])) {\n    groups.add(association[\"name\"]);\n  }\n  else if (association.containsKey(\"type\") && association[\"type\"] == \"malware\" && !software.contains(association[\"name\"])) {\n    software.add(association[\"name\"]);\n  }\n}\nif (groups.size() > 0) {\n  if (ctx.threat.group == null) {\n    ctx.threat.group = new HashMap();\n  }\n  if (ctx.threat.group.name == null) {\n    ctx.threat.group.name = new HashMap();\n  }\n  if (ctx.threat.group.id == null) {\n    ctx.threat.group.id = new HashMap();\n  }\n  ctx.threat.group.id = groups;\n  ctx.threat.group.name = groups;\n}\nif (software.size() > 0) {\n  if (ctx.threat.software == null) {\n    ctx.threat.software = new HashMap();\n  }\n  if (ctx.threat.software.type == null) {\n    ctx.threat.software.type = \"Malware\";\n  }\n  if (ctx.threat.software.name == null) {\n    ctx.threat.software.name = new HashMap();\n  }\n  ctx.threat.software.name = software;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -555,9 +547,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.misp") };
             if _cond {
-                // Painless script
-                // Source: def positive = new ArrayList();\ndef negative = new ArrayList();\ndef keys = ctx.json.misp.keySet().asList();\nkeys.sort((a, b) -> a.compareTo(b));\nfor (key in keys) {\n  if (ctx.json.misp[key]) {\n    positive.add(key);\n  } else {\n    negative.add(key);\n  }\n}\nctx.json[\"misp_warning_list_hits\"] = positive;\nctx.json[\"misp_warning_list_misses\"] = negative;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -605,9 +595,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def value = ctx.threat.indicator.confidence; if (value <= 0 || value > 100) {\n  ctx.threat.indicator.confidence = \"None\";\n  return;\n} else if (value >= 1 && value < 40) {\n  ctx.threat.indicator.confidence = \"Low\";\n  return;\n} else if (value >= 40 && value < 80) {\n  ctx.threat.indicator.confidence = \"Medium\";\n  return;\n} else if (value >= 80 && value <= 100) {\n  ctx.threat.indicator.confidence = \"High\";\n  return;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -620,8 +608,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n} drop(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

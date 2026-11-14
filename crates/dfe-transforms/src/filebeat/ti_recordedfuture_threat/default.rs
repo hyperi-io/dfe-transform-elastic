@@ -122,9 +122,7 @@ impl Transform for Default {
                     if _cond {
                         return Ok(TransformResult::Drop);
                     }
-                    // Painless script
-                    // Source: def cols = params[ ctx._tmp_.col4 == null? \"default\" : \"hash\" ]; def src = ctx._tmp_; def dst = new HashMap(); for (entry in cols.entrySet()) {\n  dst[entry.getValue()] = src[entry.getKey()];\n} ctx['json'] = dst;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -222,8 +220,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: if (ctx._temp_ != null && ctx._temp_.providers != null) {\n  ctx._temp_.providers = ctx._temp_.providers.stream()\n    .filter(p -> p != null && p.size() > 0 && !p.get(0).isEmpty())\n    .collect(Collectors.toList());\n}\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -321,9 +318,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\nList evidence_details = new ArrayList();\nfor (evidence in ctx.json.evidence_details){\n  evidence_details.add(keysToSnakeCase(evidence));\n}\nctx.json.evidence_details = evidence_details;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -468,9 +463,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def key = params[ctx.json.Algorithm]; if (key == null) {\n  throw new Exception(\"Unsupported hash algorithm '\" + ctx.json.Algorithm + \"'\");\n} def hashes = [key:ctx.json.Name]; ctx[\"_hashes\"] = hashes;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -622,9 +615,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def sum_sources_count = 0;\nfor (evidence in ctx.json.evidence_details){\n  if (evidence['sources_count'] != null){\n    sum_sources_count += evidence['sources_count'];\n  }\n}\nctx.threat.indicator.scanner_stats = sum_sources_count;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -669,9 +660,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def sum_sightings_count = 0;\nfor (evidence in ctx.json.evidence_details){\n  if (evidence['sightings_count'] != null){\n    sum_sightings_count += evidence['sightings_count'];\n  }\n}\nctx.threat.indicator.sightings = sum_sightings_count;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

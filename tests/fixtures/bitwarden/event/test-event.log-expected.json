@@ -1,0 +1,305 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-02-15T13:27:48.325Z",
+      "bitwarden": {
+        "event": {
+          "acting_user": {
+            "id": "c4377f97-b13e-4fd2-9661-ed5697612b02"
+          },
+          "collection": {
+            "id": "bcb029e4-04e1-4331-8a7d-9c5483d834e9"
+          },
+          "date": "2051-02-15T13:27:48.325Z",
+          "device": {
+            "name": "Android",
+            "value": "0"
+          },
+          "group": {
+            "id": "e17e0702-23f7-4683-b09d-2a9131b9f3a6"
+          },
+          "ip_address": "172.27.237.16",
+          "item": {
+            "id": "1904c439-3817-4ed4-b944-071375e4aebd"
+          },
+          "member": {
+            "id": "e44a9594-56cd-4285-99f9-c30577979bb4"
+          },
+          "policy": {
+            "id": "e17e0702-23f7-4683-b09d-2a9131b9f3a6"
+          },
+          "type": {
+            "name": "User_LoggedIn",
+            "value": "1000"
+          }
+        },
+        "object": "event"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam",
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"object\":\"event\",\"type\":1000,\"itemId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"collectionId\":\"bcb029e4-04e1-4331-8a7d-9c5483d834e9\",\"groupId\":\"e17e0702-23f7-4683-b09d-2a9131b9f3a6\",\"policyId\":\"e17e0702-23f7-4683-b09d-2a9131b9f3a6\",\"memberId\":\"e44a9594-56cd-4285-99f9-c30577979bb4\",\"actingUserId\":\"c4377f97-b13e-4fd2-9661-ed5697612b02\",\"date\":\"2051-02-15T13:27:48.325Z\",\"device\":0,\"ipAddress\":\"172.27.237.16\"}",
+        "outcome": "success",
+        "type": [
+          "user",
+          "start"
+        ]
+      },
+      "group": {
+        "id": "e17e0702-23f7-4683-b09d-2a9131b9f3a6"
+      },
+      "related": {
+        "ip": [
+          "172.27.237.16"
+        ],
+        "user": [
+          "e44a9594-56cd-4285-99f9-c30577979bb4",
+          "c4377f97-b13e-4fd2-9661-ed5697612b02"
+        ]
+      },
+      "source": {
+        "ip": "172.27.237.16",
+        "user": {
+          "id": "c4377f97-b13e-4fd2-9661-ed5697612b02"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "id": "e44a9594-56cd-4285-99f9-c30577979bb4"
+      }
+    },
+    {
+      "@timestamp": "2051-03-13T07:16:27.147Z",
+      "bitwarden": {
+        "event": {
+          "acting_user": {
+            "id": "1904c439-3817-4ed4-b944-071375e4aebd"
+          },
+          "date": "2051-03-13T07:16:27.147Z",
+          "device": {
+            "name": "ChromeBrowser",
+            "value": "9"
+          },
+          "ip_address": "192.0.2.54",
+          "item": {
+            "id": "1904c439-3817-4ed4-b944-071375e4aebd"
+          },
+          "type": {
+            "name": "Cipher_ClientViewed",
+            "value": "1107"
+          }
+        },
+        "object": "event"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "kind": "event",
+        "original": "{\"object\":\"event\",\"type\":1107,\"itemId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"collectionId\":null,\"groupId\":null,\"policyId\":null,\"memberId\":null,\"actingUserId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"installationId\":null,\"date\":\"2051-03-13T07:16:27.147Z\",\"device\":9,\"ipAddress\":\"192.0.2.54\"}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.54"
+        ],
+        "user": [
+          "1904c439-3817-4ed4-b944-071375e4aebd"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "user": {
+          "id": "1904c439-3817-4ed4-b944-071375e4aebd"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-03-13T07:14:37.138Z",
+      "bitwarden": {
+        "event": {
+          "acting_user": {
+            "id": "1904c439-3817-4ed4-b944-071375e4aebd"
+          },
+          "date": "2051-03-13T07:14:37.138Z",
+          "device": {
+            "name": "ChromeBrowser",
+            "value": "9"
+          },
+          "ip_address": "172.27.237.16",
+          "type": {
+            "name": "User_FailedLogIn",
+            "value": "1005"
+          }
+        },
+        "object": "event"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam",
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"object\":\"event\",\"type\":1005,\"itemId\":null,\"collectionId\":null,\"groupId\":null,\"policyId\":null,\"memberId\":null,\"actingUserId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"installationId\":null,\"date\":\"2051-03-13T07:14:37.1381554Z\",\"device\":9,\"ipAddress\":\"172.27.237.16\"}",
+        "outcome": "failure",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "172.27.237.16"
+        ],
+        "user": [
+          "1904c439-3817-4ed4-b944-071375e4aebd"
+        ]
+      },
+      "source": {
+        "ip": "172.27.237.16",
+        "user": {
+          "id": "1904c439-3817-4ed4-b944-071375e4aebd"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-02-21T04:57:10.626Z",
+      "bitwarden": {
+        "event": {
+          "acting_user": {
+            "id": "1904c439-3817-4ed4-b944-071375e4aebd"
+          },
+          "date": "2051-02-21T04:57:10.626Z",
+          "device": {
+            "name": "ChromeBrowser",
+            "value": "9"
+          },
+          "ip_address": "192.0.2.54",
+          "member": {
+            "id": "1904c439-3817-4ed4-b944-071375e4aebd"
+          },
+          "type": {
+            "name": "OrganizationUser_Updated",
+            "value": "1502"
+          }
+        },
+        "object": "event"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"object\":\"event\",\"type\":1502,\"itemId\":null,\"collectionId\":null,\"groupId\":null,\"policyId\":null,\"memberId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"actingUserId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"installationId\":null,\"date\":\"2051-02-21T04:57:10.6262883Z\",\"device\":9,\"ipAddress\":\"192.0.2.54\"}",
+        "outcome": "success",
+        "type": [
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.54"
+        ],
+        "user": [
+          "1904c439-3817-4ed4-b944-071375e4aebd"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "user": {
+          "id": "1904c439-3817-4ed4-b944-071375e4aebd"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "id": "1904c439-3817-4ed4-b944-071375e4aebd"
+      }
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"object\":\"event\",\"type\":1000,\"itemId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"collectionId\":\"bcb029e4-04e1-4331-8a7d-9c5483d834e9\",\"groupId\":\"e17e0702-23f7-4683-b09d-2a9131b9f3a6\",\"policyId\":\"e17e0702-23f7-4683-b09d-2a9131b9f3a6\",\"memberId\":\"e44a9594-56cd-4285-99f9-c30577979bb4\",\"actingUserId\":\"c4377f97-b13e-4fd2-9661-ed5697612b02\",\"date\":\"2051-02-15T13:27:48.325Z\",\"device\":0,\"ipAddress\":\"172.27.237.16\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"object\":\"event\",\"type\":1107,\"itemId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"collectionId\":null,\"groupId\":null,\"policyId\":null,\"memberId\":null,\"actingUserId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"installationId\":null,\"date\":\"2051-03-13T07:16:27.147Z\",\"device\":9,\"ipAddress\":\"192.0.2.54\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"object\":\"event\",\"type\":1005,\"itemId\":null,\"collectionId\":null,\"groupId\":null,\"policyId\":null,\"memberId\":null,\"actingUserId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"installationId\":null,\"date\":\"2051-03-13T07:14:37.1381554Z\",\"device\":9,\"ipAddress\":\"172.27.237.16\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"object\":\"event\",\"type\":1502,\"itemId\":null,\"collectionId\":null,\"groupId\":null,\"policyId\":null,\"memberId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"actingUserId\":\"1904c439-3817-4ed4-b944-071375e4aebd\",\"installationId\":null,\"date\":\"2051-02-21T04:57:10.6262883Z\",\"device\":9,\"ipAddress\":\"192.0.2.54\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"object\":\"list\",\"data\":[],\"continuationToken\":null}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-bitwarden-event-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "bitwarden",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

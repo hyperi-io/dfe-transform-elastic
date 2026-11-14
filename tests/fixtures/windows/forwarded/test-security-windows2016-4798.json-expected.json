@@ -1,0 +1,173 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-10-08T10:20:34.053Z",
+      "agent": {
+        "ephemeral_id": "c0c197ca-0905-4cbe-b226-82b28f7f1b44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "group-membership-enumerated",
+        "category": [
+          "iam"
+        ],
+        "code": "4798",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4798.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "SOV-86VA2XP94FG$",
+          "avexgxagdln7"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "WORKGROUP",
+        "id": "S-1-5-18",
+        "name": "SOV-86VA2XP94FG$",
+        "target": {
+          "domain": "SOV-86VA2XP94FG",
+          "id": "S-1-5-21-101361758-2486510592-3018839910-1005",
+          "name": "avexgxagdln7"
+        }
+      },
+      "winlog": {
+        "activity_id": "{b3af2f2a-0df7-0735-209f-eea7c25ab594}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "CallerProcessId": "0x3f0",
+          "CallerProcessName": "C:\\Windows\\System32\\LogonUI.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "SOV-86VA2XP94FG$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1005",
+          "TargetUserName": "avexgxagdln7"
+        },
+        "event_id": "4798",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 1740
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "2996",
+        "time_created": "2047-10-08T10:20:34.053Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:03:17.623Z",
+      "agent": {
+        "ephemeral_id": "c0c197ca-0905-4cbe-b226-82b28f7f1b44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4798,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4798.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{b3af2f2a-0df7-0735-209f-eea7c25ab594}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "CallerProcessId": "0x3f0",
+          "CallerProcessName": "C:\\Windows\\System32\\LogonUI.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "SOV-86VA2XP94FG$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1005",
+          "TargetUserName": "avexgxagdln7"
+        },
+        "event_id": 4798,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 1740
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 2996,
+        "time_created": "2047-10-08T10:20:34.053Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

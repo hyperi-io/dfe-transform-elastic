@@ -1,0 +1,482 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-10-06T05:28:29.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "unknown",
+        "category": [
+          "session"
+        ],
+        "kind": "event",
+        "original": "{\"message\":\"gr rap prospect\",\"status\":\"Unknown\",\"time\":2580182909,\"user\":{\"name\":\"Fod\",\"type\":\"creations\",\"uid\":\"1c0d54f8-1291-16fa-ae1b-2189cb518060\",\"type_id\":99,\"account\":{\"name\":\"minimal bumper shortly\",\"type\":\"Unknown\",\"type_id\":0}},\"group\":{\"name\":\"hollow alignment one\",\"desc\":\"checking tion ii\",\"uid\":\"3b3b96ea-1391-14da-a334-1736ec563603\",\"privileges\":[\"powder exams monkey\"]},\"metadata\":{\"version\":\"1.0.0\",\"product\":{\"name\":\"release zealand upon\",\"version\":\"1.0.0\",\"path\":\"fuel style da\",\"uid\":\"5f1fc527-9266-19fd-8364-9817cc272144\",\"lang\":\"en\",\"vendor_name\":\"crest homework turtle\"},\"sequence\":82,\"profiles\":[],\"log_name\":\"ebony pay tablets\",\"log_provider\":\"medline putting movie\",\"logged_time\":2580182909,\"original_time\":\"gentleman brings relationship\"},\"severity\":\"Low\",\"session\":{\"uid\":\"3f8b0520-2153-16ce-9f75-0111dd513388\",\"issuer\":\"available towns recorder\",\"credential_uid\":\"0b3b9e5d-8413-19ec-bcc0-8523eb228326\",\"is_remote\":true},\"type_name\":\"Authorize Session: Unknown\",\"activity_id\":0,\"type_uid\":300300,\"category_name\":\"Identity & Access Management\",\"class_uid\":3003,\"category_uid\":3,\"class_name\":\"Authorize Session\",\"timezone_offset\":34,\"activity_name\":\"Unknown\",\"privileges\":[\"arrive wu supervisors\",\"fix kevin networking\"],\"severity_id\":2,\"status_code\":\"seo\",\"status_id\":0}",
+        "outcome": "unknown",
+        "provider": "medline putting movie",
+        "sequence": 82,
+        "severity": 2,
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "id": "3b3b96ea-1391-14da-a334-1736ec563603",
+        "name": "hollow alignment one"
+      },
+      "message": "gr rap prospect",
+      "ocsf": {
+        "activity_id": "0",
+        "activity_name": "Unknown",
+        "category_name": "Identity & Access Management",
+        "category_uid": "3",
+        "class_name": "Authorize Session",
+        "class_uid": "3003",
+        "group": {
+          "desc": "checking tion ii",
+          "name": "hollow alignment one",
+          "privileges": [
+            "powder exams monkey"
+          ],
+          "uid": "3b3b96ea-1391-14da-a334-1736ec563603"
+        },
+        "message": "gr rap prospect",
+        "metadata": {
+          "log_name": "ebony pay tablets",
+          "log_provider": "medline putting movie",
+          "logged_time": "2051-10-06T05:28:29.000Z",
+          "original_time": "gentleman brings relationship",
+          "product": {
+            "lang": "en",
+            "name": "release zealand upon",
+            "path": "fuel style da",
+            "uid": "5f1fc527-9266-19fd-8364-9817cc272144",
+            "vendor_name": "crest homework turtle",
+            "version": "1.0.0"
+          },
+          "sequence": 82,
+          "version": "1.0.0"
+        },
+        "privileges": [
+          "arrive wu supervisors",
+          "fix kevin networking"
+        ],
+        "session": {
+          "credential_uid": "0b3b9e5d-8413-19ec-bcc0-8523eb228326",
+          "is_remote": true,
+          "issuer": "available towns recorder",
+          "uid": "3f8b0520-2153-16ce-9f75-0111dd513388"
+        },
+        "severity": "Low",
+        "severity_id": 2,
+        "status": "Unknown",
+        "status_code": "seo",
+        "status_id": "0",
+        "time": "2051-10-06T05:28:29.000Z",
+        "timezone_offset": 34,
+        "type_name": "Authorize Session: Unknown",
+        "type_uid": "300300",
+        "user": {
+          "account": {
+            "name": "minimal bumper shortly",
+            "type": "Unknown",
+            "type_id": "0"
+          },
+          "name": "Fod",
+          "type": "creations",
+          "type_id": "99",
+          "uid": "1c0d54f8-1291-16fa-ae1b-2189cb518060"
+        }
+      },
+      "related": {
+        "user": [
+          "1c0d54f8-1291-16fa-ae1b-2189cb518060",
+          "Fod"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "target": {
+          "id": "1c0d54f8-1291-16fa-ae1b-2189cb518060",
+          "name": "Fod"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-06T05:39:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "read",
+        "id": "e4d58119-887b-12dc-80f4-1447da211318",
+        "original": "{\"message\":\"ri retired bargain\",\"status\":\"authors technology bible\",\"time\":2580183595,\"metadata\":{\"version\":\"1.0.0\",\"product\":{\"version\":\"1.0.0\",\"uid\":\"e8a74ae8-310c-16ef-aa98-5283ef437210\",\"lang\":\"en\",\"vendor_name\":\"cross networks miles\"},\"uid\":\"e4d58119-887b-12dc-80f4-1447da211318\",\"labels\":[\"calm\"],\"sequence\":53,\"profiles\":[],\"correlation_uid\":\"e0b925a5-437f-13ac-b099-4768aa052345\",\"log_name\":\"intent hobby reserve\",\"log_provider\":\"details contributor departments\"},\"severity\":\"Unknown\",\"type_name\":\"Entity Management: Read\",\"activity_id\":2,\"type_uid\":300402,\"category_name\":\"Identity & Access Management\",\"class_uid\":3004,\"category_uid\":3,\"class_name\":\"Entity Management\",\"timezone_offset\":36,\"activity_name\":\"Read\",\"entity\":{\"name\":\"sweden temperatures paste\",\"type\":\"founder quilt bone\",\"version\":\"1.0.0\",\"uid\":\"e0d26200-732f-15ba-acc0-5071ef217395\"},\"severity_id\":0}",
+        "provider": "details contributor departments",
+        "sequence": 53,
+        "severity": 0
+      },
+      "message": "ri retired bargain",
+      "ocsf": {
+        "activity_id": "2",
+        "activity_name": "Read",
+        "category_name": "Identity & Access Management",
+        "category_uid": "3",
+        "class_name": "Entity Management",
+        "class_uid": "3004",
+        "entity": {
+          "name": "sweden temperatures paste",
+          "type": "founder quilt bone",
+          "uid": "e0d26200-732f-15ba-acc0-5071ef217395",
+          "version": "1.0.0"
+        },
+        "message": "ri retired bargain",
+        "metadata": {
+          "correlation_uid": "e0b925a5-437f-13ac-b099-4768aa052345",
+          "labels": [
+            "calm"
+          ],
+          "log_name": "intent hobby reserve",
+          "log_provider": "details contributor departments",
+          "product": {
+            "lang": "en",
+            "uid": "e8a74ae8-310c-16ef-aa98-5283ef437210",
+            "vendor_name": "cross networks miles",
+            "version": "1.0.0"
+          },
+          "sequence": 53,
+          "uid": "e4d58119-887b-12dc-80f4-1447da211318",
+          "version": "1.0.0"
+        },
+        "severity": "Unknown",
+        "severity_id": 0,
+        "status": "authors technology bible",
+        "time": "2051-10-06T05:39:55.000Z",
+        "timezone_offset": 36,
+        "type_name": "Entity Management: Read",
+        "type_uid": "300402"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "calm"
+      ]
+    },
+    {
+      "@timestamp": "2051-10-06T09:06:46.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "add-user",
+        "category": [
+          "iam"
+        ],
+        "duration": 91000000,
+        "kind": "event",
+        "original": "{\"count\":37,\"message\":\"obj permitted belong\",\"status\":\"Success\",\"time\":2580196006,\"user\":{\"name\":\"Idmtnuiz\",\"type\":\"suited\",\"uid\":\"edfa8de0-1908-19bb-8ce2-5798fa341843\",\"org\":{\"name\":\"lesson machinery nutritional\",\"uid\":\"fabe0042-1670-18bf-ac7a-4642bc617183\",\"ou_name\":\"to walnut dash\"},\"groups\":[{\"name\":\"kim patio tr\",\"desc\":\"fire transsexual uri\",\"uid\":\"dafe5476-4597-18af-8edb-2216da493878\"},{\"name\":\"interior husband tvs\",\"type\":\"magnetic peninsula riders\",\"desc\":\"snake avi only\",\"uid\":\"fdee4fb0-7633-10fd-88b2-7788ae719044\",\"privileges\":[\"fresh provision sociology\",\"foundations twisted couple\"]}],\"type_id\":99,\"full_name\":\"Jgazh Eqpqnvd\"},\"group\":{\"name\":\"cottages donor awful\",\"uid\":\"dacf7321-9573-19eb-9efa-9866ae078279\"},\"metadata\":{\"version\":\"1.0.0\",\"product\":{\"name\":\"industry thou favorites\",\"version\":\"1.0.0\",\"uid\":\"ddb0dd99-6867-12db-bbe1-4567fd399551\",\"vendor_name\":\"assisted parade monitored\"},\"sequence\":35,\"profiles\":[],\"log_name\":\"declared exhibits me\",\"log_provider\":\"adsl exposed rom\",\"original_time\":\"affordable mixture nigeria\"},\"severity\":\"Low\",\"duration\":91,\"type_name\":\"Group Management: Add User\",\"activity_id\":3,\"type_uid\":300603,\"category_name\":\"Identity & Access Management\",\"class_uid\":3006,\"category_uid\":3,\"class_name\":\"Group Management\",\"timezone_offset\":81,\"activity_name\":\"Add User\",\"enrichments\":[{\"data\":{\"dns\":\"bhrjfd\"},\"name\":\"consisting loves arrives\",\"type\":\"babes rrp normally\",\"value\":\"cooking pot enough\",\"provider\":\"case safari sw\"}],\"severity_id\":2,\"status_id\":1}",
+        "outcome": "success",
+        "provider": "adsl exposed rom",
+        "sequence": 35,
+        "severity": 2,
+        "type": [
+          "info",
+          "user"
+        ]
+      },
+      "group": {
+        "id": "dacf7321-9573-19eb-9efa-9866ae078279",
+        "name": "cottages donor awful"
+      },
+      "message": "obj permitted belong",
+      "ocsf": {
+        "activity_id": "3",
+        "activity_name": "Add User",
+        "category_name": "Identity & Access Management",
+        "category_uid": "3",
+        "class_name": "Group Management",
+        "class_uid": "3006",
+        "count": 37,
+        "duration": 91,
+        "enrichments": [
+          {
+            "data": {
+              "dns": "bhrjfd"
+            },
+            "name": "consisting loves arrives",
+            "provider": "case safari sw",
+            "type": "babes rrp normally",
+            "value": "cooking pot enough"
+          }
+        ],
+        "group": {
+          "name": "cottages donor awful",
+          "uid": "dacf7321-9573-19eb-9efa-9866ae078279"
+        },
+        "message": "obj permitted belong",
+        "metadata": {
+          "log_name": "declared exhibits me",
+          "log_provider": "adsl exposed rom",
+          "original_time": "affordable mixture nigeria",
+          "product": {
+            "name": "industry thou favorites",
+            "uid": "ddb0dd99-6867-12db-bbe1-4567fd399551",
+            "vendor_name": "assisted parade monitored",
+            "version": "1.0.0"
+          },
+          "sequence": 35,
+          "version": "1.0.0"
+        },
+        "severity": "Low",
+        "severity_id": 2,
+        "status": "Success",
+        "status_id": "1",
+        "time": "2051-10-06T09:06:46.000Z",
+        "timezone_offset": 81,
+        "type_name": "Group Management: Add User",
+        "type_uid": "300603",
+        "user": {
+          "full_name": "Jgazh Eqpqnvd",
+          "groups": [
+            {
+              "desc": "fire transsexual uri",
+              "name": "kim patio tr",
+              "uid": "dafe5476-4597-18af-8edb-2216da493878"
+            },
+            {
+              "desc": "snake avi only",
+              "name": "interior husband tvs",
+              "privileges": [
+                "fresh provision sociology",
+                "foundations twisted couple"
+              ],
+              "type": "magnetic peninsula riders",
+              "uid": "fdee4fb0-7633-10fd-88b2-7788ae719044"
+            }
+          ],
+          "name": "Idmtnuiz",
+          "org": {
+            "name": "lesson machinery nutritional",
+            "ou_name": "to walnut dash",
+            "uid": "fabe0042-1670-18bf-ac7a-4642bc617183"
+          },
+          "type": "suited",
+          "type_id": "99",
+          "uid": "edfa8de0-1908-19bb-8ce2-5798fa341843"
+        }
+      },
+      "related": {
+        "user": [
+          "Jgazh Eqpqnvd",
+          "edfa8de0-1908-19bb-8ce2-5798fa341843",
+          "Idmtnuiz"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "target": {
+          "full_name": "Jgazh Eqpqnvd",
+          "group": {
+            "id": [
+              "dafe5476-4597-18af-8edb-2216da493878",
+              "fdee4fb0-7633-10fd-88b2-7788ae719044"
+            ],
+            "name": [
+              "kim patio tr",
+              "interior husband tvs"
+            ]
+          },
+          "id": "edfa8de0-1908-19bb-8ce2-5798fa341843",
+          "name": "Idmtnuiz"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-06T08:45:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "unknown",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"message\":\"isaac uncertainty replication\",\"status\":\"abstracts\",\"time\":2580194758,\"group\":{\"name\":\"then nevada berkeley md\",\"uid\":\"f62b2e08-6394-13dc-ad09-8332fb345319\"},\"user\":{\"name\":\"Ed\",\"type\":\"System\",\"uid\":\"f69a6830-6506-12ab-9a45-8280bd038570\",\"type_id\":3,\"credential_uid\":\"e56f58fb-4788-12ae-b4ca-1183fe067159\"},\"metadata\":{\"version\":\"1.0.0\",\"product\":{\"name\":\"advance wellness phentermine\",\"version\":\"1.0.0\",\"uid\":\"f07b5121-8430-14de-b011-4202cf685498\",\"feature\":{\"name\":\"services cultural ali\",\"version\":\"1.0.0\",\"uid\":\"b84b34f4-1192-16cf-9d7a-1830aa620974\"},\"lang\":\"en\",\"vendor_name\":\"sphere chef physicians\"},\"profiles\":[],\"log_name\":\"gravity bill gp\",\"logged_time\":2580194758,\"original_time\":\"escape mic warner\"},\"resource\":{\"owner\":{\"name\":\"Fatty\",\"type\":\"forecast\",\"domain\":\"regions gr dean\",\"uid\":\"b88c645f-9805-11ee-b919-2899cb906171\",\"type_id\":99,\"email_addr\":\"Fvh@oit.name\"},\"group\":{\"name\":\"then nevada berkeley\",\"uid\":\"b09c5d31-1151-17ca-ae53-1977ba023336\"}},\"start_time\":2580194758,\"severity\":\"Medium\",\"type_name\":\"User Access Management: Unknown\",\"activity_id\":0,\"type_uid\":300500,\"observables\":[{\"name\":\"devices arguments label\",\"type\":\"Fingerprint\",\"type_id\":30},{\"name\":\"line nightlife expo\",\"type\":\"Container\",\"type_id\":27,\"reputation\":{\"base_score\":45.5971,\"provider\":\"marcus magnetic expressed\",\"score\":\"May not be Safe\",\"score_id\":5}}],\"category_name\":\"Identity & Access Management\",\"class_uid\":3005,\"category_uid\":3,\"class_name\":\"User Access Management\",\"timezone_offset\":28,\"activity_name\":\"Unknown\",\"privileges\":[\"returned funeral cave\"],\"severity_id\":3,\"status_id\":99}",
+        "provider": "sphere chef physicians",
+        "severity": 3,
+        "start": "2051-10-06T08:45:58.000Z",
+        "type": [
+          "info",
+          "group"
+        ]
+      },
+      "group": {
+        "id": "f62b2e08-6394-13dc-ad09-8332fb345319",
+        "name": "then nevada berkeley md"
+      },
+      "message": "isaac uncertainty replication",
+      "ocsf": {
+        "activity_id": "0",
+        "activity_name": "Unknown",
+        "category_name": "Identity & Access Management",
+        "category_uid": "3",
+        "class_name": "User Access Management",
+        "class_uid": "3005",
+        "group": {
+          "name": "then nevada berkeley md",
+          "uid": "f62b2e08-6394-13dc-ad09-8332fb345319"
+        },
+        "message": "isaac uncertainty replication",
+        "metadata": {
+          "log_name": "gravity bill gp",
+          "logged_time": "2051-10-06T08:45:58.000Z",
+          "original_time": "escape mic warner",
+          "product": {
+            "feature": {
+              "name": "services cultural ali",
+              "uid": "b84b34f4-1192-16cf-9d7a-1830aa620974",
+              "version": "1.0.0"
+            },
+            "lang": "en",
+            "name": "advance wellness phentermine",
+            "uid": "f07b5121-8430-14de-b011-4202cf685498",
+            "vendor_name": "sphere chef physicians",
+            "version": "1.0.0"
+          },
+          "version": "1.0.0"
+        },
+        "observables": [
+          {
+            "name": "devices arguments label",
+            "type": "Fingerprint",
+            "type_id": "30"
+          },
+          {
+            "name": "line nightlife expo",
+            "reputation": {
+              "base_score": 45.5971,
+              "provider": "marcus magnetic expressed",
+              "score": "May not be Safe",
+              "score_id": "5"
+            },
+            "type": "Container",
+            "type_id": "27"
+          }
+        ],
+        "privileges": [
+          "returned funeral cave"
+        ],
+        "resources": [
+          {
+            "group": {
+              "name": "then nevada berkeley",
+              "uid": "b09c5d31-1151-17ca-ae53-1977ba023336"
+            },
+            "owner": {
+              "domain": "regions gr dean",
+              "email_addr": "Fvh@oit.name",
+              "name": "Fatty",
+              "type": "forecast",
+              "type_id": 99,
+              "uid": "b88c645f-9805-11ee-b919-2899cb906171"
+            }
+          }
+        ],
+        "severity": "Medium",
+        "severity_id": 3,
+        "start_time": "2051-10-06T08:45:58.000Z",
+        "status": "abstracts",
+        "status_id": "99",
+        "time": "2051-10-06T08:45:58.000Z",
+        "timezone_offset": 28,
+        "type_name": "User Access Management: Unknown",
+        "type_uid": "300500",
+        "user": {
+          "credential_uid": "e56f58fb-4788-12ae-b4ca-1183fe067159",
+          "name": "Ed",
+          "type": "System",
+          "type_id": "3",
+          "uid": "f69a6830-6506-12ab-9a45-8280bd038570"
+        }
+      },
+      "related": {
+        "user": [
+          "f69a6830-6506-12ab-9a45-8280bd038570",
+          "Ed"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "target": {
+          "id": "f69a6830-6506-12ab-9a45-8280bd038570",
+          "name": "Ed"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"message\":\"gr rap prospect\",\"status\":\"Unknown\",\"time\":2580182909,\"user\":{\"name\":\"Fod\",\"type\":\"creations\",\"uid\":\"1c0d54f8-1291-16fa-ae1b-2189cb518060\",\"type_id\":99,\"account\":{\"name\":\"minimal bumper shortly\",\"type\":\"Unknown\",\"type_id\":0}},\"group\":{\"name\":\"hollow alignment one\",\"desc\":\"checking tion ii\",\"uid\":\"3b3b96ea-1391-14da-a334-1736ec563603\",\"privileges\":[\"powder exams monkey\"]},\"metadata\":{\"version\":\"1.0.0\",\"product\":{\"name\":\"release zealand upon\",\"version\":\"1.0.0\",\"path\":\"fuel style da\",\"uid\":\"5f1fc527-9266-19fd-8364-9817cc272144\",\"lang\":\"en\",\"vendor_name\":\"crest homework turtle\"},\"sequence\":82,\"profiles\":[],\"log_name\":\"ebony pay tablets\",\"log_provider\":\"medline putting movie\",\"logged_time\":2580182909,\"original_time\":\"gentleman brings relationship\"},\"severity\":\"Low\",\"session\":{\"uid\":\"3f8b0520-2153-16ce-9f75-0111dd513388\",\"issuer\":\"available towns recorder\",\"credential_uid\":\"0b3b9e5d-8413-19ec-bcc0-8523eb228326\",\"is_remote\":true},\"type_name\":\"Authorize Session: Unknown\",\"activity_id\":0,\"type_uid\":300300,\"category_name\":\"Identity & Access Management\",\"class_uid\":3003,\"category_uid\":3,\"class_name\":\"Authorize Session\",\"timezone_offset\":34,\"activity_name\":\"Unknown\",\"privileges\":[\"arrive wu supervisors\",\"fix kevin networking\"],\"severity_id\":2,\"status_code\":\"seo\",\"status_id\":0}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"message\":\"ri retired bargain\",\"status\":\"authors technology bible\",\"time\":2580183595,\"metadata\":{\"version\":\"1.0.0\",\"product\":{\"version\":\"1.0.0\",\"uid\":\"e8a74ae8-310c-16ef-aa98-5283ef437210\",\"lang\":\"en\",\"vendor_name\":\"cross networks miles\"},\"uid\":\"e4d58119-887b-12dc-80f4-1447da211318\",\"labels\":[\"calm\"],\"sequence\":53,\"profiles\":[],\"correlation_uid\":\"e0b925a5-437f-13ac-b099-4768aa052345\",\"log_name\":\"intent hobby reserve\",\"log_provider\":\"details contributor departments\"},\"severity\":\"Unknown\",\"type_name\":\"Entity Management: Read\",\"activity_id\":2,\"type_uid\":300402,\"category_name\":\"Identity & Access Management\",\"class_uid\":3004,\"category_uid\":3,\"class_name\":\"Entity Management\",\"timezone_offset\":36,\"activity_name\":\"Read\",\"entity\":{\"name\":\"sweden temperatures paste\",\"type\":\"founder quilt bone\",\"version\":\"1.0.0\",\"uid\":\"e0d26200-732f-15ba-acc0-5071ef217395\"},\"severity_id\":0}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"count\":37,\"message\":\"obj permitted belong\",\"status\":\"Success\",\"time\":2580196006,\"user\":{\"name\":\"Idmtnuiz\",\"type\":\"suited\",\"uid\":\"edfa8de0-1908-19bb-8ce2-5798fa341843\",\"org\":{\"name\":\"lesson machinery nutritional\",\"uid\":\"fabe0042-1670-18bf-ac7a-4642bc617183\",\"ou_name\":\"to walnut dash\"},\"groups\":[{\"name\":\"kim patio tr\",\"desc\":\"fire transsexual uri\",\"uid\":\"dafe5476-4597-18af-8edb-2216da493878\"},{\"name\":\"interior husband tvs\",\"type\":\"magnetic peninsula riders\",\"desc\":\"snake avi only\",\"uid\":\"fdee4fb0-7633-10fd-88b2-7788ae719044\",\"privileges\":[\"fresh provision sociology\",\"foundations twisted couple\"]}],\"type_id\":99,\"full_name\":\"Jgazh Eqpqnvd\"},\"group\":{\"name\":\"cottages donor awful\",\"uid\":\"dacf7321-9573-19eb-9efa-9866ae078279\"},\"metadata\":{\"version\":\"1.0.0\",\"product\":{\"name\":\"industry thou favorites\",\"version\":\"1.0.0\",\"uid\":\"ddb0dd99-6867-12db-bbe1-4567fd399551\",\"vendor_name\":\"assisted parade monitored\"},\"sequence\":35,\"profiles\":[],\"log_name\":\"declared exhibits me\",\"log_provider\":\"adsl exposed rom\",\"original_time\":\"affordable mixture nigeria\"},\"severity\":\"Low\",\"duration\":91,\"type_name\":\"Group Management: Add User\",\"activity_id\":3,\"type_uid\":300603,\"category_name\":\"Identity & Access Management\",\"class_uid\":3006,\"category_uid\":3,\"class_name\":\"Group Management\",\"timezone_offset\":81,\"activity_name\":\"Add User\",\"enrichments\":[{\"data\":{\"dns\":\"bhrjfd\"},\"name\":\"consisting loves arrives\",\"type\":\"babes rrp normally\",\"value\":\"cooking pot enough\",\"provider\":\"case safari sw\"}],\"severity_id\":2,\"status_id\":1}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"message\":\"isaac uncertainty replication\",\"status\":\"abstracts\",\"time\":2580194758,\"group\":{\"name\":\"then nevada berkeley md\",\"uid\":\"f62b2e08-6394-13dc-ad09-8332fb345319\"},\"user\":{\"name\":\"Ed\",\"type\":\"System\",\"uid\":\"f69a6830-6506-12ab-9a45-8280bd038570\",\"type_id\":3,\"credential_uid\":\"e56f58fb-4788-12ae-b4ca-1183fe067159\"},\"metadata\":{\"version\":\"1.0.0\",\"product\":{\"name\":\"advance wellness phentermine\",\"version\":\"1.0.0\",\"uid\":\"f07b5121-8430-14de-b011-4202cf685498\",\"feature\":{\"name\":\"services cultural ali\",\"version\":\"1.0.0\",\"uid\":\"b84b34f4-1192-16cf-9d7a-1830aa620974\"},\"lang\":\"en\",\"vendor_name\":\"sphere chef physicians\"},\"profiles\":[],\"log_name\":\"gravity bill gp\",\"logged_time\":2580194758,\"original_time\":\"escape mic warner\"},\"resource\":{\"owner\":{\"name\":\"Fatty\",\"type\":\"forecast\",\"domain\":\"regions gr dean\",\"uid\":\"b88c645f-9805-11ee-b919-2899cb906171\",\"type_id\":99,\"email_addr\":\"Fvh@oit.name\"},\"group\":{\"name\":\"then nevada berkeley\",\"uid\":\"b09c5d31-1151-17ca-ae53-1977ba023336\"}},\"start_time\":2580194758,\"severity\":\"Medium\",\"type_name\":\"User Access Management: Unknown\",\"activity_id\":0,\"type_uid\":300500,\"observables\":[{\"name\":\"devices arguments label\",\"type\":\"Fingerprint\",\"type_id\":30},{\"name\":\"line nightlife expo\",\"type\":\"Container\",\"type_id\":27,\"reputation\":{\"base_score\":45.5971,\"provider\":\"marcus magnetic expressed\",\"score\":\"May not be Safe\",\"score_id\":5}}],\"category_name\":\"Identity & Access Management\",\"class_uid\":3005,\"category_uid\":3,\"class_name\":\"User Access Management\",\"timezone_offset\":28,\"activity_name\":\"Unknown\",\"privileges\":[\"returned funeral cave\"],\"severity_id\":3,\"status_id\":99}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-amazon_security_lake-event-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [
+      "ocsf.malware.classification_ids",
+      "ocsf.user.ldap_person.manager.account.type_id",
+      "ocsf.dst_endpoint.type_id",
+      "ocsf.scan.type_id",
+      "ocsf.scan.type_id",
+      "ocsf.src_endpoint.type_id",
+      "ocsf.src_endpoint.type_id",
+      "ocsf.type_id",
+      "ocsf.user.ldap_person.manager.type_id",
+      "ocsf.resources.owner.type_id",
+      "ocsf.resources.owner.type_id",
+      "ocsf.dst_endpoint.type_id",
+      "ocsf.proxy_endpoint.type_id",
+      "ocsf.src_endpoint.type_id",
+      "ocsf.security_states.state_id"
+    ],
+    "package": "amazon_security_lake",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

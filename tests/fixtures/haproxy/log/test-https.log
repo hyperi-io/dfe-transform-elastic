@@ -1,0 +1,1 @@
+Feb  6 12:14:14 localhost haproxy[14389]: 10.209.157.224:33317 [06/Feb/2037:12:14:14.655] https-in static/srv1 10/0/30/69/109 200 2750 - - ---- 1/1/1/1/0 0/0 {5yq.eu} {} "GET /index.html HTTP/1.1" 0/0/0/0/1 5yq.eu/TLSv1.3/TLS_AES_256_GCM_SHA384

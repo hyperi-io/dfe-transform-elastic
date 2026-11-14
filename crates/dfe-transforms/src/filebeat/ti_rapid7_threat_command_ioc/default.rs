@@ -190,9 +190,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: void _set(Map base, def path, def value) {\n    if (path.length == 0) return;\n    for (int i = 0; i < path.length - 1; i++) {\n        String c = path[i];\n        if (base[c] == null) base[c] = new HashMap();\n        base = base[c];\n    }\n    base[path[path.length - 1]] = value;\n} void set(Map base, String path, def value) {\n    _set(base, path.splitOnToken(\".\"), value);\n} def mapping = params[ctx.json.type.toLowerCase()]; if (mapping == null) return; set(ctx, \"threat.indicator.type\", mapping.type); def value = ctx.json.value; if (value == null) return; set(ctx, mapping.target, value);\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -769,9 +767,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def value = ctx.threat.indicator.confidence; if (value <= 0 || value > 100) {\n  ctx.threat.indicator.confidence = \"None\";\n  return;\n} else if (value >= 1 && value < 30) {\n  ctx.threat.indicator.confidence = \"Low\";\n  return;\n} else if (value >= 30 && value < 70) {\n  ctx.threat.indicator.confidence = \"Medium\";\n  return;\n} else if (value >= 70 && value <= 100) {\n  ctx.threat.indicator.confidence = \"High\";\n  return;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -790,9 +786,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_last_seen; if (ctx.rapid7.tc.ioc.status instanceof String && ctx.rapid7.tc.ioc.status.toLowerCase().contains('retire')) {\n  _tmp_deleted_at = ZonedDateTime.parse(ctx['@timestamp']);\n} else {\n    def dur = ctx._conf.ioc_expiration_duration;\n    if (ctx.threat?.indicator?.modified_at != null) {\n        _tmp_last_seen = ZonedDateTime.parse(ctx.threat.indicator.modified_at);\n    }\n    else if (ctx.threat?.indicator?.last_seen != null) {\n        _tmp_last_seen = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n    }\n    else {\n        _tmp_last_seen = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n    }\n    if (dur instanceof String){\n        String time_unit = dur.substring(dur.length() -  1);\n        String time_value = dur.substring(0, dur.length() - 1);\n        if (time_unit == 'd') {\n            _tmp_deleted_at = _tmp_last_seen.plusDays(Long.parseLong(time_value));\n        } else if (time_unit == 'h') {\n            _tmp_deleted_at = _tmp_last_seen.plusHours(Long.parseLong(time_value));\n        } else if (time_unit == 'm') {\n            _tmp_deleted_at = _tmp_last_seen.plusMinutes(Long.parseLong(time_value));\n        }\n    }\n    // Add default IOC expiration of `90 days` from last_seen if '_conf.ioc_expiration_duration' is an invalid value.\n    if (_tmp_deleted_at == null) {\n        _tmp_deleted_at = _tmp_last_seen.plusDays(90L);\n    }\n} ctx.rapid7.tc.ioc.deleted_at = _tmp_deleted_at;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -887,8 +881,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n} drop(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

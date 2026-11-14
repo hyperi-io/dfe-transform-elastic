@@ -1,0 +1,127 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-11-08T07:56:17.321Z",
+      "agent": {
+        "ephemeral_id": "ff835c34-fbe1-4d93-8a50-3215e6ab2e36",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "logging-full",
+        "category": [
+          "iam"
+        ],
+        "code": "1104",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Eventlog",
+        "type": [
+          "admin"
+        ]
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG.jwbfen.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/1104.xml"
+        },
+        "level": "error"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+        "event_id": "1104",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "error",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 1096,
+          "thread": {
+            "id": 1444
+          }
+        },
+        "provider_guid": "{cd70abd9-f2ce-4855-83a5-2b1ffa7fb066}",
+        "provider_name": "Microsoft-Windows-Eventlog",
+        "record_id": "19352",
+        "time_created": "2047-11-08T07:56:17.321Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:06:48.792Z",
+      "agent": {
+        "ephemeral_id": "ff835c34-fbe1-4d93-8a50-3215e6ab2e36",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 1104,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Eventlog"
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG.jwbfen.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/1104.xml"
+        },
+        "level": "error"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+        "event_id": 1104,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "error",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 1096,
+          "thread": {
+            "id": 1444
+          }
+        },
+        "provider_guid": "{cd70abd9-f2ce-4855-83a5-2b1ffa7fb066}",
+        "provider_name": "Microsoft-Windows-Eventlog",
+        "record_id": 19352,
+        "time_created": "2047-11-08T07:56:17.321Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

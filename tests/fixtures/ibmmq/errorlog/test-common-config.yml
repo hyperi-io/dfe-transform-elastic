@@ -1,0 +1,10 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+multiline:
+  pattern: ^[\-]{5}.*[\-]{10,}$
+  negate: true
+  match: after
+dynamic_fields:
+  event.ingested: .*

@@ -63,7 +63,7 @@ fn set_member_status(event: &mut Event, params: &Value) {
     let _ = event.set("bitwarden.member.status.name", name);
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "eeb935132bb74890e5d43fb85f0bc8d5246b95eab7fc78ddd61d95e2c46f557b",

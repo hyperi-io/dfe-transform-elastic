@@ -1,0 +1,215 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-03T03:20:52.800Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Signup - Failure",
+            "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+            "client_name": "All Applications",
+            "connection": "Username-Password-Authentication",
+            "connection_id": "con_1a5wCUmAs6VOU17n",
+            "date": "2049-11-03T03:20:52.800Z",
+            "description": "Password is too weak",
+            "details": {
+              "body": {
+                "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+                "connection": "Username-Password-Authentication",
+                "email": "jfx@xcyx.com",
+                "password": "*****",
+                "tenant": "dev-yoj8axza"
+              },
+              "description": {
+                "rules": [
+                  {
+                    "code": "lengthAtLeast",
+                    "format": [
+                      8
+                    ],
+                    "message": "At least %d characters in length",
+                    "verified": true
+                  },
+                  {
+                    "code": "containsAtLeast",
+                    "format": [
+                      3,
+                      4
+                    ],
+                    "items": [
+                      {
+                        "code": "lowerCase",
+                        "message": "lower case letters (a-z)",
+                        "verified": true
+                      },
+                      {
+                        "code": "upperCase",
+                        "message": "upper case letters (A-Z)",
+                        "verified": false
+                      },
+                      {
+                        "code": "numbers",
+                        "message": "numbers (i.e. 0-9)",
+                        "verified": true
+                      },
+                      {
+                        "code": "specialCharacters",
+                        "message": "special characters (e.g. !@#$%^&*)",
+                        "verified": false
+                      }
+                    ],
+                    "message": "Contain at least %d of the following %d types of characters:",
+                    "verified": false
+                  }
+                ],
+                "verified": false
+              }
+            },
+            "strategy": "auth0",
+            "strategy_type": "database",
+            "type": "User signup failed",
+            "type_id": "fs"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user-signup-failed",
+        "category": [
+          "authentication",
+          "iam"
+        ],
+        "id": "90020211103032053864115389799397018204192682338689220658",
+        "kind": "event",
+        "outcome": "failure",
+        "type": [
+          "info",
+          "creation",
+          "user"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.170"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "unknown"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "data": {
+          "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+          "client_name": "All Applications",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_1a5wCUmAs6VOU17n",
+          "date": "2049-11-03T03:20:52.800Z",
+          "description": "Password is too weak",
+          "details": {
+            "body": {
+              "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+              "connection": "Username-Password-Authentication",
+              "email": "jfx@xcyx.com",
+              "password": "*****",
+              "tenant": "dev-yoj8axza"
+            },
+            "description": {
+              "rules": [
+                {
+                  "code": "lengthAtLeast",
+                  "format": [
+                    8
+                  ],
+                  "message": "At least %d characters in length",
+                  "verified": true
+                },
+                {
+                  "code": "containsAtLeast",
+                  "format": [
+                    3,
+                    4
+                  ],
+                  "items": [
+                    {
+                      "code": "lowerCase",
+                      "message": "lower case letters (a-z)",
+                      "verified": true
+                    },
+                    {
+                      "code": "upperCase",
+                      "message": "upper case letters (A-Z)",
+                      "verified": false
+                    },
+                    {
+                      "code": "numbers",
+                      "message": "numbers (i.e. 0-9)",
+                      "verified": true
+                    },
+                    {
+                      "code": "specialCharacters",
+                      "message": "special characters (e.g. !@#$%^&*)",
+                      "verified": false
+                    }
+                  ],
+                  "message": "Contain at least %d of the following %d types of characters:",
+                  "verified": false
+                }
+              ],
+              "verified": false
+            }
+          },
+          "ip": "192.0.2.170",
+          "log_id": "90020211103032053864115389799397018204192682338689220658",
+          "strategy": "auth0",
+          "strategy_type": "database",
+          "type": "fs",
+          "user_agent": "unknown",
+          "user_id": "",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103032053864115389799397018204192682338689220658"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {
+      "event.ingested": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-auth0-logs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "auth0",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

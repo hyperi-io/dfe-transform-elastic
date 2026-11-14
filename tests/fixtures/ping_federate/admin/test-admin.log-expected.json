@@ -1,0 +1,94 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-28T16:58:55.832+11:00",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "rotate",
+        "category": [
+          "configuration"
+        ],
+        "id": "A-rBnNPcJffxBiizBWDOWxq_Ek8cYxg3nef5uKyn6H4",
+        "kind": "event",
+        "original": "2052-11-28 5:58:55,832 | Administrator | UserAdmin,Admin,CryptoAdmin,ExpressionAdmin | 203.0.113.138 | A-rBnNPcJffxBiizBWDOWxq_Ek8cYxg3nef5uKyn6H4 | LICENSE | ROTATE | - Login was successful",
+        "timezone": "+11:00",
+        "type": [
+          "change"
+        ]
+      },
+      "message": "- Login was successful",
+      "observer": {
+        "product": "PingFederate",
+        "vendor": "Ping Identity"
+      },
+      "ping_federate": {
+        "admin": {
+          "component": "LICENSE",
+          "event": {
+            "detail_id": "A-rBnNPcJffxBiizBWDOWxq_Ek8cYxg3nef5uKyn6H4",
+            "type": "ROTATE"
+          },
+          "ip": "203.0.113.138",
+          "message": "- Login was successful",
+          "roles": [
+            "UserAdmin",
+            "Admin",
+            "CryptoAdmin",
+            "ExpressionAdmin"
+          ],
+          "timestamp": "2052-11-28T16:58:55.832+11:00",
+          "user": "Administrator"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "Administrator"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.138"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "Administrator",
+        "roles": [
+          "UserAdmin",
+          "Admin",
+          "CryptoAdmin",
+          "ExpressionAdmin"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "+11:00"
+      },
+      "message": "2052-11-28 5:58:55,832 | Administrator | UserAdmin,Admin,CryptoAdmin,ExpressionAdmin | 203.0.113.138 | A-rBnNPcJffxBiizBWDOWxq_Ek8cYxg3nef5uKyn6H4 | LICENSE | ROTATE | - Login was successful",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "admin",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ping_federate-admin-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ping_federate",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

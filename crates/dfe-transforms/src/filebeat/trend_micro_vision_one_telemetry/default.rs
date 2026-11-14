@@ -80,9 +80,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: // Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\n\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      newObj[camelToSnake(entry.getKey())] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    if (obj == \"\") {\n      return null;\n    }\n    return obj;\n  }\n}\n\n// Apply the conversion\nif (ctx.trend_micro_vision_one?.telemetry != null) {\n  ctx.trend_micro_vision_one.telemetry = convertToSnakeCase(ctx.trend_micro_vision_one.telemetry);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -90,9 +88,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: def key = (ctx.trend_micro_vision_one?.telemetry?.event_id ?: \"\").toString();\nif (params.containsKey(key)) {\n  ctx.trend_micro_vision_one.telemetry.event_type = params[key];\n} else {\n  ctx.trend_micro_vision_one.telemetry.event_type = 'Other';\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -103,9 +99,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: def key = (ctx.trend_micro_vision_one?.telemetry?.event_sub_id ?: \"\").toString();\nif (params.containsKey(key)) {\n  ctx.trend_micro_vision_one.telemetry.event_subtype = params[key];\n} else {\n  ctx.trend_micro_vision_one.telemetry.event_subtype = 'Other';\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -116,9 +110,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: Matcher m = /([+-]\\d\\d:\\d\\d)$/.matcher(ctx.trend_micro_vision_one?.telemetry?.timezone ?: \"\");\nctx._tmp_timezone = m.find() ? m.group(1) : \"UTC\";\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -1650,9 +1642,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.file == null) ctx.file = [:];\nctx.file.created = [\n  ctx.trend_micro_vision_one?.telemetry?.object_file_creation,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_creation,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_creation,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_creation\n];\nctx.file.created.removeIf(v -> v == null);\nif (ctx.file.created.size() == 1) ctx.file.created = ctx.file.created[0];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1728,9 +1718,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.file == null) ctx.file = [:];\nctx.file.mtime = [\n  ctx.trend_micro_vision_one?.telemetry?.object_file_modified_time,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_modified_time,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_modified_time,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_modified_time\n];\nctx.file.mtime.removeIf(v -> v == null);\nif (ctx.file.mtime.size() == 1) ctx.file.mtime = ctx.file.mtime[0];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1773,9 +1761,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.file == null) ctx.file = [:];\nctx.file.path = [\n  ctx.trend_micro_vision_one?.telemetry?.object_file_path,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_path\n];\nctx.file.path.removeIf(v -> v == null);\nif (ctx.file.path.size() == 1) ctx.file.path = ctx.file.path[0];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1818,9 +1804,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.file == null) ctx.file = [:];\nctx.file.size = [\n  ctx.trend_micro_vision_one?.telemetry?.object_current_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.object_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_size\n];\nctx.file.size.removeIf(v -> v == null);\nif (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1983,9 +1967,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.process == null) ctx.process = [:];\nctx.process.command_line = [\n  ctx.trend_micro_vision_one?.telemetry?.process_cmd,\n  ctx.trend_micro_vision_one?.telemetry?.object_cmd\n];\nctx.process.command_line.removeIf(v -> v == null);\nif (ctx.process.command_line.size() == 1) ctx.process.command_line = ctx.process.command_line[0];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2071,9 +2053,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.process == null) ctx.process = [:];\nctx.process.name = [\n  ctx.trend_micro_vision_one?.telemetry?.process_name,\n  ctx.trend_micro_vision_one?.telemetry?.object_name\n];\nctx.process.name.removeIf(v -> v == null);\nif (ctx.process.name.size() == 1) ctx.process.name = ctx.process.name[0];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2116,9 +2096,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.process == null) ctx.process = [:];\nctx.process.pid = [\n  ctx.trend_micro_vision_one?.telemetry?.process_pid,\n  ctx.trend_micro_vision_one?.telemetry?.object_pid\n];\nctx.process.pid.removeIf(v -> v == null);\nif (ctx.process.pid.size() == 1) ctx.process.pid = ctx.process.pid[0];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2161,9 +2139,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.process == null) ctx.process = [:];\nctx.process.start = [\n  ctx.trend_micro_vision_one?.telemetry?.process_launch_time,\n  ctx.trend_micro_vision_one?.telemetry?.object_launch_time\n];\nctx.process.start.removeIf(v -> v == null);\nif (ctx.process.start.size() == 1) ctx.process.start = ctx.process.start[0];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2626,8 +2602,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

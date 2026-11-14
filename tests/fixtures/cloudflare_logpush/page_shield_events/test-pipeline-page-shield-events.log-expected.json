@@ -1,0 +1,77 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-05-04T11:29:14.000Z",
+      "cloudflare_logpush": {
+        "page_shield_events": {
+          "action": "log",
+          "csp_directive": "directive",
+          "host": "hostymchost.face",
+          "page_url": "http://example.com/?query=42",
+          "policy_id": "9",
+          "resource_type": "other",
+          "timestamp": "2051-05-04T11:29:14.000Z",
+          "url": "https://example.com/?query=hog",
+          "url_contains_cdn_cgi_path": true,
+          "url_host": "example.com"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "log",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"Action\":\"log\",\"CSPDirective\":\"directive\",\"Host\":\"hostymchost.face\",\"PageURL\":\"http://example.com/?query=42\",\"PolicyID\":\"9\",\"ResourceType\":\"other\",\"Timestamp\":\"2051-05-04T11:29:14Z\",\"URL\":\"https://example.com/?query=hog\",\"URLContainsCDNCGIPath\":true,\"URLHost\":\"example.com\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "hostymchost.face"
+      },
+      "related": {
+        "hosts": [
+          "hostymchost.face",
+          "example.com"
+        ]
+      },
+      "rule": {
+        "id": "9"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com/?query=hog",
+        "path": "/",
+        "query": "query=hog",
+        "scheme": "https"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Action\":\"log\",\"CSPDirective\":\"directive\",\"Host\":\"hostymchost.face\",\"PageURL\":\"http://example.com/?query=42\",\"PolicyID\":\"9\",\"ResourceType\":\"other\",\"Timestamp\":\"2051-05-04T11:29:14Z\",\"URL\":\"https://example.com/?query=hog\",\"URLContainsCDNCGIPath\":true,\"URLHost\":\"example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "page_shield_events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-page_shield_events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

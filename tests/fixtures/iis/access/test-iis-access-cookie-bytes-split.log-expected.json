@@ -1,0 +1,114 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-07-06T18:36:16.000Z",
+      "destination": {
+        "address": "10.189.169.179",
+        "ip": "10.189.169.179",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 597000000,
+        "kind": "event",
+        "original": "2054-07-06 18:36:16 10.189.169.179 POST /apps/compliance/requirement.aspx RequirementId=1283 443 lamf@example.com 10.213.91.138 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/120.0.0.0+Safari/537.36 SESSION_ID=c0dffee4391d5008315ce113cc5d7bcf;+DeviceWidth=0;+DeviceHeight=0 https://example.com/apps/compliance/requirement.aspx?RequirementId=1283 200 0 0 20123 36264 597 203.0.113.10",
+        "outcome": "success",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 36264
+          },
+          "method": "POST",
+          "referrer": "https://example.com/apps/compliance/requirement.aspx?RequirementId=1283"
+        },
+        "response": {
+          "body": {
+            "bytes": 20123
+          },
+          "status_code": 200
+        }
+      },
+      "iis": {
+        "access": {
+          "cookie": "SESSION_ID=c0dffee4391d5008315ce113cc5d7bcf;+DeviceWidth=0;+DeviceHeight=0",
+          "sub_status": 0,
+          "win32_status": 0
+        }
+      },
+      "network": {
+        "forwarded_ip": "203.0.113.10"
+      },
+      "related": {
+        "ip": [
+          "10.213.91.138",
+          "10.189.169.179"
+        ],
+        "user": [
+          "lamf"
+        ]
+      },
+      "source": {
+        "address": "10.213.91.138",
+        "ip": "10.213.91.138"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "aspx",
+        "original": "/apps/compliance/requirement.aspx",
+        "path": "/apps/compliance/requirement.aspx",
+        "query": "RequirementId=1283"
+      },
+      "user": {
+        "domain": "example.com",
+        "name": "lamf"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "120.0.0.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "2054-07-06 18:36:16 10.189.169.179 POST /apps/compliance/requirement.aspx RequirementId=1283 443 lamf@example.com 10.213.91.138 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/120.0.0.0+Safari/537.36 SESSION_ID=c0dffee4391d5008315ce113cc5d7bcf;+DeviceWidth=0;+DeviceHeight=0 https://example.com/apps/compliance/requirement.aspx?RequirementId=1283 200 0 0 20123 36264 597 203.0.113.10",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "access",
+    "dynamic_fields": {
+      "user_agent.version": "^(\\d+\\.\\d+(\\.|\\..*)?|\\d+)$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-iis-access-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "iis",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

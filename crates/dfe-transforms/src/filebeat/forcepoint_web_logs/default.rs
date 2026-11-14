@@ -24,8 +24,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || v == 'None' || v == 'Not available' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || v == 'None' || v == 'Not available' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx.forcepoint_web);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -208,7 +207,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.forcepoint_web?.url != null && ctx.forcepoint_web?.url =~ /^(?![a-zA-Z0-9]+:\/\/)/ && ctx.http?.request?.method == "CONNECT"
+            // SKIPPED: the pipeline's condition has no equivalent here
             #[allow(unreachable_code, unused_variables)]
             if false {
                 if event.has_value("forcepoint_web.url") {
@@ -222,7 +221,7 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.forcepoint_web?.url != null && ctx.forcepoint_web?.url =~ /^(?![a-zA-Z0-9]+:\/\/)/
+            // SKIPPED: the pipeline's condition has no equivalent here
             #[allow(unreachable_code, unused_variables)]
             if false {
                 if event.has_value("forcepoint_web.url") {
@@ -571,8 +570,7 @@ impl Transform for Default {
             event.remove("_tmp");
             event.remove("_config");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

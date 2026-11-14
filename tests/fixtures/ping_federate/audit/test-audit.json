@@ -1,0 +1,266 @@
+{
+  "events": [{
+    "agent": {
+      "name": "docker-fleet-agent",
+      "id": "dc233ee0-1eb5-4cea-b6e8-8c72533deff4",
+      "ephemeral_id": "619f6360-8230-4f87-82fd-ed034b972166",
+      "type": "filebeat",
+      "version": "8.16.0"
+    },
+    "log": {
+      "source": {
+        "address": "192.168.31.197:36962"
+      }
+    },
+    "cef": {
+      "severity": "0",
+      "extensions": {
+        "deviceCustomString3Label": "Protocol",
+        "deviceCustomString1": "http://www.google.ca&landingpage=pageA",
+        "externalId": "tid:ae14b5ce8",
+        "deviceCustomString3": "SAML20",
+        "sourceAddress":"203.0.113.138",
+        "deviceCustomString1Label": "Target Application URL",
+        "deviceCustomString2": "sp:cloud:saml2",
+        "deviceReceiptTime": "2040-05-18T11:41:48.452Z",
+        "message": "failure",
+        "deviceCustomString4": "IdP",
+        "deviceCustomString6Label": "Attributes",
+        "deviceCustomString6": "{SAML_SUBJECT=joe, ognl=tom}",
+        "deviceCustomString5Label": "SP Local User ID",
+        "deviceCustomString5": "idlocal",
+        "deviceCustomString4Label": "Role",
+        "deviceHostName": "jcpwh",
+        "destinationUserId": "joe",
+        "deviceCustomString2Label": "Connection ID"
+      },
+      "name": "AUTHN_SESSION_DELETED",
+      "version": "0",
+      "device": {
+        "product": "PingFederate",
+        "event_class_id": "AUTHN_SESSION_DELETED",
+        "vendor": "Ping Identity",
+        "version": "6.4"
+      }
+    },
+    "elastic_agent": {
+      "id": "dc233ee0-1eb5-4cea-b6e8-8c72533deff4",
+      "version": "8.16.0",
+      "snapshot": false
+    },
+    "destination": {
+      "user": {
+        "id": "joe"
+      }
+    },
+    "message": "success",
+    "observer": {
+      "product": "PingFederate",
+      "hostname": "jcpwh",
+      "vendor": "Ping Identity",
+      "version": "6.4"
+    },
+    "input": {
+      "type": "tcp"
+    },
+    "@timestamp": "2040-05-18T11:41:48.452Z",
+    "ecs": {
+      "version": "8.0.0"
+    },
+    "event": {
+      "severity": 0,
+      "agent_id_status": "verified",
+      "ingested": "2052-12-06T09:22:50Z",
+      "original": "CEF:0|Ping Identity|PingFederate|6.4|AUTHN_SESSION_DELETED|AUTHN_SESSION_DELETED|0|rt=May 18 2040 11:41:48.452 duid=joe src=203.0.113.138 msg=success cs1Label=Target Application URL cs1=http://www.google.ca&landingpage\\=pageA cs2Label=Connection ID cs2=sp:cloud:saml2 cs3Label=Protocol cs3=SAML20 dvchost=jcpwh cs4Label=Role cs4=IdP externalId=tid:ae14b5ce8 cs5Label=SP Local User ID cs5=idlocal cs6Label=Attributes cs6={SAML_SUBJECT\\=joe, ognl\\=tom}",
+      "code": "AUTHN_SESSION_DELETED",
+      "dataset": "ping_federate.audit"
+    }
+  },
+  {
+    "agent": {
+      "name": "docker-fleet-agent",
+      "id": "dc233ee0-1eb5-4cea-b6e8-8c72533deff4",
+      "ephemeral_id": "619f6360-8230-4f87-82fd-ed034b972166",
+      "type": "filebeat",
+      "version": "8.16.0"
+    },
+    "log": {
+      "source": {
+        "address": "192.168.31.197:36962"
+      }
+    },
+    "cef": {
+      "severity": "0",
+      "extensions": {
+        "deviceCustomString3Label": "Protocol",
+        "externalId": "tid:ae14b5cea",
+        "sourceAddress":"203.0.113.138",
+        "deviceCustomString1Label": "Target Application URL",
+        "deviceReceiptTime": "2040-05-18T11:41:48.452Z",
+        "deviceCustomString6Label": "Attributes",
+        "deviceCustomString5Label": "SP Local User ID",
+        "deviceCustomString4Label": "Role",
+        "destinationUserId": "moe",
+        "deviceCustomString2Label": "Connection ID"
+      },
+      "name": "AUTHN_SESSION_USED",
+      "version": "0",
+      "device": {
+        "product": "PingFederate",
+        "event_class_id": "AUTHN_SESSION_USED",
+        "vendor": "Ping Identity",
+        "version": "6.4"
+      }
+    },
+    "elastic_agent": {
+      "id": "dc233ee0-1eb5-4cea-b6e8-8c72533deff4",
+      "version": "8.16.0",
+      "snapshot": false
+    },
+    "destination": {
+      "user": {
+        "id": "moe"
+      }
+    },
+    "message": "in progress",
+    "observer": {
+      "product": "PingFederate",
+      "vendor": "Ping Identity",
+      "version": "6.4"
+    },
+    "input": {
+      "type": "tcp"
+    },
+    "@timestamp": "2040-05-18T11:41:48.452Z",
+    "ecs": {
+      "version": "8.0.0"
+    },
+    "event": {
+      "severity": 0,
+      "agent_id_status": "verified",
+      "ingested": "2052-12-06T09:22:50Z",
+      "original": "CEF:0|Ping Identity|PingFederate|6.4|AUTHN_SESSION_USED|AUTHN_SESSION_USED|0|rt=May 18 2040 11:41:48.453 duid=moe src=203.0.113.138 msg=in progress cs1Label=Target Application URL cs1= cs2Label=Connection ID cs2= cs3Label=Protocol cs3= cs4Label=Role cs4= externalId=tid:ae14b5cea cs5Label=SP Local User ID cs5= cs6Label=Attributes cs6=",
+      "code": "AUTHN_SESSION_USED",
+      "dataset": "ping_federate.audit"
+    }
+  },
+    {
+      "agent": {
+        "name": "docker-fleet-agent",
+        "id": "dc233ee0-1eb5-4cea-b6e8-8c72533deff4",
+        "ephemeral_id": "619f6360-8230-4f87-82fd-ed034b972166",
+        "type": "filebeat",
+        "version": "8.16.0"
+      },
+      "log": {
+        "source": {
+          "address": "192.168.31.197:36962"
+        }
+      },
+      "cef": {
+        "severity": "0",
+        "extensions": {
+          "deviceCustomString3Label": "Protocol",
+          "externalId": "tid:ae14b5ce9",
+          "sourceAddress":"203.0.113.138",
+          "deviceCustomString1Label": "Target Application URL",
+          "deviceReceiptTime": "2040-05-18T11:41:48.452Z",
+          "deviceCustomString6Label": "Attributes",
+          "deviceCustomString5Label": "SP Local User ID",
+          "deviceCustomString4Label": "Role",
+          "destinationUserId": "moe",
+          "deviceCustomString2Label": "Connection ID"
+        },
+        "name": "AUTHN_SESSION_DELETED",
+        "version": "0",
+        "device": {
+          "product": "PingFederate",
+          "event_class_id": "AUTHN_SESSION_DELETED",
+          "vendor": "Ping Identity",
+          "version": "6.4"
+        }
+      },
+      "elastic_agent": {
+        "id": "dc233ee0-1eb5-4cea-b6e8-8c72533deff4",
+        "version": "8.16.0",
+        "snapshot": false
+      },
+      "destination": {
+        "user": {
+          "id": "moe"
+        }
+      },
+      "message": "failure",
+      "observer": {
+        "product": "PingFederate",
+        "vendor": "Ping Identity",
+        "version": "6.4"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "@timestamp": "2040-05-18T11:41:48.452Z",
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "severity": 0,
+        "agent_id_status": "verified",
+        "ingested": "2052-12-06T09:22:50Z",
+        "original": "CEF:0|Ping Identity|PingFederate|6.4|AUTHN_SESSION_DELETED|AUTHN_SESSION_DELETED|0|rt=May 18 2040 11:41:48.452 duid=moe src=203.0.113.138 msg= cs1Label=Target Application URL cs1= cs2Label=Connection ID cs2= cs3Label=Protocol cs3= cs4Label=Role cs4= externalId=tid:ae14b5ce9 cs5Label=SP Local User ID cs5= cs6Label=Attributes cs6=",
+        "code": "AUTHN_SESSION_DELETED",
+        "dataset": "ping_federate.audit"
+      }
+    },
+    {
+      "agent": {
+        "name": "docker-fleet-agent",
+        "id": "dc233ee0-1eb5-4cea-b6e8-8c72533deff4",
+        "ephemeral_id": "619f6360-8230-4f87-82fd-ed034b972166",
+        "type": "filebeat",
+        "version": "8.16.0"
+      },
+      "log": {
+        "source": {
+          "address": "192.168.31.197:36962"
+        }
+      },
+      "cef": {
+        "severity": "0",
+        "name": "UNKNOWN_TYPE",
+        "version": "0",
+        "device": {
+          "product": "PingFederate",
+          "event_class_id": "UNKNOWN_TYPE",
+          "vendor": "Ping Identity",
+          "version": "6.4"
+        }
+      },
+      "elastic_agent": {
+        "id": "dc233ee0-1eb5-4cea-b6e8-8c72533deff4",
+        "version": "8.16.0",
+        "snapshot": false
+      },
+      "message": "UNKNOWN_TYPE",
+      "observer": {
+        "product": "PingFederate",
+        "vendor": "Ping Identity",
+        "version": "6.4"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "@timestamp": "2040-05-18T11:41:48.452Z",
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "severity": 0,
+        "agent_id_status": "verified",
+        "ingested": "2052-12-06T09:22:50Z",
+        "original": "CEF:0|Ping Identity|PingFederate|6.4|UNKNOWN_TYPE|UNKNOWN_TYPE|0|",
+        "code": "UNKNOWN_TYPE",
+        "dataset": "ping_federate.audit"
+      }
+    }
+]}

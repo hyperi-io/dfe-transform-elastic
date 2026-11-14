@@ -1,0 +1,84 @@
+{
+  "expected": [
+    {
+      "admin_by_request_epm": {
+        "events": {
+          "application": {
+            "file": "msedge.exe",
+            "name": "Microsoft Edge",
+            "path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application",
+            "sha256": "4FF998D4B65CE47D18DADB1BE8BE0B2E9078A221EEBCDD3FAE5EEBCFEFA1BB0B",
+            "vendor": "Microsoft Corporation",
+            "version": "msedge.exe"
+          },
+          "computer_name": "ENWTY81",
+          "event_code": 92,
+          "event_level": 0,
+          "event_text": "Execution of file blocked by policy",
+          "event_time": "2050-01-27T12:16:38.817",
+          "event_time_utc": "2050-01-27T12:16:38.817",
+          "id": 53820480,
+          "rollback": false,
+          "user_account": "TEST",
+          "user_name": "CeimXtfer Tphjqtl"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "dataset": "admin_by_request_epm.events",
+        "kind": "event",
+        "module": "admin_by_request_epm",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "name": "msedge.exe",
+        "path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application"
+      },
+      "hash": {
+        "sha256": "4FF998D4B65CE47D18DADB1BE8BE0B2E9078A221EEBCDD3FAE5EEBCFEFA1BB0B"
+      },
+      "host": {
+        "hostname": "ENWTY81"
+      },
+      "related": {
+        "hash": [
+          "4FF998D4B65CE47D18DADB1BE8BE0B2E9078A221EEBCDD3FAE5EEBCFEFA1BB0B"
+        ],
+        "hosts": [
+          "ENWTY81"
+        ]
+      },
+      "user": {
+        "name": "CeimXtfer Tphjqtl"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\": 53820480, \"eventCode\": 92, \"eventLevel\": 0, \"eventText\": \"Execution of file blocked by policy\", \"eventTime\": \"2050-01-27T12:16:38.817\", \"eventTimeUTC\": \"2050-01-27T12:16:38.817\", \"computerName\": \"ENWTY81\", \"userAccount\": \"TEST\", \"userName\": \"CeimXtfer Tphjqtl\", \"alertAccount\": null, \"auditLogURL\": null, \"rollback\": false, \"additionalData\": null, \"application\": {\"file\": \"msedge.exe\", \"path\": \"C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\", \"name\": \"Microsoft Edge\", \"vendor\": \"Microsoft Corporation\", \"version\": \"msedge.exe\", \"sha256\": \"4FF998D4B65CE47D18DADB1BE8BE0B2E9078A221EEBCDD3FAE5EEBCFEFA1BB0B\"}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-admin_by_request_epm-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [
+      "admin_by_request_epm.events.id",
+      "admin_by_request_epm.events.event_level",
+      "admin_by_request_epm.events.event_code"
+    ],
+    "package": "admin_by_request_epm",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

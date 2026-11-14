@@ -1,0 +1,120 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "MobileDeviceInventoryCompleted",
+        "category": [
+          "host"
+        ],
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "entity": {
+          "lifecycle": {
+            "last_activity": "2052-09-04T09:57:52.001Z"
+          }
+        },
+        "ip": [
+          "198.51.100.144"
+        ],
+        "os": {
+          "version": "67.8497"
+        }
+      },
+      "jamf_pro": {
+        "events": {
+          "event": {
+            "bluetooth_mac_address": "ce:bb:a4:55:30:bc",
+            "device_name": "N7TFT",
+            "icci_id": "1067418925",
+            "imei": "P4D2IS",
+            "ip_address": "198.51.100.144",
+            "jss_id": 673,
+            "management_id": "6679969328",
+            "model": "CLKF7W",
+            "model_display": "ALJRGG",
+            "os_build": "89.5146",
+            "os_version": "67.8497",
+            "product": "QY4BVT",
+            "room": "2BHL5Q",
+            "serial_number": "3468652",
+            "udid": "5516786595",
+            "user_directory_id": "3185814212",
+            "username": "Pnvw Eyd",
+            "version": "O7F2FM",
+            "wifi_mac_address": "ce:bb:a4:55:30:bc"
+          },
+          "webhook": {
+            "event_timestamp": "2052-09-04T09:57:52.001Z",
+            "id": 911,
+            "name": "N7J0R",
+            "webhook_event": "MobileDeviceInventoryCompleted"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "Pnvw Eyd"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "Pnvw Eyd"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "event": {
+          "bluetooth_mac_address": "ce:bb:a4:55:30:bc",
+          "device_name": "N7TFT",
+          "icci_id": "1067418925",
+          "imei": "P4D2IS",
+          "ip_address": "198.51.100.144",
+          "jss_id": 673,
+          "management_id": "6679969328",
+          "model": "CLKF7W",
+          "model_display": "ALJRGG",
+          "os_build": "89.5146",
+          "os_version": "67.8497",
+          "product": "QY4BVT",
+          "room": "2BHL5Q",
+          "serial_number": "3468652",
+          "udid": "5516786595",
+          "user_directory_id": "3185814212",
+          "username": "Pnvw Eyd",
+          "version": "O7F2FM",
+          "wifi_mac_address": "ce:bb:a4:55:30:bc"
+        },
+        "webhook": {
+          "event_timestamp": 2609056672001,
+          "id": 911,
+          "name": "N7J0R",
+          "webhook_event": "MobileDeviceInventoryCompleted"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

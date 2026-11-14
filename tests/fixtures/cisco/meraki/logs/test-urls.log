@@ -1,0 +1,4 @@
+{ "message": "<134>1 1647479503.348215340 MX84 urls src=10.25.251.34:60336 dst=198.51.100.144:80 mac=36:2A:4A:FD:04:42 request: UNKNOWN https://bitbucket.org/..." }
+{ "message": "<134>1 1647479503.676404537 MX84 urls src=10.66.136.167:56424 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 request: GET https://lh3.googleusercontent.com/p/AFVnnY=w2048-h1024" }
+{ "message": "<134>1 1647479503.676404537 MX84 urls src=10.66.136.167:56424 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0' request: GET https://lh3.googleusercontent.com/p/AFVnnY=w2048-h1024" }
+{ "message": "<134>1 1709836794.196198735 BOS_WAP2_Service urls src=10.25.251.34:60336 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 agent='Microsoft NCSI' request: GET http://www.msftconnecttest.com/connecttest.txt" }

@@ -1,0 +1,603 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2044-12-02T18:27:55.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Allowed",
+        "category": [
+          "network"
+        ],
+        "code": "18041",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2044-12-02 time=18:27:55 timezone=\"GMT\" device_name=\"YBLTWU\" device_id=C01001K234RXPA1 log_id=136501618041 log_type=\"Sandbox\" log_component=\"Web\" log_subtype=\"Allowed\" priority=Information user_name=\"\" src_ip= filename=\"\" filetype=\"\" filesize=0 sha1sum=\"\" source=\"\" reason=\"eligible\" destination=\"\" subject=\"\"",
+        "outcome": "success",
+        "reason": "eligible",
+        "severity": 6,
+        "timezone": "GMT",
+        "type": [
+          "allowed",
+          "end",
+          "connection"
+        ]
+      },
+      "file": {
+        "size": 0
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C01001K234RXPA1",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "device": "SFW",
+          "device_name": "YBLTWU",
+          "log_component": "Web",
+          "log_id": "136501618041",
+          "log_subtype": "Allowed",
+          "log_type": "Sandbox",
+          "priority": "Information",
+          "timezone": "GMT"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2044-12-02T18:31:50.000Z",
+      "destination": {
+        "domain": "briakdx.bcndxlm.ca"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Allowed",
+        "category": [
+          "network"
+        ],
+        "code": "18041",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2044-12-02 time=18:31:50 timezone=\"GMT\" device_name=\"YBLTWU\" device_id=C01001K234RXPA1 log_id=136501618041 log_type=\"Sandbox\" log_component=\"Web\" log_subtype=\"Allowed\" priority=Information user_name=\"liat\" src_ip=192.168.117.190 filename=\"test7.exe\" filetype=\"application/octet-stream\" filesize=871700 sha1sum=\"2563c436296ec8b0d7529f93d47dc8773fbe925d\" source=\"briakdx.bcndxlm.ca\" reason=\"cloud clean\" destination=\"\" subject=\"\"",
+        "outcome": "success",
+        "reason": "cloud clean",
+        "severity": 6,
+        "timezone": "GMT",
+        "type": [
+          "allowed"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "2563c436296ec8b0d7529f93d47dc8773fbe925d"
+        },
+        "mime_type": "application/octet-stream",
+        "name": "test7.exe",
+        "size": 871700
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C01001K234RXPA1",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hash": [
+          "2563c436296ec8b0d7529f93d47dc8773fbe925d"
+        ],
+        "hosts": [
+          "eaecwjitcyy.local",
+          "briakdx.bcndxlm.ca"
+        ],
+        "ip": [
+          "192.168.117.190"
+        ],
+        "user": [
+          "liat"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "device": "SFW",
+          "device_name": "YBLTWU",
+          "log_component": "Web",
+          "log_id": "136501618041",
+          "log_subtype": "Allowed",
+          "log_type": "Sandbox",
+          "priority": "Information",
+          "timezone": "GMT"
+        }
+      },
+      "source": {
+        "ip": "192.168.117.190",
+        "user": {
+          "name": "liat"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "briakdx.bcndxlm.ca"
+      }
+    },
+    {
+      "@timestamp": "2046-06-21T23:43:25.000+02:00",
+      "destination": {
+        "domain": "ke-gbb-lxayoe.qf.aihein.de"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Denied",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "18042",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-21 time=23:43:25 timezone=\"CEST\" device_name=\"YP556\" device_id=SFDemo-058196d log_id=136502218042 log_type=\"Sandbox\" log_component=\"Web\" log_subtype=\"Denied\" priority=Critical user_name=\"tf-dqqcxj\" src_ip=10.70.148.228 filename=\"sandbox_dirty_no_cache\" filetype=\"text/plain\" filesize=266541 sha1sum=\"dc1cd11f92c1827e0dbfbbc56d5754a3b531aa2e\" source=\"ke-gbb-lxayoe.qf.aihein.de\" reason=\"cached malicious\" destination=\"\" subject=\"\"",
+        "outcome": "success",
+        "reason": "cached malicious",
+        "severity": 2,
+        "timezone": "Etc/GMT-2",
+        "type": [
+          "denied",
+          "connection"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "dc1cd11f92c1827e0dbfbbc56d5754a3b531aa2e"
+        },
+        "mime_type": "text/plain",
+        "name": "sandbox_dirty_no_cache",
+        "size": 266541
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "critical"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "SFDemo-058196d",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hash": [
+          "dc1cd11f92c1827e0dbfbbc56d5754a3b531aa2e"
+        ],
+        "hosts": [
+          "eaecwjitcyy.local",
+          "ke-gbb-lxayoe.qf.aihein.de"
+        ],
+        "ip": [
+          "10.70.148.228"
+        ],
+        "user": [
+          "tf-dqqcxj"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "device": "SFW",
+          "device_name": "YP556",
+          "log_component": "Web",
+          "log_id": "136502218042",
+          "log_subtype": "Denied",
+          "log_type": "Sandbox",
+          "priority": "Critical",
+          "timezone": "CEST"
+        }
+      },
+      "source": {
+        "ip": "10.70.148.228",
+        "user": {
+          "name": "tf-dqqcxj"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ke-gbb-lxayoe.qf.aihein.de"
+      }
+    },
+    {
+      "@timestamp": "2044-12-02T18:27:55.000Z",
+      "destination": {
+        "domain": "briakdx.bcndxlm.ca"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Pending",
+        "category": [
+          "network"
+        ],
+        "code": "18043",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2044-12-02 time=18:27:55 timezone=\"GMT\" device_name=\"YBLTWU\" device_id=C01001K234RXPA1 log_id=136528618043 log_type=\"Sandbox\" log_component=\"Web\" log_subtype=\"Pending\" priority=Information user_name=\"liat\" src_ip=192.168.117.190 filename=\"badb.exe\" filetype=\"application/octet-stream\" filesize=1634319 sha1sum=\"2517c16f46385ec17a6f1560cbe4cfcd868252db\" source=\"briakdx.bcndxlm.ca\" reason=\"pending\" destination=\"\" subject=\"\"",
+        "outcome": "success",
+        "reason": "pending",
+        "severity": 6,
+        "timezone": "GMT",
+        "type": [
+          "start",
+          "connection"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "2517c16f46385ec17a6f1560cbe4cfcd868252db"
+        },
+        "mime_type": "application/octet-stream",
+        "name": "badb.exe",
+        "size": 1634319
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C01001K234RXPA1",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hash": [
+          "2517c16f46385ec17a6f1560cbe4cfcd868252db"
+        ],
+        "hosts": [
+          "eaecwjitcyy.local",
+          "briakdx.bcndxlm.ca"
+        ],
+        "ip": [
+          "192.168.117.190"
+        ],
+        "user": [
+          "liat"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "device": "SFW",
+          "device_name": "YBLTWU",
+          "log_component": "Web",
+          "log_id": "136528618043",
+          "log_subtype": "Pending",
+          "log_type": "Sandbox",
+          "priority": "Information",
+          "timezone": "GMT"
+        }
+      },
+      "source": {
+        "ip": "192.168.117.190",
+        "user": {
+          "name": "liat"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "briakdx.bcndxlm.ca"
+      }
+    },
+    {
+      "@timestamp": "2044-12-02T18:27:55.000Z",
+      "destination": {
+        "domain": "briakdx.bcndxlm.ca"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Pending",
+        "category": [
+          "network"
+        ],
+        "code": "18043",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2044-12-02 time=18:27:55 timezone=\"GMT\" device_name=\"YBLTWU\" device_id=C01001K234RXPA1 log_id=136528618043 log_type=\"Sandbox\" log_component=\"Web\" log_subtype=\"Pending\" priority=Information user_name=\"liat\" src_ip=192.168.117.190 filename=\"badb.exe\" filetype=\"application/octet-stream\" filesize=1634319 sha1sum=\"6a04c20b94fcf24ba77c205c7c20544267472d092317dbe1d60c8d016058a8ab\" source=\"briakdx.bcndxlm.ca\" reason=\"pending\" destination=\"\" subject=\"\"",
+        "outcome": "success",
+        "reason": "pending",
+        "severity": 6,
+        "timezone": "GMT",
+        "type": [
+          "start",
+          "connection"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha256": "6a04c20b94fcf24ba77c205c7c20544267472d092317dbe1d60c8d016058a8ab"
+        },
+        "mime_type": "application/octet-stream",
+        "name": "badb.exe",
+        "size": 1634319
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C01001K234RXPA1",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hash": [
+          "6a04c20b94fcf24ba77c205c7c20544267472d092317dbe1d60c8d016058a8ab"
+        ],
+        "hosts": [
+          "eaecwjitcyy.local",
+          "briakdx.bcndxlm.ca"
+        ],
+        "ip": [
+          "192.168.117.190"
+        ],
+        "user": [
+          "liat"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "device": "SFW",
+          "device_name": "YBLTWU",
+          "log_component": "Web",
+          "log_id": "136528618043",
+          "log_subtype": "Pending",
+          "log_type": "Sandbox",
+          "priority": "Information",
+          "timezone": "GMT"
+        }
+      },
+      "source": {
+        "ip": "192.168.117.190",
+        "user": {
+          "name": "liat"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "briakdx.bcndxlm.ca"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2044-12-02 time=18:27:55 timezone=\"GMT\" device_name=\"YBLTWU\" device_id=C01001K234RXPA1 log_id=136501618041 log_type=\"Sandbox\" log_component=\"Web\" log_subtype=\"Allowed\" priority=Information user_name=\"\" src_ip= filename=\"\" filetype=\"\" filesize=0 sha1sum=\"\" source=\"\" reason=\"eligible\" destination=\"\" subject=\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2044-12-02 time=18:31:50 timezone=\"GMT\" device_name=\"YBLTWU\" device_id=C01001K234RXPA1 log_id=136501618041 log_type=\"Sandbox\" log_component=\"Web\" log_subtype=\"Allowed\" priority=Information user_name=\"liat\" src_ip=192.168.117.190 filename=\"test7.exe\" filetype=\"application/octet-stream\" filesize=871700 sha1sum=\"2563c436296ec8b0d7529f93d47dc8773fbe925d\" source=\"briakdx.bcndxlm.ca\" reason=\"cloud clean\" destination=\"\" subject=\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-21 time=23:43:25 timezone=\"CEST\" device_name=\"YP556\" device_id=SFDemo-058196d log_id=136502218042 log_type=\"Sandbox\" log_component=\"Web\" log_subtype=\"Denied\" priority=Critical user_name=\"tf-dqqcxj\" src_ip=10.70.148.228 filename=\"sandbox_dirty_no_cache\" filetype=\"text/plain\" filesize=266541 sha1sum=\"dc1cd11f92c1827e0dbfbbc56d5754a3b531aa2e\" source=\"ke-gbb-lxayoe.qf.aihein.de\" reason=\"cached malicious\" destination=\"\" subject=\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2044-12-02 time=18:27:55 timezone=\"GMT\" device_name=\"YBLTWU\" device_id=C01001K234RXPA1 log_id=136528618043 log_type=\"Sandbox\" log_component=\"Web\" log_subtype=\"Pending\" priority=Information user_name=\"liat\" src_ip=192.168.117.190 filename=\"badb.exe\" filetype=\"application/octet-stream\" filesize=1634319 sha1sum=\"2517c16f46385ec17a6f1560cbe4cfcd868252db\" source=\"briakdx.bcndxlm.ca\" reason=\"pending\" destination=\"\" subject=\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2044-12-02 time=18:27:55 timezone=\"GMT\" device_name=\"YBLTWU\" device_id=C01001K234RXPA1 log_id=136528618043 log_type=\"Sandbox\" log_component=\"Web\" log_subtype=\"Pending\" priority=Information user_name=\"liat\" src_ip=192.168.117.190 filename=\"badb.exe\" filetype=\"application/octet-stream\" filesize=1634319 sha1sum=\"6a04c20b94fcf24ba77c205c7c20544267472d092317dbe1d60c8d016058a8ab\" source=\"briakdx.bcndxlm.ca\" reason=\"pending\" destination=\"\" subject=\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "xg",
+    "dynamic_fields": {
+      "network.community_id": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sophos-xg-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "sophos",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

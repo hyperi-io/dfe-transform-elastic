@@ -112,9 +112,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script
-            // Source: ctx.cyberarkpas.monitor.entrySet().removeIf(entry -> entry.getValue() == \"\");
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -167,9 +165,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: String to_snake_case(String s) {\n  /* faster code path for strings that won't need an underscore */\n  if (s.chars().skip(1).noneMatch(Character::isUpperCase)) {\n    return s.toLowerCase();\n  }\n  int run = 0;\n  boolean first = true;\n  StringBuilder result = new StringBuilder();\n  for (char c : s.toCharArray()) {\n    char o = Character.toLowerCase(c);\n    if (c != o) {\n      if (run == 0 && !first) {\n        result.append('_');\n      }\n      run ++;\n    } else {\n      if (run > 1) {\n        char prev = result.charAt(result.length()-1);\n        result.setCharAt(result.length()-1, (char)'_');\n        result.append(prev);\n      }\n      run = 0;\n      first = false;\n    }\n    result.append(o);\n  }\n  return result.toString();\n} def keys_to_snake_case_recursive(Map object) {\n  return object.entrySet().stream().collect(\n    Collectors.toMap(\n      e -> to_snake_case(e.getKey()),\n      e -> e.getValue() instanceof Map ? keys_to_snake_case_recursive(e.getValue()) : e.getValue()\n    )\n  );\n} ctx.cyberarkpas.monitor = keys_to_snake_case_recursive(ctx.cyberarkpas.monitor);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -325,9 +321,7 @@ impl Transform for Default {
 
             let _cond = { event.get("tags").is_some_and(|v| v.is_array()) };
             if _cond {
-                // Painless script
-                // Source: def i = ctx.tags.indexOf(\"cyberarkpas-audit\"); if (i != -1) ctx.tags.set(i, \"cyberarkpas-monitor\");
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -370,9 +364,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("host.cpu.usage") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.host == null) ctx.host = [:]; if (ctx.host.cpu == null) ctx.host.cpu = [:]; ctx.host.cpu.usage = ctx.cyberarkpas.monitor.cpu_usage/100.0;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

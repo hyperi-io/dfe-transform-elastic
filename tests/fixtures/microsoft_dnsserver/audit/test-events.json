@@ -1,0 +1,184 @@
+{
+    "events": [
+        {
+            "@timestamp": "2052-04-23T09:16:40.645Z",
+            "winlog": {
+                "computer_name": "CB8EQEM-835CJ2A",
+                "process": {
+                    "pid": 852,
+                    "thread": {
+                        "id": 7708
+                    }
+                },
+                "keywords": [
+                    "AUDIT_POLICY"
+                ],
+                "channel": "Microsoft-Windows-DNSServer/Audit",
+                "event_data": {
+                    "Policy": "BlackholePolicy",
+                    "Condition": "And",
+                    "Action": "Ignore",
+                    "Type": "Query processing",
+                    "ProcessingOrder": "1",
+                    "IsEnabled": "True",
+                    "ServerName": "CB8EQEM-835CJ2A",
+                    "Criteria": "FQDN=EQ,*.treyresearch.com"
+                },
+                "opcode": "Info",
+                "record_id": 27,
+                "event_id": "577",
+                "task": "POLICY_OP",
+                "provider_guid": "{ee66415f-e189-4222-9933-2af8618187c9}",
+                "api": "wineventlog",
+                "provider_name": "Microsoft-Windows-DNSServer",
+                "user": {
+                    "identifier": "S-1-5-21-2397692938-4146434421-2570431792-500",
+                    "domain": "CB8EQEM-835CJ2A",
+                    "name": "Administrator",
+                    "type": "User"
+                }
+            },
+            "log": {
+                "level": "information"
+            },
+            "message": "A server level policy BlackholePolicy for Query processing  has been created on server CB8EQEM-835CJ2A with following properties: Processing order:1; Criteria:FQDN=EQ,*.treyresearch.com; Action:Ignore; Condition:And; IsEnabled:True.",
+            "input": {
+                "type": "winlog"
+            },
+            "event": {
+                "agent_id_status": "verified",
+                "ingested": "2052-04-23T09:31:03Z",
+                "code": "577",
+                "provider": "Microsoft-Windows-DNSServer",
+                "kind": "event",
+                "created": "2052-04-23T09:30:53.311Z",
+                "action": "POLICY_OP",
+                "dataset": "microsoft_dnsserver.audit"
+            }
+        },
+        {
+            "@timestamp": "2052-04-23T09:32:34.489Z",
+            "winlog": {
+                "computer_name": "CB8EQEM-835CJ2A",
+                "record_id": 37,
+                "process": {
+                    "pid": 852,
+                    "thread": {
+                        "id": 2984
+                    }
+                },
+                "task": "Configuration",
+                "event_id": "540",
+                "keywords": [
+                    "AUDIT_ROOTHINTS"
+                ],
+                "provider_guid": "{ee66415f-e189-4222-9933-2af8618187c9}",
+                "channel": "Microsoft-Windows-DNSServer/Audit",
+                "api": "wineventlog",
+                "opcode": "Info",
+                "provider_name": "Microsoft-Windows-DNSServer",
+                "user": {
+                    "identifier": "S-1-5-21-2397692938-4146434421-2570431792-500",
+                    "domain": "CB8EQEM-835CJ2A",
+                    "name": "Administrator",
+                    "type": "User"
+                }
+            },
+            "log": {
+                "level": "information"
+            },
+            "message": "The root hints have been modified.",
+            "input": {
+                "type": "winlog"
+            },
+            "event": {
+                "agent_id_status": "verified",
+                "ingested": "2052-04-23T09:32:46Z",
+                "code": "540",
+                "provider": "Microsoft-Windows-DNSServer",
+                "created": "2052-04-23T09:32:35.960Z",
+                "kind": "event",
+                "action": "Configuration",
+                "dataset": "microsoft_dnsserver.audit"
+            }
+        },
+        {
+            "@timestamp": "2052-04-23T09:32:34.487Z",
+            "winlog": {
+                "computer_name": "CB8EQEM-835CJ2A",
+                "process": {
+                    "pid": 852,
+                    "thread": {
+                        "id": 2984
+                    }
+                },
+                "keywords": [
+                    "AUDIT_CACHE"
+                ],
+                "channel": "Microsoft-Windows-DNSServer/Audit",
+                "event_data": {
+                    "Scope": "Default",
+                    "QNAME": "B.ZPQR-LERMFRO.NET.",
+                    "QTYPE": "28"
+                },
+                "opcode": "Info",
+                "record_id": 29,
+                "event_id": "536",
+                "task": "CACHE_OP",
+                "provider_guid": "{ee66415f-e189-4222-9933-2af8618187c9}",
+                "api": "wineventlog",
+                "provider_name": "Microsoft-Windows-DNSServer",
+                "user": {
+                    "identifier": "S-1-5-21-2397692938-4146434421-2570431792-500",
+                    "domain": "CB8EQEM-835CJ2A",
+                    "name": "Administrator",
+                    "type": "User"
+                }
+            },
+            "log": {
+                "level": "information"
+            },
+            "message": "A record of type 28, QNAME B.ZPQR-LERMFRO.NET. was purged from scope Default in cache.",
+            "input": {
+                "type": "winlog"
+            },
+            "data_stream": {
+                "namespace": "default",
+                "type": "logs",
+                "dataset": "microsoft_dnsserver.audit"
+            },
+            "host": {
+                "hostname": "cb8eqem-835cj2a",
+                "os": {
+                    "build": "20348.2322",
+                    "kernel": "10.0.20348.2322 (WinBuild.160101.0800)",
+                    "name": "Windows Server 2022 Datacenter",
+                    "family": "windows",
+                    "type": "windows",
+                    "version": "10.0",
+                    "platform": "windows"
+                },
+                "ip": [
+                    "fe80::dd4a:8121:e72b:6f21",
+                    "172.30.18.182"
+                ],
+                "name": "cb8eqem-835cj2a",
+                "id": "6b629328-a601-4f77-8b6f-ea217e4e9873",
+                "mac": [
+                    "44-2E-F5-8A-C0-37"
+                ],
+                "architecture": "x86_64"
+            },
+            "event": {
+                "agent_id_status": "verified",
+                "ingested": "2052-04-23T09:32:46Z",
+                "code": "536",
+                "provider": "Microsoft-Windows-DNSServer",
+                "kind": "event",
+                "created": "2052-04-23T09:32:35.959Z",
+                "action": "CACHE_OP",
+                "dataset": "microsoft_dnsserver.audit"
+            }
+        }
+    ]
+}

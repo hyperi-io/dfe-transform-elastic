@@ -186,9 +186,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.event = ctx.event ?: [:];\ndouble v = ((Number) ctx.event.risk_score).doubleValue();\nctx.event.risk_score_norm = (long) Math.round(v * 100.0);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -235,9 +233,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.event = ctx.event ?: [:];\ndef level = ctx.crowdstrike.idp.security_assessment.overall_score_level;\nif (level instanceof String) {\n  def u = level.toUpperCase();\n  if (u == 'LOW' || u == 'NEUTRAL') {\n    ctx.event.severity = 21;\n  } else if (u == 'MEDIUM') {\n    ctx.event.severity = 47;\n  } else if (u == 'HIGH') {\n    ctx.event.severity = 73;\n  } else if (u == 'CRITICAL') {\n    ctx.event.severity = 99;\n  }\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -284,9 +280,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def sa = ctx.crowdstrike.idp.security_assessment;\ndef factors = sa.remove('assessmentFactors');\nif (!(factors instanceof List)) {\n  return;\n}\ndef out = new ArrayList();\nfor (def f : factors) {\n  if (!(f instanceof Map)) {\n    continue;\n  }\n  def m = new HashMap();\n  if (f.containsKey('riskFactorType')) {\n    m.put('risk_factor_type', f.get('riskFactorType'));\n  }\n  if (f.containsKey('likelihood')) {\n    m.put('likelihood', f.get('likelihood'));\n  }\n  if (f.containsKey('severity')) {\n    m.put('severity', f.get('severity'));\n  }\n  out.add(m);\n}\nsa.put('assessment_factors', out);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -351,8 +345,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

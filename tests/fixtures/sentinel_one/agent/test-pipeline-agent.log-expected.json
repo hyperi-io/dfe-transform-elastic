@@ -1,0 +1,187 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-04-07T08:31:47.481Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "id": "13491234512345",
+        "kind": "event",
+        "original": "{\"accountId\":\"12345123451234512345\",\"accountName\":\"Ebensgs Lbmc\",\"activeDirectory\":{\"computerDistinguishedName\":null,\"computerMemberOf\":[],\"lastUserDistinguishedName\":null,\"lastUserMemberOf\":[]},\"activeThreats\":7,\"agentVersion\":\"12.x.x.x\",\"allowRemoteShell\":true,\"appsVulnerabilityStatus\":\"not_applicable\",\"cloudProviders\":{},\"computerName\":\"vwfv-zbvp\",\"consoleMigrationStatus\":\"N/A\",\"coreCount\":2,\"missingPermissions\":[\"user-action-needed-bluetooth-per\",\"user_action_needed_fda\"],\"cpuCount\":2,\"cpuId\":\"CPU Name\",\"createdAt\":\"2050-03-18T09:12:00.519500Z\",\"detectionState\":null,\"domain\":\"WORKGROUP\",\"encryptedApplications\":false,\"externalId\":\"\",\"externalIp\":\"198.51.100.111\",\"firewallEnabled\":true,\"firstFullModeTime\":null,\"groupId\":\"1234567890123456789\",\"groupIp\":\"198.51.100.211\",\"groupName\":\"Default Group\",\"id\":\"13491234512345\",\"inRemoteShellSession\":false,\"infected\":true,\"installerType\":\".msi\",\"isActive\":true,\"isDecommissioned\":false,\"isPendingUninstall\":false,\"isUninstalled\":false,\"isUpToDate\":true,\"lastActiveDate\":\"2050-03-17T09:51:28.506000Z\",\"lastIpToMgmt\":\"192.0.2.170\",\"lastLoggedInUserName\":\"\",\"licenseKey\":\"\",\"locationEnabled\":true,\"locationType\":\"not_applicable\",\"locations\":null,\"machineType\":\"server\",\"mitigationMode\":\"detect\",\"mitigationModeSuspicious\":\"detect\",\"modelName\":\"Compute Engine\",\"networkInterfaces\":[{\"gatewayIp\":\"192.0.2.170\",\"gatewayMacAddress\":\"89-41-1A-44-33-88\",\"id\":\"1234567890123456789\",\"inet\":[\"198.51.100.211\"],\"inet6\":[\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"],\"name\":\"Ethernet\",\"physical\":\"89-41-1A-44-33-88\"}],\"networkQuarantineEnabled\":false,\"networkStatus\":\"connected\",\"operationalState\":\"na\",\"operationalStateExpiration\":null,\"osArch\":\"64 bit\",\"osName\":\"Linux Server\",\"osRevision\":\"1234\",\"osStartTime\":\"2050-04-06T08:27:14Z\",\"osType\":\"linux\",\"osUsername\":null,\"rangerStatus\":\"Enabled\",\"rangerVersion\":\"21.x.x.x\",\"registeredAt\":\"2050-04-06T08:26:45.515278Z\",\"remoteProfilingState\":\"disabled\",\"remoteProfilingStateExpiration\":null,\"scanAbortedAt\":null,\"scanFinishedAt\":\"2050-04-06T09:18:21.090855Z\",\"scanStartedAt\":\"2050-04-06T08:26:52.838047Z\",\"scanStatus\":\"finished\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"storageName\":null,\"storageType\":null,\"tags\":{\"sentinelone\":[{\"assignedBy\":\"test-user\",\"assignedAt\":\"2046-02-27T04:49:26.257525Z\",\"key\":\"key123\",\"assignedById\":\"123456789012345678\",\"id\":\"123456789012345678\",\"value\":\"value123\"}]},\"threatRebootRequired\":false,\"totalMemory\":1234,\"updatedAt\":\"2050-04-07T08:31:47.481227Z\",\"userActionsNeeded\":[\"reboot_needed\"],\"uuid\":\"XXX35XXX8Xfb4aX0X1X8X12X343X8X30\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "architecture": "64 bit",
+        "domain": "WORKGROUP",
+        "id": "13491234512345",
+        "ip": [
+          "198.51.100.111"
+        ],
+        "mac": [
+          "89-41-1A-44-33-88"
+        ],
+        "name": "vwfv-zbvp",
+        "os": {
+          "name": "Linux Server",
+          "type": "linux",
+          "version": "1234"
+        }
+      },
+      "observer": {
+        "version": "12.x.x.x"
+      },
+      "related": {
+        "hosts": [
+          "vwfv-zbvp",
+          "WORKGROUP"
+        ],
+        "ip": [
+          "198.51.100.111",
+          "192.0.2.170",
+          "198.51.100.211",
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Ebensgs Lbmc"
+        },
+        "agent": {
+          "account": {
+            "id": "12345123451234512345"
+          },
+          "active_threats_count": 7,
+          "agent": {
+            "id": "13491234512345"
+          },
+          "allow_remote_shell": true,
+          "apps_vulnerability_status": "not_applicable",
+          "console_migration_status": "N/A",
+          "core": {
+            "count": 2
+          },
+          "cpu": {
+            "count": 2,
+            "id": "CPU Name"
+          },
+          "created_at": "2050-03-18T09:12:00.519Z",
+          "encrypted_application": false,
+          "firewall_enabled": true,
+          "group": {
+            "ip": "198.51.100.211"
+          },
+          "in_remote_shell_session": false,
+          "infected": true,
+          "installer_type": ".msi",
+          "is_active": true,
+          "is_decommissioned": false,
+          "is_pending_uninstall": false,
+          "is_uninstalled": false,
+          "is_up_to_date": true,
+          "last_active_date": "2050-03-17T09:51:28.506Z",
+          "last_ip_to_mgmt": "192.0.2.170",
+          "location": {
+            "enabled": true,
+            "type": "not_applicable"
+          },
+          "machine": {
+            "type": "server"
+          },
+          "missing_permissions": [
+            "user-action-needed-bluetooth-per",
+            "user_action_needed_fda"
+          ],
+          "mitigation_mode": "detect",
+          "mitigation_mode_suspicious": "detect",
+          "model_name": "Compute Engine",
+          "network_interfaces": [
+            {
+              "gateway": {
+                "ip": "192.0.2.170",
+                "mac": "89-41-1A-44-33-88"
+              },
+              "id": "1234567890123456789",
+              "inet": [
+                "198.51.100.211"
+              ],
+              "inet6": [
+                "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+              ],
+              "name": "Ethernet"
+            }
+          ],
+          "network_quarantine_enabled": false,
+          "network_status": "connected",
+          "operational_state": "na",
+          "os": {
+            "arch": "64 bit",
+            "start_time": "2050-04-06T08:27:14.000Z"
+          },
+          "ranger": {
+            "status": "Enabled",
+            "version": "21.x.x.x"
+          },
+          "registered_at": "2050-04-06T08:26:45.515Z",
+          "remote_profiling_state": "disabled",
+          "scan": {
+            "finished_at": "2050-04-06T09:18:21.090Z",
+            "started_at": "2050-04-06T08:26:52.838Z",
+            "status": "finished"
+          },
+          "tags": [
+            {
+              "assigned_at": "2046-02-27T04:49:26.257Z",
+              "assigned_by": "test-user",
+              "assigned_by_id": "123456789012345678",
+              "id": "123456789012345678",
+              "key": "key123",
+              "value": "value123"
+            }
+          ],
+          "threat_reboot_required": false,
+          "total_memory": 1234,
+          "user_action_needed": [
+            "reboot_needed"
+          ],
+          "uuid": "XXX35XXX8Xfb4aX0X1X8X12X343X8X30"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"accountId\":\"12345123451234512345\",\"accountName\":\"Ebensgs Lbmc\",\"activeDirectory\":{\"computerDistinguishedName\":null,\"computerMemberOf\":[],\"lastUserDistinguishedName\":null,\"lastUserMemberOf\":[]},\"activeThreats\":7,\"agentVersion\":\"12.x.x.x\",\"allowRemoteShell\":true,\"appsVulnerabilityStatus\":\"not_applicable\",\"cloudProviders\":{},\"computerName\":\"vwfv-zbvp\",\"consoleMigrationStatus\":\"N/A\",\"coreCount\":2,\"missingPermissions\":[\"user-action-needed-bluetooth-per\",\"user_action_needed_fda\"],\"cpuCount\":2,\"cpuId\":\"CPU Name\",\"createdAt\":\"2050-03-18T09:12:00.519500Z\",\"detectionState\":null,\"domain\":\"WORKGROUP\",\"encryptedApplications\":false,\"externalId\":\"\",\"externalIp\":\"198.51.100.111\",\"firewallEnabled\":true,\"firstFullModeTime\":null,\"groupId\":\"1234567890123456789\",\"groupIp\":\"198.51.100.211\",\"groupName\":\"Default Group\",\"id\":\"13491234512345\",\"inRemoteShellSession\":false,\"infected\":true,\"installerType\":\".msi\",\"isActive\":true,\"isDecommissioned\":false,\"isPendingUninstall\":false,\"isUninstalled\":false,\"isUpToDate\":true,\"lastActiveDate\":\"2050-03-17T09:51:28.506000Z\",\"lastIpToMgmt\":\"192.0.2.170\",\"lastLoggedInUserName\":\"\",\"licenseKey\":\"\",\"locationEnabled\":true,\"locationType\":\"not_applicable\",\"locations\":null,\"machineType\":\"server\",\"mitigationMode\":\"detect\",\"mitigationModeSuspicious\":\"detect\",\"modelName\":\"Compute Engine\",\"networkInterfaces\":[{\"gatewayIp\":\"192.0.2.170\",\"gatewayMacAddress\":\"89-41-1A-44-33-88\",\"id\":\"1234567890123456789\",\"inet\":[\"198.51.100.211\"],\"inet6\":[\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"],\"name\":\"Ethernet\",\"physical\":\"89-41-1A-44-33-88\"}],\"networkQuarantineEnabled\":false,\"networkStatus\":\"connected\",\"operationalState\":\"na\",\"operationalStateExpiration\":null,\"osArch\":\"64 bit\",\"osName\":\"Linux Server\",\"osRevision\":\"1234\",\"osStartTime\":\"2050-04-06T08:27:14Z\",\"osType\":\"linux\",\"osUsername\":null,\"rangerStatus\":\"Enabled\",\"rangerVersion\":\"21.x.x.x\",\"registeredAt\":\"2050-04-06T08:26:45.515278Z\",\"remoteProfilingState\":\"disabled\",\"remoteProfilingStateExpiration\":null,\"scanAbortedAt\":null,\"scanFinishedAt\":\"2050-04-06T09:18:21.090855Z\",\"scanStartedAt\":\"2050-04-06T08:26:52.838047Z\",\"scanStatus\":\"finished\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"storageName\":null,\"storageType\":null,\"tags\":{\"sentinelone\":[{\"assignedBy\":\"test-user\",\"assignedAt\":\"2046-02-27T04:49:26.257525Z\",\"key\":\"key123\",\"assignedById\":\"123456789012345678\",\"id\":\"123456789012345678\",\"value\":\"value123\"}]},\"threatRebootRequired\":false,\"totalMemory\":1234,\"updatedAt\":\"2050-04-07T08:31:47.481227Z\",\"userActionsNeeded\":[\"reboot_needed\"],\"uuid\":\"XXX35XXX8Xfb4aX0X1X8X12X343X8X30\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "agent",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sentinel_one-agent-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "sentinel_one",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

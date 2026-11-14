@@ -1,0 +1,384 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-05-16T08:19:21.000+02:00",
+      "destination": {
+        "ip": "169.254.169.254",
+        "mac": "47-15-C4-22-E2-D5",
+        "nat": {
+          "ip": "169.254.169.254"
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "packet-forwarded",
+        "code": "1235",
+        "original": "<134>  id=firewall sn=0040103CE114 time=\"2050-05-16 08:19:21\" fw=10.173.72.58 pri=6 c=0 gcat=6 m=1235 srcMac=94:87:b4:ed:0b:d8 src=10.173.72.58:54606:X1 srcZone=Untrusted natSrc=10.173.72.58 dstMac=47:15:c4:22:e2:d5 dst=169.254.169.254:80:X1 dstZone=Untrusted natDst=169.254.169.254 proto=tcp/http sent=52 app=9 msg=\"\" note=\"stack traffic always trusted\" n=153 fw_action=\"forward\"",
+        "sequence": 153,
+        "severity": 6,
+        "timezone": "+02:00"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": " (stack traffic always trusted)",
+      "network": {
+        "bytes": 52,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ingress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ip": [
+          "10.173.72.58"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "0040103CE114",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.173.72.58",
+          "169.254.169.254"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "app": "9",
+          "event_group_category": "Network",
+          "gcat": "6"
+        }
+      },
+      "source": {
+        "bytes": 52,
+        "ip": "10.173.72.58",
+        "mac": "94-87-B4-ED-0B-D8",
+        "nat": {
+          "ip": "10.173.72.58"
+        },
+        "port": 54606
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-05-16T08:19:21.000+02:00",
+      "destination": {
+        "ip": "169.254.169.254",
+        "mac": "47-15-C4-22-E2-D5",
+        "nat": {
+          "ip": "2001:db8:93b3:29d9:3029:a107:6605:70f3"
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "packet-forwarded",
+        "code": "1235",
+        "original": "<134>  id=firewall sn=0040103CE114 time=\"2050-05-16 08:19:21\" fw=10.173.72.58 pri=6 c=0 gcat=6 m=1235 srcMac=94:87:b4:ed:0b:d8 src=10.173.72.58:54606:X1 srcZone=Untrusted natSrcV6=2001:db8:15e6:9235:5ab4:64ce:b456:8207 dstMac=47:15:c4:22:e2:d5 dst=169.254.169.254:80:X1 dstZone=Untrusted natDstV6=2001:db8:93b3:29d9:3029:a107:6605:70f3 proto=tcp/http sent=52 app=9 msg=\"\" note=\"stack traffic always trusted\" n=153 fw_action=\"forward\"",
+        "sequence": 153,
+        "severity": 6,
+        "timezone": "+02:00"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": " (stack traffic always trusted)",
+      "network": {
+        "bytes": 52,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ingress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ip": [
+          "10.173.72.58"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "0040103CE114",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.173.72.58",
+          "2001:db8:15e6:9235:5ab4:64ce:b456:8207",
+          "169.254.169.254",
+          "2001:db8:93b3:29d9:3029:a107:6605:70f3"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "app": "9",
+          "event_group_category": "Network",
+          "gcat": "6"
+        }
+      },
+      "source": {
+        "bytes": 52,
+        "ip": "10.173.72.58",
+        "mac": "94-87-B4-ED-0B-D8",
+        "nat": {
+          "ip": "2001:db8:15e6:9235:5ab4:64ce:b456:8207"
+        },
+        "port": 54606
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-05-16T08:19:21.000+02:00",
+      "destination": {
+        "ip": "169.254.169.254",
+        "mac": "47-15-C4-22-E2-D5",
+        "nat": {
+          "ip": "2001:db8:93b3:29d9:3029:a107:6605:70f3",
+          "port": 5678
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "packet-forwarded",
+        "code": "1235",
+        "original": "<134>  id=firewall sn=0040103CE114 time=\"2050-05-16 08:19:21\" fw=10.173.72.58 pri=6 c=0 gcat=6 m=1235 srcMac=94:87:b4:ed:0b:d8 src=10.173.72.58:54606:X1 srcZone=Untrusted natSrcV6=[2001:db8:15e6:9235:5ab4:64ce:b456:8207]:1234 dstMac=47:15:c4:22:e2:d5 dst=169.254.169.254:80:X1 dstZone=Untrusted natDstV6=[2001:db8:93b3:29d9:3029:a107:6605:70f3]:5678 proto=tcp/http sent=52 app=9 msg=\"\" note=\"stack traffic always trusted\" n=153 fw_action=\"forward\"",
+        "sequence": 153,
+        "severity": 6,
+        "timezone": "+02:00"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": " (stack traffic always trusted)",
+      "network": {
+        "bytes": 52,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ingress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ip": [
+          "10.173.72.58"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "0040103CE114",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.173.72.58",
+          "2001:db8:15e6:9235:5ab4:64ce:b456:8207",
+          "169.254.169.254",
+          "2001:db8:93b3:29d9:3029:a107:6605:70f3"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "app": "9",
+          "event_group_category": "Network",
+          "gcat": "6"
+        }
+      },
+      "source": {
+        "bytes": 52,
+        "ip": "10.173.72.58",
+        "mac": "94-87-B4-ED-0B-D8",
+        "nat": {
+          "ip": "2001:db8:15e6:9235:5ab4:64ce:b456:8207",
+          "port": 1234
+        },
+        "port": 54606
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-05-16T08:19:21.000+02:00",
+      "destination": {
+        "ip": "169.254.169.254",
+        "mac": "47-15-C4-22-E2-D5",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "packet-forwarded",
+        "code": "1235",
+        "original": "<134>  id=firewall sn=0040103CE114 time=\"2050-05-16 08:19:21\" fw=10.173.72.58 pri=6 c=0 gcat=6 m=1235 srcMac=94:87:b4:ed:0b:d8 src=10.173.72.58:54606:X1 srcZone=Untrusted natSrcV6=not_an_IP dstMac=47:15:c4:22:e2:d5 dst=169.254.169.254:80:X1 dstZone=Untrusted natDstV6=not_an_IP proto=tcp/http sent=52 app=9 msg=\"\" note=\"stack traffic always trusted\" n=153 fw_action=\"forward\"",
+        "sequence": 153,
+        "severity": 6,
+        "timezone": "+02:00"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": " (stack traffic always trusted)",
+      "network": {
+        "bytes": 52,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ingress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ip": [
+          "10.173.72.58"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "0040103CE114",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.173.72.58",
+          "169.254.169.254"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "app": "9",
+          "event_group_category": "Network",
+          "gcat": "6"
+        }
+      },
+      "source": {
+        "bytes": 52,
+        "ip": "10.173.72.58",
+        "mac": "94-87-B4-ED-0B-D8",
+        "port": 54606
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "<134>  id=firewall sn=0040103CE114 time=\"2050-05-16 08:19:21\" fw=10.173.72.58 pri=6 c=0 gcat=6 m=1235 srcMac=94:87:b4:ed:0b:d8 src=10.173.72.58:54606:X1 srcZone=Untrusted natSrc=10.173.72.58 dstMac=47:15:c4:22:e2:d5 dst=169.254.169.254:80:X1 dstZone=Untrusted natDst=169.254.169.254 proto=tcp/http sent=52 app=9 msg=\"\" note=\"stack traffic always trusted\" n=153 fw_action=\"forward\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "<134>  id=firewall sn=0040103CE114 time=\"2050-05-16 08:19:21\" fw=10.173.72.58 pri=6 c=0 gcat=6 m=1235 srcMac=94:87:b4:ed:0b:d8 src=10.173.72.58:54606:X1 srcZone=Untrusted natSrcV6=2001:db8:15e6:9235:5ab4:64ce:b456:8207 dstMac=47:15:c4:22:e2:d5 dst=169.254.169.254:80:X1 dstZone=Untrusted natDstV6=2001:db8:93b3:29d9:3029:a107:6605:70f3 proto=tcp/http sent=52 app=9 msg=\"\" note=\"stack traffic always trusted\" n=153 fw_action=\"forward\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "<134>  id=firewall sn=0040103CE114 time=\"2050-05-16 08:19:21\" fw=10.173.72.58 pri=6 c=0 gcat=6 m=1235 srcMac=94:87:b4:ed:0b:d8 src=10.173.72.58:54606:X1 srcZone=Untrusted natSrcV6=[2001:db8:15e6:9235:5ab4:64ce:b456:8207]:1234 dstMac=47:15:c4:22:e2:d5 dst=169.254.169.254:80:X1 dstZone=Untrusted natDstV6=[2001:db8:93b3:29d9:3029:a107:6605:70f3]:5678 proto=tcp/http sent=52 app=9 msg=\"\" note=\"stack traffic always trusted\" n=153 fw_action=\"forward\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "<134>  id=firewall sn=0040103CE114 time=\"2050-05-16 08:19:21\" fw=10.173.72.58 pri=6 c=0 gcat=6 m=1235 srcMac=94:87:b4:ed:0b:d8 src=10.173.72.58:54606:X1 srcZone=Untrusted natSrcV6=not_an_IP dstMac=47:15:c4:22:e2:d5 dst=169.254.169.254:80:X1 dstZone=Untrusted natDstV6=not_an_IP proto=tcp/http sent=52 app=9 msg=\"\" note=\"stack traffic always trusted\" n=153 fw_action=\"forward\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sonicwall_firewall-log-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "sonicwall_firewall",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

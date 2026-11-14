@@ -1,0 +1,541 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-03-16T15:32:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user_login",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "id": "0123a45b-6c7d-8900-e12f-3456789gh0i1",
+        "kind": "event",
+        "original": "{\"id\":\"0123a45b-6c7d-8900-e12f-3456789gh0i1\",\"date_create\":2404827143,\"action\":\"user_login\",\"actor\":{\"type\":\"user\",\"user\":{\"id\":\"W123AB456\",\"name\":\"Charlie Parker\",\"email\":\"fxwc@slack.com\"}},\"entity\":{\"type\":\"user\",\"user\":{\"id\":\"W123AB456\",\"name\":\"Charlie Parker\",\"email\":\"fxwc@slack.com\"}},\"context\":{\"location\":{\"type\":\"enterprise\",\"id\":\"E1701NCCA\",\"name\":\"Birdland\",\"domain\":\"birdland\"},\"ua\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36\",\"ip_address\":\"198.51.100.111\"}}",
+        "outcome": "success",
+        "type": [
+          "info",
+          "start"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "W123AB456",
+          "fxwc@slack.com"
+        ]
+      },
+      "slack": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "context": {
+            "domain": "birdland",
+            "id": "E1701NCCA",
+            "name": "Birdland",
+            "type": "enterprise"
+          },
+          "entity": {
+            "email": "fxwc@slack.com",
+            "entity_type": "user",
+            "id": "W123AB456",
+            "name": "Charlie Parker"
+          }
+        }
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "fxwc@slack.com",
+        "full_name": "Charlie Parker",
+        "id": "W123AB456"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.12.6",
+          "name": "Mac OS X",
+          "version": "10.12.6"
+        },
+        "version": "64.0.3282.186"
+      }
+    },
+    {
+      "@timestamp": "2047-08-19T11:46:32.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user_created",
+        "category": [
+          "iam"
+        ],
+        "id": "badd12a8-29e9-43d5-9ebb-c32347faf0d8",
+        "kind": "event",
+        "original": "{\"id\":\"badd12a8-29e9-43d5-9ebb-c32347faf0d8\",\"date_create\":2449827992,\"action\":\"user_created\",\"actor\":{\"type\":\"user\",\"user\":{\"id\":\"e65b0f5c\",\"name\":\"roy\",\"email\":\"ddtlh@abui.com\"}},\"entity\":{\"type\":\"user\",\"user\":{\"id\":\"asdfasdf\",\"name\":\"Joe Bob\",\"email\":\"rfqb@example.com\",\"team\":\"T234SAH2\"}},\"context\":{\"location\":{\"type\":\"workspace\",\"id\":\"e65b11aa\",\"name\":\"Docker\",\"domain\":\"Docker\"},\"ua\":\"Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:23.0) Gecko/20131011 Firefox/23.0\",\"ip_address\":\"198.51.100.111\"}}",
+        "type": [
+          "creation",
+          "user"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "e65b0f5c",
+          "ddtlh@abui.com"
+        ]
+      },
+      "slack": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "context": {
+            "domain": "Docker",
+            "id": "e65b11aa",
+            "name": "Docker",
+            "type": "workspace"
+          },
+          "entity": {
+            "email": "rfqb@example.com",
+            "entity_type": "user",
+            "id": "asdfasdf",
+            "name": "Joe Bob",
+            "team": "T234SAH2"
+          }
+        }
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "ddtlh@abui.com",
+        "full_name": "roy",
+        "id": "e65b0f5c"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:23.0) Gecko/20131011 Firefox/23.0",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "23.0"
+      }
+    },
+    {
+      "@timestamp": "2051-05-11T20:17:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "file_downloaded",
+        "category": [
+          "file"
+        ],
+        "id": "1ee07522-3667-4d84-ae95-cfec78a4f0e4",
+        "kind": "event",
+        "original": "{\"action\":\"file_downloaded\",\"actor\":{\"type\":\"user\",\"user\":{\"email\":\"sucj.rdhjaw@bcfc.co\",\"id\":\"7c73548b-8b92-4f99-b52a-b6c678742dbb\",\"name\":\"User McUser\",\"team\":\"user-team\"}},\"context\":{\"ip_address\":\"198.51.100.211\",\"location\":{\"domain\":\"domain.tld\",\"id\":\"eaaa5d3a-5c93-415f-8c63-45f4f984c4ef\",\"name\":\"The Place\",\"type\":\"workspace\"},\"session_id\":913888259765,\"ua\":\"com.tinyspeck.chatlyio/23.04.40 (iPhone; iOS 1.4.1; Scale/3.00)\"},\"date_create\":2567449075,\"details\":{\"url_private\":\"https://example.com/\"},\"entity\":{\"file\":{\"filetype\":\"image/png\",\"id\":\"6fab3e65-d359-42bf-973c-92e15d1cedcd\",\"name\":\"image.png\",\"title\":\"image.png\"},\"type\":\"file\"},\"id\":\"1ee07522-3667-4d84-ae95-cfec78a4f0e4\"}",
+        "type": [
+          "access"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "7c73548b-8b92-4f99-b52a-b6c678742dbb",
+          "sucj.rdhjaw@bcfc.co"
+        ]
+      },
+      "slack": {
+        "audit": {
+          "actor": {
+            "type": "user",
+            "user": {
+              "team": "user-team"
+            }
+          },
+          "context": {
+            "domain": "domain.tld",
+            "id": "eaaa5d3a-5c93-415f-8c63-45f4f984c4ef",
+            "name": "The Place",
+            "session_id": "913888259765",
+            "type": "workspace"
+          },
+          "details": {
+            "url_private": "https://example.com/"
+          },
+          "entity": {
+            "entity_type": "file",
+            "filetype": "image/png",
+            "id": "6fab3e65-d359-42bf-973c-92e15d1cedcd",
+            "name": "image.png",
+            "title": "image.png"
+          }
+        }
+      },
+      "source": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "sucj.rdhjaw@bcfc.co",
+        "full_name": "User McUser",
+        "id": "7c73548b-8b92-4f99-b52a-b6c678742dbb"
+      },
+      "user_agent": {
+        "device": {
+          "name": "iPhone"
+        },
+        "name": "Mobile Safari UI/WKWebView",
+        "original": "com.tinyspeck.chatlyio/23.04.40 (iPhone; iOS 1.4.1; Scale/3.00)",
+        "os": {
+          "full": "iOS 1.4.1",
+          "name": "iOS",
+          "version": "1.4.1"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-01-13T17:40:21.862Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "anomaly",
+        "id": "17d4ed75-c65d-4ab2-a3c8-b37cb72ce9e4",
+        "kind": "event",
+        "original": "{\"id\":\"17d4ed75-c65d-4ab2-a3c8-b37cb72ce9e4\",\"date_create\":2557244331,\"action\":\"anomaly\",\"actor\":{\"type\":\"user\",\"user\":{\"id\":\"e65b0f5c\",\"name\":\"roy\",\"email\":\"ddtlh@abui.com\"}},\"entity\":{\"type\":\"user\",\"user\":{\"id\":\"asdfasdf\",\"name\":\"Joe Bob\",\"email\":\"rfqb@example.com\",\"team\":\"T234SAH2\"}},\"context\":{\"location\":{\"type\":\"workspace\",\"id\":\"e65b11aa\",\"name\":\"Docker\",\"domain\":\"Docker\"},\"ua\":\"Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:23.0) Gecko/20131011 Firefox/23.0\",\"ip_address\":\"198.51.100.111\"},\"details\":{\"action_timestamp\":2557244421862,\"location\":\"England, GB\",\"previous_ip_address\":\"203.0.113.11\",\"previous_ua\":\"\",\"reason\":[\"asn\",\"ip_address\"]}}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "e65b0f5c",
+          "ddtlh@abui.com"
+        ]
+      },
+      "slack": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "context": {
+            "domain": "Docker",
+            "id": "e65b11aa",
+            "name": "Docker",
+            "type": "workspace"
+          },
+          "details": {
+            "location": "England, GB",
+            "previous_ip_address": "203.0.113.11",
+            "reason": [
+              "asn",
+              "ip_address"
+            ]
+          },
+          "entity": {
+            "email": "rfqb@example.com",
+            "entity_type": "user",
+            "id": "asdfasdf",
+            "name": "Joe Bob",
+            "team": "T234SAH2"
+          }
+        }
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "ddtlh@abui.com",
+        "full_name": "roy",
+        "id": "e65b0f5c"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:23.0) Gecko/20131011 Firefox/23.0",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "23.0"
+      }
+    },
+    {
+      "@timestamp": "2051-07-13T12:01:56.345113Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "anomaly",
+        "id": "bea8d41b-a535-4a59-a763-5a16567f6af7",
+        "kind": "event",
+        "original": "{\"action\":\"anomaly\",\"actor\":{\"type\":\"user\",\"user\":{\"email\":\"rvny@example.com\",\"id\":\"U04V6RBUPAK\",\"name\":\"John Doe\",\"team\":\"Z0937DXQX\"}},\"context\":{\"ip_address\":\"192.168.106.155\",\"location\":{\"domain\":\"example\",\"id\":\"Z0937DXQX\",\"name\":\"Acme\",\"type\":\"workspace\"},\"session_id\":9982493323637,\"ua\":\"com.tinyspeck.chatlyio/23.07.10 (iPhone; iOS 16.5.1; Scale/3.00)\"},\"date_create\":2572862564,\"details\":{\"action_timestamp\":2572862516345113,\"location\":\"Tokyo, JP\",\"previous_ip_address\":\"192.168.183.99\",\"previous_ua\":\"com.tinyspeck.chatlyio.NotificationService/23.07.10 (iPhone; iOS 16.5.1; Scale/3.00)\",\"reason\":[\"asn\",\"ip_address\"]},\"entity\":{\"type\":\"user\",\"user\":{\"email\":\"rvny@example.com\",\"id\":\"U04V6RBUPAK\",\"name\":\"John Doe\",\"team\":\"Z0937DXQX\"}},\"id\":\"bea8d41b-a535-4a59-a763-5a16567f6af7\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.168.106.155"
+        ],
+        "user": [
+          "U04V6RBUPAK",
+          "rvny@example.com"
+        ]
+      },
+      "slack": {
+        "audit": {
+          "actor": {
+            "type": "user",
+            "user": {
+              "team": "Z0937DXQX"
+            }
+          },
+          "context": {
+            "domain": "example",
+            "id": "Z0937DXQX",
+            "name": "Acme",
+            "session_id": "9982493323637",
+            "type": "workspace"
+          },
+          "details": {
+            "location": "Tokyo, JP",
+            "previous_ip_address": "192.168.183.99",
+            "previous_user_agent": "com.tinyspeck.chatlyio.NotificationService/23.07.10 (iPhone; iOS 16.5.1; Scale/3.00)",
+            "reason": [
+              "asn",
+              "ip_address"
+            ]
+          },
+          "entity": {
+            "email": "rvny@example.com",
+            "entity_type": "user",
+            "id": "U04V6RBUPAK",
+            "name": "John Doe",
+            "team": "Z0937DXQX"
+          }
+        }
+      },
+      "source": {
+        "address": "192.168.106.155",
+        "ip": "192.168.106.155"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "rvny@example.com",
+        "full_name": "John Doe",
+        "id": "U04V6RBUPAK"
+      },
+      "user_agent": {
+        "device": {
+          "name": "iPhone"
+        },
+        "name": "Mobile Safari UI/WKWebView",
+        "original": "com.tinyspeck.chatlyio/23.07.10 (iPhone; iOS 16.5.1; Scale/3.00)",
+        "os": {
+          "full": "iOS 16.5.1",
+          "name": "iOS",
+          "version": "16.5.1"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-03-05T08:39:07.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "file_malicious_content_detected",
+        "category": [
+          "file",
+          "malware"
+        ],
+        "id": "fdca0e48-4846-4111-8064-0b20e5b7aedc",
+        "kind": "event",
+        "original": "{\"action\":\"file_malicious_content_detected\",\"actor\":{\"type\":\"user\",\"user\":{\"email\":\"YHRZYHN@apejtlc.co\",\"id\":\"U01MF9XXXX\",\"name\":\"XXXXXx\",\"team\":\"T0CUXXXXX\"}},\"context\":{\"ip_address\":\"198.51.100.111\",\"location\":{\"domain\":\"elastic\",\"id\":\"XXXXXX\",\"name\":\"Elastic\",\"type\":\"workspace\"},\"session_id\":5458207163185,\"ua\":\"Mozilla/5.0 (Windows NT 10.0.19045; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Slack/4.36.140 Chrome/120.0.6099.227 Electron/28.2.0 Safari/537.36 OS_Product/Workstation Servicing_Channel/SAC Sonic Slack_SSB/4.36.140\"},\"date_create\":2593240747,\"details\":{\"md5_hash\":\"8b4f6413d47ca58e8ab053e2b9543d20\"},\"entity\":{\"file\":{\"filetype\":\"\",\"id\":\"F06XXXXXXX\",\"name\":\"mimi.zip\",\"title\":\"\"},\"type\":\"file\"},\"id\":\"fdca0e48-4846-4111-8064-0b20e5b7aedc\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "md5": "8b4f6413d47ca58e8ab053e2b9543d20"
+        }
+      },
+      "related": {
+        "hash": [
+          "8b4f6413d47ca58e8ab053e2b9543d20"
+        ],
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "U01MF9XXXX",
+          "YHRZYHN@apejtlc.co"
+        ]
+      },
+      "slack": {
+        "audit": {
+          "actor": {
+            "type": "user",
+            "user": {
+              "team": "T0CUXXXXX"
+            }
+          },
+          "context": {
+            "domain": "elastic",
+            "id": "XXXXXX",
+            "name": "Elastic",
+            "session_id": "5458207163185",
+            "type": "workspace"
+          },
+          "details": {
+            "md5": "8b4f6413d47ca58e8ab053e2b9543d20"
+          },
+          "entity": {
+            "entity_type": "file",
+            "id": "F06XXXXXXX",
+            "name": "mimi.zip"
+          }
+        }
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "YHRZYHN@apejtlc.co",
+        "full_name": "XXXXXx",
+        "id": "U01MF9XXXX"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Slack Desktop Client",
+        "original": "Mozilla/5.0 (Windows NT 10.0.19045; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Slack/4.36.140 Chrome/120.0.6099.227 Electron/28.2.0 Safari/537.36 OS_Product/Workstation Servicing_Channel/SAC Sonic Slack_SSB/4.36.140",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "4.36.140"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"0123a45b-6c7d-8900-e12f-3456789gh0i1\",\"date_create\":2404827143,\"action\":\"user_login\",\"actor\":{\"type\":\"user\",\"user\":{\"id\":\"W123AB456\",\"name\":\"Charlie Parker\",\"email\":\"fxwc@slack.com\"}},\"entity\":{\"type\":\"user\",\"user\":{\"id\":\"W123AB456\",\"name\":\"Charlie Parker\",\"email\":\"fxwc@slack.com\"}},\"context\":{\"location\":{\"type\":\"enterprise\",\"id\":\"E1701NCCA\",\"name\":\"Birdland\",\"domain\":\"birdland\"},\"ua\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36\",\"ip_address\":\"198.51.100.111\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"badd12a8-29e9-43d5-9ebb-c32347faf0d8\",\"date_create\":2449827992,\"action\":\"user_created\",\"actor\":{\"type\":\"user\",\"user\":{\"id\":\"e65b0f5c\",\"name\":\"roy\",\"email\":\"ddtlh@abui.com\"}},\"entity\":{\"type\":\"user\",\"user\":{\"id\":\"asdfasdf\",\"name\":\"Joe Bob\",\"email\":\"rfqb@example.com\",\"team\":\"T234SAH2\"}},\"context\":{\"location\":{\"type\":\"workspace\",\"id\":\"e65b11aa\",\"name\":\"Docker\",\"domain\":\"Docker\"},\"ua\":\"Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:23.0) Gecko/20131011 Firefox/23.0\",\"ip_address\":\"198.51.100.111\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"action\":\"file_downloaded\",\"actor\":{\"type\":\"user\",\"user\":{\"email\":\"sucj.rdhjaw@bcfc.co\",\"id\":\"7c73548b-8b92-4f99-b52a-b6c678742dbb\",\"name\":\"User McUser\",\"team\":\"user-team\"}},\"context\":{\"ip_address\":\"198.51.100.211\",\"location\":{\"domain\":\"domain.tld\",\"id\":\"eaaa5d3a-5c93-415f-8c63-45f4f984c4ef\",\"name\":\"The Place\",\"type\":\"workspace\"},\"session_id\":913888259765,\"ua\":\"com.tinyspeck.chatlyio/23.04.40 (iPhone; iOS 1.4.1; Scale/3.00)\"},\"date_create\":2567449075,\"details\":{\"url_private\":\"https://example.com/\"},\"entity\":{\"file\":{\"filetype\":\"image/png\",\"id\":\"6fab3e65-d359-42bf-973c-92e15d1cedcd\",\"name\":\"image.png\",\"title\":\"image.png\"},\"type\":\"file\"},\"id\":\"1ee07522-3667-4d84-ae95-cfec78a4f0e4\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"17d4ed75-c65d-4ab2-a3c8-b37cb72ce9e4\",\"date_create\":2557244331,\"action\":\"anomaly\",\"actor\":{\"type\":\"user\",\"user\":{\"id\":\"e65b0f5c\",\"name\":\"roy\",\"email\":\"ddtlh@abui.com\"}},\"entity\":{\"type\":\"user\",\"user\":{\"id\":\"asdfasdf\",\"name\":\"Joe Bob\",\"email\":\"rfqb@example.com\",\"team\":\"T234SAH2\"}},\"context\":{\"location\":{\"type\":\"workspace\",\"id\":\"e65b11aa\",\"name\":\"Docker\",\"domain\":\"Docker\"},\"ua\":\"Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:23.0) Gecko/20131011 Firefox/23.0\",\"ip_address\":\"198.51.100.111\"},\"details\":{\"action_timestamp\":2557244421862,\"location\":\"England, GB\",\"previous_ip_address\":\"203.0.113.11\",\"previous_ua\":\"\",\"reason\":[\"asn\",\"ip_address\"]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"action\":\"anomaly\",\"actor\":{\"type\":\"user\",\"user\":{\"email\":\"rvny@example.com\",\"id\":\"U04V6RBUPAK\",\"name\":\"John Doe\",\"team\":\"Z0937DXQX\"}},\"context\":{\"ip_address\":\"192.168.106.155\",\"location\":{\"domain\":\"example\",\"id\":\"Z0937DXQX\",\"name\":\"Acme\",\"type\":\"workspace\"},\"session_id\":9982493323637,\"ua\":\"com.tinyspeck.chatlyio/23.07.10 (iPhone; iOS 16.5.1; Scale/3.00)\"},\"date_create\":2572862564,\"details\":{\"action_timestamp\":2572862516345113,\"location\":\"Tokyo, JP\",\"previous_ip_address\":\"192.168.183.99\",\"previous_ua\":\"com.tinyspeck.chatlyio.NotificationService/23.07.10 (iPhone; iOS 16.5.1; Scale/3.00)\",\"reason\":[\"asn\",\"ip_address\"]},\"entity\":{\"type\":\"user\",\"user\":{\"email\":\"rvny@example.com\",\"id\":\"U04V6RBUPAK\",\"name\":\"John Doe\",\"team\":\"Z0937DXQX\"}},\"id\":\"bea8d41b-a535-4a59-a763-5a16567f6af7\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"action\":\"file_malicious_content_detected\",\"actor\":{\"type\":\"user\",\"user\":{\"email\":\"YHRZYHN@apejtlc.co\",\"id\":\"U01MF9XXXX\",\"name\":\"XXXXXx\",\"team\":\"T0CUXXXXX\"}},\"context\":{\"ip_address\":\"198.51.100.111\",\"location\":{\"domain\":\"elastic\",\"id\":\"XXXXXX\",\"name\":\"Elastic\",\"type\":\"workspace\"},\"session_id\":5458207163185,\"ua\":\"Mozilla/5.0 (Windows NT 10.0.19045; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Slack/4.36.140 Chrome/120.0.6099.227 Electron/28.2.0 Safari/537.36 OS_Product/Workstation Servicing_Channel/SAC Sonic Slack_SSB/4.36.140\"},\"date_create\":2593240747,\"details\":{\"md5_hash\":\"8b4f6413d47ca58e8ab053e2b9543d20\"},\"entity\":{\"file\":{\"filetype\":\"\",\"id\":\"F06XXXXXXX\",\"name\":\"mimi.zip\",\"title\":\"\"},\"type\":\"file\"},\"id\":\"fdca0e48-4846-4111-8064-0b20e5b7aedc\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-slack-audit-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "slack",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,6 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - forwarded
+  - atlassian_cloud-audit
+  - preserve_original_event

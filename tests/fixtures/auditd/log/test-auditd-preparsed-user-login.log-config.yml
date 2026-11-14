@@ -1,0 +1,20 @@
+# Test inputs for this directory's fixtures.
+fields:
+  '@timestamp': '2045-03-16T04:02:40.072Z'
+  tags:
+  - preserve_original_event
+  auditd:
+    log:
+      record_type: USER_LOGIN
+      sequence: '19623791'
+      pid: '28281'
+      uid: '0'
+      auid: '700'
+      ses: '6793'
+      op: login
+      acct: root
+      exe: /usr/sbin/sshd
+      hostname: 192.0.2.197
+      addr: 127.0.0.1
+      terminal: sshd
+      result: success

@@ -1,0 +1,439 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-02-14T10:45:33.257Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.190125745Z",
+        "kind": "event",
+        "original": "2049-02-14 10:45:33.257 UTC,\"jjolljco\",\"jjolljco\",86,\"172.18.116.197:48978\",6028ff3a.56,4,\"idle\",2049-02-14 10:45:14 UTC,3/3,0,LOG,00000,\"statement: SET idle_in_transaction_session_timeout = 50;\",,,,,,,,,\"psql\",\"client backend\"",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "SET idle_in_transaction_session_timeout = 50;",
+      "postgresql": {
+        "log": {
+          "application_name": "psql",
+          "backend_type": "client backend",
+          "client_addr": "172.18.116.197",
+          "client_port": 48978,
+          "command_tag": "idle",
+          "database": "jjolljco",
+          "query_step": "statement",
+          "session_id": "6028ff3a.56",
+          "session_start_time": "2049-02-14T10:45:14.000Z",
+          "sql_state_code": "00000",
+          "timestamp": "2049-02-14 10:45:33.257 UTC",
+          "transaction_id": 0,
+          "virtual_transaction_id": "3/3"
+        }
+      },
+      "process": {
+        "pid": 86
+      },
+      "related": {
+        "ip": [
+          "172.18.116.197"
+        ],
+        "user": [
+          "jjolljco"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "jjolljco"
+      }
+    },
+    {
+      "@timestamp": "2049-02-14T10:45:48.113Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.190134155Z",
+        "kind": "event",
+        "original": "2049-02-14 10:45:48.113 UTC,\"jjolljco\",\"jjolljco\",86,\"172.18.116.197:48978\",6028ff3a.56,5,\"idle\",2049-02-14 10:45:14 UTC,3/4,0,LOG,00000,\"statement: BEGIN;\",,,,,,,,,\"psql\",\"client backend\"",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "BEGIN;",
+      "postgresql": {
+        "log": {
+          "application_name": "psql",
+          "backend_type": "client backend",
+          "client_addr": "172.18.116.197",
+          "client_port": 48978,
+          "command_tag": "idle",
+          "database": "jjolljco",
+          "query_step": "statement",
+          "session_id": "6028ff3a.56",
+          "session_start_time": "2049-02-14T10:45:14.000Z",
+          "sql_state_code": "00000",
+          "timestamp": "2049-02-14 10:45:48.113 UTC",
+          "transaction_id": 0,
+          "virtual_transaction_id": "3/4"
+        }
+      },
+      "process": {
+        "pid": 86
+      },
+      "related": {
+        "ip": [
+          "172.18.116.197"
+        ],
+        "user": [
+          "jjolljco"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "jjolljco"
+      }
+    },
+    {
+      "@timestamp": "2049-02-14T10:45:48.164Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.190135035Z",
+        "kind": "event",
+        "original": "2049-02-14 10:45:48.164 UTC,\"jjolljco\",\"jjolljco\",86,\"172.18.116.197:48978\",6028ff3a.56,6,\"idle in transaction\",2049-02-14 10:45:14 UTC,3/4,0,FATAL,25P03,\"terminating connection due to idle-in-transaction timeout\",,,,,,,,,\"psql\",\"client backend\"",
+        "timezone": "UTC",
+        "type": [
+          "error"
+        ]
+      },
+      "log": {
+        "level": "FATAL"
+      },
+      "message": "terminating connection due to idle-in-transaction timeout",
+      "postgresql": {
+        "log": {
+          "application_name": "psql",
+          "backend_type": "client backend",
+          "client_addr": "172.18.116.197",
+          "client_port": 48978,
+          "command_tag": "idle in transaction",
+          "database": "jjolljco",
+          "session_id": "6028ff3a.56",
+          "session_start_time": "2049-02-14T10:45:14.000Z",
+          "sql_state_code": "25P03",
+          "timestamp": "2049-02-14 10:45:48.164 UTC",
+          "transaction_id": 0,
+          "virtual_transaction_id": "3/4"
+        }
+      },
+      "process": {
+        "pid": 86
+      },
+      "related": {
+        "ip": [
+          "172.18.116.197"
+        ],
+        "user": [
+          "jjolljco"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "jjolljco"
+      }
+    },
+    {
+      "@timestamp": "2049-02-14T10:45:48.164Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.190135655Z",
+        "kind": "event",
+        "original": "2049-02-14 10:45:48.164 UTC,\"jjolljco\",\"jjolljco\",86,\"172.18.116.197:48978\",6028ff3a.56,7,\"idle in transaction\",2049-02-14 10:45:14 UTC,,0,LOG,00000,\"disconnection: session time: 0:00:33.289 user=jjolljco database=jjolljco host=172.18.116.197 port=48978\",,,,,,,,,\"psql\",\"client backend\"",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "disconnection: session time: 0:00:33.289 user=jjolljco database=jjolljco host=172.18.116.197 port=48978",
+      "postgresql": {
+        "log": {
+          "application_name": "psql",
+          "backend_type": "client backend",
+          "client_addr": "172.18.116.197",
+          "client_port": 48978,
+          "command_tag": "idle in transaction",
+          "database": "jjolljco",
+          "session_id": "6028ff3a.56",
+          "session_start_time": "2049-02-14T10:45:14.000Z",
+          "sql_state_code": "00000",
+          "timestamp": "2049-02-14 10:45:48.164 UTC",
+          "transaction_id": 0
+        }
+      },
+      "process": {
+        "pid": 86
+      },
+      "related": {
+        "ip": [
+          "172.18.116.197"
+        ],
+        "user": [
+          "jjolljco"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "jjolljco"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2049-02-14 10:45:33.257 UTC,\"jjolljco\",\"jjolljco\",86,\"172.18.116.197:48978\",6028ff3a.56,4,\"idle\",2049-02-14 10:45:14 UTC,3/3,0,LOG,00000,\"statement: SET idle_in_transaction_session_timeout = 50;\",,,,,,,,,\"psql\",\"client backend\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2049-02-14 10:45:48.113 UTC,\"jjolljco\",\"jjolljco\",86,\"172.18.116.197:48978\",6028ff3a.56,5,\"idle\",2049-02-14 10:45:14 UTC,3/4,0,LOG,00000,\"statement: BEGIN;\",,,,,,,,,\"psql\",\"client backend\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2049-02-14 10:45:48.164 UTC,\"jjolljco\",\"jjolljco\",86,\"172.18.116.197:48978\",6028ff3a.56,6,\"idle in transaction\",2049-02-14 10:45:14 UTC,3/4,0,FATAL,25P03,\"terminating connection due to idle-in-transaction timeout\",,,,,,,,,\"psql\",\"client backend\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2049-02-14 10:45:48.164 UTC,\"jjolljco\",\"jjolljco\",86,\"172.18.116.197:48978\",6028ff3a.56,7,\"idle in transaction\",2049-02-14 10:45:14 UTC,,0,LOG,00000,\"disconnection: session time: 0:00:33.289 user=jjolljco database=jjolljco host=172.18.116.197 port=48978\",,,,,,,,,\"psql\",\"client backend\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-postgresql-log-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "postgresql",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

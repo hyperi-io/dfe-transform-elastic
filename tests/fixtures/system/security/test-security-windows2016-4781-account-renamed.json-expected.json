@@ -1,0 +1,326 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-09-06T13:38:17.556Z",
+      "agent": {
+        "ephemeral_id": "c6cf67ab-2171-4878-afeb-5e007fc23533",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "renamed-user-account",
+        "category": [
+          "iam"
+        ],
+        "code": "4781",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4781_Account_Renamed.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "Administrator",
+          "audittest06",
+          "audittest0609"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "changes": {
+          "name": "audittest06"
+        },
+        "domain": "SOV-86VA2XP94FG",
+        "id": "S-1-5-21-101361758-2486510592-3018839910-500",
+        "name": "Administrator",
+        "target": {
+          "name": "audittest0609"
+        }
+      },
+      "winlog": {
+        "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "NewTargetUserName": "audittest06",
+          "OldTargetUserName": "audittest0609",
+          "SubjectDomainName": "SOV-86VA2XP94FG",
+          "SubjectLogonId": "0x264b2",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1006"
+        },
+        "event_id": "4781",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x264b2"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "2873",
+        "time_created": "2047-09-06T13:38:17.556Z"
+      }
+    },
+    {
+      "@timestamp": "2047-09-06T13:38:23.516Z",
+      "agent": {
+        "ephemeral_id": "c6cf67ab-2171-4878-afeb-5e007fc23533",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "renamed-user-account",
+        "category": [
+          "iam"
+        ],
+        "code": "4781",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4781_Account_Renamed.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "Administrator",
+          "audittest0609",
+          "audittest06"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "changes": {
+          "name": "audittest0609"
+        },
+        "domain": "SOV-86VA2XP94FG",
+        "id": "S-1-5-21-101361758-2486510592-3018839910-500",
+        "name": "Administrator",
+        "target": {
+          "name": "audittest06"
+        }
+      },
+      "winlog": {
+        "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "NewTargetUserName": "audittest0609",
+          "OldTargetUserName": "audittest06",
+          "SubjectDomainName": "SOV-86VA2XP94FG",
+          "SubjectLogonId": "0x264b2",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1006"
+        },
+        "event_id": "4781",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x264b2"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "2875",
+        "time_created": "2047-09-06T13:38:23.516Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:08:29.043Z",
+      "agent": {
+        "ephemeral_id": "c6cf67ab-2171-4878-afeb-5e007fc23533",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4781,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4781_Account_Renamed.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "NewTargetUserName": "audittest06",
+          "OldTargetUserName": "audittest0609",
+          "PrivilegeList": "-",
+          "SubjectDomainName": "SOV-86VA2XP94FG",
+          "SubjectLogonId": "0x264b2",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1006"
+        },
+        "event_id": 4781,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 2873,
+        "time_created": "2047-09-06T13:38:17.556Z"
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:08:29.044Z",
+      "agent": {
+        "ephemeral_id": "c6cf67ab-2171-4878-afeb-5e007fc23533",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4781,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4781_Account_Renamed.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "NewTargetUserName": "audittest0609",
+          "OldTargetUserName": "audittest06",
+          "PrivilegeList": "-",
+          "SubjectDomainName": "SOV-86VA2XP94FG",
+          "SubjectLogonId": "0x264b2",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1006"
+        },
+        "event_id": 4781,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 2875,
+        "time_created": "2047-09-06T13:38:23.516Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

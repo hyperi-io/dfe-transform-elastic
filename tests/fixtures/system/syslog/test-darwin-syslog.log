@@ -1,0 +1,497 @@
+Dec 13 11:35:28 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:28.419 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSAgentApp performSelfUpdateWithEngine:] Finished self update check.
+Dec 13 11:35:28 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:28.420 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSAgentApp updateProductWithProductID:usingEngine:] Checking for updates for "All Products" using engine <KSUpdateEngine:0x100341a00
+		ticketStore=<KSPersistentTicketStore:0x100204520 store=<KSKeyedPersistentStore:0x100213290
+			path="/Users/qhs/Library/Google/GoogleSoftwareUpdate/TicketStore/Keystone.ticketstore"
+			lockFile=<KSLockFile:0x1002160e0
+				path="/Users/qhs/Library/Google/GoogleSoftwareUpdate/TicketStore/Keystone.ticketstore.lock"
+				locked=NO
+			>
+		>>
+		processor=<KSActionProcessor:0x1003bb5f0
+			delegate=<KSUpdateEngine:0x100341a00>
+			isProcessing=NO actionsCompleted=0 progress=0.00
+			errors=0 currentActionErrors=0
+			events=0 currentActionEvents=0
+			actionQueue=( )
+		>
+		delegate=(null)
+		serverInfoStore=(null)
+		errors=0
+	>
+Dec 13 11:35:28 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:28.421 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSUpdateEngine updateAllExceptProduct:] KSUpdateEngine updating all installed products, except:'com.google.Keystone'.
+Dec 13 11:35:28 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:28.422 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSCheckAction performAction] KSCheckAction checking 2 ticket(s).
+Dec 13 11:35:28 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:28.428 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSUpdateCheckAction performAction] KSUpdateCheckAction starting update check for ticket(s): {(
+		<KSTicket:0x100550bd0
+			productID=com.google.Chrome
+			version=54.0.2840.98
+			xc=<KSPathExistenceChecker:0x1005507d0 path=/Applications/Google Chrome.app>
+			serverType=Omaha
+			url=https://tools.google.com/service/update2
+			creationDate=2043-06-25 15:40:23
+			tagPath=/Applications/Google Chrome.app/Contents/Info.plist
+			tagKey=KSChannelID
+			brandPath=/Users/qhs/Library/Google/Google Chrome Brand.plist
+			brandKey=KSBrandID
+			versionPath=/Applications/Google Chrome.app/Contents/Info.plist
+			versionKey=KSVersion
+			cohort=1:1y5:gy3@0.05
+			cohortName=Stable
+			ticketVersion=1
+		>,
+		<KSTicket:0x100555140
+			productID=com.google.GoogleDrive
+			version=1.32.3889.0961
+			xc=<KSPathExistenceChecker:0x100554490 path=/Applications/Google Drive.app>
+			serverType=Omaha
+			url=https://tools.google.com/service/update2
+			creationDate=2043-09-11 20:38:12
+			ticketVersion=1
+		>
+	)}
+	Using server: <KSOmahaServer:0x100555120
+		engine=<KSUpdateEngine:0x100341a00>
+	>
+Dec 13 11:35:28 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:28.446 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] +[KSCodeSigningVerification verifyBundle:applicationId:error:] KSCodeSigningVerification verifying code signing for '/Applications/Google Chrome.app' with the requirement 'anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists and certificate leaf[subject.OU]="EQHXZ8M8AV" and (identifier="com.google.Chrome")'
+Dec 13 11:35:29 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:29.430 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] +[KSCodeSigningVerification verifyBundle:applicationId:error:] KSCodeSigningVerification verifying code signing for '/Applications/Google Drive.app' with the requirement 'anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists and certificate leaf[subject.OU]="EQHXZ8M8AV" and (identifier="com.google.GoogleDrive")'
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.115 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSUpdateCheckAction performAction] KSUpdateCheckAction running KSServerUpdateRequest: <KSOmahaServerUpdateRequest:0x100480470
+		server=<KSOmahaServer:0x100555120>
+		url="https://tools.google.com/service/update2?cup2hreq=404000b234f822c6f15a260531db971808358d54f6e6d2baea0074ef61c1d430&cup2key=6:1566315822"
+		fallbackURLs=(
+			http://tools.google.com/service/update2?cup2hreq=404000b234f822c6f15a260531db971808358d54f6e6d2baea0074ef61c1d430&cup2key=6:1617080069
+		)
+		runningFetchers=0
+		tickets=2
+		body=
+			<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+			<request protocol="3.0" version="KeystoneAgent-1.2.6.1370" ismachine="0" requestid="{5B9B33B7-832C-4762-832A-F58937DF1D8A}" dedup="cr" sessionid="{6AA757CC-51CB-46F0-9A63-BCA660D899A9}">
+			    <os platform="mac" version="10.12" arch="x86_64h" sp="10.12.0_x86_64h"></os>
+			    <app appid="com.google.Chrome" version="54.0.2840.98" cohort="1:1y5:gy3@0.05" cohortname="Stable" lang="en-us" installage="536" installdate="3479" brand="GGRO" _numaccounts="1" _numsignedin="1" signed="1">
+			        <ping r="1" rd="3633" a="1" ad="3633" ping_freshness="{5621BC7C-5200-42D1-97A9-AF7294EE01B7}"></ping>
+			        <updatecheck></updatecheck>
+			    </app>
+			    <app appid="com.google.GoogleDrive" version="1.32.3889.0961" lang="en-us" installage="458" installdate="3479" brand="GGLG" signed="1">
+			        <ping r="1" rd="3633" a="1" ad="3633" ping_freshness="{4BFDFADB-0184-4180-855E-A7B382D220C0}"></ping>
+			        <updatecheck></updatecheck>
+			    </app>
+			</request>
+		headers={
+			"X-GoogleUpdate-Interactivity" = bg;
+		}
+	>
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.116 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSOutOfProcessFetcher beginFetchWithDelegate:] KSOutOfProcessFetcher start fetch from URL: "https://tools.google.com/service/update2?cup2hreq=404000b234f822c6f15a260531db971808358d54f6e6d2baea0074ef61c1d430&cup2key=6:1566315822"
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.117 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSOutOfProcessFetcher(PrivateMethods) launchedHelperTaskForToolPath:error:] KSOutOfProcessFetcher launched '/Users/qhs/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/MacOS/ksfetch' with process id: 21414
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.118 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSOutOfProcessFetcher beginFetchWithDelegate:] KSOutOfProcessFetcher sending both request and download file location to the helper.
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.118 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] KSSendAllDataToHelper() KSHelperTool wrote 2383 bytes to the helper input.
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.118 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSOutOfProcessFetcher beginFetchWithDelegate:] Closing the file handle.
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.118 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSOutOfProcessFetcher beginFetchWithDelegate:] KSOutOfProcessFetcher fetching from URL: "https://tools.google.com/service/update2?cup2hreq=404000b234f822c6f15a260531db971808358d54f6e6d2baea0074ef61c1d430&cup2key=6:1566315822"
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi ksfetch[21414]: 2044-12-13 11:35:30.149 ksfetch[21414/0x7fffcc3f93c0] [lvl=2] KSHelperReceiveAllData() KSHelperTool read 2383 bytes from stdin.
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi ksfetch[21414]: 2044-12-13 11:35:30.151 ksfetch[21414/0x7fffcc3f93c0] [lvl=2] main() Fetcher received a request: <NSMutableURLRequest: 0x100119140> { URL: https://tools.google.com/service/update2?cup2hreq=404000b234f822c6f15a260531db971808358d54f6e6d2baea0074ef61c1d430&cup2key=6:1566315822 }
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi ksfetch[21414]: 2044-12-13 11:35:30.151 ksfetch[21414/0x7fffcc3f93c0] [lvl=2] main() Fetcher received a download path: /tmp/KSOutOfProcessFetcher.QTqOLkktQz/download
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi ksfetch[21414]: 2044-12-13 11:35:30.152 ksfetch[21414/0x7fffcc3f93c0] [lvl=2] main() ksfetch fetching URL (<NSMutableURLRequest: 0x100119140> { URL: https://tools.google.com/service/update2?cup2hreq=404000b234f822c6f15a260531db971808358d54f6e6d2baea0074ef61c1d430&cup2key=6:1566315822 }) to folder:/tmp/KSOutOfProcessFetcher.QTqOLkktQz/download
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi ksfetch[21414]: 2044-12-13 11:35:30.152 ksfetch[21414/0x7fffcc3f93c0] [lvl=2] main() Setting up download file handles...
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi ksfetch[21414]: 2044-12-13 11:35:30.348 ksfetch[21414/0x7fffcc3f93c0] [lvl=2] -[FetchDelegate fetcher:finishedWithData:] Fetcher downloaded successfully data of length: 0
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi ksfetch[21414]: 2044-12-13 11:35:30.348 ksfetch[21414/0x7fffcc3f93c0] [lvl=2] main() ksfetch done fetching.
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi ksfetch[21414]: 2044-12-13 11:35:30.351 ksfetch[21414/0x7fffcc3f93c0] [lvl=2] main() Fetcher is exiting.
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.354 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSOutOfProcessFetcher(PrivateMethods) helperErrorAvailable:] KSOutOfProcessFetcher helper tool raw STDERR:
+	:	<>
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.354 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSOutOfProcessFetcher(PrivateMethods) helperDidTerminate:] KSOutOfProcessFetcher fetch ended for URL: "https://tools.google.com/service/update2?cup2hreq=404000b234f822c6f15a260531db971808358d54f6e6d2baea0074ef61c1d430&cup2key=6:1566315822"
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.355 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSUpdateCheckAction(KSServerUpdateRequestDelegate) serverRequest:fetchedWithResponse:] KSUpdateCheckAction received KSServerUpdateResponse: <KSOmahaServerUpdateResponse:0x100559060
+		server=<KSOmahaServer:0x100555120>
+		url="https://tools.google.com/service/update2?cup2hreq=404000b234f822c6f15a260531db971808358d54f6e6d2baea0074ef61c1d430&cup2key=6:1566315822"
+		tickets=2
+		status=200
+		data=
+			<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+			<response protocol="3.0" server="prod">
+			    <daystart elapsed_days="3634" elapsed_seconds="9330"></daystart>
+			    <app appid="com.google.Chrome" cohort="1:1y5:gy3@0.05" cohortname="Stable" status="ok">
+			        <ping status="ok"></ping>
+			        <updatecheck status="noupdate"></updatecheck>
+			    </app>
+			    <app appid="com.google.GoogleDrive" cohort="" cohortname="" status="ok">
+			        <ping status="ok"></ping>
+			        <updatecheck status="noupdate"></updatecheck>
+			    </app>
+			</response>
+	>
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.356 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSOmahaServer updateInfosForUpdateResponse:updateRequest:infoStore:upToDateTickets:updatedTickets:events:errors:] Response passed CUP validation.
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.381 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSUpdateCheckAction(PrivateMethods) finishAction] KSUpdateCheckAction found updates: {( )}
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.384 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSPrefetchAction performAction] KSPrefetchAction no updates to prefetch.
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.384 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSMultiUpdateAction performAction] KSSilentUpdateAction had no updates to apply.
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.384 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSMultiUpdateAction performAction] KSPromptAction had no updates to apply.
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.384 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSAgentApp(KeystoneDelegate) updateEngineFinishedWithErrors:] Keystone finished: errors=0
+Dec 13 11:35:30 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:30.385 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSUpdateEngine(PrivateMethods) updateFinish] KSUpdateEngine update processing complete.
+Dec 13 11:35:31 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:31.142 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSAgentApp updateProductWithProductID:usingEngine:] Done checking for updates for '"All Products"' using engine <KSUpdateEngine:0x100341a00
+		ticketStore=<KSPersistentTicketStore:0x100204520 store=<KSKeyedPersistentStore:0x100213290
+			path="/Users/qhs/Library/Google/GoogleSoftwareUpdate/TicketStore/Keystone.ticketstore"
+			lockFile=<KSLockFile:0x1002160e0
+				path="/Users/qhs/Library/Google/GoogleSoftwareUpdate/TicketStore/Keystone.ticketstore.lock"
+				locked=NO
+			>
+		>>
+		processor=<KSActionProcessor:0x1002769e0
+			delegate=<KSUpdateEngine:0x100341a00>
+			isProcessing=NO actionsCompleted=0 progress=0.00
+			errors=0 currentActionErrors=0
+			events=0 currentActionEvents=0
+			actionQueue=( )
+		>
+		delegate=<KSAgentApp: 0x10052a250>
+		serverInfoStore=<KSServerPrivateInfoStore:0x100317b40 path="/Users/qhs/Library/Google/GoogleSoftwareUpdate/Servers">
+		errors=0
+	>
+Dec 13 11:35:31 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:31.302 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSAgentUploader fetcher:finishedWithData:] Successfully uploaded stats to <NSMutableURLRequest: 0x1003cbcd0> { URL: https://tools.google.com/service/update2 }
+Dec 13 11:35:31 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:31.431 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSAgentApp uploadStats:] Successfully uploaded stats <KSStatsCollection:0x100212570 path="/Users/qhs/Library/Google/GoogleSoftwareUpdate/Stats/Keystone.stats", count=5, stats={
+	    checks = 2;
+	    tickets = 2;
+	    usertickets = 3;
+	    validtickets = 2;
+	    validusertickets = 3;
+	}>
+Dec 13 11:35:32 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:32.508 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSAgentApp(KeystoneThread) runKeystonesInThreadWithArg:] Finished with engine thread
+Dec 13 11:35:32 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:32.825 GoogleSoftwareUpdateAgent[21412/0x7fffcc3f93c0] [lvl=2] -[KSAgentApp checkForUpdates] Finished update check.
+Dec 13 11:35:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000a8499d0 holds 0x2121212121212121 instead of 0x600006a22fa0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:37:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f047240 holds 0x2121212121212121 instead of 0x608002231220. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:38:45 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[21498]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 11:39:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000a256990 holds 0x2121212121212121 instead of 0x600006a22420. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:41:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x6080096475d0 holds 0x2121212121212121 instead of 0x608004e21280. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:41:57 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 11:42:55 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[21556]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 11:45:18 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.imfoundation.IMRemoteURLConnectionAgent): Unknown key for integer: _DirtyJetsamMemoryLimit
+Dec 13 11:45:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000a85a860 holds 0x2121212121212121 instead of 0x600004a3b9a0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:47:06 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[21581]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 11:47:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x608009840580 holds 0x2121212121212121 instead of 0x608004a22940. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:49:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x608009c5b700 holds 0x2121212121212121 instead of 0x608005830020. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:51:17 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[21586]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 11:51:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800ee592d0 holds 0x2121212121212121 instead of 0x608005627220. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:51:57 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 11:53:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000c648290 holds 0x2121212121212121 instead of 0x6000050242a0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:55:28 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[21589]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 11:55:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x600009840460 holds 0x2121212121212121 instead of 0x60000122e940. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:56:30 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.imfoundation.IMRemoteURLConnectionAgent): Unknown key for integer: _DirtyJetsamMemoryLimit
+Dec 13 11:57:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000ee5b730 holds 0x2121212121212121 instead of 0x600007821c20. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 11:59:40 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[21946]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:01:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x600006a49940 holds 0x2121212121212121 instead of 0x6000078202e0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:01:57 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 12:03:04 d-oef-kqjn-epd-ofi Slack Helper[55199]: Invoked notification with id: d08283fb-b70b-4b6e-99b9-29c9f2729287
+Dec 13 12:03:51 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[21966]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:05:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f043dc0 holds 0x2121212121212121 instead of 0x6080026228c0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:08:02 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[21981]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:09:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x608009a53600 holds 0x2121212121212121 instead of 0x608000629420. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:11:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f259c30 holds 0x2121212121212121 instead of 0x608004a21c20. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:11:57 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 12:12:13 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22226]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:13:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000c647d80 holds 0x2121212121212121 instead of 0x600006e3ee80. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:15:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f053a80 holds 0x2121212121212121 instead of 0x608007227ce0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:16:24 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22241]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:17:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000a64ce80 holds 0x2121212121212121 instead of 0x600006629940. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:19:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000a843580 holds 0x2121212121212121 instead of 0x600006629540. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:20:35 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22254]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:21:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f45b910 holds 0x2121212121212121 instead of 0x608005822c40. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:21:57 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 12:23:13 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.imfoundation.IMRemoteURLConnectionAgent): Unknown key for integer: _DirtyJetsamMemoryLimit
+Dec 13 12:23:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000ea5edf0 holds 0x2121212121212121 instead of 0x600003a35a60. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:24:46 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22265]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:28:43 d-oef-kqjn-epd-ofi Slack Helper[55199]: Invoked notification with id: 30eb36b5-4d4c-4727-8119-4de1606ade0a
+Dec 13 12:28:57 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22292]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:29:06 d-oef-kqjn-epd-ofi Slack Helper[55199]: Invoked notification with id: c8b2c775-82e8-4c4f-a0a2-dcc5e4da59a4
+Dec 13 12:29:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f246430 holds 0x2121212121212121 instead of 0x608001c26d00. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:31:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800c85fd80 holds 0x2121212121212121 instead of 0x608005a3a420. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:31:57 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 12:33:08 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22305]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:33:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x600006452400 holds 0x2121212121212121 instead of 0x60000763bac0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:35:56 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[22318]: 2044-12-13 12:35:56.416 GoogleSoftwareUpdateAgent[22318/0x7fffcc3f93c0] [lvl=2] -[KSAgentApp setupLoggerOutput] Agent settings: <KSAgentSettings:0x100505750 bundleID=com.google.Keystone.Agent lastCheck=2044-12-13 10:35:32 +0000 checkInterval=18000.000000 uiDisplayInterval=604800.000000 sleepInterval=1800.000000 jitterInterval=900 maxRunInterval=0.000000 isConsoleUser=1 ticketStorePath=/Users/qhs/Library/Google/GoogleSoftwareUpdate/TicketStore/Keystone.ticketstore runMode=3 daemonUpdateEngineBrokerServiceName=com.google.Keystone.Daemon.UpdateEngine daemonAdministrationServiceName=com.google.Keystone.Daemon.Administration logEverything=0 logBufferSize=2048 alwaysPromptForUpdates=0 productIDToUpdate=(null) lastUIDisplayed=(null) alwaysShowStatusItem=0 updateCheckTag=(null) printResults=NO userInitiated=NO>
+Dec 13 12:37:20 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22324]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:37:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f24d0f0 holds 0x2121212121212121 instead of 0x608007423ee0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:39:28 d-oef-kqjn-epd-ofi Slack Helper[55199]: Invoked notification with id: ac169625-f242-4c3f-9023-846d77402805
+Dec 13 12:41:06 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.imfoundation.IMRemoteURLConnectionAgent): Unknown key for integer: _DirtyJetsamMemoryLimit
+Dec 13 12:41:26 d-oef-kqjn-epd-ofi Slack Helper[55199]: Invoked notification with id: e52e0eb9-f3dc-44a7-a80a-1eb3511d2044
+Dec 13 12:41:30 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22336]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:41:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800a2535a0 holds 0x2121212121212121 instead of 0x608003828e20. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:41:57 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 12:43:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f241d50 holds 0x2121212121212121 instead of 0x60800562f380. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:45:41 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22348]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:45:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000c444450 holds 0x2121212121212121 instead of 0x600007237f00. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:47:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000c4424a0 holds 0x2121212121212121 instead of 0x600007026520. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:49:13 d-oef-kqjn-epd-ofi logd[63]: _handle_cache_delete_with_urgency(0x7fc55c429b40, 0, 1)
+Dec 13 12:49:13 d-oef-kqjn-epd-ofi logd[63]: _volume_contains_cached_data(is /private/var/db/diagnostics/ in /) - YES
+Dec 13 12:49:13 d-oef-kqjn-epd-ofi logd[63]: Purged 0 bytes from log files.
+Dec 13 12:49:13 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext enter - 1
+Dec 13 12:49:14 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext got 1023 UUIDs and 3 slibs from inflight logs
+Dec 13 12:49:14 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.imfoundation.IMRemoteURLConnectionAgent): Unknown key for integer: _DirtyJetsamMemoryLimit
+Dec 13 12:49:24 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext got 1303 UUIDs and 3 slibs from inflight and persistent logs
+Dec 13 12:49:24 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext processing shared lib uuid 00000000-0000-0000-0000-000000000000
+Dec 13 12:49:24 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext processing shared lib uuid 846CA3D9-185B-3306-991D-4BB3A36C81A7
+Dec 13 12:49:24 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext processing shared lib uuid F65235B0-59B6-3B44-909E-6F147E76F941
+Dec 13 12:49:24 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext got 2260 UUIDs and 3 slibs from inflight and persistent logs and slibs
+Dec 13 12:49:24 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 00000000-0000-0000-0000-000000000000 mentioned but not found
+Dec 13 12:49:27 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 6FF8E72F-8451-4C25-B836-F5B6EAFA73C2 mentioned but not found
+Dec 13 12:49:29 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 07D9CD2F-EF1C-0197-FB41-25C2FD9D1086 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 23D3BB6F-BA8A-0313-FB45-81F1FC1D7880 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 75F97F57-C72A-4296-BC24-144A50A6095D mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 332C5751-3121-0097-FB30-20B9FB1B0527 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 084A349F-6682-0327-FE76-65B1CE0B7913 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 488D9D96-2781-0252-FC99-57C4CF0E2326 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 840B7163-8494-0667-FE26-48D9FC3B4668 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 512F437D-4972-0360-FB76-97E5AE1D0039 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 223E1355-4815-0619-FD94-40B1CC8D7697 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 933D9384-3092-0084-FA78-48A5CE2B7656 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 439CA04E-8877-0053-FC53-70F2FF6E3472 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 117DB457-7320-0850-FC44-51B8FF9B5190 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 539DBC8C-1081-0339-FC01-47A6EA8A7426 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 870DF930-0430-0905-FB41-51C7ED4C6071 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 923A0E5B-8480-0900-FC87-18A5AF2C1248 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 080A8C2C-7125-0920-FF91-55F1BE8C6392 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 947C3D82-7702-0263-FD70-44B5DA7E6426 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 819CBC28-6296-0779-FE67-00B4BE7D5816 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 195FCD2E-1328-0364-FC62-24E1AC1F6694 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 627CC40A-7000-0001-FF52-60D4BD7B2833 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 217BAB52-9766-0740-FE39-70F8BC8E9666 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 791AD483-8983-0291-FE25-51F8EE2E4859 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 394EE75E-1639-0667-FC04-65B9CB4D4737 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 261B0E1C-4422-0086-FF50-22E3CF2E4262 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 343D0402-3445-0086-FC07-43C0EA4E2010 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 904D0C70-4005-0945-FE18-90A4DB0A1727 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 283BED3E-8142-0874-FE10-28D6FC3A7723 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 876EFE03-4839-0980-FE67-49A4AF0F2498 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 134B1B47-4596-0230-FD76-48D2BC8C5622 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 185E7A3E-0964-0683-FB54-16E1FF0D4638 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 817C9A79-5836-0251-FC15-86F4EF3C7627 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 455A8800-0115-0027-FE75-01C9DB5B7041 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 732EB091-0254-0480-FF09-29B8FB0A1220 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 223CA360-4971-0748-FB72-50D3BE4B9253 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 310BE522-6074-0745-FC36-00C5BE1E5917 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 763CBD19-8923-0875-FF30-88A0FF0A0177 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 777D1964-7954-0922-FC45-85F6FB6E6784 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 783E815B-7441-0569-FE62-93C9CF7D4925 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 815D693A-6171-0086-FD48-22E5AA4D7266 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 046C2234-8868-0196-FA48-39C2AA0A2331 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 296B9B2C-9938-0312-FF37-84E0DF2E3584 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 068F7A06-3651-0486-FB44-27D0CE0C3276 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 490DE412-3794-0220-FC30-42A8DC0B5646 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 696FEE20-9090-0756-FC62-33E8DF0D2697 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 264C068E-1996-0193-FD93-25D3BD1E9450 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 798F4B31-0551-0987-FD13-81A3BA6C7212 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 746C0D69-2563-0074-FD81-78B2AD9B9929 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 698D2F0C-0648-0678-FF85-71C7AF1F6572 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 554FB99F-4267-0200-FC76-60A5EE7D1983 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 984AFA89-4841-0626-FB51-10E4FE6E1681 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 282DBB10-2759-0802-FA43-88C5FB6A1657 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 442D8886-0499-0417-FC89-05C6BB8A5103 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 804C1653-0576-0976-FE18-25B8FE7F1511 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 205F6D96-2614-0458-FA02-73F8AC3D9027 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 982EE943-7268-0457-FA18-51F0BC8A3561 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 274ACF71-6055-0515-FF31-13E0EC5C6596 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 549BEB31-7823-0244-FF38-59C7DF3D2208 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 491F2106-1857-0673-FD29-43F9DD9C8910 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 251D7F44-6468-0109-FD93-18D7FB4D8510 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 642D7E02-7745-0119-FF40-86F2FD8D5316 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 796D5A2F-3390-0469-FC61-22F6AB5B7989 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 037BDA96-5278-0975-FB22-13C5BA7A3630 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 879AA54A-0199-0166-FB79-35F5BD5C8194 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 380AC535-1504-0742-FC67-70F9BD0E4035 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 533AC452-7470-0393-FC80-63A6DB1B3913 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 311D1017-3248-0017-FB68-20B8AF5E3082 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 237D7240-4200-0682-FB64-27E1EE1C9009 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 521B1679-1199-0040-FB24-68A0AC4E1363 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 611C993B-2580-0364-FD54-97A8EA5C7469 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 391C0B64-4170-0254-FE56-04F0BA2B7889 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 870D9E5D-2915-0182-FF06-01B2CC1C4415 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 116BA770-5936-0332-FE48-02E6EF6F1519 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 356EA688-5713-0236-FD04-98D8DC1E8961 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 022BBB10-0561-0017-FA19-86F5BD4F9147 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 627FEB4B-7922-0408-FD99-59D7DB1A5117 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 093EFF59-7218-0900-FA56-14C3CC5E5455 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 162C1926-8692-0117-FC69-57D3DB7D4216 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 893C4F9E-8955-0115-FB22-81E2EB5A8060 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 823E2A1F-4719-0383-FF00-69E8CE3E2858 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 067F6A32-8794-0363-FE08-31D2FA7F8558 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 523E3920-0592-0014-FC08-55D9AD0A7108 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 941B3901-9401-0832-FF12-16C8DD9E7120 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 773D687B-1611-0181-FD87-41E1ED2D0318 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 226FE02D-4136-0778-FF88-25A6EA3B0176 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 325AC003-6137-0852-FF28-51A0FF9D2851 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 902BE957-1314-0937-FE54-08A1AE0F6776 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 101AB986-4563-0957-FC52-33B8EF8B8664 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 354EED93-8667-0349-FE44-07F4FC4C8539 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 064FCC31-0097-0675-FE68-87C8FD1C7812 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 880DAB7E-1815-0560-FB22-27F6BD1A6435 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 95DE998B-0287-0595-FF99-13B5CA3B6488 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 32AE5687-1568-0532-FB74-05C5BD7B8001 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 98DE531E-0397-0776-FA34-57B6BE8F2779 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 75DE113D-2589-0660-FC64-82B8EE8E9966 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 03CC8D4F-4035-0854-FC54-46E6FA2A2206 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 33CE3D09-3559-0654-FE53-66C2EB1B9429 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 87DD829A-7364-0539-FB95-86A7EA4C2498 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 30CE375F-9067-0489-FC02-25E8CD8E4099 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 75EB5C91-4732-0888-FC56-68C2DD8E4156 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 88DDE605-0933-0726-FF89-92B6CD9A6012 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 87BCEA80-5842-0084-FA93-67B0AC0A1643 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 66AEDB35-2163-0375-FB45-16D8BF3E1187 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 67FC814F-1002-0759-FB65-25D9DE8C0751 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 08AB3B2E-9461-0254-FB21-68A7EE9D9730 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 44AE1889-2567-0589-FE94-57D5CF0C2730 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 09EF5161-5402-0886-FB24-82D5AA9D3023 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 91EEF254-2171-0737-FB53-77A2CE4D6776 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 85BED061-9873-0105-FC31-18E7BC6A5529 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 94EDF005-6722-0828-FD72-56F8AB3B7210 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 17EAD123-8163-0136-FC40-38B6DA9B2278 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 64DEAD99-6760-0005-FC82-50F7AB0E2405 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 78EA6393-2314-0248-FC77-14E1BA2B2561 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 20CB0497-2810-0482-FE88-79B6CE9E9070 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 41AD8491-3121-0954-FB89-16D0FA1A2380 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 41EC089D-7785-0739-FF51-16C3CA8B2608 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 37DF1289-0162-0410-FA88-04F5EE5D9512 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 73ED7F18-7159-0790-FD33-07C3ED2D3141 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 25CD349A-0336-0996-FC84-99F7FA0A6122 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 45FC320C-3977-0691-FF00-93D0AA2E6289 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 55AE717B-2892-0190-FA45-55B5BA1D6055 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 52AFE475-4212-0220-FD02-35A0AE3F5881 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 53ACD913-3828-0078-FA30-94E8DA0F2716 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 40BCC36E-6702-0828-FA07-86A0AE9B3200 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 51ACCA13-5241-0781-FF57-93B7EA1E5343 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 97EABC4A-2582-0857-FA44-11F9BD2F2034 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 43AA8C41-0240-0122-FA35-99B0AA9F6884 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 38CF1480-2427-0136-FE08-07F4CE3F7684 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 24AEE953-0818-0329-FD08-63B6AE6E0350 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 26DEFC4A-7386-0236-FD44-97B9BC4D5228 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 20DAAD82-9204-0163-FD39-71B9CC2A7386 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 08CFB702-3427-0726-FC82-59A3EF9F9505 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 77C2BA4E-FE5A-0992-FD00-74C8BC9E6597 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 62CB0D5A-1949-0467-FE69-12E6CD0E5614 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 48ED6782-7879-0177-FA51-51F0DC7F9987 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 26AC4B65-2534-0999-FC48-32F3BE9F1663 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 09EA0E22-3108-0034-FB83-86C9BB7B6610 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 32EA1108-5662-0592-FA52-44B3CD6E9586 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 02CFD772-4320-0697-FD01-09C5AD5D1447 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 89CCA84A-4514-0245-FE98-38B5BC7E7382 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 39CEC858-4195-0771-FA93-91A8FB4B4415 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 82AAB355-2130-0166-FF72-33A2EA5A1770 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 16AB9404-1597-0312-FE33-64A9AB4A4651 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 25AB0D51-6245-0394-FC91-17D7BF7B0943 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 05CB8B67-9933-0364-FA05-99D0DE1A1499 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 51BF9130-7823-0063-FA64-40E7AE6B4888 mentioned but not found
+Dec 13 12:49:31 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 03EB1625-1417-0395-FB49-02D3FF3D9864 mentioned but not found
+Dec 13 12:49:32 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for 32A6BB4E-FA7C-0326-FC01-45B1DE3D2684 mentioned but not found
+Dec 13 12:49:32 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for F3D4FD4F-AE9C-0361-FF97-78E5BE1D5827 mentioned but not found
+Dec 13 12:49:32 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for B7E3EE9B-AA4A-0228-FF95-20D3CB8C9933 mentioned but not found
+Dec 13 12:49:32 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for C94797A0-8807-4FD9-98EF-D3B8F4D0B513 mentioned but not found
+Dec 13 12:49:33 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuidtext file for A394F9D2-5640-3381-9175-28118F0C9F18 mentioned but not found
+Dec 13 12:49:33 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext tree walked
+Dec 13 12:49:33 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/00/0E757A4E2C3108A74D6C5A996AAAAB
+Dec 13 12:49:33 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/00/F2131643943190B32FE35236EA4864
+Dec 13 12:49:33 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/06/608E438FDA3E28B9A262F575FE0E75
+Dec 13 12:49:33 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/09/35918C5C783B8AB2E6B75B12056F3C
+Dec 13 12:49:33 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/11/DD409E112F373398E6DA86BF046EC9
+Dec 13 12:49:33 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/14/65FB07456D36EC9EC80462D86BB21B
+Dec 13 12:49:33 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/18/A779EC17953910996D134A28F5C564
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/19/57E846B04C32FBAD78821B285B0D18
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/1E/79F11C7D5333F1BD0630540535F725
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/1E/9811DDA51A3BE9A4A748AD394DBE73
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/23/099C5F0A853312A9BD5694C15D228C
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/27/FBA267162735F8B5A6BF29E3A7670E
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/39/2980D3CAF73E2A94ED57F74979F1D9
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/3E/67870101A7359F88CCB9BD6681FC93
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/41/C51F4A33E03ACF86603802C9E6FFDE
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/42/BF3535B92C3272BA41F8A9BC267F3B
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/42/C18E8D6CEE37FF8DCD1390244CF38E
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/53/4B25B3C583361EADD5CB938678868C
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/54/090A60831C3233A4F0022DB86FF8B8
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/56/8EBEC4BC8230848898534D17830BB6
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/57/58C9F966E631669B74E6625D40C806
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/5E/F7315AF27B31A6A38D6364704D4FFC
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/5F/2B940389D136F2817A41C784D530CB
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/62/196B2A409236898AAD3A1520C53191
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/65/2D3DB29CBA32E297A65465CBA36B01
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/67/58A21E3D2B3620952A68EC384CC1AF
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/69/ADA53CBD3A3E31B08CFD85B12D52E1
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/72/FB1BBBCA3E30E89802A68B8B2B07F1
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/74/702F7027E834ACB0057983649FFB29
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/75/B25BA663DB34EC9AAC6971BBE817EB
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/75/B88148A6E233F8AFF323294DE561E0
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/76/2702DC49823F9E8292BB022D6BAF84
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/76/73D347C0F834879F9438D542975A23
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/78/397DF6C0253FD383E4AFAE3DD2E49C
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/7F/BCC184181A3913ADC50E38F950D098
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/81/12B328744938E1ACF2846B35CD83B4
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/82/3CB803D77334D0B5C759685022D876
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/8A/860FB569623B81B0511956EC82CEA3
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/90/9D581D35E7358AA75371D3A038142D
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/99/AC7E971E8C3319AD0514626D763823
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/9A/53817F2101396598311DB81D851FBA
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/9B/2EB7A3E93A3641B38EAD32B1CBE412
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/9F/E64976D7223E7F992BB3287AF23301
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/A7/8C02A56C0F3A9D90CAD8C92842B9A9
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/A9/733CC25E7239F98BC0812C5D7AF135
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/AB/450D449D5432C9B30A439A35B29931
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/B0/AF101031AA3188A08CF1517F800B2C
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/B4/77C958888B3AB092FD097D2C9A1B13
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/B4/BDFB4CAE49386B963E2C7A296B7D20
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/B5/0CBF2789673C6AB67F80F199CFD499
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/B6/41F64AD9923AD19AED8A35325FB04E
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/B6/566C8F2EA7349EB2C02647D2F69F97
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/BA/2A57BB4346303EA1E87862E6752057
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/C0/2D31E981553F31B0E9C36C232EE607
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/C0/E060E4E9373D4D9B4A930D3291F052
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/C2/531C46380A3DA489F7752C2FE6AEA0
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/C9/17C064F3903260A7DC304FABDDC3FD
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/CD/E2995BDA593F96B16EF1AE92AF31D8
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/CE/EE9ADE6F813CD78A1308F14010F463
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/D1/7E3015AC923AFE89BAFE6411B96431
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/D3/AE090906EC3F058A04EE77A574C8B3
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/DA/BAD1584258317A8483FE9CF10547BD
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/DD/CCB6FD639830F39A5D87247D54F616
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/E1/05E61475463784975FC5278723D08C
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/E1/B515E0321E3B85B90F01D623DC9047
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/E2/8DBEF43A0A37008A26AE9F016435F3
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/E3/55D24FAC0838679583537F319C7B72
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/EF/8522BAF9393808A2E6018507233133
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext unlinking /var/db/uuidtext/FC/F7262CC2703E32BD3808B2D50C74F0
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext total: 2209, in_use:2104, marked:23, recent:13, deleted 69
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext slib tree cleaned up (0)
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext uuid tree cleaned up (3)
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: _purge_uuidtext cleaned up (0)
+Dec 13 12:49:34 d-oef-kqjn-epd-ofi logd[63]: Purged 5816519 bytes from uuidtext.
+Dec 13 12:49:52 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22360]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:49:57 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x600011443d90 holds 0x2121212121212121 instead of 0x600006e206c0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:51:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800ac568a0 holds 0x2121212121212121 instead of 0x608003630680. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:51:58 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 12:53:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000664ad50 holds 0x2121212121212121 instead of 0x600006c31140. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:54:03 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22370]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:55:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x6000060446c0 holds 0x2121212121212121 instead of 0x600006c34d60. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:57:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000c645c20 holds 0x2121212121212121 instead of 0x600002e295c0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 12:58:14 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[22382]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 12:59:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800fe59330 holds 0x2121212121212121 instead of 0x608004030e80. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:01:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000ec41a20 holds 0x2121212121212121 instead of 0x600002e2d920. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:01:58 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 13:03:19 d-oef-kqjn-epd-ofi Preview[24046]: BUG in libdispatch client: kevent[EVFILT_MACHPORT] monitored resource vanished before the source cancel handler was invoked
+Dec 13 13:03:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x608007645da0 holds 0x2121212121212121 instead of 0x6080044252a0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:05:26 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[25276]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 13:05:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000c643b20 holds 0x2121212121212121 instead of 0x6000036340a0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:07:26 d-oef-kqjn-epd-ofi Slack Helper[55199]: Invoked notification with id: 7fc6059b-da36-4957-8941-7fc34ee6b03c
+Dec 13 13:07:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x600007852ee0 holds 0x2121212121212121 instead of 0x600006a22780. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:09:37 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[25878]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 13:09:49 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.imfoundation.IMRemoteURLConnectionAgent): Unknown key for integer: _DirtyJetsamMemoryLimit
+Dec 13 13:13:48 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[25888]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 13:13:48 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 13:13:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60001125b6a0 holds 0x2121212121212121 instead of 0x600007234ce0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:15:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x600006a41480 holds 0x2121212121212121 instead of 0x600003a2e920. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:17:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x600005a46cd0 holds 0x2121212121212121 instead of 0x60000582bd00. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:17:59 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[25896]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 13:19:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800ee5b730 holds 0x2121212121212121 instead of 0x6080072264c0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:21:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f65cb10 holds 0x2121212121212121 instead of 0x6080046351c0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:22:10 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[25914]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 13:23:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x600008c56780 holds 0x2121212121212121 instead of 0x600006624600. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:23:58 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 13:25:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f65d7a0 holds 0x2121212121212121 instead of 0x608003a3d9a0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:26:21 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[25923]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 13:27:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000785e8e0 holds 0x2121212121212121 instead of 0x600006622ba0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:29:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60801005a980 holds 0x2121212121212121 instead of 0x608001a3f8a0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:30:33 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[25940]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 13:31:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000d6588b0 holds 0x2121212121212121 instead of 0x600002a3dd60. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:32:28 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.imfoundation.IMRemoteURLConnectionAgent): Unknown key for integer: _DirtyJetsamMemoryLimit
+Dec 13 13:33:58 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60800f459990 holds 0x2121212121212121 instead of 0x60800463e7e0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:33:58 d-oef-kqjn-epd-ofi syslogd[46]: ASL Sender Statistics
+Dec 13 13:34:44 d-oef-kqjn-epd-ofi com.apple.xpc.launchd[1] (com.apple.quicklook[26381]): Endpoint has been activated through legacy launch(3) APIs. Please switch to XPC or bootstrap_check_in(): com.apple.quicklook
+Dec 13 13:35:59 d-oef-kqjn-epd-ofi Google Chrome[85294]: objc[85294]: __weak variable at 0x60000be429b0 holds 0x2121212121212121 instead of 0x600003c325e0. This is probably incorrect use of objc_storeWeak() and objc_loadWeak(). Break on objc_weak_error to debug.
+Dec 13 13:36:19 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[27321]: 2044-12-13 13:36:19.906 GoogleSoftwareUpdateAgent[27321/0x7fffcc3f93c0] [lvl=2] -[KSAgentApp setupLoggerOutput] Agent settings: <KSAgentSettings:0x100228060 bundleID=com.google.Keystone.Agent lastCheck=2044-12-13 10:35:32 +0000 checkInterval=18000.000000 uiDisplayInterval=604800.000000 sleepInterval=1800.000000 jitterInterval=900 maxRunInterval=0.000000 isConsoleUser=1 ticketStorePath=/Users/qhs/Library/Google/GoogleSoftwareUpdate/TicketStore/Keystone.ticketstore runMode=3 daemonUpdateEngineBrokerServiceName=com.google.Keystone.Daemon.UpdateEngine daemonAdministrationServiceName=com.google.Keystone.Daemon.Administration logEverything=0 logBufferSize=2048 alwaysPromptForUpdates=0 productIDToUpdate=(null) lastUIDisplayed=(null) alwaysShowStatusItem=0 updateCheckTag=(null) printResults=NO userInitiated=NO>

@@ -1,0 +1,599 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-11-15T05:00:09.600Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--70b84911-a3e0-4c20-a0d3-e5df95d03fbc",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-11-17T05:00:09.642Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"created\":\"2051-11-15T05:00:09.6Z\",\"description\":\"Each of these file hashes indicates that a variant of a variant of Win32/Injector.ETLW trojan is present.\",\"id\":\"indicator--70b84911-a3e0-4c20-a0d3-e5df95d03fbc\",\"labels\":[\"malicious-activity\"],\"modified\":\"2051-11-15T05:00:09.642619Z\",\"name\":\"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\",\"pattern\":\"[file:hashes.'SHA-256'='69f381e0ecf92c446c4985327dfe214d49df4735efe47b482159e3da60e156fa'] OR [file:hashes.'SHA-1'='0be08a424b343c7f8dc4a93301b01d868bad2c9f'] OR [file:hashes.'MD5'='3d72fcb0d5acd2afc5618ae02c7129e0']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"spec_version\":\"indicator\",\"type\":\"indicator\",\"valid_from\":\"2051-11-15T05:00:09.642619Z\",\"valid_until\":\"2051-11-17T05:00:09.642619Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of a variant of Win32/Injector.ETLW trojan is present.",
+          "file": {
+            "hash": {
+              "md5": "3d72fcb0d5acd2afc5618ae02c7129e0",
+              "sha1": "0be08a424b343c7f8dc4a93301b01d868bad2c9f",
+              "sha256": "69f381e0ecf92c446c4985327dfe214d49df4735efe47b482159e3da60e156fa"
+            }
+          },
+          "last_seen": "2051-11-15T05:00:09.642Z",
+          "modified_at": "2051-11-15T05:00:09.642Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-15T01:59:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--dafe4edd-2e79-4c62-8512-c39e6c1e2bcb",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-10-17T01:59:23.000Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\": \"indicator--dafe4edd-2e79-4c62-8512-c39e6c1e2bcb\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of a variant of Win32/AutoRun.Agent.UD worm is present.\", \"pattern\": \"[file:hashes.'SHA-256'='008656415f8f2ce1e7c9d11c1b0541754e0e8cc3bbf25e798791a9792e3296d1'] OR [file:hashes.'SHA-1'='2148bdd9e0fbe40d23eb5e14bb3e2fecc1a371e7'] OR [file:hashes.'MD5'='2a36f9112feb28c2132d015cc49337b4']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of a variant of Win32/AutoRun.Agent.UD worm is present.",
+          "file": {
+            "hash": {
+              "md5": "2a36f9112feb28c2132d015cc49337b4",
+              "sha1": "2148bdd9e0fbe40d23eb5e14bb3e2fecc1a371e7",
+              "sha256": "008656415f8f2ce1e7c9d11c1b0541754e0e8cc3bbf25e798791a9792e3296d1"
+            }
+          },
+          "last_seen": "2051-10-15T01:59:23.000Z",
+          "modified_at": "2051-10-15T01:59:23.000Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-15T01:59:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--8be4c888-fbdd-4869-9d9c-e542a5d8399d",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-10-17T01:59:23.000Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\": \"indicator--8be4c888-fbdd-4869-9d9c-e542a5d8399d\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of a variant of Win32/TrojanDropper.Agent.PQT trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='2774eb14cc096339199c50dd77a4d38e8fbe5d1e9df91b3c82a3ddcde3963202'] OR [file:hashes.'SHA-1'='59ed42f73281746173da50513adcf380fe06a7a9'] OR [file:hashes.'MD5'='e00707738effdcf5749512108e043ea3']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of a variant of Win32/TrojanDropper.Agent.PQT trojan is present.",
+          "file": {
+            "hash": {
+              "md5": "e00707738effdcf5749512108e043ea3",
+              "sha1": "59ed42f73281746173da50513adcf380fe06a7a9",
+              "sha256": "2774eb14cc096339199c50dd77a4d38e8fbe5d1e9df91b3c82a3ddcde3963202"
+            }
+          },
+          "last_seen": "2051-10-15T01:59:23.000Z",
+          "modified_at": "2051-10-15T01:59:23.000Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-15T01:59:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--3e578440-30e0-4b0f-ad66-53a282f7738f",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-10-17T01:59:23.000Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\": \"indicator--3e578440-30e0-4b0f-ad66-53a282f7738f\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of VBS/Agent.QMG trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='22f2fbdf71df7c35fd55d0c91afef761bb2ebb2e8b741dc0fb48770b003fc0bd'] OR [file:hashes.'SHA-1'='6c78431c930763188d92431f495bc8870b4e9e21'] OR [file:hashes.'MD5'='eba95e0711c2406103d3539e2cfd4a30']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of VBS/Agent.QMG trojan is present.",
+          "file": {
+            "hash": {
+              "md5": "eba95e0711c2406103d3539e2cfd4a30",
+              "sha1": "6c78431c930763188d92431f495bc8870b4e9e21",
+              "sha256": "22f2fbdf71df7c35fd55d0c91afef761bb2ebb2e8b741dc0fb48770b003fc0bd"
+            }
+          },
+          "last_seen": "2051-10-15T01:59:23.000Z",
+          "modified_at": "2051-10-15T01:59:23.000Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-15T01:59:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--ca3219e3-9e83-4236-b96e-a97c1878ea4f",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-10-17T01:59:23.000Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\": \"indicator--ca3219e3-9e83-4236-b96e-a97c1878ea4f\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of HTML/Fraud.CX trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='8fe051e28fde2ffddb77cfe06e88a9d4c20d4fdb71be5a949a610ec1e5be3840'] OR [file:hashes.'SHA-1'='398b3cd385af9587f5fe53fb68f2f1a3560a311f'] OR [file:hashes.'MD5'='10a85e1c7e6edcf400a5d4e0606752a1']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of HTML/Fraud.CX trojan is present.",
+          "file": {
+            "hash": {
+              "md5": "10a85e1c7e6edcf400a5d4e0606752a1",
+              "sha1": "398b3cd385af9587f5fe53fb68f2f1a3560a311f",
+              "sha256": "8fe051e28fde2ffddb77cfe06e88a9d4c20d4fdb71be5a949a610ec1e5be3840"
+            }
+          },
+          "last_seen": "2051-10-15T01:59:23.000Z",
+          "modified_at": "2051-10-15T01:59:23.000Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-15T01:59:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--e49799ce-208c-4fab-967d-3eb2c3e71b1b",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-10-17T01:59:23.000Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\": \"indicator--e49799ce-208c-4fab-967d-3eb2c3e71b1b\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of a variant of Win32/GenKryptik.GOVN trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='c77ac1fcf13454d8200a486098639844cd959d7093a408751cb05bb5a91dd137'] OR [file:hashes.'SHA-1'='19747a0a4a56d0a4af8747e6a1ce7dfe8b72c8ff'] OR [file:hashes.'MD5'='e9902c8791c2446f649561888a2f3dc9']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of a variant of Win32/GenKryptik.GOVN trojan is present.",
+          "file": {
+            "hash": {
+              "md5": "e9902c8791c2446f649561888a2f3dc9",
+              "sha1": "19747a0a4a56d0a4af8747e6a1ce7dfe8b72c8ff",
+              "sha256": "c77ac1fcf13454d8200a486098639844cd959d7093a408751cb05bb5a91dd137"
+            }
+          },
+          "last_seen": "2051-10-15T01:59:23.000Z",
+          "modified_at": "2051-10-15T01:59:23.000Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-15T01:59:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--9babb86e-0e2f-442c-9b37-5cd05198f58f",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-10-17T01:59:23.000Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\": \"indicator--9babb86e-0e2f-442c-9b37-5cd05198f58f\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of NSIS/Injector.ASH trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='5e8dae668f6c4d048676d8d35b734556722fd8022505cf871d07bcfabdc4b44f'] OR [file:hashes.'SHA-1'='423ad6e7ba560b183ca8767942b134326719f986'] OR [file:hashes.'MD5'='43f2d66b86ba45d9cad6d301136eca54']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of NSIS/Injector.ASH trojan is present.",
+          "file": {
+            "hash": {
+              "md5": "43f2d66b86ba45d9cad6d301136eca54",
+              "sha1": "423ad6e7ba560b183ca8767942b134326719f986",
+              "sha256": "5e8dae668f6c4d048676d8d35b734556722fd8022505cf871d07bcfabdc4b44f"
+            }
+          },
+          "last_seen": "2051-10-15T01:59:23.000Z",
+          "modified_at": "2051-10-15T01:59:23.000Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-15T01:59:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--1fb40180-521f-470f-95bb-b449282bd636",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-10-17T01:59:23.000Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\": \"indicator--1fb40180-521f-470f-95bb-b449282bd636\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of JS/Kryptik.BMZ trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='a3c4649aef01a38940a533c1a54aa39fd66c46b467df5bd4a24bd820b69b257c'] OR [file:hashes.'SHA-1'='7f61e95066af407411d7b241121c4ef9f0a91825'] OR [file:hashes.'MD5'='6366ab8f8081e03ac3c62f8dba55e6de']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of JS/Kryptik.BMZ trojan is present.",
+          "file": {
+            "hash": {
+              "md5": "6366ab8f8081e03ac3c62f8dba55e6de",
+              "sha1": "7f61e95066af407411d7b241121c4ef9f0a91825",
+              "sha256": "a3c4649aef01a38940a533c1a54aa39fd66c46b467df5bd4a24bd820b69b257c"
+            }
+          },
+          "last_seen": "2051-10-15T01:59:23.000Z",
+          "modified_at": "2051-10-15T01:59:23.000Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-15T01:59:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--78b8e233-0cab-4d54-8474-7af5f271b96c",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-10-17T01:59:23.000Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\": \"indicator--78b8e233-0cab-4d54-8474-7af5f271b96c\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of JS/ScrInject.B trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='c994475fc2fb0dac420bcba6a306c49cd2f2f2c1f2acba8773a443a5869dd4f7'] OR [file:hashes.'SHA-1'='52be1353dbb3dfce58c16253b3ffbd502b2784bf'] OR [file:hashes.'MD5'='64f570d986e5ab8b260ffe3c8f32e713']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of JS/ScrInject.B trojan is present.",
+          "file": {
+            "hash": {
+              "md5": "64f570d986e5ab8b260ffe3c8f32e713",
+              "sha1": "52be1353dbb3dfce58c16253b3ffbd502b2784bf",
+              "sha256": "c994475fc2fb0dac420bcba6a306c49cd2f2f2c1f2acba8773a443a5869dd4f7"
+            }
+          },
+          "last_seen": "2051-10-15T01:59:23.000Z",
+          "modified_at": "2051-10-15T01:59:23.000Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-15T01:59:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--abab1f5a-69bb-4703-baaf-1579f0717d5a",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-10-17T01:59:23.000Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\": \"indicator--abab1f5a-69bb-4703-baaf-1579f0717d5a\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of HTML/Refresh.AUD trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='f3ef9d1583a53192dacb5853f5ed630a59b28ce4edcf3a61ba0cd62dcec5adc0'] OR [file:hashes.'SHA-1'='1f7162e539318eaa272cd391b3de474e6274f900'] OR [file:hashes.'MD5'='6ae98afac8d932d2c133199085d38b13']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of HTML/Refresh.AUD trojan is present.",
+          "file": {
+            "hash": {
+              "md5": "6ae98afac8d932d2c133199085d38b13",
+              "sha1": "1f7162e539318eaa272cd391b3de474e6274f900",
+              "sha256": "f3ef9d1583a53192dacb5853f5ed630a59b28ce4edcf3a61ba0cd62dcec5adc0"
+            }
+          },
+          "last_seen": "2051-10-15T01:59:23.000Z",
+          "modified_at": "2051-10-15T01:59:23.000Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-10-15T01:59:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset": {
+        "id": "indicator--9baf483f-9dd8-464b-ab81-22e729547c59",
+        "labels": [
+          "malicious-activity"
+        ],
+        "valid_until": "2051-10-17T01:59:23.000Z"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\": \"indicator--9baf483f-9dd8-464b-ab81-22e729547c59\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of HTML/Phishing.Agent.AUW trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='b30a9ab48be1d9ef9284d5b89dad814130a8860ff2707610fe80f9794f9e2bf1'] OR [file:hashes.'SHA-1'='bcda9e733cb6f3cfb39e530ea78b92ec42732d7f'] OR [file:hashes.'MD5'='58320e8ee2aad2a1bb7b916afe4dc4ba']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "ESET Malicious Files stix 2.1"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Each of these file hashes indicates that a variant of HTML/Phishing.Agent.AUW trojan is present.",
+          "file": {
+            "hash": {
+              "md5": "58320e8ee2aad2a1bb7b916afe4dc4ba",
+              "sha1": "bcda9e733cb6f3cfb39e530ea78b92ec42732d7f",
+              "sha256": "b30a9ab48be1d9ef9284d5b89dad814130a8860ff2707610fe80f9794f9e2bf1"
+            }
+          },
+          "last_seen": "2051-10-15T01:59:23.000Z",
+          "modified_at": "2051-10-15T01:59:23.000Z",
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "provider": "eset",
+          "type": "file"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"created\":\"2051-11-15T05:00:09.6Z\",\"description\":\"Each of these file hashes indicates that a variant of a variant of Win32/Injector.ETLW trojan is present.\",\"id\":\"indicator--70b84911-a3e0-4c20-a0d3-e5df95d03fbc\",\"labels\":[\"malicious-activity\"],\"modified\":\"2051-11-15T05:00:09.642619Z\",\"name\":\"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\",\"pattern\":\"[file:hashes.'SHA-256'='69f381e0ecf92c446c4985327dfe214d49df4735efe47b482159e3da60e156fa'] OR [file:hashes.'SHA-1'='0be08a424b343c7f8dc4a93301b01d868bad2c9f'] OR [file:hashes.'MD5'='3d72fcb0d5acd2afc5618ae02c7129e0']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"spec_version\":\"indicator\",\"type\":\"indicator\",\"valid_from\":\"2051-11-15T05:00:09.642619Z\",\"valid_until\":\"2051-11-17T05:00:09.642619Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\": \"indicator--dafe4edd-2e79-4c62-8512-c39e6c1e2bcb\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of a variant of Win32/AutoRun.Agent.UD worm is present.\", \"pattern\": \"[file:hashes.'SHA-256'='008656415f8f2ce1e7c9d11c1b0541754e0e8cc3bbf25e798791a9792e3296d1'] OR [file:hashes.'SHA-1'='2148bdd9e0fbe40d23eb5e14bb3e2fecc1a371e7'] OR [file:hashes.'MD5'='2a36f9112feb28c2132d015cc49337b4']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\": \"indicator--8be4c888-fbdd-4869-9d9c-e542a5d8399d\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of a variant of Win32/TrojanDropper.Agent.PQT trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='2774eb14cc096339199c50dd77a4d38e8fbe5d1e9df91b3c82a3ddcde3963202'] OR [file:hashes.'SHA-1'='59ed42f73281746173da50513adcf380fe06a7a9'] OR [file:hashes.'MD5'='e00707738effdcf5749512108e043ea3']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\": \"indicator--3e578440-30e0-4b0f-ad66-53a282f7738f\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of VBS/Agent.QMG trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='22f2fbdf71df7c35fd55d0c91afef761bb2ebb2e8b741dc0fb48770b003fc0bd'] OR [file:hashes.'SHA-1'='6c78431c930763188d92431f495bc8870b4e9e21'] OR [file:hashes.'MD5'='eba95e0711c2406103d3539e2cfd4a30']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\": \"indicator--ca3219e3-9e83-4236-b96e-a97c1878ea4f\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of HTML/Fraud.CX trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='8fe051e28fde2ffddb77cfe06e88a9d4c20d4fdb71be5a949a610ec1e5be3840'] OR [file:hashes.'SHA-1'='398b3cd385af9587f5fe53fb68f2f1a3560a311f'] OR [file:hashes.'MD5'='10a85e1c7e6edcf400a5d4e0606752a1']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\": \"indicator--e49799ce-208c-4fab-967d-3eb2c3e71b1b\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of a variant of Win32/GenKryptik.GOVN trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='c77ac1fcf13454d8200a486098639844cd959d7093a408751cb05bb5a91dd137'] OR [file:hashes.'SHA-1'='19747a0a4a56d0a4af8747e6a1ce7dfe8b72c8ff'] OR [file:hashes.'MD5'='e9902c8791c2446f649561888a2f3dc9']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\": \"indicator--9babb86e-0e2f-442c-9b37-5cd05198f58f\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of NSIS/Injector.ASH trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='5e8dae668f6c4d048676d8d35b734556722fd8022505cf871d07bcfabdc4b44f'] OR [file:hashes.'SHA-1'='423ad6e7ba560b183ca8767942b134326719f986'] OR [file:hashes.'MD5'='43f2d66b86ba45d9cad6d301136eca54']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\": \"indicator--1fb40180-521f-470f-95bb-b449282bd636\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of JS/Kryptik.BMZ trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='a3c4649aef01a38940a533c1a54aa39fd66c46b467df5bd4a24bd820b69b257c'] OR [file:hashes.'SHA-1'='7f61e95066af407411d7b241121c4ef9f0a91825'] OR [file:hashes.'MD5'='6366ab8f8081e03ac3c62f8dba55e6de']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\": \"indicator--78b8e233-0cab-4d54-8474-7af5f271b96c\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of JS/ScrInject.B trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='c994475fc2fb0dac420bcba6a306c49cd2f2f2c1f2acba8773a443a5869dd4f7'] OR [file:hashes.'SHA-1'='52be1353dbb3dfce58c16253b3ffbd502b2784bf'] OR [file:hashes.'MD5'='64f570d986e5ab8b260ffe3c8f32e713']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\": \"indicator--abab1f5a-69bb-4703-baaf-1579f0717d5a\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of HTML/Refresh.AUD trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='f3ef9d1583a53192dacb5853f5ed630a59b28ce4edcf3a61ba0cd62dcec5adc0'] OR [file:hashes.'SHA-1'='1f7162e539318eaa272cd391b3de474e6274f900'] OR [file:hashes.'MD5'='6ae98afac8d932d2c133199085d38b13']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\": \"indicator--9baf483f-9dd8-464b-ab81-22e729547c59\", \"type\": \"indicator\", \"spec_version\": \"indicator\", \"created\": \"2051-10-15T01:59:23.000Z\", \"modified\": \"2051-10-15T01:59:23.000Z\", \"name\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"description\": \"Each of these file hashes indicates that a variant of HTML/Phishing.Agent.AUW trojan is present.\", \"pattern\": \"[file:hashes.'SHA-256'='b30a9ab48be1d9ef9284d5b89dad814130a8860ff2707610fe80f9794f9e2bf1'] OR [file:hashes.'SHA-1'='bcda9e733cb6f3cfb39e530ea78b92ec42732d7f'] OR [file:hashes.'MD5'='58320e8ee2aad2a1bb7b916afe4dc4ba']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"valid_from\": \"2051-10-15T01:59:23Z\", \"valid_until\": \"2051-10-17T01:59:23Z\", \"labels\": [\"malicious-activity\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "files",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_eset-files-default",
+    "event_count": 11,
+    "numeric_keyword_fields": [],
+    "package": "ti_eset",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

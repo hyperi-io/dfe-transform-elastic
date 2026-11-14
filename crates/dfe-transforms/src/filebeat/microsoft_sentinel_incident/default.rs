@@ -875,9 +875,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def temp = ctx.microsoft_sentinel.incident.properties.severity.toLowerCase(); if (temp == 'informational') {\n  ctx.event.severity = 0;\n} else if (temp == 'low') {\n  ctx.event.severity = 1;\n} else if (temp == 'medium') {\n  ctx.event.severity = 2;\n} else if (temp == 'high') {\n  ctx.event.severity = 3;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1138,8 +1136,7 @@ impl Transform for Default {
             event.remove("_temp");
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

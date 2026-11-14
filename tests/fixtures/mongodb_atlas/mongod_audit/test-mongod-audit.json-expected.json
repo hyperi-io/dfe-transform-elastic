@@ -1,0 +1,320 @@
+{
+  "expected": [
+    {
+      "_compat_error": "no result"
+    },
+    {
+      "@timestamp": "2053-01-27T06:01:43.665Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "clientMetadata",
+        "category": [
+          "network",
+          "authentication"
+        ],
+        "kind": "event",
+        "module": "mongodb_atlas",
+        "original": "{ \"atype\" : \"clientMetadata\", \"ts\" : { \"$date\" : \"2053-01-27T06:01:43.665+00:00\" }, \"uuid\" : { \"$binary\" : \"nyibZv2iT/6f00Zq4bupWg==\", \"$type\" : \"04\" }, \"local\" : { \"ip\" : \"192.168.64.85\", \"port\" : 27017 }, \"remote\" : { \"ip\" : \"192.168.64.85\", \"port\" : 57172 }, \"users\" : [], \"roles\" : [], \"param\" : { \"localEndpoint\" : { \"ip\" : \"192.168.64.85\", \"port\" : 27017 }, \"clientMetadata\" : { \"application\" : { \"name\" : \"MongoDB Automation Agent v13.27.1.9281 (git: d702e0b164aed8b4675b2c15940483d8893195e9)\" }, \"driver\" : { \"name\" : \"mongo-go-driver\", \"version\" : \"v1.12.0-cloud\" }, \"os\" : { \"type\" : \"linux\", \"architecture\" : \"arm64\" }, \"platform\" : \"go1.22.10\" } }, \"result\" : 0 }",
+        "type": [
+          "access",
+          "info"
+        ]
+      },
+      "mongodb_atlas": {
+        "mongod_audit": {
+          "local": {
+            "ip": "192.168.64.85",
+            "port": 27017
+          },
+          "param": {
+            "clientMetadata": {
+              "application": {
+                "name": "MongoDB Automation Agent v13.27.1.9281 (git: d702e0b164aed8b4675b2c15940483d8893195e9)"
+              },
+              "driver": {
+                "name": "mongo-go-driver",
+                "version": "v1.12.0-cloud"
+              },
+              "os": {
+                "architecture": "arm64",
+                "type": "linux"
+              },
+              "platform": "go1.22.10"
+            },
+            "localEndpoint": {
+              "ip": "192.168.64.85",
+              "port": 27017
+            }
+          },
+          "remote": {
+            "ip": "192.168.64.85",
+            "port": 57172
+          },
+          "result": "Success",
+          "uuid": {
+            "binary": "nyibZv2iT/6f00Zq4bupWg==",
+            "type": "04"
+          }
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.64.85"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-01-29T06:57:15.366Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "logout",
+        "category": [
+          "network",
+          "authentication"
+        ],
+        "kind": "event",
+        "module": "mongodb_atlas",
+        "original": "{ \"atype\": \"logout\", \"ts\": { \"$date\": \"2052-01-29T06:57:15.366+00:00\" }, \"uuid\": { \"$binary\": \"bY/PMV8IR36q+hmAJZYyfw==\", \"$type\": \"04\" }, \"local\": { \"ip\": \"127.0.0.1\", \"port\": 27017 }, \"remote\": { \"ip\": \"127.0.0.1\", \"port\": 43714 }, \"users\":[ { \"user\":\"jrs-zuzuylnuop-bmaxw\", \"db\":\"admin\" } ], \"roles\": [ { \"role\": \"backup\", \"db\": \"admin\" }, { \"role\": \"clusterAdmin\", \"db\": \"admin\" }, { \"role\": \"dbAdminAnyDatabase\", \"db\": \"admin\" }, { \"role\": \"readWriteAnyDatabase\", \"db\": \"admin\" }, { \"role\": \"restore\", \"db\": \"admin\" }, { \"role\": \"userAdminAnyDatabase\", \"db\": \"admin\" } ], \"result\": 0 }",
+        "type": [
+          "access",
+          "info"
+        ]
+      },
+      "mongodb_atlas": {
+        "mongod_audit": {
+          "local": {
+            "ip": "127.0.0.1",
+            "port": 27017
+          },
+          "remote": {
+            "ip": "127.0.0.1",
+            "port": 43714
+          },
+          "result": "Success",
+          "user": {
+            "names": [
+              {
+                "db": "admin",
+                "user": "jrs-zuzuylnuop-bmaxw"
+              }
+            ],
+            "roles": [
+              {
+                "db": "admin",
+                "role": "backup"
+              },
+              {
+                "db": "admin",
+                "role": "clusterAdmin"
+              },
+              {
+                "db": "admin",
+                "role": "dbAdminAnyDatabase"
+              },
+              {
+                "db": "admin",
+                "role": "readWriteAnyDatabase"
+              },
+              {
+                "db": "admin",
+                "role": "restore"
+              },
+              {
+                "db": "admin",
+                "role": "userAdminAnyDatabase"
+              }
+            ]
+          },
+          "uuid": {
+            "binary": "bY/PMV8IR36q+hmAJZYyfw==",
+            "type": "04"
+          }
+        }
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2051-04-01T12:00:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "authenticate",
+        "category": [
+          "network",
+          "authentication"
+        ],
+        "kind": "event",
+        "module": "mongodb_atlas",
+        "original": "{\"atype\":\"authenticate\",\"ts\":{\"$date\":\"2051-04-01T12:00:00.000Z\"},\"uuid\":{\"$binary\":\"some-unique-identifier\",\"$type\":\"04\"},\"local\":{\"ip\":\"127.0.0.1\",\"port\":27017},\"remote\":{\"ip\":\"192.168.125.99\",\"port\":54320},\"users\":[{\"user\":\"eqcqjPzck\",\"db\":\"admin\"}],\"roles\":[{\"role\":\"dbAdmin\",\"db\":\"admin\"}],\"result\":0}",
+        "type": [
+          "access",
+          "info"
+        ]
+      },
+      "mongodb_atlas": {
+        "mongod_audit": {
+          "local": {
+            "ip": "127.0.0.1",
+            "port": 27017
+          },
+          "remote": {
+            "ip": "192.168.125.99",
+            "port": 54320
+          },
+          "result": "Success",
+          "user": {
+            "names": [
+              {
+                "db": "admin",
+                "user": "eqcqjPzck"
+              }
+            ],
+            "roles": [
+              {
+                "db": "admin",
+                "role": "dbAdmin"
+              }
+            ]
+          },
+          "uuid": {
+            "binary": "some-unique-identifier",
+            "type": "04"
+          }
+        }
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1",
+          "192.168.125.99"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2051-04-01T12:05:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "authCheck",
+        "category": [
+          "network",
+          "authentication"
+        ],
+        "kind": "event",
+        "module": "mongodb_atlas",
+        "original": "{\"atype\":\"authCheck\",\"ts\":{\"$date\":\"2051-04-01T12:05:00.000Z\"},\"uuid\":{\"$binary\":\"another-unique-identifier\",\"$type\":\"04\"},\"local\":{\"ip\":\"127.0.0.1\",\"port\":27017},\"remote\":{\"ip\":\"192.168.85.202\",\"port\":54321},\"users\":[{\"user\":\"hpcwPbjp\",\"db\":\"test\"}],\"roles\":[{\"role\":\"read\",\"db\":\"test\"}],\"result\":13}",
+        "type": [
+          "access",
+          "info"
+        ]
+      },
+      "mongodb_atlas": {
+        "mongod_audit": {
+          "local": {
+            "ip": "127.0.0.1",
+            "port": 27017
+          },
+          "remote": {
+            "ip": "192.168.85.202",
+            "port": 54321
+          },
+          "result": "Unauthorized to perform the operation",
+          "user": {
+            "names": [
+              {
+                "db": "test",
+                "user": "hpcwPbjp"
+              }
+            ],
+            "roles": [
+              {
+                "db": "test",
+                "role": "read"
+              }
+            ]
+          },
+          "uuid": {
+            "binary": "another-unique-identifier",
+            "type": "04"
+          }
+        }
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1",
+          "192.168.85.202"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-02-08T06:20:49.729Z",
+      "message": "No data for given time period or host is unreachable",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-02-08T06:25:56.621Z",
+      "message": "{ \"atype\" : \"clientMetadata\", \"ts\" : { \"$date\" : \"2053-01-27T06:01:43.665+00:00\" }, \"uuid\" : { \"$binary\" : \"nyibZv2iT/6f00Zq4bupWg==\", \"$type\" : \"04\" }, \"local\" : { \"ip\" : \"192.168.64.85\", \"port\" : 27017 }, \"remote\" : { \"ip\" : \"192.168.64.85\", \"port\" : 57172 }, \"users\" : [], \"roles\" : [], \"param\" : { \"localEndpoint\" : { \"ip\" : \"192.168.64.85\", \"port\" : 27017 }, \"clientMetadata\" : { \"application\" : { \"name\" : \"MongoDB Automation Agent v13.27.1.9281 (git: d702e0b164aed8b4675b2c15940483d8893195e9)\" }, \"driver\" : { \"name\" : \"mongo-go-driver\", \"version\" : \"v1.12.0-cloud\" }, \"os\" : { \"type\" : \"linux\", \"architecture\" : \"arm64\" }, \"platform\" : \"go1.22.10\" } }, \"result\" : 0 }",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-02-08T06:20:56.621Z",
+      "message": "{ \"atype\": \"logout\", \"ts\": { \"$date\": \"2052-01-29T06:57:15.366+00:00\" }, \"uuid\": { \"$binary\": \"bY/PMV8IR36q+hmAJZYyfw==\", \"$type\": \"04\" }, \"local\": { \"ip\": \"127.0.0.1\", \"port\": 27017 }, \"remote\": { \"ip\": \"127.0.0.1\", \"port\": 43714 }, \"users\":[ { \"user\":\"jrs-zuzuylnuop-bmaxw\", \"db\":\"admin\" } ], \"roles\": [ { \"role\": \"backup\", \"db\": \"admin\" }, { \"role\": \"clusterAdmin\", \"db\": \"admin\" }, { \"role\": \"dbAdminAnyDatabase\", \"db\": \"admin\" }, { \"role\": \"readWriteAnyDatabase\", \"db\": \"admin\" }, { \"role\": \"restore\", \"db\": \"admin\" }, { \"role\": \"userAdminAnyDatabase\", \"db\": \"admin\" } ], \"result\": 0 }",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-02-08T07:20:00.123Z",
+      "message": "{\"atype\":\"authenticate\",\"ts\":{\"$date\":\"2051-04-01T12:00:00.000Z\"},\"uuid\":{\"$binary\":\"some-unique-identifier\",\"$type\":\"04\"},\"local\":{\"ip\":\"127.0.0.1\",\"port\":27017},\"remote\":{\"ip\":\"192.168.125.99\",\"port\":54320},\"users\":[{\"user\":\"eqcqjPzck\",\"db\":\"admin\"}],\"roles\":[{\"role\":\"dbAdmin\",\"db\":\"admin\"}],\"result\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-02-08T07:30:56.234Z",
+      "message": "{\"atype\":\"authCheck\",\"ts\":{\"$date\":\"2051-04-01T12:05:00.000Z\"},\"uuid\":{\"$binary\":\"another-unique-identifier\",\"$type\":\"04\"},\"local\":{\"ip\":\"127.0.0.1\",\"port\":27017},\"remote\":{\"ip\":\"192.168.85.202\",\"port\":54321},\"users\":[{\"user\":\"hpcwPbjp\",\"db\":\"test\"}],\"roles\":[{\"role\":\"read\",\"db\":\"test\"}],\"result\":13}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "mongod_audit",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-mongodb_atlas-mongod_audit-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "mongodb_atlas",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

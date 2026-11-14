@@ -43,7 +43,7 @@ fn parse_additional_detail(event: &mut Event, _params: &Value) {
     event.update(DETAIL, Value::Object(detail));
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "316d1eae5cb6f99bfdad0f9393d4ec1d17edc1cea9dd0d2baa2372b31d6a79f9",
     source: "microsoft_intune",

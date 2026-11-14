@@ -1,0 +1,73 @@
+{
+    "events": [
+        {
+            "log": {
+                "syslog": {
+                    "hostname": "wtft-jehrqr",
+                    "appname": "sysmon",
+                    "procid": "3099"
+                }
+            },
+            "winlog": {
+                "record_id": "24",
+                "computer_name": "wtft-jehrqr",
+                "process": {
+                    "pid": 3099,
+                    "thread": {
+                        "id": 3099
+                    }
+                },
+                "event_id": "5",
+                "provider_guid": "{bb784918-d9f2-4b32-b0b4-16bd497b8a36}",
+                "level": "information",
+                "channel": "Linux-Sysmon/Operational",
+                "time_created": "2050-10-24T17:06:14.193Z",
+                "event_data": {
+                    "User": "root",
+                    "ProcessId": "783",
+                    "Image": "/opt/Elastic/Agent/data/elastic-agent-5ae799/install/osquerybeat-7.15.1-linux-x86_64/osqueryd",
+                    "RuleName": "-",
+                    "ProcessGuid": "{f90225be-3a2d-6791-0790-522194353635}",
+                    "UtcTime": "2050-10-24 17:06:14.200",
+                    "opcode": "Info",
+                    "provider_name": "Linux-Sysmon",
+                    "version": "3"
+                }
+            }
+        },
+        {
+            "log": {
+                "syslog": {
+                    "hostname": "wtft-jehrqr",
+                    "appname": "sysmon"
+                }
+            },
+            "winlog": {
+                "computer_name": "wtft-jehrqr",
+                "record_id": "22",
+                "process": {
+                    "pid": 3099,
+                    "thread": {
+                        "id": 3099
+                    }
+                },
+                "event_id": "5",
+                "level": "information",
+                "provider_guid": "{bb784918-d9f2-4b32-b0b4-16bd497b8a36}",
+                "channel": "Linux-Sysmon/Operational",
+                "time_created": "2050-10-24T17:05:48.296Z",
+                "event_data": {
+                    "User": "root",
+                    "ProcessId": "3100",
+                    "Image": "(null)",
+                    "ProcessGuid": "{d55077cd-0d26-6108-0569-213899907901}",
+                    "RuleName": "-",
+                    "UtcTime": "2050-10-24 17:05:48.302",
+                    "provider_name": "Linux-Sysmon",
+                    "opcode": "Info",
+                    "version": "3"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,142 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-05-12T05:38:53.580Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "create",
+        "id": "e63c8c80-cd33-4297-adfe-1a3587756c3e",
+        "kind": "event",
+        "original": "{\"id\":\"e63c8c80-cd33-4297-adfe-1a3587756c3e\",\"name\":\"API key signed in\",\"event\":\"API key signed in with id 5d5184c2-fe23-4cb2-a0eb-8b6a5feb1b35\",\"action\":\"create\",\"browser\":\"python-requests/2.32.3\",\"details\":null,\"username\":\"cagfle@onfqn.com via APIkey AK6eef5d\",\"controller\":\"api/api_key_sessions\",\"ip_address\":\"192.0.2.218\",\"record_created_at\":2630641133580,\"time\":2630641133579}"
+      },
+      "message": "API key signed in with id 5d5184c2-fe23-4cb2-a0eb-8b6a5feb1b35",
+      "nozomi_networks": {
+        "audit": {
+          "action": "create",
+          "browser": "python-requests/2.32.3",
+          "controller": "api/api_key_sessions",
+          "event": "API key signed in with id 5d5184c2-fe23-4cb2-a0eb-8b6a5feb1b35",
+          "id": "e63c8c80-cd33-4297-adfe-1a3587756c3e",
+          "ip_address": "192.0.2.218",
+          "name": "API key signed in",
+          "record_created_at": "2053-05-12T05:38:53.580Z",
+          "time": "2053-05-12T05:38:53.579Z",
+          "username": "cagfle@onfqn.com via APIkey AK6eef5d"
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.218"
+        ],
+        "user": [
+          "cagfle",
+          "cagfle@onfqn.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.218"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "onfqn.com",
+        "email": "cagfle@onfqn.com",
+        "name": "cagfle"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Python Requests",
+        "original": "python-requests/2.32.3",
+        "version": "2.32"
+      }
+    },
+    {
+      "@timestamp": "2053-05-12T05:38:53.580Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "create",
+        "id": "a41f6b19-ee49-7502-abfb-8d1801950c9c",
+        "kind": "event",
+        "original": "{\"id\":\"a41f6b19-ee49-7502-abfb-8d1801950c9c\",\"name\":\"API key signed in\",\"event\":\"API key signed in with id 7c6206a9-df01-4bf1-a7de-5d7c4afd4e63\",\"action\":\"create\",\"browser\":\"python-requests/2.32.3\",\"details\":null,\"username\":\"rvny@onfqn.com via APIkey AK6dsf5d\",\"controller\":\"api/api_key_sessions\",\"ip_address\":\"198.51.100.74\",\"record_created_at\":2630641133580,\"time\":2630641133579}"
+      },
+      "message": "API key signed in with id 7c6206a9-df01-4bf1-a7de-5d7c4afd4e63",
+      "nozomi_networks": {
+        "audit": {
+          "action": "create",
+          "browser": "python-requests/2.32.3",
+          "controller": "api/api_key_sessions",
+          "event": "API key signed in with id 7c6206a9-df01-4bf1-a7de-5d7c4afd4e63",
+          "id": "a41f6b19-ee49-7502-abfb-8d1801950c9c",
+          "ip_address": "198.51.100.74",
+          "name": "API key signed in",
+          "record_created_at": "2053-05-12T05:38:53.580Z",
+          "time": "2053-05-12T05:38:53.579Z",
+          "username": "rvny@onfqn.com via APIkey AK6dsf5d"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.74"
+        ],
+        "user": [
+          "rvny",
+          "rvny@onfqn.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.74"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "onfqn.com",
+        "email": "rvny@onfqn.com",
+        "name": "rvny"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Python Requests",
+        "original": "python-requests/2.32.3",
+        "version": "2.32"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"e63c8c80-cd33-4297-adfe-1a3587756c3e\",\"name\":\"API key signed in\",\"event\":\"API key signed in with id 5d5184c2-fe23-4cb2-a0eb-8b6a5feb1b35\",\"action\":\"create\",\"browser\":\"python-requests/2.32.3\",\"details\":null,\"username\":\"cagfle@onfqn.com via APIkey AK6eef5d\",\"controller\":\"api/api_key_sessions\",\"ip_address\":\"192.0.2.218\",\"record_created_at\":2630641133580,\"time\":2630641133579}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"a41f6b19-ee49-7502-abfb-8d1801950c9c\",\"name\":\"API key signed in\",\"event\":\"API key signed in with id 7c6206a9-df01-4bf1-a7de-5d7c4afd4e63\",\"action\":\"create\",\"browser\":\"python-requests/2.32.3\",\"details\":null,\"username\":\"rvny@onfqn.com via APIkey AK6dsf5d\",\"controller\":\"api/api_key_sessions\",\"ip_address\":\"198.51.100.74\",\"record_created_at\":2630641133580,\"time\":2630641133579}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-nozomi_networks-audit-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "nozomi_networks",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

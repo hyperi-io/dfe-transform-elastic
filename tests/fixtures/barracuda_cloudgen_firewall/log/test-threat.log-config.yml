@@ -1,0 +1,10 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+  lumberjack:
+    type: ngfw-threat
+    sn: 5d09effa9e2d593cb2fa02e327eafba4
+    product: ngfw
+    beat:
+      hostname: cpd-gdwln-mrt

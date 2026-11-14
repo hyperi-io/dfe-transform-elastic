@@ -1,0 +1,78 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-04-04T16:32:27.398Z",
+      "cloud": {
+        "service": {
+          "name": "AWS EC2"
+        }
+      },
+      "ecs": {
+        "version": "8.6.0"
+      },
+      "observer": {
+        "vendor": "Elastic"
+      }
+    },
+    {
+      "@timestamp": "2052-04-04T16:32:27.398Z",
+      "cloud": {
+        "service": {
+          "name": "test"
+        }
+      },
+      "ecs": {
+        "version": "8.6.0"
+      },
+      "observer": {
+        "vendor": "Elastic"
+      }
+    },
+    {
+      "@timestamp": "2052-04-04T16:32:27.398Z",
+      "cloud": {
+        "service": {
+          "name": "AWS EC2"
+        }
+      },
+      "ecs": {
+        "version": "8.6.0"
+      },
+      "host": {
+        "name": "shouldlovercasehostname"
+      },
+      "observer": {
+        "vendor": "Elastic"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-04-04T16:32:27.398Z"
+    },
+    {
+      "@timestamp": "2052-04-04T16:32:27.398Z",
+      "cloud": {
+        "service": {
+          "name": "test"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-04-04T16:32:27.398Z",
+      "host": {
+        "name": "ShouldLoverCaseHostName"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "vulnerabilities",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloud_security_posture-vulnerabilities-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cloud_security_posture",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

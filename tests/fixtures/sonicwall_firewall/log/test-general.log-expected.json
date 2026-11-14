@@ -1,0 +1,3385 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2035-01-03T14:48:06.000+02:00",
+      "destination": {
+        "ip": "203.0.113.61",
+        "port": 50000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "Jan  3 13:45:36 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:06\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23419 src=198.51.100.135:36701:WAN dst=203.0.113.61:50000:WAN proto=tcp/50000",
+        "outcome": "success",
+        "sequence": 23419,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.135",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.135",
+        "port": 36701
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:07.000+02:00",
+      "destination": {
+        "ip": "203.0.113.61",
+        "port": 50000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login-failure",
+        "category": [
+          "authentication"
+        ],
+        "code": "30",
+        "kind": "event",
+        "original": "Jan  3 13:45:36 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:07\" fw=203.0.113.61 pri=1 c=32 m=30 msg=\"Administrator login denied due to bad credentials\" n=7 src=198.51.100.135:36701:WAN dst=203.0.113.61:50000:WAN",
+        "outcome": "failure",
+        "sequence": 7,
+        "severity": 1,
+        "timezone": "+02:00",
+        "type": [
+          "start",
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "alert"
+      },
+      "message": "Administrator login denied due to bad credentials",
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.135",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.135",
+        "port": 36701
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:07.000+02:00",
+      "destination": {
+        "ip": "203.0.113.61",
+        "port": 50000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "Jan  3 13:45:36 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:07\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23420 src=198.51.100.135:36702:WAN dst=203.0.113.61:50000:WAN proto=tcp/50000",
+        "outcome": "success",
+        "sequence": 23420,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.135",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.135",
+        "port": 36702
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:07.000+02:00",
+      "destination": {
+        "bytes": 242,
+        "ip": "192.168.56.205",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-end",
+        "category": [
+          "network"
+        ],
+        "code": "537",
+        "kind": "event",
+        "original": "Jan  3 13:45:37 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:07\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=567996 src=192.168.254.75:27577:WAN dst=192.168.56.205:53:LAN proto=tcp/dns sent=257 rcvd=242",
+        "outcome": "success",
+        "sequence": 567996,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Closed",
+      "network": {
+        "bytes": 499,
+        "protocol": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "LAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.168.254.75",
+          "192.168.56.205",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "bytes": 257,
+        "ip": "192.168.254.75",
+        "port": 27577
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:08.000+02:00",
+      "destination": {
+        "bytes": 13042,
+        "ip": "192.168.125.99",
+        "port": 1026
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-end",
+        "category": [
+          "network"
+        ],
+        "code": "537",
+        "kind": "event",
+        "original": "Jan  3 13:45:37 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:08\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=567997 src=192.168.67.70:4277:LAN dst=192.168.125.99:1026:WAN proto=tcp/1026 sent=3590 rcvd=13042 vpnpolicy=\"name\"",
+        "outcome": "success",
+        "sequence": 567997,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Closed",
+      "network": {
+        "bytes": 16632,
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "LAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.168.67.70",
+          "192.168.125.99",
+          "203.0.113.61"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "vpnpolicy": "name"
+        }
+      },
+      "source": {
+        "bytes": 3590,
+        "ip": "192.168.67.70",
+        "port": 4277
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:10.000+02:00",
+      "destination": {
+        "bytes": 454118,
+        "ip": "192.168.120.195",
+        "port": 41850
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-end",
+        "category": [
+          "network"
+        ],
+        "code": "537",
+        "kind": "event",
+        "original": "Jan  3 13:45:39 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:10\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=567999 src=192.168.67.70:4280:LAN dst=192.168.120.195:41850:WAN proto=tcp/41850 sent=386026 rcvd=454118 vpnpolicy=\"name\"",
+        "outcome": "success",
+        "sequence": 567999,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Closed",
+      "network": {
+        "bytes": 840144,
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "LAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.168.67.70",
+          "192.168.120.195",
+          "203.0.113.61"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "vpnpolicy": "name"
+        }
+      },
+      "source": {
+        "bytes": 386026,
+        "ip": "192.168.67.70",
+        "port": 4280
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:10.000+02:00",
+      "destination": {
+        "bytes": 152,
+        "ip": "198.51.100.135",
+        "port": 500
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-end",
+        "category": [
+          "network"
+        ],
+        "code": "537",
+        "kind": "event",
+        "original": "Jan  3 13:45:39 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:10\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=567999 src=203.0.113.61:500:WAN dst=198.51.100.135:500:WAN proto=udp/500 sent=344 rcvd=152",
+        "outcome": "success",
+        "sequence": 567999,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Closed",
+      "network": {
+        "bytes": 496,
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.61",
+          "198.51.100.135"
+        ]
+      },
+      "source": {
+        "bytes": 344,
+        "ip": "203.0.113.61",
+        "port": 500
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:10.000+02:00",
+      "destination": {
+        "ip": "203.0.113.61",
+        "port": 50000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "Jan  3 13:45:40 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:10\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23421 src=198.51.100.135:36703:WAN dst=203.0.113.61:50000:WAN proto=tcp/50000",
+        "outcome": "success",
+        "sequence": 23421,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.135",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.135",
+        "port": 36703
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:10.000+02:00",
+      "destination": {
+        "ip": "203.0.113.61",
+        "port": 50000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login-failure",
+        "category": [
+          "authentication"
+        ],
+        "code": "30",
+        "kind": "event",
+        "original": "Jan  3 13:45:40 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:10\" fw=203.0.113.61 pri=1 c=32 m=30 msg=\"Administrator login denied due to bad credentials\" n=8 src=198.51.100.135:36703:WAN dst=203.0.113.61:50000:WAN",
+        "outcome": "failure",
+        "sequence": 8,
+        "severity": 1,
+        "timezone": "+02:00",
+        "type": [
+          "start",
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "alert"
+      },
+      "message": "Administrator login denied due to bad credentials",
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.135",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.135",
+        "port": 36703
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:11.000+02:00",
+      "destination": {
+        "ip": "203.0.113.61",
+        "port": 50000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "Jan  3 13:45:40 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:11\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23422 src=198.51.100.135:36704:WAN dst=203.0.113.61:50000:WAN proto=tcp/50000",
+        "outcome": "success",
+        "sequence": 23422,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.135",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.135",
+        "port": 36704
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:14.000+02:00",
+      "destination": {
+        "ip": "203.0.113.61",
+        "port": 6822
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "packet-dropped",
+        "category": [
+          "network"
+        ],
+        "code": "38",
+        "kind": "event",
+        "original": "Jan  3 13:45:43 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:14\" fw=203.0.113.61 pri=5 c=256 m=38 msg=\"ICMP packet dropped\" n=22070 src=203.0.113.248:1026:WAN dst=203.0.113.61:6822:WAN  type=3 code=3",
+        "outcome": "success",
+        "sequence": 22070,
+        "severity": 5,
+        "timezone": "+02:00",
+        "type": [
+          "denied"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "ICMP packet dropped",
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "203.0.113.61"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "code": "3",
+          "type": "3"
+        }
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 1026
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:14.000+02:00",
+      "destination": {
+        "ip": "203.0.113.61",
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-end",
+        "category": [
+          "network"
+        ],
+        "code": "537",
+        "kind": "event",
+        "original": "Jan  3 13:45:43 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:14\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=568000 src=203.0.113.248:1026:WAN dst=203.0.113.61:0:WAN proto=udp/0",
+        "outcome": "success",
+        "sequence": 568000,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Closed",
+      "network": {
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 1026
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:15.000+02:00",
+      "destination": {
+        "ip": "203.0.113.61",
+        "port": 500
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "346",
+        "original": "Jan  3 13:45:44 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:15\" fw=203.0.113.61 pri=6 c=16 m=346 msg=\"IKE Initiator: Start Quick Mode (Phase 2).\" n=171872 src=198.51.100.135:500 dst=203.0.113.61:500",
+        "sequence": 171872,
+        "severity": 6,
+        "timezone": "+02:00"
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "IKE Initiator: Start Quick Mode (Phase 2).",
+      "observer": {
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.135",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.135",
+        "port": 500
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:15.000+02:00",
+      "destination": {
+        "ip": "198.51.100.135",
+        "port": 500
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "Jan  3 13:45:44 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:15\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23423 src=203.0.113.61:500:WAN dst=198.51.100.135:500:WAN proto=udp/500",
+        "outcome": "success",
+        "sequence": 23423,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.61",
+          "198.51.100.135"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.61",
+        "port": 500
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:15.000+02:00",
+      "destination": {
+        "ip": "203.0.113.61",
+        "port": 500
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "483",
+        "original": "Jan  3 13:45:44 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:15\" fw=203.0.113.61 pri=4 c=16 m=483 msg=\"Received notify: INVALID_ID_INFO\" n=171625 src=198.51.100.135:500 dst=203.0.113.61:500",
+        "sequence": 171625,
+        "severity": 4,
+        "timezone": "+02:00"
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "warning"
+      },
+      "message": "Received notify: INVALID_ID_INFO",
+      "observer": {
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.135",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.135",
+        "port": 500
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:15.000+02:00",
+      "destination": {
+        "ip": "192.168.56.205",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "Jan  3 13:45:45 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:15\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23424 src=192.168.7.66:11549:WAN dst=192.168.56.205:53:LAN proto=tcp/dns",
+        "outcome": "success",
+        "sequence": 23424,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "protocol": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "LAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.168.7.66",
+          "192.168.56.205",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "192.168.7.66",
+        "port": 11549
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:17.000+02:00",
+      "destination": {
+        "ip": "192.168.125.99",
+        "port": 445
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "Jan  3 13:45:46 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:17\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23425 src=192.168.211.184:3182:LAN dst=192.168.125.99:445:WAN proto=tcp/445",
+        "outcome": "success",
+        "sequence": 23425,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "LAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.168.211.184",
+          "192.168.125.99",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "192.168.211.184",
+        "port": 3182
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:18.000+02:00",
+      "destination": {
+        "bytes": 957,
+        "ip": "203.0.113.61",
+        "port": 50000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-end",
+        "category": [
+          "network"
+        ],
+        "code": "537",
+        "kind": "event",
+        "original": "Jan  3 13:45:47 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:18\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=568001 src=198.51.100.135:36699:WAN dst=203.0.113.61:50000:WAN proto=tcp/50000 sent=1557 rcvd=957",
+        "outcome": "success",
+        "sequence": 568001,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Closed",
+      "network": {
+        "bytes": 2514,
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.135",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "bytes": 1557,
+        "ip": "198.51.100.135",
+        "port": 36699
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:20.000+02:00",
+      "destination": {
+        "bytes": 254,
+        "ip": "192.168.125.99",
+        "packets": 3,
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-end",
+        "category": [
+          "network"
+        ],
+        "code": "537",
+        "kind": "event",
+        "original": "Jan  3 13:45:49 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:20\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=568002 src=192.168.56.205:3417:LAN dst=192.168.125.99:53:WAN proto=udp/dns sent=401 rcvd=254 rpkt=3 spkt=2 vpnpolicy=\"name\"",
+        "outcome": "success",
+        "sequence": 568002,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Closed",
+      "network": {
+        "bytes": 655,
+        "packets": 5,
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "LAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.168.56.205",
+          "192.168.125.99",
+          "203.0.113.61"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "vpnpolicy": "name"
+        }
+      },
+      "source": {
+        "bytes": 401,
+        "ip": "192.168.56.205",
+        "packets": 2,
+        "port": 3417
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:20.000+02:00",
+      "destination": {
+        "ip": "192.168.56.205",
+        "port": 3582
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "Jan  3 13:45:50 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:20\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23426 src=192.168.160.223:524:WAN dst=192.168.56.205:3582:LAN proto=udp/3582",
+        "outcome": "success",
+        "sequence": 23426,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "LAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.168.160.223",
+          "192.168.56.205",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "192.168.160.223",
+        "port": 524
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:21.000+02:00",
+      "destination": {
+        "ip": "192.168.56.205"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "Jan  3 13:45:50 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:21\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23427 src=192.168.236.10:28503 dst=192.168.56.205 proto=tcp/dns",
+        "outcome": "success",
+        "sequence": 23427,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "protocol": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.168.236.10",
+          "192.168.56.205",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "192.168.236.10",
+        "port": 28503
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-03T14:48:22.000+02:00",
+      "destination": {
+        "domain": "DSTHOST",
+        "ip": "::1"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "Jan  3 13:45:51 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:22\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23427 src=:28503:WAN:SOURCEHOST srcV6=2001:db8:5bff:23b8:b0b2:237:3d1:721c dst=::LAN:DSTHOST proto=tcp/dns dstV6=::1",
+        "outcome": "success",
+        "sequence": 23427,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.142.147"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "protocol": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "LAN"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "WAN"
+          }
+        },
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "000SERIAL",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "::1",
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "domain": "SOURCEHOST",
+        "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+        "port": 28503
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2043-11-21T14:30:38.000+02:00",
+      "destination": {
+        "ip": "ff02::c",
+        "mac": "55-04-41-40-46-7C"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "original": "id=firewall sn=XXXXXXX time=\"2043-11-21 14:30:38\" fw=10.26.137.145 pri=5 msg=\"Unhandled link-local or multicast IPv6 packet dropped\" srcV6=fe80::d4db:99b9:6f20:f6bd dstV6=ff02::c srcMac=96:23:dd:fe:85:41 dstMac=55:04:41:40:46:7c proto=udp/65535",
+        "severity": 5,
+        "timezone": "+02:00"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "Unhandled link-local or multicast IPv6 packet dropped",
+      "network": {
+        "transport": "udp"
+      },
+      "observer": {
+        "ip": [
+          "10.26.137.145"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "XXXXXXX",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "fe80::d4db:99b9:6f20:f6bd",
+          "ff02::c",
+          "10.26.137.145"
+        ]
+      },
+      "source": {
+        "ip": "fe80::d4db:99b9:6f20:f6bd",
+        "mac": "96-23-DD-FE-85-41"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-03-14T18:37:19.000+02:00",
+      "destination": {
+        "ip": "198.51.100.74"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "1388",
+        "original": "id=YYYYYY sn=XXXX time=\"2047-03-14 16:37:19 UTC\" fw=172.29.30.236 pri=1 c=32 m=1388 msg=\"IPSec VPN Decryption Failed\" n=1064050271 src=203.0.113.53 dst=198.51.100.74 note=\"Replay check failure.\"",
+        "sequence": 1064050271,
+        "severity": 1,
+        "timezone": "+02:00"
+      },
+      "log": {
+        "level": "alert"
+      },
+      "message": "IPSec VPN Decryption Failed (Replay check failure.)",
+      "observer": {
+        "ip": [
+          "172.29.30.236"
+        ],
+        "name": "YYYYYY",
+        "product": "SonicOS",
+        "serial_number": "XXXX",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "198.51.100.74",
+          "172.29.30.236"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.53"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-02-27T14:55:40.000+02:00",
+      "destination": {
+        "ip": "198.51.100.211"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-info",
+        "category": [
+          "network"
+        ],
+        "code": "1197",
+        "kind": "event",
+        "original": "id=YYYYYY  sn=XXXX time=\"2047-02-27 12:55:40 UTC\" fw=10.134.1.96 pri=5 c=0 m=1197 msg=\"NAT Mapping\" n=4748427 src=10.105.251.146::X500 dst=198.51.100.211::X3 proto=icmp note=\"Source: 192.0.2.168, 63130, Destination: 203.0.113.185, 8, Protocol: 1\" rule=\"17 (LAN->WAN)\"",
+        "outcome": "success",
+        "sequence": 4748427,
+        "severity": 5,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "NAT Mapping (Source: 192.0.2.168, 63130, Destination: 203.0.113.185, 8, Protocol: 1)",
+      "network": {
+        "transport": "icmp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X3"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "X500"
+          }
+        },
+        "ip": [
+          "10.134.1.96"
+        ],
+        "name": "YYYYYY",
+        "product": "SonicOS",
+        "serial_number": "XXXX",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.105.251.146",
+          "198.51.100.211",
+          "10.134.1.96"
+        ]
+      },
+      "rule": {
+        "id": "17 (LAN->WAN)"
+      },
+      "source": {
+        "ip": "10.105.251.146"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-03-19T08:44:01.000+02:00",
+      "destination": {
+        "domain": "example.com",
+        "ip": "192.0.2.87",
+        "mac": "65-26-28-97-97-92",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-denied",
+        "category": [
+          "network"
+        ],
+        "code": "14",
+        "kind": "event",
+        "original": "id=YYYYYY sn=XXXX time=\"2047-03-19 06:44:01 UTC\" fw=10.134.1.96 pri=3 c=4 m=14 msg=\"Web site access denied\" app=49177 appName=\"General HTTPS\" n=856789 src=192.168.63.146:59668:X0:nb020.example.com dst=192.0.2.87:443:X1:example.com srcMac=16:32:bf:df:10:e0 dstMac=65:26:28:97:97:92 proto=tcp/https dstname=example.com arg=/ code=49 Category=\"Freeware/Software Downloads\"",
+        "outcome": "success",
+        "sequence": 856789,
+        "severity": 3,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "level": "error"
+      },
+      "message": "Web site access denied",
+      "network": {
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "X0"
+          }
+        },
+        "ip": [
+          "10.134.1.96"
+        ],
+        "name": "YYYYYY",
+        "product": "SonicOS",
+        "serial_number": "XXXX",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.168.63.146",
+          "192.0.2.87",
+          "10.134.1.96"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "Category": "Freeware/Software Downloads",
+          "app": "49177",
+          "appName": "General HTTPS",
+          "code": "49"
+        }
+      },
+      "source": {
+        "domain": "nb020.example.com",
+        "ip": "192.168.63.146",
+        "mac": "16-32-BF-DF-10-E0",
+        "port": 59668
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "full": "https://example.com/",
+        "path": "/",
+        "scheme": "https"
+      }
+    },
+    {
+      "@timestamp": "2050-02-22T20:24:30.000+02:00",
+      "destination": {
+        "ip": "192.0.2.139",
+        "nat": {
+          "ip": "192.0.2.139",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "10.26.137.145 id=firewall sn=123456789 time=\"2050-02-22 18:24:30 UTC\" fw=10.178.13.239 pri=6 c=262144 gcat=6 m=98 msg=\"Connection Opened\" src=10.108.194.78:52379:X0 natSrc=10.178.13.239:48245 dst=192.0.2.139:443:X1 natDst=192.0.2.139:443 usr=\"Unknown (SSO failed)\" proto=tcp/https sent=52 app=49177 appName='General HTTPS' n=123456789 fw_action=\"NA\" dpi=0",
+        "outcome": "success",
+        "sequence": 123456789,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Opened",
+      "network": {
+        "bytes": 52,
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "X0"
+          }
+        },
+        "ip": [
+          "10.178.13.239"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "123456789",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.108.194.78",
+          "10.178.13.239",
+          "192.0.2.139"
+        ],
+        "user": [
+          "Unknown (SSO failed)"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "app": "49177",
+          "appName": "General HTTPS",
+          "dpi": "false",
+          "event_group_category": "Network",
+          "gcat": "6"
+        }
+      },
+      "source": {
+        "bytes": 52,
+        "ip": "10.108.194.78",
+        "nat": {
+          "ip": "10.178.13.239",
+          "port": 48245
+        },
+        "port": 52379
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "Unknown (SSO failed)"
+      }
+    },
+    {
+      "@timestamp": "2050-02-22T20:29:37.000+02:00",
+      "destination": {
+        "bytes": 14226,
+        "ip": "192.0.2.139",
+        "mac": "CC-78-15-96-48-99",
+        "nat": {
+          "ip": "192.0.2.139",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "97",
+        "original": "10.26.137.145 id=firewall sn=123456789 time=\"2050-02-22 18:29:37 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=2 m=97 msg=\"Web site hit\" srcMac=88:27:94:52:46:ec src=10.108.194.78:64828:X0 srcZone=Trusted natSrc=10.178.13.239:47621 dstMac=cc:78:15:96:48:99 dst=192.0.2.139:443:X1 dstZone=Untrusted natDst=192.0.2.139:443 usr=\"Unknown (SSO failed)\" proto=tcp/https sent=3523 rcvd=14226 app=7927 dstname=chat-pa.clients6.google.com arg=/ code=29 Category=\"Search Engines and Portals\" note=\"Policy: cfsZonePolicy0, Info: 6148 \" n=123456789 fw_action=\"NA\" dpi=1",
+        "sequence": 123456789,
+        "severity": 6,
+        "timezone": "+02:00"
+      },
+      "host": {
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Web site hit (Policy: cfsZonePolicy0, Info: 6148 )",
+      "network": {
+        "bytes": 17749,
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ingress": {
+          "interface": {
+            "name": "X0"
+          },
+          "zone": "Trusted"
+        },
+        "ip": [
+          "10.178.13.239"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "123456789",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.108.194.78",
+          "10.178.13.239",
+          "192.0.2.139"
+        ],
+        "user": [
+          "Unknown (SSO failed)"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "Category": "Search Engines and Portals",
+          "app": "7927",
+          "code": "29",
+          "dpi": "true",
+          "event_group_category": "Log",
+          "gcat": "2"
+        }
+      },
+      "source": {
+        "bytes": 3523,
+        "ip": "10.108.194.78",
+        "mac": "88-27-94-52-46-EC",
+        "nat": {
+          "ip": "10.178.13.239",
+          "port": 47621
+        },
+        "port": 64828
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "chat-pa.clients6.google.com",
+        "full": "https://chat-pa.clients6.google.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user": {
+        "name": "Unknown (SSO failed)"
+      }
+    },
+    {
+      "@timestamp": "2050-02-22T20:34:21.000+02:00",
+      "destination": {
+        "bytes": 6642,
+        "ip": "192.0.2.139",
+        "mac": "CC-78-15-96-48-99",
+        "nat": {
+          "ip": "192.0.2.139",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "97",
+        "original": "10.26.137.145 id=firewall sn=12345678 time=\"2050-02-22 18:34:21 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=2 m=97 msg=\"Web site hit\" srcMac=88:27:94:52:46:ec src=10.108.194.78:49217:X0 srcZone=Trusted natSrc=10.178.13.239:53466 dstMac=cc:78:15:96:48:99 dst=192.0.2.139:443:X1 dstZone=Untrusted natDst=192.0.2.139:443 usr=\"Unknown (SSO failed)\" proto=tcp/https sent=2079 rcvd=6642 app=7927 dstname=seg.ad.gt arg=/ code=15 Category=\"Business and Economy\" note=\"Policy: cfsZonePolicy0, Info: 6148 \" n=123456789 fw_action=\"NA\" dpi=1 op=3",
+        "sequence": 123456789,
+        "severity": 6,
+        "timezone": "+02:00"
+      },
+      "host": {
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "HEAD"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Web site hit (Policy: cfsZonePolicy0, Info: 6148 )",
+      "network": {
+        "bytes": 8721,
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ingress": {
+          "interface": {
+            "name": "X0"
+          },
+          "zone": "Trusted"
+        },
+        "ip": [
+          "10.178.13.239"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "12345678",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.108.194.78",
+          "10.178.13.239",
+          "192.0.2.139"
+        ],
+        "user": [
+          "Unknown (SSO failed)"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "Category": "Business and Economy",
+          "app": "7927",
+          "code": "15",
+          "dpi": "true",
+          "event_group_category": "Log",
+          "gcat": "2"
+        }
+      },
+      "source": {
+        "bytes": 2079,
+        "ip": "10.108.194.78",
+        "mac": "88-27-94-52-46-EC",
+        "nat": {
+          "ip": "10.178.13.239",
+          "port": 53466
+        },
+        "port": 49217
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "seg.ad.gt",
+        "full": "https://seg.ad.gt/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user": {
+        "name": "Unknown (SSO failed)"
+      }
+    },
+    {
+      "@timestamp": "2050-03-09T16:58:44.000+02:00",
+      "destination": {
+        "bytes": 968,
+        "ip": "192.0.2.97",
+        "mac": "CC-78-15-96-48-99",
+        "nat": {
+          "ip": "192.0.2.97",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "97",
+        "original": "10.26.137.145  id=firewall sn=12345678 time=\"2050-03-09 14:58:44 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=2 m=97 msg=\"Web site hit\" srcMac=88:27:94:52:46:ec src=10.108.194.78:56242:X0 srcZone=Trusted natSrc=10.178.13.239:18447 dstMac=cc:78:15:96:48:99 dst=192.0.2.97:443:X1 dstZone=Untrusted natDst=192.0.2.97:443 usr=\"Unknown (SSO failed)\" proto=tcp/https sent=1749 rcvd=968 app=7927 dstname=sbx-kn-farm-9.jbpucihyde-fso.com arg=/ code=27 Category=\"Information Technology/Computers\" note=\"Policy: cfsZonePolicy0, Info: 6148 \" n=368203630 fw_action=\"NA\" dpi=1 op=\"testing bad value\"",
+        "sequence": 368203630,
+        "severity": 6,
+        "timezone": "+02:00"
+      },
+      "host": {
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Web site hit (Policy: cfsZonePolicy0, Info: 6148 )",
+      "network": {
+        "bytes": 2717,
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ingress": {
+          "interface": {
+            "name": "X0"
+          },
+          "zone": "Trusted"
+        },
+        "ip": [
+          "10.178.13.239"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "12345678",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.108.194.78",
+          "10.178.13.239",
+          "192.0.2.97"
+        ],
+        "user": [
+          "Unknown (SSO failed)"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "Category": "Information Technology/Computers",
+          "app": "7927",
+          "code": "27",
+          "dpi": "true",
+          "event_group_category": "Log",
+          "gcat": "2"
+        }
+      },
+      "source": {
+        "bytes": 1749,
+        "ip": "10.108.194.78",
+        "mac": "88-27-94-52-46-EC",
+        "nat": {
+          "ip": "10.178.13.239",
+          "port": 18447
+        },
+        "port": 56242
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "sbx-kn-farm-9.jbpucihyde-fso.com",
+        "full": "https://sbx-kn-farm-9.jbpucihyde-fso.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user": {
+        "name": "Unknown (SSO failed)"
+      }
+    },
+    {
+      "@timestamp": "2050-03-09T07:29:32.000+02:00",
+      "destination": {
+        "bytes": 955,
+        "ip": "198.51.100.57",
+        "mac": "CC-78-15-96-48-99",
+        "nat": {
+          "ip": "198.51.100.57",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "97",
+        "original": "10.26.137.145  id=firewall sn=12345678 time=\"2050-03-09 05:29:32 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=2 m=97 msg=\"Web site hit\" srcMac=88:27:94:52:46:ec src=10.108.194.78:56502:X0 srcZone=Trusted natSrc=10.178.13.239:15926 dstMac=cc:78:15:96:48:99 dst=198.51.100.57:80:X1 dstZone=Untrusted natDst=198.51.100.57:80 usr=\"Unknown (SSO failed)\" proto=tcp/http sent=510 rcvd=955 app=5147 op=1 dstname=qcoh.dihpabln.com arg=/abcd code=27 Category=\"Information Technology/Computers\" note=\"Policy: cfsZonePolicy0, Info: 6147 \" n=367895985 fw_action=\"NA\" dpi=1",
+        "sequence": 367895985,
+        "severity": 6,
+        "timezone": "+02:00"
+      },
+      "host": {
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Web site hit (Policy: cfsZonePolicy0, Info: 6147 )",
+      "network": {
+        "bytes": 1465,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ingress": {
+          "interface": {
+            "name": "X0"
+          },
+          "zone": "Trusted"
+        },
+        "ip": [
+          "10.178.13.239"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "12345678",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.108.194.78",
+          "10.178.13.239",
+          "198.51.100.57"
+        ],
+        "user": [
+          "Unknown (SSO failed)"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "Category": "Information Technology/Computers",
+          "app": "5147",
+          "code": "27",
+          "dpi": "true",
+          "event_group_category": "Log",
+          "gcat": "2"
+        }
+      },
+      "source": {
+        "bytes": 510,
+        "ip": "10.108.194.78",
+        "mac": "88-27-94-52-46-EC",
+        "nat": {
+          "ip": "10.178.13.239",
+          "port": 15926
+        },
+        "port": 56502
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "qcoh.dihpabln.com",
+        "full": "http://qcoh.dihpabln.com/abcd",
+        "path": "/abcd",
+        "scheme": "http"
+      },
+      "user": {
+        "name": "Unknown (SSO failed)"
+      }
+    },
+    {
+      "@timestamp": "2050-03-09T20:44:05.000+02:00",
+      "destination": {
+        "ip": "203.0.113.248",
+        "nat": {
+          "ip": "203.0.113.248",
+          "port": 8800
+        },
+        "port": 8800
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-end",
+        "category": [
+          "network"
+        ],
+        "code": "537",
+        "kind": "event",
+        "original": "10.26.137.145  id=firewall sn=12345678 time=\"2050-03-09 18:44:05 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=6 m=537 msg=\"Connection Closed\" src=10.186.49.1:37153:X0 natSrc=10.178.13.239:12325 dst=203.0.113.248:8800:X1 natDst=203.0.113.248:8800 proto=udp/8800 sent=284 spkt=1 app=49202 appName='General UDP' n=1846613339 fw_action=\"NA\" dpi=0",
+        "outcome": "success",
+        "sequence": 1846613339,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Connection Closed",
+      "network": {
+        "bytes": 284,
+        "packets": 1,
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "X0"
+          }
+        },
+        "ip": [
+          "10.178.13.239"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "12345678",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.186.49.1",
+          "10.178.13.239",
+          "203.0.113.248"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "app": "49202",
+          "appName": "General UDP",
+          "dpi": "false",
+          "event_group_category": "Network",
+          "gcat": "6"
+        }
+      },
+      "source": {
+        "bytes": 284,
+        "ip": "10.186.49.1",
+        "nat": {
+          "ip": "10.178.13.239",
+          "port": 12325
+        },
+        "packets": 1,
+        "port": 37153
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-03-09T20:57:05.000+02:00",
+      "destination": {
+        "ip": "10.108.194.78",
+        "port": 1850
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "attack-detected",
+        "category": [
+          "intrusion_detection"
+        ],
+        "code": "608",
+        "kind": "alert",
+        "original": "10.26.137.145  id=firewall sn=12345678 time=\"2050-03-09 18:57:05 UTC\" fw=10.178.13.239 pri=1 c=32 gcat=3 m=608 src=203.0.113.53:8:X1 dst=10.108.194.78:1850:X0 msg=\"IPS Detection Alert: ICMP Echo Reply, SID: 316, Priority: Low\" msg=\"IPS Detection Alert: ICMP Echo Reply\" sid=316 ipscat=\"ICMP Echo Reply\" ipspri=3  n=174072 fw_action=\"NA\"",
+        "outcome": "success",
+        "sequence": 174072,
+        "severity": 1,
+        "timezone": "+02:00",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "log": {
+        "level": "alert"
+      },
+      "message": "{0=IPS Detection Alert: ICMP Echo Reply, SID: 316, Priority: Low, 1=IPS Detection Alert: ICMP Echo Reply}",
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "X1"
+          }
+        },
+        "ip": [
+          "10.178.13.239"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "12345678",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "10.108.194.78",
+          "10.178.13.239"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "event_group_category": "Security Services",
+          "gcat": "3",
+          "ipscat": "ICMP Echo Reply",
+          "ipspri": "3",
+          "sid": "316"
+        }
+      },
+      "source": {
+        "ip": "203.0.113.53",
+        "port": 8
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-03-11T16:17:52.000+02:00",
+      "destination": {
+        "bytes": 230,
+        "ip": "203.0.113.248",
+        "mac": "CC-78-15-96-48-99",
+        "nat": {
+          "ip": "203.0.113.248",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "97",
+        "original": "10.26.137.145 id=firewall sn=12345678 time=\"2050-03-11 14:17:52 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=2 m=97 srcMac=88:27:94:52:46:ec src=10.186.49.1:41856:X0 srcZone=Trusted natSrc=10.178.13.239:8689 dstMac=cc:78:15:96:48:99 dst=203.0.113.248:443:X1 dstZone=Untrusted natDst=203.0.113.248:443 usr=\"Unknown (SSO failed)\" proto=tcp/https sent=104 rcvd=230 rule=\"15 (LAN->WAN)\" app=5 af_polid=4 ipscat=N/A appcat=\"PROXY-ACCESS\" appid=2900 dstname=203.0.113.248 arg=/ code=64 Category=\"Not Rated\" note=\"Policy: cfsZonePolicy0, Info: 6148 \" n=2520325 fw_action=\"NA\" dpi=1 op=0",
+        "sequence": 2520325,
+        "severity": 6,
+        "timezone": "+02:00"
+      },
+      "host": {
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Policy: cfsZonePolicy0, Info: 6148 ",
+      "network": {
+        "bytes": 334,
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X1"
+          },
+          "zone": "Untrusted"
+        },
+        "ingress": {
+          "interface": {
+            "name": "X0"
+          },
+          "zone": "Trusted"
+        },
+        "ip": [
+          "10.178.13.239"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "12345678",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "10.186.49.1",
+          "10.178.13.239",
+          "203.0.113.248"
+        ],
+        "user": [
+          "Unknown (SSO failed)"
+        ]
+      },
+      "rule": {
+        "id": "15 (LAN->WAN)"
+      },
+      "sonicwall": {
+        "firewall": {
+          "Category": "Not Rated",
+          "af_polid": "4",
+          "app": "5",
+          "appcat": "PROXY-ACCESS",
+          "appid": "2900",
+          "code": "64",
+          "dpi": "true",
+          "event_group_category": "Log",
+          "gcat": "2",
+          "ipscat": "N/A"
+        }
+      },
+      "source": {
+        "bytes": 104,
+        "ip": "10.186.49.1",
+        "mac": "88-27-94-52-46-EC",
+        "nat": {
+          "ip": "10.178.13.239",
+          "port": 8689
+        },
+        "port": 41856
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "203.0.113.248",
+        "full": "https://203.0.113.248/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user": {
+        "name": "Unknown (SSO failed)"
+      }
+    },
+    {
+      "@timestamp": "2050-02-24T03:29:07.000+02:00",
+      "destination": {
+        "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+        "port": 8080
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "attack-blocked",
+        "category": [
+          "intrusion_detection"
+        ],
+        "code": "609",
+        "kind": "alert",
+        "original": "<129> id=firewall sn=ZZZZZZZZZ time=\"2050-02-24 03:29:07\" fw=192.168.60.62 pri=1 c=32 m=609 msg=\"IPS Prevention Alert: WEB-ATTACKS Apache Log4j2 JNDI Log Messages Remote Code Execution\" sid=2307 ipscat=\"WEB-ATTACKS Apache Log4j2 JNDI Log Messages Remote Code Execution\" ipspri=2 n=8158 src=192.0.2.139:54192:X20-V60 dst=:8080:X20-V68 dstV6=2001:db8:5bff:23b8:b0b2:237:3d1:721c fw_action=\"drop\"",
+        "outcome": "success",
+        "sequence": 8158,
+        "severity": 1,
+        "timezone": "+02:00",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "level": "alert",
+        "syslog": {
+          "priority": 129
+        }
+      },
+      "message": "IPS Prevention Alert: WEB-ATTACKS Apache Log4j2 JNDI Log Messages Remote Code Execution",
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X20-V68"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "X20-V60"
+          }
+        },
+        "ip": [
+          "192.168.60.62"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "ZZZZZZZZZ",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.139",
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "192.168.60.62"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "ipscat": "WEB-ATTACKS Apache Log4j2 JNDI Log Messages Remote Code Execution",
+          "ipspri": "2",
+          "sid": "2307"
+        }
+      },
+      "source": {
+        "ip": "192.0.2.139",
+        "port": 54192
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-05-06T16:10:06.000+02:00",
+      "destination": {
+        "ip": "192.0.2.22",
+        "port": 4433
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "<134>  id=firewall sn=xxxxxxxxxxxxxxx time=\"2050-05-06 16:10:06\" fw=192.168.216.38 pri=6 c=262144 gcat=6 m=98 msg=\"Connection Opened\" src=203.0.113.248:42082:X4-V1032 dst=192.0.2.22:4433:X4-V1032 proto=tcp/4433 sent=52 app=49330 appName='Service iMesh' n=3591578 fw_action=\"NA\" dpi=0",
+        "outcome": "success",
+        "sequence": 3591578,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "Connection Opened",
+      "network": {
+        "bytes": 52,
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X4-V1032"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "X4-V1032"
+          }
+        },
+        "ip": [
+          "192.168.216.38"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "xxxxxxxxxxxxxxx",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "192.0.2.22",
+          "192.168.216.38"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "app": "49330",
+          "appName": "Service iMesh",
+          "dpi": "false",
+          "event_group_category": "Network",
+          "gcat": "6"
+        }
+      },
+      "source": {
+        "bytes": 52,
+        "ip": "203.0.113.248",
+        "port": 42082
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-05-06T16:10:06.000+02:00",
+      "destination": {
+        "ip": "192.0.2.22",
+        "port": 4433
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-start",
+        "category": [
+          "network"
+        ],
+        "code": "98",
+        "kind": "event",
+        "original": "<134>  id=firewall sn=xxxxxxxxxxxxxxx time=\"2050-05-06 16:10:06\" fw=192.168.216.38 pri=6 c=262144 gcat=6 m=98 msg=\"Connection Opened\" src=203.0.113.61:26391:X4-V1032 dst=192.0.2.22:4433:X4-V1032 proto=tcp/4433 sent=52 app=49330 appName='Service iMesh' n=3591579 fw_action=\"NA\" dpi=0",
+        "outcome": "success",
+        "sequence": 3591579,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "Connection Opened",
+      "network": {
+        "bytes": 52,
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X4-V1032"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "X4-V1032"
+          }
+        },
+        "ip": [
+          "192.168.216.38"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "xxxxxxxxxxxxxxx",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.61",
+          "192.0.2.22",
+          "192.168.216.38"
+        ]
+      },
+      "sonicwall": {
+        "firewall": {
+          "app": "49330",
+          "appName": "Service iMesh",
+          "dpi": "false",
+          "event_group_category": "Network",
+          "gcat": "6"
+        }
+      },
+      "source": {
+        "bytes": 52,
+        "ip": "203.0.113.61",
+        "port": 26391
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-05-06T16:10:06.000+02:00",
+      "destination": {
+        "bytes": 115,
+        "ip": "192.0.2.22",
+        "mac": "78-49-10-42-71-59",
+        "packets": 1,
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-end",
+        "category": [
+          "network"
+        ],
+        "code": "537",
+        "duration": 30016000000,
+        "kind": "event",
+        "original": "<134>  id=firewall sn=xxxxxxxxxxxxxxx time=\"2050-05-06 16:10:06\" fw=192.168.216.38 pri=6 c=1024 gcat=6 m=537 msg=\"Connection Closed\" src=192.168.42.5:56783:X4-V1032 srcZone=TEST dstMac=78:49:10:42:71:59 dst=192.0.2.22:53:X6 dstZone=Trusted usr=\"TheUser\" proto=udp/dns sent=63 rcvd=115 spkt=1 rpkt=1 cdur=30016 sess=\"sslvpnc\" rule=\"157 (SSLVPN->SERVER)\" app=49169 appName='General DNS' n=54094499 fw_action=\"NA\" dpi=0",
+        "outcome": "success",
+        "sequence": 54094499,
+        "severity": 6,
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "Connection Closed",
+      "network": {
+        "bytes": 178,
+        "packets": 2,
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "X6"
+          },
+          "zone": "Trusted"
+        },
+        "ingress": {
+          "interface": {
+            "name": "X4-V1032"
+          },
+          "zone": "TEST"
+        },
+        "ip": [
+          "192.168.216.38"
+        ],
+        "name": "firewall",
+        "product": "SonicOS",
+        "serial_number": "xxxxxxxxxxxxxxx",
+        "type": "firewall",
+        "vendor": "SonicWall"
+      },
+      "related": {
+        "ip": [
+          "192.168.42.5",
+          "192.0.2.22",
+          "192.168.216.38"
+        ],
+        "user": [
+          "TheUser"
+        ]
+      },
+      "rule": {
+        "id": "157 (SSLVPN->SERVER)"
+      },
+      "sonicwall": {
+        "firewall": {
+          "app": "49169",
+          "appName": "General DNS",
+          "dpi": "false",
+          "event_group_category": "Network",
+          "gcat": "6",
+          "sess": "sslvpnc"
+        }
+      },
+      "source": {
+        "bytes": 63,
+        "ip": "192.168.42.5",
+        "packets": 1,
+        "port": 56783
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "TheUser"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:36 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:06\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23419 src=198.51.100.135:36701:WAN dst=203.0.113.61:50000:WAN proto=tcp/50000",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:36 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:07\" fw=203.0.113.61 pri=1 c=32 m=30 msg=\"Administrator login denied due to bad credentials\" n=7 src=198.51.100.135:36701:WAN dst=203.0.113.61:50000:WAN",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:36 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:07\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23420 src=198.51.100.135:36702:WAN dst=203.0.113.61:50000:WAN proto=tcp/50000",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:37 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:07\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=567996 src=192.168.254.75:27577:WAN dst=192.168.56.205:53:LAN proto=tcp/dns sent=257 rcvd=242",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:37 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:08\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=567997 src=192.168.67.70:4277:LAN dst=192.168.125.99:1026:WAN proto=tcp/1026 sent=3590 rcvd=13042 vpnpolicy=\"name\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:39 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:10\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=567999 src=192.168.67.70:4280:LAN dst=192.168.120.195:41850:WAN proto=tcp/41850 sent=386026 rcvd=454118 vpnpolicy=\"name\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:39 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:10\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=567999 src=203.0.113.61:500:WAN dst=198.51.100.135:500:WAN proto=udp/500 sent=344 rcvd=152",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:40 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:10\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23421 src=198.51.100.135:36703:WAN dst=203.0.113.61:50000:WAN proto=tcp/50000",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:40 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:10\" fw=203.0.113.61 pri=1 c=32 m=30 msg=\"Administrator login denied due to bad credentials\" n=8 src=198.51.100.135:36703:WAN dst=203.0.113.61:50000:WAN",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:40 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:11\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23422 src=198.51.100.135:36704:WAN dst=203.0.113.61:50000:WAN proto=tcp/50000",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:43 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:14\" fw=203.0.113.61 pri=5 c=256 m=38 msg=\"ICMP packet dropped\" n=22070 src=203.0.113.248:1026:WAN dst=203.0.113.61:6822:WAN  type=3 code=3",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:43 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:14\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=568000 src=203.0.113.248:1026:WAN dst=203.0.113.61:0:WAN proto=udp/0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:44 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:15\" fw=203.0.113.61 pri=6 c=16 m=346 msg=\"IKE Initiator: Start Quick Mode (Phase 2).\" n=171872 src=198.51.100.135:500 dst=203.0.113.61:500",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:44 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:15\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23423 src=203.0.113.61:500:WAN dst=198.51.100.135:500:WAN proto=udp/500",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:44 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:15\" fw=203.0.113.61 pri=4 c=16 m=483 msg=\"Received notify: INVALID_ID_INFO\" n=171625 src=198.51.100.135:500 dst=203.0.113.61:500",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:45 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:15\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23424 src=192.168.7.66:11549:WAN dst=192.168.56.205:53:LAN proto=tcp/dns",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:46 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:17\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23425 src=192.168.211.184:3182:LAN dst=192.168.125.99:445:WAN proto=tcp/445",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:47 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:18\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=568001 src=198.51.100.135:36699:WAN dst=203.0.113.61:50000:WAN proto=tcp/50000 sent=1557 rcvd=957",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:49 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:20\" fw=203.0.113.61 pri=6 c=1024 m=537 msg=\"Connection Closed\" n=568002 src=192.168.56.205:3417:LAN dst=192.168.125.99:53:WAN proto=udp/dns sent=401 rcvd=254 rpkt=3 spkt=2 vpnpolicy=\"name\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:50 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:20\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23426 src=192.168.160.223:524:WAN dst=192.168.56.205:3582:LAN proto=udp/3582",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:50 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:21\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23427 src=192.168.236.10:28503 dst=192.168.56.205 proto=tcp/dns",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "Jan  3 13:45:51 192.168.142.147 id=firewall sn=000SERIAL time=\"2035-01-03 14:48:22\" fw=203.0.113.61 pri=6 c=262144 m=98 msg=\"Connection Opened\" n=23427 src=:28503:WAN:SOURCEHOST srcV6=2001:db8:5bff:23b8:b0b2:237:3d1:721c dst=::LAN:DSTHOST proto=tcp/dns dstV6=::1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "id=firewall sn=XXXXXXX time=\"2043-11-21 14:30:38\" fw=10.26.137.145 pri=5 msg=\"Unhandled link-local or multicast IPv6 packet dropped\" srcV6=fe80::d4db:99b9:6f20:f6bd dstV6=ff02::c srcMac=96:23:dd:fe:85:41 dstMac=55:04:41:40:46:7c proto=udp/65535",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "id=YYYYYY sn=XXXX time=\"2047-03-14 16:37:19 UTC\" fw=172.29.30.236 pri=1 c=32 m=1388 msg=\"IPSec VPN Decryption Failed\" n=1064050271 src=203.0.113.53 dst=198.51.100.74 note=\"Replay check failure.\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "id=YYYYYY  sn=XXXX time=\"2047-02-27 12:55:40 UTC\" fw=10.134.1.96 pri=5 c=0 m=1197 msg=\"NAT Mapping\" n=4748427 src=10.105.251.146::X500 dst=198.51.100.211::X3 proto=icmp note=\"Source: 192.0.2.168, 63130, Destination: 203.0.113.185, 8, Protocol: 1\" rule=\"17 (LAN->WAN)\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "id=YYYYYY sn=XXXX time=\"2047-03-19 06:44:01 UTC\" fw=10.134.1.96 pri=3 c=4 m=14 msg=\"Web site access denied\" app=49177 appName=\"General HTTPS\" n=856789 src=192.168.63.146:59668:X0:nb020.example.com dst=192.0.2.87:443:X1:example.com srcMac=16:32:bf:df:10:e0 dstMac=65:26:28:97:97:92 proto=tcp/https dstname=example.com arg=/ code=49 Category=\"Freeware/Software Downloads\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "10.26.137.145 id=firewall sn=123456789 time=\"2050-02-22 18:24:30 UTC\" fw=10.178.13.239 pri=6 c=262144 gcat=6 m=98 msg=\"Connection Opened\" src=10.108.194.78:52379:X0 natSrc=10.178.13.239:48245 dst=192.0.2.139:443:X1 natDst=192.0.2.139:443 usr=\"Unknown (SSO failed)\" proto=tcp/https sent=52 app=49177 appName='General HTTPS' n=123456789 fw_action=\"NA\" dpi=0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "10.26.137.145 id=firewall sn=123456789 time=\"2050-02-22 18:29:37 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=2 m=97 msg=\"Web site hit\" srcMac=88:27:94:52:46:ec src=10.108.194.78:64828:X0 srcZone=Trusted natSrc=10.178.13.239:47621 dstMac=cc:78:15:96:48:99 dst=192.0.2.139:443:X1 dstZone=Untrusted natDst=192.0.2.139:443 usr=\"Unknown (SSO failed)\" proto=tcp/https sent=3523 rcvd=14226 app=7927 dstname=chat-pa.clients6.google.com arg=/ code=29 Category=\"Search Engines and Portals\" note=\"Policy: cfsZonePolicy0, Info: 6148 \" n=123456789 fw_action=\"NA\" dpi=1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "10.26.137.145 id=firewall sn=12345678 time=\"2050-02-22 18:34:21 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=2 m=97 msg=\"Web site hit\" srcMac=88:27:94:52:46:ec src=10.108.194.78:49217:X0 srcZone=Trusted natSrc=10.178.13.239:53466 dstMac=cc:78:15:96:48:99 dst=192.0.2.139:443:X1 dstZone=Untrusted natDst=192.0.2.139:443 usr=\"Unknown (SSO failed)\" proto=tcp/https sent=2079 rcvd=6642 app=7927 dstname=seg.ad.gt arg=/ code=15 Category=\"Business and Economy\" note=\"Policy: cfsZonePolicy0, Info: 6148 \" n=123456789 fw_action=\"NA\" dpi=1 op=3",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "10.26.137.145  id=firewall sn=12345678 time=\"2050-03-09 14:58:44 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=2 m=97 msg=\"Web site hit\" srcMac=88:27:94:52:46:ec src=10.108.194.78:56242:X0 srcZone=Trusted natSrc=10.178.13.239:18447 dstMac=cc:78:15:96:48:99 dst=192.0.2.97:443:X1 dstZone=Untrusted natDst=192.0.2.97:443 usr=\"Unknown (SSO failed)\" proto=tcp/https sent=1749 rcvd=968 app=7927 dstname=sbx-kn-farm-9.jbpucihyde-fso.com arg=/ code=27 Category=\"Information Technology/Computers\" note=\"Policy: cfsZonePolicy0, Info: 6148 \" n=368203630 fw_action=\"NA\" dpi=1 op=\"testing bad value\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "10.26.137.145  id=firewall sn=12345678 time=\"2050-03-09 05:29:32 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=2 m=97 msg=\"Web site hit\" srcMac=88:27:94:52:46:ec src=10.108.194.78:56502:X0 srcZone=Trusted natSrc=10.178.13.239:15926 dstMac=cc:78:15:96:48:99 dst=198.51.100.57:80:X1 dstZone=Untrusted natDst=198.51.100.57:80 usr=\"Unknown (SSO failed)\" proto=tcp/http sent=510 rcvd=955 app=5147 op=1 dstname=qcoh.dihpabln.com arg=/abcd code=27 Category=\"Information Technology/Computers\" note=\"Policy: cfsZonePolicy0, Info: 6147 \" n=367895985 fw_action=\"NA\" dpi=1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "10.26.137.145  id=firewall sn=12345678 time=\"2050-03-09 18:44:05 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=6 m=537 msg=\"Connection Closed\" src=10.186.49.1:37153:X0 natSrc=10.178.13.239:12325 dst=203.0.113.248:8800:X1 natDst=203.0.113.248:8800 proto=udp/8800 sent=284 spkt=1 app=49202 appName='General UDP' n=1846613339 fw_action=\"NA\" dpi=0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "10.26.137.145  id=firewall sn=12345678 time=\"2050-03-09 18:57:05 UTC\" fw=10.178.13.239 pri=1 c=32 gcat=3 m=608 src=203.0.113.53:8:X1 dst=10.108.194.78:1850:X0 msg=\"IPS Detection Alert: ICMP Echo Reply, SID: 316, Priority: Low\" msg=\"IPS Detection Alert: ICMP Echo Reply\" sid=316 ipscat=\"ICMP Echo Reply\" ipspri=3  n=174072 fw_action=\"NA\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "10.26.137.145 id=firewall sn=12345678 time=\"2050-03-11 14:17:52 UTC\" fw=10.178.13.239 pri=6 c=1024 gcat=2 m=97 srcMac=88:27:94:52:46:ec src=10.186.49.1:41856:X0 srcZone=Trusted natSrc=10.178.13.239:8689 dstMac=cc:78:15:96:48:99 dst=203.0.113.248:443:X1 dstZone=Untrusted natDst=203.0.113.248:443 usr=\"Unknown (SSO failed)\" proto=tcp/https sent=104 rcvd=230 rule=\"15 (LAN->WAN)\" app=5 af_polid=4 ipscat=N/A appcat=\"PROXY-ACCESS\" appid=2900 dstname=203.0.113.248 arg=/ code=64 Category=\"Not Rated\" note=\"Policy: cfsZonePolicy0, Info: 6148 \" n=2520325 fw_action=\"NA\" dpi=1 op=0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "<129> id=firewall sn=ZZZZZZZZZ time=\"2050-02-24 03:29:07\" fw=192.168.60.62 pri=1 c=32 m=609 msg=\"IPS Prevention Alert: WEB-ATTACKS Apache Log4j2 JNDI Log Messages Remote Code Execution\" sid=2307 ipscat=\"WEB-ATTACKS Apache Log4j2 JNDI Log Messages Remote Code Execution\" ipspri=2 n=8158 src=192.0.2.139:54192:X20-V60 dst=:8080:X20-V68 dstV6=2001:db8:5bff:23b8:b0b2:237:3d1:721c fw_action=\"drop\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "<134>  id=firewall sn=xxxxxxxxxxxxxxx time=\"2050-05-06 16:10:06\" fw=192.168.216.38 pri=6 c=262144 gcat=6 m=98 msg=\"Connection Opened\" src=203.0.113.248:42082:X4-V1032 dst=192.0.2.22:4433:X4-V1032 proto=tcp/4433 sent=52 app=49330 appName='Service iMesh' n=3591578 fw_action=\"NA\" dpi=0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "<134>  id=firewall sn=xxxxxxxxxxxxxxx time=\"2050-05-06 16:10:06\" fw=192.168.216.38 pri=6 c=262144 gcat=6 m=98 msg=\"Connection Opened\" src=203.0.113.61:26391:X4-V1032 dst=192.0.2.22:4433:X4-V1032 proto=tcp/4433 sent=52 app=49330 appName='Service iMesh' n=3591579 fw_action=\"NA\" dpi=0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+02:00"
+      },
+      "message": "<134>  id=firewall sn=xxxxxxxxxxxxxxx time=\"2050-05-06 16:10:06\" fw=192.168.216.38 pri=6 c=1024 gcat=6 m=537 msg=\"Connection Closed\" src=192.168.42.5:56783:X4-V1032 srcZone=TEST dstMac=78:49:10:42:71:59 dst=192.0.2.22:53:X6 dstZone=Trusted usr=\"TheUser\" proto=udp/dns sent=63 rcvd=115 spkt=1 rpkt=1 cdur=30016 sess=\"sslvpnc\" rule=\"157 (SSLVPN->SERVER)\" app=49169 appName='General DNS' n=54094499 fw_action=\"NA\" dpi=0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sonicwall_firewall-log-default",
+    "event_count": 38,
+    "numeric_keyword_fields": [],
+    "package": "sonicwall_firewall",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -391,7 +391,7 @@ fn painless_string(value: &Value) -> String {
         .map_or_else(|| value.to_string(), ToOwned::to_owned)
 }
 
-/// Every `stormshield` script transcribed here.
+/// Every `stormshield` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "7fcd8ae0b46f1a0ca4efa3dbe45ced648c260e32a6eea40f42d3977956295d6a",

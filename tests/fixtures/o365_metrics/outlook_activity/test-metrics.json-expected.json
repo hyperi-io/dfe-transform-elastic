@@ -1,0 +1,57 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-25",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "o365": {
+        "metrics": {
+          "outlook": {
+            "activity": {
+              "emails_read": {
+                "count": 1
+              },
+              "emails_received": {
+                "count": 1
+              },
+              "emails_sent": {
+                "count": 5
+              },
+              "meeting_created": {
+                "count": 0
+              },
+              "meeting_interacted": {
+                "count": 2
+              },
+              "report": {
+                "date": "2052-11-25",
+                "period": {
+                  "day": "7"
+                },
+                "refresh_date": "2052-11-30"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "outlook_activity": "{\"Meeting Created\":\"0\",\"Meeting Interacted\":\"2\",\"Read\":\"1\",\"Receive\":\"1\",\"Report Date\":\"2052-11-25\",\"Report Period\":\"7\",\"Send\":\"5\",\"Report Refresh Date\":\"2052-11-30\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "outlook_activity",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-outlook_activity-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

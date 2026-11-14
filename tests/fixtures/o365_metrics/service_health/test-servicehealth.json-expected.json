@@ -1,0 +1,60 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "original": "{\"services\": [{\"name\": \"Microsoft Entra\",\"status\": \"serviceOperational\",\"id\": \"OrgLiveID\"},{\"name\": \"Microsoft 365 suite\",\"status\": \"serviceDegradation\",\"id\": \"OSDPPlatform\"},{\"name\": \"Microsoft 365 Copilot Chat\",\"status\": \"serviceDegradation\",\"id\": \"CopilotChat\"}]}"
+      },
+      "o365": {
+        "metrics": {
+          "service": {
+            "health": {
+              "services": [
+                {
+                  "id": "OrgLiveID",
+                  "name": "Microsoft Entra",
+                  "status": "serviceOperational"
+                },
+                {
+                  "id": "OSDPPlatform",
+                  "name": "Microsoft 365 suite",
+                  "status": "serviceDegradation"
+                },
+                {
+                  "id": "CopilotChat",
+                  "name": "Microsoft 365 Copilot Chat",
+                  "status": "serviceDegradation"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"services\": [{\"name\": \"Microsoft Entra\",\"status\": \"serviceOperational\",\"id\": \"OrgLiveID\"},{\"name\": \"Microsoft 365 suite\",\"status\": \"serviceDegradation\",\"id\": \"OSDPPlatform\"},{\"name\": \"Microsoft 365 Copilot Chat\",\"status\": \"serviceDegradation\",\"id\": \"CopilotChat\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "service_health",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-service_health-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

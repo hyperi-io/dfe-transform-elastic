@@ -516,8 +516,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ArrayList severities = new ArrayList(['emergency','alert','critical','error','warning','notice','information','debug']);\nHashMap sevrityMap = new HashMap();\nHashMap facilityMap = new HashMap();\nString severity = ctx.log.level.toLowerCase();\nLong priority = ctx.log.syslog.priority;\nfor (def i = 0; i < severities.length; i++) {\n  if (severities[i] == severity){\n    sevrityMap.put('code',i);\n    ctx.log.syslog.severity = sevrityMap;\n    facilityMap.put('code', (priority-i)/8);\n    ctx.log.syslog.facility = facilityMap;\n    break;\n  }\n}
+                    // The pipeline's script, emitted as the runtime's equivalent
                     syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
                     Ok(())
                 })() {
@@ -2406,8 +2405,7 @@ impl Transform for Default {
                 event.remove("event.original");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

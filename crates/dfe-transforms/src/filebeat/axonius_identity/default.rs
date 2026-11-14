@@ -119,9 +119,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx.axonius?.identity?.event?.data instanceof Map) {\n  Map eventData = ctx.axonius.identity.event.data;\n  for (String key : new ArrayList(eventData.keySet())) {\n    if (ctx.axonius.identity.containsKey(key)) {\n      ctx.axonius.identity['data_' + key] = eventData[key];\n    } else {\n      ctx.axonius.identity[key] = eventData[key];\n    }\n  }\n  ctx.axonius.identity.event.remove('data');\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -3797,9 +3795,7 @@ impl Transform for Default {
                 }
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: void appendUnique(Map container, String field, def value) {\n  if (value == null) return;\n  def current = container[field];\n  if (current == null) {\n    container[field] = [value];\n  } else if (current instanceof List) {\n    if (!current.contains(value)) {\n      current.add(value);\n    }\n  } else if (current != value) {\n    container[field] = [current, value];\n  }\n}\nif (ctx.axonius?.identity?.associated_devices instanceof List) {\n  if (ctx.device == null) ctx.device = [:];\n  if (ctx.device.model == null) ctx.device.model = [:];\n  for (def device : ctx.axonius.identity.associated_devices) {\n    if (!(device instanceof Map)) continue;\n    if (device.device_id instanceof List) {\n      for (def v : device.device_id) {\n        if (v != null) appendUnique(ctx.device, 'id', v.toString());\n      }\n    }\n    if (device.device_model instanceof List) {\n      for (def v : device.device_model) {\n        if (v != null) appendUnique(ctx.device.model, 'name', v.toString());\n      }\n    }\n    if (device.device_serial instanceof List) {\n      for (def v : device.device_serial) {\n        if (v != null) appendUnique(ctx.device, 'serial_number', v.toString());\n      }\n    }\n    if (device.device_preferred_mac_address instanceof List) {\n      for (int i = 0; i < device.device_preferred_mac_address.size(); i++) {\n        def mac = device.device_preferred_mac_address[i];\n        if (mac != null) {\n          device.device_preferred_mac_address[i] = mac.toString().replace(':', '-').toUpperCase();\n        }\n      }\n    }\n  }\n}\nif (ctx.axonius?.identity?.associated_employees instanceof List) {\n  if (ctx.related == null) ctx.related = [:];\n  for (def emp : ctx.axonius.identity.associated_employees) {\n    if (!(emp instanceof Map)) continue;\n    if (emp.username instanceof List) {\n      for (def v : emp.username) {\n        if (v != null) appendUnique(ctx.related, 'user', v.toString());\n      }\n    }\n  }\n}\nif (ctx.axonius?.identity?.associated_groups instanceof List) {\n  if (ctx.related == null) ctx.related = [:];\n  for (def grp : ctx.axonius.identity.associated_groups) {\n    if (!(grp instanceof Map)) continue;\n    if (grp.display_name != null) {\n      appendUnique(ctx.related, 'user', grp.display_name.toString());\n    }\n  }\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -3861,9 +3857,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: String parseDate(String input, def fmts, def outFmt) {\n  // Strip \"EEE,\" / \"EEE, \" day-of-week prefix if present so we don't\n  // depend on it being internally consistent (the source data is known\n  // to occasionally have a day-of-week that doesn't match the date).\n  String stripped = input;\n  if (input.length() > 4 && input.indexOf(',') == 3) {\n    stripped = input.substring(4).trim();\n  }\n  for (def fmt : fmts) {\n    try {\n      return LocalDateTime.parse(stripped, fmt).atZone(ZoneId.of('UTC')).format(outFmt);\n    } catch (Exception e1) {\n      try {\n        return LocalDate.parse(stripped, fmt).atStartOfDay(ZoneId.of('UTC')).format(outFmt);\n      } catch (Exception e2) { /* try next */ }\n    }\n  }\n  return null;\n}\nvoid appendUnique(Map container, String field, def value) {\n  if (value == null) return;\n  def current = container[field];\n  if (current == null) {\n    container[field] = [value];\n  } else if (current instanceof List) {\n    if (!current.contains(value)) {\n      current.add(value);\n    }\n  } else if (current != value) {\n    container[field] = [current, value];\n  }\n}\ndef fmts = [\n  DateTimeFormatter.ofPattern(\"dd MMM yyyy HH:mm:ss 'GMT'\", Locale.ENGLISH),\n  DateTimeFormatter.ofPattern(\"yyyy-MM-dd\", Locale.ENGLISH)\n];\ndef outFmt = DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSSXXX\");\nfor (def item : ctx.axonius.identity.breaches_data) {\n  if (!(item instanceof Map)) continue;\n  for (def f : params.dateFields) {\n    if (item[f] == null || item[f] == '') continue;\n    String parsed = parseDate(item[f].toString(), fmts, outFmt);\n    if (parsed != null) {\n      item[f] = parsed;\n    } else {\n      item.remove(f);\n    }\n  }\n  if (item.added_date != null) {\n    if (ctx.threat == null) ctx.threat = [:];\n    if (ctx.threat.enrichments == null) ctx.threat.enrichments = [:];\n    if (ctx.threat.enrichments.indicator == null) ctx.threat.enrichments.indicator = [:];\n    appendUnique(ctx.threat.enrichments.indicator, 'first_seen', item.added_date.toString());\n  }\n  if (item.pwn_count != null && !(item.pwn_count instanceof Long || item.pwn_count instanceof Integer)) {\n    try {\n      item.pwn_count = Long.parseLong(item.pwn_count.toString());\n    } catch (NumberFormatException e) {\n      item.remove('pwn_count');\n    }\n  }\n  for (def f : params.boolFields) {\n    if (!item.containsKey(f) || item[f] == null) continue;\n    def v = item[f];\n    if (v instanceof Boolean) continue;\n    def s = v.toString().toLowerCase();\n    if (s == '1' || s == 'true') {\n      item[f] = true;\n    } else if (s == '' || s == '0' || s == 'false') {\n      item[f] = false;\n    } else {\n      item.remove(f);\n    }\n  }\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -4503,9 +4497,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def obj = ctx.axonius.identity.feature;\nfor (def f : params.boolFields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Boolean) {\n    continue;\n  }\n  def s = v.toString().toLowerCase();\n  if (s == '1' || s == 'true') {\n    obj[f] = true;\n  } else if (s == '' || s == '0' || s == 'false') {\n    obj[f] = false;\n  } else {\n    obj.remove(f);\n  }\n}\nfor (def f : params.longFields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Long || v instanceof Integer) {\n    continue;\n  }\n  try {\n    obj[f] = Long.parseLong(v.toString());\n  } catch (NumberFormatException e) {\n    obj.remove(f);\n  }\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -4623,9 +4615,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def obj = ctx.axonius.identity.in_meeting;\nfor (def f : params.fields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Boolean) {\n    continue;\n  }\n  def s = v.toString().toLowerCase();\n  if (s == '1' || s == 'true') {\n    obj[f] = true;\n  } else if (s == '' || s == '0' || s == 'false') {\n    obj[f] = false;\n  } else {\n    obj.remove(f);\n  }\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -4673,9 +4663,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def obj = ctx.axonius.identity;\nfor (def f : params.fields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Boolean) {\n    continue;\n  }\n  def s = v.toString().toLowerCase();\n  if (s == '1' || s == 'true') {\n    obj[f] = true;\n  } else if (s == '' || s == '0' || s == 'false') {\n    obj[f] = false;\n  } else {\n    obj.remove(f);\n  }\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -5588,9 +5576,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def obj = ctx.axonius.identity.recording;\nfor (def f : params.fields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Boolean) {\n    continue;\n  }\n  def s = v.toString().toLowerCase();\n  if (s == '1' || s == 'true') {\n    obj[f] = true;\n  } else if (s == '' || s == '0' || s == 'false') {\n    obj[f] = false;\n  } else {\n    obj.remove(f);\n  }\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -5685,9 +5671,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def obj = ctx.axonius.identity.schedule_meeting;\nfor (def f : params.fields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Boolean) {\n    continue;\n  }\n  def s = v.toString().toLowerCase();\n  if (s == '1' || s == 'true') {\n    obj[f] = true;\n  } else if (s == '' || s == '0' || s == 'false') {\n    obj[f] = false;\n  } else {\n    obj.remove(f);\n  }\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -6121,9 +6105,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: for (def item : ctx.axonius.identity.user_apps) {\n  for (def f : params.fields) {\n    if (!item.containsKey(f) || item[f] == null) {\n      continue;\n    }\n    def v = item[f];\n    if (v instanceof Boolean) {\n      continue;\n    }\n    def s = v.toString().toLowerCase();\n    if (s == '1' || s == 'true') {\n      item[f] = true;\n    } else if (s == '' || s == '0' || s == 'false') {\n      item[f] = false;\n    } else {\n      item.remove(f);\n    }\n  }\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -6898,8 +6880,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

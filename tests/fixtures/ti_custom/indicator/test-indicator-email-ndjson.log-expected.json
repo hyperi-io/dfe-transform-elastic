@@ -1,0 +1,251 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-01-20T15:39:16.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\":\"indicator--3d1a1d31-9f73-53fa-9ef1-44cdc77f8ae6\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"extensions\":{\"extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba\":{\"extension_type\":\"property-extension\",\"id\":\"2a3c5826-08b4-4994-82dd-1c9e5c005007\",\"type\":\"Indicator\",\"created_at\":\"2051-10-18T07:44:24.979Z\",\"updated_at\":\"2051-10-18T07:44:25.075Z\",\"is_inferred\":false,\"creator_ids\":[\"cec7b7fd-a153-414f-a965-2257f716f3aa\"],\"labels_ids\":[\"0280d2b5-8f1d-43f5-be28-18d65fdcbc6b\",\"c8a782bd-9b70-4269-827b-9264a3793a3c\",\"4640f14b-abc3-4dd4-ba44-eca514927381\",\"28e63aea-5033-43d9-89bd-abe7f0cb39a2\"],\"created_by_ref_id\":\"a2c31ec1-99a9-4e7c-9a97-20cd2aabfb0f\",\"detection\":false,\"score\":40,\"main_observable_type\":\"Email-Message\"},\"extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b\":{\"extension_type\":\"property-extension\"}},\"created\":\"2048-01-20T15:39:16.000Z\",\"modified\":\"2051-10-18T07:44:25.075Z\",\"revoked\":true,\"confidence\":20,\"lang\":\"en\",\"labels\":[\"perpetual\",\"osint\",\"botnet\",\"certainty-50\"],\"object_marking_refs\":[\"marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9\"],\"created_by_ref\":\"identity--4f347cc9-4658-59ee-9707-134f434f9d1c\",\"name\":\"Vacancy Announcement\",\"pattern\":\"[email-message:subject = 'Vacancy Announcement']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"valid_from\":\"2048-01-20T15:39:16.000Z\",\"valid_until\":\"2049-01-19T15:39:16.000Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "stix": {
+        "confidence": 20,
+        "created": "2048-01-20T15:39:16.000Z",
+        "created_by_ref": "identity--4f347cc9-4658-59ee-9707-134f434f9d1c",
+        "extensions": {
+          "extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b": {
+            "extension_type": "property-extension"
+          },
+          "extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba": {
+            "created_at": "2051-10-18T07:44:24.979Z",
+            "created_by_ref_id": "a2c31ec1-99a9-4e7c-9a97-20cd2aabfb0f",
+            "creator_ids": [
+              "cec7b7fd-a153-414f-a965-2257f716f3aa"
+            ],
+            "detection": false,
+            "extension_type": "property-extension",
+            "id": "2a3c5826-08b4-4994-82dd-1c9e5c005007",
+            "is_inferred": false,
+            "labels_ids": [
+              "0280d2b5-8f1d-43f5-be28-18d65fdcbc6b",
+              "c8a782bd-9b70-4269-827b-9264a3793a3c",
+              "4640f14b-abc3-4dd4-ba44-eca514927381",
+              "28e63aea-5033-43d9-89bd-abe7f0cb39a2"
+            ],
+            "main_observable_type": "Email-Message",
+            "score": 40,
+            "type": "Indicator",
+            "updated_at": "2051-10-18T07:44:25.075Z"
+          }
+        },
+        "id": "indicator--3d1a1d31-9f73-53fa-9ef1-44cdc77f8ae6",
+        "ioc_expiration_date": "2049-01-19T15:39:16.000Z",
+        "ioc_expiration_duration": "5d",
+        "ioc_expiration_reason": "Expiration set from valid_until field",
+        "lang": "en",
+        "modified": "2051-10-18T07:44:25.075Z",
+        "object_marking_refs": [
+          "marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9"
+        ],
+        "pattern": "[email-message:subject = 'Vacancy Announcement']",
+        "pattern_type": "stix",
+        "pattern_version": "2.1",
+        "revoked": true,
+        "spec_version": "2.1",
+        "type": "indicator",
+        "valid_from": "2048-01-20T15:39:16.000Z",
+        "valid_until": "2049-01-19T15:39:16.000Z"
+      },
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator",
+        "perpetual",
+        "osint",
+        "botnet",
+        "certainty-50"
+      ],
+      "threat": {
+        "feed": {
+          "name": "Test STIX feed"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "first_seen": "2048-01-20T15:39:16.000Z",
+          "last_seen": "2051-10-18T07:44:25.075Z",
+          "modified_at": "2051-10-18T07:44:25.075Z",
+          "name": "Vacancy Announcement",
+          "type": "email-addr"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-09-29T17:58:54.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"created\":\"2051-09-29T17:58:54.000Z\",\"created_by_ref\":\"identity--55f6ea5e-51ac-4344-bc8c-4170950d210f\",\"id\":\"indicator--f89cd8e8-3dfa-4157-bb4d-33ee9d7e054c\",\"kill_chain_phases\":[{\"kill_chain_name\":\"misp-category\",\"phase_name\":\"network\"}],\"labels\":[\"misp:name=\\\"email\\\"\",\"misp:meta-category=\\\"network\\\"\",\"misp:to_ids=\\\"True\\\"\"],\"modified\":\"2051-09-29T17:58:54.000Z\",\"pattern\":\"[email-message:from_ref.value = 'naibdoyft8773@iyvvopdtnetq.pt' AND email-message:subject = 'Hackers Leak Explicit Photos of More Than 100 Government workers']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"spec_version\":\"indicator\",\"type\":\"indicator\",\"valid_from\":\"2051-09-29T00:00:00Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "stix": {
+        "created": "2051-09-29T17:58:54.000Z",
+        "created_by_ref": "identity--55f6ea5e-51ac-4344-bc8c-4170950d210f",
+        "id": "indicator--f89cd8e8-3dfa-4157-bb4d-33ee9d7e054c",
+        "ioc_expiration_date": "2051-10-04T17:58:54.000Z",
+        "ioc_expiration_duration": "5d",
+        "ioc_expiration_reason": "Expiration set by Elastic from the integration's parameter `IOC Expiration Duration`",
+        "kill_chain_phases": [
+          {
+            "kill_chain_name": "misp-category",
+            "phase_name": "network"
+          }
+        ],
+        "modified": "2051-09-29T17:58:54.000Z",
+        "pattern": "[email-message:from_ref.value = 'naibdoyft8773@iyvvopdtnetq.pt' AND email-message:subject = 'Hackers Leak Explicit Photos of More Than 100 Government workers']",
+        "pattern_type": "stix",
+        "pattern_version": "2.1",
+        "spec_version": "indicator",
+        "type": "indicator",
+        "valid_from": "2051-09-29T00:00:00Z"
+      },
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator",
+        "misp:name=\"email\"",
+        "misp:meta-category=\"network\"",
+        "misp:to_ids=\"True\""
+      ],
+      "threat": {
+        "feed": {
+          "name": "Test STIX feed"
+        },
+        "indicator": {
+          "email": {
+            "address": [
+              "naibdoyft8773@iyvvopdtnetq.pt"
+            ]
+          },
+          "first_seen": "2051-09-29T00:00:00.000Z",
+          "last_seen": "2051-09-29T17:58:54.000Z",
+          "modified_at": "2051-09-29T17:58:54.000Z",
+          "type": "email-addr"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-01-17T06:44:17.361Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\":\"indicator--34da552c-ed45-5ee8-9a0a-833e7fb50713\",\"revoked\":true,\"confidence\":30,\"lang\":\"en\",\"created\":\"2051-01-17T06:44:17.361Z\",\"modified\":\"2051-01-17T09:13:06.584Z\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"pattern\":\"[email-addr:value = 'evgrci38@vzmzshtahn.ch']\",\"name\":\"evgrci38@vzmzshtahn.ch\",\"description\":\"\",\"valid_from\":\"2045-08-04T09:57:02.000Z\",\"valid_until\":\"2046-08-04T09:57:02.000Z\",\"killChainPhases\":[]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "stix": {
+        "confidence": 30,
+        "created": "2051-01-17T06:44:17.361Z",
+        "id": "indicator--34da552c-ed45-5ee8-9a0a-833e7fb50713",
+        "ioc_expiration_date": "2046-08-04T09:57:02.000Z",
+        "ioc_expiration_duration": "5d",
+        "ioc_expiration_reason": "Expiration set from valid_until field",
+        "lang": "en",
+        "modified": "2051-01-17T09:13:06.584Z",
+        "pattern": "[email-addr:value = 'evgrci38@vzmzshtahn.ch']",
+        "pattern_type": "stix",
+        "pattern_version": "2.1",
+        "revoked": true,
+        "valid_from": "2045-08-04T09:57:02.000Z",
+        "valid_until": "2046-08-04T09:57:02.000Z"
+      },
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ],
+      "threat": {
+        "feed": {
+          "name": "Test STIX feed"
+        },
+        "indicator": {
+          "confidence": "Medium",
+          "email": {
+            "address": [
+              "evgrci38@vzmzshtahn.ch"
+            ]
+          },
+          "first_seen": "2045-08-04T09:57:02.000Z",
+          "last_seen": "2051-01-17T09:13:06.584Z",
+          "modified_at": "2051-01-17T09:13:06.584Z",
+          "name": "evgrci38@vzmzshtahn.ch",
+          "type": "email-addr"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "feed_name": "Test STIX feed",
+        "ioc_expiration_duration": "5d",
+        "restrict_stix": false
+      },
+      "message": "{\"id\":\"indicator--3d1a1d31-9f73-53fa-9ef1-44cdc77f8ae6\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"extensions\":{\"extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba\":{\"extension_type\":\"property-extension\",\"id\":\"2a3c5826-08b4-4994-82dd-1c9e5c005007\",\"type\":\"Indicator\",\"created_at\":\"2051-10-18T07:44:24.979Z\",\"updated_at\":\"2051-10-18T07:44:25.075Z\",\"is_inferred\":false,\"creator_ids\":[\"cec7b7fd-a153-414f-a965-2257f716f3aa\"],\"labels_ids\":[\"0280d2b5-8f1d-43f5-be28-18d65fdcbc6b\",\"c8a782bd-9b70-4269-827b-9264a3793a3c\",\"4640f14b-abc3-4dd4-ba44-eca514927381\",\"28e63aea-5033-43d9-89bd-abe7f0cb39a2\"],\"created_by_ref_id\":\"a2c31ec1-99a9-4e7c-9a97-20cd2aabfb0f\",\"detection\":false,\"score\":40,\"main_observable_type\":\"Email-Message\"},\"extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b\":{\"extension_type\":\"property-extension\"}},\"created\":\"2048-01-20T15:39:16.000Z\",\"modified\":\"2051-10-18T07:44:25.075Z\",\"revoked\":true,\"confidence\":20,\"lang\":\"en\",\"labels\":[\"perpetual\",\"osint\",\"botnet\",\"certainty-50\"],\"object_marking_refs\":[\"marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9\"],\"created_by_ref\":\"identity--4f347cc9-4658-59ee-9707-134f434f9d1c\",\"name\":\"Vacancy Announcement\",\"pattern\":\"[email-message:subject = 'Vacancy Announcement']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"valid_from\":\"2048-01-20T15:39:16.000Z\",\"valid_until\":\"2049-01-19T15:39:16.000Z\"}",
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ]
+    },
+    {
+      "_conf": {
+        "feed_name": "Test STIX feed",
+        "ioc_expiration_duration": "5d",
+        "restrict_stix": false
+      },
+      "message": "{\"created\":\"2051-09-29T17:58:54.000Z\",\"created_by_ref\":\"identity--55f6ea5e-51ac-4344-bc8c-4170950d210f\",\"id\":\"indicator--f89cd8e8-3dfa-4157-bb4d-33ee9d7e054c\",\"kill_chain_phases\":[{\"kill_chain_name\":\"misp-category\",\"phase_name\":\"network\"}],\"labels\":[\"misp:name=\\\"email\\\"\",\"misp:meta-category=\\\"network\\\"\",\"misp:to_ids=\\\"True\\\"\"],\"modified\":\"2051-09-29T17:58:54.000Z\",\"pattern\":\"[email-message:from_ref.value = 'naibdoyft8773@iyvvopdtnetq.pt' AND email-message:subject = 'Hackers Leak Explicit Photos of More Than 100 Government workers']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"spec_version\":\"indicator\",\"type\":\"indicator\",\"valid_from\":\"2051-09-29T00:00:00Z\"}",
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ]
+    },
+    {
+      "_conf": {
+        "feed_name": "Test STIX feed",
+        "ioc_expiration_duration": "5d",
+        "restrict_stix": false
+      },
+      "message": "{\"id\":\"indicator--34da552c-ed45-5ee8-9a0a-833e7fb50713\",\"revoked\":true,\"confidence\":30,\"lang\":\"en\",\"created\":\"2051-01-17T06:44:17.361Z\",\"modified\":\"2051-01-17T09:13:06.584Z\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"pattern\":\"[email-addr:value = 'evgrci38@vzmzshtahn.ch']\",\"name\":\"evgrci38@vzmzshtahn.ch\",\"description\":\"\",\"valid_from\":\"2045-08-04T09:57:02.000Z\",\"valid_until\":\"2046-08-04T09:57:02.000Z\",\"killChainPhases\":[]}",
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_custom-indicator-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "ti_custom",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,860 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-11-08T08:41:56.595Z",
+      "cloud": {
+        "instance": {
+          "id": "18d9c6dfbfa32b9b8a314ffea25a360309622710"
+        }
+      },
+      "device": {
+        "id": "18d9c6dfbfa32b9b8a314ffea25a360309622710"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "file"
+        ],
+        "id": "da638034938542195558_2006612345",
+        "kind": "alert",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-AlertEvidence\",\"operationName\":\"Publish\",\"properties\":{\"AccountDomain\":\"a-domain\",\"AccountName\":\"fecpyrn obuc\",\"AccountObjectId\":\"S-1-5-2\",\"AccountSid\":\"S-1-5-1\",\"AccountUpn\":null,\"AdditionalFields\":\"{\\\"$id\\\":\\\"1\\\",\\\"ProcessId\\\":\\\"1960\\\"}\",\"AlertId\":\"da638034938542195558_2006612345\",\"Application\":null,\"ApplicationId\":null,\"DeviceId\":\"18d9c6dfbfa32b9b8a314ffea25a360309622710\",\"DeviceName\":\"XeilUadttze3\",\"EmailSubject\":null,\"EntityType\":\"File\",\"EvidenceDirection\":null,\"EvidenceRole\":\"Related\",\"FileName\":\"ai_alternate_stream_s7f_48qa.txt:ai-8xNfG12345\",\"FileSize\":27436,\"FolderPath\":\"C:\\\\Windows\\\\Temp\",\"LocalIP\":\"192.0.2.218\",\"MachineGroup\":null,\"NetworkMessageId\":null,\"OAuthApplicationId\":null,\"ProcessCommandLine\":null,\"RegistryKey\":null,\"RegistryValueData\":null,\"RegistryValueName\":null,\"RemoteIP\":null,\"RemoteUrl\":null,\"SHA1\":\"ead83d75f644f82bee94102cc70c8d8bd4941215\",\"SHA256\":\"eb616b36a09b22b2ebf69ee791c1695cf4cbe034dbd2d4a39fbd90afdd810719\",\"ServiceSource\":\"Microsoft Defender for Endpoint\",\"ThreatFamily\":null,\"Timestamp\":\"2050-11-08T08:41:56.5950497Z\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-08T08:44:14.9047460Z\"}",
+        "provider": "Microsoft Defender for Endpoint",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "directory": "C:\\Windows\\Temp",
+        "hash": {
+          "sha1": "ead83d75f644f82bee94102cc70c8d8bd4941215",
+          "sha256": "eb616b36a09b22b2ebf69ee791c1695cf4cbe034dbd2d4a39fbd90afdd810719"
+        },
+        "name": "ai_alternate_stream_s7f_48qa.txt:ai-8xNfG12345",
+        "size": 27436
+      },
+      "host": {
+        "id": "18d9c6dfbfa32b9b8a314ffea25a360309622710",
+        "name": "xeiluadttze3"
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "domain": "a-domain",
+            "name": "fecpyrn obuc",
+            "object_id": "S-1-5-2",
+            "sid": "S-1-5-1"
+          },
+          "additional_fields": {
+            "$id": "1",
+            "ProcessId": "1960"
+          },
+          "alert": {
+            "id": "da638034938542195558_2006612345"
+          },
+          "category": "AdvancedHunting-AlertEvidence",
+          "device": {
+            "id": "18d9c6dfbfa32b9b8a314ffea25a360309622710",
+            "name": "XeilUadttze3"
+          },
+          "entity_type": "File",
+          "evidence": {
+            "role": "Related"
+          },
+          "file": {
+            "name": "ai_alternate_stream_s7f_48qa.txt:ai-8xNfG12345",
+            "size": 27436
+          },
+          "folder_path": "C:\\Windows\\Temp",
+          "local": {
+            "ip": "192.0.2.218"
+          },
+          "operation_name": "Publish",
+          "service_source": "Microsoft Defender for Endpoint",
+          "sha1": "ead83d75f644f82bee94102cc70c8d8bd4941215",
+          "sha256": "eb616b36a09b22b2ebf69ee791c1695cf4cbe034dbd2d4a39fbd90afdd810719",
+          "tenant": {
+            "id": "61684dd7-ec2c-4d00-b86e-97096b240117",
+            "name": "DefaultTenant"
+          },
+          "time": "2050-11-08T08:44:14.904Z",
+          "timestamp": "2050-11-08T08:41:56.595Z"
+        }
+      },
+      "related": {
+        "hash": [
+          "eb616b36a09b22b2ebf69ee791c1695cf4cbe034dbd2d4a39fbd90afdd810719",
+          "ead83d75f644f82bee94102cc70c8d8bd4941215"
+        ],
+        "hosts": [
+          "xeiluadttze3",
+          "a-domain",
+          "18d9c6dfbfa32b9b8a314ffea25a360309622710"
+        ],
+        "ip": [
+          "192.0.2.218"
+        ],
+        "user": [
+          "S-1-5-2",
+          "fecpyrn obuc"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.218"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "a-domain",
+        "id": "S-1-5-1",
+        "name": "fecpyrn obuc"
+      }
+    },
+    {
+      "@timestamp": "2050-11-08T08:42:17.295Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "da638034938542563831_172489803",
+        "kind": "alert",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-AlertInfo\",\"operationName\":\"Publish\",\"properties\":{\"AlertId\":\"da638034938542563831_172489803\",\"AttackTechniques\":\"[\\\"Valid Accounts (T1078)\\\",\\\"Cloud Accounts (T1078.004)\\\"]\",\"Category\":\"Persistence\",\"DetectionSource\":\"EDR\",\"MachineGroup\":null,\"ServiceSource\":\"Microsoft Defender for Endpoint\",\"Severity\":\"Medium\",\"Timestamp\":\"2050-11-08T08:42:17.2954051Z\",\"Title\":\"Anomalous silent process exit monitor registration\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-08T08:44:14.7934901Z\"}",
+        "provider": "Microsoft Defender for Endpoint",
+        "severity": 47,
+        "type": [
+          "info"
+        ]
+      },
+      "m365_defender": {
+        "event": {
+          "alert": {
+            "category": "Persistence",
+            "id": "da638034938542563831_172489803"
+          },
+          "attack_techniques": [
+            "Cloud Accounts (T1078.004)",
+            "Valid Accounts (T1078)"
+          ],
+          "category": "AdvancedHunting-AlertInfo",
+          "detection": {
+            "source": "EDR"
+          },
+          "operation_name": "Publish",
+          "service_source": "Microsoft Defender for Endpoint",
+          "severity": "medium",
+          "tenant": {
+            "id": "61684dd7-ec2c-4d00-b86e-97096b240117",
+            "name": "DefaultTenant"
+          },
+          "time": "2050-11-08T08:44:14.793Z",
+          "timestamp": "2050-11-08T08:42:17.295Z",
+          "title": "Anomalous silent process exit monitor registration"
+        }
+      },
+      "message": "Anomalous silent process exit monitor registration",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "technique": {
+          "subtechnique": {
+            "id": [
+              "T1078",
+              "T1078.004"
+            ],
+            "name": [
+              "Cloud Accounts",
+              "Valid Accounts"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-11-08T08:42:17.295Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "da638034938542563831_172489803",
+        "kind": "alert",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-AlertInfo\",\"operationName\":\"Publish\",\"properties\":{\"AlertId\":\"da638034938542563831_172489803\",\"AttackTechniques\":\"\",\"Category\":\"Persistence\",\"DetectionSource\":\"EDR\",\"MachineGroup\":null,\"ServiceSource\":\"Microsoft Defender for Endpoint\",\"Severity\":\"Medium\",\"Timestamp\":\"2050-11-08T08:42:17.2954051Z\",\"Title\":\"Anomalous silent process exit monitor registration\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-08T08:44:14.7934901Z\"}",
+        "provider": "Microsoft Defender for Endpoint",
+        "severity": 47,
+        "type": [
+          "info"
+        ]
+      },
+      "m365_defender": {
+        "event": {
+          "alert": {
+            "category": "Persistence",
+            "id": "da638034938542563831_172489803"
+          },
+          "category": "AdvancedHunting-AlertInfo",
+          "detection": {
+            "source": "EDR"
+          },
+          "operation_name": "Publish",
+          "service_source": "Microsoft Defender for Endpoint",
+          "severity": "medium",
+          "tenant": {
+            "id": "61684dd7-ec2c-4d00-b86e-97096b240117",
+            "name": "DefaultTenant"
+          },
+          "time": "2050-11-08T08:44:14.793Z",
+          "timestamp": "2050-11-08T08:42:17.295Z",
+          "title": "Anomalous silent process exit monitor registration"
+        }
+      },
+      "message": "Anomalous silent process exit monitor registration",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2050-11-08T08:42:17.295Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "da638034938542563831_172489803",
+        "kind": "alert",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-AlertInfo\",\"operationName\":\"Publish\",\"properties\":{\"AlertId\":\"da638034938542563831_172489803\",\"AttackTechniques\":\"\",\"Category\":\"Persistence\",\"DetectionSource\":\"EDR\",\"MachineGroup\":null,\"ServiceSource\":\"Microsoft Defender for Endpoint\",\"Severity\":\"Medium\",\"Timestamp\":\"2050-11-08T08:42:17.2954051Z\",\"Title\":\"Anomalous silent process exit monitor registration\",\"ProcessCommandLine\":\"\\\"InstallUtil.exe\\\" /u \\\"C:\\\\Program Files (x86)\\\\Lenovo\\\\System Update\\\\SUService.exe\\\"\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-08T08:44:14.7934901Z\"}",
+        "provider": "Microsoft Defender for Endpoint",
+        "severity": 47,
+        "type": [
+          "info"
+        ]
+      },
+      "m365_defender": {
+        "event": {
+          "alert": {
+            "category": "Persistence",
+            "id": "da638034938542563831_172489803"
+          },
+          "category": "AdvancedHunting-AlertInfo",
+          "detection": {
+            "source": "EDR"
+          },
+          "operation_name": "Publish",
+          "process": {
+            "command_line": "\"InstallUtil.exe\" /u \"C:\\Program Files (x86)\\Lenovo\\System Update\\SUService.exe\""
+          },
+          "service_source": "Microsoft Defender for Endpoint",
+          "severity": "medium",
+          "tenant": {
+            "id": "61684dd7-ec2c-4d00-b86e-97096b240117",
+            "name": "DefaultTenant"
+          },
+          "time": "2050-11-08T08:44:14.793Z",
+          "timestamp": "2050-11-08T08:42:17.295Z",
+          "title": "Anomalous silent process exit monitor registration"
+        }
+      },
+      "message": "Anomalous silent process exit monitor registration",
+      "process": {
+        "args": [
+          "InstallUtil.exe",
+          "/u",
+          "C:\\Program Files (x86)\\Lenovo\\System Update\\SUService.exe"
+        ],
+        "args_count": 3,
+        "command_line": "\"InstallUtil.exe\" /u \"C:\\Program Files (x86)\\Lenovo\\System Update\\SUService.exe\"",
+        "executable": "InstallUtil.exe",
+        "name": "InstallUtil.exe"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-09-10T03:59:59.294Z",
+      "cloud": {
+        "instance": {
+          "id": "bceea49579f1fdbf8395d7c8ec2770445b690248"
+        }
+      },
+      "device": {
+        "id": "bceea49579f1fdbf8395d7c8ec2770445b690248"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "start",
+        "category": [
+          "process"
+        ],
+        "kind": "event",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"_TimeReceivedBySvc\":\"2052-09-10T04:00:06.8088202Z\",\"category\":\"AdvancedHunting-DeviceProcessEvents\",\"operationName\":\"Publish\",\"properties\":{\"AccountDomain\":\"dnpsqnbqxc\",\"AccountName\":\"root\",\"AccountObjectId\":null,\"AccountSid\":null,\"AccountUpn\":null,\"ActionType\":\"ProcessCreated\",\"AdditionalFields\":\"{\\\"InitiatingProcessPosixEffectiveUser\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"dnpsqnbqxc\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"InitiatingProcessPosixEffectiveGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0},\\\"InitiatingProcessPosixProcessGroupId\\\":215957,\\\"InitiatingProcessPosixSessionId\\\":215957,\\\"InitiatingProcessCurrentWorkingDirectory\\\":\\\"/var/backups\\\",\\\"InitiatingProcessPosixFilePermissions\\\":[\\\"OthersExecute\\\",\\\"OthersRead\\\",\\\"GroupExecute\\\",\\\"GroupRead\\\",\\\"UserExecute\\\",\\\"UserWrite\\\",\\\"UserRead\\\",\\\"UserAll\\\"],\\\"InitiatingProcessPosixUserOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"dnpsqnbqxc\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"InitiatingProcessPosixGroupOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0},\\\"InitiatingProcessPosixRealUser\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"dnpsqnbqxc\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"ProcessPosixEffectiveUser\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"dnpsqnbqxc\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"ProcessPosixEffectiveGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0},\\\"ProcessPosixProcessGroupId\\\":215957,\\\"ProcessPosixSessionId\\\":215957,\\\"ProcessCurrentWorkingDirectory\\\":\\\"/var/backups\\\",\\\"ProcessPosixFilePermissions\\\":[\\\"OthersExecute\\\",\\\"OthersRead\\\",\\\"GroupExecute\\\",\\\"GroupRead\\\",\\\"UserExecute\\\",\\\"UserWrite\\\",\\\"UserRead\\\",\\\"UserAll\\\"],\\\"ProcessPosixFileUserOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"dnpsqnbqxc\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"ProcessPosixFileGroupOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}}\",\"AppGuardContainerId\":\"1234-2222a\",\"CreatedProcessSessionId\":null,\"DeviceId\":\"bceea49579f1fdbf8395d7c8ec2770445b690248\",\"DeviceName\":\"dnpsqnbqxc\",\"FileName\":\"tar\",\"FileSize\":517952,\"FolderPath\":\"/usr/bin/tar\",\"InitiatingProcessAccountDomain\":\"dnpsqnbqxc\",\"InitiatingProcessAccountName\":\"root\",\"InitiatingProcessAccountObjectId\":null,\"InitiatingProcessAccountSid\":null,\"InitiatingProcessAccountUpn\":null,\"InitiatingProcessCommandLine\":\"/bin/sh /usr/libexec/dpkg/dpkg-db-backup\",\"InitiatingProcessCreationTime\":\"2052-09-10T03:59:59.29Z\",\"InitiatingProcessFileName\":\"dash\",\"InitiatingProcessFileSize\":125688,\"InitiatingProcessFolderPath\":\"/usr/bin/dash\",\"InitiatingProcessId\":216032,\"InitiatingProcessIntegrityLevel\":null,\"InitiatingProcessLogonId\":0,\"InitiatingProcessMD5\":\"4932fe2b5d32f025ce24e2370e11f318\",\"InitiatingProcessParentCreationTime\":\"2052-09-10T03:59:59.151109Z\",\"InitiatingProcessParentFileName\":\"dash\",\"InitiatingProcessParentId\":215957,\"InitiatingProcessRemoteSessionDeviceName\":null,\"InitiatingProcessRemoteSessionIP\":null,\"InitiatingProcessSHA1\":\"61b79917b2490a4404a96b1a00aeb0d9178a9898\",\"InitiatingProcessSHA256\":\"9d001729c31a620ad06861fae966d688174f4355b4ffedd75bbd69512a6a1741\",\"InitiatingProcessSessionId\":null,\"InitiatingProcessSignatureStatus\":\"Unknown\",\"InitiatingProcessSignerType\":\"Unknown\",\"InitiatingProcessTokenElevation\":\"None\",\"InitiatingProcessVersionInfoCompanyName\":null,\"InitiatingProcessVersionInfoFileDescription\":null,\"InitiatingProcessVersionInfoInternalFileName\":null,\"InitiatingProcessVersionInfoOriginalFileName\":null,\"InitiatingProcessVersionInfoProductName\":null,\"InitiatingProcessVersionInfoProductVersion\":null,\"IsInitiatingProcessRemoteSession\":false,\"IsProcessRemoteSession\":false,\"LogonId\":0,\"MD5\":\"d1402e7015c44d67dcd2937ad805497f\",\"MachineGroup\":null,\"ProcessCommandLine\":\"tar -df alternatives.tar.0 -C /var/lib/dpkg alternatives\",\"ProcessCreationTime\":\"2052-09-10T03:59:59.29459Z\",\"ProcessId\":216032,\"ProcessIntegrityLevel\":null,\"ProcessRemoteSessionDeviceName\":null,\"ProcessRemoteSessionIP\":null,\"ProcessTokenElevation\":\"None\",\"ProcessVersionInfoCompanyName\":null,\"ProcessVersionInfoFileDescription\":null,\"ProcessVersionInfoInternalFileName\":null,\"ProcessVersionInfoOriginalFileName\":null,\"ProcessVersionInfoProductName\":null,\"ProcessVersionInfoProductVersion\":null,\"ReportId\":9999,\"SHA1\":\"b21864a859256bbc98fb2093a3402b0869340eba\",\"SHA256\":\"646875709ed0423fb21cd2e07c3c8a205fe5b993623f498a5fbefbb522e2ec1a\",\"Timestamp\":\"2052-09-10T03:59:59.29459Z\"},\"tenantId\":\"b33f-beef-beef\",\"time\":\"2052-09-10T04:02:21.5746371Z\"}",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "hostname": "dnpsqnbqxc",
+        "id": "bceea49579f1fdbf8395d7c8ec2770445b690248",
+        "name": "dnpsqnbqxc",
+        "os": {
+          "type": "unix"
+        }
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "domain": "dnpsqnbqxc",
+            "name": "root"
+          },
+          "action": {
+            "type": "ProcessCreated"
+          },
+          "additional_fields": {
+            "InitiatingProcessCurrentWorkingDirectory": "/var/backups",
+            "InitiatingProcessPosixEffectiveGroup": {
+              "Name": "root",
+              "PosixGroupId": 0
+            },
+            "InitiatingProcessPosixEffectiveUser": {
+              "DomainName": "dnpsqnbqxc",
+              "LogonId": 0,
+              "Name": "root",
+              "PosixUserId": 0,
+              "PrimaryPosixGroup": {
+                "Name": "root",
+                "PosixGroupId": 0
+              }
+            },
+            "InitiatingProcessPosixFilePermissions": [
+              "OthersExecute",
+              "OthersRead",
+              "GroupExecute",
+              "GroupRead",
+              "UserExecute",
+              "UserWrite",
+              "UserRead",
+              "UserAll"
+            ],
+            "InitiatingProcessPosixGroupOwner": {
+              "Name": "root",
+              "PosixGroupId": 0
+            },
+            "InitiatingProcessPosixProcessGroupId": 215957,
+            "InitiatingProcessPosixRealUser": {
+              "DomainName": "dnpsqnbqxc",
+              "LogonId": 0,
+              "Name": "root",
+              "PosixUserId": 0,
+              "PrimaryPosixGroup": {
+                "Name": "root",
+                "PosixGroupId": 0
+              }
+            },
+            "InitiatingProcessPosixSessionId": 215957,
+            "InitiatingProcessPosixUserOwner": {
+              "DomainName": "dnpsqnbqxc",
+              "LogonId": 0,
+              "Name": "root",
+              "PosixUserId": 0,
+              "PrimaryPosixGroup": {
+                "Name": "root",
+                "PosixGroupId": 0
+              }
+            },
+            "ProcessCurrentWorkingDirectory": "/var/backups",
+            "ProcessPosixEffectiveGroup": {
+              "Name": "root",
+              "PosixGroupId": 0
+            },
+            "ProcessPosixEffectiveUser": {
+              "DomainName": "dnpsqnbqxc",
+              "LogonId": 0,
+              "Name": "root",
+              "PosixUserId": 0,
+              "PrimaryPosixGroup": {
+                "Name": "root",
+                "PosixGroupId": 0
+              }
+            },
+            "ProcessPosixFileGroupOwner": {
+              "Name": "root",
+              "PosixGroupId": 0
+            },
+            "ProcessPosixFilePermissions": [
+              "OthersExecute",
+              "OthersRead",
+              "GroupExecute",
+              "GroupRead",
+              "UserExecute",
+              "UserWrite",
+              "UserRead",
+              "UserAll"
+            ],
+            "ProcessPosixFileUserOwner": {
+              "DomainName": "dnpsqnbqxc",
+              "LogonId": 0,
+              "Name": "root",
+              "PosixUserId": 0,
+              "PrimaryPosixGroup": {
+                "Name": "root",
+                "PosixGroupId": 0
+              }
+            },
+            "ProcessPosixProcessGroupId": 215957,
+            "ProcessPosixSessionId": 215957
+          },
+          "app_guard_container_id": "1234-2222a",
+          "category": "AdvancedHunting-DeviceProcessEvents",
+          "device": {
+            "id": "bceea49579f1fdbf8395d7c8ec2770445b690248",
+            "name": "dnpsqnbqxc"
+          },
+          "file": {
+            "name": "tar",
+            "size": 517952
+          },
+          "folder_path": "/usr/bin/tar",
+          "initiating_process": {
+            "account_domain": "dnpsqnbqxc",
+            "account_name": "root",
+            "command_line": "/bin/sh /usr/libexec/dpkg/dpkg-db-backup",
+            "creation_time": "2052-09-10T03:59:59.290Z",
+            "file_name": "dash",
+            "file_size": 125688,
+            "folder_path": "/usr/bin/dash",
+            "id": 216032,
+            "logon_id": "0",
+            "md5": "4932fe2b5d32f025ce24e2370e11f318",
+            "parent_creation_time": "2052-09-10T03:59:59.151Z",
+            "parent_file_name": "dash",
+            "parent_id": 215957,
+            "sha1": "61b79917b2490a4404a96b1a00aeb0d9178a9898",
+            "sha256": "9d001729c31a620ad06861fae966d688174f4355b4ffedd75bbd69512a6a1741",
+            "signature_status": "Unknown",
+            "signer_type": "Unknown",
+            "token_elevation": "None"
+          },
+          "logon": {
+            "id": "0"
+          },
+          "md5": "d1402e7015c44d67dcd2937ad805497f",
+          "operation_name": "Publish",
+          "process": {
+            "command_line": "tar -df alternatives.tar.0 -C /var/lib/dpkg alternatives",
+            "creation_time": "2052-09-10T03:59:59.294Z",
+            "id": 216032,
+            "token_elevation": "None"
+          },
+          "report_id": "9999",
+          "sha1": "b21864a859256bbc98fb2093a3402b0869340eba",
+          "sha256": "646875709ed0423fb21cd2e07c3c8a205fe5b993623f498a5fbefbb522e2ec1a",
+          "tenant": {
+            "id": "b33f-beef-beef",
+            "name": "DefaultTenant"
+          },
+          "time": "2052-09-10T04:02:21.574Z",
+          "timestamp": "2052-09-10T03:59:59.294Z"
+        }
+      },
+      "process": {
+        "args": [
+          "tar",
+          "-df",
+          "alternatives.tar.0",
+          "-C",
+          "/var/lib/dpkg",
+          "alternatives"
+        ],
+        "args_count": 6,
+        "command_line": "tar -df alternatives.tar.0 -C /var/lib/dpkg alternatives",
+        "entity_id": "eaLpcb48U24+j9XCWG23P2w4MTg=",
+        "executable": "/usr/bin/tar",
+        "hash": {
+          "md5": "d1402e7015c44d67dcd2937ad805497f",
+          "sha1": "b21864a859256bbc98fb2093a3402b0869340eba",
+          "sha256": "646875709ed0423fb21cd2e07c3c8a205fe5b993623f498a5fbefbb522e2ec1a"
+        },
+        "name": "tar",
+        "parent": {
+          "args": [
+            "/bin/sh",
+            "/usr/libexec/dpkg/dpkg-db-backup"
+          ],
+          "args_count": 2,
+          "code_signature": {
+            "status": "Unknown"
+          },
+          "command_line": "/bin/sh /usr/libexec/dpkg/dpkg-db-backup",
+          "entity_id": "0flIoFjTS5tsXLdKdH+hfDRtS2w=",
+          "executable": "/usr/bin/dash",
+          "group_leader": {
+            "name": "dash",
+            "pid": 215957,
+            "start": "2052-09-10T03:59:59.151Z"
+          },
+          "hash": {
+            "md5": "4932fe2b5d32f025ce24e2370e11f318",
+            "sha1": "61b79917b2490a4404a96b1a00aeb0d9178a9898",
+            "sha256": "9d001729c31a620ad06861fae966d688174f4355b4ffedd75bbd69512a6a1741"
+          },
+          "name": "dash",
+          "pid": 216032,
+          "start": "2052-09-10T03:59:59.290Z"
+        },
+        "pid": 216032,
+        "start": "2052-09-10T03:59:59.294Z"
+      },
+      "related": {
+        "hash": [
+          "d1402e7015c44d67dcd2937ad805497f",
+          "b21864a859256bbc98fb2093a3402b0869340eba",
+          "646875709ed0423fb21cd2e07c3c8a205fe5b993623f498a5fbefbb522e2ec1a",
+          "4932fe2b5d32f025ce24e2370e11f318",
+          "61b79917b2490a4404a96b1a00aeb0d9178a9898",
+          "9d001729c31a620ad06861fae966d688174f4355b4ffedd75bbd69512a6a1741"
+        ],
+        "hosts": [
+          "bceea49579f1fdbf8395d7c8ec2770445b690248",
+          "dnpsqnbqxc"
+        ],
+        "user": [
+          "root"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dnpsqnbqxc",
+        "name": "root"
+      }
+    },
+    {
+      "@timestamp": "2052-09-10T14:20:33.665Z",
+      "cloud": {
+        "instance": {
+          "id": "ddddd"
+        }
+      },
+      "device": {
+        "id": "ddddd"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "start",
+        "category": [
+          "process"
+        ],
+        "kind": "event",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"_TimeReceivedBySvc\":\"2052-09-10T14:20:41.5318943Z\",\"category\":\"AdvancedHunting-DeviceProcessEvents\",\"operationName\":\"Publish\",\"properties\":{\"AccountDomain\":\"gdnohspk\",\"AccountName\":\"gyii\",\"AccountObjectId\":null,\"AccountSid\":null,\"AccountUpn\":null,\"ActionType\":\"ProcessCreated\",\"AdditionalFields\":\"{\\\"InitiatingProcessPosixEffectiveUser\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"DomainName\\\":\\\"gdnohspk\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":1000,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"PosixGroupId\\\":1000}},\\\"InitiatingProcessPosixEffectiveGroup\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"PosixGroupId\\\":1000},\\\"InitiatingProcessPosixProcessGroupId\\\":66743,\\\"InitiatingProcessPosixSessionId\\\":66743,\\\"InitiatingProcessPosixAttachedTerminal\\\":\\\"/dev/pts/3\\\",\\\"InitiatingProcessCurrentWorkingDirectory\\\":\\\"/mnt/c/Users/hyt\\\",\\\"InitiatingProcessPosixFilePermissions\\\":[\\\"OthersExecute\\\",\\\"OthersRead\\\",\\\"GroupExecute\\\",\\\"GroupRead\\\",\\\"UserExecute\\\",\\\"UserWrite\\\",\\\"UserRead\\\",\\\"UserAll\\\"],\\\"InitiatingProcessPosixUserOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"gdnohspk\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"InitiatingProcessPosixGroupOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0},\\\"InitiatingProcessPosixRealUser\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"DomainName\\\":\\\"gdnohspk\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":1000,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"PosixGroupId\\\":1000}},\\\"ProcessPosixEffectiveUser\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"DomainName\\\":\\\"gdnohspk\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":1000,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"PosixGroupId\\\":1000}},\\\"ProcessPosixEffectiveGroup\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"PosixGroupId\\\":1000},\\\"ProcessPosixProcessGroupId\\\":225349,\\\"ProcessPosixSessionId\\\":66743,\\\"ProcessPosixAttachedTerminal\\\":\\\"/dev/pts/3\\\",\\\"ProcessCurrentWorkingDirectory\\\":\\\"/home/hyt/git/detection-rules\\\",\\\"ProcessPosixFilePermissions\\\":[\\\"OthersExecute\\\",\\\"OthersRead\\\",\\\"GroupExecute\\\",\\\"GroupRead\\\",\\\"UserExecute\\\",\\\"UserWrite\\\",\\\"UserRead\\\",\\\"UserAll\\\"],\\\"ProcessPosixFileUserOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"gdnohspk\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"ProcessPosixFileGroupOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}}\",\"AppGuardContainerId\":\"fffff\",\"CreatedProcessSessionId\":null,\"DeviceId\":\"ddddd\",\"DeviceName\":\"gdnohspk\",\"FileName\":\"python3.12\",\"FileSize\":7900176,\"FolderPath\":\"/usr/bin/python3.12\",\"InitiatingProcessAccountDomain\":\"gdnohspk\",\"InitiatingProcessAccountName\":\"gyii\",\"InitiatingProcessAccountObjectId\":null,\"InitiatingProcessAccountSid\":null,\"InitiatingProcessAccountUpn\":null,\"InitiatingProcessCommandLine\":\"-zsh\",\"InitiatingProcessCreationTime\":\"2052-09-10T14:20:33.66Z\",\"InitiatingProcessFileName\":\"zsh\",\"InitiatingProcessFileSize\":1013328,\"InitiatingProcessFolderPath\":\"/usr/bin/zsh\",\"InitiatingProcessId\":225349,\"InitiatingProcessIntegrityLevel\":null,\"InitiatingProcessLogonId\":0,\"InitiatingProcessMD5\":\"95b9f7f9725b10e9d1b63503d1db4ad8\",\"InitiatingProcessParentCreationTime\":\"2052-09-09T17:56:12.959468Z\",\"InitiatingProcessParentFileName\":\"zsh\",\"InitiatingProcessParentId\":66743,\"InitiatingProcessRemoteSessionDeviceName\":null,\"InitiatingProcessRemoteSessionIP\":null,\"InitiatingProcessSHA1\":\"20a4f4a47373a05d2e5d2455bcd8d7596c447383\",\"InitiatingProcessSHA256\":\"10e7e3e39cc5501b466e75fcefd8fd4040c0eda156daa2c61e7cbc27959fc479\",\"InitiatingProcessSessionId\":null,\"InitiatingProcessSignatureStatus\":\"Unknown\",\"InitiatingProcessSignerType\":\"Unknown\",\"InitiatingProcessTokenElevation\":\"None\",\"InitiatingProcessVersionInfoCompanyName\":null,\"InitiatingProcessVersionInfoFileDescription\":null,\"InitiatingProcessVersionInfoInternalFileName\":null,\"InitiatingProcessVersionInfoOriginalFileName\":null,\"InitiatingProcessVersionInfoProductName\":null,\"InitiatingProcessVersionInfoProductVersion\":null,\"IsInitiatingProcessRemoteSession\":false,\"IsProcessRemoteSession\":false,\"LogonId\":0,\"MD5\":\"0f2092bef924d43dd045f7050a36b8a6\",\"MachineGroup\":null,\"ProcessCommandLine\":\"python -m detection_rules\",\"ProcessCreationTime\":\"2052-09-10T14:20:33.665774Z\",\"ProcessId\":225349,\"ProcessIntegrityLevel\":null,\"ProcessRemoteSessionDeviceName\":null,\"ProcessRemoteSessionIP\":null,\"ProcessTokenElevation\":\"None\",\"ProcessVersionInfoCompanyName\":null,\"ProcessVersionInfoFileDescription\":null,\"ProcessVersionInfoInternalFileName\":null,\"ProcessVersionInfoOriginalFileName\":null,\"ProcessVersionInfoProductName\":null,\"ProcessVersionInfoProductVersion\":null,\"ReportId\":9677,\"SHA1\":\"dae6a36d730227268d5a9a15cde5f3ed79edddc6\",\"SHA256\":\"3d5b81b83c1f843b520eb7c7bd800575f31e9f4f972ce420060d740c415bb043\",\"Timestamp\":\"2052-09-10T14:20:33.665774Z\"},\"tenantId\":\"abcdef0-12345-678987\",\"time\":\"2052-09-10T14:22:18.2365207Z\"}",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "hostname": "gdnohspk",
+        "id": "ddddd",
+        "name": "gdnohspk",
+        "os": {
+          "type": "unix"
+        }
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "domain": "gdnohspk",
+            "name": "gyii"
+          },
+          "action": {
+            "type": "ProcessCreated"
+          },
+          "additional_fields": {
+            "InitiatingProcessCurrentWorkingDirectory": "/mnt/c/Users/hyt",
+            "InitiatingProcessPosixAttachedTerminal": "/dev/pts/3",
+            "InitiatingProcessPosixEffectiveGroup": {
+              "Name": "gyii",
+              "PosixGroupId": 1000
+            },
+            "InitiatingProcessPosixEffectiveUser": {
+              "DomainName": "gdnohspk",
+              "LogonId": 0,
+              "Name": "gyii",
+              "PosixUserId": 1000,
+              "PrimaryPosixGroup": {
+                "Name": "gyii",
+                "PosixGroupId": 1000
+              }
+            },
+            "InitiatingProcessPosixFilePermissions": [
+              "OthersExecute",
+              "OthersRead",
+              "GroupExecute",
+              "GroupRead",
+              "UserExecute",
+              "UserWrite",
+              "UserRead",
+              "UserAll"
+            ],
+            "InitiatingProcessPosixGroupOwner": {
+              "Name": "root",
+              "PosixGroupId": 0
+            },
+            "InitiatingProcessPosixProcessGroupId": 66743,
+            "InitiatingProcessPosixRealUser": {
+              "DomainName": "gdnohspk",
+              "LogonId": 0,
+              "Name": "gyii",
+              "PosixUserId": 1000,
+              "PrimaryPosixGroup": {
+                "Name": "gyii",
+                "PosixGroupId": 1000
+              }
+            },
+            "InitiatingProcessPosixSessionId": 66743,
+            "InitiatingProcessPosixUserOwner": {
+              "DomainName": "gdnohspk",
+              "LogonId": 0,
+              "Name": "root",
+              "PosixUserId": 0,
+              "PrimaryPosixGroup": {
+                "Name": "root",
+                "PosixGroupId": 0
+              }
+            },
+            "ProcessCurrentWorkingDirectory": "/home/hyt/git/detection-rules",
+            "ProcessPosixAttachedTerminal": "/dev/pts/3",
+            "ProcessPosixEffectiveGroup": {
+              "Name": "gyii",
+              "PosixGroupId": 1000
+            },
+            "ProcessPosixEffectiveUser": {
+              "DomainName": "gdnohspk",
+              "LogonId": 0,
+              "Name": "gyii",
+              "PosixUserId": 1000,
+              "PrimaryPosixGroup": {
+                "Name": "gyii",
+                "PosixGroupId": 1000
+              }
+            },
+            "ProcessPosixFileGroupOwner": {
+              "Name": "root",
+              "PosixGroupId": 0
+            },
+            "ProcessPosixFilePermissions": [
+              "OthersExecute",
+              "OthersRead",
+              "GroupExecute",
+              "GroupRead",
+              "UserExecute",
+              "UserWrite",
+              "UserRead",
+              "UserAll"
+            ],
+            "ProcessPosixFileUserOwner": {
+              "DomainName": "gdnohspk",
+              "LogonId": 0,
+              "Name": "root",
+              "PosixUserId": 0,
+              "PrimaryPosixGroup": {
+                "Name": "root",
+                "PosixGroupId": 0
+              }
+            },
+            "ProcessPosixProcessGroupId": 225349,
+            "ProcessPosixSessionId": 66743
+          },
+          "app_guard_container_id": "fffff",
+          "category": "AdvancedHunting-DeviceProcessEvents",
+          "device": {
+            "id": "ddddd",
+            "name": "gdnohspk"
+          },
+          "file": {
+            "name": "python3.12",
+            "size": 7900176
+          },
+          "folder_path": "/usr/bin/python3.12",
+          "initiating_process": {
+            "account_domain": "gdnohspk",
+            "account_name": "gyii",
+            "command_line": "-zsh",
+            "creation_time": "2052-09-10T14:20:33.660Z",
+            "file_name": "zsh",
+            "file_size": 1013328,
+            "folder_path": "/usr/bin/zsh",
+            "id": 225349,
+            "logon_id": "0",
+            "md5": "95b9f7f9725b10e9d1b63503d1db4ad8",
+            "parent_creation_time": "2052-09-09T17:56:12.959Z",
+            "parent_file_name": "zsh",
+            "parent_id": 66743,
+            "sha1": "20a4f4a47373a05d2e5d2455bcd8d7596c447383",
+            "sha256": "10e7e3e39cc5501b466e75fcefd8fd4040c0eda156daa2c61e7cbc27959fc479",
+            "signature_status": "Unknown",
+            "signer_type": "Unknown",
+            "token_elevation": "None"
+          },
+          "logon": {
+            "id": "0"
+          },
+          "md5": "0f2092bef924d43dd045f7050a36b8a6",
+          "operation_name": "Publish",
+          "process": {
+            "command_line": "python -m detection_rules",
+            "creation_time": "2052-09-10T14:20:33.665Z",
+            "id": 225349,
+            "token_elevation": "None"
+          },
+          "report_id": "9677",
+          "sha1": "dae6a36d730227268d5a9a15cde5f3ed79edddc6",
+          "sha256": "3d5b81b83c1f843b520eb7c7bd800575f31e9f4f972ce420060d740c415bb043",
+          "tenant": {
+            "id": "abcdef0-12345-678987",
+            "name": "DefaultTenant"
+          },
+          "time": "2052-09-10T14:22:18.236Z",
+          "timestamp": "2052-09-10T14:20:33.665Z"
+        }
+      },
+      "process": {
+        "args": [
+          "python",
+          "-m",
+          "detection_rules"
+        ],
+        "args_count": 3,
+        "command_line": "python -m detection_rules",
+        "entity_id": "FRIFwHcsQx93GtUgqJcg+sAF26w=",
+        "executable": "/usr/bin/python3.12",
+        "hash": {
+          "md5": "0f2092bef924d43dd045f7050a36b8a6",
+          "sha1": "dae6a36d730227268d5a9a15cde5f3ed79edddc6",
+          "sha256": "3d5b81b83c1f843b520eb7c7bd800575f31e9f4f972ce420060d740c415bb043"
+        },
+        "name": "python3.12",
+        "parent": {
+          "args": [
+            "-zsh"
+          ],
+          "args_count": 1,
+          "code_signature": {
+            "status": "Unknown"
+          },
+          "command_line": "-zsh",
+          "entity_id": "hpxt3kd7PXxEaRDG/LRxYKDx1Z8=",
+          "executable": "/usr/bin/zsh",
+          "group_leader": {
+            "name": "zsh",
+            "pid": 66743,
+            "start": "2052-09-09T17:56:12.959Z"
+          },
+          "hash": {
+            "md5": "95b9f7f9725b10e9d1b63503d1db4ad8",
+            "sha1": "20a4f4a47373a05d2e5d2455bcd8d7596c447383",
+            "sha256": "10e7e3e39cc5501b466e75fcefd8fd4040c0eda156daa2c61e7cbc27959fc479"
+          },
+          "name": "zsh",
+          "pid": 225349,
+          "start": "2052-09-10T14:20:33.660Z"
+        },
+        "pid": 225349,
+        "start": "2052-09-10T14:20:33.665Z"
+      },
+      "related": {
+        "hash": [
+          "0f2092bef924d43dd045f7050a36b8a6",
+          "dae6a36d730227268d5a9a15cde5f3ed79edddc6",
+          "3d5b81b83c1f843b520eb7c7bd800575f31e9f4f972ce420060d740c415bb043",
+          "95b9f7f9725b10e9d1b63503d1db4ad8",
+          "20a4f4a47373a05d2e5d2455bcd8d7596c447383",
+          "10e7e3e39cc5501b466e75fcefd8fd4040c0eda156daa2c61e7cbc27959fc479"
+        ],
+        "hosts": [
+          "ddddd",
+          "gdnohspk"
+        ],
+        "user": [
+          "gyii"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "gdnohspk",
+        "name": "gyii"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-AlertEvidence\",\"operationName\":\"Publish\",\"properties\":{\"AccountDomain\":\"a-domain\",\"AccountName\":\"fecpyrn obuc\",\"AccountObjectId\":\"S-1-5-2\",\"AccountSid\":\"S-1-5-1\",\"AccountUpn\":null,\"AdditionalFields\":\"{\\\"$id\\\":\\\"1\\\",\\\"ProcessId\\\":\\\"1960\\\"}\",\"AlertId\":\"da638034938542195558_2006612345\",\"Application\":null,\"ApplicationId\":null,\"DeviceId\":\"18d9c6dfbfa32b9b8a314ffea25a360309622710\",\"DeviceName\":\"XeilUadttze3\",\"EmailSubject\":null,\"EntityType\":\"File\",\"EvidenceDirection\":null,\"EvidenceRole\":\"Related\",\"FileName\":\"ai_alternate_stream_s7f_48qa.txt:ai-8xNfG12345\",\"FileSize\":27436,\"FolderPath\":\"C:\\\\Windows\\\\Temp\",\"LocalIP\":\"192.0.2.218\",\"MachineGroup\":null,\"NetworkMessageId\":null,\"OAuthApplicationId\":null,\"ProcessCommandLine\":null,\"RegistryKey\":null,\"RegistryValueData\":null,\"RegistryValueName\":null,\"RemoteIP\":null,\"RemoteUrl\":null,\"SHA1\":\"ead83d75f644f82bee94102cc70c8d8bd4941215\",\"SHA256\":\"eb616b36a09b22b2ebf69ee791c1695cf4cbe034dbd2d4a39fbd90afdd810719\",\"ServiceSource\":\"Microsoft Defender for Endpoint\",\"ThreatFamily\":null,\"Timestamp\":\"2050-11-08T08:41:56.5950497Z\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-08T08:44:14.9047460Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-AlertInfo\",\"operationName\":\"Publish\",\"properties\":{\"AlertId\":\"da638034938542563831_172489803\",\"AttackTechniques\":\"[\\\"Valid Accounts (T1078)\\\",\\\"Cloud Accounts (T1078.004)\\\"]\",\"Category\":\"Persistence\",\"DetectionSource\":\"EDR\",\"MachineGroup\":null,\"ServiceSource\":\"Microsoft Defender for Endpoint\",\"Severity\":\"Medium\",\"Timestamp\":\"2050-11-08T08:42:17.2954051Z\",\"Title\":\"Anomalous silent process exit monitor registration\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-08T08:44:14.7934901Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-AlertInfo\",\"operationName\":\"Publish\",\"properties\":{\"AlertId\":\"da638034938542563831_172489803\",\"AttackTechniques\":\"\",\"Category\":\"Persistence\",\"DetectionSource\":\"EDR\",\"MachineGroup\":null,\"ServiceSource\":\"Microsoft Defender for Endpoint\",\"Severity\":\"Medium\",\"Timestamp\":\"2050-11-08T08:42:17.2954051Z\",\"Title\":\"Anomalous silent process exit monitor registration\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-08T08:44:14.7934901Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-AlertInfo\",\"operationName\":\"Publish\",\"properties\":{\"AlertId\":\"da638034938542563831_172489803\",\"AttackTechniques\":\"\",\"Category\":\"Persistence\",\"DetectionSource\":\"EDR\",\"MachineGroup\":null,\"ServiceSource\":\"Microsoft Defender for Endpoint\",\"Severity\":\"Medium\",\"Timestamp\":\"2050-11-08T08:42:17.2954051Z\",\"Title\":\"Anomalous silent process exit monitor registration\",\"ProcessCommandLine\":\"\\\"InstallUtil.exe\\\" /u \\\"C:\\\\Program Files (x86)\\\\Lenovo\\\\System Update\\\\SUService.exe\\\"\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-08T08:44:14.7934901Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"_TimeReceivedBySvc\":\"2052-09-10T04:00:06.8088202Z\",\"category\":\"AdvancedHunting-DeviceProcessEvents\",\"operationName\":\"Publish\",\"properties\":{\"AccountDomain\":\"dnpsqnbqxc\",\"AccountName\":\"root\",\"AccountObjectId\":null,\"AccountSid\":null,\"AccountUpn\":null,\"ActionType\":\"ProcessCreated\",\"AdditionalFields\":\"{\\\"InitiatingProcessPosixEffectiveUser\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"dnpsqnbqxc\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"InitiatingProcessPosixEffectiveGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0},\\\"InitiatingProcessPosixProcessGroupId\\\":215957,\\\"InitiatingProcessPosixSessionId\\\":215957,\\\"InitiatingProcessCurrentWorkingDirectory\\\":\\\"/var/backups\\\",\\\"InitiatingProcessPosixFilePermissions\\\":[\\\"OthersExecute\\\",\\\"OthersRead\\\",\\\"GroupExecute\\\",\\\"GroupRead\\\",\\\"UserExecute\\\",\\\"UserWrite\\\",\\\"UserRead\\\",\\\"UserAll\\\"],\\\"InitiatingProcessPosixUserOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"dnpsqnbqxc\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"InitiatingProcessPosixGroupOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0},\\\"InitiatingProcessPosixRealUser\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"dnpsqnbqxc\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"ProcessPosixEffectiveUser\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"dnpsqnbqxc\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"ProcessPosixEffectiveGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0},\\\"ProcessPosixProcessGroupId\\\":215957,\\\"ProcessPosixSessionId\\\":215957,\\\"ProcessCurrentWorkingDirectory\\\":\\\"/var/backups\\\",\\\"ProcessPosixFilePermissions\\\":[\\\"OthersExecute\\\",\\\"OthersRead\\\",\\\"GroupExecute\\\",\\\"GroupRead\\\",\\\"UserExecute\\\",\\\"UserWrite\\\",\\\"UserRead\\\",\\\"UserAll\\\"],\\\"ProcessPosixFileUserOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"dnpsqnbqxc\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"ProcessPosixFileGroupOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}}\",\"AppGuardContainerId\":\"1234-2222a\",\"CreatedProcessSessionId\":null,\"DeviceId\":\"bceea49579f1fdbf8395d7c8ec2770445b690248\",\"DeviceName\":\"dnpsqnbqxc\",\"FileName\":\"tar\",\"FileSize\":517952,\"FolderPath\":\"/usr/bin/tar\",\"InitiatingProcessAccountDomain\":\"dnpsqnbqxc\",\"InitiatingProcessAccountName\":\"root\",\"InitiatingProcessAccountObjectId\":null,\"InitiatingProcessAccountSid\":null,\"InitiatingProcessAccountUpn\":null,\"InitiatingProcessCommandLine\":\"/bin/sh /usr/libexec/dpkg/dpkg-db-backup\",\"InitiatingProcessCreationTime\":\"2052-09-10T03:59:59.29Z\",\"InitiatingProcessFileName\":\"dash\",\"InitiatingProcessFileSize\":125688,\"InitiatingProcessFolderPath\":\"/usr/bin/dash\",\"InitiatingProcessId\":216032,\"InitiatingProcessIntegrityLevel\":null,\"InitiatingProcessLogonId\":0,\"InitiatingProcessMD5\":\"4932fe2b5d32f025ce24e2370e11f318\",\"InitiatingProcessParentCreationTime\":\"2052-09-10T03:59:59.151109Z\",\"InitiatingProcessParentFileName\":\"dash\",\"InitiatingProcessParentId\":215957,\"InitiatingProcessRemoteSessionDeviceName\":null,\"InitiatingProcessRemoteSessionIP\":null,\"InitiatingProcessSHA1\":\"61b79917b2490a4404a96b1a00aeb0d9178a9898\",\"InitiatingProcessSHA256\":\"9d001729c31a620ad06861fae966d688174f4355b4ffedd75bbd69512a6a1741\",\"InitiatingProcessSessionId\":null,\"InitiatingProcessSignatureStatus\":\"Unknown\",\"InitiatingProcessSignerType\":\"Unknown\",\"InitiatingProcessTokenElevation\":\"None\",\"InitiatingProcessVersionInfoCompanyName\":null,\"InitiatingProcessVersionInfoFileDescription\":null,\"InitiatingProcessVersionInfoInternalFileName\":null,\"InitiatingProcessVersionInfoOriginalFileName\":null,\"InitiatingProcessVersionInfoProductName\":null,\"InitiatingProcessVersionInfoProductVersion\":null,\"IsInitiatingProcessRemoteSession\":false,\"IsProcessRemoteSession\":false,\"LogonId\":0,\"MD5\":\"d1402e7015c44d67dcd2937ad805497f\",\"MachineGroup\":null,\"ProcessCommandLine\":\"tar -df alternatives.tar.0 -C /var/lib/dpkg alternatives\",\"ProcessCreationTime\":\"2052-09-10T03:59:59.29459Z\",\"ProcessId\":216032,\"ProcessIntegrityLevel\":null,\"ProcessRemoteSessionDeviceName\":null,\"ProcessRemoteSessionIP\":null,\"ProcessTokenElevation\":\"None\",\"ProcessVersionInfoCompanyName\":null,\"ProcessVersionInfoFileDescription\":null,\"ProcessVersionInfoInternalFileName\":null,\"ProcessVersionInfoOriginalFileName\":null,\"ProcessVersionInfoProductName\":null,\"ProcessVersionInfoProductVersion\":null,\"ReportId\":9999,\"SHA1\":\"b21864a859256bbc98fb2093a3402b0869340eba\",\"SHA256\":\"646875709ed0423fb21cd2e07c3c8a205fe5b993623f498a5fbefbb522e2ec1a\",\"Timestamp\":\"2052-09-10T03:59:59.29459Z\"},\"tenantId\":\"b33f-beef-beef\",\"time\":\"2052-09-10T04:02:21.5746371Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"_TimeReceivedBySvc\":\"2052-09-10T14:20:41.5318943Z\",\"category\":\"AdvancedHunting-DeviceProcessEvents\",\"operationName\":\"Publish\",\"properties\":{\"AccountDomain\":\"gdnohspk\",\"AccountName\":\"gyii\",\"AccountObjectId\":null,\"AccountSid\":null,\"AccountUpn\":null,\"ActionType\":\"ProcessCreated\",\"AdditionalFields\":\"{\\\"InitiatingProcessPosixEffectiveUser\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"DomainName\\\":\\\"gdnohspk\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":1000,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"PosixGroupId\\\":1000}},\\\"InitiatingProcessPosixEffectiveGroup\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"PosixGroupId\\\":1000},\\\"InitiatingProcessPosixProcessGroupId\\\":66743,\\\"InitiatingProcessPosixSessionId\\\":66743,\\\"InitiatingProcessPosixAttachedTerminal\\\":\\\"/dev/pts/3\\\",\\\"InitiatingProcessCurrentWorkingDirectory\\\":\\\"/mnt/c/Users/hyt\\\",\\\"InitiatingProcessPosixFilePermissions\\\":[\\\"OthersExecute\\\",\\\"OthersRead\\\",\\\"GroupExecute\\\",\\\"GroupRead\\\",\\\"UserExecute\\\",\\\"UserWrite\\\",\\\"UserRead\\\",\\\"UserAll\\\"],\\\"InitiatingProcessPosixUserOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"gdnohspk\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"InitiatingProcessPosixGroupOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0},\\\"InitiatingProcessPosixRealUser\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"DomainName\\\":\\\"gdnohspk\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":1000,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"PosixGroupId\\\":1000}},\\\"ProcessPosixEffectiveUser\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"DomainName\\\":\\\"gdnohspk\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":1000,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"PosixGroupId\\\":1000}},\\\"ProcessPosixEffectiveGroup\\\":{\\\"Name\\\":\\\"gyii\\\",\\\"PosixGroupId\\\":1000},\\\"ProcessPosixProcessGroupId\\\":225349,\\\"ProcessPosixSessionId\\\":66743,\\\"ProcessPosixAttachedTerminal\\\":\\\"/dev/pts/3\\\",\\\"ProcessCurrentWorkingDirectory\\\":\\\"/home/hyt/git/detection-rules\\\",\\\"ProcessPosixFilePermissions\\\":[\\\"OthersExecute\\\",\\\"OthersRead\\\",\\\"GroupExecute\\\",\\\"GroupRead\\\",\\\"UserExecute\\\",\\\"UserWrite\\\",\\\"UserRead\\\",\\\"UserAll\\\"],\\\"ProcessPosixFileUserOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"DomainName\\\":\\\"gdnohspk\\\",\\\"LogonId\\\":0,\\\"PosixUserId\\\":0,\\\"PrimaryPosixGroup\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}},\\\"ProcessPosixFileGroupOwner\\\":{\\\"Name\\\":\\\"root\\\",\\\"PosixGroupId\\\":0}}\",\"AppGuardContainerId\":\"fffff\",\"CreatedProcessSessionId\":null,\"DeviceId\":\"ddddd\",\"DeviceName\":\"gdnohspk\",\"FileName\":\"python3.12\",\"FileSize\":7900176,\"FolderPath\":\"/usr/bin/python3.12\",\"InitiatingProcessAccountDomain\":\"gdnohspk\",\"InitiatingProcessAccountName\":\"gyii\",\"InitiatingProcessAccountObjectId\":null,\"InitiatingProcessAccountSid\":null,\"InitiatingProcessAccountUpn\":null,\"InitiatingProcessCommandLine\":\"-zsh\",\"InitiatingProcessCreationTime\":\"2052-09-10T14:20:33.66Z\",\"InitiatingProcessFileName\":\"zsh\",\"InitiatingProcessFileSize\":1013328,\"InitiatingProcessFolderPath\":\"/usr/bin/zsh\",\"InitiatingProcessId\":225349,\"InitiatingProcessIntegrityLevel\":null,\"InitiatingProcessLogonId\":0,\"InitiatingProcessMD5\":\"95b9f7f9725b10e9d1b63503d1db4ad8\",\"InitiatingProcessParentCreationTime\":\"2052-09-09T17:56:12.959468Z\",\"InitiatingProcessParentFileName\":\"zsh\",\"InitiatingProcessParentId\":66743,\"InitiatingProcessRemoteSessionDeviceName\":null,\"InitiatingProcessRemoteSessionIP\":null,\"InitiatingProcessSHA1\":\"20a4f4a47373a05d2e5d2455bcd8d7596c447383\",\"InitiatingProcessSHA256\":\"10e7e3e39cc5501b466e75fcefd8fd4040c0eda156daa2c61e7cbc27959fc479\",\"InitiatingProcessSessionId\":null,\"InitiatingProcessSignatureStatus\":\"Unknown\",\"InitiatingProcessSignerType\":\"Unknown\",\"InitiatingProcessTokenElevation\":\"None\",\"InitiatingProcessVersionInfoCompanyName\":null,\"InitiatingProcessVersionInfoFileDescription\":null,\"InitiatingProcessVersionInfoInternalFileName\":null,\"InitiatingProcessVersionInfoOriginalFileName\":null,\"InitiatingProcessVersionInfoProductName\":null,\"InitiatingProcessVersionInfoProductVersion\":null,\"IsInitiatingProcessRemoteSession\":false,\"IsProcessRemoteSession\":false,\"LogonId\":0,\"MD5\":\"0f2092bef924d43dd045f7050a36b8a6\",\"MachineGroup\":null,\"ProcessCommandLine\":\"python -m detection_rules\",\"ProcessCreationTime\":\"2052-09-10T14:20:33.665774Z\",\"ProcessId\":225349,\"ProcessIntegrityLevel\":null,\"ProcessRemoteSessionDeviceName\":null,\"ProcessRemoteSessionIP\":null,\"ProcessTokenElevation\":\"None\",\"ProcessVersionInfoCompanyName\":null,\"ProcessVersionInfoFileDescription\":null,\"ProcessVersionInfoInternalFileName\":null,\"ProcessVersionInfoOriginalFileName\":null,\"ProcessVersionInfoProductName\":null,\"ProcessVersionInfoProductVersion\":null,\"ReportId\":9677,\"SHA1\":\"dae6a36d730227268d5a9a15cde5f3ed79edddc6\",\"SHA256\":\"3d5b81b83c1f843b520eb7c7bd800575f31e9f4f972ce420060d740c415bb043\",\"Timestamp\":\"2052-09-10T14:20:33.665774Z\"},\"tenantId\":\"abcdef0-12345-678987\",\"time\":\"2052-09-10T14:22:18.2365207Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {
+      "url.extension": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-m365_defender-event-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "m365_defender",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

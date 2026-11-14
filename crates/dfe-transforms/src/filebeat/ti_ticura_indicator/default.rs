@@ -72,9 +72,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("threat.indicator.id") };
             if _cond {
-                // Painless script
-                // Source: if (!(ctx.threat.indicator.id instanceof List)) {\n  ctx.threat.indicator.id = [ctx.threat.indicator.id];\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -501,9 +499,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.ticura.indicator.merged == null || !(ctx.ticura.indicator.merged instanceof Map)) {\n    ctx.ticura.indicator.merged = [:];\n}\n\nList mergedCountries = [];\nif (ctx.ticura?.indicator?.countries != null) {\n    if (ctx.ticura.indicator.countries instanceof List) {\n        mergedCountries.addAll(ctx.ticura.indicator.countries);\n    } else {\n        mergedCountries.add(ctx.ticura.indicator.countries);\n    }\n}\nif (ctx.ticura?.indicator?.additional_info?.countries != null) {\n    if (ctx.ticura.indicator.additional_info.countries instanceof List) {\n        mergedCountries.addAll(ctx.ticura.indicator.additional_info.countries);\n    } else {\n        mergedCountries.add(ctx.ticura.indicator.additional_info.countries);\n    }\n}\nctx.ticura.indicator.merged.countries = new ArrayList(new HashSet(mergedCountries));\nctx.ticura.indicator.merged.countries.sort(null);\n\nList mergedIndustries = [];\nif (ctx.ticura?.indicator?.industries != null) {\n    if (ctx.ticura.indicator.industries instanceof List) {\n        mergedIndustries.addAll(ctx.ticura.indicator.industries);\n    } else {\n        mergedIndustries.add(ctx.ticura.indicator.industries);\n    }\n}\nif (ctx.ticura?.indicator?.additional_info?.industries != null) {\n    if (ctx.ticura.indicator.additional_info.industries instanceof List) {\n        mergedIndustries.addAll(ctx.ticura.indicator.additional_info.industries);\n    } else {\n        mergedIndustries.add(ctx.ticura.indicator.additional_info.industries);\n    }\n}\nctx.ticura.indicator.merged.industries = new ArrayList(new HashSet(mergedIndustries));\nctx.ticura.indicator.merged.industries.sort(null);\n\nList mergedActors = [];\nif (ctx.ticura?.indicator?.actors != null) {\n    if (ctx.ticura.indicator.actors instanceof List) {\n        mergedActors.addAll(ctx.ticura.indicator.actors);\n    } else {\n        mergedActors.add(ctx.ticura.indicator.actors);\n    }\n}\nif (ctx.ticura?.indicator?.additional_info?.actors != null) {\n    if (ctx.ticura.indicator.additional_info.actors instanceof List) {\n        mergedActors.addAll(ctx.ticura.indicator.additional_info.actors);\n    } else {\n        mergedActors.add(ctx.ticura.indicator.additional_info.actors);\n    }\n}\nctx.ticura.indicator.merged.actors = new ArrayList(new HashSet(mergedActors));\nctx.ticura.indicator.merged.actors.sort(null);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -515,8 +511,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) { handleMap((Map) v); return ((Map) v).isEmpty(); }\n    else if (v instanceof List) { handleList((List) v); return ((List) v).isEmpty(); }\n    else if (v instanceof String) { return ((String) v).isEmpty(); }\n    return v == null;\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) { handleMap((Map) v); return ((Map) v).isEmpty(); }\n    else if (v instanceof List) { handleList((List) v); return ((List) v).isEmpty(); }\n    else if (v instanceof String) { return ((String) v).isEmpty(); }\n    return v == null;\n  });\n}\nhandleMap(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

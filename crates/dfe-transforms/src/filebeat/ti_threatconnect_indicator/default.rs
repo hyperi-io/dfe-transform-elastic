@@ -125,9 +125,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def dur = ctx._conf.ioc_expiration_duration; String lastModified = ctx.json.lastModified; if (dur instanceof String){\n  String time_unit = dur.substring(dur.length() -  1, dur.length());\n  String time_value = dur.substring(0, dur.length() - 1);\n  if (time_unit == 'd') {\n    ctx.json.deleted_at = ZonedDateTime.parse(lastModified).plusDays(Long.parseLong(time_value));\n  } else if (time_unit == 'h') {\n    ctx.json.deleted_at = ZonedDateTime.parse(lastModified).plusHours(Long.parseLong(time_value));\n  } else if (time_unit == 'm') {\n    ctx.json.deleted_at = ZonedDateTime.parse(lastModified).plusMinutes(Long.parseLong(time_value));\n  } else {\n    ctx.json.deleted_at = ZonedDateTime.parse(lastModified).plusDays(90L);\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2655,9 +2653,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.associatedIndicators.data") };
             if _cond {
-                // Painless script
-                // Source: def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n      if (key=='location') {\n        updatedJson['location_value'] = value;\n        updatedJson.remove('location');\n      }\n    }\n  }\n  return updatedJson;\n}\ndef entities_obj = new ArrayList();\nfor(entity in ctx.json.associatedIndicators.data){\n  entities_obj.add(renameKeys(entity, params));\n}\nctx.entities_obj=entities_obj;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -4549,9 +4545,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.confidence") };
             if _cond {
-                // Painless script
-                // Source: def value = ctx.json?.confidence; def confidence = \"None\"; if (value == 0) {\n  confidence = \"Not Specified\";\n} if (value > 1 && value < 40) {\n  confidence = \"Low\";\n} if (value >= 40.0 && value < 70) {\n  confidence = \"Medium\";\n} else if (value >= 70 && value <= 100) {\n  confidence = \"High\";\n} ctx.threat.indicator.put(\"confidence\", confidence)\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -5323,9 +5317,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.threat_connect.indicator.type.contains('File')) {\n  ctx.threat.indicator.type = ['file'];\n} else if (ctx.threat_connect.indicator.type.contains('URL')){\n  ctx.threat.indicator.type = ['url'];\n} else if (ctx.threat_connect.indicator.type.contains('EmailAddress')){\n  ctx.threat.indicator.type = ['email-addr'];\n} else if (ctx.threat_connect.indicator.type.contains('Mutex')){\n  ctx.threat.indicator.type = ['mutex'];\n}  else if (ctx.threat_connect.indicator.type.contains('Registry Key')){\n  ctx.threat.indicator.type = ['windows-registry-key'];\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -5741,9 +5733,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def ecsTlps = ['WHITE','CLEAR','GREEN','AMBER','AMBER+STRICT','RED']; def tlps = new ArrayList(); for (def obj : ctx.json.securityLabels.data) {\n  if (obj.containsKey('name')) {\n    if (obj.get('name').contains(':')){\n       def name = obj.get('name').splitOnToken(':')[1];\n       if (ecsTlps.contains(name)) {\n          tlps.add(name)\n       }\n    }\n  }\n} if (tlps.size() > 0){\n  if (ctx.threat.indicator.marking == null) {\n    ctx.threat.indicator.marking = new HashMap();\n  }\n  ctx.threat.indicator.marking.tlp = tlps;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6042,9 +6032,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def t_names = new ArrayList();\nfor (def obj : ctx.json.tags.data) {\n  if (obj.get('techniqueId') != null) {\n    t_names.add(obj.get('name'));\n  }\n}\nif (t_names.size() > 0){\n  if (ctx.threat.technique == null) {\n    ctx.threat.technique = new HashMap();\n  }\n  ctx.threat.technique.name = t_names;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -6579,8 +6567,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

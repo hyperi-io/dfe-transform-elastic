@@ -162,9 +162,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx.bitwarden?.event?.type?.value == null || params.get(ctx.bitwarden.event.type.value) == null) {\n  return;\n}\ndef hm = new HashMap(params.get(ctx.bitwarden.event.type.value));\nctx.bitwarden.event.type.name = hm.name;\nctx.event.category = hm.category;\nctx.event.type = hm.type;\nctx.event.outcome = hm.outcome;
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -373,9 +371,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("bitwarden.event.device.value") };
             if _cond {
-                // Painless script
-                // Source: def deviceTypeValue = Integer.parseInt(ctx.bitwarden.event.device.value);\nif (deviceTypeValue >= 0 && deviceTypeValue < params.DeviceType.length) {\n  ctx.bitwarden.event.device.put('name', params['DeviceType'][deviceTypeValue]);\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -536,8 +532,7 @@ impl Transform for Default {
                 event.remove("bitwarden.event.ip_address");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

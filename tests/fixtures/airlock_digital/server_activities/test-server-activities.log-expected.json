@@ -1,0 +1,106 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-01-25T05:23:31.770Z",
+      "airlock_digital": {
+        "server_activities": {
+          "checkpoint": "65b1f05387bacb6955a32a3c",
+          "datetime": "2052-01-25T05:23:31.770Z",
+          "description": "a.out added to repository",
+          "task": "Repository Add",
+          "user": "SYSTEM"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "repository-add",
+        "category": [
+          "host"
+        ],
+        "id": "65b1f05387bacb6955a32a3c",
+        "kind": "event",
+        "original": "{\"checkpoint\":\"65b1f05387bacb6955a32a3c\",\"datetime\":\"2052-01-25T05:23:31.77Z\",\"task\":\"Repository Add\",\"user\":\"SYSTEM\",\"description\":\"a.out added to repository\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "a.out added to repository",
+      "related": {
+        "user": [
+          "SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "SYSTEM"
+      }
+    },
+    {
+      "@timestamp": "2052-01-25T05:23:31.880Z",
+      "airlock_digital": {
+        "server_activities": {
+          "checkpoint": "65b1f05387bacb6955a32a40",
+          "datetime": "2052-01-25T05:23:31.880Z",
+          "description": "file.exe added to repository",
+          "task": "Repository Add",
+          "user": "SYSTEM"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "repository-add",
+        "category": [
+          "host"
+        ],
+        "id": "65b1f05387bacb6955a32a40",
+        "kind": "event",
+        "original": "{\"checkpoint\":\"65b1f05387bacb6955a32a40\",\"datetime\":\"2052-01-25T05:23:31.88Z\",\"task\":\"Repository Add\",\"user\":\"SYSTEM\",\"description\":\"file.exe added to repository\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "file.exe added to repository",
+      "related": {
+        "user": [
+          "SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "SYSTEM"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"checkpoint\":\"65b1f05387bacb6955a32a3c\",\"datetime\":\"2052-01-25T05:23:31.77Z\",\"task\":\"Repository Add\",\"user\":\"SYSTEM\",\"description\":\"a.out added to repository\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"checkpoint\":\"65b1f05387bacb6955a32a40\",\"datetime\":\"2052-01-25T05:23:31.88Z\",\"task\":\"Repository Add\",\"user\":\"SYSTEM\",\"description\":\"file.exe added to repository\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "server_activities",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-airlock_digital-server_activities-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "airlock_digital",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "expected": [
+    {
+      "ceph": {
+        "cluster_health": {
+          "epoch": 7,
+          "round": {
+            "count": 0,
+            "status": "finished"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "metric",
+        "module": "ceph",
+        "original": "{ \"command\": \"time-sync-status format=json\", \"outb\": {\"timechecks\":{\"epoch\":7,\"round\":0,\"round_status\":\"finished\"}}, \"outs\": \"\" }",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{ \"command\": \"time-sync-status format=json\", \"outb\": {\"timechecks\":{\"epoch\":7,\"round\":0,\"round_status\":\"finished\"}}, \"outs\": \"\" }",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cluster_health",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ceph-cluster_health-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ceph",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

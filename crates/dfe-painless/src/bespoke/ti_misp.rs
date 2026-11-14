@@ -2,7 +2,7 @@
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! `ti_misp`'s microsecond-to-millisecond trim on the attribute sighting
-//! stamps, transcribed.
+//! stamps, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -31,7 +31,7 @@ fn microseconds_to_milliseconds(event: &mut Event, _params: &Value) {
     }
 }
 
-/// Every `ti_misp` script transcribed here.
+/// Every `ti_misp` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "c251879607a2bf21fb4980093185015f81bf2490a5544787546735df6fe0ce0d",
     source: "ti_misp",

@@ -1,0 +1,51 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-06-24T22:03:49.025419Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "dataset": "tenable_ot_security.system_log",
+        "kind": "event",
+        "module": "tenable_ot_security",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Login by local user \"admin\" failed",
+      "related": {
+        "user": [
+          "admin"
+        ]
+      },
+      "user": {
+        "name": "admin"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": {
+        "message": "Login by local user \"admin\" failed",
+        "timeStamp": "2052-06-24T22:03:49.025419Z",
+        "userName": "admin"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "system_log",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tenable_ot_security-system_log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "tenable_ot_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

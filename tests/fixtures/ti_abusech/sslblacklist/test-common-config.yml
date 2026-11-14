@@ -1,0 +1,9 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+  _conf:
+    interval: 1h
+dynamic_fields:
+  event.ingested: .*
+  abusech.sslblacklist.deleted_at: .*

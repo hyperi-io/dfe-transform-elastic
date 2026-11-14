@@ -1,0 +1,69 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-12-10T01:34:26.743Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 8080
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Tunnel::DISCOVER",
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":2428018466.743509,\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":0,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":8080,\"tunnel_type\":\"Tunnel::HTTP\",\"action\":\"Tunnel::DISCOVER\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 0
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "tunnel": {
+          "action": "Tunnel::DISCOVER",
+          "type": "Tunnel::HTTP"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2428018466.743509,\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":0,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":8080,\"tunnel_type\":\"Tunnel::HTTP\",\"action\":\"Tunnel::DISCOVER\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "tunnel",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-tunnel-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

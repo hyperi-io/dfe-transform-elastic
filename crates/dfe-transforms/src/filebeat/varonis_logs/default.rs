@@ -28,9 +28,7 @@ impl Transform for Default {
 
             event.set("event.module", json!("varonis"))?;
 
-            // Painless script
-            // Source: void changeLabelsToKeys(Map input) {\n    List keys = new ArrayList(input.keySet()); // To avoid conflicts\n    for (String key : keys) {\n        if (key.endsWith(\"Label\")) {\n            String valueKey = key.substring(0, key.length() - 5);\n            if (input.containsKey(valueKey) && input.get(valueKey) != null && !input.get(valueKey).toString().isEmpty()) {\n                input.put(input.get(key), input.get(valueKey));\n                input.remove(valueKey);\n                input.remove(key);\n            } else {\n                input.remove(key);\n            }\n        }\n    }\n}\nchangeLabelsToKeys(ctx.cef.extensions);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -40,9 +38,7 @@ impl Transform for Default {
 
             event.rename("cef.extensions", "varonis.logs")?;
 
-            // Painless script
-            // Source: Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\n\nif (ctx.varonis.logs != null) {\n  ctx.varonis.logs = keysToSnakeCase(ctx.varonis.logs);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -56,9 +52,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.severity") };
             if _cond {
-                // Painless script
-                // Source: String severity = String.valueOf(ctx.event.severity);\nctx.event.severity_label = params.descriptions.getOrDefault(\n  severity,\n  \"unknown\"\n);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

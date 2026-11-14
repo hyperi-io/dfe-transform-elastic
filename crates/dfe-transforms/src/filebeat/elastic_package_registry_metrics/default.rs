@@ -134,9 +134,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx.package_registry.containsKey(\"start_time\") && ctx.containsKey(\"@timestamp\")) {\n    ZonedDateTime created = ZonedDateTime.parse(ctx[\"@timestamp\"]);\n    ZonedDateTime start = ZonedDateTime.parse(ctx.package_registry['start_time']);\n    long uptime = ChronoUnit.MILLIS.between(start, created)/1000;\n    ctx.package_registry[\"uptime\"] = uptime;\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

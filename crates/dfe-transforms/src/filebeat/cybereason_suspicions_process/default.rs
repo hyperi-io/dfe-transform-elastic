@@ -77,9 +77,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.suspicionsMap = ctx.json[1]; ctx.evidenceMap = ctx.json[2]; ctx.json = ctx.json[0];
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2965,8 +2963,7 @@ impl Transform for Default {
                     .is_some_and(|v| !v.is_null())
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.companyName\"); ctx.cybereason.suspicions_process.simple_values.image_file_company_name = obj;
+                // The pipeline's script, emitted as the runtime's equivalent
                 move_map_entry(
                     event,
                     &MoveMapEntry::new(
@@ -3031,8 +3028,7 @@ impl Transform for Default {
                     .is_some_and(|v| !v.is_null())
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.fileHash.iconBase64\"); ctx.cybereason.suspicions_process.simple_values.image_file_hash_icon_base64 = obj;
+                // The pipeline's script, emitted as the runtime's equivalent
                 move_map_entry(
                     event,
                     &MoveMapEntry::new(
@@ -3097,8 +3093,7 @@ impl Transform for Default {
                     .is_some_and(|v| !v.is_null())
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.maliciousClassificationType\"); ctx.cybereason.suspicions_process.simple_values.image_file_malicious_classification_type = obj;
+                // The pipeline's script, emitted as the runtime's equivalent
                 move_map_entry(event, &MoveMapEntry::new("json.simpleValues".into(), "imageFile.maliciousClassificationType".into(), "cybereason.suspicions_process.simple_values.image_file_malicious_classification_type".into()));
             }
 
@@ -3152,8 +3147,7 @@ impl Transform for Default {
                     .is_some_and(|v| !v.is_null())
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.md5String\"); ctx.cybereason.suspicions_process.simple_values.image_file_md5_string = obj;
+                // The pipeline's script, emitted as the runtime's equivalent
                 move_map_entry(
                     event,
                     &MoveMapEntry::new(
@@ -3254,8 +3248,7 @@ impl Transform for Default {
                     .is_some_and(|v| !v.is_null())
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.productName\"); ctx.cybereason.suspicions_process.simple_values.image_file_product_name = obj;
+                // The pipeline's script, emitted as the runtime's equivalent
                 move_map_entry(
                     event,
                     &MoveMapEntry::new(
@@ -3320,8 +3313,7 @@ impl Transform for Default {
                     .is_some_and(|v| !v.is_null())
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.sha1String\"); ctx.cybereason.suspicions_process.simple_values.image_file_sha1_string = obj;
+                // The pipeline's script, emitted as the runtime's equivalent
                 move_map_entry(
                     event,
                     &MoveMapEntry::new(
@@ -4018,8 +4010,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

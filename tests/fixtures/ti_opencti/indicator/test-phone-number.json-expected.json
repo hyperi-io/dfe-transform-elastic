@@ -1,0 +1,127 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2045-10-31T15:00:07.000Z",
+        "id": "729c9218-06b3-450a-bb03-0f94af630776",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2046-10-31T15:00:07.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 0,
+          "pattern": "[phone-number:value = '+35220880392']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 40,
+          "standard_id": "indicator--464c3732-d824-5225-9c50-db734881a1b4",
+          "valid_from": "2045-10-31T15:00:07.000Z",
+          "valid_until": "2046-10-31T15:00:07.000Z"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "scam"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "description": "fake Microsoft phone number",
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "modified_at": "2051-01-17T08:55:25.258Z",
+          "name": "+35220880392",
+          "provider": "CIRCL",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/729c9218-06b3-450a-bb03-0f94af630776",
+          "type": "phone-number"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 15,
+      "created": "2045-10-31T15:00:07.000Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "CIRCL"
+      },
+      "description": "fake Microsoft phone number",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "729c9218-06b3-450a-bb03-0f94af630776",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T08:55:25.258Z",
+      "name": "+35220880392",
+      "objectLabel": [
+        {
+          "value": "scam"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:CLEAR",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [],
+        "pageInfo": {
+          "globalCount": 0
+        }
+      },
+      "pattern": "[phone-number:value = '+35220880392']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--464c3732-d824-5225-9c50-db734881a1b4",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2045-10-31T15:00:07.000Z",
+      "valid_until": "2046-10-31T15:00:07.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "Phone-Number",
+      "x_opencti_score": 40
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_opencti-indicator-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_opencti",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,7 @@
+Feb 22 16:45:20 gwfoa26 sshd[2738]: Failed password for root from 198.51.100.144 port 1786 ssh2
+Feb 22 16:45:20 gwfoa26 sshd[2738]: pam_succeed_if(sshd:auth): requirement "uid >= 1000" not met by user "root"
+Feb 22 16:45:26 gwfoa26 sshd[2738]: fatal: Read from socket failed: Connection reset by peer [preauth]
+Feb 22 16:45:26 gwfoa26 sshd[2738]: PAM 4 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.144  user=root
+Feb 22 16:45:26 gwfoa26 sshd[2738]: PAM service(sshd) ignoring max retries; 5 > 3
+Feb 22 16:45:32 gwfoa26 sshd[2742]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.144  user=root
+Feb 22 17:04:51 gwfoa26 sudo:     qhs : TTY=pts/0 ; PWD=/home/qhs ; USER=root ; COMMAND=/bin/cp /var/log/secure .

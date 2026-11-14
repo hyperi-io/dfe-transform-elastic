@@ -1,0 +1,69 @@
+{
+    "events": [
+        {
+            "@timestamp": "2050-11-30T09:57:14.833Z",
+            "agent": {
+              "hostname": "Wfmmax1",
+              "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+              "version": "7.3.1",
+              "type": "winlogbeat",
+              "ephemeral_id": "7d2caeef-f2bc-439c-96ed-84601bb37a76"
+            },
+            "ecs": {
+              "version": "1.0.1"
+            },
+            "host": {
+              "os": {
+                "family": "windows",
+                "name": "Windows Server 2016 Standard Evaluation",
+                "kernel": "10.0.14393.693 (rs1_release.161220-1747)",
+                "build": "14393.693",
+                "platform": "windows",
+                "version": "10.0"
+              },
+              "id": "9ff0eeec-e913-4a05-990e-50d99b6ea290",
+              "hostname": "Wfmmax1",
+              "name": "Wfmmax1",
+              "architecture": "x86_64"
+            },
+            "winlog": {
+              "api": "wineventlog",
+              "opcode": "Info",
+              "task": "File Share",
+              "computer_name": "Wfmmax1.xcyu5.local",
+              "event_data": {
+                "ShareLocalPath": "C:\\Users\\Administrator\\Downloads\\F2",
+                "SubjectUserSid": "S-1-5-21-1280187532-2219128962-763009249-500",
+                "SubjectUserName": "Administrator",
+                "SubjectDomainName": "TEST1",
+                "SubjectLogonId": "0x16b304a",
+                "ShareName": "\\\\*\\F2"
+              },
+              "provider_name": "Microsoft-Windows-Security-Auditing",
+              "record_id": 39845139,
+              "channel": "Security",
+              "keywords": [
+                "Audit Success"
+              ],
+              "process": {
+                "pid": 4,
+                "thread": {
+                  "id": 1056
+                }
+              },
+              "event_id": 5142,
+              "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}"
+            },
+            "event": {
+              "action": "File Share",
+              "created": "2050-11-30T09:58:09.118Z",
+              "kind": "event",
+              "code": 5142
+            },
+            "log": {
+              "level": "information"
+            },
+            "message": "A network share object was added.\n\t\nSubject:\n\tSecurity ID:\t\tS-1-5-21-1280187532-2219128962-763009249-500\n\tAccount Name:\t\tAdministrator\n\tAccount Domain:\t\tTEST1\n\tLogon ID:\t\t0x16B304A\n\nShare Information:\t\n\tShare Name:\t\t\\\\*\\F2\n\tShare Path:\t\tC:\\Users\\Administrator\\Downloads\\F2"
+        }
+    ]
+}

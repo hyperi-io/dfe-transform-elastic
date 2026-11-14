@@ -1438,9 +1438,7 @@ impl Transform for Default {
                     })
             };
             if _cond {
-                // Painless script
-                // Source: String identities_tail = ctx.cisco.umbrella.identities.substring(ctx.cisco.umbrella.identity.length());\nif (identities_tail.startsWith(',')) {\n  identities_tail = identities_tail.substring(1);\n}\nif (ctx.cisco.umbrella._tmp == null) {\n  ctx.cisco.umbrella._tmp = new HashMap();\n}\nctx.cisco.umbrella._tmp.identities_tail = identities_tail;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1468,9 +1466,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.umbrella._tmp.identities_tail") };
             if _cond {
-                // Painless script
-                // Source: def identities = new ArrayList();\nidentities.add(ctx.cisco.umbrella.identity);\nfor (identity in ctx.cisco.umbrella._tmp.identities_tail) {\n  identities.add(identity);\n}        \nctx.cisco.umbrella._tmp.identities = identities;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1603,9 +1599,7 @@ impl Transform for Default {
                     )
             };
             if _cond {
-                // Painless script
-                // Source: void setHost(def ctx, def x) {\n  if (ctx.host == null) {\n    ctx.host = new HashMap();\n  }\n  if (ctx.host.name == null) {\n    ctx.host.name = x;\n  }\n}\nvoid setUser(def ctx, def x) {\n  if (ctx.user == null) {\n    ctx.user = new HashMap();\n  }\n  if (ctx.user.name == null) {\n    ctx.user.name = x;\n  }\n}\nvoid addNetwork(def ctx, def x) {\n  if (ctx.network == null) {\n    ctx.network = new HashMap();\n  }\n  if (ctx.network?.name == null) {\n    ArrayList al = new ArrayList();\n    ctx.network.put(\"name\", al);\n  }\n  if (!ctx.network.name.contains(x)) {\n    ctx.network.name.add(x);\n  }\n}\ndef i = 0;\nfor (cisco_identity_type in ctx.cisco.umbrella.identity_types) {\n  if ([\"AD Users\"].contains(cisco_identity_type)) {\n    setUser(ctx, ctx.cisco.umbrella.identities[i]);\n  }\n  if ([\"AD Computers\", \"Roaming Computers\", \"Anyconnect Roaming Client\", \"Mobile Devices\"].contains(cisco_identity_type)) {\n    setHost(ctx, ctx.cisco.umbrella.identities[i]);\n  }\n  if ([\"Sites\", \"Internal Networks\", \"Networks\", \"Network Devices\", \"Network Tunnels\", \"CDFW Tunnel Device\"].contains(cisco_identity_type)) {\n    addNetwork(ctx, ctx.cisco.umbrella.identities[i]);\n  }\n  i++;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2006,8 +2000,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.network = ctx.network ?: [:];\nctx.network.packets = ctx.source.packets + ctx.destination.packets;
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions(event, &["packets"]);
                     Ok(())
                 })() {
@@ -2045,8 +2038,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.network = ctx.network ?: [:];\nctx.network.bytes = ctx.source.bytes + ctx.destination.bytes;
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions(event, &["bytes"]);
                     Ok(())
                 })() {

@@ -1,0 +1,273 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-09-04T22:54:04.249Z",
+      "ecs": {
+        "version": "1.2.0"
+      },
+      "elasticsearch": {
+        "cluster": {
+          "name": "elasticsearch",
+          "uuid": "sh0FdC0tRUGgzD6U7OsO3g"
+        },
+        "index": {
+          "name": ".ds-.logs-deprecation.elasticsearch-default-2022.09.04-000001"
+        },
+        "node": {
+          "id": "rsRsMdvhREeQqLkk3twtqA",
+          "name": "16f5806fc421"
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-04T22:54:04.249Z",
+        "dataset": "elasticsearch.server",
+        "ingested": "2026-11-13T23:04:18.469792027Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "rsRsMdvhREeQqLkk3twtqA",
+        "name": "16f5806fc421"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.elasticsearch.cluster.metadata.MetadataCreateIndexService"
+      },
+      "message": "[.ds-.logs-deprecation.elasticsearch-default-2022.09.04-000001] creating index, cause [initialize_data_stream], templates [.deprecation-indexing-template], shards [1]/[1]",
+      "process": {
+        "thread": {
+          "name": "elasticsearch[16f5806fc421][masterService#updateTask][T#1]"
+        }
+      },
+      "service": {
+        "name": "ES_ECS",
+        "type": "elasticsearch"
+      }
+    },
+    {
+      "@timestamp": "2050-09-04T22:54:04.252Z",
+      "ecs": {
+        "version": "1.2.0"
+      },
+      "elasticsearch": {
+        "cluster": {
+          "name": "elasticsearch",
+          "uuid": "sh0FdC0tRUGgzD6U7OsO3g"
+        },
+        "node": {
+          "id": "rsRsMdvhREeQqLkk3twtqA",
+          "name": "16f5806fc421"
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-04T22:54:04.252Z",
+        "dataset": "elasticsearch.server",
+        "ingested": "2026-11-13T23:04:18.469801417Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "rsRsMdvhREeQqLkk3twtqA",
+        "name": "16f5806fc421"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.elasticsearch.cluster.metadata.MetadataCreateDataStreamService"
+      },
+      "message": "adding data stream [.logs-deprecation.elasticsearch-default] with write index [.ds-.logs-deprecation.elasticsearch-default-2022.09.04-000001], backing indices [], and aliases []",
+      "process": {
+        "thread": {
+          "name": "elasticsearch[16f5806fc421][masterService#updateTask][T#1]"
+        }
+      },
+      "service": {
+        "name": "ES_ECS",
+        "type": "elasticsearch"
+      }
+    },
+    {
+      "@timestamp": "2050-09-04T22:54:04.255Z",
+      "ecs": {
+        "version": "1.2.0"
+      },
+      "elasticsearch": {
+        "cluster": {
+          "name": "elasticsearch",
+          "uuid": "sh0FdC0tRUGgzD6U7OsO3g"
+        },
+        "node": {
+          "id": "rsRsMdvhREeQqLkk3twtqA",
+          "name": "16f5806fc421"
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-04T22:54:04.255Z",
+        "dataset": "elasticsearch.server",
+        "ingested": "2026-11-13T23:04:18.469802327Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "rsRsMdvhREeQqLkk3twtqA",
+        "name": "16f5806fc421"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.elasticsearch.cluster.routing.allocation.AllocationService"
+      },
+      "message": "updating number_of_replicas to [0] for indices [.ds-.logs-deprecation.elasticsearch-default-2022.09.04-000001]",
+      "process": {
+        "thread": {
+          "name": "elasticsearch[16f5806fc421][masterService#updateTask][T#1]"
+        }
+      },
+      "service": {
+        "name": "ES_ECS",
+        "type": "elasticsearch"
+      }
+    },
+    {
+      "@timestamp": "2053-01-22T18:51:43.993Z",
+      "ecs": {
+        "version": "1.2.0"
+      },
+      "elasticsearch": {
+        "cluster": {
+          "name": "es",
+          "uuid": "saa-yNQ6Q7iunpSFDnNxOA"
+        },
+        "index": {
+          "name": "0"
+        },
+        "node": {
+          "id": "vn1CC_lLQ3CKan1N5O3xUg",
+          "name": "es-es-search-54845b5cf-qbcjq"
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2053-01-22T18:51:43.993Z",
+        "dataset": "elasticsearch.server",
+        "ingested": "2026-11-13T23:04:18.469802807Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "vn1CC_lLQ3CKan1N5O3xUg",
+        "name": "es-es-search-54845b5cf-qbcjq"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "co.elastic.elasticsearch.stateless.StatelessIndexEventListener"
+      },
+      "message": "[0] with UUID [ucaHOD8fRH6f0PfuHnk7_Q] bootstrapping [SEARCH_ONLY] shard on primary term [1] with [stateless_commit_154][1][154] and latest uploaded [term=1, gen=154] from indexing shard (peer recovery from es-es-index-5bfdf695cc-t8mxb)",
+      "process": {
+        "thread": {
+          "name": "elasticsearch[es-es-search-54845b5cf-qbcjq][generic][T#5]"
+        }
+      },
+      "service": {
+        "name": "ES_ECS",
+        "type": "elasticsearch"
+      }
+    },
+    {
+      "@timestamp": "2053-01-22T15:50:04.517Z",
+      "ecs": {
+        "version": "1.2.0"
+      },
+      "elasticsearch": {
+        "cluster": {
+          "name": "es",
+          "uuid": "vaYFhXk-Q0WFOdSjyaylnA"
+        },
+        "index": {
+          "name": "co.elastic.elasticsearch.metering.sampling.SampledStorageMetricsProvider"
+        },
+        "node": {
+          "id": "fnqA_AXpTFm6uZdtXDNIPA",
+          "name": "es-es-search-c886b6975-9tsbz"
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2053-01-22T15:50:04.517Z",
+        "dataset": "elasticsearch.server",
+        "ingested": "2026-11-13T23:04:18.469803277Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "fnqA_AXpTFm6uZdtXDNIPA",
+        "name": "es-es-search-c886b6975-9tsbz"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "co.elastic.elasticsearch.metering.usagereports.UsageReportCollector"
+      },
+      "message": "[co.elastic.elasticsearch.metering.sampling.SampledStorageMetricsProvider] is not ready for collect yet",
+      "process": {
+        "thread": {
+          "name": "elasticsearch[es-es-search-c886b6975-9tsbz][metering_reporter][T#1]"
+        }
+      },
+      "service": {
+        "name": "ES_ECS",
+        "type": "elasticsearch"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"@timestamp\":\"2050-09-04T22:54:04.249Z\", \"log.level\": \"INFO\", \"message\":\"[.ds-.logs-deprecation.elasticsearch-default-2022.09.04-000001] creating index, cause [initialize_data_stream], templates [.deprecation-indexing-template], shards [1]/[1]\", \"ecs.version\": \"1.2.0\",\"service.name\":\"ES_ECS\",\"event.dataset\":\"elasticsearch.server\",\"process.thread.name\":\"elasticsearch[16f5806fc421][masterService#updateTask][T#1]\",\"log.logger\":\"org.elasticsearch.cluster.metadata.MetadataCreateIndexService\",\"elasticsearch.cluster.uuid\":\"sh0FdC0tRUGgzD6U7OsO3g\",\"elasticsearch.node.id\":\"rsRsMdvhREeQqLkk3twtqA\",\"elasticsearch.node.name\":\"16f5806fc421\",\"elasticsearch.cluster.name\":\"elasticsearch\"}"
+    },
+    {
+      "message": "{\"@timestamp\":\"2050-09-04T22:54:04.252Z\", \"log.level\": \"INFO\", \"message\":\"adding data stream [.logs-deprecation.elasticsearch-default] with write index [.ds-.logs-deprecation.elasticsearch-default-2022.09.04-000001], backing indices [], and aliases []\", \"ecs.version\": \"1.2.0\",\"service.name\":\"ES_ECS\",\"event.dataset\":\"elasticsearch.server\",\"process.thread.name\":\"elasticsearch[16f5806fc421][masterService#updateTask][T#1]\",\"log.logger\":\"org.elasticsearch.cluster.metadata.MetadataCreateDataStreamService\",\"elasticsearch.cluster.uuid\":\"sh0FdC0tRUGgzD6U7OsO3g\",\"elasticsearch.node.id\":\"rsRsMdvhREeQqLkk3twtqA\",\"elasticsearch.node.name\":\"16f5806fc421\",\"elasticsearch.cluster.name\":\"elasticsearch\"}"
+    },
+    {
+      "message": "{\"@timestamp\":\"2050-09-04T22:54:04.255Z\", \"log.level\": \"INFO\", \"message\":\"updating number_of_replicas to [0] for indices [.ds-.logs-deprecation.elasticsearch-default-2022.09.04-000001]\", \"ecs.version\": \"1.2.0\",\"service.name\":\"ES_ECS\",\"event.dataset\":\"elasticsearch.server\",\"process.thread.name\":\"elasticsearch[16f5806fc421][masterService#updateTask][T#1]\",\"log.logger\":\"org.elasticsearch.cluster.routing.allocation.AllocationService\",\"elasticsearch.cluster.uuid\":\"sh0FdC0tRUGgzD6U7OsO3g\",\"elasticsearch.node.id\":\"rsRsMdvhREeQqLkk3twtqA\",\"elasticsearch.node.name\":\"16f5806fc421\",\"elasticsearch.cluster.name\":\"elasticsearch\"}"
+    },
+    {
+      "message": "{\"@timestamp\":\"2053-01-22T18:51:43.993Z\", \"log.level\": \"INFO\", \"message\":\"[0] with UUID [ucaHOD8fRH6f0PfuHnk7_Q] bootstrapping [SEARCH_ONLY] shard on primary term [1] with [stateless_commit_154][1][154] and latest uploaded [term=1, gen=154] from indexing shard (peer recovery from es-es-index-5bfdf695cc-t8mxb)\", \"ecs.version\": \"1.2.0\",\"service.name\":\"ES_ECS\",\"event.dataset\":\"elasticsearch.server\",\"process.thread.name\":\"elasticsearch[es-es-search-54845b5cf-qbcjq][generic][T#5]\",\"log.logger\":\"co.elastic.elasticsearch.stateless.StatelessIndexEventListener\",\"elasticsearch.cluster.uuid\":\"saa-yNQ6Q7iunpSFDnNxOA\",\"elasticsearch.node.id\":\"vn1CC_lLQ3CKan1N5O3xUg\",\"elasticsearch.node.name\":\"es-es-search-54845b5cf-qbcjq\",\"elasticsearch.cluster.name\":\"es\"}"
+    },
+    {
+      "message": "{\"@timestamp\":\"2053-01-22T15:50:04.517Z\", \"log.level\": \"INFO\", \"message\":\"[co.elastic.elasticsearch.metering.sampling.SampledStorageMetricsProvider] is not ready for collect yet\", \"ecs.version\": \"1.2.0\",\"service.name\":\"ES_ECS\",\"event.dataset\":\"elasticsearch.server\",\"process.thread.name\":\"elasticsearch[es-es-search-c886b6975-9tsbz][metering_reporter][T#1]\",\"log.logger\":\"co.elastic.elasticsearch.metering.usagereports.UsageReportCollector\",\"elasticsearch.cluster.uuid\":\"vaYFhXk-Q0WFOdSjyaylnA\",\"elasticsearch.node.id\":\"fnqA_AXpTFm6uZdtXDNIPA\",\"elasticsearch.node.name\":\"es-es-search-c886b6975-9tsbz\",\"elasticsearch.cluster.name\":\"es\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "server",
+    "dynamic_fields": {
+      "event.created": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-elasticsearch-server-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "elasticsearch",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

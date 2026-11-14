@@ -39,7 +39,7 @@ fn split_audit_details(event: &mut Event, _params: &Value) {
     event.update("modsec.audit.details", Value::Array(boxed));
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "50178a81c7c727038d28b38963b2a540e2ce10566a9bf56475d4fb7978c01359",
     source: "modsecurity",

@@ -1,0 +1,94 @@
+{
+  "expected": [
+    {
+      "event": {
+        "original": "Mar 15 10:30:01 peegdwvcj sshd[12345]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=10.194.10.249  user=admin",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Mar 15 10:30:01 peegdwvcj sshd[12345]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=10.194.10.249  user=admin"
+    },
+    {
+      "event": {
+        "original": "Mar 15 10:30:02 peegdwvcj sshd[12346]: PAM 2 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=10.194.10.249  user=catyhm",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Mar 15 10:30:02 peegdwvcj sshd[12346]: PAM 2 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=10.194.10.249  user=catyhm"
+    },
+    {
+      "event": {
+        "original": "Mar 15 10:30:03 peegdwvcj passwd[12347]: pam_unix(passwd:chauthtok): password changed for pozslr",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Mar 15 10:30:03 peegdwvcj passwd[12347]: pam_unix(passwd:chauthtok): password changed for pozslr"
+    },
+    {
+      "event": {
+        "original": "Mar 15 10:30:04 peegdwvcj sudo: pam_unix(sudo:auth): authentication failure; logname=pozslr uid=1001 euid=0 tty=/dev/pts/0 ruser=pozslr rhost=  user=pozslr",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Mar 15 10:30:04 peegdwvcj sudo: pam_unix(sudo:auth): authentication failure; logname=pozslr uid=1001 euid=0 tty=/dev/pts/0 ruser=pozslr rhost=  user=pozslr"
+    },
+    {
+      "event": {
+        "original": "Mar 15 10:30:05 peegdwvcj sshd[12348]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.125.99",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Mar 15 10:30:05 peegdwvcj sshd[12348]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.125.99"
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Mar 15 10:30:01 peegdwvcj sshd[12345]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=10.194.10.249  user=admin"
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Mar 15 10:30:02 peegdwvcj sshd[12346]: PAM 2 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=10.194.10.249  user=catyhm"
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Mar 15 10:30:03 peegdwvcj passwd[12347]: pam_unix(passwd:chauthtok): password changed for pozslr"
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Mar 15 10:30:04 peegdwvcj sudo: pam_unix(sudo:auth): authentication failure; logname=pozslr uid=1001 euid=0 tty=/dev/pts/0 ruser=pozslr rhost=  user=pozslr"
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Mar 15 10:30:05 peegdwvcj sshd[12348]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.125.99"
+    }
+  ],
+  "meta": {
+    "data_stream": "auth",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}Z$",
+      "event.ingested": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-auth-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

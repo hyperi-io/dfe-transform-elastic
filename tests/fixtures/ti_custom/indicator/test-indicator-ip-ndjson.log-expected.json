@@ -1,0 +1,217 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-02-18T02:43:46.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\":\"indicator--c5232efd-0fc3-5642-9940-b72412c44e36\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"extensions\":{\"extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba\":{\"extension_type\":\"property-extension\",\"id\":\"ea6eb694-9315-4ce2-a67f-e6604b7d0236\",\"type\":\"Indicator\",\"created_at\":\"2051-10-18T07:50:11.997Z\",\"updated_at\":\"2051-10-18T07:50:12.105Z\",\"is_inferred\":false,\"creator_ids\":[\"cec7b7fd-a153-414f-a965-2257f716f3aa\"],\"labels_ids\":[\"e98ff2ae-3f88-471a-9601-94ce422e2922\"],\"created_by_ref_id\":\"46ea5134-3db9-49ea-8820-f076a46bf9b2\",\"detection\":true,\"score\":30,\"main_observable_type\":\"IPv4-Addr\"},\"extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b\":{\"extension_type\":\"property-extension\"}},\"created\":\"2048-02-18T02:43:46.000Z\",\"modified\":\"2051-10-18T07:50:12.105Z\",\"revoked\":true,\"confidence\":20,\"lang\":\"en\",\"labels\":[\"trickbot\"],\"object_marking_refs\":[\"marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da\"],\"created_by_ref\":\"identity--8f7836ce-7c19-5ed6-ab9e-68386bb83092\",\"name\":\"203.0.113.88\",\"description\":\"Trickbot C2\",\"pattern\":\"[ipv4-addr:value = '203.0.113.88/24' OR ipv4-addr:value = '192.0.2.209']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"valid_from\":\"2048-02-18T02:43:46.000Z\",\"valid_until\":\"2048-03-19T02:43:46.000Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "ip": [
+          "203.0.113.88",
+          "192.0.2.209"
+        ]
+      },
+      "stix": {
+        "confidence": 20,
+        "created": "2048-02-18T02:43:46.000Z",
+        "created_by_ref": "identity--8f7836ce-7c19-5ed6-ab9e-68386bb83092",
+        "extensions": {
+          "extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b": {
+            "extension_type": "property-extension"
+          },
+          "extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba": {
+            "created_at": "2051-10-18T07:50:11.997Z",
+            "created_by_ref_id": "46ea5134-3db9-49ea-8820-f076a46bf9b2",
+            "creator_ids": [
+              "cec7b7fd-a153-414f-a965-2257f716f3aa"
+            ],
+            "detection": true,
+            "extension_type": "property-extension",
+            "id": "ea6eb694-9315-4ce2-a67f-e6604b7d0236",
+            "is_inferred": false,
+            "labels_ids": [
+              "e98ff2ae-3f88-471a-9601-94ce422e2922"
+            ],
+            "main_observable_type": "IPv4-Addr",
+            "score": 30,
+            "type": "Indicator",
+            "updated_at": "2051-10-18T07:50:12.105Z"
+          }
+        },
+        "id": "indicator--c5232efd-0fc3-5642-9940-b72412c44e36",
+        "ioc_expiration_date": "2048-03-19T02:43:46.000Z",
+        "ioc_expiration_duration": "5d",
+        "ioc_expiration_reason": "Expiration set from valid_until field",
+        "lang": "en",
+        "modified": "2051-10-18T07:50:12.105Z",
+        "object_marking_refs": [
+          "marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da"
+        ],
+        "pattern": "[ipv4-addr:value = '203.0.113.88/24' OR ipv4-addr:value = '192.0.2.209']",
+        "pattern_type": "stix",
+        "pattern_version": "2.1",
+        "revoked": true,
+        "spec_version": "2.1",
+        "type": "indicator",
+        "valid_from": "2048-02-18T02:43:46.000Z",
+        "valid_until": "2048-03-19T02:43:46.000Z"
+      },
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator",
+        "trickbot"
+      ],
+      "threat": {
+        "feed": {
+          "name": "Test STIX feed"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "description": "Trickbot C2",
+          "first_seen": "2048-02-18T02:43:46.000Z",
+          "ip": [
+            "203.0.113.88",
+            "192.0.2.209"
+          ],
+          "last_seen": "2051-10-18T07:50:12.105Z",
+          "modified_at": "2051-10-18T07:50:12.105Z",
+          "name": "203.0.113.88",
+          "type": "ipv4-addr"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-02-18T02:43:46.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\":\"indicator--f7d0b69d-d246-543d-a733-5146bbfb5e2e\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"extensions\":{\"extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba\":{\"extension_type\":\"property-extension\",\"id\":\"ea6eb694-9315-4ce2-a67f-e6604b7d0236\",\"type\":\"Indicator\",\"created_at\":\"2051-10-18T07:50:11.997Z\",\"updated_at\":\"2051-10-18T07:50:12.105Z\",\"is_inferred\":false,\"creator_ids\":[\"cec7b7fd-a153-414f-a965-2257f716f3aa\"],\"labels_ids\":[\"e98ff2ae-3f88-471a-9601-94ce422e2922\"],\"created_by_ref_id\":\"46ea5134-3db9-49ea-8820-f076a46bf9b2\",\"detection\":true,\"score\":30,\"main_observable_type\":\"IPv6-Addr\"},\"extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b\":{\"extension_type\":\"property-extension\"}},\"created\":\"2048-02-18T02:43:46.000Z\",\"modified\":\"2051-10-18T07:50:12.105Z\",\"revoked\":true,\"confidence\":20,\"lang\":\"en\",\"labels\":[\"osint\"],\"object_marking_refs\":[\"marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da\"],\"created_by_ref\":\"identity--8f7836ce-7c19-5ed6-ab9e-68386bb83092\",\"name\":\"2001:db8:9baf:db79:6ef1:14d4:686d:44c9\",\"description\":\"\",\"pattern\":\"[ipv6-addr:value = '2001:db8:9baf:db79:6ef1:14d4:686d:44c9']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"valid_from\":\"2048-02-18T02:43:46.000Z\",\"valid_until\":\"2048-03-19T02:43:46.000Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "ip": [
+          "2001:db8:9baf:db79:6ef1:14d4:686d:44c9"
+        ]
+      },
+      "stix": {
+        "confidence": 20,
+        "created": "2048-02-18T02:43:46.000Z",
+        "created_by_ref": "identity--8f7836ce-7c19-5ed6-ab9e-68386bb83092",
+        "extensions": {
+          "extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b": {
+            "extension_type": "property-extension"
+          },
+          "extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba": {
+            "created_at": "2051-10-18T07:50:11.997Z",
+            "created_by_ref_id": "46ea5134-3db9-49ea-8820-f076a46bf9b2",
+            "creator_ids": [
+              "cec7b7fd-a153-414f-a965-2257f716f3aa"
+            ],
+            "detection": true,
+            "extension_type": "property-extension",
+            "id": "ea6eb694-9315-4ce2-a67f-e6604b7d0236",
+            "is_inferred": false,
+            "labels_ids": [
+              "e98ff2ae-3f88-471a-9601-94ce422e2922"
+            ],
+            "main_observable_type": "IPv6-Addr",
+            "score": 30,
+            "type": "Indicator",
+            "updated_at": "2051-10-18T07:50:12.105Z"
+          }
+        },
+        "id": "indicator--f7d0b69d-d246-543d-a733-5146bbfb5e2e",
+        "ioc_expiration_date": "2048-03-19T02:43:46.000Z",
+        "ioc_expiration_duration": "5d",
+        "ioc_expiration_reason": "Expiration set from valid_until field",
+        "lang": "en",
+        "modified": "2051-10-18T07:50:12.105Z",
+        "object_marking_refs": [
+          "marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da"
+        ],
+        "pattern": "[ipv6-addr:value = '2001:db8:9baf:db79:6ef1:14d4:686d:44c9']",
+        "pattern_type": "stix",
+        "pattern_version": "2.1",
+        "revoked": true,
+        "spec_version": "2.1",
+        "type": "indicator",
+        "valid_from": "2048-02-18T02:43:46.000Z",
+        "valid_until": "2048-03-19T02:43:46.000Z"
+      },
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator",
+        "osint"
+      ],
+      "threat": {
+        "feed": {
+          "name": "Test STIX feed"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "first_seen": "2048-02-18T02:43:46.000Z",
+          "ip": [
+            "2001:db8:9baf:db79:6ef1:14d4:686d:44c9"
+          ],
+          "last_seen": "2051-10-18T07:50:12.105Z",
+          "modified_at": "2051-10-18T07:50:12.105Z",
+          "name": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9",
+          "type": "ipv6-addr"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "feed_name": "Test STIX feed",
+        "ioc_expiration_duration": "5d",
+        "restrict_stix": false
+      },
+      "message": "{\"id\":\"indicator--c5232efd-0fc3-5642-9940-b72412c44e36\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"extensions\":{\"extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba\":{\"extension_type\":\"property-extension\",\"id\":\"ea6eb694-9315-4ce2-a67f-e6604b7d0236\",\"type\":\"Indicator\",\"created_at\":\"2051-10-18T07:50:11.997Z\",\"updated_at\":\"2051-10-18T07:50:12.105Z\",\"is_inferred\":false,\"creator_ids\":[\"cec7b7fd-a153-414f-a965-2257f716f3aa\"],\"labels_ids\":[\"e98ff2ae-3f88-471a-9601-94ce422e2922\"],\"created_by_ref_id\":\"46ea5134-3db9-49ea-8820-f076a46bf9b2\",\"detection\":true,\"score\":30,\"main_observable_type\":\"IPv4-Addr\"},\"extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b\":{\"extension_type\":\"property-extension\"}},\"created\":\"2048-02-18T02:43:46.000Z\",\"modified\":\"2051-10-18T07:50:12.105Z\",\"revoked\":true,\"confidence\":20,\"lang\":\"en\",\"labels\":[\"trickbot\"],\"object_marking_refs\":[\"marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da\"],\"created_by_ref\":\"identity--8f7836ce-7c19-5ed6-ab9e-68386bb83092\",\"name\":\"203.0.113.88\",\"description\":\"Trickbot C2\",\"pattern\":\"[ipv4-addr:value = '203.0.113.88/24' OR ipv4-addr:value = '192.0.2.209']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"valid_from\":\"2048-02-18T02:43:46.000Z\",\"valid_until\":\"2048-03-19T02:43:46.000Z\"}",
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ]
+    },
+    {
+      "_conf": {
+        "feed_name": "Test STIX feed",
+        "ioc_expiration_duration": "5d",
+        "restrict_stix": false
+      },
+      "message": "{\"id\":\"indicator--f7d0b69d-d246-543d-a733-5146bbfb5e2e\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"extensions\":{\"extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba\":{\"extension_type\":\"property-extension\",\"id\":\"ea6eb694-9315-4ce2-a67f-e6604b7d0236\",\"type\":\"Indicator\",\"created_at\":\"2051-10-18T07:50:11.997Z\",\"updated_at\":\"2051-10-18T07:50:12.105Z\",\"is_inferred\":false,\"creator_ids\":[\"cec7b7fd-a153-414f-a965-2257f716f3aa\"],\"labels_ids\":[\"e98ff2ae-3f88-471a-9601-94ce422e2922\"],\"created_by_ref_id\":\"46ea5134-3db9-49ea-8820-f076a46bf9b2\",\"detection\":true,\"score\":30,\"main_observable_type\":\"IPv6-Addr\"},\"extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b\":{\"extension_type\":\"property-extension\"}},\"created\":\"2048-02-18T02:43:46.000Z\",\"modified\":\"2051-10-18T07:50:12.105Z\",\"revoked\":true,\"confidence\":20,\"lang\":\"en\",\"labels\":[\"osint\"],\"object_marking_refs\":[\"marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da\"],\"created_by_ref\":\"identity--8f7836ce-7c19-5ed6-ab9e-68386bb83092\",\"name\":\"2001:db8:9baf:db79:6ef1:14d4:686d:44c9\",\"description\":\"\",\"pattern\":\"[ipv6-addr:value = '2001:db8:9baf:db79:6ef1:14d4:686d:44c9']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"valid_from\":\"2048-02-18T02:43:46.000Z\",\"valid_until\":\"2048-03-19T02:43:46.000Z\"}",
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_custom-indicator-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "ti_custom",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

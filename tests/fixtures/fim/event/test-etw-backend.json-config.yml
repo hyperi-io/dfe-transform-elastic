@@ -1,0 +1,8 @@
+# Test inputs for this directory's fixtures.
+fields:
+  event.module: file_integrity
+  event.dataset: fim.event
+  service.type: file_integrity
+  data_stream.type: logs
+  data_stream.dataset: fim.event
+  data_stream.namespace: test

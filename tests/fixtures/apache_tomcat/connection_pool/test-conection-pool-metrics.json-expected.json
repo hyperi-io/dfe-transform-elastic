@@ -1,0 +1,157 @@
+{
+  "expected": [
+    {
+      "apache_tomcat": {
+        "connection_pool": {
+          "access_to_underlying_connection_allowed": false,
+          "application_name": "/sample",
+          "cache": {
+            "state": 1
+          },
+          "connection": {
+            "abandoned_usage_tracking": false,
+            "active": {
+              "count": 0
+            },
+            "autocommit_on_return": true,
+            "clear_statement_pool_on_return": false,
+            "closed": false,
+            "database": {
+              "time": {
+                "max": {
+                  "ms": -1
+                }
+              }
+            },
+            "default_transaction_isolation": -1,
+            "enable_autocommit_on_return": true,
+            "fast_fail_validation": false,
+            "idle": {
+              "count": 0,
+              "exists": false,
+              "max": {
+                "count": 20,
+                "size": 0,
+                "time": {
+                  "ms": 3
+                }
+              },
+              "min": {
+                "size": 5,
+                "time": {
+                  "ms": -1
+                }
+              }
+            },
+            "initial_size": {
+              "count": 0
+            },
+            "lifetime": {
+              "max": {
+                "ms": -1
+              }
+            },
+            "log_expired": true,
+            "min_evictable_idle": {
+              "time": 1800000
+            },
+            "remove_abandoned_on_borrow": false,
+            "remove_abandoned_on_maintenance": false,
+            "remove_abandoned_timeout": 300,
+            "rollback_on_return": true,
+            "test_on_return": false,
+            "test_while_idle": false,
+            "time_betwen_eviction_run": {
+              "time": {
+                "ms": -1
+              }
+            },
+            "validate": -1
+          },
+          "lifo": true,
+          "max": {
+            "total": 8
+          },
+          "prepared_statements": false,
+          "test_on_borrow": true,
+          "test_on_create": false
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "metric",
+        "module": "apache_tomcat",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "prometheus": {
+        "labels": {
+          "context": "/sample",
+          "host": "localhost",
+          "instance": "127.0.0.1:9090",
+          "job": "prometheus",
+          "name": "jdbc/MyDB"
+        },
+        "metrics": {
+          "Catalina_DataSource_abandonedUsageTracking": 0,
+          "Catalina_DataSource_accessToUnderlyingConnectionAllowed": 0,
+          "Catalina_DataSource_autoCommitOnReturn": 1,
+          "Catalina_DataSource_cacheState": 1,
+          "Catalina_DataSource_clearStatementPoolOnReturn": 0,
+          "Catalina_DataSource_closed": 0,
+          "Catalina_DataSource_defaultTransactionIsolation": -1,
+          "Catalina_DataSource_enableAutoCommitOnReturn": 1,
+          "Catalina_DataSource_fastFailValidation": 0,
+          "Catalina_DataSource_initialSize": 0,
+          "Catalina_DataSource_lifo": 1,
+          "Catalina_DataSource_logAbandoned": 0,
+          "Catalina_DataSource_logExpiredConnections": 1,
+          "Catalina_DataSource_maxConnLifetimeMillis": -1,
+          "Catalina_DataSource_maxIdle": 20,
+          "Catalina_DataSource_maxOpenPreparedStatements": 0,
+          "Catalina_DataSource_maxTotal": 8,
+          "Catalina_DataSource_maxWaitMillis": -1,
+          "Catalina_DataSource_minEvictableIdleTimeMillis": 1800000,
+          "Catalina_DataSource_minIdle": 5,
+          "Catalina_DataSource_numActive": 0,
+          "Catalina_DataSource_numIdle": 0,
+          "Catalina_DataSource_numTestsPerEvictionRun": 3,
+          "Catalina_DataSource_poolPreparedStatements": 0,
+          "Catalina_DataSource_removeAbandonedOnBorrow": 0,
+          "Catalina_DataSource_removeAbandonedOnMaintenance": 0,
+          "Catalina_DataSource_removeAbandonedTimeout": 300,
+          "Catalina_DataSource_rollbackOnReturn": 1,
+          "Catalina_DataSource_softMinEvictableIdleTimeMillis": -1,
+          "Catalina_DataSource_testOnBorrow": 1,
+          "Catalina_DataSource_testOnCreate": 0,
+          "Catalina_DataSource_testOnReturn": 0,
+          "Catalina_DataSource_testWhileIdle": 0,
+          "Catalina_DataSource_timeBetweenEvictionRunsMillis": -1,
+          "Catalina_DataSource_validationQueryTimeout": -1
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "connection_pool",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache_tomcat-connection_pool-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "apache_tomcat",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

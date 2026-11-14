@@ -72,9 +72,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: Map m = new HashMap();\nm.put(0, \"Shutdown\");\nm.put(1, \"Starting\");\nm.put(2, \"Running\");\nctx.oracle_weblogic.deployed_application.deployment.state.name = m.get(ctx.oracle_weblogic.deployed_application.deployment.state.value);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

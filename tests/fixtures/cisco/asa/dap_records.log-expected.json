@@ -1,0 +1,150 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-02-20T16:11:11.000-02:00",
+      "agent": {
+        "ephemeral_id": "dec0ef63-2c3a-439b-80ca-bb05d1e924a6",
+        "id": "8f9e62bc-5e60-47db-bf9e-5134486e834a",
+        "name": "cf93d3c04eba",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "connection_type": "AnyConnect",
+          "dap_records": [
+            "dap_1",
+            "dap_2"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication",
+          "network"
+        ],
+        "code": "734001",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Feb 20 2048 16:11:11: %ASA-6-734001: DAP: User eplglapb.veyzsfwc@dwofop.net, Addr 198.51.100.111, Connection AnyConnect: The following DAP records were selected for this connection: dap_1, dap_2",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "-02:00",
+        "type": [
+          "allowed",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "informational",
+        "offset": 0
+      },
+      "observer": {
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "eplglapb.veyzsfwc@dwofop.net"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T03:45:24.095Z",
+      "agent": {
+        "ephemeral_id": "dec0ef63-2c3a-439b-80ca-bb05d1e924a6",
+        "id": "8f9e62bc-5e60-47db-bf9e-5134486e834a",
+        "name": "cf93d3c04eba",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "Feb 20 2048 16:11:11: %ASA-6-734001: DAP: User eplglapb.veyzsfwc@dwofop.net, Addr 198.51.100.111, Connection AnyConnect: The following DAP records were selected for this connection: dap_1, dap_2",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$",
+      "event.end": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$",
+      "event.start": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_asa-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "cisco_asa",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,2310 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-02-07T11:48:51.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:48:51 +0000] \"POST /products HTTP/1.1\" 200 59 \"-\" \"curl/7.54.0\" 89 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 181e327769336e6b10656a5bd8987611",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 89,
+          "id": "181e327769336e6b10656a5bd8987611",
+          "method": "POST"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "181e327769336e6b10656a5bd8987611",
+              "length": 89,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.0,
+              "time_list": [
+                "0.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products",
+        "path": "/products"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.54.0",
+        "version": "7.54.0"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:49:15.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:49:15 +0000] \"GET /products/42 HTTP/1.1\" 200 59 \"-\" \"curl/7.54.0\" 91 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 17ac918ad9faac542bce35a669caa040",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 91,
+          "id": "17ac918ad9faac542bce35a669caa040",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "17ac918ad9faac542bce35a669caa040",
+              "length": 91,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.0,
+              "time_list": [
+                "0.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products/42",
+        "path": "/products/42"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.54.0",
+        "version": "7.54.0"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:49:30.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:49:30 +0000] \"DELETE /products/42 HTTP/1.1\" 200 59 \"-\" \"curl/7.54.0\" 94 0.000 [default-web-8080] [] 172.26.229.62:8080 59 0.001 200 6af777237af5ac04085c143717d3cc91",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 94,
+          "id": "6af777237af5ac04085c143717d3cc91",
+          "method": "DELETE"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "6af777237af5ac04085c143717d3cc91",
+              "length": 94,
+              "time": 0.0
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.001,
+              "time_list": [
+                "0.001"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products/42",
+        "path": "/products/42"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.54.0",
+        "version": "7.54.0"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:49:43.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:49:43 +0000] \"PATCH /products/42 HTTP/1.1\" 200 59 \"-\" \"curl/7.54.0\" 93 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 e625ca8e7ac5cebcca5f1a619dd8cecc",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 93,
+          "id": "e625ca8e7ac5cebcca5f1a619dd8cecc",
+          "method": "PATCH"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "e625ca8e7ac5cebcca5f1a619dd8cecc",
+              "length": 93,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.0,
+              "time_list": [
+                "0.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products/42",
+        "path": "/products/42"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.54.0",
+        "version": "7.54.0"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:49:50.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:49:50 +0000] \"PATCHp /products/42 HTTP/1.1\" 400 163 \"-\" \"-\" 0 0.000 [] [] - - - - 4a3b2328930b16036b3f8afda81b597a",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "id": "4a3b2328930b16036b3f8afda81b597a",
+          "method": "PATCHp"
+        },
+        "response": {
+          "body": {
+            "bytes": 163
+          },
+          "status_code": 400
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "4a3b2328930b16036b3f8afda81b597a",
+              "length": 0,
+              "time": 0.0
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "name": ""
+          }
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products/42",
+        "path": "/products/42"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:50:09.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:50:09 +0000] \"geti /products/42 HTTP/1.1\" 400 163 \"-\" \"-\" 0 0.000 [] [] - - - - cad8d4fe8fc2abde1a9d3db324f7a893",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "id": "cad8d4fe8fc2abde1a9d3db324f7a893",
+          "method": "geti"
+        },
+        "response": {
+          "body": {
+            "bytes": 163
+          },
+          "status_code": 400
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "cad8d4fe8fc2abde1a9d3db324f7a893",
+              "length": 0,
+              "time": 0.0
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "name": ""
+          }
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products/42",
+        "path": "/products/42"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:55:05.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:55:05 +0000] \"GET /products/42 HTTP/1.1\" 200 59 \"-\" \"Wget/1.20.3 (darwin18.6.0)\" 157 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 133e32a2c6ce4397cc114fbeb735f6ad",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 157,
+          "id": "133e32a2c6ce4397cc114fbeb735f6ad",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "133e32a2c6ce4397cc114fbeb735f6ad",
+              "length": 157,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.0,
+              "time_list": [
+                "0.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products/42",
+        "path": "/products/42"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Wget",
+        "original": "Wget/1.20.3 (darwin18.6.0)",
+        "version": "1.20.3"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:55:57.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:55:57 +0000] \"GET /products/42 HTTP/1.1\" 200 59 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\" 450 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 eb28cbe02b6d3625cbbe6d1ffe130021",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 450,
+          "id": "eb28cbe02b6d3625cbbe6d1ffe130021",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "eb28cbe02b6d3625cbbe6d1ffe130021",
+              "length": 450,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.0,
+              "time_list": [
+                "0.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products/42",
+        "path": "/products/42"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "79.0.3945.130"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:55:57.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:55:57 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"http://hello-world.info/products/42\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\" 381 0.000 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 b485a4ff0c937789efa49a3e2fdeca42",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 381,
+          "id": "b485a4ff0c937789efa49a3e2fdeca42",
+          "method": "GET",
+          "referrer": "http://hello-world.info/products/42"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "b485a4ff0c937789efa49a3e2fdeca42",
+              "length": 381,
+              "time": 0.0
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.0,
+              "time_list": [
+                "0.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "ico",
+        "original": "/favicon.ico",
+        "path": "/favicon.ico"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "79.0.3945.130"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:56:24.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:56:24 +0000] \"GET /v2 HTTP/1.1\" 200 61 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\" 441 0.002 [default-web2-8080] [] 172.28.254.100:8080 61 0.001 200 3d6dc49df7629c5eb3581e87d292b466",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 441,
+          "id": "3d6dc49df7629c5eb3581e87d292b466",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 61
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "3d6dc49df7629c5eb3581e87d292b466",
+              "length": 441,
+              "time": 0.002
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.28.254.100",
+            "name": "default-web2-8080",
+            "port": 8080,
+            "response": {
+              "length": 61,
+              "length_list": [
+                "61"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.001,
+              "time_list": [
+                "0.001"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.28.254.100:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.28.254.100"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/v2",
+        "path": "/v2"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "79.0.3945.130"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:56:24.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:56:24 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"http://hello-world.info/v2\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\" 372 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.002 200 e892aa4ffd202da316c33deca3ebd982",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 372,
+          "id": "e892aa4ffd202da316c33deca3ebd982",
+          "method": "GET",
+          "referrer": "http://hello-world.info/v2"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "e892aa4ffd202da316c33deca3ebd982",
+              "length": 372,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.002,
+              "time_list": [
+                "0.002"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "ico",
+        "original": "/favicon.ico",
+        "path": "/favicon.ico"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "79.0.3945.130"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:56:36.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:56:36 +0000] \"GET /products/42 HTTP/1.1\" 200 59 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 369 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.001 200 ae3798dafae1bb5b0d930ef2ff04000a",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 369,
+          "id": "ae3798dafae1bb5b0d930ef2ff04000a",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "ae3798dafae1bb5b0d930ef2ff04000a",
+              "length": 369,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.001,
+              "time_list": [
+                "0.001"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products/42",
+        "path": "/products/42"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Safari",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "13.0.5"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:56:36.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:56:36 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"http://hello-world.info/products/42\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 325 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.001 200 1077c4265508859911e707b2d8accbda",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 325,
+          "id": "1077c4265508859911e707b2d8accbda",
+          "method": "GET",
+          "referrer": "http://hello-world.info/products/42"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "1077c4265508859911e707b2d8accbda",
+              "length": 325,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.001,
+              "time_list": [
+                "0.001"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "ico",
+        "original": "/favicon.ico",
+        "path": "/favicon.ico"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Safari",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "13.0.5"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:56:54.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:56:54 +0000] \"GET /products/42 HTTP/1.1\" 200 59 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 369 0.002 [default-web-8080] [] 172.26.229.62:8080 59 0.002 200 7d10aa560d499b9409590bf955d81c27",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 369,
+          "id": "7d10aa560d499b9409590bf955d81c27",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "7d10aa560d499b9409590bf955d81c27",
+              "length": 369,
+              "time": 0.002
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.002,
+              "time_list": [
+                "0.002"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products/42",
+        "path": "/products/42"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Safari",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "13.0.5"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:56:54.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.168.141.84 - - [07/Feb/2048:11:56:54 +0000] \"GET / HTTP/1.1\" 200 59 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 358 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.001 200 88dbc66d9c1027aa00d9b0efc2c40f65",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 358,
+          "id": "88dbc66d9c1027aa00d9b0efc2c40f65",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "88dbc66d9c1027aa00d9b0efc2c40f65",
+              "length": 358,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.168.141.84"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.001,
+              "time_list": [
+                "0.001"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.141.84",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.168.141.84",
+        "ip": "192.168.141.84"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/",
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Safari",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "13.0.5"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:56:54.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.0.2.97 - - [07/Feb/2048:11:56:54 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"http://hello-world.info/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 314 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.002 200 e532071a7ff17d371c4d451f71833d5f",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 314,
+          "id": "e532071a7ff17d371c4d451f71833d5f",
+          "method": "GET",
+          "referrer": "http://hello-world.info/"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "e532071a7ff17d371c4d451f71833d5f",
+              "length": 314,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.0.2.97"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.002,
+              "time_list": [
+                "0.002"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.97",
+        "ip": "192.0.2.97"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "ico",
+        "original": "/favicon.ico",
+        "path": "/favicon.ico"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Safari",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "13.0.5"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:56:56.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.0.2.97 - - [07/Feb/2048:11:56:56 +0000] \"GET /v2 HTTP/1.1\" 200 61 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 360 0.002 [default-web2-8080] [] 172.28.254.100:8080 61 0.002 200 7e0f43c292c824fd1e45d81d897c4d8e",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 360,
+          "id": "7e0f43c292c824fd1e45d81d897c4d8e",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 61
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "7e0f43c292c824fd1e45d81d897c4d8e",
+              "length": 360,
+              "time": 0.002
+            }
+          },
+          "remote_ip_list": [
+            "192.0.2.97"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.28.254.100",
+            "name": "default-web2-8080",
+            "port": 8080,
+            "response": {
+              "length": 61,
+              "length_list": [
+                "61"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.002,
+              "time_list": [
+                "0.002"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.28.254.100:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97",
+          "172.28.254.100"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.97",
+        "ip": "192.0.2.97"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/v2",
+        "path": "/v2"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Safari",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "13.0.5"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T11:56:56.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.0.2.97 - - [07/Feb/2048:11:56:56 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"http://hello-world.info/v2\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 316 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 4f705ddcc00fbbc3f38b756f3ae79959",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 316,
+          "id": "4f705ddcc00fbbc3f38b756f3ae79959",
+          "method": "GET",
+          "referrer": "http://hello-world.info/v2"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "4f705ddcc00fbbc3f38b756f3ae79959",
+              "length": 316,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.0.2.97"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.0,
+              "time_list": [
+                "0.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.97",
+        "ip": "192.0.2.97"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "ico",
+        "original": "/favicon.ico",
+        "path": "/favicon.ico"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Safari",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15",
+        "os": {
+          "full": "Mac OS X 10.14.6",
+          "name": "Mac OS X",
+          "version": "10.14.6"
+        },
+        "version": "13.0.5"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T12:00:28.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.0.2.97 - - [07/Feb/2048:12:00:28 +0000] \"GET /products/42?address=delhi+technological+university HTTP/1.1\" 200 59 \"-\" \"python-requests/2.22.0\" 197 0.000 [default-web-8080] [] 172.26.229.62:8080 59 0.001 200 0a0ecad65cc9fd74b41fd46c692b2365",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 197,
+          "id": "0a0ecad65cc9fd74b41fd46c692b2365",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "0a0ecad65cc9fd74b41fd46c692b2365",
+              "length": 197,
+              "time": 0.0
+            }
+          },
+          "remote_ip_list": [
+            "192.0.2.97"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.001,
+              "time_list": [
+                "0.001"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.97",
+        "ip": "192.0.2.97"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/products/42?address=delhi+technological+university",
+        "path": "/products/42",
+        "query": "address=delhi+technological+university"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Python Requests",
+        "original": "python-requests/2.22.0",
+        "version": "2.22"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T12:02:38.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.0.2.97 - - [07/Feb/2048:12:02:38 +0000] \"GET /v2 HTTP/1.1\" 200 61 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0\" 343 0.000 [default-web2-8080] [] 172.28.254.100:8080 61 0.001 200 be26e40680626d901560145c6c94ad01",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 343,
+          "id": "be26e40680626d901560145c6c94ad01",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 61
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "be26e40680626d901560145c6c94ad01",
+              "length": 343,
+              "time": 0.0
+            }
+          },
+          "remote_ip_list": [
+            "192.0.2.97"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.28.254.100",
+            "name": "default-web2-8080",
+            "port": 8080,
+            "response": {
+              "length": 61,
+              "length_list": [
+                "61"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.001,
+              "time_list": [
+                "0.001"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.28.254.100:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97",
+          "172.28.254.100"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.97",
+        "ip": "192.0.2.97"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/v2",
+        "path": "/v2"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+        "os": {
+          "full": "Mac OS X 10.14",
+          "name": "Mac OS X",
+          "version": "10.14"
+        },
+        "version": "72.0"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T12:02:38.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.0.2.97 - - [07/Feb/2048:12:02:38 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0\" 262 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 97a22af2f11e06a2bc7dd21c0db31f3b",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 262,
+          "id": "97a22af2f11e06a2bc7dd21c0db31f3b",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 59
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "97a22af2f11e06a2bc7dd21c0db31f3b",
+              "length": 262,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.0.2.97"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.26.229.62",
+            "name": "default-web-8080",
+            "port": 8080,
+            "response": {
+              "length": 59,
+              "length_list": [
+                "59"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.0,
+              "time_list": [
+                "0.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.26.229.62:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97",
+          "172.26.229.62"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.97",
+        "ip": "192.0.2.97"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "ico",
+        "original": "/favicon.ico",
+        "path": "/favicon.ico"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+        "os": {
+          "full": "Mac OS X 10.14",
+          "name": "Mac OS X",
+          "version": "10.14"
+        },
+        "version": "72.0"
+      }
+    },
+    {
+      "@timestamp": "2048-02-07T12:02:42.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "192.0.2.97 - - [07/Feb/2048:12:02:42 +0000] \"GET /v2/some HTTP/1.1\" 200 61 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0\" 348 0.001 [default-web2-8080] [] 172.28.254.100:8080 61 0.000 200 342699dc18506dba6083dcdb15f8e110",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 348,
+          "id": "342699dc18506dba6083dcdb15f8e110",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 61
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "342699dc18506dba6083dcdb15f8e110",
+              "length": 348,
+              "time": 0.001
+            }
+          },
+          "remote_ip_list": [
+            "192.0.2.97"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "172.28.254.100",
+            "name": "default-web2-8080",
+            "port": 8080,
+            "response": {
+              "length": 61,
+              "length_list": [
+                "61"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.0,
+              "time_list": [
+                "0.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "172.28.254.100:8080"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97",
+          "172.28.254.100"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.97",
+        "ip": "192.0.2.97"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/v2/some",
+        "path": "/v2/some"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+        "os": {
+          "full": "Mac OS X 10.14",
+          "name": "Mac OS X",
+          "version": "10.14"
+        },
+        "version": "72.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:48:51 +0000] \"POST /products HTTP/1.1\" 200 59 \"-\" \"curl/7.54.0\" 89 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 181e327769336e6b10656a5bd8987611",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:49:15 +0000] \"GET /products/42 HTTP/1.1\" 200 59 \"-\" \"curl/7.54.0\" 91 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 17ac918ad9faac542bce35a669caa040",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:49:30 +0000] \"DELETE /products/42 HTTP/1.1\" 200 59 \"-\" \"curl/7.54.0\" 94 0.000 [default-web-8080] [] 172.26.229.62:8080 59 0.001 200 6af777237af5ac04085c143717d3cc91",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:49:43 +0000] \"PATCH /products/42 HTTP/1.1\" 200 59 \"-\" \"curl/7.54.0\" 93 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 e625ca8e7ac5cebcca5f1a619dd8cecc",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:49:50 +0000] \"PATCHp /products/42 HTTP/1.1\" 400 163 \"-\" \"-\" 0 0.000 [] [] - - - - 4a3b2328930b16036b3f8afda81b597a",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:50:09 +0000] \"geti /products/42 HTTP/1.1\" 400 163 \"-\" \"-\" 0 0.000 [] [] - - - - cad8d4fe8fc2abde1a9d3db324f7a893",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:55:05 +0000] \"GET /products/42 HTTP/1.1\" 200 59 \"-\" \"Wget/1.20.3 (darwin18.6.0)\" 157 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 133e32a2c6ce4397cc114fbeb735f6ad",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:55:57 +0000] \"GET /products/42 HTTP/1.1\" 200 59 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\" 450 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 eb28cbe02b6d3625cbbe6d1ffe130021",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:55:57 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"http://hello-world.info/products/42\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\" 381 0.000 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 b485a4ff0c937789efa49a3e2fdeca42",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:56:24 +0000] \"GET /v2 HTTP/1.1\" 200 61 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\" 441 0.002 [default-web2-8080] [] 172.28.254.100:8080 61 0.001 200 3d6dc49df7629c5eb3581e87d292b466",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:56:24 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"http://hello-world.info/v2\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\" 372 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.002 200 e892aa4ffd202da316c33deca3ebd982",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:56:36 +0000] \"GET /products/42 HTTP/1.1\" 200 59 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 369 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.001 200 ae3798dafae1bb5b0d930ef2ff04000a",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:56:36 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"http://hello-world.info/products/42\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 325 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.001 200 1077c4265508859911e707b2d8accbda",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:56:54 +0000] \"GET /products/42 HTTP/1.1\" 200 59 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 369 0.002 [default-web-8080] [] 172.26.229.62:8080 59 0.002 200 7d10aa560d499b9409590bf955d81c27",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.168.141.84 - - [07/Feb/2048:11:56:54 +0000] \"GET / HTTP/1.1\" 200 59 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 358 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.001 200 88dbc66d9c1027aa00d9b0efc2c40f65",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.0.2.97 - - [07/Feb/2048:11:56:54 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"http://hello-world.info/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 314 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.002 200 e532071a7ff17d371c4d451f71833d5f",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.0.2.97 - - [07/Feb/2048:11:56:56 +0000] \"GET /v2 HTTP/1.1\" 200 61 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 360 0.002 [default-web2-8080] [] 172.28.254.100:8080 61 0.002 200 7e0f43c292c824fd1e45d81d897c4d8e",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.0.2.97 - - [07/Feb/2048:11:56:56 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"http://hello-world.info/v2\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\" 316 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 4f705ddcc00fbbc3f38b756f3ae79959",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.0.2.97 - - [07/Feb/2048:12:00:28 +0000] \"GET /products/42?address=delhi+technological+university HTTP/1.1\" 200 59 \"-\" \"python-requests/2.22.0\" 197 0.000 [default-web-8080] [] 172.26.229.62:8080 59 0.001 200 0a0ecad65cc9fd74b41fd46c692b2365",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.0.2.97 - - [07/Feb/2048:12:02:38 +0000] \"GET /v2 HTTP/1.1\" 200 61 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0\" 343 0.000 [default-web2-8080] [] 172.28.254.100:8080 61 0.001 200 be26e40680626d901560145c6c94ad01",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.0.2.97 - - [07/Feb/2048:12:02:38 +0000] \"GET /favicon.ico HTTP/1.1\" 200 59 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0\" 262 0.001 [default-web-8080] [] 172.26.229.62:8080 59 0.000 200 97a22af2f11e06a2bc7dd21c0db31f3b",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "192.0.2.97 - - [07/Feb/2048:12:02:42 +0000] \"GET /v2/some HTTP/1.1\" 200 61 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0\" 348 0.001 [default-web2-8080] [] 172.28.254.100:8080 61 0.000 200 342699dc18506dba6083dcdb15f8e110",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "access",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-nginx_ingress_controller-access-default",
+    "event_count": 22,
+    "numeric_keyword_fields": [],
+    "package": "nginx_ingress_controller",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

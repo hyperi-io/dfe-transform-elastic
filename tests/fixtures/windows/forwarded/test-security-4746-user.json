@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:08:14.021Z",
+            "winlog": {
+                "event_id": 4746,
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "process": {
+                    "pid": 492,
+                    "thread": {
+                        "id": 1076
+                    }
+                },
+                "event_data": {
+                    "MemberSid": "S-1-5-21-1717121054-434620538-60925301-500",
+                    "TargetUserName": "uaqibnrhjtabt9",
+                    "SubjectDomainName": "TEST",
+                    "PrivilegeList": "-",
+                    "SubjectLogonId": "0x2e67800",
+                    "MemberName": "CN=Reyes\\, Elena (FFF),CN=Users,DC=TEST,DC=SAAS",
+                    "TargetDomainName": "TEST",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2903",
+                    "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+                    "SubjectUserName": "ev_aav"
+                },
+                "channel": "Security",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 3700022,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "time_created": "2047-12-18T16:31:01.611Z",
+                "outcome": "success",
+                "level": "information"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4746,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4746.xml"
+                },
+                "level": "information"
+            },
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "ee1c457c-cbce-4400-880e-7d1a070b7694"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            }
+        }
+    ]
+}

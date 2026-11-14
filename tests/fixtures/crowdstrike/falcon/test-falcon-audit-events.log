@@ -1,0 +1,277 @@
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 1045,
+        "eventType": "RemoteResponseSessionStartEvent",
+        "eventCreationTime": 2466443534000,
+        "version": "1.0"
+    },
+    "event": {
+        "SessionId": "6289739c-7469-4e08-974d-3647b14020ce",
+        "HostnameField": "hostnameofmachine",
+        "UserName": "awnhx.sfis@djxlbxr.com",
+        "StartTimestamp": 2466443534
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 1046,
+        "eventType": "RemoteResponseSessionEndEvent",
+        "eventCreationTime": 2466443572000,
+        "version": "1.0"
+    },
+    "event": {
+        "SessionId": "6289739c-7469-4e08-974d-3647b14020ce",
+        "HostnameField": "hostnameofmachine",
+        "UserName": "awnhx.sfis@djxlbxr.com",
+        "EndTimestamp": 2466443572
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 0,
+        "eventType": "AuthActivityAuditEvent",
+        "eventCreationTime": 2465155750710,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "api-client-id:1234567890abcdefghijklmnopqrstuvwxyz",
+        "UserIp": "10.15.40.40",
+        "OperationName": "streamStarted",
+        "ServiceName": "Crowdstrike Streaming API",
+        "Success": true,
+        "UTCTimestamp": 2465155750,
+        "AuditKeyValues": [
+            {
+                "Key": "APIClientID",
+                "ValueString": "1234567890abcdefghijklmnopqr"
+            },
+            {
+                "Key": "partition",
+                "ValueString": "0"
+            },
+            {
+                "Key": "offset",
+                "ValueString": "-1"
+            },
+            {
+                "Key": "appId",
+                "ValueString": "siem-connector-v2.0.0"
+            },
+            {
+                "Key": "eventType",
+                "ValueString": "[UserActivityAuditEvent HashSpreadingEvent RemoteResponseSessionStartEvent RemoteResponseSessionEndEvent DetectionSummaryEvent AuthActivityAuditEvent]"
+            }
+        ]
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 1,
+        "eventType": "AuthActivityAuditEvent",
+        "eventCreationTime": 2465156377147,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "fnvfc@djxlbxr.com",
+        "UserIp": "192.168.246.94",
+        "OperationName": "twoFactorAuthenticate",
+        "ServiceName": "CrowdStrike Authentication",
+        "Success": true,
+        "UTCTimestamp": 2465156377147
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 2,
+        "eventType": "AuthActivityAuditEvent",
+        "eventCreationTime": 2465158477554,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "fpf@djxlbxr.com",
+        "UserIp": "192.168.101.230",
+        "OperationName": "twoFactorAuthenticate",
+        "ServiceName": "CrowdStrike Authentication",
+        "Success": true,
+        "UTCTimestamp": 2465158477554
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 3,
+        "eventType": "UserActivityAuditEvent",
+        "eventCreationTime": 2465159048000,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "arvzz@djxlbxr.com",
+        "UserIp": "192.168.83.119",
+        "OperationName": "update_group",
+        "ServiceName": "groups",
+        "AuditKeyValues": [
+            {
+                "Key": "group_id",
+                "ValueString": "8a58da87d8583be5ed00edef4a569f46"
+            },
+            {
+                "Key": "action_name",
+                "ValueString": "add_group_member"
+            }
+        ],
+        "UTCTimestamp": 2465159048
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 4,
+        "eventType": "AuthActivityAuditEvent",
+        "eventCreationTime": 2465214112140,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "fnvfc@djxlbxr.com",
+        "UserIp": "192.168.246.94",
+        "OperationName": "requestResetPassword",
+        "ServiceName": "CrowdStrike Authentication",
+        "Success": true,
+        "UTCTimestamp": 2465214112140,
+        "AuditKeyValues": [
+            {
+                "Key": "target_name",
+                "ValueString": "fnvfc@djxlbxr.com"
+            }
+        ]
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 5,
+        "eventType": "AuthActivityAuditEvent",
+        "eventCreationTime": 2465214141730,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "fnvfc@djxlbxr.com",
+        "UserIp": "192.168.246.94",
+        "OperationName": "twoFactorAuthenticate",
+        "ServiceName": "CrowdStrike Authentication",
+        "Success": true,
+        "UTCTimestamp": 2465214141730
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 6,
+        "eventType": "AuthActivityAuditEvent",
+        "eventCreationTime": 2465214320236,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "fnvfc@djxlbxr.com",
+        "UserIp": "192.168.246.94",
+        "OperationName": "changePassword",
+        "ServiceName": "CrowdStrike Authentication",
+        "Success": true,
+        "UTCTimestamp": 2465214320236,
+        "AuditKeyValues": [
+            {
+                "Key": "target_name",
+                "ValueString": "awnhx.sfis@djxlbxr.com"
+            }
+        ]
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 7,
+        "eventType": "AuthActivityAuditEvent",
+        "eventCreationTime": 2465214372362,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "fnvfc@djxlbxr.com",
+        "UserIp": "192.168.246.94",
+        "OperationName": "userAuthenticate",
+        "ServiceName": "CrowdStrike Authentication",
+        "Success": true,
+        "UTCTimestamp": 2465214372362
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 8,
+        "eventType": "AuthActivityAuditEvent",
+        "eventCreationTime": 2465214614754,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "fnvfc@djxlbxr.com",
+        "UserIp": "192.168.246.94",
+        "OperationName": "twoFactorAuthenticate",
+        "ServiceName": "CrowdStrike Authentication",
+        "Success": true,
+        "UTCTimestamp": 2465214614754
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 9,
+        "eventType": "AuthActivityAuditEvent",
+        "eventCreationTime": 2465214620289,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "fnvfc@djxlbxr.com",
+        "UserIp": "192.168.246.94",
+        "OperationName": "selfAcceptEula",
+        "ServiceName": "CrowdStrike Authentication",
+        "Success": true,
+        "UTCTimestamp": 2465214620289
+    }
+}
+{
+    "metadata": {
+        "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+        "offset": 10,
+        "eventType": "UserActivityAuditEvent",
+        "eventCreationTime": 2465216062000,
+        "version": "1.0"
+    },
+    "event": {
+        "UserId": "fnvfc@djxlbxr.com",
+        "UserIp": "192.168.246.94",
+        "OperationName": "detection_update",
+        "ServiceName": "detections",
+        "AuditKeyValues": [
+            {
+                "Key": "detection_id",
+                "ValueString": "ldt:9a0bb4d6933976eb67ef25490f7eed67:17180539745"
+            },
+            {
+                "Key": "new_state",
+                "ValueString": "in_progress"
+            },
+            {
+                "Key": "assigned_to",
+                "ValueString": "First Last"
+            },
+            {
+                "Key": "assigned_to_uid",
+                "ValueString": "awnhx.sfis@djxlbxr.com"
+            }
+        ],
+        "UTCTimestamp": 2465216062
+    }
+}

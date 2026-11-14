@@ -1,0 +1,229 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-10-25T12:53:27.433Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "id": "b1040e73-1b5b-42a7-b30a-94d9238e07d5_0",
+        "kind": "event",
+        "original": "{\"timestamp\":\"15:53:27.433\",\"event.category\":\"threat_intelligence_indicators\",\"tiindicator.originalEvent.id\":\"01GG7HHG0PAKQDFE9XZY7WDT4V_1\",\"site.id\":\"123456789123456789\",\"tiIndicator.uid\":\"3a79192c13eb19b50634c4728ae157e0\",\"src.process.user\":\"root\",\"src.process.indicatorRansomwareCount\":0,\"src.process.crossProcessDupRemoteProcessHandleCount\":0,\"src.process.tgtFileCreationCount\":0,\"tiIndicator.uploadTime\":2546996392103,\"src.process.indicatorInjectionCount\":0,\"src.process.moduleCount\":0,\"i.version\":\"preprocess-lib-1.0\",\"tiIndicator.validUntil\":1666709993007,\"sca:atlantisIngestTime\":1666702407563,\"src.process.indicatorReconnaissanceCount\":0,\"src.process.storyline.id\":\"40efba44-4024-0295-58e9-9f08652c944c\",\"src.process.childProcCount\":32388,\"mgmt.url\":\"ayfe-939.ifkswpfhtkd.org\",\"src.process.crossProcessOpenProcessCount\":0,\"src.process.subsystem\":\"SUBSYSTEM_UNKNOWN\",\"meta.event.name\":\"THREATINTEL\",\"src.process.indicatorExploitationCount\":0,\"src.process.integrityLevel\":\"INTEGRITY_LEVEL_UNKNOWN\",\"i.scheme\":\"edr\",\"site.name\":\"ASDF\",\"src.process.netConnInCount\":37275,\"event.time\":2550315207433,\"account.id\":\"123456789123456789\",\"dataSource.name\":\"SentinelOne\",\"endpoint.name\":\"asdf1\",\"src.process.image.sha1\":\"1ed38435d90b49967ca0fed5553cc62af4cf9d74\",\"src.process.isStorylineRoot\":false,\"tiIndicator.addedBy\":\"admin@rpff2-upvqgf.ifkswpfhtkd.net\",\"src.process.pid\":1901,\"tgt.file.isSigned\":\"unsigned\",\"src.process.cmdline\":\"-D\",\"sca:ingestTime\":1666702413,\"dataSource.category\":\"security\",\"src.process.crossProcessThreadCreateCount\":0,\"src.process.crossProcessCount\":0,\"src.process.signedStatus\":\"unsigned\",\"event.id\":\"b1040e73-1b5b-42a7-b30a-94d9238e07d5_0\",\"tiIndicator.modificationTime\":2549113193007,\"src.process.image.path\":\"/usr/sbin/yvre\",\"src.process.tgtFileModificationCount\":0,\"src.process.indicatorEvasionCount\":0,\"tiindicator.originalEvent.traceId\":\"48WG4SWR5JDSLCFE6UGW1XAO3L\",\"src.process.netConnOutCount\":0,\"tiindicator.originalEvent.index\":1,\"src.process.crossProcessDupThreadHandleCount\":0,\"tiIndicator.comparisonMethod\":\"EQUALS\",\"endpoint.os\":\"linux\",\"src.process.tgtFileDeletionCount\":0,\"src.process.startTime\":2526135993160,\"tiIndicator.name\":\"mandiant_ipv4_41.66.217.101\",\"mgmt.id\":\"1337\",\"os.name\":\"Linux\",\"src.process.displayName\":\"yvre\",\"tiindicator.originalEvent.time\":2550313349275,\"src.process.isNative64Bit\":false,\"src.process.uid\":\"02afbe55-afb1-1006-1c9b-97c7dc4ff7dd\",\"src.process.indicatorBootConfigurationUpdateCount\":0,\"src.process.indicatorInfostealerCount\":0,\"process.unique.key\":\"02afbe55-afb1-1006-1c9b-97c7dc4ff7dd\",\"agent.version\":\"192.0.2.162\",\"src.process.sessionId\":0,\"src.process.netConnCount\":37275,\"tiIndicator.type\":\"IPv4\",\"mgmt.osRevision\":\"Ubuntu16.04.7LTS4.4.0-1098-aws\",\"group.id\":\"asdf\",\"src.process.isRedirectCmdProcessor\":false,\"tiIndicator.value\":\"192.0.2.245\",\"src.process.dnsCount\":0,\"endpoint.type\":\"server\",\"trace.id\":\"b1040e73-1b5b-42a7-b30a-94d9238e07d5\",\"agent.uuid\":\"asdf356783457dfds4456d65\",\"src.process.indicatorGeneralCount\":0,\"src.process.crossProcessOutOfStorylineCount\":0,\"tiIndicator.source\":\"mandiant\",\"src.process.registryChangeCount\":0,\"src.process.indicatorPersistenceCount\":0,\"event.type\":\"ThreatIntelligenceIndicators\",\"src.process.indicatorPostExploitationCount\":0}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "group": {
+        "id": "asdf"
+      },
+      "host": {
+        "hostname": "asdf1",
+        "id": "asdf356783457dfds4456d65",
+        "os": {
+          "name": "Linux",
+          "platform": "linux",
+          "type": "linux"
+        },
+        "type": "server"
+      },
+      "process": {
+        "args": [
+          "-D"
+        ],
+        "args_count": 1,
+        "code_signature": {
+          "exists": false
+        },
+        "command_line": "-D",
+        "entity_id": "02afbe55-afb1-1006-1c9b-97c7dc4ff7dd",
+        "executable": "/usr/sbin/yvre",
+        "hash": {
+          "sha1": "1ed38435d90b49967ca0fed5553cc62af4cf9d74"
+        },
+        "pid": 1901,
+        "start": "2050-01-18T16:26:33.160Z",
+        "title": "yvre",
+        "user": {
+          "name": "root"
+        }
+      },
+      "related": {
+        "hash": [
+          "1ed38435d90b49967ca0fed5553cc62af4cf9d74"
+        ],
+        "hosts": [
+          "asdf1",
+          "linux",
+          "server"
+        ]
+      },
+      "sentinel_one_cloud_funnel": {
+        "event": {
+          "account_id": "123456789123456789",
+          "agent": {
+            "uuid": "asdf356783457dfds4456d65",
+            "version": "192.0.2.162"
+          },
+          "category": "threat_intelligence_indicators",
+          "data_source": {
+            "category": "security",
+            "name": "SentinelOne"
+          },
+          "endpoint": {
+            "name": "asdf1",
+            "os": "linux",
+            "type": "server"
+          },
+          "group": {
+            "id": "asdf"
+          },
+          "i": {
+            "scheme": "edr",
+            "version": "preprocess-lib-1.0"
+          },
+          "id": "b1040e73-1b5b-42a7-b30a-94d9238e07d5_0",
+          "meta_event_name": "THREATINTEL",
+          "mgmt": {
+            "id": "1337",
+            "os_revision": "Ubuntu16.04.7LTS4.4.0-1098-aws",
+            "url": "ayfe-939.ifkswpfhtkd.org"
+          },
+          "os_name": "Linux",
+          "process_unique_key": "02afbe55-afb1-1006-1c9b-97c7dc4ff7dd",
+          "sca": {
+            "atlantis_ingest_time": "2022-10-25T12:53:27.563Z",
+            "ingest_time": "1970-01-20T06:58:22.413Z"
+          },
+          "site": {
+            "id": "123456789123456789",
+            "name": "ASDF"
+          },
+          "src": {
+            "process": {
+              "child_proc_count": 32388,
+              "cmd_line": "-D",
+              "cross_process": {
+                "count": 0,
+                "dup": {
+                  "remote_process_handle_count": 0,
+                  "thread_handle_count": 0
+                },
+                "open_process_count": 0,
+                "out_of_storyline_count": 0,
+                "thread_create_count": 0
+              },
+              "display_name": "yvre",
+              "dns_count": 0,
+              "image": {
+                "path": "/usr/sbin/yvre",
+                "sha1": "1ed38435d90b49967ca0fed5553cc62af4cf9d74"
+              },
+              "indicator": {
+                "boot_configuration_update_count": 0,
+                "evasion_count": 0,
+                "exploitation_count": 0,
+                "general_count": 0,
+                "info_stealer_count": 0,
+                "injection_count": 0,
+                "persistence_count": 0,
+                "post_exploitation_count": 0,
+                "ransomware_count": 0,
+                "reconnaissance_count": 0
+              },
+              "integrity_level": "INTEGRITY_LEVEL_UNKNOWN",
+              "is_native_64_bit": false,
+              "is_redirect_cmd_processor": false,
+              "is_storyline_root": false,
+              "module_count": 0,
+              "net_conn": {
+                "count": 37275,
+                "in_count": 37275,
+                "out_count": 0
+              },
+              "pid": 1901,
+              "registry_change_count": 0,
+              "session_id": "0",
+              "signed_status": "unsigned",
+              "start_time": "2050-01-18T16:26:33.160Z",
+              "storyline_id": "40efba44-4024-0295-58e9-9f08652c944c",
+              "subsystem": "SUBSYSTEM_UNKNOWN",
+              "tgt_file": {
+                "creation_count": 0,
+                "deletion_count": 0,
+                "modification_count": 0
+              },
+              "uid": "02afbe55-afb1-1006-1c9b-97c7dc4ff7dd",
+              "user": {
+                "name": "root"
+              }
+            }
+          },
+          "tgt": {
+            "file": {
+              "is_signed": "unsigned"
+            }
+          },
+          "ti_indicator": {
+            "added_by": "admin@rpff2-upvqgf.ifkswpfhtkd.net",
+            "comparison_method": "EQUALS",
+            "modification_time": "2050-10-11T14:59:53.007Z",
+            "name": "mandiant_ipv4_41.66.217.101",
+            "original_event": {
+              "id": "01GG7HHG0PAKQDFE9XZY7WDT4V_1",
+              "index": 1,
+              "time": "2050-10-25T12:22:29.275Z",
+              "trace_id": "48WG4SWR5JDSLCFE6UGW1XAO3L"
+            },
+            "source": "mandiant",
+            "type": "IPv4",
+            "uid": "3a79192c13eb19b50634c4728ae157e0",
+            "upload_time": "2050-09-17T02:59:52.103Z",
+            "valid_until": "2022-10-25T14:59:53.007Z",
+            "value": "192.0.2.245"
+          },
+          "time": "2050-10-25T12:53:27.433Z",
+          "timestamp": "2026-01-01T15:53:27.433Z",
+          "trace_id": "b1040e73-1b5b-42a7-b30a-94d9238e07d5",
+          "type": "ThreatIntelligenceIndicators"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "root",
+        "name": "root"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "reroute": [
+          "dns"
+        ]
+      },
+      "message": "{\"timestamp\":\"15:53:27.433\",\"event.category\":\"threat_intelligence_indicators\",\"tiindicator.originalEvent.id\":\"01GG7HHG0PAKQDFE9XZY7WDT4V_1\",\"site.id\":\"123456789123456789\",\"tiIndicator.uid\":\"3a79192c13eb19b50634c4728ae157e0\",\"src.process.user\":\"root\",\"src.process.indicatorRansomwareCount\":0,\"src.process.crossProcessDupRemoteProcessHandleCount\":0,\"src.process.tgtFileCreationCount\":0,\"tiIndicator.uploadTime\":2546996392103,\"src.process.indicatorInjectionCount\":0,\"src.process.moduleCount\":0,\"i.version\":\"preprocess-lib-1.0\",\"tiIndicator.validUntil\":1666709993007,\"sca:atlantisIngestTime\":1666702407563,\"src.process.indicatorReconnaissanceCount\":0,\"src.process.storyline.id\":\"40efba44-4024-0295-58e9-9f08652c944c\",\"src.process.childProcCount\":32388,\"mgmt.url\":\"ayfe-939.ifkswpfhtkd.org\",\"src.process.crossProcessOpenProcessCount\":0,\"src.process.subsystem\":\"SUBSYSTEM_UNKNOWN\",\"meta.event.name\":\"THREATINTEL\",\"src.process.indicatorExploitationCount\":0,\"src.process.integrityLevel\":\"INTEGRITY_LEVEL_UNKNOWN\",\"i.scheme\":\"edr\",\"site.name\":\"ASDF\",\"src.process.netConnInCount\":37275,\"event.time\":2550315207433,\"account.id\":\"123456789123456789\",\"dataSource.name\":\"SentinelOne\",\"endpoint.name\":\"asdf1\",\"src.process.image.sha1\":\"1ed38435d90b49967ca0fed5553cc62af4cf9d74\",\"src.process.isStorylineRoot\":false,\"tiIndicator.addedBy\":\"admin@rpff2-upvqgf.ifkswpfhtkd.net\",\"src.process.pid\":1901,\"tgt.file.isSigned\":\"unsigned\",\"src.process.cmdline\":\"-D\",\"sca:ingestTime\":1666702413,\"dataSource.category\":\"security\",\"src.process.crossProcessThreadCreateCount\":0,\"src.process.crossProcessCount\":0,\"src.process.signedStatus\":\"unsigned\",\"event.id\":\"b1040e73-1b5b-42a7-b30a-94d9238e07d5_0\",\"tiIndicator.modificationTime\":2549113193007,\"src.process.image.path\":\"/usr/sbin/yvre\",\"src.process.tgtFileModificationCount\":0,\"src.process.indicatorEvasionCount\":0,\"tiindicator.originalEvent.traceId\":\"48WG4SWR5JDSLCFE6UGW1XAO3L\",\"src.process.netConnOutCount\":0,\"tiindicator.originalEvent.index\":1,\"src.process.crossProcessDupThreadHandleCount\":0,\"tiIndicator.comparisonMethod\":\"EQUALS\",\"endpoint.os\":\"linux\",\"src.process.tgtFileDeletionCount\":0,\"src.process.startTime\":2526135993160,\"tiIndicator.name\":\"mandiant_ipv4_41.66.217.101\",\"mgmt.id\":\"1337\",\"os.name\":\"Linux\",\"src.process.displayName\":\"yvre\",\"tiindicator.originalEvent.time\":2550313349275,\"src.process.isNative64Bit\":false,\"src.process.uid\":\"02afbe55-afb1-1006-1c9b-97c7dc4ff7dd\",\"src.process.indicatorBootConfigurationUpdateCount\":0,\"src.process.indicatorInfostealerCount\":0,\"process.unique.key\":\"02afbe55-afb1-1006-1c9b-97c7dc4ff7dd\",\"agent.version\":\"192.0.2.162\",\"src.process.sessionId\":0,\"src.process.netConnCount\":37275,\"tiIndicator.type\":\"IPv4\",\"mgmt.osRevision\":\"Ubuntu16.04.7LTS4.4.0-1098-aws\",\"group.id\":\"asdf\",\"src.process.isRedirectCmdProcessor\":false,\"tiIndicator.value\":\"192.0.2.245\",\"src.process.dnsCount\":0,\"endpoint.type\":\"server\",\"trace.id\":\"b1040e73-1b5b-42a7-b30a-94d9238e07d5\",\"agent.uuid\":\"asdf356783457dfds4456d65\",\"src.process.indicatorGeneralCount\":0,\"src.process.crossProcessOutOfStorylineCount\":0,\"tiIndicator.source\":\"mandiant\",\"src.process.registryChangeCount\":0,\"src.process.indicatorPersistenceCount\":0,\"event.type\":\"ThreatIntelligenceIndicators\",\"src.process.indicatorPostExploitationCount\":0}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {
+      "sentinel_one_cloud_funnel.event.timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sentinel_one_cloud_funnel-event-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "sentinel_one_cloud_funnel",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

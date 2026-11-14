@@ -1,0 +1,1087 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-05-26T00:01:48.000Z",
+      "axonius": {
+        "application": {
+          "accurate_for_datetime": "2026-05-26T00:01:48.000Z",
+          "actual_renewal_date": "2026-07-09T07:51:07.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "azure_ad_adapter"
+          ],
+          "application_and_account_name": "microsoft/azure_ad-demo",
+          "asset_type": "licenses",
+          "associated_users": [
+            {
+              "user_activity_status": "Active",
+              "username": "heilwkr.xgby@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "qqkthe.rajvgh@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "rufqzkj.hjtoxihs@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "ehvntc.qcenag@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "islshqt.qvdebbt@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "thjb.lvcjm@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "wwndj.ahaswn@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "csfqngr.eztfj@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "wcyzu.zelomnqz@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "lcjfod.uollqos@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "akxelf.vdohfk@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "aosa.qvydcod@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "xzunua.djhue@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "exrhc.dvyugdo@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "xcur.qauibg@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "zgbnqp.ucrxxufo@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "uaujdp.rbesclbv@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "eczk.ohvchou@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "scuik.qfsjia@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "paokf.bbstk@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "arxb.rzrfeqii@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "kets.buxffv@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "axuemc.kqgz@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "wqayefl.pywbjvi@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "ubil.uuhlsgyxszjot@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "ixht.nycmva@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "vek.fvugz@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "bbujavkjb.jufebzb@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "ycrseft.eosgeg@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "ntnajfjt.bfezk@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "azndh.mcgveq@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "vaxzodby.iiawd@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "dgbc.dfgdiez@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "kfrpzefs.kfyyeo@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "enelan.uzelcz@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "osob.ajqtbto@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "nupxid.rruwvwou@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "dlpkvs.bdyjeuw@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "gnepruh.xecspwp@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "lvfm.najedv@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "ozgi.zbgryv@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "njxidxt.hdoxbl@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "yydgxxdq.sjuvficn@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "ueb.gcyxsq@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "udpntv.rynh@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "mfgd.eumuag@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "vtcpdbp.lnasbyo@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "wbsvnfqe.bhodh@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "ejh.ajdphap@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "xmztaoyd.jumlbw@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "dcbmp.kjcb@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "vngwdktsf.wujbvfox@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "jhitopuc.fbdmcn@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "ayywqnx.fqegapfzr@abui.local"
+            },
+            {
+              "user_activity_status": "Active",
+              "username": "ubvcqe.vdfy@abui.local"
+            }
+          ],
+          "cost": 766.5,
+          "end_date": "2026-07-09T07:51:07.000Z",
+          "event": {
+            "adapter_categories": [
+              "Directory",
+              "IAM",
+              "SaaS Management"
+            ],
+            "client_used": "67fd09bbfe1c8e812a176bb5",
+            "initial_plugin_unique_name": "azure_ad_adapter_0",
+            "plugin_name": "azure_ad_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "azure_ad_adapter_0",
+            "quick_id": "azure_ad_adapter_0!f73ac74c4ba45d2e09bf",
+            "type": "entitydata"
+          },
+          "fetch_time": "2026-05-26T00:01:17.000Z",
+          "first_fetch_time": "2025-12-14T16:49:42.000Z",
+          "from_last_fetch": true,
+          "id": "f73ac74c4ba45d2e09bf",
+          "id_raw": "kathryn.thomsen@demo.local_Microsoft 365 E5_2053-07-09 07:51:07.157232",
+          "internal_axon_id": "a34e39a181f37c65e40d3bdf3306725f",
+          "is_active_license": false,
+          "is_active_license_from_adapter": true,
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09bbfe1c8e812a176bb5",
+          "last_fetch_connection_label": "azure_ad-demo",
+          "license_estimated_monthly_cost": 63.875,
+          "license_estimated_yearly_cost": 766.5,
+          "license_name": "Microsoft 365 E5",
+          "license_type": "Paid",
+          "name": "Microsoft 365 E5",
+          "not_fetched_count": 0,
+          "number_of_active_associated_users": 93,
+          "number_of_associated_users": 102,
+          "number_of_inactive_associated_users": 9,
+          "owner": "wbvmxuv.jvoixdg@abui.local",
+          "possible_savings_of_inactive_associated_users": 492.75,
+          "pricing_unit": "User",
+          "quantity": 14,
+          "related_vendor_name": "Office365",
+          "sm_entity_type": "license",
+          "source_application": "Microsoft",
+          "subscription_term": "Monthly",
+          "tenant_number": [
+            4
+          ],
+          "transform_unique_id": "9gKmcIWx7Txgaokmw4R8TINkEko=",
+          "type": "Licenses",
+          "unit_price": 54.75
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "created": "2025-07-09T07:51:07.000Z",
+        "kind": "event",
+        "original": "{\"asset_type\":\"licenses\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:48 GMT\",\"adapter_categories\":[\"Directory\",\"IAM\",\"SaaS Management\"],\"client_used\":\"67fd09bbfe1c8e812a176bb5\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:48 GMT\",\"actual_renewal_date\":\"Thu, 09 Jul 2026 07:51:07 GMT\",\"application_and_account_name\":\"microsoft/azure_ad-demo\",\"associated_users\":[{\"user_activity_status\":\"Active\",\"username\":\"heilwkr.xgby@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"qqkthe.rajvgh@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"rufqzkj.hjtoxihs@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ehvntc.qcenag@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"islshqt.qvdebbt@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"thjb.lvcjm@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"wwndj.ahaswn@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"csfqngr.eztfj@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"wcyzu.zelomnqz@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"lcjfod.uollqos@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"akxelf.vdohfk@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"aosa.qvydcod@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"xzunua.djhue@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"exrhc.dvyugdo@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"xcur.qauibg@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"zgbnqp.ucrxxufo@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"uaujdp.rbesclbv@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"eczk.ohvchou@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"scuik.qfsjia@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"paokf.bbstk@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"arxb.rzrfeqii@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"kets.buxffv@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"axuemc.kqgz@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"wqayefl.pywbjvi@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ubil.uuhlsgyxszjot@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ixht.nycmva@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"vek.fvugz@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"bbujavkjb.jufebzb@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ycrseft.eosgeg@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ntnajfjt.bfezk@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"azndh.mcgveq@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"vaxzodby.iiawd@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"dgbc.dfgdiez@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"kfrpzefs.kfyyeo@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"enelan.uzelcz@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"osob.ajqtbto@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"nupxid.rruwvwou@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"dlpkvs.bdyjeuw@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"gnepruh.xecspwp@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"lvfm.najedv@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ozgi.zbgryv@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"njxidxt.hdoxbl@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"yydgxxdq.sjuvficn@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ueb.gcyxsq@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"udpntv.rynh@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"mfgd.eumuag@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"vtcpdbp.lnasbyo@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"wbsvnfqe.bhodh@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ejh.ajdphap@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"xmztaoyd.jumlbw@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"dcbmp.kjcb@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"vngwdktsf.wujbvfox@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"jhitopuc.fbdmcn@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ayywqnx.fqegapfzr@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ubvcqe.vdfy@abui.local\"}],\"cost\":766.5,\"created\":\"Wed, 09 Jul 2025 07:51:07 GMT\",\"end_date\":\"Thu, 09 Jul 2026 07:51:07 GMT\",\"fetch_time\":\"Tue, 26 May 2026 00:01:17 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:49:42 GMT\",\"from_last_fetch\":true,\"id\":\"f73ac74c4ba45d2e09bf\",\"id_raw\":\"kathryn.thomsen@demo.local_Microsoft 365 E5_2053-07-09 07:51:07.157232\",\"is_active_license\":false,\"is_active_license_from_adapter\":true,\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09bbfe1c8e812a176bb5\",\"last_fetch_connection_label\":\"azure_ad-demo\",\"license_estimated_monthly_cost\":63.875,\"license_estimated_yearly_cost\":766.5,\"license_name\":\"Microsoft 365 E5\",\"license_type\":\"Paid\",\"name\":\"Microsoft 365 E5\",\"not_fetched_count\":0,\"number_of_active_associated_users\":93,\"number_of_associated_users\":102,\"number_of_inactive_associated_users\":9,\"owner\":\"wbvmxuv.jvoixdg@abui.local\",\"possible_savings_of_inactive_associated_users\":492.75,\"pricing_unit\":\"User\",\"quantity\":14,\"related_vendor_name\":\"Office365\",\"sm_entity_type\":\"license\",\"source_application\":\"Microsoft\",\"start_date\":\"Wed, 09 Jul 2025 07:51:07 GMT\",\"subscription_term\":\"Monthly\",\"tenant_number\":[\"4\"],\"type\":\"Licenses\",\"unit_price\":54.75},\"initial_plugin_unique_name\":\"azure_ad_adapter_0\",\"plugin_name\":\"azure_ad_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"azure_ad_adapter_0\",\"quick_id\":\"azure_ad_adapter_0!f73ac74c4ba45d2e09bf\",\"type\":\"entitydata\"},\"internal_axon_id\":\"a34e39a181f37c65e40d3bdf3306725f\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}",
+        "start": "2025-07-09T07:51:07.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "wbvmxuv.jvoixdg@abui.local",
+          "heilwkr.xgby@abui.local",
+          "qqkthe.rajvgh@abui.local",
+          "rufqzkj.hjtoxihs@abui.local",
+          "ehvntc.qcenag@abui.local",
+          "islshqt.qvdebbt@abui.local",
+          "thjb.lvcjm@abui.local",
+          "wwndj.ahaswn@abui.local",
+          "csfqngr.eztfj@abui.local",
+          "wcyzu.zelomnqz@abui.local",
+          "lcjfod.uollqos@abui.local",
+          "akxelf.vdohfk@abui.local",
+          "aosa.qvydcod@abui.local",
+          "xzunua.djhue@abui.local",
+          "exrhc.dvyugdo@abui.local",
+          "xcur.qauibg@abui.local",
+          "zgbnqp.ucrxxufo@abui.local",
+          "uaujdp.rbesclbv@abui.local",
+          "eczk.ohvchou@abui.local",
+          "scuik.qfsjia@abui.local",
+          "paokf.bbstk@abui.local",
+          "arxb.rzrfeqii@abui.local",
+          "kets.buxffv@abui.local",
+          "axuemc.kqgz@abui.local",
+          "wqayefl.pywbjvi@abui.local",
+          "ubil.uuhlsgyxszjot@abui.local",
+          "ixht.nycmva@abui.local",
+          "vek.fvugz@abui.local",
+          "bbujavkjb.jufebzb@abui.local",
+          "ycrseft.eosgeg@abui.local",
+          "ntnajfjt.bfezk@abui.local",
+          "azndh.mcgveq@abui.local",
+          "vaxzodby.iiawd@abui.local",
+          "dgbc.dfgdiez@abui.local",
+          "kfrpzefs.kfyyeo@abui.local",
+          "enelan.uzelcz@abui.local",
+          "osob.ajqtbto@abui.local",
+          "nupxid.rruwvwou@abui.local",
+          "dlpkvs.bdyjeuw@abui.local",
+          "gnepruh.xecspwp@abui.local",
+          "lvfm.najedv@abui.local",
+          "ozgi.zbgryv@abui.local",
+          "njxidxt.hdoxbl@abui.local",
+          "yydgxxdq.sjuvficn@abui.local",
+          "ueb.gcyxsq@abui.local",
+          "udpntv.rynh@abui.local",
+          "mfgd.eumuag@abui.local",
+          "vtcpdbp.lnasbyo@abui.local",
+          "wbsvnfqe.bhodh@abui.local",
+          "ejh.ajdphap@abui.local",
+          "xmztaoyd.jumlbw@abui.local",
+          "dcbmp.kjcb@abui.local",
+          "vngwdktsf.wujbvfox@abui.local",
+          "jhitopuc.fbdmcn@abui.local",
+          "ayywqnx.fqegapfzr@abui.local",
+          "ubvcqe.vdfy@abui.local"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2026-05-26T00:12:29.000Z",
+      "axonius": {
+        "application": {
+          "adapter_list_length": 1,
+          "adapters": [
+            "azure_ad_adapter"
+          ],
+          "asset_type": "licenses",
+          "associated_license_users": [
+            {
+              "email": [
+                "csfqngr.eztfj@abui.local"
+              ],
+              "internal_axon_id": [
+                "ba1002b0bc68fa0edc741c662d75c133"
+              ],
+              "username": [
+                "csfqngr.eztfj@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "ejh.ajdphap@abui.local"
+              ],
+              "internal_axon_id": [
+                "5063961d54432081783e45ebe5658c3c"
+              ],
+              "username": [
+                "ejh.ajdphap@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "aosa.qvydcod@abui.local"
+              ],
+              "internal_axon_id": [
+                "fc45d8bfe564bfd2690f67b8f8a7fa0a"
+              ],
+              "username": [
+                "aosa.qvydcod@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "ayywqnx.fqegapfzr@abui.local"
+              ],
+              "internal_axon_id": [
+                "643972e3c9732eb593ccb8c16ac7cac8"
+              ],
+              "username": [
+                "ayywqnx.fqegapfzr@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "akxelf.vdohfk@abui.local"
+              ],
+              "internal_axon_id": [
+                "6e5c844f49840a53d8b42bd14960ea34"
+              ],
+              "username": [
+                "akxelf.vdohfk@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "dcbmp.kjcb@abui.local"
+              ],
+              "internal_axon_id": [
+                "3494918ff668a1e5a8df4e78a9c29b93"
+              ],
+              "username": [
+                "dcbmp.kjcb@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "enelan.uzelcz@abui.local"
+              ],
+              "internal_axon_id": [
+                "5e5f3336423346ab1323ffbc4b3f53d4"
+              ],
+              "username": [
+                "enelan.uzelcz@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "azndh.mcgveq@abui.local"
+              ],
+              "internal_axon_id": [
+                "7fd7d8257195c6c0412e4f418aeba778"
+              ],
+              "username": [
+                "azndh.mcgveq@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "eczk.ohvchou@abui.local"
+              ],
+              "internal_axon_id": [
+                "c6c369abb6c40aa9939eb4fef84a9648"
+              ],
+              "username": [
+                "eczk.ohvchou@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "bbujavkjb.jufebzb@abui.local"
+              ],
+              "internal_axon_id": [
+                "19bdb1ffa0f75c2f76431fe49acb8635"
+              ],
+              "username": [
+                "bbujavkjb.jufebzb@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "ehvntc.qcenag@abui.local"
+              ],
+              "internal_axon_id": [
+                "ee009ad76a14ed7673eee14dd74879c9"
+              ],
+              "username": [
+                "ehvntc.qcenag@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "exrhc.dvyugdo@abui.local"
+              ],
+              "internal_axon_id": [
+                "c9d6222fad53e221a421f27e5e05fbc6"
+              ],
+              "username": [
+                "exrhc.dvyugdo@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "axuemc.kqgz@abui.local"
+              ],
+              "internal_axon_id": [
+                "1d1df7bf568ef373d9f0153b7ee3a90c"
+              ],
+              "username": [
+                "axuemc.kqgz@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "dlpkvs.bdyjeuw@abui.local"
+              ],
+              "internal_axon_id": [
+                "8776ce2b1cc8180da1fc2bdbe9f6e823"
+              ],
+              "username": [
+                "dlpkvs.bdyjeuw@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "arxb.rzrfeqii@abui.local"
+              ],
+              "internal_axon_id": [
+                "707fa00bae3243eec3e625d0dafb4c20"
+              ],
+              "username": [
+                "arxb.rzrfeqii@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "dgbc.dfgdiez@abui.local"
+              ],
+              "internal_axon_id": [
+                "b23c4958d6bed1e399d47a451f24d359"
+              ],
+              "username": [
+                "dgbc.dfgdiez@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "ubil.uuhlsgyxszjot@abui.local"
+              ],
+              "internal_axon_id": [
+                "2d4773086f48cfbdcf8765fc9714f99b"
+              ],
+              "username": [
+                "ubil.uuhlsgyxszjot@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "nupxid.rruwvwou@abui.local"
+              ],
+              "internal_axon_id": [
+                "2fb7b199f32033d3517dcdc682ef3f8c"
+              ],
+              "username": [
+                "nupxid.rruwvwou@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "gnepruh.xecspwp@abui.local"
+              ],
+              "internal_axon_id": [
+                "3e6bd878a7e4b4e62fb84afb843a0c72"
+              ],
+              "username": [
+                "gnepruh.xecspwp@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "qqkthe.rajvgh@abui.local"
+              ],
+              "internal_axon_id": [
+                "e5cd7acd45d73043bbb66ebfe9ca64fd"
+              ],
+              "username": [
+                "qqkthe.rajvgh@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "kfrpzefs.kfyyeo@abui.local"
+              ],
+              "internal_axon_id": [
+                "4ac6646f39847a81c4521d070e57b22d"
+              ],
+              "username": [
+                "kfrpzefs.kfyyeo@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "ixht.nycmva@abui.local"
+              ],
+              "internal_axon_id": [
+                "56cc3ae269c62aa502125e9ac5c48e8c"
+              ],
+              "username": [
+                "ixht.nycmva@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "ozgi.zbgryv@abui.local"
+              ],
+              "internal_axon_id": [
+                "bb0eaf468c16461c3063d5d0357f2947"
+              ],
+              "username": [
+                "ozgi.zbgryv@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "osob.ajqtbto@abui.local"
+              ],
+              "internal_axon_id": [
+                "ae33e5c3ced47c57ae131a7d5a695fcf"
+              ],
+              "username": [
+                "osob.ajqtbto@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "lvfm.najedv@abui.local"
+              ],
+              "internal_axon_id": [
+                "c15efcede6a07421eb65c3028f4bf87d"
+              ],
+              "username": [
+                "lvfm.najedv@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "vaxzodby.iiawd@abui.local"
+              ],
+              "internal_axon_id": [
+                "152947dcea401db6602d78ae9f5109cd"
+              ],
+              "username": [
+                "vaxzodby.iiawd@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "heilwkr.xgby@abui.local"
+              ],
+              "internal_axon_id": [
+                "85d8012a9568b4a2691ba1a3b1a2ca54"
+              ],
+              "username": [
+                "heilwkr.xgby@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "paokf.bbstk@abui.local"
+              ],
+              "internal_axon_id": [
+                "9c95a6ce6c1fcadad6af309d0051337c"
+              ],
+              "username": [
+                "paokf.bbstk@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "wcyzu.zelomnqz@abui.local"
+              ],
+              "internal_axon_id": [
+                "697c2bd3cef93de3f95d2d992b0f6edd"
+              ],
+              "username": [
+                "wcyzu.zelomnqz@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "islshqt.qvdebbt@abui.local"
+              ],
+              "internal_axon_id": [
+                "f631260750cfc854ced004b37852cdaf"
+              ],
+              "username": [
+                "islshqt.qvdebbt@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "jhitopuc.fbdmcn@abui.local"
+              ],
+              "internal_axon_id": [
+                "4fbeb829e23a4aab79847a3fcaeb8f81"
+              ],
+              "username": [
+                "jhitopuc.fbdmcn@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "scuik.qfsjia@abui.local"
+              ],
+              "internal_axon_id": [
+                "bf3f24a3ee21c6559a20a2c35c5c60ba"
+              ],
+              "username": [
+                "scuik.qfsjia@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "ueb.gcyxsq@abui.local"
+              ],
+              "internal_axon_id": [
+                "b36ac93b98f0bc5537b8445865e9b40e"
+              ],
+              "username": [
+                "ueb.gcyxsq@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "vek.fvugz@abui.local"
+              ],
+              "internal_axon_id": [
+                "09642e91dca33860bacefdafc796cef8"
+              ],
+              "username": [
+                "vek.fvugz@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "xmztaoyd.jumlbw@abui.local"
+              ],
+              "internal_axon_id": [
+                "af4702ca2bae313be53e64ea995fd84c"
+              ],
+              "username": [
+                "xmztaoyd.jumlbw@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "xzunua.djhue@abui.local"
+              ],
+              "internal_axon_id": [
+                "0275083f3ff21d48d047fe5b1c609e39"
+              ],
+              "username": [
+                "xzunua.djhue@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "mfgd.eumuag@abui.local"
+              ],
+              "internal_axon_id": [
+                "a54477dec7882c2499ff8540cc371c03"
+              ],
+              "username": [
+                "mfgd.eumuag@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "udpntv.rynh@abui.local"
+              ],
+              "internal_axon_id": [
+                "65b221150f0f61a049bb159ffeb8d6bb"
+              ],
+              "username": [
+                "udpntv.rynh@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "kets.buxffv@abui.local"
+              ],
+              "internal_axon_id": [
+                "a455a1aaa57b8c3aed900d6dd7fef501"
+              ],
+              "username": [
+                "kets.buxffv@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "ycrseft.eosgeg@abui.local"
+              ],
+              "internal_axon_id": [
+                "febeea4c289c7aae360407df39691fc2"
+              ],
+              "username": [
+                "ycrseft.eosgeg@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "wqayefl.pywbjvi@abui.local"
+              ],
+              "internal_axon_id": [
+                "de255a8393d8ec4a7ed38e4e011f211d"
+              ],
+              "username": [
+                "wqayefl.pywbjvi@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "vtcpdbp.lnasbyo@abui.local"
+              ],
+              "internal_axon_id": [
+                "7d83d639ab4a20af16e4484a8acb2c32"
+              ],
+              "username": [
+                "vtcpdbp.lnasbyo@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "yydgxxdq.sjuvficn@abui.local"
+              ],
+              "internal_axon_id": [
+                "6ef632d6037797f13a77c4a409742f1b"
+              ],
+              "username": [
+                "yydgxxdq.sjuvficn@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "wbsvnfqe.bhodh@abui.local"
+              ],
+              "internal_axon_id": [
+                "573fc52dfd89540f32796ecd617262a2"
+              ],
+              "username": [
+                "wbsvnfqe.bhodh@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "xcur.qauibg@abui.local"
+              ],
+              "internal_axon_id": [
+                "ae782342bae4fa28dee98c20350b584f"
+              ],
+              "username": [
+                "xcur.qauibg@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "uaujdp.rbesclbv@abui.local"
+              ],
+              "internal_axon_id": [
+                "9392f25a216b02162c1865e041a65474"
+              ],
+              "username": [
+                "uaujdp.rbesclbv@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "wwndj.ahaswn@abui.local"
+              ],
+              "internal_axon_id": [
+                "c7f3f3fb50e4769c9d6bb11a9f3723dc"
+              ],
+              "username": [
+                "wwndj.ahaswn@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "thjb.lvcjm@abui.local"
+              ],
+              "internal_axon_id": [
+                "5d2a9bce80357f8d41dabb8bab3d2b33"
+              ],
+              "username": [
+                "thjb.lvcjm@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "ntnajfjt.bfezk@abui.local"
+              ],
+              "internal_axon_id": [
+                "f10259f0c64351d27676114e95c9edae"
+              ],
+              "username": [
+                "ntnajfjt.bfezk@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "njxidxt.hdoxbl@abui.local"
+              ],
+              "internal_axon_id": [
+                "89152dbe1588a9874a97bbc11c555217"
+              ],
+              "username": [
+                "njxidxt.hdoxbl@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "ubvcqe.vdfy@abui.local"
+              ],
+              "internal_axon_id": [
+                "2239297f41c178285e15eab9642dfc3b"
+              ],
+              "username": [
+                "ubvcqe.vdfy@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "lcjfod.uollqos@abui.local"
+              ],
+              "internal_axon_id": [
+                "b109849e07340d2341f7b82777748065"
+              ],
+              "username": [
+                "lcjfod.uollqos@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "zgbnqp.ucrxxufo@abui.local"
+              ],
+              "internal_axon_id": [
+                "4418f3116a94010a13976419e41e38f0"
+              ],
+              "username": [
+                "zgbnqp.ucrxxufo@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "rufqzkj.hjtoxihs@abui.local"
+              ],
+              "internal_axon_id": [
+                "4f8773cf81375911c92c9104ff7d5dd3"
+              ],
+              "username": [
+                "rufqzkj.hjtoxihs@abui.local"
+              ]
+            },
+            {
+              "email": [
+                "vngwdktsf.wujbvfox@abui.local"
+              ],
+              "internal_axon_id": [
+                "be51eb1ee2f06de8655ffa93bbd47d6f"
+              ],
+              "username": [
+                "vngwdktsf.wujbvfox@abui.local"
+              ]
+            }
+          ],
+          "event": {
+            "association_type": "Tag",
+            "entity": "licenses",
+            "hidden_for_gui": true,
+            "name": "static_analysis_0_associated_license_users",
+            "plugin_name": "static_analysis",
+            "plugin_unique_name": "static_analysis_0_associated_license_users",
+            "type": "adapterdata"
+          },
+          "internal_axon_id": "a34e39a181f37c65e40d3bdf3306725f",
+          "transform_unique_id": "tcZMIdsz+dDV0IDVF805FWfE9OM="
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"asset_type\":\"licenses\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:12:29 GMT\",\"action_if_exists\":\"update\",\"associated_adapters\":[],\"association_type\":\"Tag\",\"data\":{\"associated_license_users\":[{\"email\":[\"csfqngr.eztfj@abui.local\"],\"internal_axon_id\":[\"ba1002b0bc68fa0edc741c662d75c133\"],\"username\":[\"csfqngr.eztfj@abui.local\"]},{\"email\":[\"ejh.ajdphap@abui.local\"],\"internal_axon_id\":[\"5063961d54432081783e45ebe5658c3c\"],\"username\":[\"ejh.ajdphap@abui.local\"]},{\"email\":[\"aosa.qvydcod@abui.local\"],\"internal_axon_id\":[\"fc45d8bfe564bfd2690f67b8f8a7fa0a\"],\"username\":[\"aosa.qvydcod@abui.local\"]},{\"email\":[\"ayywqnx.fqegapfzr@abui.local\"],\"internal_axon_id\":[\"643972e3c9732eb593ccb8c16ac7cac8\"],\"username\":[\"ayywqnx.fqegapfzr@abui.local\"]},{\"email\":[\"akxelf.vdohfk@abui.local\"],\"internal_axon_id\":[\"6e5c844f49840a53d8b42bd14960ea34\"],\"username\":[\"akxelf.vdohfk@abui.local\"]},{\"email\":[\"dcbmp.kjcb@abui.local\"],\"internal_axon_id\":[\"3494918ff668a1e5a8df4e78a9c29b93\"],\"username\":[\"dcbmp.kjcb@abui.local\"]},{\"email\":[\"enelan.uzelcz@abui.local\"],\"internal_axon_id\":[\"5e5f3336423346ab1323ffbc4b3f53d4\"],\"username\":[\"enelan.uzelcz@abui.local\"]},{\"email\":[\"azndh.mcgveq@abui.local\"],\"internal_axon_id\":[\"7fd7d8257195c6c0412e4f418aeba778\"],\"username\":[\"azndh.mcgveq@abui.local\"]},{\"email\":[\"eczk.ohvchou@abui.local\"],\"internal_axon_id\":[\"c6c369abb6c40aa9939eb4fef84a9648\"],\"username\":[\"eczk.ohvchou@abui.local\"]},{\"email\":[\"bbujavkjb.jufebzb@abui.local\"],\"internal_axon_id\":[\"19bdb1ffa0f75c2f76431fe49acb8635\"],\"username\":[\"bbujavkjb.jufebzb@abui.local\"]},{\"email\":[\"ehvntc.qcenag@abui.local\"],\"internal_axon_id\":[\"ee009ad76a14ed7673eee14dd74879c9\"],\"username\":[\"ehvntc.qcenag@abui.local\"]},{\"email\":[\"exrhc.dvyugdo@abui.local\"],\"internal_axon_id\":[\"c9d6222fad53e221a421f27e5e05fbc6\"],\"username\":[\"exrhc.dvyugdo@abui.local\"]},{\"email\":[\"axuemc.kqgz@abui.local\"],\"internal_axon_id\":[\"1d1df7bf568ef373d9f0153b7ee3a90c\"],\"username\":[\"axuemc.kqgz@abui.local\"]},{\"email\":[\"dlpkvs.bdyjeuw@abui.local\"],\"internal_axon_id\":[\"8776ce2b1cc8180da1fc2bdbe9f6e823\"],\"username\":[\"dlpkvs.bdyjeuw@abui.local\"]},{\"email\":[\"arxb.rzrfeqii@abui.local\"],\"internal_axon_id\":[\"707fa00bae3243eec3e625d0dafb4c20\"],\"username\":[\"arxb.rzrfeqii@abui.local\"]},{\"email\":[\"dgbc.dfgdiez@abui.local\"],\"internal_axon_id\":[\"b23c4958d6bed1e399d47a451f24d359\"],\"username\":[\"dgbc.dfgdiez@abui.local\"]},{\"email\":[\"ubil.uuhlsgyxszjot@abui.local\"],\"internal_axon_id\":[\"2d4773086f48cfbdcf8765fc9714f99b\"],\"username\":[\"ubil.uuhlsgyxszjot@abui.local\"]},{\"email\":[\"nupxid.rruwvwou@abui.local\"],\"internal_axon_id\":[\"2fb7b199f32033d3517dcdc682ef3f8c\"],\"username\":[\"nupxid.rruwvwou@abui.local\"]},{\"email\":[\"gnepruh.xecspwp@abui.local\"],\"internal_axon_id\":[\"3e6bd878a7e4b4e62fb84afb843a0c72\"],\"username\":[\"gnepruh.xecspwp@abui.local\"]},{\"email\":[\"qqkthe.rajvgh@abui.local\"],\"internal_axon_id\":[\"e5cd7acd45d73043bbb66ebfe9ca64fd\"],\"username\":[\"qqkthe.rajvgh@abui.local\"]},{\"email\":[\"kfrpzefs.kfyyeo@abui.local\"],\"internal_axon_id\":[\"4ac6646f39847a81c4521d070e57b22d\"],\"username\":[\"kfrpzefs.kfyyeo@abui.local\"]},{\"email\":[\"ixht.nycmva@abui.local\"],\"internal_axon_id\":[\"56cc3ae269c62aa502125e9ac5c48e8c\"],\"username\":[\"ixht.nycmva@abui.local\"]},{\"email\":[\"ozgi.zbgryv@abui.local\"],\"internal_axon_id\":[\"bb0eaf468c16461c3063d5d0357f2947\"],\"username\":[\"ozgi.zbgryv@abui.local\"]},{\"email\":[\"osob.ajqtbto@abui.local\"],\"internal_axon_id\":[\"ae33e5c3ced47c57ae131a7d5a695fcf\"],\"username\":[\"osob.ajqtbto@abui.local\"]},{\"email\":[\"lvfm.najedv@abui.local\"],\"internal_axon_id\":[\"c15efcede6a07421eb65c3028f4bf87d\"],\"username\":[\"lvfm.najedv@abui.local\"]},{\"email\":[\"vaxzodby.iiawd@abui.local\"],\"internal_axon_id\":[\"152947dcea401db6602d78ae9f5109cd\"],\"username\":[\"vaxzodby.iiawd@abui.local\"]},{\"email\":[\"heilwkr.xgby@abui.local\"],\"internal_axon_id\":[\"85d8012a9568b4a2691ba1a3b1a2ca54\"],\"username\":[\"heilwkr.xgby@abui.local\"]},{\"email\":[\"paokf.bbstk@abui.local\"],\"internal_axon_id\":[\"9c95a6ce6c1fcadad6af309d0051337c\"],\"username\":[\"paokf.bbstk@abui.local\"]},{\"email\":[\"wcyzu.zelomnqz@abui.local\"],\"internal_axon_id\":[\"697c2bd3cef93de3f95d2d992b0f6edd\"],\"username\":[\"wcyzu.zelomnqz@abui.local\"]},{\"email\":[\"islshqt.qvdebbt@abui.local\"],\"internal_axon_id\":[\"f631260750cfc854ced004b37852cdaf\"],\"username\":[\"islshqt.qvdebbt@abui.local\"]},{\"email\":[\"jhitopuc.fbdmcn@abui.local\"],\"internal_axon_id\":[\"4fbeb829e23a4aab79847a3fcaeb8f81\"],\"username\":[\"jhitopuc.fbdmcn@abui.local\"]},{\"email\":[\"scuik.qfsjia@abui.local\"],\"internal_axon_id\":[\"bf3f24a3ee21c6559a20a2c35c5c60ba\"],\"username\":[\"scuik.qfsjia@abui.local\"]},{\"email\":[\"ueb.gcyxsq@abui.local\"],\"internal_axon_id\":[\"b36ac93b98f0bc5537b8445865e9b40e\"],\"username\":[\"ueb.gcyxsq@abui.local\"]},{\"email\":[\"vek.fvugz@abui.local\"],\"internal_axon_id\":[\"09642e91dca33860bacefdafc796cef8\"],\"username\":[\"vek.fvugz@abui.local\"]},{\"email\":[\"xmztaoyd.jumlbw@abui.local\"],\"internal_axon_id\":[\"af4702ca2bae313be53e64ea995fd84c\"],\"username\":[\"xmztaoyd.jumlbw@abui.local\"]},{\"email\":[\"xzunua.djhue@abui.local\"],\"internal_axon_id\":[\"0275083f3ff21d48d047fe5b1c609e39\"],\"username\":[\"xzunua.djhue@abui.local\"]},{\"email\":[\"mfgd.eumuag@abui.local\"],\"internal_axon_id\":[\"a54477dec7882c2499ff8540cc371c03\"],\"username\":[\"mfgd.eumuag@abui.local\"]},{\"email\":[\"udpntv.rynh@abui.local\"],\"internal_axon_id\":[\"65b221150f0f61a049bb159ffeb8d6bb\"],\"username\":[\"udpntv.rynh@abui.local\"]},{\"email\":[\"kets.buxffv@abui.local\"],\"internal_axon_id\":[\"a455a1aaa57b8c3aed900d6dd7fef501\"],\"username\":[\"kets.buxffv@abui.local\"]},{\"email\":[\"ycrseft.eosgeg@abui.local\"],\"internal_axon_id\":[\"febeea4c289c7aae360407df39691fc2\"],\"username\":[\"ycrseft.eosgeg@abui.local\"]},{\"email\":[\"wqayefl.pywbjvi@abui.local\"],\"internal_axon_id\":[\"de255a8393d8ec4a7ed38e4e011f211d\"],\"username\":[\"wqayefl.pywbjvi@abui.local\"]},{\"email\":[\"vtcpdbp.lnasbyo@abui.local\"],\"internal_axon_id\":[\"7d83d639ab4a20af16e4484a8acb2c32\"],\"username\":[\"vtcpdbp.lnasbyo@abui.local\"]},{\"email\":[\"yydgxxdq.sjuvficn@abui.local\"],\"internal_axon_id\":[\"6ef632d6037797f13a77c4a409742f1b\"],\"username\":[\"yydgxxdq.sjuvficn@abui.local\"]},{\"email\":[\"wbsvnfqe.bhodh@abui.local\"],\"internal_axon_id\":[\"573fc52dfd89540f32796ecd617262a2\"],\"username\":[\"wbsvnfqe.bhodh@abui.local\"]},{\"email\":[\"xcur.qauibg@abui.local\"],\"internal_axon_id\":[\"ae782342bae4fa28dee98c20350b584f\"],\"username\":[\"xcur.qauibg@abui.local\"]},{\"email\":[\"uaujdp.rbesclbv@abui.local\"],\"internal_axon_id\":[\"9392f25a216b02162c1865e041a65474\"],\"username\":[\"uaujdp.rbesclbv@abui.local\"]},{\"email\":[\"wwndj.ahaswn@abui.local\"],\"internal_axon_id\":[\"c7f3f3fb50e4769c9d6bb11a9f3723dc\"],\"username\":[\"wwndj.ahaswn@abui.local\"]},{\"email\":[\"thjb.lvcjm@abui.local\"],\"internal_axon_id\":[\"5d2a9bce80357f8d41dabb8bab3d2b33\"],\"username\":[\"thjb.lvcjm@abui.local\"]},{\"email\":[\"ntnajfjt.bfezk@abui.local\"],\"internal_axon_id\":[\"f10259f0c64351d27676114e95c9edae\"],\"username\":[\"ntnajfjt.bfezk@abui.local\"]},{\"email\":[\"njxidxt.hdoxbl@abui.local\"],\"internal_axon_id\":[\"89152dbe1588a9874a97bbc11c555217\"],\"username\":[\"njxidxt.hdoxbl@abui.local\"]},{\"email\":[\"ubvcqe.vdfy@abui.local\"],\"internal_axon_id\":[\"2239297f41c178285e15eab9642dfc3b\"],\"username\":[\"ubvcqe.vdfy@abui.local\"]},{\"email\":[\"lcjfod.uollqos@abui.local\"],\"internal_axon_id\":[\"b109849e07340d2341f7b82777748065\"],\"username\":[\"lcjfod.uollqos@abui.local\"]},{\"email\":[\"zgbnqp.ucrxxufo@abui.local\"],\"internal_axon_id\":[\"4418f3116a94010a13976419e41e38f0\"],\"username\":[\"zgbnqp.ucrxxufo@abui.local\"]},{\"email\":[\"rufqzkj.hjtoxihs@abui.local\"],\"internal_axon_id\":[\"4f8773cf81375911c92c9104ff7d5dd3\"],\"username\":[\"rufqzkj.hjtoxihs@abui.local\"]},{\"email\":[\"vngwdktsf.wujbvfox@abui.local\"],\"internal_axon_id\":[\"be51eb1ee2f06de8655ffa93bbd47d6f\"],\"username\":[\"vngwdktsf.wujbvfox@abui.local\"]}]},\"entity\":\"licenses\",\"hidden_for_gui\":true,\"name\":\"static_analysis_0_associated_license_users\",\"plugin_name\":\"static_analysis\",\"plugin_unique_name\":\"static_analysis_0_associated_license_users\",\"type\":\"adapterdata\"},\"internal_axon_id\":\"a34e39a181f37c65e40d3bdf3306725f\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "{0=csfqngr.eztfj@abui.local}",
+          "{0=ejh.ajdphap@abui.local}",
+          "{0=aosa.qvydcod@abui.local}",
+          "{0=ayywqnx.fqegapfzr@abui.local}",
+          "{0=akxelf.vdohfk@abui.local}",
+          "{0=dcbmp.kjcb@abui.local}",
+          "{0=enelan.uzelcz@abui.local}",
+          "{0=azndh.mcgveq@abui.local}",
+          "{0=eczk.ohvchou@abui.local}",
+          "{0=bbujavkjb.jufebzb@abui.local}",
+          "{0=ehvntc.qcenag@abui.local}",
+          "{0=exrhc.dvyugdo@abui.local}",
+          "{0=axuemc.kqgz@abui.local}",
+          "{0=dlpkvs.bdyjeuw@abui.local}",
+          "{0=arxb.rzrfeqii@abui.local}",
+          "{0=dgbc.dfgdiez@abui.local}",
+          "{0=ubil.uuhlsgyxszjot@abui.local}",
+          "{0=nupxid.rruwvwou@abui.local}",
+          "{0=gnepruh.xecspwp@abui.local}",
+          "{0=qqkthe.rajvgh@abui.local}",
+          "{0=kfrpzefs.kfyyeo@abui.local}",
+          "{0=ixht.nycmva@abui.local}",
+          "{0=ozgi.zbgryv@abui.local}",
+          "{0=osob.ajqtbto@abui.local}",
+          "{0=lvfm.najedv@abui.local}",
+          "{0=vaxzodby.iiawd@abui.local}",
+          "{0=heilwkr.xgby@abui.local}",
+          "{0=paokf.bbstk@abui.local}",
+          "{0=wcyzu.zelomnqz@abui.local}",
+          "{0=islshqt.qvdebbt@abui.local}",
+          "{0=jhitopuc.fbdmcn@abui.local}",
+          "{0=scuik.qfsjia@abui.local}",
+          "{0=ueb.gcyxsq@abui.local}",
+          "{0=vek.fvugz@abui.local}",
+          "{0=xmztaoyd.jumlbw@abui.local}",
+          "{0=xzunua.djhue@abui.local}",
+          "{0=mfgd.eumuag@abui.local}",
+          "{0=udpntv.rynh@abui.local}",
+          "{0=kets.buxffv@abui.local}",
+          "{0=ycrseft.eosgeg@abui.local}",
+          "{0=wqayefl.pywbjvi@abui.local}",
+          "{0=vtcpdbp.lnasbyo@abui.local}",
+          "{0=yydgxxdq.sjuvficn@abui.local}",
+          "{0=wbsvnfqe.bhodh@abui.local}",
+          "{0=xcur.qauibg@abui.local}",
+          "{0=uaujdp.rbesclbv@abui.local}",
+          "{0=wwndj.ahaswn@abui.local}",
+          "{0=thjb.lvcjm@abui.local}",
+          "{0=ntnajfjt.bfezk@abui.local}",
+          "{0=njxidxt.hdoxbl@abui.local}",
+          "{0=ubvcqe.vdfy@abui.local}",
+          "{0=lcjfod.uollqos@abui.local}",
+          "{0=zgbnqp.ucrxxufo@abui.local}",
+          "{0=rufqzkj.hjtoxihs@abui.local}",
+          "{0=vngwdktsf.wujbvfox@abui.local}"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"asset_type\":\"licenses\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:48 GMT\",\"adapter_categories\":[\"Directory\",\"IAM\",\"SaaS Management\"],\"client_used\":\"67fd09bbfe1c8e812a176bb5\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:48 GMT\",\"actual_renewal_date\":\"Thu, 09 Jul 2026 07:51:07 GMT\",\"application_and_account_name\":\"microsoft/azure_ad-demo\",\"associated_users\":[{\"user_activity_status\":\"Active\",\"username\":\"heilwkr.xgby@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"qqkthe.rajvgh@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"rufqzkj.hjtoxihs@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ehvntc.qcenag@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"islshqt.qvdebbt@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"thjb.lvcjm@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"wwndj.ahaswn@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"csfqngr.eztfj@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"wcyzu.zelomnqz@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"lcjfod.uollqos@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"akxelf.vdohfk@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"aosa.qvydcod@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"xzunua.djhue@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"exrhc.dvyugdo@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"xcur.qauibg@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"zgbnqp.ucrxxufo@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"uaujdp.rbesclbv@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"eczk.ohvchou@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"scuik.qfsjia@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"paokf.bbstk@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"arxb.rzrfeqii@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"kets.buxffv@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"axuemc.kqgz@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"wqayefl.pywbjvi@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ubil.uuhlsgyxszjot@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ixht.nycmva@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"vek.fvugz@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"bbujavkjb.jufebzb@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ycrseft.eosgeg@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ntnajfjt.bfezk@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"azndh.mcgveq@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"vaxzodby.iiawd@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"dgbc.dfgdiez@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"kfrpzefs.kfyyeo@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"enelan.uzelcz@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"osob.ajqtbto@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"nupxid.rruwvwou@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"dlpkvs.bdyjeuw@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"gnepruh.xecspwp@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"lvfm.najedv@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ozgi.zbgryv@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"njxidxt.hdoxbl@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"yydgxxdq.sjuvficn@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ueb.gcyxsq@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"udpntv.rynh@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"mfgd.eumuag@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"vtcpdbp.lnasbyo@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"wbsvnfqe.bhodh@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ejh.ajdphap@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"xmztaoyd.jumlbw@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"dcbmp.kjcb@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"vngwdktsf.wujbvfox@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"jhitopuc.fbdmcn@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ayywqnx.fqegapfzr@abui.local\"},{\"user_activity_status\":\"Active\",\"username\":\"ubvcqe.vdfy@abui.local\"}],\"cost\":766.5,\"created\":\"Wed, 09 Jul 2025 07:51:07 GMT\",\"end_date\":\"Thu, 09 Jul 2026 07:51:07 GMT\",\"fetch_time\":\"Tue, 26 May 2026 00:01:17 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:49:42 GMT\",\"from_last_fetch\":true,\"id\":\"f73ac74c4ba45d2e09bf\",\"id_raw\":\"kathryn.thomsen@demo.local_Microsoft 365 E5_2053-07-09 07:51:07.157232\",\"is_active_license\":false,\"is_active_license_from_adapter\":true,\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09bbfe1c8e812a176bb5\",\"last_fetch_connection_label\":\"azure_ad-demo\",\"license_estimated_monthly_cost\":63.875,\"license_estimated_yearly_cost\":766.5,\"license_name\":\"Microsoft 365 E5\",\"license_type\":\"Paid\",\"name\":\"Microsoft 365 E5\",\"not_fetched_count\":0,\"number_of_active_associated_users\":93,\"number_of_associated_users\":102,\"number_of_inactive_associated_users\":9,\"owner\":\"wbvmxuv.jvoixdg@abui.local\",\"possible_savings_of_inactive_associated_users\":492.75,\"pricing_unit\":\"User\",\"quantity\":14,\"related_vendor_name\":\"Office365\",\"sm_entity_type\":\"license\",\"source_application\":\"Microsoft\",\"start_date\":\"Wed, 09 Jul 2025 07:51:07 GMT\",\"subscription_term\":\"Monthly\",\"tenant_number\":[\"4\"],\"type\":\"Licenses\",\"unit_price\":54.75},\"initial_plugin_unique_name\":\"azure_ad_adapter_0\",\"plugin_name\":\"azure_ad_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"azure_ad_adapter_0\",\"quick_id\":\"azure_ad_adapter_0!f73ac74c4ba45d2e09bf\",\"type\":\"entitydata\"},\"internal_axon_id\":\"a34e39a181f37c65e40d3bdf3306725f\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}"
+    },
+    {
+      "message": "{\"asset_type\":\"licenses\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:12:29 GMT\",\"action_if_exists\":\"update\",\"associated_adapters\":[],\"association_type\":\"Tag\",\"data\":{\"associated_license_users\":[{\"email\":[\"csfqngr.eztfj@abui.local\"],\"internal_axon_id\":[\"ba1002b0bc68fa0edc741c662d75c133\"],\"username\":[\"csfqngr.eztfj@abui.local\"]},{\"email\":[\"ejh.ajdphap@abui.local\"],\"internal_axon_id\":[\"5063961d54432081783e45ebe5658c3c\"],\"username\":[\"ejh.ajdphap@abui.local\"]},{\"email\":[\"aosa.qvydcod@abui.local\"],\"internal_axon_id\":[\"fc45d8bfe564bfd2690f67b8f8a7fa0a\"],\"username\":[\"aosa.qvydcod@abui.local\"]},{\"email\":[\"ayywqnx.fqegapfzr@abui.local\"],\"internal_axon_id\":[\"643972e3c9732eb593ccb8c16ac7cac8\"],\"username\":[\"ayywqnx.fqegapfzr@abui.local\"]},{\"email\":[\"akxelf.vdohfk@abui.local\"],\"internal_axon_id\":[\"6e5c844f49840a53d8b42bd14960ea34\"],\"username\":[\"akxelf.vdohfk@abui.local\"]},{\"email\":[\"dcbmp.kjcb@abui.local\"],\"internal_axon_id\":[\"3494918ff668a1e5a8df4e78a9c29b93\"],\"username\":[\"dcbmp.kjcb@abui.local\"]},{\"email\":[\"enelan.uzelcz@abui.local\"],\"internal_axon_id\":[\"5e5f3336423346ab1323ffbc4b3f53d4\"],\"username\":[\"enelan.uzelcz@abui.local\"]},{\"email\":[\"azndh.mcgveq@abui.local\"],\"internal_axon_id\":[\"7fd7d8257195c6c0412e4f418aeba778\"],\"username\":[\"azndh.mcgveq@abui.local\"]},{\"email\":[\"eczk.ohvchou@abui.local\"],\"internal_axon_id\":[\"c6c369abb6c40aa9939eb4fef84a9648\"],\"username\":[\"eczk.ohvchou@abui.local\"]},{\"email\":[\"bbujavkjb.jufebzb@abui.local\"],\"internal_axon_id\":[\"19bdb1ffa0f75c2f76431fe49acb8635\"],\"username\":[\"bbujavkjb.jufebzb@abui.local\"]},{\"email\":[\"ehvntc.qcenag@abui.local\"],\"internal_axon_id\":[\"ee009ad76a14ed7673eee14dd74879c9\"],\"username\":[\"ehvntc.qcenag@abui.local\"]},{\"email\":[\"exrhc.dvyugdo@abui.local\"],\"internal_axon_id\":[\"c9d6222fad53e221a421f27e5e05fbc6\"],\"username\":[\"exrhc.dvyugdo@abui.local\"]},{\"email\":[\"axuemc.kqgz@abui.local\"],\"internal_axon_id\":[\"1d1df7bf568ef373d9f0153b7ee3a90c\"],\"username\":[\"axuemc.kqgz@abui.local\"]},{\"email\":[\"dlpkvs.bdyjeuw@abui.local\"],\"internal_axon_id\":[\"8776ce2b1cc8180da1fc2bdbe9f6e823\"],\"username\":[\"dlpkvs.bdyjeuw@abui.local\"]},{\"email\":[\"arxb.rzrfeqii@abui.local\"],\"internal_axon_id\":[\"707fa00bae3243eec3e625d0dafb4c20\"],\"username\":[\"arxb.rzrfeqii@abui.local\"]},{\"email\":[\"dgbc.dfgdiez@abui.local\"],\"internal_axon_id\":[\"b23c4958d6bed1e399d47a451f24d359\"],\"username\":[\"dgbc.dfgdiez@abui.local\"]},{\"email\":[\"ubil.uuhlsgyxszjot@abui.local\"],\"internal_axon_id\":[\"2d4773086f48cfbdcf8765fc9714f99b\"],\"username\":[\"ubil.uuhlsgyxszjot@abui.local\"]},{\"email\":[\"nupxid.rruwvwou@abui.local\"],\"internal_axon_id\":[\"2fb7b199f32033d3517dcdc682ef3f8c\"],\"username\":[\"nupxid.rruwvwou@abui.local\"]},{\"email\":[\"gnepruh.xecspwp@abui.local\"],\"internal_axon_id\":[\"3e6bd878a7e4b4e62fb84afb843a0c72\"],\"username\":[\"gnepruh.xecspwp@abui.local\"]},{\"email\":[\"qqkthe.rajvgh@abui.local\"],\"internal_axon_id\":[\"e5cd7acd45d73043bbb66ebfe9ca64fd\"],\"username\":[\"qqkthe.rajvgh@abui.local\"]},{\"email\":[\"kfrpzefs.kfyyeo@abui.local\"],\"internal_axon_id\":[\"4ac6646f39847a81c4521d070e57b22d\"],\"username\":[\"kfrpzefs.kfyyeo@abui.local\"]},{\"email\":[\"ixht.nycmva@abui.local\"],\"internal_axon_id\":[\"56cc3ae269c62aa502125e9ac5c48e8c\"],\"username\":[\"ixht.nycmva@abui.local\"]},{\"email\":[\"ozgi.zbgryv@abui.local\"],\"internal_axon_id\":[\"bb0eaf468c16461c3063d5d0357f2947\"],\"username\":[\"ozgi.zbgryv@abui.local\"]},{\"email\":[\"osob.ajqtbto@abui.local\"],\"internal_axon_id\":[\"ae33e5c3ced47c57ae131a7d5a695fcf\"],\"username\":[\"osob.ajqtbto@abui.local\"]},{\"email\":[\"lvfm.najedv@abui.local\"],\"internal_axon_id\":[\"c15efcede6a07421eb65c3028f4bf87d\"],\"username\":[\"lvfm.najedv@abui.local\"]},{\"email\":[\"vaxzodby.iiawd@abui.local\"],\"internal_axon_id\":[\"152947dcea401db6602d78ae9f5109cd\"],\"username\":[\"vaxzodby.iiawd@abui.local\"]},{\"email\":[\"heilwkr.xgby@abui.local\"],\"internal_axon_id\":[\"85d8012a9568b4a2691ba1a3b1a2ca54\"],\"username\":[\"heilwkr.xgby@abui.local\"]},{\"email\":[\"paokf.bbstk@abui.local\"],\"internal_axon_id\":[\"9c95a6ce6c1fcadad6af309d0051337c\"],\"username\":[\"paokf.bbstk@abui.local\"]},{\"email\":[\"wcyzu.zelomnqz@abui.local\"],\"internal_axon_id\":[\"697c2bd3cef93de3f95d2d992b0f6edd\"],\"username\":[\"wcyzu.zelomnqz@abui.local\"]},{\"email\":[\"islshqt.qvdebbt@abui.local\"],\"internal_axon_id\":[\"f631260750cfc854ced004b37852cdaf\"],\"username\":[\"islshqt.qvdebbt@abui.local\"]},{\"email\":[\"jhitopuc.fbdmcn@abui.local\"],\"internal_axon_id\":[\"4fbeb829e23a4aab79847a3fcaeb8f81\"],\"username\":[\"jhitopuc.fbdmcn@abui.local\"]},{\"email\":[\"scuik.qfsjia@abui.local\"],\"internal_axon_id\":[\"bf3f24a3ee21c6559a20a2c35c5c60ba\"],\"username\":[\"scuik.qfsjia@abui.local\"]},{\"email\":[\"ueb.gcyxsq@abui.local\"],\"internal_axon_id\":[\"b36ac93b98f0bc5537b8445865e9b40e\"],\"username\":[\"ueb.gcyxsq@abui.local\"]},{\"email\":[\"vek.fvugz@abui.local\"],\"internal_axon_id\":[\"09642e91dca33860bacefdafc796cef8\"],\"username\":[\"vek.fvugz@abui.local\"]},{\"email\":[\"xmztaoyd.jumlbw@abui.local\"],\"internal_axon_id\":[\"af4702ca2bae313be53e64ea995fd84c\"],\"username\":[\"xmztaoyd.jumlbw@abui.local\"]},{\"email\":[\"xzunua.djhue@abui.local\"],\"internal_axon_id\":[\"0275083f3ff21d48d047fe5b1c609e39\"],\"username\":[\"xzunua.djhue@abui.local\"]},{\"email\":[\"mfgd.eumuag@abui.local\"],\"internal_axon_id\":[\"a54477dec7882c2499ff8540cc371c03\"],\"username\":[\"mfgd.eumuag@abui.local\"]},{\"email\":[\"udpntv.rynh@abui.local\"],\"internal_axon_id\":[\"65b221150f0f61a049bb159ffeb8d6bb\"],\"username\":[\"udpntv.rynh@abui.local\"]},{\"email\":[\"kets.buxffv@abui.local\"],\"internal_axon_id\":[\"a455a1aaa57b8c3aed900d6dd7fef501\"],\"username\":[\"kets.buxffv@abui.local\"]},{\"email\":[\"ycrseft.eosgeg@abui.local\"],\"internal_axon_id\":[\"febeea4c289c7aae360407df39691fc2\"],\"username\":[\"ycrseft.eosgeg@abui.local\"]},{\"email\":[\"wqayefl.pywbjvi@abui.local\"],\"internal_axon_id\":[\"de255a8393d8ec4a7ed38e4e011f211d\"],\"username\":[\"wqayefl.pywbjvi@abui.local\"]},{\"email\":[\"vtcpdbp.lnasbyo@abui.local\"],\"internal_axon_id\":[\"7d83d639ab4a20af16e4484a8acb2c32\"],\"username\":[\"vtcpdbp.lnasbyo@abui.local\"]},{\"email\":[\"yydgxxdq.sjuvficn@abui.local\"],\"internal_axon_id\":[\"6ef632d6037797f13a77c4a409742f1b\"],\"username\":[\"yydgxxdq.sjuvficn@abui.local\"]},{\"email\":[\"wbsvnfqe.bhodh@abui.local\"],\"internal_axon_id\":[\"573fc52dfd89540f32796ecd617262a2\"],\"username\":[\"wbsvnfqe.bhodh@abui.local\"]},{\"email\":[\"xcur.qauibg@abui.local\"],\"internal_axon_id\":[\"ae782342bae4fa28dee98c20350b584f\"],\"username\":[\"xcur.qauibg@abui.local\"]},{\"email\":[\"uaujdp.rbesclbv@abui.local\"],\"internal_axon_id\":[\"9392f25a216b02162c1865e041a65474\"],\"username\":[\"uaujdp.rbesclbv@abui.local\"]},{\"email\":[\"wwndj.ahaswn@abui.local\"],\"internal_axon_id\":[\"c7f3f3fb50e4769c9d6bb11a9f3723dc\"],\"username\":[\"wwndj.ahaswn@abui.local\"]},{\"email\":[\"thjb.lvcjm@abui.local\"],\"internal_axon_id\":[\"5d2a9bce80357f8d41dabb8bab3d2b33\"],\"username\":[\"thjb.lvcjm@abui.local\"]},{\"email\":[\"ntnajfjt.bfezk@abui.local\"],\"internal_axon_id\":[\"f10259f0c64351d27676114e95c9edae\"],\"username\":[\"ntnajfjt.bfezk@abui.local\"]},{\"email\":[\"njxidxt.hdoxbl@abui.local\"],\"internal_axon_id\":[\"89152dbe1588a9874a97bbc11c555217\"],\"username\":[\"njxidxt.hdoxbl@abui.local\"]},{\"email\":[\"ubvcqe.vdfy@abui.local\"],\"internal_axon_id\":[\"2239297f41c178285e15eab9642dfc3b\"],\"username\":[\"ubvcqe.vdfy@abui.local\"]},{\"email\":[\"lcjfod.uollqos@abui.local\"],\"internal_axon_id\":[\"b109849e07340d2341f7b82777748065\"],\"username\":[\"lcjfod.uollqos@abui.local\"]},{\"email\":[\"zgbnqp.ucrxxufo@abui.local\"],\"internal_axon_id\":[\"4418f3116a94010a13976419e41e38f0\"],\"username\":[\"zgbnqp.ucrxxufo@abui.local\"]},{\"email\":[\"rufqzkj.hjtoxihs@abui.local\"],\"internal_axon_id\":[\"4f8773cf81375911c92c9104ff7d5dd3\"],\"username\":[\"rufqzkj.hjtoxihs@abui.local\"]},{\"email\":[\"vngwdktsf.wujbvfox@abui.local\"],\"internal_axon_id\":[\"be51eb1ee2f06de8655ffa93bbd47d6f\"],\"username\":[\"vngwdktsf.wujbvfox@abui.local\"]}]},\"entity\":\"licenses\",\"hidden_for_gui\":true,\"name\":\"static_analysis_0_associated_license_users\",\"plugin_name\":\"static_analysis\",\"plugin_unique_name\":\"static_analysis_0_associated_license_users\",\"type\":\"adapterdata\"},\"internal_axon_id\":\"a34e39a181f37c65e40d3bdf3306725f\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}"
+    }
+  ],
+  "meta": {
+    "data_stream": "application",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-axonius-application-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "axonius",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

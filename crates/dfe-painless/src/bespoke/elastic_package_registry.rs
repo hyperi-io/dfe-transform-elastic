@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `elastic_package_registry`'s process uptime, transcribed.
+//! `elastic_package_registry`'s process uptime, as the runtime runs them.
 
 use chrono::DateTime;
 use serde_json::Value;
@@ -38,7 +38,7 @@ fn parse_instant(text: &str) -> Option<i64> {
         .map(|stamp| stamp.timestamp_millis())
 }
 
-/// Every `elastic_package_registry` script transcribed here.
+/// Every `elastic_package_registry` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "93452588d813fdef39523447eab2646e8bc8127209fca2ea2c630b93343527df",
     source: "elastic_package_registry",

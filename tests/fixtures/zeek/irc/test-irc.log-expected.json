@@ -1,0 +1,221 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2041-12-20T15:44:10.647Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 8000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "USER",
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CNJBX5FQdL62VUUP1",
+        "kind": "event",
+        "original": "{\"ts\":2271167050.647295,\"uid\":\"CNJBX5FQdL62VUUP1\",\"id.orig_h\":\"10.158.138.211\",\"id.orig_p\":45921,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":8000,\"command\":\"USER\",\"value\":\"rnoyt\",\"addl\":\"+iw rnoyt XxxxxxXxxx \"}",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:gVSPdgeCl4IKIr/UZWcAh3IAMGY=",
+        "protocol": "irc",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.158.138.211",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.158.138.211",
+        "ip": "10.158.138.211",
+        "port": 45921
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "irc": {
+          "addl": "+iw rnoyt XxxxxxXxxx ",
+          "command": "USER",
+          "value": "rnoyt"
+        },
+        "session_id": "CNJBX5FQdL62VUUP1"
+      }
+    },
+    {
+      "@timestamp": "2041-12-20T15:44:10.647Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 8000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "NICK",
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CNJBX5FQdL62VUUP1",
+        "kind": "event",
+        "original": "{\"ts\":2271167050.647295,\"uid\":\"CNJBX5FQdL62VUUP1\",\"id.orig_h\":\"10.158.138.211\",\"id.orig_p\":45921,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":8000,\"user\":\"rnoyt\",\"command\":\"NICK\",\"value\":\"molochtest\",\"addl\":\"+iw rnoyt XxxxxxXxxx \"}",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:gVSPdgeCl4IKIr/UZWcAh3IAMGY=",
+        "protocol": "irc",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.158.138.211",
+          "198.51.100.144"
+        ],
+        "user": [
+          "rnoyt"
+        ]
+      },
+      "source": {
+        "address": "10.158.138.211",
+        "ip": "10.158.138.211",
+        "port": 45921
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "rnoyt"
+      },
+      "zeek": {
+        "irc": {
+          "addl": "+iw rnoyt XxxxxxXxxx ",
+          "command": "NICK",
+          "value": "molochtest"
+        },
+        "session_id": "CNJBX5FQdL62VUUP1"
+      }
+    },
+    {
+      "@timestamp": "2041-12-20T15:44:10.706Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 8000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "JOIN",
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CNJBX5FQdL62VUUP1",
+        "kind": "event",
+        "original": "{\"ts\":2271167050.706387,\"uid\":\"CNJBX5FQdL62VUUP1\",\"id.orig_h\":\"10.158.138.211\",\"id.orig_p\":45921,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":8000,\"nick\":\"molochtest\",\"user\":\"rnoyt\",\"command\":\"JOIN\",\"value\":\"#moloch-fpc\",\"addl\":\" with channel key: \\u0027-\\u0027\"}",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:gVSPdgeCl4IKIr/UZWcAh3IAMGY=",
+        "protocol": "irc",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.158.138.211",
+          "198.51.100.144"
+        ],
+        "user": [
+          "rnoyt"
+        ]
+      },
+      "source": {
+        "address": "10.158.138.211",
+        "ip": "10.158.138.211",
+        "port": 45921
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "rnoyt"
+      },
+      "zeek": {
+        "irc": {
+          "addl": " with channel key: '-'",
+          "command": "JOIN",
+          "nick": "molochtest",
+          "value": "#moloch-fpc"
+        },
+        "session_id": "CNJBX5FQdL62VUUP1"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2271167050.647295,\"uid\":\"CNJBX5FQdL62VUUP1\",\"id.orig_h\":\"10.158.138.211\",\"id.orig_p\":45921,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":8000,\"command\":\"USER\",\"value\":\"rnoyt\",\"addl\":\"+iw rnoyt XxxxxxXxxx \"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2271167050.647295,\"uid\":\"CNJBX5FQdL62VUUP1\",\"id.orig_h\":\"10.158.138.211\",\"id.orig_p\":45921,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":8000,\"user\":\"rnoyt\",\"command\":\"NICK\",\"value\":\"molochtest\",\"addl\":\"+iw rnoyt XxxxxxXxxx \"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2271167050.706387,\"uid\":\"CNJBX5FQdL62VUUP1\",\"id.orig_h\":\"10.158.138.211\",\"id.orig_p\":45921,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":8000,\"nick\":\"molochtest\",\"user\":\"rnoyt\",\"command\":\"JOIN\",\"value\":\"#moloch-fpc\",\"addl\":\" with channel key: \\u0027-\\u0027\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "irc",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-irc-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

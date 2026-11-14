@@ -1,0 +1,140 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "ComputerPolicyFinished",
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "entity": {
+          "lifecycle": {
+            "last_activity": "2052-09-04T09:57:52.001Z"
+          }
+        },
+        "id": "5836625775",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "name": "ZFKO0",
+        "os": {
+          "version": "37.5296"
+        }
+      },
+      "jamf_pro": {
+        "events": {
+          "event": {
+            "computer": {
+              "alternate_mac_address": "ce:bb:a4:55:30:bc",
+              "building": "B56FRD",
+              "department": "E96W2U",
+              "device_name": "ZFKO0",
+              "email_address": "dmfuep@dobjr.com",
+              "ip_address": "198.51.100.144",
+              "jss_id": 667,
+              "mac_address": "ce:bb:a4:55:30:bc",
+              "management_id": "4247833287",
+              "model": "QHUAIT",
+              "os_build": "12.9706",
+              "os_version": "37.5296",
+              "phone": "5845522",
+              "position": "D2DO7Q",
+              "real_name": "TOKUG",
+              "reported_ip_address": "198.51.100.144",
+              "room": "4HF1TE",
+              "serial_number": "9281431",
+              "udid": "5836625775",
+              "user_directory_id": "9292263487",
+              "username": "Pnvw Eyd"
+            },
+            "policy_id": 217,
+            "successful": true
+          },
+          "webhook": {
+            "event_timestamp": "2052-09-04T09:57:52.001Z",
+            "id": 228,
+            "name": "9DMZT",
+            "webhook_event": "ComputerPolicyFinished"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "Pnvw Eyd",
+          "dmfuep@dobjr.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "dmfuep@dobjr.com",
+        "name": "Pnvw Eyd"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "event": {
+          "computer": {
+            "alternate_mac_address": "ce:bb:a4:55:30:bc",
+            "building": "B56FRD",
+            "department": "E96W2U",
+            "device_name": "ZFKO0",
+            "email_address": "dmfuep@dobjr.com",
+            "ip_address": "198.51.100.144",
+            "jss_id": 667,
+            "mac_address": "ce:bb:a4:55:30:bc",
+            "management_id": "4247833287",
+            "model": "QHUAIT",
+            "os_build": "12.9706",
+            "os_version": "37.5296",
+            "phone": "5845522",
+            "position": "D2DO7Q",
+            "real_name": "TOKUG",
+            "reported_ip_address": "198.51.100.144",
+            "room": "4HF1TE",
+            "serial_number": "9281431",
+            "udid": "5836625775",
+            "user_directory_id": "9292263487",
+            "username": "Pnvw Eyd"
+          },
+          "policy_id": 217,
+          "successful": true
+        },
+        "webhook": {
+          "event_timestamp": 2609056672001,
+          "id": 228,
+          "name": "9DMZT",
+          "webhook_event": "ComputerPolicyFinished"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

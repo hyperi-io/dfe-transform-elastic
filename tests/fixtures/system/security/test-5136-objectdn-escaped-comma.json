@@ -1,0 +1,50 @@
+{
+    "events": [
+        {
+            "event": {
+                "code": "5136",
+                "kind": "event",
+                "outcome": "success",
+                "provider": "Microsoft-Windows-Security-Auditing"
+            },
+            "host": {
+                "name": "CF43.egmukjj.local"
+            },
+            "log": {
+                "level": "information"
+            },
+            "winlog": {
+                "channel": "Security",
+                "computer_name": "CF43.egmukjj.local",
+                "event_data": {
+                    "SubjectDomainName": "CONTOSO",
+                    "SubjectLogonId": "0x32004",
+                    "SubjectUserName": "fddrio",
+                    "SubjectUserSid": "S-1-5-21-3457937927-2839227994-823803824-1104",
+                    "DSName": "example.com",
+                    "DSType": "Active Directory Domain Services",
+                    "ObjectDN": "CN=Smith\\, John,OU=Users,DC=example,DC=com",
+                    "ObjectClass": "user",
+                    "OperationType": "Value Added",
+                    "OpCorrelationID": "{da980c0a-686a-4ba9-9164-dd6235e12f37}",
+                    "AppCorrelationID": "{ff320a1e-447a}"
+                },
+                "event_id": "5136",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "process": {
+                    "pid": 516,
+                    "thread": {
+                        "id": 4020
+                    }
+                },
+                "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 410204,
+                "time_created": "2043-08-28T17:36:04.1294726Z"
+            }
+        }
+    ]
+}

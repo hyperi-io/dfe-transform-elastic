@@ -1,0 +1,255 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-01-01T01:00:27.000Z",
+      "agent": {
+        "ephemeral_id": "26412eb7-30ce-4e11-9e36-de017cca494b",
+        "id": "958aedea-e8de-4df6-843b-e999a4000657",
+        "name": "d5323b7a4678",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "999999",
+        "dataset": "cisco.ftd",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jan  1 2047 01:00:27 beats asa[1234]: %FTD-7-999999: This message is not filtered.",
+        "severity": 7,
+        "timezone": "+00:00",
+        "type": [
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "beats"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 0
+      },
+      "observer": {
+        "hostname": "beats",
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "asa",
+        "pid": 1234
+      },
+      "related": {
+        "hosts": [
+          "beats"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-01-01T01:00:30.000Z",
+      "agent": {
+        "ephemeral_id": "26412eb7-30ce-4e11-9e36-de017cca494b",
+        "id": "958aedea-e8de-4df6-843b-e999a4000657",
+        "name": "d5323b7a4678",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "999999",
+        "dataset": "cisco.ftd",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jan  1 2047 01:00:30 beats asa[1234]: %FTD-8-999999: This phony message is dropped due to log level.",
+        "severity": 8,
+        "timezone": "+00:00",
+        "type": [
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "beats"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 83
+      },
+      "observer": {
+        "hostname": "beats",
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "asa",
+        "pid": 1234
+      },
+      "related": {
+        "hosts": [
+          "beats"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:54:52.094Z",
+      "agent": {
+        "ephemeral_id": "26412eb7-30ce-4e11-9e36-de017cca494b",
+        "id": "958aedea-e8de-4df6-843b-e999a4000657",
+        "name": "d5323b7a4678",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "Jan  1 2047 01:00:27 beats asa[1234]: %FTD-7-999999: This message is not filtered.",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:54:52.094Z",
+      "agent": {
+        "ephemeral_id": "26412eb7-30ce-4e11-9e36-de017cca494b",
+        "id": "958aedea-e8de-4df6-843b-e999a4000657",
+        "name": "d5323b7a4678",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 83
+      },
+      "message": "Jan  1 2047 01:00:30 beats asa[1234]: %FTD-8-999999: This phony message is dropped due to log level.",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_ftd-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "cisco_ftd",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

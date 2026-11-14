@@ -225,9 +225,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_tmp.date") && event.has_value("_tmp.time") };
             if _cond {
-                // Painless script
-                // Source: ctx._tmp.timestamp = ctx._tmp.date + 'T' + ctx._tmp.time;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -462,9 +460,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_tmp.time_taken") };
             if _cond {
-                // Painless script
-                // Source: ctx.event.duration = (Long)(Float.parseFloat(ctx._tmp.time_taken) * params.S_TO_NS);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -492,9 +488,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_tmp.split_x_forwarded_for") };
             if _cond {
-                // Painless script
-                // Source: for (int i = 0; i < ctx._tmp.split_x_forwarded_for.length; i++) {\n  ctx._tmp.split_x_forwarded_for[i] = ctx._tmp.split_x_forwarded_for[i].trim();\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -646,9 +640,7 @@ impl Transform for Default {
                     && event.get_str("_tmp.split_x_forwarded_for") != Some("-")
             };
             if _cond {
-                // Painless script
-                // Source: if (ctx.get('network') == null) {\n    ctx['network'] = new HashMap();\n  }\nfor (String item : ctx._tmp.split_x_forwarded_for ) {\n  // edge case observed in the wild. e.g. 'localhost:8081'\n  if (item.startsWith('localhost')) {\n  if (ctx.network.forwarded_ip == null) {\n    ctx['network']['forwarded_ip'] = new ArrayList();\n  }\n    ctx['network']['forwarded_ip'].add('127.0.0.1');\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -855,9 +847,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: def full = \"\";\nif(ctx.network?.protocol != null && ctx.network?.protocol != \"\") {\n    full += ctx.network.protocol+\"://\";\n}\nif(ctx.destination?.domain != null && ctx.destination?.domain != \"\") {\n    full += ctx.destination.domain;\n}\nif(ctx.url?.path != null && ctx.url?.path != \"\") {\n    full += ctx.url.path;\n}\nif(ctx.url?.query != null && ctx.url?.query != \"\") {\n    full += \"?\"+ctx.url.query;\n}\nif(full != \"\") {\n    ctx._tmp.url_full = full\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

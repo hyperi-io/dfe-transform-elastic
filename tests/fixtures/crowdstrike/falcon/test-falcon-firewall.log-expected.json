@@ -1,0 +1,125 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-07-20T12:41:46.000Z",
+      "crowdstrike": {
+        "event": {
+          "CustomerId": "12345a1bc2d34fghi56jk7890lmno12p",
+          "DeviceId": "12345a1bc2d34fghi56jk7890lmno12p",
+          "Flags": {
+            "Audit": false,
+            "Log": false,
+            "Monitor": true
+          },
+          "MatchCount": 1,
+          "MatchCountSinceLastReport": 1,
+          "NetworkProfile": "2",
+          "PolicyID": "12345a1bc2d34fghi56jk7890lmno12p",
+          "PolicyName": "PROD-FW-TESTSTATION-General",
+          "Protocol": "6",
+          "RuleAction": "2",
+          "Timestamp": "2048-07-20T12:41:44Z",
+          "TreeID": "158446832506666"
+        },
+        "metadata": {
+          "customerIDString": "12345a1bc2d34fghi56jk7890lmno12p",
+          "eventType": "FirewallMatchEvent",
+          "offset": 70689,
+          "version": "1.0"
+        }
+      },
+      "destination": {
+        "ip": "10.182.2.165",
+        "port": 445
+      },
+      "device": {
+        "id": "12345a1bc2d34fghi56jk7890lmno12p"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "firewall_match_event"
+        ],
+        "category": [
+          "network"
+        ],
+        "code": "FirewallRuleIP4Matched",
+        "created": "2048-07-20T12:41:46.000Z",
+        "kind": "event",
+        "original": "{\"metadata\":{\"customerIDString\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"offset\":70689,\"eventType\":\"FirewallMatchEvent\",\"eventCreationTime\":2478861706000,\"version\":\"1.0\"},\"event\":{\"DeviceId\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"CustomerId\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"Ipv\":\"ipv4\",\"CommandLine\":\"nginx\",\"ConnectionDirection\":\"1\",\"EventType\":\"FirewallRuleIP4Matched\",\"Flags\":{\"Audit\":false,\"Log\":false,\"Monitor\":true},\"HostName\":\"WDHMFFLPAA45\",\"ICMPCode\":\"\",\"ICMPType\":\"\",\"ImageFileName\":\"/usr/bin/nginx\",\"LocalAddress\":\"10.182.2.165\",\"LocalPort\":\"445\",\"MatchCount\":1,\"MatchCountSinceLastReport\":1,\"NetworkProfile\":\"2\",\"PID\":\"206158879910\",\"PolicyName\":\"PROD-FW-TESTSTATION-General\",\"PolicyID\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"Protocol\":\"6\",\"RemoteAddress\":\"198.51.100.124\",\"RemotePort\":\"54952\",\"RuleAction\":\"2\",\"RuleDescription\":\"\",\"RuleFamilyID\":\"ebc15d08c7ff7825ea969b3e70b102fc\",\"RuleGroupName\":\"SMB Rules\",\"RuleName\":\"Inbound SMB Block & Log Private\",\"RuleId\":\"4877172638743447345\",\"Status\":\"\",\"Timestamp\":\"2048-07-20T12:41:44Z\",\"TreeID\":\"158446832506666\"}}",
+        "type": [
+          "start",
+          "connection",
+          "denied"
+        ]
+      },
+      "host": {
+        "name": "WDHMFFLPAA45"
+      },
+      "message": "Firewall Rule: 'Inbound SMB Block & Log Private' triggered - Action: 'Blocked'",
+      "network": {
+        "direction": "ingress",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "process": {
+        "args": [
+          "nginx"
+        ],
+        "command_line": "nginx",
+        "entity_id": "206158879910",
+        "executable": "/usr/bin/nginx",
+        "pid": 206158879910
+      },
+      "related": {
+        "hosts": [
+          "WDHMFFLPAA45"
+        ],
+        "ip": [
+          "198.51.100.124",
+          "10.182.2.165"
+        ]
+      },
+      "rule": {
+        "category": "ebc15d08c7ff7825ea969b3e70b102fc",
+        "id": "4877172638743447345",
+        "name": "Inbound SMB Block & Log Private",
+        "ruleset": "SMB Rules"
+      },
+      "source": {
+        "ip": "198.51.100.124",
+        "port": 54952
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"metadata\":{\"customerIDString\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"offset\":70689,\"eventType\":\"FirewallMatchEvent\",\"eventCreationTime\":2478861706000,\"version\":\"1.0\"},\"event\":{\"DeviceId\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"CustomerId\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"Ipv\":\"ipv4\",\"CommandLine\":\"nginx\",\"ConnectionDirection\":\"1\",\"EventType\":\"FirewallRuleIP4Matched\",\"Flags\":{\"Audit\":false,\"Log\":false,\"Monitor\":true},\"HostName\":\"WDHMFFLPAA45\",\"ICMPCode\":\"\",\"ICMPType\":\"\",\"ImageFileName\":\"/usr/bin/nginx\",\"LocalAddress\":\"10.182.2.165\",\"LocalPort\":\"445\",\"MatchCount\":1,\"MatchCountSinceLastReport\":1,\"NetworkProfile\":\"2\",\"PID\":\"206158879910\",\"PolicyName\":\"PROD-FW-TESTSTATION-General\",\"PolicyID\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"Protocol\":\"6\",\"RemoteAddress\":\"198.51.100.124\",\"RemotePort\":\"54952\",\"RuleAction\":\"2\",\"RuleDescription\":\"\",\"RuleFamilyID\":\"ebc15d08c7ff7825ea969b3e70b102fc\",\"RuleGroupName\":\"SMB Rules\",\"RuleName\":\"Inbound SMB Block & Log Private\",\"RuleId\":\"4877172638743447345\",\"Status\":\"\",\"Timestamp\":\"2048-07-20T12:41:44Z\",\"TreeID\":\"158446832506666\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "falcon",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-falcon-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

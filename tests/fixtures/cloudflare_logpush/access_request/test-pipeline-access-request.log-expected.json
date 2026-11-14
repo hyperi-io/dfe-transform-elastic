@@ -1,0 +1,286 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-05-23T17:18:33.000Z",
+      "client": {
+        "geo": {
+          "country_iso_code": "US"
+        },
+        "ip": "192.0.2.209"
+      },
+      "cloudflare_logpush": {
+        "access_request": {
+          "action": "login",
+          "allowed": true,
+          "app": {
+            "domain": "yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp",
+            "uuid": "599f7114-a48a-12b6-a725-214252530685"
+          },
+          "client": {
+            "ip": "192.0.2.209"
+          },
+          "connection": "onetimepin",
+          "country": "us",
+          "ray": {
+            "id": "00c0ffeeabc12345"
+          },
+          "request": {
+            "prompt": "Please provide your reason for accessing the application.",
+            "response": "I need to access the application for work purposes."
+          },
+          "temp_access": {
+            "approvers": [
+              "fuskjtap9@example.com",
+              "etvzvpei5@example.com"
+            ],
+            "duration": 7200
+          },
+          "timestamp": "2051-05-23T17:18:33.000Z",
+          "user": {
+            "email": "user@example.com",
+            "id": "656cbffa-57d4-5d27-bc9c-26408044062c"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network"
+        ],
+        "id": "00c0ffeeabc12345",
+        "kind": "event",
+        "original": "{\"Action\":\"login\",\"Allowed\":true,\"AppDomain\":\"yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp\",\"AppUUID\":\"599f7114-a48a-12b6-a725-214252530685\",\"Connection\":\"onetimepin\",\"Country\":\"us\",\"CreatedAt\":\"2051-05-24T02:48:33+09:30\",\"Email\":\"user@example.com\",\"IPAddress\":\"192.0.2.209\",\"PurposeJustificationPrompt\":\"Please provide your reason for accessing the application.\",\"PurposeJustificationResponse\":\"I need to access the application for work purposes.\",\"RayID\":\"00c0ffeeabc12345\",\"TemporaryAccessApprovers\":[\"fuskjtap9@example.com\",\"etvzvpei5@example.com\"],\"TemporaryAccessDuration\":7200,\"UserUID\":\"656cbffa-57d4-5d27-bc9c-26408044062c\"}",
+        "type": [
+          "access",
+          "allowed"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.209"
+        ],
+        "user": [
+          "656cbffa-57d4-5d27-bc9c-26408044062c",
+          "user@example.com",
+          "fuskjtap9@example.com",
+          "etvzvpei5@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp"
+      },
+      "user": {
+        "email": "user@example.com",
+        "id": "656cbffa-57d4-5d27-bc9c-26408044062c"
+      }
+    },
+    {
+      "@timestamp": "2051-05-23T17:18:33.000Z",
+      "client": {
+        "geo": {
+          "country_iso_code": "US"
+        },
+        "ip": "192.0.2.209"
+      },
+      "cloudflare_logpush": {
+        "access_request": {
+          "action": "login",
+          "allowed": true,
+          "app": {
+            "domain": "yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp",
+            "uuid": "599f7114-a48a-12b6-a725-214252530685"
+          },
+          "client": {
+            "ip": "192.0.2.209"
+          },
+          "connection": "onetimepin",
+          "country": "us",
+          "ray": {
+            "id": "00c0ffeeabc12345"
+          },
+          "request": {
+            "prompt": "Please provide your reason for accessing the application.",
+            "response": "I need to access the application for work purposes."
+          },
+          "temp_access": {
+            "approvers": [
+              "fuskjtap9@example.com",
+              "etvzvpei5@example.com"
+            ],
+            "duration": 7200
+          },
+          "timestamp": "2051-05-23T17:18:33.000Z",
+          "user": {
+            "email": "user@example.com",
+            "id": "656cbffa-57d4-5d27-bc9c-26408044062c"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network"
+        ],
+        "id": "00c0ffeeabc12345",
+        "kind": "event",
+        "original": "{\"Action\":\"login\",\"Allowed\":true,\"AppDomain\":\"yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp\",\"AppUUID\":\"599f7114-a48a-12b6-a725-214252530685\",\"Connection\":\"onetimepin\",\"Country\":\"us\",\"CreatedAt\":2568475113,\"Email\":\"user@example.com\",\"IPAddress\":\"192.0.2.209\",\"PurposeJustificationPrompt\":\"Please provide your reason for accessing the application.\",\"PurposeJustificationResponse\":\"I need to access the application for work purposes.\",\"RayID\":\"00c0ffeeabc12345\",\"TemporaryAccessApprovers\":[\"fuskjtap9@example.com\",\"etvzvpei5@example.com\"],\"TemporaryAccessDuration\":7200,\"UserUID\":\"656cbffa-57d4-5d27-bc9c-26408044062c\"}",
+        "type": [
+          "access",
+          "allowed"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.209"
+        ],
+        "user": [
+          "656cbffa-57d4-5d27-bc9c-26408044062c",
+          "user@example.com",
+          "fuskjtap9@example.com",
+          "etvzvpei5@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp"
+      },
+      "user": {
+        "email": "user@example.com",
+        "id": "656cbffa-57d4-5d27-bc9c-26408044062c"
+      }
+    },
+    {
+      "@timestamp": "2051-05-23T17:18:33.000Z",
+      "client": {
+        "geo": {
+          "country_iso_code": "US"
+        },
+        "ip": "192.0.2.209"
+      },
+      "cloudflare_logpush": {
+        "access_request": {
+          "action": "login",
+          "allowed": true,
+          "app": {
+            "domain": "yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp",
+            "uuid": "599f7114-a48a-12b6-a725-214252530685"
+          },
+          "client": {
+            "ip": "192.0.2.209"
+          },
+          "connection": "onetimepin",
+          "country": "us",
+          "ray": {
+            "id": "00c0ffeeabc12345"
+          },
+          "request": {
+            "prompt": "Please provide your reason for accessing the application.",
+            "response": "I need to access the application for work purposes."
+          },
+          "temp_access": {
+            "approvers": [
+              "fuskjtap9@example.com",
+              "etvzvpei5@example.com"
+            ],
+            "duration": 7200
+          },
+          "timestamp": "2051-05-23T17:18:33.000Z",
+          "user": {
+            "email": "user@example.com",
+            "id": "656cbffa-57d4-5d27-bc9c-26408044062c"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network"
+        ],
+        "id": "00c0ffeeabc12345",
+        "kind": "event",
+        "original": "{\"Action\":\"login\",\"Allowed\":true,\"AppDomain\":\"yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp\",\"AppUUID\":\"599f7114-a48a-12b6-a725-214252530685\",\"Connection\":\"onetimepin\",\"Country\":\"us\",\"CreatedAt\":2568475113000000000,\"Email\":\"user@example.com\",\"IPAddress\":\"192.0.2.209\",\"PurposeJustificationPrompt\":\"Please provide your reason for accessing the application.\",\"PurposeJustificationResponse\":\"I need to access the application for work purposes.\",\"RayID\":\"00c0ffeeabc12345\",\"TemporaryAccessApprovers\":[\"fuskjtap9@example.com\",\"etvzvpei5@example.com\"],\"TemporaryAccessDuration\":7200,\"UserUID\":\"656cbffa-57d4-5d27-bc9c-26408044062c\"}",
+        "type": [
+          "access",
+          "allowed"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.209"
+        ],
+        "user": [
+          "656cbffa-57d4-5d27-bc9c-26408044062c",
+          "user@example.com",
+          "fuskjtap9@example.com",
+          "etvzvpei5@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp"
+      },
+      "user": {
+        "email": "user@example.com",
+        "id": "656cbffa-57d4-5d27-bc9c-26408044062c"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Action\":\"login\",\"Allowed\":true,\"AppDomain\":\"yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp\",\"AppUUID\":\"599f7114-a48a-12b6-a725-214252530685\",\"Connection\":\"onetimepin\",\"Country\":\"us\",\"CreatedAt\":\"2051-05-24T02:48:33+09:30\",\"Email\":\"user@example.com\",\"IPAddress\":\"192.0.2.209\",\"PurposeJustificationPrompt\":\"Please provide your reason for accessing the application.\",\"PurposeJustificationResponse\":\"I need to access the application for work purposes.\",\"RayID\":\"00c0ffeeabc12345\",\"TemporaryAccessApprovers\":[\"fuskjtap9@example.com\",\"etvzvpei5@example.com\"],\"TemporaryAccessDuration\":7200,\"UserUID\":\"656cbffa-57d4-5d27-bc9c-26408044062c\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Action\":\"login\",\"Allowed\":true,\"AppDomain\":\"yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp\",\"AppUUID\":\"599f7114-a48a-12b6-a725-214252530685\",\"Connection\":\"onetimepin\",\"Country\":\"us\",\"CreatedAt\":2568475113,\"Email\":\"user@example.com\",\"IPAddress\":\"192.0.2.209\",\"PurposeJustificationPrompt\":\"Please provide your reason for accessing the application.\",\"PurposeJustificationResponse\":\"I need to access the application for work purposes.\",\"RayID\":\"00c0ffeeabc12345\",\"TemporaryAccessApprovers\":[\"fuskjtap9@example.com\",\"etvzvpei5@example.com\"],\"TemporaryAccessDuration\":7200,\"UserUID\":\"656cbffa-57d4-5d27-bc9c-26408044062c\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Action\":\"login\",\"Allowed\":true,\"AppDomain\":\"yeoiyfm-qv-ools.dqozcbqctdcfaduv.com/warp\",\"AppUUID\":\"599f7114-a48a-12b6-a725-214252530685\",\"Connection\":\"onetimepin\",\"Country\":\"us\",\"CreatedAt\":2568475113000000000,\"Email\":\"user@example.com\",\"IPAddress\":\"192.0.2.209\",\"PurposeJustificationPrompt\":\"Please provide your reason for accessing the application.\",\"PurposeJustificationResponse\":\"I need to access the application for work purposes.\",\"RayID\":\"00c0ffeeabc12345\",\"TemporaryAccessApprovers\":[\"fuskjtap9@example.com\",\"etvzvpei5@example.com\"],\"TemporaryAccessDuration\":7200,\"UserUID\":\"656cbffa-57d4-5d27-bc9c-26408044062c\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "access_request",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-access_request-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

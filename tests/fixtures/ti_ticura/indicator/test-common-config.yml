@@ -1,0 +1,9 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+dynamic_fields:
+  ticura.indicator.feed_ingest_timestamp: ^.*$
+  event.ingested: ^.*$
+  threat.indicator.geo: ^.*$
+  threat.indicator.as: ^.*$

@@ -506,9 +506,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def dur = ctx._conf.ioc_expiration_duration; def last_updated = ctx.json.last_updated; if (dur instanceof String){\n  String time_unit = dur.substring(dur.length() -  1, dur.length());\n  String time_value = dur.substring(0, dur.length() - 1);\n  if (time_unit == 'd') {\n    ctx.json.deleted_at = last_updated + Long.parseLong(time_value)*24*60*60;\n  } else if (time_unit == 'h') {\n    ctx.json.deleted_at = last_updated + Long.parseLong(time_value)*60*60;\n  } else if (time_unit == 'm') {\n    ctx.json.deleted_at = last_updated + Long.parseLong(time_value)*60;\n  } else {\n    ctx.json.deleted_at = last_updated + 90*24*60*60;\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -675,9 +673,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: String temp = ctx.ti_crowdstrike.intel.malicious_confidence;\nif (['high', 'low', 'medium'].contains(temp)) {\n    ctx.threat.indicator.confidence = temp.substring(0, 1).toUpperCase() + temp.substring(1);\n}\nif (temp == 'unverified') {\n    ctx.threat.indicator.confidence = 'Not Specified';\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1014,9 +1010,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: String mapping = params[ctx.ti_crowdstrike.intel.type]; if (mapping != null) {\n   ctx.threat.indicator.type = mapping;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -1360,8 +1354,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

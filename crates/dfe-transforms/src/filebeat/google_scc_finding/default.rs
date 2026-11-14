@@ -121,9 +121,7 @@ impl Transform for Default {
                 event.rename("json.stateChange", "json.finding.stateChange")?;
             }
 
-            // Painless script
-            // Source: // Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      // Skip fields that contain '@' in their name\n      if (!entry.getKey().contains(\"@\")) {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n// Apply the conversion\nctx.google_scc = ctx.google_scc ?: [:];\nif (ctx.json != null) {\n  ctx.google_scc.finding = convertToSnakeCase(ctx.json.finding);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -4397,9 +4395,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def severity = ctx.google_scc.finding.severity;\n  if (severity == 'LOW' || severity == 'SEVERITY_UNSPECIFIED') {\n    ctx.event.severity = 21;\n  } else if (severity == 'MEDIUM') {\n    ctx.event.severity = 47;\n  } else if (severity == 'HIGH') {\n    ctx.event.severity = 73;\n  } else if (severity == 'CRITICAL') {\n    ctx.event.severity = 99;\n  }
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -5760,9 +5756,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.threat?.tactic?.name instanceof List) {\n  def list = new ArrayList();\n  for (def value: ctx.threat.tactic.name) {\n    list.add(params.tactic.get(value));\n  }\n  ctx.threat.tactic.put('id', list);\n}\nif (ctx.threat?.technique?.name instanceof List) {\n  def list = new ArrayList();\n  for (def value: ctx.threat.technique.name) {\n    list.add(params.technique.get(value));\n  }\n  ctx.threat.technique.put('id', list);\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -6075,9 +6069,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: String severity = ctx.google_scc.finding.severity; if (severity == 'SEVERITY_UNSPECIFIED') {\n  ctx.vulnerability.put('severity', 'None');\n} else if (severity == 'LOW') {\n  ctx.vulnerability.put('severity', 'Low');\n} else if (severity == 'MEDIUM') {\n  ctx.vulnerability.put('severity', 'Medium');\n} else if (severity == 'HIGH') {\n  ctx.vulnerability.put('severity', 'High');\n} else if (severity == 'CRITICAL') {\n  ctx.vulnerability.put('severity', 'Critical');\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -6833,8 +6825,7 @@ impl Transform for Default {
                 event.remove("google_scc.finding.vulnerability.cve.cvssv3.base_score");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1,0 +1,155 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "state",
+        "module": "tychon",
+        "original": "{\"event.reason\":\"Minimum values source: Default application value; Maximum value source: Default application value\",\"host.biossn\":\"1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC\",\"host.cloud.compute.location\":\"\",\"host.cloud.compute.name\":\"\",\"host.cloud.compute.resource_group_name\":\"\",\"host.cloud.compute.resource_id\":\"\",\"host.cloud.compute.subscription_id\":\"\",\"host.cloud.compute.tags\":\"\",\"host.cloud.compute.vm_id\":\"\",\"host.cloud.hosted\":\"false\",\"host.cloud.network.mac_address\":\"\",\"host.cloud.network.public_ipv4\":\"\",\"host.cloud.network.public_ipv6\":\"\",\"host.domain\":\"\",\"host.hardware.bios.name\":\"Phoenix Technologies LTD\",\"host.hardware.bios.version\":\"6.00\",\"host.hardware.cpu.caption\":\"Intel64 Family 6 Model 45 Stepping 7\",\"host.hardware.manufacturer\":\"VMware, Inc.\",\"host.hardware.owner\":\"dcuser\",\"host.hardware.serial_number\":\"VMware-56 4d da 1c 0a cf 55 aa-ff 70 b5 c7 ba ef 9a eb\",\"host.hostname\":\"DERNIIQ-NRNPZ9Y\",\"host.id\":\"50368abceb237fcce8efd382d11bcfc2_1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC_DESKTOP-TIUKL1R_WORKGROUP\",\"host.ip\":\"10.129.167.119,fe80::40d1:5287:42b9:5645\",\"host.ipv4\":\"10.129.167.119\",\"host.ipv6\":\"fe80::40d1:5287:42b9:5645\",\"host.mac\":\"46:0A:44:FF:8E:BF\",\"host.oem.manufacturer\":\"\",\"host.oem.model\":\"\",\"host.os.build\":\"22000\",\"host.os.description\":\"\",\"host.os.family\":\"Windows\",\"host.os.name\":\"Microsoft Windows 11 Education N\",\"host.os.organization\":\"\",\"host.os.version\":\"2009\",\"host.type\":\"Workstation\",\"host.uptime\":\"1230468.4420023\",\"host.workgroup\":\"WORKGROUP\",\"id\":\"be359764511842c05337da537367a8a77b0d184f\",\"package.architecture\":\"x64\",\"package.cpe\":\"cpe:/a:mozilla:mozilla_firefox_%28x64_en-us%29:121.0.1::~~~~x64~\",\"package.edition\":\"firefox\",\"package.installed\":\"\",\"package.name\":\"Mozilla Firefox (x64 en-US)\",\"package.path\":\"C:\\\\Program Files\\\\Mozilla Firefox\",\"package.publisher\":\"Mozilla\",\"package.size\":\"226934\",\"package.type\":\"installer\",\"package.uninstall\":\"\\\"C:\\\\Program Files\\\\Mozilla Firefox\\\\uninstall\\\\helper.exe\\\"\",\"package.version\":\"121.0.1\",\"package.version_build\":\"0\",\"package.version_major\":\"121\",\"package.version_minor\":\"0\",\"package.version_release\":\"1\",\"script.current_duration\":\"7914.82\",\"script.current_time\":\"2052-01-24T05:20:01Z\",\"script.name\":\"Get-BrowserCryptography.ps1\",\"script.start\":\"2052-01-24T05:19:53Z\",\"script.type\":\"powershell\",\"script.version\":\"2.4.260.0\",\"tls.version_protocol\":\"TLSv1.2\",\"tychon.data.version\":\"2.4\",\"tychon.id\":\"50368abceb237fcce8efd382d11bcfc2_1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC_DESKTOP-TIUKL1R_WORKGROUP\"}",
+        "reason": "Minimum values source: Default application value; Maximum value source: Default application value",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "DERNIIQ-NRNPZ9Y",
+        "id": "50368abceb237fcce8efd382d11bcfc2_1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC_DESKTOP-TIUKL1R_WORKGROUP",
+        "ip": [
+          "10.129.167.119",
+          "fe80::40d1:5287:42b9:5645"
+        ],
+        "mac": [
+          "46-0A-44-FF-8E-BF"
+        ],
+        "os": {
+          "family": "Windows",
+          "name": "Microsoft Windows 11 Education N",
+          "type": "windows",
+          "version": "2009"
+        },
+        "type": "Workstation",
+        "uptime": 1230468
+      },
+      "package": {
+        "architecture": "x64",
+        "name": "Mozilla Firefox (x64 en-US)",
+        "path": "C:\\Program Files\\Mozilla Firefox",
+        "size": 226934,
+        "type": "installer",
+        "version": "121.0.1"
+      },
+      "related": {
+        "hosts": [
+          "DERNIIQ-NRNPZ9Y",
+          "50368abceb237fcce8efd382d11bcfc2_1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC_DESKTOP-TIUKL1R_WORKGROUP"
+        ],
+        "ip": [
+          "10.129.167.119",
+          "fe80::40d1:5287:42b9:5645"
+        ]
+      },
+      "tls": {
+        "version": "1.2",
+        "version_protocol": "tls"
+      },
+      "tychon": {
+        "event": {
+          "reason": "Minimum values source: Default application value; Maximum value source: Default application value"
+        },
+        "host": {
+          "biossn": "1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC",
+          "hardware": {
+            "bios": {
+              "name": "Phoenix Technologies LTD",
+              "version": "6.00"
+            },
+            "cpu": {
+              "caption": "Intel64 Family 6 Model 45 Stepping 7"
+            },
+            "manufacturer": "VMware, Inc.",
+            "owner": "dcuser",
+            "serial_number": "VMware-56 4d da 1c 0a cf 55 aa-ff 70 b5 c7 ba ef 9a eb"
+          },
+          "hostname": "DERNIIQ-NRNPZ9Y",
+          "id": "50368abceb237fcce8efd382d11bcfc2_1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC_DESKTOP-TIUKL1R_WORKGROUP",
+          "ip": [
+            "10.129.167.119",
+            "fe80::40d1:5287:42b9:5645"
+          ],
+          "ipv4": [
+            "10.129.167.119"
+          ],
+          "ipv6": [
+            "fe80::40d1:5287:42b9:5645"
+          ],
+          "mac": [
+            "46-0A-44-FF-8E-BF"
+          ],
+          "os": {
+            "build": "22000",
+            "family": "Windows",
+            "name": "Microsoft Windows 11 Education N",
+            "version": "2009"
+          },
+          "type": "Workstation",
+          "uptime": 1230468,
+          "workgroup": "WORKGROUP"
+        },
+        "id": "be359764511842c05337da537367a8a77b0d184f",
+        "package": {
+          "architecture": "x64",
+          "cpe": "cpe:/a:mozilla:mozilla_firefox_%28x64_en-us%29:121.0.1::~~~~x64~",
+          "edition": "firefox",
+          "name": "Mozilla Firefox (x64 en-US)",
+          "path": "C:\\Program Files\\Mozilla Firefox",
+          "publisher": "Mozilla",
+          "size": 226934,
+          "type": "installer",
+          "uninstall": "\"C:\\Program Files\\Mozilla Firefox\\uninstall\\helper.exe\"",
+          "version": "121.0.1",
+          "version_build": "0",
+          "version_major": "121",
+          "version_minor": "0",
+          "version_release": "1"
+        },
+        "script": {
+          "current_duration": 7914,
+          "current_time": "2052-01-24T05:20:01Z",
+          "name": "Get-BrowserCryptography.ps1",
+          "start": "2052-01-24T05:19:53Z",
+          "type": "powershell",
+          "version": "2.4.260.0"
+        },
+        "tls": {
+          "version_protocol": "TLSv1.2"
+        },
+        "tychon": {
+          "data": {
+            "version": "2.4"
+          },
+          "id": "50368abceb237fcce8efd382d11bcfc2_1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC_DESKTOP-TIUKL1R_WORKGROUP"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"event.reason\":\"Minimum values source: Default application value; Maximum value source: Default application value\",\"host.biossn\":\"1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC\",\"host.cloud.compute.location\":\"\",\"host.cloud.compute.name\":\"\",\"host.cloud.compute.resource_group_name\":\"\",\"host.cloud.compute.resource_id\":\"\",\"host.cloud.compute.subscription_id\":\"\",\"host.cloud.compute.tags\":\"\",\"host.cloud.compute.vm_id\":\"\",\"host.cloud.hosted\":\"false\",\"host.cloud.network.mac_address\":\"\",\"host.cloud.network.public_ipv4\":\"\",\"host.cloud.network.public_ipv6\":\"\",\"host.domain\":\"\",\"host.hardware.bios.name\":\"Phoenix Technologies LTD\",\"host.hardware.bios.version\":\"6.00\",\"host.hardware.cpu.caption\":\"Intel64 Family 6 Model 45 Stepping 7\",\"host.hardware.manufacturer\":\"VMware, Inc.\",\"host.hardware.owner\":\"dcuser\",\"host.hardware.serial_number\":\"VMware-56 4d da 1c 0a cf 55 aa-ff 70 b5 c7 ba ef 9a eb\",\"host.hostname\":\"DERNIIQ-NRNPZ9Y\",\"host.id\":\"50368abceb237fcce8efd382d11bcfc2_1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC_DESKTOP-TIUKL1R_WORKGROUP\",\"host.ip\":\"10.129.167.119,fe80::40d1:5287:42b9:5645\",\"host.ipv4\":\"10.129.167.119\",\"host.ipv6\":\"fe80::40d1:5287:42b9:5645\",\"host.mac\":\"46:0A:44:FF:8E:BF\",\"host.oem.manufacturer\":\"\",\"host.oem.model\":\"\",\"host.os.build\":\"22000\",\"host.os.description\":\"\",\"host.os.family\":\"Windows\",\"host.os.name\":\"Microsoft Windows 11 Education N\",\"host.os.organization\":\"\",\"host.os.version\":\"2009\",\"host.type\":\"Workstation\",\"host.uptime\":\"1230468.4420023\",\"host.workgroup\":\"WORKGROUP\",\"id\":\"be359764511842c05337da537367a8a77b0d184f\",\"package.architecture\":\"x64\",\"package.cpe\":\"cpe:/a:mozilla:mozilla_firefox_%28x64_en-us%29:121.0.1::~~~~x64~\",\"package.edition\":\"firefox\",\"package.installed\":\"\",\"package.name\":\"Mozilla Firefox (x64 en-US)\",\"package.path\":\"C:\\\\Program Files\\\\Mozilla Firefox\",\"package.publisher\":\"Mozilla\",\"package.size\":\"226934\",\"package.type\":\"installer\",\"package.uninstall\":\"\\\"C:\\\\Program Files\\\\Mozilla Firefox\\\\uninstall\\\\helper.exe\\\"\",\"package.version\":\"121.0.1\",\"package.version_build\":\"0\",\"package.version_major\":\"121\",\"package.version_minor\":\"0\",\"package.version_release\":\"1\",\"script.current_duration\":\"7914.82\",\"script.current_time\":\"2052-01-24T05:20:01Z\",\"script.name\":\"Get-BrowserCryptography.ps1\",\"script.start\":\"2052-01-24T05:19:53Z\",\"script.type\":\"powershell\",\"script.version\":\"2.4.260.0\",\"tls.version_protocol\":\"TLSv1.2\",\"tychon.data.version\":\"2.4\",\"tychon.id\":\"50368abceb237fcce8efd382d11bcfc2_1EAB6B61-BC4A-AD31-FE26-B2E8CCAA2EBC_DESKTOP-TIUKL1R_WORKGROUP\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "browser",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tychon-browser-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "tychon",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

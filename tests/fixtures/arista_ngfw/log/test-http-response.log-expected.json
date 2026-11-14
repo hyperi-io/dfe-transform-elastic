@@ -1,0 +1,1434 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-05-25T13:59:11.622-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "httpRequestEvent": {},
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "ffreauwwmnet.akzcasm.com",
+        "ip": "192.0.2.238",
+        "nat": {
+          "ip": "192.0.2.238",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866602155",
+        "kind": "event",
+        "original": "<174>May 25 13:59:11 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:59:11.622\",\"contentLength\":8,\"requestLine\":\"GET http://detectportal.firefox.com/success.txt?ipv4\",\"contentType\":\"text/plain\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:59:11.613\",\"method\":\"GET\",\"requestId\":110221859378971,\"domain\":\"ffreauwwmnet.akzcasm.com\",\"host\":\"ffreauwwmnet.akzcasm.com\",\"contentLength\":0,\"requestUri\":\"/success.txt?ipv4\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"sagwtm\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":39.1028,\"localAddr\":\"192.168.180.184\",\"SServerAddr\":\"192.0.2.238\",\"remoteAddr\":\"192.0.2.238\",\"serverIntf\":1,\"CClientAddr\":\"192.168.180.184\",\"serverCountry\":\"US\",\"sessionId\":110221866602155,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":41968,\"timeStamp\":\"2051-05-25 13:55:24.843\",\"serverLongitude\":-94.5778,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":47164,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"192.0.2.238\",\"tagsString\":\"\"}}}",
+        "provider": "http_response",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "name": "sagwtm"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 8
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:va1MdmbCevk2sh/lYHdPJCj3JMc=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "sagwtm",
+          "ffreauwwmnet.akzcasm.com"
+        ],
+        "ip": [
+          "192.0.2.238",
+          "192.168.180.184",
+          "192.0.2.5"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.180.184",
+        "nat": {
+          "ip": "192.0.2.5",
+          "port": 47164
+        },
+        "port": 41968
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "detectportal.firefox.com",
+        "extension": "txt",
+        "full": "http://detectportal.firefox.com/success.txt?ipv4",
+        "original": "http://detectportal.firefox.com/success.txt?ipv4",
+        "path": "/success.txt",
+        "query": "ipv4",
+        "scheme": "http"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T13:28:56.752-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "httpRequestEvent": {},
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "qcoh.dwrvgor.net",
+        "ip": "198.51.100.134",
+        "nat": {
+          "ip": "198.51.100.134",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866590454",
+        "kind": "event",
+        "original": "<174>May 25 13:28:56 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:28:56.752\",\"contentLength\":0,\"requestLine\":\"GET http://ocsp.entrust.net/MFEwTzBNMEswSTAJBgUrDgMCGgUABBRr2bwARTxMtEy9aspRAZg5QFhagQQUgrrWPZfOn89x6JI3r%2F2ztWk1V88CEHHvVXSvNVTDWixp9m9La80%3D\",\"contentType\":\"application/ocsp-response\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:28:56.741\",\"method\":\"GET\",\"requestId\":110221859376527,\"domain\":\"qcoh.dwrvgor.net\",\"host\":\"qcoh.dwrvgor.net\",\"contentLength\":0,\"requestUri\":\"/MFEwTzBNMEswSTAJBgUrDgMCGgUABBRr2bwARTxMtEy9aspRAZg5QFhagQQUgrrWPZfOn89x6JI3r%2F2ztWk1V88CEHHvVXSvNVTDWixp9m9La80%3D\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"B83031I37\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.131.221\",\"SServerAddr\":\"198.51.100.134\",\"remoteAddr\":\"198.51.100.134\",\"serverIntf\":1,\"CClientAddr\":\"192.168.131.221\",\"serverCountry\":\"US\",\"sessionId\":110221866590454,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":62349,\"timeStamp\":\"2051-05-25 13:28:56.735\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":15108,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"198.51.100.134\",\"username\":\"fyvb\",\"tagsString\":\"\"}}}",
+        "provider": "http_response",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "name": "B83031I37"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 0
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:rVVai0nB5NTDZJBcPScLru5jUxc=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "B83031I37",
+          "qcoh.dwrvgor.net"
+        ],
+        "ip": [
+          "198.51.100.134",
+          "192.168.131.221",
+          "192.0.2.5"
+        ],
+        "user": [
+          "fyvb"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.131.221",
+        "nat": {
+          "ip": "192.0.2.5",
+          "port": 15108
+        },
+        "port": 62349
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ocsp.entrust.net",
+        "full": "http://ocsp.entrust.net/MFEwTzBNMEswSTAJBgUrDgMCGgUABBRr2bwARTxMtEy9aspRAZg5QFhagQQUgrrWPZfOn89x6JI3r%2F2ztWk1V88CEHHvVXSvNVTDWixp9m9La80%3D",
+        "original": "http://ocsp.entrust.net/MFEwTzBNMEswSTAJBgUrDgMCGgUABBRr2bwARTxMtEy9aspRAZg5QFhagQQUgrrWPZfOn89x6JI3r%2F2ztWk1V88CEHHvVXSvNVTDWixp9m9La80%3D",
+        "path": "/MFEwTzBNMEswSTAJBgUrDgMCGgUABBRr2bwARTxMtEy9aspRAZg5QFhagQQUgrrWPZfOn89x6JI3r/2ztWk1V88CEHHvVXSvNVTDWixp9m9La80=",
+        "scheme": "http"
+      },
+      "user": {
+        "name": "fyvb"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T13:28:56.693-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "httpRequestEvent": {},
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "anmag.simawjokgfeqc.com",
+        "ip": "203.0.113.209",
+        "nat": {
+          "ip": "203.0.113.209",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866590452",
+        "kind": "event",
+        "original": "<174>May 25 13:28:56 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:28:56.693\",\"contentLength\":0,\"requestLine\":\"GET http://ctldl.windowsupdate.com/msdownload/update/v3/static/trustedr/en/pinrulesstl.cab?9d222919ed61d6da\",\"contentType\":\"application/vnd.ms-cab-compressed\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:28:56.684\",\"method\":\"GET\",\"requestId\":110221859376526,\"domain\":\"anmag.simawjokgfeqc.com\",\"host\":\"anmag.simawjokgfeqc.com\",\"contentLength\":0,\"requestUri\":\"/msdownload/update/v3/static/trustedr/en/pinrulesstl.cab?9d222919ed61d6da\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"B83031I37\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.131.221\",\"SServerAddr\":\"203.0.113.209\",\"remoteAddr\":\"203.0.113.209\",\"serverIntf\":1,\"CClientAddr\":\"192.168.131.221\",\"serverCountry\":\"US\",\"sessionId\":110221866590452,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":62348,\"timeStamp\":\"2051-05-25 13:28:56.656\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":19844,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"203.0.113.209\",\"username\":\"fyvb\",\"tagsString\":\"\"}}}",
+        "provider": "http_response",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "name": "B83031I37"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 0
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:M0cweD99J/VN4DZJt5WUodfMX/g=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "B83031I37",
+          "anmag.simawjokgfeqc.com"
+        ],
+        "ip": [
+          "203.0.113.209",
+          "192.168.131.221",
+          "192.0.2.5"
+        ],
+        "user": [
+          "fyvb"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.131.221",
+        "nat": {
+          "ip": "192.0.2.5",
+          "port": 19844
+        },
+        "port": 62348
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ctldl.windowsupdate.com",
+        "extension": "cab",
+        "full": "http://ctldl.windowsupdate.com/msdownload/update/v3/static/trustedr/en/pinrulesstl.cab?9d222919ed61d6da",
+        "original": "http://ctldl.windowsupdate.com/msdownload/update/v3/static/trustedr/en/pinrulesstl.cab?9d222919ed61d6da",
+        "path": "/msdownload/update/v3/static/trustedr/en/pinrulesstl.cab",
+        "query": "9d222919ed61d6da",
+        "scheme": "http"
+      },
+      "user": {
+        "name": "fyvb"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T13:28:17.055-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "httpRequestEvent": {},
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "dmd.metaservices.microsoft.com",
+        "ip": "198.51.100.114",
+        "nat": {
+          "ip": "198.51.100.114",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866589634",
+        "kind": "event",
+        "original": "<174>May 25 13:28:17 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:28:17.055\",\"contentLength\":1736,\"requestLine\":\"POST http://dmd.metaservices.microsoft.com/metadata.svc\",\"contentType\":\"text/xml\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:28:17.019\",\"method\":\"POST\",\"requestId\":110221859376508,\"domain\":\"dmd.metaservices.microsoft.com\",\"host\":\"dmd.metaservices.microsoft.com\",\"contentLength\":1270,\"requestUri\":\"/metadata.svc\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"GejhlfEhn2\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.3388,\"localAddr\":\"192.168.114.223\",\"SServerAddr\":\"198.51.100.114\",\"remoteAddr\":\"198.51.100.114\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.223\",\"serverCountry\":\"US\",\"sessionId\":110221866589634,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":19486,\"timeStamp\":\"2051-05-25 13:28:11.523\",\"serverLongitude\":-121.8914,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":31487,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"198.51.100.114\",\"tagsString\":\"\"}}}",
+        "provider": "http_response",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "name": "GejhlfEhn2"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        },
+        "response": {
+          "bytes": 1736
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:hFCQpxJtHpBUBlAfvqT0WUFWA74=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "GejhlfEhn2",
+          "dmd.metaservices.microsoft.com"
+        ],
+        "ip": [
+          "198.51.100.114",
+          "192.168.114.223",
+          "192.0.2.5"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.114.223",
+        "nat": {
+          "ip": "192.0.2.5",
+          "port": 31487
+        },
+        "port": 19486
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "dmd.metaservices.microsoft.com",
+        "extension": "svc",
+        "full": "http://dmd.metaservices.microsoft.com/metadata.svc",
+        "original": "http://dmd.metaservices.microsoft.com/metadata.svc",
+        "path": "/metadata.svc",
+        "scheme": "http"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T13:28:17.015-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "httpRequestEvent": {},
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "go.microsoft.com",
+        "ip": "203.0.113.131",
+        "nat": {
+          "ip": "203.0.113.131",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866589745",
+        "kind": "event",
+        "original": "<174>May 25 13:28:17 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:28:17.015\",\"contentLength\":0,\"requestLine\":\"POST http://go.microsoft.com/fwlink/?LinkID=252669&clcid=0x409\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:28:17.007\",\"method\":\"POST\",\"requestId\":110221859376507,\"domain\":\"go.microsoft.com\",\"host\":\"go.microsoft.com\",\"contentLength\":1270,\"requestUri\":\"/fwlink/?LinkID=252669&clcid=0x409\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"GejhlfEhn2\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.114.223\",\"SServerAddr\":\"203.0.113.131\",\"remoteAddr\":\"203.0.113.131\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.223\",\"serverCountry\":\"US\",\"sessionId\":110221866589745,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":19498,\"timeStamp\":\"2051-05-25 13:28:17.002\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":48711,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"203.0.113.131\",\"tagsString\":\"\"}}}",
+        "provider": "http_response",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "name": "GejhlfEhn2"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        },
+        "response": {
+          "bytes": 0
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:VTV82IFt+dQeFC/xVXaoypaJErQ=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "GejhlfEhn2",
+          "go.microsoft.com"
+        ],
+        "ip": [
+          "203.0.113.131",
+          "192.168.114.223",
+          "192.0.2.5"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.114.223",
+        "nat": {
+          "ip": "192.0.2.5",
+          "port": 48711
+        },
+        "port": 19498
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "go.microsoft.com",
+        "full": "http://go.microsoft.com/fwlink/?LinkID=252669&clcid=0x409",
+        "original": "http://go.microsoft.com/fwlink/?LinkID=252669&clcid=0x409",
+        "path": "/fwlink/",
+        "query": "LinkID=252669&clcid=0x409",
+        "scheme": "http"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T13:20:58.327-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "httpRequestEvent": {},
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "connectivitycheck.gstatic.com",
+        "ip": "198.51.100.211",
+        "nat": {
+          "ip": "198.51.100.211",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866586859",
+        "kind": "event",
+        "original": "<174>May 25 13:20:58 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:20:58.327\",\"contentLength\":0,\"requestLine\":\"GET http://connectivitycheck.gstatic.com/generate_204\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:20:58.316\",\"method\":\"GET\",\"requestId\":110221859376191,\"domain\":\"connectivitycheck.gstatic.com\",\"host\":\"connectivitycheck.gstatic.com\",\"contentLength\":0,\"requestUri\":\"/generate_204\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"198.51.100.211\",\"remoteAddr\":\"198.51.100.211\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866586859,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":44148,\"timeStamp\":\"2051-05-25 13:20:57.995\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":31260,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"198.51.100.211\",\"tagsString\":\"\"}}}",
+        "provider": "http_response",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "name": "Ociapn-U60"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 0
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:vep1YDPFh4kof57izpubR38NU+Q=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "Ociapn-U60",
+          "connectivitycheck.gstatic.com"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "192.168.130.47",
+          "192.0.2.5"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.130.47",
+        "nat": {
+          "ip": "192.0.2.5",
+          "port": 31260
+        },
+        "port": 44148
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "connectivitycheck.gstatic.com",
+        "full": "http://connectivitycheck.gstatic.com/generate_204",
+        "original": "http://connectivitycheck.gstatic.com/generate_204",
+        "path": "/generate_204",
+        "scheme": "http"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T13:18:39.717-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "httpRequestEvent": {},
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "qcoh.dihpabln.com",
+        "ip": "198.51.100.27",
+        "nat": {
+          "ip": "198.51.100.27",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866586366",
+        "kind": "event",
+        "original": "<174>May 25 13:18:39 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:18:39.717\",\"contentLength\":471,\"requestLine\":\"POST http://ocsp.digicert.com/\",\"contentType\":\"application/ocsp-response\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:18:39.707\",\"method\":\"POST\",\"requestId\":110221859376170,\"domain\":\"qcoh.dihpabln.com\",\"host\":\"qcoh.dihpabln.com\",\"contentLength\":83,\"requestUri\":\"/\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"GejhlfEhn2\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.114.223\",\"SServerAddr\":\"198.51.100.27\",\"remoteAddr\":\"198.51.100.27\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.223\",\"serverCountry\":\"US\",\"sessionId\":110221866586366,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":19427,\"timeStamp\":\"2051-05-25 13:18:39.704\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":43090,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"198.51.100.27\",\"tagsString\":\"\"}}}",
+        "provider": "http_response",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "name": "GejhlfEhn2"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        },
+        "response": {
+          "bytes": 471
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:JHPW8iAXkIexhHTI9r0M9RPNBfc=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "GejhlfEhn2",
+          "qcoh.dihpabln.com"
+        ],
+        "ip": [
+          "198.51.100.27",
+          "192.168.114.223",
+          "192.0.2.5"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.114.223",
+        "nat": {
+          "ip": "192.0.2.5",
+          "port": 43090
+        },
+        "port": 19427
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ocsp.digicert.com",
+        "full": "http://ocsp.digicert.com/",
+        "original": "http://ocsp.digicert.com/",
+        "path": "/",
+        "scheme": "http"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T12:20:36.570-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "httpRequestEvent": {},
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "2.tlu.dl.delivery.mp.microsoft.com",
+        "ip": "198.51.100.231",
+        "nat": {
+          "ip": "198.51.100.231",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866571317",
+        "kind": "event",
+        "original": "<174>May 25 12:20:36 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 12:20:36.57\",\"contentLength\":1048576,\"contentFilename\":\"microsoft.bingweather_4.53.51361.0_neutral_~_8wekyb3d8bbwe.appxbundle\",\"requestLine\":\"GET http://2.tlu.dl.delivery.mp.microsoft.com/filestreamingservice/files/38a55a4b-de32-4f98-ba94-8cb40a7db167?P1=1685040131&P2=404&P3=2&P4=Vf%2fpxph%2fQJH7%2bPZqc3Xz67gngLpb9rnmPKNOcGPYlicP6iPXjtm%2fbGOxnQU8ZrFgGnsw8Ipj14OS%2fVkJglNd6A%3d%3d\",\"contentType\":\"application/octet-stream\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 12:20:36.509\",\"method\":\"GET\",\"requestId\":110221859374271,\"domain\":\"2.tlu.dl.delivery.mp.microsoft.com\",\"host\":\"2.tlu.dl.delivery.mp.microsoft.com\",\"contentLength\":0,\"requestUri\":\"/filestreamingservice/files/38a55a4b-de32-4f98-ba94-8cb40a7db167?P1=1685040131&P2=404&P3=2&P4=Vf%2fpxph%2fQJH7%2bPZqc3Xz67gngLpb9rnmPKNOcGPYlicP6iPXjtm%2fbGOxnQU8ZrFgGnsw8Ipj14OS%2fVkJglNd6A%3d%3d\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"B83031I37\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.131.221\",\"SServerAddr\":\"198.51.100.231\",\"remoteAddr\":\"198.51.100.231\",\"serverIntf\":1,\"CClientAddr\":\"192.168.131.221\",\"serverCountry\":\"US\",\"sessionId\":110221866571317,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":54631,\"timeStamp\":\"2051-05-25 12:20:36.113\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":49992,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"198.51.100.231\",\"username\":\"fyvb\",\"tagsString\":\"\"}}}",
+        "provider": "http_response",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "file": {
+        "name": "microsoft.bingweather_4.53.51361.0_neutral_~_8wekyb3d8bbwe.appxbundle"
+      },
+      "host": {
+        "name": "B83031I37"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 1048576
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:Jgas2UPyxPo9lX7pOWWl4etWtn8=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "B83031I37",
+          "2.tlu.dl.delivery.mp.microsoft.com"
+        ],
+        "ip": [
+          "198.51.100.231",
+          "192.168.131.221",
+          "192.0.2.5"
+        ],
+        "user": [
+          "fyvb"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.131.221",
+        "nat": {
+          "ip": "192.0.2.5",
+          "port": 49992
+        },
+        "port": 54631
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "2.tlu.dl.delivery.mp.microsoft.com",
+        "full": "http://2.tlu.dl.delivery.mp.microsoft.com/filestreamingservice/files/38a55a4b-de32-4f98-ba94-8cb40a7db167?P1=1685040131&P2=404&P3=2&P4=Vf%2fpxph%2fQJH7%2bPZqc3Xz67gngLpb9rnmPKNOcGPYlicP6iPXjtm%2fbGOxnQU8ZrFgGnsw8Ipj14OS%2fVkJglNd6A%3d%3d",
+        "original": "http://2.tlu.dl.delivery.mp.microsoft.com/filestreamingservice/files/38a55a4b-de32-4f98-ba94-8cb40a7db167?P1=1685040131&P2=404&P3=2&P4=Vf%2fpxph%2fQJH7%2bPZqc3Xz67gngLpb9rnmPKNOcGPYlicP6iPXjtm%2fbGOxnQU8ZrFgGnsw8Ipj14OS%2fVkJglNd6A%3d%3d",
+        "path": "/filestreamingservice/files/38a55a4b-de32-4f98-ba94-8cb40a7db167",
+        "query": "P1=1685040131&P2=404&P3=2&P4=Vf/pxph/QJH7+PZqc3Xz67gngLpb9rnmPKNOcGPYlicP6iPXjtm/bGOxnQU8ZrFgGnsw8Ipj14OS/VkJglNd6A==",
+        "scheme": "http"
+      },
+      "user": {
+        "name": "fyvb"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T12:20:35.953-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "httpRequestEvent": {},
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "2.tlu.dl.delivery.mp.microsoft.com",
+        "ip": "192.0.2.112",
+        "nat": {
+          "ip": "192.0.2.112",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866571313",
+        "kind": "event",
+        "original": "<174>May 25 12:20:35 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 12:20:35.953\",\"contentLength\":1048576,\"contentFilename\":\"microsoft.microsoftofficehub_18.2304.1202.0_neutral_~_8wekyb3d8bbwe.appxbundle\",\"requestLine\":\"GET http://2.tlu.dl.delivery.mp.microsoft.com/filestreamingservice/files/dbe32f7c-669a-43b3-9ce5-e318b329c267?P1=1685039689&P2=404&P3=2&P4=J5KXMJWKulWN6iU7zXXnBHsN5grFqq4jTLeBolgTSTDCAvNAorpE%2fWRUlfYgNfcHUzyzDSl9S5jMYOK%2fY9Gqjg%3d%3d\",\"contentType\":\"application/octet-stream\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 12:20:35.738\",\"method\":\"GET\",\"requestId\":110221859374261,\"domain\":\"2.tlu.dl.delivery.mp.microsoft.com\",\"host\":\"2.tlu.dl.delivery.mp.microsoft.com\",\"contentLength\":0,\"requestUri\":\"/filestreamingservice/files/dbe32f7c-669a-43b3-9ce5-e318b329c267?P1=1685039689&P2=404&P3=2&P4=J5KXMJWKulWN6iU7zXXnBHsN5grFqq4jTLeBolgTSTDCAvNAorpE%2fWRUlfYgNfcHUzyzDSl9S5jMYOK%2fY9Gqjg%3d%3d\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"B83031I37\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.131.221\",\"SServerAddr\":\"192.0.2.112\",\"remoteAddr\":\"192.0.2.112\",\"serverIntf\":1,\"CClientAddr\":\"192.168.131.221\",\"serverCountry\":\"US\",\"sessionId\":110221866571313,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":54628,\"timeStamp\":\"2051-05-25 12:20:35.702\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":26442,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"192.0.2.112\",\"username\":\"fyvb\",\"tagsString\":\"\"}}}",
+        "provider": "http_response",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "file": {
+        "name": "microsoft.microsoftofficehub_18.2304.1202.0_neutral_~_8wekyb3d8bbwe.appxbundle"
+      },
+      "host": {
+        "name": "B83031I37"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 1048576
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:TlHbdIb8mVwAXHmORfw3ldCtIdU=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "B83031I37",
+          "2.tlu.dl.delivery.mp.microsoft.com"
+        ],
+        "ip": [
+          "192.0.2.112",
+          "192.168.131.221",
+          "192.0.2.5"
+        ],
+        "user": [
+          "fyvb"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.131.221",
+        "nat": {
+          "ip": "192.0.2.5",
+          "port": 26442
+        },
+        "port": 54628
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "2.tlu.dl.delivery.mp.microsoft.com",
+        "full": "http://2.tlu.dl.delivery.mp.microsoft.com/filestreamingservice/files/dbe32f7c-669a-43b3-9ce5-e318b329c267?P1=1685039689&P2=404&P3=2&P4=J5KXMJWKulWN6iU7zXXnBHsN5grFqq4jTLeBolgTSTDCAvNAorpE%2fWRUlfYgNfcHUzyzDSl9S5jMYOK%2fY9Gqjg%3d%3d",
+        "original": "http://2.tlu.dl.delivery.mp.microsoft.com/filestreamingservice/files/dbe32f7c-669a-43b3-9ce5-e318b329c267?P1=1685039689&P2=404&P3=2&P4=J5KXMJWKulWN6iU7zXXnBHsN5grFqq4jTLeBolgTSTDCAvNAorpE%2fWRUlfYgNfcHUzyzDSl9S5jMYOK%2fY9Gqjg%3d%3d",
+        "path": "/filestreamingservice/files/dbe32f7c-669a-43b3-9ce5-e318b329c267",
+        "query": "P1=1685039689&P2=404&P3=2&P4=J5KXMJWKulWN6iU7zXXnBHsN5grFqq4jTLeBolgTSTDCAvNAorpE/WRUlfYgNfcHUzyzDSl9S5jMYOK/Y9Gqjg==",
+        "scheme": "http"
+      },
+      "user": {
+        "name": "fyvb"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T09:28:51.570-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "httpRequestEvent": {},
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "qcoh.sbogpntu.com",
+        "ip": "192.0.2.229",
+        "nat": {
+          "ip": "192.0.2.229",
+          "port": 80
+        },
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866498840",
+        "kind": "event",
+        "original": "<174>May 25 09:28:51 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:28:51.57\",\"contentLength\":1551,\"requestLine\":\"GET http://ocsp.verisign.com/MFEwTzBNMEswSTAJBgUrDgMCGgUABBTSqZMG5M8TA9rdzkbCnNwuMAd5VgQUz5mp6nsm9EvJjo%2FX8AUm7%2BPSp50CECnEX2U8xxBTGE6%2BVZZgJjI%3D\",\"contentType\":\"application/ocsp-response\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 09:28:51.333\",\"method\":\"GET\",\"requestId\":110221859359026,\"domain\":\"qcoh.sbogpntu.com\",\"host\":\"qcoh.sbogpntu.com\",\"contentLength\":0,\"requestUri\":\"/MFEwTzBNMEswSTAJBgUrDgMCGgUABBTSqZMG5M8TA9rdzkbCnNwuMAd5VgQUz5mp6nsm9EvJjo%2FX8AUm7%2BPSp50CECnEX2U8xxBTGE6%2BVZZgJjI%3D\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"GejhlfEhn2\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.114.223\",\"SServerAddr\":\"192.0.2.229\",\"remoteAddr\":\"192.0.2.229\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.223\",\"serverCountry\":\"US\",\"sessionId\":110221866498840,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":17824,\"timeStamp\":\"2051-05-25 09:28:51.329\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":10848,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"192.0.2.229\",\"tagsString\":\"\"}}}",
+        "provider": "http_response",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "name": "GejhlfEhn2"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 1551
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:d3Uhzdk6E79LS981+rzlHjZTVSE=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "GejhlfEhn2",
+          "qcoh.sbogpntu.com"
+        ],
+        "ip": [
+          "192.0.2.229",
+          "192.168.114.223",
+          "192.0.2.5"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.114.223",
+        "nat": {
+          "ip": "192.0.2.5",
+          "port": 10848
+        },
+        "port": 17824
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ocsp.verisign.com",
+        "full": "http://ocsp.verisign.com/MFEwTzBNMEswSTAJBgUrDgMCGgUABBTSqZMG5M8TA9rdzkbCnNwuMAd5VgQUz5mp6nsm9EvJjo%2FX8AUm7%2BPSp50CECnEX2U8xxBTGE6%2BVZZgJjI%3D",
+        "original": "http://ocsp.verisign.com/MFEwTzBNMEswSTAJBgUrDgMCGgUABBTSqZMG5M8TA9rdzkbCnNwuMAd5VgQUz5mp6nsm9EvJjo%2FX8AUm7%2BPSp50CECnEX2U8xxBTGE6%2BVZZgJjI%3D",
+        "path": "/MFEwTzBNMEswSTAJBgUrDgMCGgUABBTSqZMG5M8TA9rdzkbCnNwuMAd5VgQUz5mp6nsm9EvJjo/X8AUm7+PSp50CECnEX2U8xxBTGE6+VZZgJjI=",
+        "scheme": "http"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 13:59:11 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:59:11.622\",\"contentLength\":8,\"requestLine\":\"GET http://detectportal.firefox.com/success.txt?ipv4\",\"contentType\":\"text/plain\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:59:11.613\",\"method\":\"GET\",\"requestId\":110221859378971,\"domain\":\"ffreauwwmnet.akzcasm.com\",\"host\":\"ffreauwwmnet.akzcasm.com\",\"contentLength\":0,\"requestUri\":\"/success.txt?ipv4\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"sagwtm\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":39.1028,\"localAddr\":\"192.168.180.184\",\"SServerAddr\":\"192.0.2.238\",\"remoteAddr\":\"192.0.2.238\",\"serverIntf\":1,\"CClientAddr\":\"192.168.180.184\",\"serverCountry\":\"US\",\"sessionId\":110221866602155,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":41968,\"timeStamp\":\"2051-05-25 13:55:24.843\",\"serverLongitude\":-94.5778,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":47164,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"192.0.2.238\",\"tagsString\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 13:28:56 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:28:56.752\",\"contentLength\":0,\"requestLine\":\"GET http://ocsp.entrust.net/MFEwTzBNMEswSTAJBgUrDgMCGgUABBRr2bwARTxMtEy9aspRAZg5QFhagQQUgrrWPZfOn89x6JI3r%2F2ztWk1V88CEHHvVXSvNVTDWixp9m9La80%3D\",\"contentType\":\"application/ocsp-response\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:28:56.741\",\"method\":\"GET\",\"requestId\":110221859376527,\"domain\":\"qcoh.dwrvgor.net\",\"host\":\"qcoh.dwrvgor.net\",\"contentLength\":0,\"requestUri\":\"/MFEwTzBNMEswSTAJBgUrDgMCGgUABBRr2bwARTxMtEy9aspRAZg5QFhagQQUgrrWPZfOn89x6JI3r%2F2ztWk1V88CEHHvVXSvNVTDWixp9m9La80%3D\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"B83031I37\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.131.221\",\"SServerAddr\":\"198.51.100.134\",\"remoteAddr\":\"198.51.100.134\",\"serverIntf\":1,\"CClientAddr\":\"192.168.131.221\",\"serverCountry\":\"US\",\"sessionId\":110221866590454,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":62349,\"timeStamp\":\"2051-05-25 13:28:56.735\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":15108,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"198.51.100.134\",\"username\":\"fyvb\",\"tagsString\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 13:28:56 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:28:56.693\",\"contentLength\":0,\"requestLine\":\"GET http://ctldl.windowsupdate.com/msdownload/update/v3/static/trustedr/en/pinrulesstl.cab?9d222919ed61d6da\",\"contentType\":\"application/vnd.ms-cab-compressed\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:28:56.684\",\"method\":\"GET\",\"requestId\":110221859376526,\"domain\":\"anmag.simawjokgfeqc.com\",\"host\":\"anmag.simawjokgfeqc.com\",\"contentLength\":0,\"requestUri\":\"/msdownload/update/v3/static/trustedr/en/pinrulesstl.cab?9d222919ed61d6da\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"B83031I37\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.131.221\",\"SServerAddr\":\"203.0.113.209\",\"remoteAddr\":\"203.0.113.209\",\"serverIntf\":1,\"CClientAddr\":\"192.168.131.221\",\"serverCountry\":\"US\",\"sessionId\":110221866590452,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":62348,\"timeStamp\":\"2051-05-25 13:28:56.656\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":19844,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"203.0.113.209\",\"username\":\"fyvb\",\"tagsString\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 13:28:17 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:28:17.055\",\"contentLength\":1736,\"requestLine\":\"POST http://dmd.metaservices.microsoft.com/metadata.svc\",\"contentType\":\"text/xml\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:28:17.019\",\"method\":\"POST\",\"requestId\":110221859376508,\"domain\":\"dmd.metaservices.microsoft.com\",\"host\":\"dmd.metaservices.microsoft.com\",\"contentLength\":1270,\"requestUri\":\"/metadata.svc\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"GejhlfEhn2\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.3388,\"localAddr\":\"192.168.114.223\",\"SServerAddr\":\"198.51.100.114\",\"remoteAddr\":\"198.51.100.114\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.223\",\"serverCountry\":\"US\",\"sessionId\":110221866589634,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":19486,\"timeStamp\":\"2051-05-25 13:28:11.523\",\"serverLongitude\":-121.8914,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":31487,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"198.51.100.114\",\"tagsString\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 13:28:17 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:28:17.015\",\"contentLength\":0,\"requestLine\":\"POST http://go.microsoft.com/fwlink/?LinkID=252669&clcid=0x409\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:28:17.007\",\"method\":\"POST\",\"requestId\":110221859376507,\"domain\":\"go.microsoft.com\",\"host\":\"go.microsoft.com\",\"contentLength\":1270,\"requestUri\":\"/fwlink/?LinkID=252669&clcid=0x409\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"GejhlfEhn2\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.114.223\",\"SServerAddr\":\"203.0.113.131\",\"remoteAddr\":\"203.0.113.131\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.223\",\"serverCountry\":\"US\",\"sessionId\":110221866589745,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":19498,\"timeStamp\":\"2051-05-25 13:28:17.002\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":48711,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"203.0.113.131\",\"tagsString\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 13:20:58 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:20:58.327\",\"contentLength\":0,\"requestLine\":\"GET http://connectivitycheck.gstatic.com/generate_204\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:20:58.316\",\"method\":\"GET\",\"requestId\":110221859376191,\"domain\":\"connectivitycheck.gstatic.com\",\"host\":\"connectivitycheck.gstatic.com\",\"contentLength\":0,\"requestUri\":\"/generate_204\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"198.51.100.211\",\"remoteAddr\":\"198.51.100.211\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866586859,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":44148,\"timeStamp\":\"2051-05-25 13:20:57.995\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":31260,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"198.51.100.211\",\"tagsString\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 13:18:39 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 13:18:39.717\",\"contentLength\":471,\"requestLine\":\"POST http://ocsp.digicert.com/\",\"contentType\":\"application/ocsp-response\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 13:18:39.707\",\"method\":\"POST\",\"requestId\":110221859376170,\"domain\":\"qcoh.dihpabln.com\",\"host\":\"qcoh.dihpabln.com\",\"contentLength\":83,\"requestUri\":\"/\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"GejhlfEhn2\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.114.223\",\"SServerAddr\":\"198.51.100.27\",\"remoteAddr\":\"198.51.100.27\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.223\",\"serverCountry\":\"US\",\"sessionId\":110221866586366,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":19427,\"timeStamp\":\"2051-05-25 13:18:39.704\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":43090,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"198.51.100.27\",\"tagsString\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 12:20:36 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 12:20:36.57\",\"contentLength\":1048576,\"contentFilename\":\"microsoft.bingweather_4.53.51361.0_neutral_~_8wekyb3d8bbwe.appxbundle\",\"requestLine\":\"GET http://2.tlu.dl.delivery.mp.microsoft.com/filestreamingservice/files/38a55a4b-de32-4f98-ba94-8cb40a7db167?P1=1685040131&P2=404&P3=2&P4=Vf%2fpxph%2fQJH7%2bPZqc3Xz67gngLpb9rnmPKNOcGPYlicP6iPXjtm%2fbGOxnQU8ZrFgGnsw8Ipj14OS%2fVkJglNd6A%3d%3d\",\"contentType\":\"application/octet-stream\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 12:20:36.509\",\"method\":\"GET\",\"requestId\":110221859374271,\"domain\":\"2.tlu.dl.delivery.mp.microsoft.com\",\"host\":\"2.tlu.dl.delivery.mp.microsoft.com\",\"contentLength\":0,\"requestUri\":\"/filestreamingservice/files/38a55a4b-de32-4f98-ba94-8cb40a7db167?P1=1685040131&P2=404&P3=2&P4=Vf%2fpxph%2fQJH7%2bPZqc3Xz67gngLpb9rnmPKNOcGPYlicP6iPXjtm%2fbGOxnQU8ZrFgGnsw8Ipj14OS%2fVkJglNd6A%3d%3d\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"B83031I37\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.131.221\",\"SServerAddr\":\"198.51.100.231\",\"remoteAddr\":\"198.51.100.231\",\"serverIntf\":1,\"CClientAddr\":\"192.168.131.221\",\"serverCountry\":\"US\",\"sessionId\":110221866571317,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":54631,\"timeStamp\":\"2051-05-25 12:20:36.113\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":49992,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"198.51.100.231\",\"username\":\"fyvb\",\"tagsString\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 12:20:35 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 12:20:35.953\",\"contentLength\":1048576,\"contentFilename\":\"microsoft.microsoftofficehub_18.2304.1202.0_neutral_~_8wekyb3d8bbwe.appxbundle\",\"requestLine\":\"GET http://2.tlu.dl.delivery.mp.microsoft.com/filestreamingservice/files/dbe32f7c-669a-43b3-9ce5-e318b329c267?P1=1685039689&P2=404&P3=2&P4=J5KXMJWKulWN6iU7zXXnBHsN5grFqq4jTLeBolgTSTDCAvNAorpE%2fWRUlfYgNfcHUzyzDSl9S5jMYOK%2fY9Gqjg%3d%3d\",\"contentType\":\"application/octet-stream\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 12:20:35.738\",\"method\":\"GET\",\"requestId\":110221859374261,\"domain\":\"2.tlu.dl.delivery.mp.microsoft.com\",\"host\":\"2.tlu.dl.delivery.mp.microsoft.com\",\"contentLength\":0,\"requestUri\":\"/filestreamingservice/files/dbe32f7c-669a-43b3-9ce5-e318b329c267?P1=1685039689&P2=404&P3=2&P4=J5KXMJWKulWN6iU7zXXnBHsN5grFqq4jTLeBolgTSTDCAvNAorpE%2fWRUlfYgNfcHUzyzDSl9S5jMYOK%2fY9Gqjg%3d%3d\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"B83031I37\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.131.221\",\"SServerAddr\":\"192.0.2.112\",\"remoteAddr\":\"192.0.2.112\",\"serverIntf\":1,\"CClientAddr\":\"192.168.131.221\",\"serverCountry\":\"US\",\"sessionId\":110221866571313,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":54628,\"timeStamp\":\"2051-05-25 12:20:35.702\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":26442,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"192.0.2.112\",\"username\":\"fyvb\",\"tagsString\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:28:51 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:28:51.57\",\"contentLength\":1551,\"requestLine\":\"GET http://ocsp.verisign.com/MFEwTzBNMEswSTAJBgUrDgMCGgUABBTSqZMG5M8TA9rdzkbCnNwuMAd5VgQUz5mp6nsm9EvJjo%2FX8AUm7%2BPSp50CECnEX2U8xxBTGE6%2BVZZgJjI%3D\",\"contentType\":\"application/ocsp-response\",\"class\":\"class com.untangle.app.http.HttpResponseEvent\",\"httpRequestEvent\":{\"timeStamp\":\"2051-05-25 09:28:51.333\",\"method\":\"GET\",\"requestId\":110221859359026,\"domain\":\"qcoh.sbogpntu.com\",\"host\":\"qcoh.sbogpntu.com\",\"contentLength\":0,\"requestUri\":\"/MFEwTzBNMEswSTAJBgUrDgMCGgUABBTSqZMG5M8TA9rdzkbCnNwuMAd5VgQUz5mp6nsm9EvJjo%2FX8AUm7%2BPSp50CECnEX2U8xxBTGE6%2BVZZgJjI%3D\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"GejhlfEhn2\",\"CServerPort\":80,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.114.223\",\"SServerAddr\":\"192.0.2.229\",\"remoteAddr\":\"192.0.2.229\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.223\",\"serverCountry\":\"US\",\"sessionId\":110221866498840,\"SClientAddr\":\"192.0.2.5\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":17824,\"timeStamp\":\"2051-05-25 09:28:51.329\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":10848,\"bypassed\":false,\"SServerPort\":80,\"CServerAddr\":\"192.0.2.229\",\"tagsString\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-arista_ngfw-log-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "arista_ngfw",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

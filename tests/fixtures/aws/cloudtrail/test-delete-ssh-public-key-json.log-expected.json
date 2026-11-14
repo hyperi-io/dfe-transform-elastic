@@ -1,0 +1,131 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-01-10T16:07:08.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_type": "AwsApiCall",
+          "event_version": "1.05",
+          "flattened": {
+            "request_parameters": {
+              "sSHPublicKeyId": "EXAMPLE_KEY_ID",
+              "userName": "Cgb"
+            }
+          },
+          "recipient_account_id": "0123456789012",
+          "request_id": "AWFLMJB-8f76-13ea-f56d-DVFWJQA",
+          "request_parameters": "{sSHPublicKeyId=EXAMPLE_KEY_ID, userName=Cgb}",
+          "user_identity": {
+            "access_key_id": "EXAMPLE_KEY",
+            "arn": "arn:aws:iam::0123456789012:user/Ekkcf",
+            "invoked_by": "signin.amazonaws.com",
+            "session_context": {
+              "creation_date": "2048-01-10T14:38:30.000Z",
+              "mfa_authenticated": "true"
+            },
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "0123456789012"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DeleteSSHPublicKey",
+        "category": [
+          "iam"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "EXAMPLE-72ff-4d4f-9a8d-EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"EXAMPLE_ID\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\",\"sessionContext\":{\"attributes\":{\"mfaAuthenticated\":\"true\",\"creationDate\":\"2048-01-10T14:38:30Z\"}},\"invokedBy\":\"signin.amazonaws.com\"},\"eventTime\":\"2048-01-10T16:07:08Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"DeleteSSHPublicKey\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"signin.amazonaws.com\",\"requestParameters\":{\"sSHPublicKeyId\":\"EXAMPLE_KEY_ID\",\"userName\":\"Cgb\"},\"responseElements\":null,\"requestID\":\"AWFLMJB-8f76-13ea-f56d-DVFWJQA\",\"eventID\":\"EXAMPLE-72ff-4d4f-9a8d-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+        "outcome": "success",
+        "provider": "iam.amazonaws.com",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "related": {
+        "entity": [
+          "EXAMPLE_KEY",
+          "Ekkcf",
+          "arn:aws:iam::0123456789012:user/Ekkcf",
+          "Cgb"
+        ],
+        "user": [
+          "Cgb",
+          "EXAMPLE_ID",
+          "Ekkcf"
+        ]
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        },
+        "id": "EXAMPLE_ID",
+        "name": "Ekkcf",
+        "target": {
+          "name": "Cgb"
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "signin.amazonaws.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"EXAMPLE_ID\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\",\"sessionContext\":{\"attributes\":{\"mfaAuthenticated\":\"true\",\"creationDate\":\"2048-01-10T14:38:30Z\"}},\"invokedBy\":\"signin.amazonaws.com\"},\"eventTime\":\"2048-01-10T16:07:08Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"DeleteSSHPublicKey\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"signin.amazonaws.com\",\"requestParameters\":{\"sSHPublicKeyId\":\"EXAMPLE_KEY_ID\",\"userName\":\"Cgb\"},\"responseElements\":null,\"requestID\":\"AWFLMJB-8f76-13ea-f56d-DVFWJQA\",\"eventID\":\"EXAMPLE-72ff-4d4f-9a8d-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

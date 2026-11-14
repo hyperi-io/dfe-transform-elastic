@@ -1,0 +1,87 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-05-19T10:01:00.000Z",
+      "atlassian_cloud": {
+        "audit": {
+          "location": {
+            "geo": "NA"
+          },
+          "message": {
+            "format": "simple"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "organization_users_viewed",
+        "category": [
+          "iam"
+        ],
+        "created": "2054-05-19T10:01:01.000Z",
+        "id": "c7196880-2764-4050-8852-381041247678",
+        "kind": "event",
+        "original": "{\"type\":\"events\",\"id\":\"c7196880-2764-4050-8852-381041247678\",\"attributes\":{\"time\":\"2054-05-19T10:01:00.000Z\",\"processedAt\":\"2054-05-19T10:01:01.000Z\",\"action\":\"organization_users_viewed\",\"actor\":{\"id\":\"712020:ebbbbdcf-dfaf-beea-bbac-daaebcfdfbaf\",\"name\":\"Bob Smith\",\"email\":\"drc.zsgwr@example.com\"},\"location\":{\"ip\":\"198.51.100.11\",\"geo\":\"NA\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Bob Smith viewed organization users\",\"format\":\"simple\"}}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Bob Smith viewed organization users",
+      "observer": {
+        "product": "Atlassian Cloud",
+        "type": "saas",
+        "vendor": "Atlassian"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.11"
+        ],
+        "user": [
+          "Bob Smith",
+          "drc.zsgwr@example.com"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "Example City",
+          "country_name": "Example Country"
+        },
+        "ip": "198.51.100.11"
+      },
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "drc.zsgwr@example.com",
+        "id": "712020:ebbbbdcf-dfaf-beea-bbac-daaebcfdfbaf",
+        "name": "Bob Smith"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"type\":\"events\",\"id\":\"c7196880-2764-4050-8852-381041247678\",\"attributes\":{\"time\":\"2054-05-19T10:01:00.000Z\",\"processedAt\":\"2054-05-19T10:01:01.000Z\",\"action\":\"organization_users_viewed\",\"actor\":{\"id\":\"712020:ebbbbdcf-dfaf-beea-bbac-daaebcfdfbaf\",\"name\":\"Bob Smith\",\"email\":\"drc.zsgwr@example.com\"},\"location\":{\"ip\":\"198.51.100.11\",\"geo\":\"NA\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Bob Smith viewed organization users\",\"format\":\"simple\"}}",
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_cloud-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

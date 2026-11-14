@@ -1,0 +1,332 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2043-09-18T02:45:13.581Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "network-share-object-accessed",
+        "category": [
+          "network",
+          "file"
+        ],
+        "code": "5140",
+        "created": "2050-02-03T18:51:05.143Z",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "info",
+          "access"
+        ]
+      },
+      "file": {
+        "directory": "C:\\Documents"
+      },
+      "host": {
+        "name": "CF43.egmukjj.local"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "ip": [
+          "10.95.37.32"
+        ],
+        "user": [
+          "fddrio"
+        ]
+      },
+      "source": {
+        "ip": "10.95.37.32",
+        "port": 49212
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-3457937927-2839227994-823803824-1104",
+        "name": "fddrio"
+      },
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "CF43.egmukjj.local",
+        "event_data": {
+          "AccessList": [
+            "4416"
+          ],
+          "AccessListDescription": [
+            "ReadData (or ListDirectory)"
+          ],
+          "AccessMask": [
+            "0x1"
+          ],
+          "AccessMaskDescription": [
+            "Create Child"
+          ],
+          "ObjectType": "File",
+          "ShareLocalPath": "\\??\\C:\\Documents",
+          "ShareName": "\\\\\\*\\Documents",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x541f35",
+          "SubjectUserName": "fddrio",
+          "SubjectUserSid": "S-1-5-21-3457937927-2839227994-823803824-1104"
+        },
+        "event_id": "5140",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x541f35"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 772
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "268495",
+        "task": "File Share",
+        "time_created": "2043-09-18T02:45:13.581231400Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2043-09-18T02:45:13.581Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "network-share-object-access-checked",
+        "category": [
+          "network",
+          "file"
+        ],
+        "code": "5145",
+        "created": "2050-02-03T18:51:05.143Z",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "info",
+          "access"
+        ]
+      },
+      "file": {
+        "directory": "C:\\Documents",
+        "extension": "exe",
+        "name": "Bginfo.exe",
+        "path": "C:\\Documents\\Bginfo.exe",
+        "target_path": "\\\\\\*\\Documents\\Bginfo.exe"
+      },
+      "host": {
+        "name": "CF43.egmukjj.local"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "ip": [
+          "fe80::31ea:6c3c:f40d:1973"
+        ],
+        "user": [
+          "fddrio"
+        ]
+      },
+      "source": {
+        "ip": "fe80::31ea:6c3c:f40d:1973",
+        "port": 49212
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-3457937927-2839227994-823803824-1104",
+        "name": "fddrio"
+      },
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "CF43.egmukjj.local",
+        "event_data": {
+          "AccessList": [
+            "1541",
+            "4416",
+            "4423"
+          ],
+          "AccessListDescription": [
+            "SYNCHRONIZE",
+            "ReadData (or ListDirectory)",
+            "ReadAttributes"
+          ],
+          "AccessMask": [
+            "0x100081"
+          ],
+          "AccessMaskDescription": [
+            "Create Child",
+            "List Object",
+            "SYNCHRONIZE"
+          ],
+          "AccessReason": "%%1541: %%1801 D:(A;;FA;;;WD) %%4416: %%1801 D:(A;;FA;;;WD) %%4423: %%1801 D:(A;;FA;;;WD)",
+          "ObjectType": "File",
+          "RelativeTargetName": "Bginfo.exe",
+          "ShareLocalPath": "\\??\\C:\\Documents",
+          "ShareName": "\\\\\\*\\Documents",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x541f35",
+          "SubjectUserName": "fddrio",
+          "SubjectUserSid": "S-1-5-21-3457937927-2839227994-823803824-1104"
+        },
+        "event_id": "5145",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x541f35"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 772
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "268495",
+        "task": "Detailed File Share",
+        "time_created": "2043-09-18T02:45:13.581231400Z",
+        "version": 0
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:06:03.636Z",
+      "event": {
+        "action": "File Share",
+        "code": 5140,
+        "created": "2050-02-03T18:51:05.143Z",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CF43.egmukjj.local"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "CF43.egmukjj.local",
+        "event_data": {
+          "AccessList": "%%4416",
+          "AccessMask": "0x1",
+          "IpAddress": "10.95.37.32",
+          "IpPort": "49212",
+          "ObjectType": "File",
+          "ShareLocalPath": "\\??\\C:\\Documents",
+          "ShareName": "\\\\\\*\\Documents",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x541f35",
+          "SubjectUserName": "fddrio",
+          "SubjectUserSid": "S-1-5-21-3457937927-2839227994-823803824-1104"
+        },
+        "event_id": 5140,
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 772
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 268495,
+        "task": "File Share",
+        "time_created": "2043-09-18T02:45:13.581231400Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:06:03.636Z",
+      "event": {
+        "action": "Detailed File Share",
+        "code": 5145,
+        "created": "2050-02-03T18:51:05.143Z",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CF43.egmukjj.local"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "CF43.egmukjj.local",
+        "event_data": {
+          "AccessList": "%%1541 %%4416 %%4423",
+          "AccessMask": "0x100081",
+          "AccessReason": "%%1541: %%1801 D:(A;;FA;;;WD) %%4416: %%1801 D:(A;;FA;;;WD) %%4423: %%1801 D:(A;;FA;;;WD)",
+          "IpAddress": "fe80::31ea:6c3c:f40d:1973",
+          "IpPort": "49212",
+          "ObjectType": "File",
+          "RelativeTargetName": "Bginfo.exe",
+          "ShareLocalPath": "\\??\\C:\\Documents",
+          "ShareName": "\\\\\\*\\Documents",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x541f35",
+          "SubjectUserName": "fddrio",
+          "SubjectUserSid": "S-1-5-21-3457937927-2839227994-823803824-1104"
+        },
+        "event_id": 5145,
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 772
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 268495,
+        "task": "Detailed File Share",
+        "time_created": "2043-09-18T02:45:13.581231400Z",
+        "version": 0
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

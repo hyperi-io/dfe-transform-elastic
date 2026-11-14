@@ -1,0 +1,181 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-12-19T08:21:23.644Z",
+      "agent": {
+        "ephemeral_id": "71472904-b44f-4a6d-a716-af1c55ce9b01",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "removed-member-from-distribution-group",
+        "category": [
+          "iam"
+        ],
+        "code": "4752",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "group": {
+        "domain": "TEST",
+        "id": "S-1-5-21-1717121054-434620538-60925301-2904",
+        "name": "ibsisxmcco9"
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4752.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "Administrator",
+          "ev_aav"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TEST",
+        "id": "S-1-5-21-1717121054-434620538-60925301-2794",
+        "name": "ev_aav",
+        "target": {
+          "domain": "SAAS",
+          "group": {
+            "domain": "TEST",
+            "id": "S-1-5-21-1717121054-434620538-60925301-2904",
+            "name": "ibsisxmcco9"
+          },
+          "name": "Administrator"
+        }
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "MemberName": "CN=Administrator,CN=Users,DC=TEST,DC=SAAS",
+          "MemberSid": "S-1-5-21-1717121054-434620538-60925301-500",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x2e67800",
+          "SubjectUserName": "ev_aav",
+          "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+          "TargetDomainName": "TEST",
+          "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2904",
+          "TargetUserName": "ibsisxmcco9"
+        },
+        "event_id": "4752",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x2e67800"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 492,
+          "thread": {
+            "id": 1076
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "3707686",
+        "time_created": "2047-12-19T08:21:23.644Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:08:09.007Z",
+      "agent": {
+        "ephemeral_id": "71472904-b44f-4a6d-a716-af1c55ce9b01",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4752,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4752.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "MemberName": "CN=Administrator,CN=Users,DC=TEST,DC=SAAS",
+          "MemberSid": "S-1-5-21-1717121054-434620538-60925301-500",
+          "PrivilegeList": "-",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x2e67800",
+          "SubjectUserName": "ev_aav",
+          "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+          "TargetDomainName": "TEST",
+          "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2904",
+          "TargetUserName": "ibsisxmcco9"
+        },
+        "event_id": 4752,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 492,
+          "thread": {
+            "id": 1076
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 3707686,
+        "time_created": "2047-12-19T08:21:23.644Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

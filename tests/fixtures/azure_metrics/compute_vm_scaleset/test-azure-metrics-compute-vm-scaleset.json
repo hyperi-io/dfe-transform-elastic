@@ -1,0 +1,80 @@
+{
+    "events": [
+        {
+            "cloud": {
+                "instance": {
+                    "name": "obswinvmss"
+                },
+                "provider": "azure",
+                "machine": {
+                    "type": "Standard_B1ls"
+                },
+                "region": "westeurope",
+                "account": {
+                    "id": "69fd8b08-6b7d-4897-8555-fb37d8acd234"
+                }
+            },
+            "@timestamp": "2049-07-26T09:52:00.000Z",
+            "data_stream": {
+                "namespace": "default",
+                "type": "metrics",
+                "dataset": "azure.compute_vm_scaleset"
+            },
+            "service": {
+                "type": "azure"
+            },
+            "host": {
+                "hostname": "ezdhdr-bldfh-dvenz",
+                "os": {
+                    "kernel": "4.19.128-microsoft-standard",
+                    "codename": "Core",
+                    "name": "CentOS Linux",
+                    "type": "linux",
+                    "family": "redhat",
+                    "version": "7 (Core)",
+                    "platform": "centos"
+                },
+                "containerized": true,
+                "ip": [
+                    "172.26.228.241"
+                ],
+                "name": "obswinvmss",
+                "id": "f7512aff323cc3de64d5c928b009c7bd",
+                "mac": [
+                    "93:53:ca:27:11:68"
+                ],
+                "architecture": "x86_64"
+            },
+            "metricset": {
+                "period": 300000,
+                "name": "compute_vm_scaleset"
+            },
+            "event": {
+                "duration": 1939176000,
+                "agent_id_status": "verified",
+                "ingested": "2049-07-26T10:02:20.418602Z",
+                "module": "azure",
+                "dataset": "azure.compute_vm_scaleset"
+            },
+            "azure": {
+                "subscription_id": "69fd8b08-6b7d-4897-8555-fb37d8acd234",
+                "timegrain": "PT5M",
+                "monitor": {
+                    "cpu_credits_remaining": {
+                        "avg": 72
+                    },
+                    "cpu_credits_consumed": {
+                        "avg": 0
+                    }
+                },
+                "resource": {
+                    "name": "obswinvmss",
+                    "id": "/subscriptions/69fd8b08-6b7d-4897-8555-fb37d8acd234/resourceGroups/obs-infrastructure/providers/Microsoft.Compute/virtualMachineScaleSets/obswinvmss",
+                    "type": "Microsoft.Compute/virtualMachineScaleSets",
+                    "group": "obs-infrastructure"
+                },
+                "namespace": "Microsoft.Compute/virtualMachineScaleSets"
+            }
+        }
+    ]
+}

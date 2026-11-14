@@ -22,17 +22,14 @@ impl Transform for Default {
                     && event.get_str("aws.awshealth.end_time") == Some("0001-01-01T00:00:00.000Z")
             };
             if _cond {
-                // Painless script
-                // Source: ctx.aws.awshealth.end_time = null
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(r#"ctx.aws.awshealth.end_time = null"#),
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n    if (o == null || o == '') {\n    return true;\n    } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n    } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n    }\n    return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

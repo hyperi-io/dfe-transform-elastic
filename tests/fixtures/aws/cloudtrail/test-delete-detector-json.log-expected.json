@@ -1,0 +1,135 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-09-27T13:39:33.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_category": "Management",
+          "event_type": "AwsApiCall",
+          "event_version": "1.09",
+          "flattened": {
+            "request_parameters": {
+              "detectorId": "00f070bee555dd09c986a26150e42339"
+            }
+          },
+          "read_only": false,
+          "recipient_account_id": "000000000",
+          "request_id": "ba5ed59b-3ff4-4e14-a108-bc3db27bf541",
+          "request_parameters": "{detectorId=00f070bee555dd09c986a26150e42339}",
+          "user_identity": {
+            "access_key_id": "ACCESSKEYID",
+            "arn": "arn:aws:iam::000000000:user/sbgq@apejtlc.co",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "000000000"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entity": {
+        "target": {
+          "id": [
+            "00f070bee555dd09c986a26150e42339"
+          ]
+        }
+      },
+      "event": {
+        "action": "DeleteDetector",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "9199f7e7-fddb-4f08-a49e-df3a9a8fd7d4",
+        "kind": "event",
+        "original": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"9199f7e7-fddb-4f08-a49e-df3a9a8fd7d4\",\"eventName\":\"DeleteDetector\",\"eventSource\":\"guardduty.amazonaws.com\",\"eventTime\":\"2052-09-27T13:39:33Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.09\",\"readOnly\":false,\"recipientAccountId\":\"000000000\",\"requestID\":\"ba5ed59b-3ff4-4e14-a108-bc3db27bf541\",\"requestParameters\":{\"detectorId\":\"00f070bee555dd09c986a26150e42339\"},\"responseElements\":null,\"sourceIPAddress\":\"198.51.100.124\",\"userAgent\":\"aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_e56027de-8fde-4790-b146-0e908e5482a4 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#guardduty.delete-detector\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+        "outcome": "success",
+        "provider": "guardduty.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "ACCESSKEYID",
+          "sbgq@apejtlc.co",
+          "00f070bee555dd09c986a26150e42339",
+          "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+        ],
+        "user": [
+          "PRINCIPALID",
+          "sbgq@apejtlc.co"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "00f070bee555dd09c986a26150e42339"
+          ]
+        }
+      },
+      "user": {
+        "email": "sbgq@apejtlc.co",
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        },
+        "id": "PRINCIPALID",
+        "name": "sbgq@apejtlc.co"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_e56027de-8fde-4790-b146-0e908e5482a4 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#guardduty.delete-detector",
+        "version": "2.17.60"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"9199f7e7-fddb-4f08-a49e-df3a9a8fd7d4\",\"eventName\":\"DeleteDetector\",\"eventSource\":\"guardduty.amazonaws.com\",\"eventTime\":\"2052-09-27T13:39:33Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.09\",\"readOnly\":false,\"recipientAccountId\":\"000000000\",\"requestID\":\"ba5ed59b-3ff4-4e14-a108-bc3db27bf541\",\"requestParameters\":{\"detectorId\":\"00f070bee555dd09c986a26150e42339\"},\"responseElements\":null,\"sourceIPAddress\":\"198.51.100.124\",\"userAgent\":\"aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_e56027de-8fde-4790-b146-0e908e5482a4 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#guardduty.delete-detector\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

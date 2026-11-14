@@ -1,0 +1,314 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2048-03-09T11:00:32.000Z",
+        "id": "0c110077-a14b-425a-8084-f33c5110bd40",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2048-04-08T11:00:32.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 1,
+          "pattern": "[ipv4-addr:value = '192.0.2.75']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 40,
+          "standard_id": "indicator--a5967e41-f02f-51e0-af64-a4d0064df92c",
+          "valid_from": "2048-03-09T11:00:32.000Z",
+          "valid_until": "2048-04-08T11:00:32.000Z"
+        },
+        "observable": {
+          "ipv4_addr": {
+            "entity_type": "IPv4-Addr",
+            "id": "fcb00699-05bf-41a6-adcd-3e2ce7d80b18",
+            "standard_id": "ipv4-addr--040b4f0c-6e5a-5abd-868f-3a2eab31bef7",
+            "value": "192.0.2.75"
+          }
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.75"
+        ]
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "malware",
+        "linux",
+        "botnet",
+        "password brute forcing",
+        "machine-access-control",
+        "ongoing",
+        "ecs-indicator-detail"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "description": "The Hajime Linux IoT botnet list of active P2P IoT peers (IP addresses)",
+          "ip": [
+            "192.0.2.75"
+          ],
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "modified_at": "2051-01-17T09:30:06.558Z",
+          "name": "192.0.2.75",
+          "provider": "MalwareMustDie",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/0c110077-a14b-425a-8084-f33c5110bd40",
+          "type": "ipv4-addr"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2048-03-09T11:00:32.000Z",
+        "id": "0c110077-a14b-425a-8084-f33c5110bd40",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2048-04-08T11:00:32.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 0,
+          "pattern": "[ipv4-addr:value = '192.0.2.75']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 40,
+          "standard_id": "indicator--a5967e41-f02f-51e0-af64-a4d0064df92c",
+          "valid_from": "2048-03-09T11:00:32.000Z",
+          "valid_until": "2048-04-08T11:00:32.000Z"
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.75"
+        ]
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "malware",
+        "linux",
+        "botnet",
+        "password brute forcing",
+        "machine-access-control",
+        "ongoing",
+        "ecs-indicator-detail"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "description": "The Hajime Linux IoT botnet list of active P2P IoT peers (IP addresses)",
+          "ip": [
+            "192.0.2.75"
+          ],
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "modified_at": "2051-01-17T09:30:06.558Z",
+          "name": "192.0.2.75",
+          "provider": "MalwareMustDie",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/0c110077-a14b-425a-8084-f33c5110bd40",
+          "type": "ipv4-addr"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 15,
+      "created": "2048-03-09T11:00:32.000Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "MalwareMustDie"
+      },
+      "description": "The Hajime Linux IoT botnet list of active P2P IoT peers (IP addresses)",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "0c110077-a14b-425a-8084-f33c5110bd40",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T09:30:06.558Z",
+      "name": "192.0.2.75",
+      "objectLabel": [
+        {
+          "value": "malware"
+        },
+        {
+          "value": "linux"
+        },
+        {
+          "value": "botnet"
+        },
+        {
+          "value": "password brute forcing"
+        },
+        {
+          "value": "machine-access-control"
+        },
+        {
+          "value": "ongoing"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:CLEAR",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [
+          {
+            "node": {
+              "entity_type": "IPv4-Addr",
+              "id": "fcb00699-05bf-41a6-adcd-3e2ce7d80b18",
+              "observable_value": "192.0.2.75",
+              "standard_id": "ipv4-addr--040b4f0c-6e5a-5abd-868f-3a2eab31bef7",
+              "value": "11175.16.199.127"
+            }
+          }
+        ],
+        "pageInfo": {
+          "globalCount": 1
+        }
+      },
+      "pattern": "[ipv4-addr:value = '192.0.2.75']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--a5967e41-f02f-51e0-af64-a4d0064df92c",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2048-03-09T11:00:32.000Z",
+      "valid_until": "2048-04-08T11:00:32.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "IPv4-Addr",
+      "x_opencti_score": 40
+    },
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 15,
+      "created": "2048-03-09T11:00:32.000Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "MalwareMustDie"
+      },
+      "description": "The Hajime Linux IoT botnet list of active P2P IoT peers (IP addresses)",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "0c110077-a14b-425a-8084-f33c5110bd40",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T09:30:06.558Z",
+      "name": "192.0.2.75",
+      "objectLabel": [
+        {
+          "value": "malware"
+        },
+        {
+          "value": "linux"
+        },
+        {
+          "value": "botnet"
+        },
+        {
+          "value": "password brute forcing"
+        },
+        {
+          "value": "machine-access-control"
+        },
+        {
+          "value": "ongoing"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:CLEAR",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [],
+        "pageInfo": {
+          "globalCount": 0
+        }
+      },
+      "pattern": "[ipv4-addr:value = '192.0.2.75']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--a5967e41-f02f-51e0-af64-a4d0064df92c",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2048-03-09T11:00:32.000Z",
+      "valid_until": "2048-04-08T11:00:32.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "IPv4-Addr",
+      "x_opencti_score": 40
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_opencti-indicator-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "ti_opencti",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

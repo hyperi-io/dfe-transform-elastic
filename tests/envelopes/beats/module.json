@@ -1,0 +1,60 @@
+{
+  "provenance": {
+    "file": "scripts/rewrite_fixtures.py in dfe-transform-elastic-dev",
+    "line": "synthesise_envelopes",
+    "producer": "a Beats shipper's module wrapper",
+    "note": "Built from the wrapper's documented keys around a vendor line."
+  },
+  "shape": {
+    "family": "beats",
+    "variant": "module"
+  },
+  "detect": {
+    "family": "beats",
+    "variant": "module"
+  },
+  "event": {
+    "@metadata": {
+      "beat": "filebeat",
+      "pipeline": "filebeat-8.17.0-cisco-ios-pipeline",
+      "type": "_doc",
+      "version": "8.17.0"
+    },
+    "@timestamp": "2052-03-04T07:26:15.000Z",
+    "agent": {
+      "ephemeral_id": "0f6c2a4e-6d1b-4c3a-9e2f-3b7a1c5d8e90",
+      "id": "6a1e4f2b-9c3d-4e5f-8a7b-1c2d3e4f5a6b",
+      "name": "shipper-01",
+      "type": "filebeat",
+      "version": "8.17.0"
+    },
+    "ecs": {
+      "version": "8.0.0"
+    },
+    "event": {
+      "dataset": "cisco.ios",
+      "module": "cisco",
+      "timezone": "+00:00"
+    },
+    "fileset": {
+      "name": "ios"
+    },
+    "input": {
+      "type": "log"
+    },
+    "log": {
+      "file": {
+        "path": "/var/log/network/ios.log"
+      },
+      "offset": 0
+    },
+    "message": "Feb  9 04:00:48 203.0.113.12 585917: Feb  9 04:00:47.272: %SEC-6-IPACCESSLOGRP: list 177 denied igmp 198.51.100.197 -> 224.0.0.22, 1 packet",
+    "service": {
+      "type": "cisco"
+    },
+    "tags": [
+      "preserve_original_event",
+      "forwarded"
+    ]
+  }
+}

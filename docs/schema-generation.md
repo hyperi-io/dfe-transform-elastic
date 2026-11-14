@@ -51,11 +51,9 @@ The corpus gives JSON types only. It cannot separate `keyword` from `text`
 (a lowcardinality dimension against a fulltext index), or `long` from
 `scaled_float` — and those distinctions are exactly what drive the DDL.
 
-Types come from the integrations' `fields/*.yml`. The `elastic/integrations`
-clone named by `DFE_ELASTIC_SOURCES` is pinned at
-`2c934eb5223bdfcf0ea0db9e3230154933352bda`, the same `integrations_sha` every
-corpus `meta.json` records, so a generated schema and the parity corpus describe
-the same upstream commit without vendoring anything.
+Types come from each package's `fields/*.yml`, read at the same pipeline commit
+every confirmed fixture records as `pipelines_commit`, so a generated schema and
+the parity corpus describe the same pipelines.
 
 `external: ecs` there is the only reliable ECS/vendor discriminator. Inferring
 it from the top-level namespace is wrong in both directions: `process.*` is ECS

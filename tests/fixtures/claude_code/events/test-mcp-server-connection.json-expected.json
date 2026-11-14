@@ -1,0 +1,147 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-06-22T02:16:23.941Z",
+      "claude_code": {
+        "events": {
+          "event": {
+            "name": "mcp_server_connection",
+            "sequence": 2,
+            "timestamp": "2054-06-22T02:16:23.941Z"
+          },
+          "is_plugin": false,
+          "server_name": "aldcccld-zaqgph-oaj",
+          "server_scope": "user",
+          "session": {
+            "id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd"
+          },
+          "status": "connected",
+          "terminal": {
+            "type": "gnome-terminal"
+          },
+          "transport_type": "stdio",
+          "user": {
+            "account_id": "user_01ExampleAccountId00000",
+            "account_uuid": "93713061-9622-2531-3758-372154648850"
+          }
+        }
+      },
+      "data_stream": {
+        "dataset": "claude_code.events.otel",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "mcp_server_connection",
+        "category": [
+          "network"
+        ],
+        "duration": 211000000,
+        "kind": "event",
+        "original": "{\"observed_timestamp\":\"2054-06-22T02:16:23.941Z\",\"@timestamp\":\"2054-06-22T02:16:23.941Z\",\"resource\":{\"attributes\":{\"service.name\":\"claude-code\",\"service.version\":\"2.1.175\",\"host.arch\":\"amd64\",\"os.type\":\"linux\",\"os.version\":\"6.17.0-14-generic\"}},\"data_stream\":{\"namespace\":\"default\",\"type\":\"logs\",\"dataset\":\"claude_code.events.otel\"},\"scope\":{\"name\":\"com.anthropic.claude_code.events\",\"version\":\"2.1.175\"},\"event_name\":\"mcp_server_connection\",\"attributes\":{\"server_name\":\"aldcccld-zaqgph-oaj\",\"user.id\":\"c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4\",\"terminal.type\":\"gnome-terminal\",\"user.account_uuid\":\"93713061-9622-2531-3758-372154648850\",\"event.name\":\"mcp_server_connection\",\"event.timestamp\":\"2054-06-22T02:16:23.941Z\",\"duration_ms\":211,\"event.sequence\":2,\"user.email\":\"fnvfc@example.com\",\"transport_type\":\"stdio\",\"is_plugin\":false,\"organization.id\":\"08166994-2766-0080-0901-658708848682\",\"server_scope\":\"user\",\"user.account_id\":\"user_01ExampleAccountId00000\",\"session.id\":\"cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\",\"status\":\"connected\"},\"body\":{\"text\":\"claude_code.mcp_server_connection\"},\"event\":{},\"tags\":[\"preserve_original_event\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "outcome": "unknown",
+        "provider": "claude-code",
+        "type": [
+          "connection"
+        ]
+      },
+      "gen_ai": {
+        "provider": {
+          "name": "anthropic"
+        }
+      },
+      "observed_timestamp": "2054-06-22T02:16:23.941Z",
+      "organization": {
+        "id": "08166994-2766-0080-0901-658708848682"
+      },
+      "related": {
+        "user": [
+          "fnvfc@example.com",
+          "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+        ]
+      },
+      "resource": {
+        "attributes": {
+          "host.arch": "amd64",
+          "os.type": "linux",
+          "os.version": "6.17.0-14-generic",
+          "service.name": "claude-code",
+          "service.version": "2.1.175"
+        }
+      },
+      "scope": {
+        "name": "com.anthropic.claude_code.events",
+        "version": "2.1.175"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "fnvfc@example.com",
+        "id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2054-06-22T02:16:23.941Z",
+      "attributes": {
+        "duration_ms": 211,
+        "event.name": "mcp_server_connection",
+        "event.sequence": 2,
+        "event.timestamp": "2054-06-22T02:16:23.941Z",
+        "is_plugin": false,
+        "organization.id": "08166994-2766-0080-0901-658708848682",
+        "server_name": "aldcccld-zaqgph-oaj",
+        "server_scope": "user",
+        "session.id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd",
+        "status": "connected",
+        "terminal.type": "gnome-terminal",
+        "transport_type": "stdio",
+        "user.account_id": "user_01ExampleAccountId00000",
+        "user.account_uuid": "93713061-9622-2531-3758-372154648850",
+        "user.email": "fnvfc@example.com",
+        "user.id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+      },
+      "body": {
+        "text": "claude_code.mcp_server_connection"
+      },
+      "data_stream": {
+        "dataset": "claude_code.events.otel",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "event_name": "mcp_server_connection",
+      "observed_timestamp": "2054-06-22T02:16:23.941Z",
+      "resource": {
+        "attributes": {
+          "host.arch": "amd64",
+          "os.type": "linux",
+          "os.version": "6.17.0-14-generic",
+          "service.name": "claude-code",
+          "service.version": "2.1.175"
+        }
+      },
+      "scope": {
+        "name": "com.anthropic.claude_code.events",
+        "version": "2.1.175"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-claude_code-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "claude_code",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

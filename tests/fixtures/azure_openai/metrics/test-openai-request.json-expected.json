@@ -1,0 +1,158 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-04-24T05:01:00.000Z",
+      "agent": {
+        "ephemeral_id": "55c2c336-3f90-4100-af57-649a93732d61",
+        "id": "5d41d582-ac58-48a5-b3a7-525d4d70137e",
+        "name": "docker-fleet-agent",
+        "type": "metricbeat",
+        "version": "8.13.0"
+      },
+      "azure": {
+        "dimensions": {
+          "api_name": "OpenAI",
+          "feature_name": "gpt-35-turbo",
+          "model_deployment_name": "turbo-35",
+          "model_version": "0613",
+          "region": "japaneast",
+          "usage_channel": "Cloud"
+        },
+        "namespace": "Microsoft.CognitiveServices/accounts",
+        "open_ai": {
+          "generated_tokens": {
+            "total": 46
+          },
+          "processed_prompt_tokens": {
+            "total": 29
+          },
+          "token_transaction": {
+            "total": 75
+          }
+        },
+        "resource": {
+          "group": "obs-openai-service-rs-1",
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroups/obs-openai-service-rs-1/providers/Microsoft.CognitiveServices/accounts/obs-openai-test-02",
+          "name": "obs-openai-test-02",
+          "type": "Microsoft.CognitiveServices/accounts"
+        },
+        "subscription_id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb",
+        "timegrain": "PT1M"
+      },
+      "cloud": {
+        "provider": "azure",
+        "region": "japaneast"
+      },
+      "data_stream": {
+        "dataset": "azure.open_ai",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "elastic_agent": {
+        "id": "5d41d582-ac58-48a5-b3a7-525d4d70137e",
+        "snapshot": false,
+        "version": "8.13.0"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "azure.open_ai",
+        "duration": 11316799713,
+        "ingested": "2052-04-24T05:07:43Z",
+        "module": "azure"
+      },
+      "metricset": {
+        "name": "monitor",
+        "period": 300000
+      },
+      "service": {
+        "type": "azure"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-04-24T05:01:00.000Z",
+      "agent": {
+        "ephemeral_id": "55c2c336-3f90-4100-af57-649a93732d61",
+        "id": "5d41d582-ac58-48a5-b3a7-525d4d70137e",
+        "name": "docker-fleet-agent",
+        "type": "metricbeat",
+        "version": "8.13.0"
+      },
+      "azure": {
+        "dimensions": {
+          "api_name": "OpenAI",
+          "feature_name": "gpt-35-turbo",
+          "model_deployment_name": "turbo-35",
+          "model_version": "0613",
+          "region": "japaneast",
+          "usage_channel": "Cloud"
+        },
+        "namespace": "Microsoft.CognitiveServices/accounts",
+        "open_ai": {
+          "generated_tokens": {
+            "total": 46
+          },
+          "processed_prompt_tokens": {
+            "total": 29
+          },
+          "token_transaction": {
+            "total": 75
+          }
+        },
+        "resource": {
+          "group": "obs-openai-service-rs-1",
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroups/obs-openai-service-rs-1/providers/Microsoft.CognitiveServices/accounts/obs-openai-test-02",
+          "name": "obs-openai-test-02",
+          "type": "Microsoft.CognitiveServices/accounts"
+        },
+        "subscription_id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb",
+        "timegrain": "PT1M"
+      },
+      "cloud": {
+        "provider": "azure",
+        "region": "japaneast"
+      },
+      "data_stream": {
+        "dataset": "azure.open_ai",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "elastic_agent": {
+        "id": "5d41d582-ac58-48a5-b3a7-525d4d70137e",
+        "snapshot": false,
+        "version": "8.13.0"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "azure.open_ai",
+        "duration": 11316799713,
+        "ingested": "2052-04-24T05:07:43Z",
+        "module": "azure"
+      },
+      "metricset": {
+        "name": "monitor",
+        "period": 300000
+      },
+      "service": {
+        "type": "azure"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "metrics",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_openai-metrics-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure_openai",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

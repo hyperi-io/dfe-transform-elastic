@@ -1,0 +1,49 @@
+{
+    "events": [
+        {
+            "cloud.region": "us-east-1",
+            "aws.firehose.arn": "arn:aws:firehose:us-east-2:123456:deliverystream/firehose-classic-load-balancer-logs-to-elastic",
+            "data_stream.namespace": "default",
+            "message": "2043-05-13T23:39:43.945958Z rv-vnbddaxalaar 192.168.146.1:2817 10.26.137.145:80 0.000073 0.001048 0.000057 200 200 0 29 \"GET http://www.example.com:80/ HTTP/1.1\" \"curl/7.38.0\" - -",
+            "aws.kinesis.type": "deliverystream",
+            "data_stream.type": "logs",
+            "aws.firehose.request_id": "606eb21f-a644-4a4a-b292-68b0fb272a63",
+            "cloud.provider": "aws",
+            "@timestamp": "2051-07-25T21:04:35Z",
+            "cloud.account.id": "123456",
+            "data_stream.dataset": "awsfirehose",
+            "aws.kinesis.name": "firehose-classic-load-balancer-logs-to-elastic",
+            "event.id": "37670326805251200781477669690942747782212394134076063744"
+        },
+        {
+            "cloud.region": "us-east-1",
+            "aws.firehose.arn": "arn:aws:firehose:us-east-2:123456:deliverystream/firehose-application-load-balancer-logs-to-elastic",
+            "data_stream.namespace": "default",
+            "message": "http 2046-07-02T22:23:00.186641Z app/rv-vnbddaxalaar/50dc6c495c0c9188 192.168.146.1:2817 10.26.137.145:80 0.000 0.001 0.000 200 200 34 366 \"GET http://www.example.com:80/ HTTP/1.1\" \"curl/7.46.0\" - - arn:aws:elasticloadbalancing:us-east-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067 \"Root=1-58337262-36d228ad5d99923122bbe354\" \"-\" \"-\" 0 2046-07-02T22:22:48.364000Z \"forward\" \"-\" \"-\" \"10.26.137.145:80\" \"200\" \"-\" \"-\"",
+            "aws.kinesis.type": "deliverystream",
+            "data_stream.type": "logs",
+            "aws.firehose.request_id": "606eb21f-a644-4a4a-b292-68b0fb272a63",
+            "cloud.provider": "aws",
+            "@timestamp": "2051-07-25T21:04:35Z",
+            "cloud.account.id": "123456",
+            "data_stream.dataset": "awsfirehose",
+            "aws.kinesis.name": "firehose-application-load-balancer-logs-to-elastic",
+            "event.id": "37670326805251200781477669690942747782212394134076063744"
+        },
+        {
+            "cloud.region": "us-east-1",
+            "aws.firehose.arn": "arn:aws:firehose:us-east-2:123456:deliverystream/firehose-network-load-balancer-logs-to-elastic",
+            "data_stream.namespace": "default",
+            "message": "tls 2.0 2046-12-20T02:59:40 net/my-network-loadbalancer/c6e77e28c25b2234 g3d4b5e8bb8464cd 203.0.113.188:51341 192.0.2.201:443 5 2 98 246 - arn:aws:acm:us-east-2:671290407336:certificate/5f271e28-cbbe-43e2-8501-f26cf7ca2a92 - ECDHE-RSA-AES128-SHA tlsv12 - my-network-loadbalancer-c6e77e28c25b2234.elb.us-east-2.amazonaws.com - - - 2046-12-20T02:59:30",
+            "aws.kinesis.type": "deliverystream",
+            "data_stream.type": "logs",
+            "aws.firehose.request_id": "606eb21f-a644-4a4a-b292-68b0fb272a63",
+            "cloud.provider": "aws",
+            "@timestamp": "2051-07-25T21:04:35Z",
+            "cloud.account.id": "123456",
+            "data_stream.dataset": "awsfirehose",
+            "aws.kinesis.name": "firehose-network-load-balancer-logs-to-elastic",
+            "event.id": "37670326805251200781477669690942747782212394134076063744"
+        }
+    ]
+}

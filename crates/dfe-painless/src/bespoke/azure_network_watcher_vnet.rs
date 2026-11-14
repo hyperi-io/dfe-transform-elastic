@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `azure_network_watcher_vnet`'s flow tuples, transcribed.
+//! `azure_network_watcher_vnet`'s flow tuples, as the runtime runs them.
 //!
 //! The virtual-network flow log is the security-group log's younger sibling:
 //! the same thirteen comma-separated fields under a different nesting, with the
@@ -182,7 +182,7 @@ fn one_tuple(parts: &[&str], gathered: &mut Gathered) -> Value {
     Value::Object(whole)
 }
 
-/// Every `azure_network_watcher_vnet` script transcribed here.
+/// Every `azure_network_watcher_vnet` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "56ee775ebf8a06b2180f32fea3e22e1716f363a41cd89941d5d5f2069dd60c28",
     source: "azure_network_watcher_vnet",

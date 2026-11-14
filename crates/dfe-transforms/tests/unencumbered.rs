@@ -6,8 +6,7 @@
 //! `tests/fixtures/unencumbered/` carries vendor samples from CC0, MIT and
 //! Apache-2.0 projects -- see the PROVENANCE.md beside them. They have no
 //! expected output, so this is not a parity test: it asserts the transform
-//! consumes each shape and emits something, which is what makes them usable as
-//! input to `scripts/compat.py`.
+//! consumes each shape and emits something.
 
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
@@ -171,13 +170,12 @@ fn every_sample_directory_is_mapped_or_declared_unmapped() {
     );
 }
 
-/// `tests/fixtures/` holds the licence-clean samples and nothing else.
-///
-/// Elastic's pipeline-test fixtures are Elastic License 2.0 and are kept
-/// outside this repository; a copy of one under any other directory here ships
-/// Elastic's material in it.
+/// Outside `unencumbered/`, `tests/fixtures/` holds the repository's own
+/// fixtures, and none of them carries a reference to Elastic's repositories or
+/// licence text.
 #[test]
-fn nothing_but_the_licence_clean_samples_sits_under_tests_fixtures() {
+fn the_repositorys_own_fixtures_carry_no_elastic_material() {
+    const MARKERS: [&str; 3] = ["elastic/integrations", "elastic/beats", "Elastic License"];
     let root = Path::new(SAMPLES)
         .parent()
         .expect("the samples sit in tests/fixtures");
@@ -188,6 +186,7 @@ fn nothing_but_the_licence_clean_samples_sits_under_tests_fixtures() {
         .filter(|entry| entry.file_name() != "unencumbered")
         .map(|entry| entry.path())
         .collect();
+    let mut scanned = 0usize;
     while let Some(path) = pending.pop() {
         if path.is_dir() {
             let Ok(entries) = std::fs::read_dir(&path) else {
@@ -195,15 +194,26 @@ fn nothing_but_the_licence_clean_samples_sits_under_tests_fixtures() {
             };
             pending.extend(entries.flatten().map(|entry| entry.path()));
         } else {
-            stray.push(path);
+            scanned += 1;
+            let text = String::from_utf8_lossy(
+                &std::fs::read(&path).unwrap_or_else(|e| panic!("{} reads: {e}", path.display())),
+            )
+            .into_owned();
+            if MARKERS.iter().any(|marker| text.contains(marker)) {
+                stray.push(path);
+            }
         }
     }
     stray.sort();
 
     assert!(
+        scanned > 1_000,
+        "only {scanned} fixture files under {}",
+        root.display()
+    );
+    assert!(
         stray.is_empty(),
-        "only tests/fixtures/unencumbered/ is committed here; Elastic's fixtures \
-         are kept outside this repository: {stray:?}"
+        "these fixtures name an Elastic repository or licence: {stray:?}"
     );
 }
 

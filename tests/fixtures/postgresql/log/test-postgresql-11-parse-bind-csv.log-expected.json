@@ -1,0 +1,338 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-01-04T00:51:56.837Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "duration": 7775000,
+        "ingested": "2026-11-13T23:03:08.131645557Z",
+        "kind": "event",
+        "original": "2049-01-04 00:51:56.837 UTC,\"postgres\",\"postgres\",105,\"172.18.116.197:44618\",5ff26691.69,6,\"PARSE\",2049-01-04 00:51:29 UTC,3/135,0,LOG,00000,\"duration: 7.775 ms  parse py:0x7fde12d61b80: SELECT * from information_schema.tables WHERE table_name = $1\",,,,,,,,,\"\"",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "SELECT * from information_schema.tables WHERE table_name = $1",
+      "postgresql": {
+        "log": {
+          "client_addr": "172.18.116.197",
+          "client_port": 44618,
+          "command_tag": "PARSE",
+          "database": "postgres",
+          "query_name": "py:0x7fde12d61b80",
+          "query_step": "parse",
+          "session_id": "5ff26691.69",
+          "session_start_time": "2049-01-04T00:51:29.000Z",
+          "sql_state_code": "00000",
+          "timestamp": "2049-01-04 00:51:56.837 UTC",
+          "transaction_id": 0,
+          "virtual_transaction_id": "3/135"
+        }
+      },
+      "process": {
+        "pid": 105
+      },
+      "related": {
+        "ip": [
+          "172.18.116.197"
+        ],
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2049-01-04T00:51:56.843Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "duration": 4091000,
+        "ingested": "2026-11-13T23:03:08.131653387Z",
+        "kind": "event",
+        "original": "2049-01-04 00:51:56.843 UTC,\"postgres\",\"postgres\",105,\"172.18.116.197:44618\",5ff26691.69,7,\"BIND\",2049-01-04 00:51:29 UTC,3/136,0,LOG,00000,\"duration: 4.091 ms  bind py:0x7fde12d61b80: SELECT * from information_schema.tables WHERE table_name = $1\",\"parameters: $1 = 'tables'\",,,,,,,,\"\"",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "SELECT * from information_schema.tables WHERE table_name = $1",
+      "postgresql": {
+        "log": {
+          "client_addr": "172.18.116.197",
+          "client_port": 44618,
+          "command_tag": "BIND",
+          "database": "postgres",
+          "detail": "parameters: $1 = 'tables'",
+          "query_name": "py:0x7fde12d61b80",
+          "query_step": "bind",
+          "session_id": "5ff26691.69",
+          "session_start_time": "2049-01-04T00:51:29.000Z",
+          "sql_state_code": "00000",
+          "timestamp": "2049-01-04 00:51:56.843 UTC",
+          "transaction_id": 0,
+          "virtual_transaction_id": "3/136"
+        }
+      },
+      "process": {
+        "pid": 105
+      },
+      "related": {
+        "ip": [
+          "172.18.116.197"
+        ],
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2049-01-04T00:51:56.843Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "duration": 455000,
+        "ingested": "2026-11-13T23:03:08.131654597Z",
+        "kind": "event",
+        "original": "2049-01-04 00:51:56.843 UTC,\"postgres\",\"postgres\",105,\"172.18.116.197:44618\",5ff26691.69,8,\"SELECT\",2049-01-04 00:51:29 UTC,3/136,0,LOG,00000,\"duration: 0.455 ms  execute py:0x7fde12d61b80: SELECT * from information_schema.tables WHERE table_name = $1\",\"parameters: $1 = 'tables'\",,,,,,,,\"\"",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "SELECT * from information_schema.tables WHERE table_name = $1",
+      "postgresql": {
+        "log": {
+          "client_addr": "172.18.116.197",
+          "client_port": 44618,
+          "command_tag": "SELECT",
+          "database": "postgres",
+          "detail": "parameters: $1 = 'tables'",
+          "query_name": "py:0x7fde12d61b80",
+          "query_step": "execute",
+          "session_id": "5ff26691.69",
+          "session_start_time": "2049-01-04T00:51:29.000Z",
+          "sql_state_code": "00000",
+          "timestamp": "2049-01-04 00:51:56.843 UTC",
+          "transaction_id": 0,
+          "virtual_transaction_id": "3/136"
+        }
+      },
+      "process": {
+        "pid": 105
+      },
+      "related": {
+        "ip": [
+          "172.18.116.197"
+        ],
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2049-01-04 00:51:56.837 UTC,\"postgres\",\"postgres\",105,\"172.18.116.197:44618\",5ff26691.69,6,\"PARSE\",2049-01-04 00:51:29 UTC,3/135,0,LOG,00000,\"duration: 7.775 ms  parse py:0x7fde12d61b80: SELECT * from information_schema.tables WHERE table_name = $1\",,,,,,,,,\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2049-01-04 00:51:56.843 UTC,\"postgres\",\"postgres\",105,\"172.18.116.197:44618\",5ff26691.69,7,\"BIND\",2049-01-04 00:51:29 UTC,3/136,0,LOG,00000,\"duration: 4.091 ms  bind py:0x7fde12d61b80: SELECT * from information_schema.tables WHERE table_name = $1\",\"parameters: $1 = 'tables'\",,,,,,,,\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2049-01-04 00:51:56.843 UTC,\"postgres\",\"postgres\",105,\"172.18.116.197:44618\",5ff26691.69,8,\"SELECT\",2049-01-04 00:51:29 UTC,3/136,0,LOG,00000,\"duration: 0.455 ms  execute py:0x7fde12d61b80: SELECT * from information_schema.tables WHERE table_name = $1\",\"parameters: $1 = 'tables'\",,,,,,,,\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-postgresql-log-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "postgresql",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

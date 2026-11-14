@@ -1,0 +1,48 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.identity_protection",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"RiskyUsers\"}",
+      "routing": {
+        "category": "RiskyUsers"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.identity_protection",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"UserRiskEvents\"}",
+      "routing": {
+        "category": "UserRiskEvents"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category\":\"RiskyUsers\"}"
+    },
+    {
+      "message": "{\"category\":\"UserRiskEvents\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-events-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

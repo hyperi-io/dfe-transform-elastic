@@ -1,0 +1,337 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-05-16T10:00:00.000Z",
+      "cloudflare_logpush": {
+        "casb": {
+          "asset": {
+            "id": "0051N000004mG2LAAA",
+            "metadata": {
+              "Address": {
+                "city": "Singapore",
+                "country": "Singapore",
+                "countryCode": "SG"
+              },
+              "Alias": "JDoe",
+              "BannerPhotoUrl": "/profilephoto/001",
+              "CommunityNickname": "Doe.John",
+              "CompanyName": "MyCompany",
+              "DefaultGroupNotificationFrequency": "N",
+              "Department": "521",
+              "DigestFrequency": "D",
+              "Email": "user@example.com",
+              "EmailEncodingKey": "UTF-8",
+              "EmailPreferencesAutoBcc": true,
+              "EmployeeNumber": "18124",
+              "FirstName": "Kmjo",
+              "ForecastEnabled": false,
+              "FullPhotoUrl": "https://photos.com/profilephoto/001",
+              "Id": "0051N000004mG2LAAA",
+              "IsActive": false,
+              "IsProfilePhotoActive": false,
+              "LanguageLocaleKey": "en_US",
+              "LastLoginDate": "2049-10-06T06:32:09.000+0000",
+              "LastName": "Cse",
+              "LocaleSidKey": "en_SG",
+              "MediumBannerPhotoUrl": "/profilephoto/001/E",
+              "Name": "Kmjo Cse",
+              "Phone": "+3460000000",
+              "ReceivesAdminInfoEmails": true,
+              "ReceivesInfoEmails": true,
+              "SenderEmail": "jeoccs@example.com",
+              "SmallBannerPhotoUrl": "/profilephoto/001/D",
+              "SmallPhotoUrl": "https://photos.com/photo/001",
+              "TimeZoneSidKey": "Asia/Singapore",
+              "Title": "Customer Solutions Engineer",
+              "UserPermissionsCallCenterAutoLogin": false,
+              "UserPermissionsInteractionUser": true,
+              "UserPermissionsMarketingUser": false,
+              "UserPermissionsOfflineUser": false,
+              "UserPermissionsSupportUser": false,
+              "UserRoleId": "00E2G000001E",
+              "UserType": "Standard",
+              "attributes": {
+                "type": "User",
+                "url": "/services/data/userID"
+              }
+            },
+            "name": "Kmjo Cse",
+            "url": "https://example.com/resource"
+          },
+          "finding": {
+            "id": "2c502bf2-4bb0-45e6-a69b-730550474903",
+            "type": {
+              "id": "c8570b0f-97c8-443b-b177-6b6702f050ca",
+              "name": "Salesforce User Sending Email with Different Email Address",
+              "severity": "Medium"
+            }
+          },
+          "integration": {
+            "id": "c986765e-9bd6-4c52-bf6d-524211135950",
+            "name": "Salesforce Testing",
+            "policy_vendor": "Salesforce Connection"
+          },
+          "timestamp": "2051-05-16T10:00:00.000Z"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "2c502bf2-4bb0-45e6-a69b-730550474903",
+        "kind": "event",
+        "original": "{\"AssetDisplayName\":\"Kmjo Cse\",\"AssetExternalID\":\"0051N000004mG2LAAA\",\"AssetLink\":\"https://example.com/resource\",\"AssetMetadata\":{\"Id\":\"0051N000004mG2LAAA\",\"Fax\":null,\"Name\":\"Kmjo Cse\",\"Alias\":\"JDoe\",\"Email\":\"user@example.com\",\"Phone\":\"+3460000000\",\"Title\":\"Customer Solutions Engineer\",\"Address\":{\"city\":\"Singapore\",\"state\":null,\"street\":null,\"country\":\"Singapore\",\"latitude\":null,\"longitude\":null,\"stateCode\":null,\"postalCode\":null,\"countryCode\":\"SG\",\"geocodeAccuracy\":null},\"Division\":null,\"IsActive\":false,\"LastName\":\"Cse\",\"UserType\":\"Standard\",\"AccountId\":null,\"BadgeText\":\"\",\"ContactId\":null,\"Extension\":null,\"FirstName\":\"Kmjo\",\"Signature\":null,\"Department\":\"521\",\"SenderName\":null,\"UserRoleId\":\"00E2G000001E\",\"attributes\":{\"url\":\"/services/data/userID\",\"type\":\"User\"},\"CompanyName\":\"MyCompany\",\"MobilePhone\":null,\"SenderEmail\":\"jeoccs@example.com\",\"CallCenterId\":null,\"FullPhotoUrl\":\"https://photos.com/profilephoto/001\",\"LocaleSidKey\":\"en_SG\",\"LastLoginDate\":\"2049-10-06T06:32:09.000+0000\",\"SmallPhotoUrl\":\"https://photos.com/photo/001\",\"BannerPhotoUrl\":\"/profilephoto/001\",\"EmployeeNumber\":\"18124\",\"LastViewedDate\":null,\"TimeZoneSidKey\":\"Asia/Singapore\",\"DigestFrequency\":\"D\",\"ForecastEnabled\":false,\"EmailEncodingKey\":\"UTF-8\",\"CommunityNickname\":\"Doe.John\",\"LanguageLocaleKey\":\"en_US\",\"LastReferencedDate\":null,\"ReceivesInfoEmails\":true,\"SmallBannerPhotoUrl\":\"/profilephoto/001/D\",\"FederationIdentifier\":null,\"IsProfilePhotoActive\":false,\"MediumBannerPhotoUrl\":\"/profilephoto/001/E\",\"EmailPreferencesAutoBcc\":true,\"ReceivesAdminInfoEmails\":true,\"OfflineTrialExpirationDate\":null,\"UserPermissionsOfflineUser\":false,\"UserPermissionsSupportUser\":false,\"UserPermissionsMarketingUser\":false,\"UserPermissionsInteractionUser\":true,\"DefaultGroupNotificationFrequency\":\"N\",\"UserPermissionsCallCenterAutoLogin\":false},\"DetectedTimestamp\":\"2051-05-16T10:00:00Z\",\"FindingTypeDisplayName\":\"Salesforce User Sending Email with Different Email Address\",\"FindingTypeID\":\"c8570b0f-97c8-443b-b177-6b6702f050ca\",\"FindingTypeSeverity\":\"Medium\",\"InstanceID\":\"2c502bf2-4bb0-45e6-a69b-730550474903\",\"IntegrationDisplayName\":\"Salesforce Testing\",\"IntegrationID\":\"c986765e-9bd6-4c52-bf6d-524211135950\",\"IntegrationPolicyVendor\":\"Salesforce Connection\"}",
+        "severity": 47,
+        "type": [
+          "access"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com/resource",
+        "path": "/resource",
+        "scheme": "https"
+      }
+    },
+    {
+      "@timestamp": "2051-05-16T10:00:00.000Z",
+      "cloudflare_logpush": {
+        "casb": {
+          "asset": {
+            "id": "0051N000004mG2LAAA",
+            "metadata": {
+              "Address": {
+                "city": "Singapore",
+                "country": "Singapore",
+                "countryCode": "SG"
+              },
+              "Alias": "JDoe",
+              "BannerPhotoUrl": "/profilephoto/001",
+              "CommunityNickname": "Doe.John",
+              "CompanyName": "MyCompany",
+              "DefaultGroupNotificationFrequency": "N",
+              "Department": "521",
+              "DigestFrequency": "D",
+              "Email": "user@example.com",
+              "EmailEncodingKey": "UTF-8",
+              "EmailPreferencesAutoBcc": true,
+              "EmployeeNumber": "18124",
+              "FirstName": "Kmjo",
+              "ForecastEnabled": false,
+              "FullPhotoUrl": "https://photos.com/profilephoto/001",
+              "Id": "0051N000004mG2LAAA",
+              "IsActive": false,
+              "IsProfilePhotoActive": false,
+              "LanguageLocaleKey": "en_US",
+              "LastLoginDate": "2049-10-06T06:32:09.000+0000",
+              "LastName": "Cse",
+              "LocaleSidKey": "en_SG",
+              "MediumBannerPhotoUrl": "/profilephoto/001/E",
+              "Name": "Kmjo Cse",
+              "Phone": "+3460000000",
+              "ReceivesAdminInfoEmails": true,
+              "ReceivesInfoEmails": true,
+              "SenderEmail": "jeoccs@example.com",
+              "SmallBannerPhotoUrl": "/profilephoto/001/D",
+              "SmallPhotoUrl": "https://photos.com/photo/001",
+              "TimeZoneSidKey": "Asia/Singapore",
+              "Title": "Customer Solutions Engineer",
+              "UserPermissionsCallCenterAutoLogin": false,
+              "UserPermissionsInteractionUser": true,
+              "UserPermissionsMarketingUser": false,
+              "UserPermissionsOfflineUser": false,
+              "UserPermissionsSupportUser": false,
+              "UserRoleId": "00E2G000001E",
+              "UserType": "Standard",
+              "attributes": {
+                "type": "User",
+                "url": "/services/data/userID"
+              }
+            },
+            "name": "Kmjo Cse",
+            "url": "https://example.com/resource"
+          },
+          "finding": {
+            "id": "2c502bf2-4bb0-45e6-a69b-730550474903",
+            "type": {
+              "id": "c8570b0f-97c8-443b-b177-6b6702f050ca",
+              "name": "Salesforce User Sending Email with Different Email Address",
+              "severity": "Medium"
+            }
+          },
+          "integration": {
+            "id": "c986765e-9bd6-4c52-bf6d-524211135950",
+            "name": "Salesforce Testing",
+            "policy_vendor": "Salesforce Connection"
+          },
+          "timestamp": "2051-05-16T10:00:00.000Z"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "2c502bf2-4bb0-45e6-a69b-730550474903",
+        "kind": "event",
+        "original": "{\"AssetDisplayName\":\"Kmjo Cse\",\"AssetExternalID\":\"0051N000004mG2LAAA\",\"AssetLink\":\"https://example.com/resource\",\"AssetMetadata\":{\"Id\":\"0051N000004mG2LAAA\",\"Fax\":null,\"Name\":\"Kmjo Cse\",\"Alias\":\"JDoe\",\"Email\":\"user@example.com\",\"Phone\":\"+3460000000\",\"Title\":\"Customer Solutions Engineer\",\"Address\":{\"city\":\"Singapore\",\"state\":null,\"street\":null,\"country\":\"Singapore\",\"latitude\":null,\"longitude\":null,\"stateCode\":null,\"postalCode\":null,\"countryCode\":\"SG\",\"geocodeAccuracy\":null},\"Division\":null,\"IsActive\":false,\"LastName\":\"Cse\",\"UserType\":\"Standard\",\"AccountId\":null,\"BadgeText\":\"\",\"ContactId\":null,\"Extension\":null,\"FirstName\":\"Kmjo\",\"Signature\":null,\"Department\":\"521\",\"SenderName\":null,\"UserRoleId\":\"00E2G000001E\",\"attributes\":{\"url\":\"/services/data/userID\",\"type\":\"User\"},\"CompanyName\":\"MyCompany\",\"MobilePhone\":null,\"SenderEmail\":\"jeoccs@example.com\",\"CallCenterId\":null,\"FullPhotoUrl\":\"https://photos.com/profilephoto/001\",\"LocaleSidKey\":\"en_SG\",\"LastLoginDate\":\"2049-10-06T06:32:09.000+0000\",\"SmallPhotoUrl\":\"https://photos.com/photo/001\",\"BannerPhotoUrl\":\"/profilephoto/001\",\"EmployeeNumber\":\"18124\",\"LastViewedDate\":null,\"TimeZoneSidKey\":\"Asia/Singapore\",\"DigestFrequency\":\"D\",\"ForecastEnabled\":false,\"EmailEncodingKey\":\"UTF-8\",\"CommunityNickname\":\"Doe.John\",\"LanguageLocaleKey\":\"en_US\",\"LastReferencedDate\":null,\"ReceivesInfoEmails\":true,\"SmallBannerPhotoUrl\":\"/profilephoto/001/D\",\"FederationIdentifier\":null,\"IsProfilePhotoActive\":false,\"MediumBannerPhotoUrl\":\"/profilephoto/001/E\",\"EmailPreferencesAutoBcc\":true,\"ReceivesAdminInfoEmails\":true,\"OfflineTrialExpirationDate\":null,\"UserPermissionsOfflineUser\":false,\"UserPermissionsSupportUser\":false,\"UserPermissionsMarketingUser\":false,\"UserPermissionsInteractionUser\":true,\"DefaultGroupNotificationFrequency\":\"N\",\"UserPermissionsCallCenterAutoLogin\":false},\"DetectedTimestamp\":\"2567844000\",\"FindingTypeDisplayName\":\"Salesforce User Sending Email with Different Email Address\",\"FindingTypeID\":\"c8570b0f-97c8-443b-b177-6b6702f050ca\",\"FindingTypeSeverity\":\"Medium\",\"InstanceID\":\"2c502bf2-4bb0-45e6-a69b-730550474903\",\"IntegrationDisplayName\":\"Salesforce Testing\",\"IntegrationID\":\"c986765e-9bd6-4c52-bf6d-524211135950\",\"IntegrationPolicyVendor\":\"Salesforce Connection\"}",
+        "severity": 47,
+        "type": [
+          "access"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com/resource",
+        "path": "/resource",
+        "scheme": "https"
+      }
+    },
+    {
+      "@timestamp": "2051-05-16T10:00:00.000Z",
+      "cloudflare_logpush": {
+        "casb": {
+          "asset": {
+            "id": "0051N000004mG2LAAA",
+            "metadata": {
+              "Address": {
+                "city": "Singapore",
+                "country": "Singapore",
+                "countryCode": "SG"
+              },
+              "Alias": "JDoe",
+              "BannerPhotoUrl": "/profilephoto/001",
+              "CommunityNickname": "Doe.John",
+              "CompanyName": "MyCompany",
+              "DefaultGroupNotificationFrequency": "N",
+              "Department": "521",
+              "DigestFrequency": "D",
+              "Email": "user@example.com",
+              "EmailEncodingKey": "UTF-8",
+              "EmailPreferencesAutoBcc": true,
+              "EmployeeNumber": "18124",
+              "FirstName": "Kmjo",
+              "ForecastEnabled": false,
+              "FullPhotoUrl": "https://photos.com/profilephoto/001",
+              "Id": "0051N000004mG2LAAA",
+              "IsActive": false,
+              "IsProfilePhotoActive": false,
+              "LanguageLocaleKey": "en_US",
+              "LastLoginDate": "2049-10-06T06:32:09.000+0000",
+              "LastName": "Cse",
+              "LocaleSidKey": "en_SG",
+              "MediumBannerPhotoUrl": "/profilephoto/001/E",
+              "Name": "Kmjo Cse",
+              "Phone": "+3460000000",
+              "ReceivesAdminInfoEmails": true,
+              "ReceivesInfoEmails": true,
+              "SenderEmail": "jeoccs@example.com",
+              "SmallBannerPhotoUrl": "/profilephoto/001/D",
+              "SmallPhotoUrl": "https://photos.com/photo/001",
+              "TimeZoneSidKey": "Asia/Singapore",
+              "Title": "Customer Solutions Engineer",
+              "UserPermissionsCallCenterAutoLogin": false,
+              "UserPermissionsInteractionUser": true,
+              "UserPermissionsMarketingUser": false,
+              "UserPermissionsOfflineUser": false,
+              "UserPermissionsSupportUser": false,
+              "UserRoleId": "00E2G000001E",
+              "UserType": "Standard",
+              "attributes": {
+                "type": "User",
+                "url": "/services/data/userID"
+              }
+            },
+            "name": "Kmjo Cse",
+            "url": "https://example.com/resource"
+          },
+          "finding": {
+            "id": "2c502bf2-4bb0-45e6-a69b-730550474903",
+            "type": {
+              "id": "c8570b0f-97c8-443b-b177-6b6702f050ca",
+              "name": "Salesforce User Sending Email with Different Email Address",
+              "severity": "Medium"
+            }
+          },
+          "integration": {
+            "id": "c986765e-9bd6-4c52-bf6d-524211135950",
+            "name": "Salesforce Testing",
+            "policy_vendor": "Salesforce Connection"
+          },
+          "timestamp": "2051-05-16T10:00:00.000Z"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "2c502bf2-4bb0-45e6-a69b-730550474903",
+        "kind": "event",
+        "original": "{\"AssetDisplayName\":\"Kmjo Cse\",\"AssetExternalID\":\"0051N000004mG2LAAA\",\"AssetLink\":\"https://example.com/resource\",\"AssetMetadata\":{\"Id\":\"0051N000004mG2LAAA\",\"Fax\":null,\"Name\":\"Kmjo Cse\",\"Alias\":\"JDoe\",\"Email\":\"user@example.com\",\"Phone\":\"+3460000000\",\"Title\":\"Customer Solutions Engineer\",\"Address\":{\"city\":\"Singapore\",\"state\":null,\"street\":null,\"country\":\"Singapore\",\"latitude\":null,\"longitude\":null,\"stateCode\":null,\"postalCode\":null,\"countryCode\":\"SG\",\"geocodeAccuracy\":null},\"Division\":null,\"IsActive\":false,\"LastName\":\"Cse\",\"UserType\":\"Standard\",\"AccountId\":null,\"BadgeText\":\"\",\"ContactId\":null,\"Extension\":null,\"FirstName\":\"Kmjo\",\"Signature\":null,\"Department\":\"521\",\"SenderName\":null,\"UserRoleId\":\"00E2G000001E\",\"attributes\":{\"url\":\"/services/data/userID\",\"type\":\"User\"},\"CompanyName\":\"MyCompany\",\"MobilePhone\":null,\"SenderEmail\":\"jeoccs@example.com\",\"CallCenterId\":null,\"FullPhotoUrl\":\"https://photos.com/profilephoto/001\",\"LocaleSidKey\":\"en_SG\",\"LastLoginDate\":\"2049-10-06T06:32:09.000+0000\",\"SmallPhotoUrl\":\"https://photos.com/photo/001\",\"BannerPhotoUrl\":\"/profilephoto/001\",\"EmployeeNumber\":\"18124\",\"LastViewedDate\":null,\"TimeZoneSidKey\":\"Asia/Singapore\",\"DigestFrequency\":\"D\",\"ForecastEnabled\":false,\"EmailEncodingKey\":\"UTF-8\",\"CommunityNickname\":\"Doe.John\",\"LanguageLocaleKey\":\"en_US\",\"LastReferencedDate\":null,\"ReceivesInfoEmails\":true,\"SmallBannerPhotoUrl\":\"/profilephoto/001/D\",\"FederationIdentifier\":null,\"IsProfilePhotoActive\":false,\"MediumBannerPhotoUrl\":\"/profilephoto/001/E\",\"EmailPreferencesAutoBcc\":true,\"ReceivesAdminInfoEmails\":true,\"OfflineTrialExpirationDate\":null,\"UserPermissionsOfflineUser\":false,\"UserPermissionsSupportUser\":false,\"UserPermissionsMarketingUser\":false,\"UserPermissionsInteractionUser\":true,\"DefaultGroupNotificationFrequency\":\"N\",\"UserPermissionsCallCenterAutoLogin\":false},\"DetectedTimestamp\":\"2567844000000000000\",\"FindingTypeDisplayName\":\"Salesforce User Sending Email with Different Email Address\",\"FindingTypeID\":\"c8570b0f-97c8-443b-b177-6b6702f050ca\",\"FindingTypeSeverity\":\"Medium\",\"InstanceID\":\"2c502bf2-4bb0-45e6-a69b-730550474903\",\"IntegrationDisplayName\":\"Salesforce Testing\",\"IntegrationID\":\"c986765e-9bd6-4c52-bf6d-524211135950\",\"IntegrationPolicyVendor\":\"Salesforce Connection\"}",
+        "severity": 47,
+        "type": [
+          "access"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com/resource",
+        "path": "/resource",
+        "scheme": "https"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"AssetDisplayName\":\"Kmjo Cse\",\"AssetExternalID\":\"0051N000004mG2LAAA\",\"AssetLink\":\"https://example.com/resource\",\"AssetMetadata\":{\"Id\":\"0051N000004mG2LAAA\",\"Fax\":null,\"Name\":\"Kmjo Cse\",\"Alias\":\"JDoe\",\"Email\":\"user@example.com\",\"Phone\":\"+3460000000\",\"Title\":\"Customer Solutions Engineer\",\"Address\":{\"city\":\"Singapore\",\"state\":null,\"street\":null,\"country\":\"Singapore\",\"latitude\":null,\"longitude\":null,\"stateCode\":null,\"postalCode\":null,\"countryCode\":\"SG\",\"geocodeAccuracy\":null},\"Division\":null,\"IsActive\":false,\"LastName\":\"Cse\",\"UserType\":\"Standard\",\"AccountId\":null,\"BadgeText\":\"\",\"ContactId\":null,\"Extension\":null,\"FirstName\":\"Kmjo\",\"Signature\":null,\"Department\":\"521\",\"SenderName\":null,\"UserRoleId\":\"00E2G000001E\",\"attributes\":{\"url\":\"/services/data/userID\",\"type\":\"User\"},\"CompanyName\":\"MyCompany\",\"MobilePhone\":null,\"SenderEmail\":\"jeoccs@example.com\",\"CallCenterId\":null,\"FullPhotoUrl\":\"https://photos.com/profilephoto/001\",\"LocaleSidKey\":\"en_SG\",\"LastLoginDate\":\"2049-10-06T06:32:09.000+0000\",\"SmallPhotoUrl\":\"https://photos.com/photo/001\",\"BannerPhotoUrl\":\"/profilephoto/001\",\"EmployeeNumber\":\"18124\",\"LastViewedDate\":null,\"TimeZoneSidKey\":\"Asia/Singapore\",\"DigestFrequency\":\"D\",\"ForecastEnabled\":false,\"EmailEncodingKey\":\"UTF-8\",\"CommunityNickname\":\"Doe.John\",\"LanguageLocaleKey\":\"en_US\",\"LastReferencedDate\":null,\"ReceivesInfoEmails\":true,\"SmallBannerPhotoUrl\":\"/profilephoto/001/D\",\"FederationIdentifier\":null,\"IsProfilePhotoActive\":false,\"MediumBannerPhotoUrl\":\"/profilephoto/001/E\",\"EmailPreferencesAutoBcc\":true,\"ReceivesAdminInfoEmails\":true,\"OfflineTrialExpirationDate\":null,\"UserPermissionsOfflineUser\":false,\"UserPermissionsSupportUser\":false,\"UserPermissionsMarketingUser\":false,\"UserPermissionsInteractionUser\":true,\"DefaultGroupNotificationFrequency\":\"N\",\"UserPermissionsCallCenterAutoLogin\":false},\"DetectedTimestamp\":\"2051-05-16T10:00:00Z\",\"FindingTypeDisplayName\":\"Salesforce User Sending Email with Different Email Address\",\"FindingTypeID\":\"c8570b0f-97c8-443b-b177-6b6702f050ca\",\"FindingTypeSeverity\":\"Medium\",\"InstanceID\":\"2c502bf2-4bb0-45e6-a69b-730550474903\",\"IntegrationDisplayName\":\"Salesforce Testing\",\"IntegrationID\":\"c986765e-9bd6-4c52-bf6d-524211135950\",\"IntegrationPolicyVendor\":\"Salesforce Connection\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AssetDisplayName\":\"Kmjo Cse\",\"AssetExternalID\":\"0051N000004mG2LAAA\",\"AssetLink\":\"https://example.com/resource\",\"AssetMetadata\":{\"Id\":\"0051N000004mG2LAAA\",\"Fax\":null,\"Name\":\"Kmjo Cse\",\"Alias\":\"JDoe\",\"Email\":\"user@example.com\",\"Phone\":\"+3460000000\",\"Title\":\"Customer Solutions Engineer\",\"Address\":{\"city\":\"Singapore\",\"state\":null,\"street\":null,\"country\":\"Singapore\",\"latitude\":null,\"longitude\":null,\"stateCode\":null,\"postalCode\":null,\"countryCode\":\"SG\",\"geocodeAccuracy\":null},\"Division\":null,\"IsActive\":false,\"LastName\":\"Cse\",\"UserType\":\"Standard\",\"AccountId\":null,\"BadgeText\":\"\",\"ContactId\":null,\"Extension\":null,\"FirstName\":\"Kmjo\",\"Signature\":null,\"Department\":\"521\",\"SenderName\":null,\"UserRoleId\":\"00E2G000001E\",\"attributes\":{\"url\":\"/services/data/userID\",\"type\":\"User\"},\"CompanyName\":\"MyCompany\",\"MobilePhone\":null,\"SenderEmail\":\"jeoccs@example.com\",\"CallCenterId\":null,\"FullPhotoUrl\":\"https://photos.com/profilephoto/001\",\"LocaleSidKey\":\"en_SG\",\"LastLoginDate\":\"2049-10-06T06:32:09.000+0000\",\"SmallPhotoUrl\":\"https://photos.com/photo/001\",\"BannerPhotoUrl\":\"/profilephoto/001\",\"EmployeeNumber\":\"18124\",\"LastViewedDate\":null,\"TimeZoneSidKey\":\"Asia/Singapore\",\"DigestFrequency\":\"D\",\"ForecastEnabled\":false,\"EmailEncodingKey\":\"UTF-8\",\"CommunityNickname\":\"Doe.John\",\"LanguageLocaleKey\":\"en_US\",\"LastReferencedDate\":null,\"ReceivesInfoEmails\":true,\"SmallBannerPhotoUrl\":\"/profilephoto/001/D\",\"FederationIdentifier\":null,\"IsProfilePhotoActive\":false,\"MediumBannerPhotoUrl\":\"/profilephoto/001/E\",\"EmailPreferencesAutoBcc\":true,\"ReceivesAdminInfoEmails\":true,\"OfflineTrialExpirationDate\":null,\"UserPermissionsOfflineUser\":false,\"UserPermissionsSupportUser\":false,\"UserPermissionsMarketingUser\":false,\"UserPermissionsInteractionUser\":true,\"DefaultGroupNotificationFrequency\":\"N\",\"UserPermissionsCallCenterAutoLogin\":false},\"DetectedTimestamp\":\"2567844000\",\"FindingTypeDisplayName\":\"Salesforce User Sending Email with Different Email Address\",\"FindingTypeID\":\"c8570b0f-97c8-443b-b177-6b6702f050ca\",\"FindingTypeSeverity\":\"Medium\",\"InstanceID\":\"2c502bf2-4bb0-45e6-a69b-730550474903\",\"IntegrationDisplayName\":\"Salesforce Testing\",\"IntegrationID\":\"c986765e-9bd6-4c52-bf6d-524211135950\",\"IntegrationPolicyVendor\":\"Salesforce Connection\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AssetDisplayName\":\"Kmjo Cse\",\"AssetExternalID\":\"0051N000004mG2LAAA\",\"AssetLink\":\"https://example.com/resource\",\"AssetMetadata\":{\"Id\":\"0051N000004mG2LAAA\",\"Fax\":null,\"Name\":\"Kmjo Cse\",\"Alias\":\"JDoe\",\"Email\":\"user@example.com\",\"Phone\":\"+3460000000\",\"Title\":\"Customer Solutions Engineer\",\"Address\":{\"city\":\"Singapore\",\"state\":null,\"street\":null,\"country\":\"Singapore\",\"latitude\":null,\"longitude\":null,\"stateCode\":null,\"postalCode\":null,\"countryCode\":\"SG\",\"geocodeAccuracy\":null},\"Division\":null,\"IsActive\":false,\"LastName\":\"Cse\",\"UserType\":\"Standard\",\"AccountId\":null,\"BadgeText\":\"\",\"ContactId\":null,\"Extension\":null,\"FirstName\":\"Kmjo\",\"Signature\":null,\"Department\":\"521\",\"SenderName\":null,\"UserRoleId\":\"00E2G000001E\",\"attributes\":{\"url\":\"/services/data/userID\",\"type\":\"User\"},\"CompanyName\":\"MyCompany\",\"MobilePhone\":null,\"SenderEmail\":\"jeoccs@example.com\",\"CallCenterId\":null,\"FullPhotoUrl\":\"https://photos.com/profilephoto/001\",\"LocaleSidKey\":\"en_SG\",\"LastLoginDate\":\"2049-10-06T06:32:09.000+0000\",\"SmallPhotoUrl\":\"https://photos.com/photo/001\",\"BannerPhotoUrl\":\"/profilephoto/001\",\"EmployeeNumber\":\"18124\",\"LastViewedDate\":null,\"TimeZoneSidKey\":\"Asia/Singapore\",\"DigestFrequency\":\"D\",\"ForecastEnabled\":false,\"EmailEncodingKey\":\"UTF-8\",\"CommunityNickname\":\"Doe.John\",\"LanguageLocaleKey\":\"en_US\",\"LastReferencedDate\":null,\"ReceivesInfoEmails\":true,\"SmallBannerPhotoUrl\":\"/profilephoto/001/D\",\"FederationIdentifier\":null,\"IsProfilePhotoActive\":false,\"MediumBannerPhotoUrl\":\"/profilephoto/001/E\",\"EmailPreferencesAutoBcc\":true,\"ReceivesAdminInfoEmails\":true,\"OfflineTrialExpirationDate\":null,\"UserPermissionsOfflineUser\":false,\"UserPermissionsSupportUser\":false,\"UserPermissionsMarketingUser\":false,\"UserPermissionsInteractionUser\":true,\"DefaultGroupNotificationFrequency\":\"N\",\"UserPermissionsCallCenterAutoLogin\":false},\"DetectedTimestamp\":\"2567844000000000000\",\"FindingTypeDisplayName\":\"Salesforce User Sending Email with Different Email Address\",\"FindingTypeID\":\"c8570b0f-97c8-443b-b177-6b6702f050ca\",\"FindingTypeSeverity\":\"Medium\",\"InstanceID\":\"2c502bf2-4bb0-45e6-a69b-730550474903\",\"IntegrationDisplayName\":\"Salesforce Testing\",\"IntegrationID\":\"c986765e-9bd6-4c52-bf6d-524211135950\",\"IntegrationPolicyVendor\":\"Salesforce Connection\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "casb",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-casb-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

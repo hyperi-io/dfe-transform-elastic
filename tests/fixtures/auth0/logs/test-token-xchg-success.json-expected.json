@@ -1,0 +1,1993 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-04T00:15:10.907Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-04T00:15:10.907Z",
+            "details": {
+              "code": "******************************************VM-"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211104001514276223441402873466602396154780480176194",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618223a4e3f49e006948565c",
+          "ceh",
+          "ceh@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "ceh@xcyx.com",
+        "id": "auth0|618223a4e3f49e006948565c",
+        "name": "ceh"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T03:25:29.382Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T03:25:29.382Z",
+            "details": {
+              "code": "******************************************JEu"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103032533223115389920819109674646826560562135090",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|6182002f34f4dd006b05b5c7",
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "id": "auth0|6182002f34f4dd006b05b5c7",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T05:53:54.714Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T05:53:54.714Z",
+            "details": {
+              "code": "******************************************Rqs"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103055356921223355655001812450210017671557152834",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|6182002f34f4dd006b05b5c7",
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "id": "auth0|6182002f34f4dd006b05b5c7",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T05:54:15.863Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T05:54:15.863Z",
+            "details": {
+              "code": "******************************************VcE"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103055417070115394218610844695634887352363515954",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618223a4e3f49e006948565c",
+          "ceh",
+          "ceh@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "ceh@xcyx.com",
+        "id": "auth0|618223a4e3f49e006948565c",
+        "name": "ceh"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T07:00:21.161Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T07:00:21.161Z",
+            "details": {
+              "code": "******************************************q12"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103070025453223361339703470878590694285033603138",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618232c562bac1006935a7af",
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "id": "auth0|618232c562bac1006935a7af",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T08:13:24.290Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T08:13:24.290Z",
+            "details": {
+              "code": "******************************************Zhk"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103081329169106767059161007825876379053011763282",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618223a4e3f49e006948565c",
+          "ceh",
+          "ceh@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "ceh@xcyx.com",
+        "id": "auth0|618223a4e3f49e006948565c",
+        "name": "ceh"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T08:17:46.184Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T08:17:46.184Z",
+            "details": {
+              "code": "******************************************upP"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103081747834106767097563745411754707146353147986",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618232c562bac1006935a7af",
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "id": "auth0|618232c562bac1006935a7af",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T08:25:00.234Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T08:25:00.234Z",
+            "details": {
+              "code": "******************************************frS"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103082505159223368972684592755695916615263584322",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618232c562bac1006935a7af",
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "id": "auth0|618232c562bac1006935a7af",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T08:25:23.077Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T08:25:23.077Z",
+            "details": {
+              "code": "******************************************6z4"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103082528115223369008130297786796845598196629570",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618223a4e3f49e006948565c",
+          "ceh",
+          "ceh@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "ceh@xcyx.com",
+        "id": "auth0|618223a4e3f49e006948565c",
+        "name": "ceh"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T08:57:43.955Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T08:57:43.955Z",
+            "details": {
+              "code": "******************************************gq4"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103085744439115398741355869453054444297355526194",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|61823277a44a21007221a59a",
+          "kcj",
+          "kcj@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "kcj@xcyx.com",
+        "id": "auth0|61823277a44a21007221a59a",
+        "name": "kcj"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T08:58:41.378Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T08:58:41.378Z",
+            "details": {
+              "code": "******************************************vaC"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103085843618106767481997320345928494961253154898",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|61823277a44a21007221a59a",
+          "kcj",
+          "kcj@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "kcj@xcyx.com",
+        "id": "auth0|61823277a44a21007221a59a",
+        "name": "kcj"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T10:23:21.308Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T10:23:21.308Z",
+            "details": {
+              "code": "******************************************mVU"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103102326019106768307491764530844927445776203858",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|61823277a44a21007221a59a",
+          "kcj",
+          "kcj@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "kcj@xcyx.com",
+        "id": "auth0|61823277a44a21007221a59a",
+        "name": "kcj"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T10:36:01.665Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T10:36:01.665Z",
+            "details": {
+              "code": "******************************************OLf"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103103606684106768432065525613034443117615382610",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|61823277a44a21007221a59a",
+          "kcj",
+          "kcj@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "kcj@xcyx.com",
+        "id": "auth0|61823277a44a21007221a59a",
+        "name": "kcj"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T10:37:24.933Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T10:37:24.933Z",
+            "details": {
+              "code": "******************************************P8g"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103103728977106768445800131849676250806449340498",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|6182002f34f4dd006b05b5c7",
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "id": "auth0|6182002f34f4dd006b05b5c7",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T10:43:25.246Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T10:43:25.246Z",
+            "details": {
+              "code": "******************************************HTC"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103104330288223383260091503229401565368577687618",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618232c562bac1006935a7af",
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "id": "auth0|618232c562bac1006935a7af",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T10:51:33.221Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T10:51:33.221Z",
+            "details": {
+              "code": "******************************************0wG"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103105137698223384111124505353676723471492579394",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|61823277a44a21007221a59a",
+          "kcj",
+          "kcj@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "kcj@xcyx.com",
+        "id": "auth0|61823277a44a21007221a59a",
+        "name": "kcj"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T10:53:33.520Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T10:53:33.520Z",
+            "details": {
+              "code": "******************************************bBO"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103105337123223384318518147560205595828304216130",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|61823277a44a21007221a59a",
+          "kcj",
+          "kcj@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "kcj@xcyx.com",
+        "id": "auth0|61823277a44a21007221a59a",
+        "name": "kcj"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T22:16:38.865Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-03T22:16:38.865Z",
+            "details": {
+              "code": "******************************************vzq"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211103221641308223432165971774216334598458560217154",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618232c562bac1006935a7af",
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "id": "auth0|618232c562bac1006935a7af",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-04T00:15:10.907Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-04T00:15:10.907Z",
+            "details": {
+              "code": "******************************************VM-"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211104001514276223441402873466602396154780480176194",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618223a4e3f49e006948565c",
+          "ceh",
+          "ceh@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "ceh@xcyx.com",
+        "id": "auth0|618223a4e3f49e006948565c",
+        "name": "ceh"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-04T01:16:26.371Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-04T01:16:26.371Z",
+            "details": {
+              "code": "******************************************6hm"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211104011631432334548139276348032705599973097472098",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|6183285d6e5071006a61f319",
+          "hel.gifkuc",
+          "hel.gifkuc@gmail.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "gmail.com",
+        "email": "hel.gifkuc@gmail.com",
+        "id": "auth0|6183285d6e5071006a61f319",
+        "name": "hel.gifkuc"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-04T01:16:26.371Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Token Exchange - Success",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "date": "2049-11-04T01:16:26.371Z",
+            "details": {
+              "code": "******************************************6hm"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Successful exchange of Authorization Code for Access Token",
+            "type_id": "seacft"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-exchange-auth-code-for-access-token",
+        "category": [
+          "authentication",
+          "network",
+          "web"
+        ],
+        "id": "90020211104011631432334548139276348032705599973097472098",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "protocol",
+          "access"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|6183285d6e5071006a61f319",
+          "hel.gifkuc",
+          "hel.gifkuc@gmail.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "gmail.com",
+        "email": "hel.gifkuc@gmail.com",
+        "id": "auth0|6183285d6e5071006a61f319",
+        "name": "hel.gifkuc"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-04T00:15:10.907Z",
+          "description": "",
+          "details": {
+            "code": "******************************************VM-"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211104001514276223441402873466602396154780480176194",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|618223a4e3f49e006948565c",
+          "user_name": "ceh@xcyx.com"
+        },
+        "log_id": "90020211104001514276223441402873466602396154780480176194"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T03:25:29.382Z",
+          "description": "",
+          "details": {
+            "code": "******************************************JEu"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103032533223115389920819109674646826560562135090",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|6182002f34f4dd006b05b5c7",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103032533223115389920819109674646826560562135090"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T05:53:54.714Z",
+          "description": "",
+          "details": {
+            "code": "******************************************Rqs"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103055356921223355655001812450210017671557152834",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|6182002f34f4dd006b05b5c7",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103055356921223355655001812450210017671557152834"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T05:54:15.863Z",
+          "description": "",
+          "details": {
+            "code": "******************************************VcE"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103055417070115394218610844695634887352363515954",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|618223a4e3f49e006948565c",
+          "user_name": "ceh@xcyx.com"
+        },
+        "log_id": "90020211103055417070115394218610844695634887352363515954"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T07:00:21.161Z",
+          "description": "",
+          "details": {
+            "code": "******************************************q12"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103070025453223361339703470878590694285033603138",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|618232c562bac1006935a7af",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103070025453223361339703470878590694285033603138"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T08:13:24.290Z",
+          "description": "",
+          "details": {
+            "code": "******************************************Zhk"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103081329169106767059161007825876379053011763282",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|618223a4e3f49e006948565c",
+          "user_name": "ceh@xcyx.com"
+        },
+        "log_id": "90020211103081329169106767059161007825876379053011763282"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T08:17:46.184Z",
+          "description": "",
+          "details": {
+            "code": "******************************************upP"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103081747834106767097563745411754707146353147986",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|618232c562bac1006935a7af",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103081747834106767097563745411754707146353147986"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T08:25:00.234Z",
+          "description": "",
+          "details": {
+            "code": "******************************************frS"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103082505159223368972684592755695916615263584322",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|618232c562bac1006935a7af",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103082505159223368972684592755695916615263584322"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T08:25:23.077Z",
+          "description": "",
+          "details": {
+            "code": "******************************************6z4"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103082528115223369008130297786796845598196629570",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|618223a4e3f49e006948565c",
+          "user_name": "ceh@xcyx.com"
+        },
+        "log_id": "90020211103082528115223369008130297786796845598196629570"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T08:57:43.955Z",
+          "description": "",
+          "details": {
+            "code": "******************************************gq4"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103085744439115398741355869453054444297355526194",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|61823277a44a21007221a59a",
+          "user_name": "kcj@xcyx.com"
+        },
+        "log_id": "90020211103085744439115398741355869453054444297355526194"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T08:58:41.378Z",
+          "description": "",
+          "details": {
+            "code": "******************************************vaC"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103085843618106767481997320345928494961253154898",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|61823277a44a21007221a59a",
+          "user_name": "kcj@xcyx.com"
+        },
+        "log_id": "90020211103085843618106767481997320345928494961253154898"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T10:23:21.308Z",
+          "description": "",
+          "details": {
+            "code": "******************************************mVU"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103102326019106768307491764530844927445776203858",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|61823277a44a21007221a59a",
+          "user_name": "kcj@xcyx.com"
+        },
+        "log_id": "90020211103102326019106768307491764530844927445776203858"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T10:36:01.665Z",
+          "description": "",
+          "details": {
+            "code": "******************************************OLf"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103103606684106768432065525613034443117615382610",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|61823277a44a21007221a59a",
+          "user_name": "kcj@xcyx.com"
+        },
+        "log_id": "90020211103103606684106768432065525613034443117615382610"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T10:37:24.933Z",
+          "description": "",
+          "details": {
+            "code": "******************************************P8g"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103103728977106768445800131849676250806449340498",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|6182002f34f4dd006b05b5c7",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103103728977106768445800131849676250806449340498"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T10:43:25.246Z",
+          "description": "",
+          "details": {
+            "code": "******************************************HTC"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103104330288223383260091503229401565368577687618",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|618232c562bac1006935a7af",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103104330288223383260091503229401565368577687618"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T10:51:33.221Z",
+          "description": "",
+          "details": {
+            "code": "******************************************0wG"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103105137698223384111124505353676723471492579394",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|61823277a44a21007221a59a",
+          "user_name": "kcj@xcyx.com"
+        },
+        "log_id": "90020211103105137698223384111124505353676723471492579394"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T10:53:33.520Z",
+          "description": "",
+          "details": {
+            "code": "******************************************bBO"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103105337123223384318518147560205595828304216130",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|61823277a44a21007221a59a",
+          "user_name": "kcj@xcyx.com"
+        },
+        "log_id": "90020211103105337123223384318518147560205595828304216130"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-03T22:16:38.865Z",
+          "description": "",
+          "details": {
+            "code": "******************************************vzq"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103221641308223432165971774216334598458560217154",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|618232c562bac1006935a7af",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103221641308223432165971774216334598458560217154"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-04T00:15:10.907Z",
+          "description": "",
+          "details": {
+            "code": "******************************************VM-"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211104001514276223441402873466602396154780480176194",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|618223a4e3f49e006948565c",
+          "user_name": "ceh@xcyx.com"
+        },
+        "log_id": "90020211104001514276223441402873466602396154780480176194"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-04T01:16:26.371Z",
+          "description": "",
+          "details": {
+            "code": "******************************************6hm"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211104011631432334548139276348032705599973097472098",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|6183285d6e5071006a61f319",
+          "user_name": "hel.gifkuc@gmail.com"
+        },
+        "log_id": "90020211104011631432334548139276348032705599973097472098"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection_id": "",
+          "date": "2049-11-04T01:16:26.371Z",
+          "description": "",
+          "details": {
+            "code": "******************************************6hm"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211104011631432334548139276348032705599973097472098",
+          "type": "seacft",
+          "user_agent": "Go-http-client/2.0",
+          "user_id": "auth0|6183285d6e5071006a61f319",
+          "user_name": "hel.gifkuc@gmail.com"
+        },
+        "log_id": "90020211104011631432334548139276348032705599973097472098"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {
+      "event.ingested": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-auth0-logs-default",
+    "event_count": 21,
+    "numeric_keyword_fields": [],
+    "package": "auth0",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "cef": {
+                "severity": "8",
+                "extensions": {
+                    "destinationAddress": "192.0.2.54",
+                    "deviceCustomString3Label": "PTAlink",
+                    "sourceHostName": "vmxe1.dwofop.com",
+                    "sourceAddress": "192.0.2.134",
+                    "sourceUserName": "gpma2@vmxe1.dwofop.com",
+                    "deviceCustomString1": "None",
+                    "deviceCustomDate1": "2042-01-01T12:05:00.000Z",
+                    "deviceCustomString3": "https://192.0.2.134/incidents/52b06812ec3500ed864c461e",
+                    "deviceCustomString2": "52b06812ec3500ed864c461e",
+                    "deviceCustomString1Label": "ExtraData",
+                    "destinationHostName": "bas5.dwofop.com",
+                    "deviceCustomString4": "https://myexternallink.com",
+                    "destinationUserName": "bxbv@bas5.dwofop.com",
+                    "deviceCustomString4Label": "ExternalLink",
+                    "deviceCustomDate1Label": "detectionDate",
+                    "deviceCustomString2Label": "EventID"
+                },
+                "name": "Suspected credentials theft",
+                "version": "0",
+                "device": {
+                    "product": "PTA",
+                    "event_class_id": "1",
+                    "vendor": "CyberArk",
+                    "version": "12.6"
+                }
+            },
+            "destination": {
+                "domain": "bas5.dwofop.com",
+                "ip": "192.0.2.54",
+                "user": {
+                    "name": "bxbv@bas5.dwofop.com"
+                }
+            },
+            "source": {
+                "domain": "vmxe1.dwofop.com",
+                "ip": "192.0.2.134",
+                "user": {
+                    "name": "gpma2@vmxe1.dwofop.com"
+                }
+            },
+            "message": "Suspected credentials theft",
+            "tags": [
+                "cyberark_pta",
+                "forwarded"
+            ],
+            "observer": {
+                "product": "PTA",
+                "vendor": "CyberArk",
+                "version": "12.6"
+            },
+            "event": {
+                "severity": 8,
+                "original": "CEF:0|CyberArk|PTA|12.6|1|Suspected credentials theft|8|suser=gpma2@vmxe1.dwofop.com shost=vmxe1.dwofop.com src=192.0.2.134 duser=bxbv@bas5.dwofop.com dhost=bas5.dwofop.com dst=192.0.2.54 cs1Label=ExtraData cs1=None cs2Label=EventID cs2=52b06812ec3500ed864c461e deviceCustomDate1Label=detectionDate deviceCustomDate1=2272190700000 cs3Label=PTAlink cs3=https://192.0.2.134/incidents/52b06812ec3500ed864c461e cs4Label=ExternalLink cs4=https://myexternallink.com",
+                "code": "1",
+                "ingested": "2050-07-28T14:05:49Z"
+            }
+        }
+    ]
+}

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `beyondtrust_epm`'s container image digests, transcribed.
+//! `beyondtrust_epm`'s container image digests, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -44,7 +44,7 @@ fn container_digests_into_related_hash(event: &mut Event, _params: &Value) {
     }
 }
 
-/// Every `beyondtrust_epm` script transcribed here.
+/// Every `beyondtrust_epm` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "825e4c5796f8b644026a63cf65d406830ae8fec109e8f9946aff2a2b57df34ea",
     source: "beyondtrust_epm",

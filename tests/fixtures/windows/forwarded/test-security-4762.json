@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:04:38.185Z",
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "63ee84f4-cb0b-4de5-b80a-71b46c16d711",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25"
+            },
+            "winlog": {
+                "time_created": "2047-12-19T08:33:25.967Z",
+                "event_data": {
+                    "TargetDomainName": "TEST",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2905",
+                    "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+                    "SubjectUserName": "ev_aav",
+                    "PrivilegeList": "-",
+                    "MemberName": "CN=Administrator,CN=Users,DC=TEST,DC=SAAS",
+                    "TargetUserName": "gbujtqv8",
+                    "SubjectLogonId": "0x2e67800",
+                    "MemberSid": "S-1-5-21-1717121054-434620538-60925301-500",
+                    "SubjectDomainName": "TEST"
+                },
+                "process": {
+                    "pid": 492,
+                    "thread": {
+                        "id": 1348
+                    }
+                },
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "outcome": "success",
+                "level": "information",
+                "channel": "Security",
+                "event_id": 4762,
+                "record_id": 3707841
+            },
+            "event": {
+                "code": 4762,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "kind": "event"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4762.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            }
+        }
+    ]
+}

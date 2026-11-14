@@ -1,0 +1,169 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-08-19T07:56:52.019Z",
+      "agent": {
+        "ephemeral_id": "80ef52ba-91e0-47ba-aff8-57e3a0d3b62d",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "security-event-source-added",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "code": "4904",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "admin",
+          "change"
+        ]
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4904_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\inetsrv\\inetinfo.exe",
+        "name": "inetinfo.exe",
+        "pid": 3608
+      },
+      "related": {
+        "user": [
+          "ZVK-EPQ9VR7G6I6$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TEST",
+        "id": "S-1-5-18",
+        "name": "ZVK-EPQ9VR7G6I6$"
+      },
+      "winlog": {
+        "activity_id": "{afe30a25-81ff-0215-c39f-b3ffce90a981}",
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "event_data": {
+          "AuditSourceName": "IIS-METABASE",
+          "EventSourceId": "0x460422",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+          "SubjectUserSid": "S-1-5-18"
+        },
+        "event_id": "4904",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 784,
+          "thread": {
+            "id": 824
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "146939",
+        "time_created": "2048-08-19T07:56:52.019Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:05:08.356Z",
+      "agent": {
+        "ephemeral_id": "80ef52ba-91e0-47ba-aff8-57e3a0d3b62d",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4904,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4904_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{afe30a25-81ff-0215-c39f-b3ffce90a981}",
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "event_data": {
+          "AuditSourceName": "IIS-METABASE",
+          "EventSourceId": "0x460422",
+          "ProcessId": "0xe18",
+          "ProcessName": "C:\\Windows\\System32\\inetsrv\\inetinfo.exe",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+          "SubjectUserSid": "S-1-5-18"
+        },
+        "event_id": 4904,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 784,
+          "thread": {
+            "id": 824
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 146939,
+        "time_created": "2048-08-19T07:56:52.019Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "provenance": {
+    "file": "scripts/rewrite_fixtures.py in dfe-transform-elastic-dev",
+    "line": "synthesise_envelopes",
+    "producer": "a Beats shipper's bare wrapper",
+    "note": "Built from the wrapper's documented keys around a vendor line."
+  },
+  "shape": {
+    "family": "beats",
+    "variant": "bare"
+  },
+  "detect": {
+    "family": "beats",
+    "variant": "bare"
+  },
+  "event": {
+    "message": "Feb  9 04:00:48 203.0.113.12 585917: Feb  9 04:00:47.272: %SEC-6-IPACCESSLOGRP: list 177 denied igmp 198.51.100.197 -> 224.0.0.22, 1 packet",
+    "tags": [
+      "preserve_original_event"
+    ]
+  }
+}

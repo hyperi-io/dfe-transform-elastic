@@ -1,0 +1,5 @@
+{"client_type":"Browser","email":"fnvfc@example.com","ip_address":"192.0.2.10","time":"2052-06-07T10:00:00Z","type":"Sign in","version":"6.0.0.1000"}
+{"client_type":"Windows","email":"afre@example.com","ip_address":"192.0.2.20","time":"2052-06-07T11:15:00Z","type":"Sign out","version":"6.0.0.1000"}
+{"client_type":"Mac","email":"ebxhs@example.com","ip_address":"203.0.113.55","time":"2052-06-07T15:45:00Z","type":"Sign out","version":"6.0.0.1000"}
+{"email":"fpf@example.com","time":"2052-06-07T14:30:00Z","type":"Sign in"}
+{"client_type":"Browser","email":"cnbrj@example.com","ip_address":"10.174.228.41","time":"2052-06-08T09:00:00Z","type":"Sign in","version":"6.0.0.1000"}

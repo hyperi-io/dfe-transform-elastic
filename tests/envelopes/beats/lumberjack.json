@@ -1,0 +1,43 @@
+{
+  "provenance": {
+    "file": "scripts/rewrite_fixtures.py in dfe-transform-elastic-dev",
+    "line": "synthesise_envelopes",
+    "producer": "a Beats shipper's module wrapper",
+    "note": "Built from the wrapper's documented keys around a vendor line."
+  },
+  "shape": {
+    "family": "beats",
+    "variant": "module"
+  },
+  "detect": {
+    "family": "beats",
+    "variant": "module"
+  },
+  "event": {
+    "@metadata": {
+      "beat": "filebeat",
+      "type": "_doc",
+      "version": "8.17.0"
+    },
+    "@timestamp": "2052-03-04T07:26:15.000Z",
+    "agent": {
+      "id": "6a1e4f2b-9c3d-4e5f-8a7b-1c2d3e4f5a6b",
+      "name": "shipper-01",
+      "type": "filebeat",
+      "version": "8.17.0"
+    },
+    "ecs": {
+      "version": "8.0.0"
+    },
+    "fileset": {
+      "name": "log"
+    },
+    "input": {
+      "type": "udp"
+    },
+    "message": "Feb  9 04:00:48 203.0.113.12 585917: Feb  9 04:00:47.272: %SEC-6-IPACCESSLOGRP: list 177 denied igmp 198.51.100.197 -> 224.0.0.22, 1 packet",
+    "service": {
+      "type": "cisco"
+    }
+  }
+}

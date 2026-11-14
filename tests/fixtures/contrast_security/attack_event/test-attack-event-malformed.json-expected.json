@@ -1,0 +1,47 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-01-07T17:46:40.561Z",
+      "event": {
+        "dataset": "contrast_security.attack_event",
+        "kind": "event",
+        "module": "contrast_security",
+        "original": "\"malformed-event-payload\""
+      },
+      "host": {
+        "hostname": "brmysbgp-adnyu-dfru-ebhemawpubf-8cd8f7b3a8-grk7v"
+      },
+      "message": "sql-injection",
+      "observer": {
+        "product": "Contrast ADR",
+        "type": "adr",
+        "vendor": "Contrast Security"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2054-01-07T17:46:40.561Z",
+      "event": "malformed-event-payload",
+      "host": {
+        "hostname": "brmysbgp-adnyu-dfru-ebhemawpubf-8cd8f7b3a8-grk7v"
+      },
+      "message": "sql-injection",
+      "observer": {
+        "product": "Contrast ADR",
+        "type": "adr",
+        "vendor": "Contrast Security"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "attack_event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-contrast_security-attack_event-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "contrast_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "MobileDeviceUnEnrolled",
+        "category": [
+          "host"
+        ],
+        "kind": "event",
+        "type": [
+          "change",
+          "end"
+        ]
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "entity": {
+          "lifecycle": {
+            "last_activity": "2052-09-04T09:57:52.001Z"
+          }
+        },
+        "ip": [
+          "198.51.100.144"
+        ],
+        "os": {
+          "version": "34.8068"
+        }
+      },
+      "jamf_pro": {
+        "events": {
+          "event": {
+            "bluetooth_mac_address": "ce:bb:a4:55:30:bc",
+            "device_name": "XSCAY",
+            "icci_id": "9224352581",
+            "imei": "3VCFIL",
+            "ip_address": "198.51.100.144",
+            "jss_id": 770,
+            "management_id": "4731686831",
+            "model": "R8IHXV",
+            "model_display": "L2BF3S",
+            "os_build": "65.5172",
+            "os_version": "34.8068",
+            "product": "ZEISZB",
+            "room": "NIIH3N",
+            "serial_number": "1679902",
+            "udid": "8657879161",
+            "user_directory_id": "9292535361",
+            "username": "Pnvw Eyd",
+            "version": "ECGLA1",
+            "wifi_mac_address": "ce:bb:a4:55:30:bc"
+          },
+          "webhook": {
+            "event_timestamp": "2052-09-04T09:57:52.001Z",
+            "id": 267,
+            "name": "QDU7E",
+            "webhook_event": "MobileDeviceUnEnrolled"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "Pnvw Eyd"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "Pnvw Eyd"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "event": {
+          "bluetooth_mac_address": "ce:bb:a4:55:30:bc",
+          "device_name": "XSCAY",
+          "icci_id": "9224352581",
+          "imei": "3VCFIL",
+          "ip_address": "198.51.100.144",
+          "jss_id": 770,
+          "management_id": "4731686831",
+          "model": "R8IHXV",
+          "model_display": "L2BF3S",
+          "os_build": "65.5172",
+          "os_version": "34.8068",
+          "product": "ZEISZB",
+          "room": "NIIH3N",
+          "serial_number": "1679902",
+          "udid": "8657879161",
+          "user_directory_id": "9292535361",
+          "username": "Pnvw Eyd",
+          "version": "ECGLA1",
+          "wifi_mac_address": "ce:bb:a4:55:30:bc"
+        },
+        "webhook": {
+          "event_timestamp": 2609056672001,
+          "id": 267,
+          "name": "QDU7E",
+          "webhook_event": "MobileDeviceUnEnrolled"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

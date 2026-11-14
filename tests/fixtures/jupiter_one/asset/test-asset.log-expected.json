@@ -1,0 +1,364 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "event": {
+        "created": "2053-11-03T10:55:37.188Z",
+        "duration": 172800000000000,
+        "end": "2053-11-06T06:48:22.119Z",
+        "id": "6ebd4abc-f8e9-52cc-8630-f49f805a3180",
+        "kind": "alert",
+        "original": "{\"id\": \"6ebd4abc-f8e9-52cc-8630-f49f805a3180\", \"entity\": {\"_beginOn\": \"2053-11-04T06:48:22.119Z\", \"_endOn\": \"2053-11-06T06:48:22.119Z\", \"_createdOn\": \"2053-11-03T10:55:37.188Z\", \"displayName\": \"Rxye Czdgns\", \"_scope\": \"jupiterone\", \"_key\": \"alert:ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274\", \"_integrationDefinitionId\": \"ef60401a-0feb-4d37-98af-9572d67b2544\", \"_integrationName\": \"O4P9\", \"_version\": 1, \"_deleted\": false, \"_integrationClass\": [\"Device Management\", \"Endpoint Security\", \"IT Service Management\"], \"_type\": \"jupiterone_rule_alert\", \"_integrationType\": \"jupiterone\", \"_accountId\": \"ee360a88-2629-47ad-9a7c-d582455573f5\", \"_source\": \"system-internal\", \"_id\": \"6ebd4abc-f8e9-52cc-8630-f49f805a3180\", \"_class\": [\"Alert\"], \"_integrationInstanceId\": \"4ff533a7-eea7-40d8-9c4a-d9533192f0ce\"}, \"properties\": {\"numericSeverity\": 0, \"awsAccountId\": [], \"tag.AccountName\": [\"sbgq\", \"Eapbxq_Qgyclizlmu\", \"O4P9\", \"OmqxjcoNpd\"], \"webLink\": \"https://apps.us.jupiterone.io/alerts?alertId=ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274\", \"gcpProjectId\": [], \"description\": \"Rxye Czdgns\", \"createdOn\": \"2053-11-03T10:54:49.341Z\", \"azureAccountId\": [], \"id\": \"ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274\", \"severity\": \"INFO\", \"level\": \"INFO\", \"active\": true, \"updatedOn\": \"2053-11-03T10:55:21.737Z\", \"totalNumberOfAffectedEntities\": 11131, \"name\": \"Rxye Czdgns\", \"category\": \"alert\", \"open\": true, \"status\": \"ACTIVE\"}}",
+        "start": "2053-11-04T06:48:22.119Z"
+      },
+      "jupiter_one": {
+        "asset": {
+          "entity": {
+            "_account_id": "ee360a88-2629-47ad-9a7c-d582455573f5",
+            "_begin_on": "2053-11-04T06:48:22.119Z",
+            "_class": [
+              "Alert"
+            ],
+            "_created_on": "2053-11-03T10:55:37.188Z",
+            "_deleted": false,
+            "_end_on": "2053-11-06T06:48:22.119Z",
+            "_id": "6ebd4abc-f8e9-52cc-8630-f49f805a3180",
+            "_integration_class": [
+              "Device Management",
+              "Endpoint Security",
+              "IT Service Management"
+            ],
+            "_integration_definition_id": "ef60401a-0feb-4d37-98af-9572d67b2544",
+            "_integration_instance_id": "4ff533a7-eea7-40d8-9c4a-d9533192f0ce",
+            "_integration_name": "O4P9",
+            "_integration_type": "jupiterone",
+            "_key": "alert:ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274",
+            "_scope": "jupiterone",
+            "_source": "system-internal",
+            "_type": "jupiterone_rule_alert",
+            "_version": "1",
+            "display_name": "Rxye Czdgns"
+          },
+          "id": "6ebd4abc-f8e9-52cc-8630-f49f805a3180",
+          "properties": {
+            "active": true,
+            "category": "alert",
+            "created_on": "2053-11-03T10:54:49.341Z",
+            "description": "Rxye Czdgns",
+            "id": "ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274",
+            "level": "INFO",
+            "name": "Rxye Czdgns",
+            "numeric_severity": 0,
+            "open": true,
+            "severity": "INFO",
+            "status": "ACTIVE",
+            "tag": {
+              "account_name": [
+                "sbgq",
+                "Eapbxq_Qgyclizlmu",
+                "O4P9",
+                "OmqxjcoNpd"
+              ]
+            },
+            "total_number_of_affected_entities": 11131,
+            "updated_on": "2053-11-03T10:55:21.737Z",
+            "web_link": "https://apps.us.jupiterone.io/alerts?alertId=ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274"
+          }
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Rxye Czdgns",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "domain": "apps.us.jupiterone.io",
+        "original": "https://apps.us.jupiterone.io/alerts?alertId=ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274",
+        "path": "/alerts",
+        "query": "alertId=ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274",
+        "scheme": "https"
+      }
+    },
+    {
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "event": {
+        "category": [
+          "vulnerability"
+        ],
+        "created": "2053-11-03T10:43:45.691Z",
+        "id": "b94dbab7-9a9a-5ebe-b5a5-fc7d333ed571",
+        "kind": "alert",
+        "original": "{\"id\": \"b94dbab7-9a9a-5ebe-b5a5-fc7d333ed571\", \"entity\": {\"_createdOn\": \"2053-11-03T10:43:45.691Z\", \"_key\": \"80ffc3e6562889481a3ecc073001e8f7_94304facac714d6dfba48f58ffb53428\", \"_version\": 1, \"_deleted\": false, \"_integrationClass\": [\"EPP\", \"EDR\", \"EndpointSecurity\"], \"_source\": \"integration-managed\", \"_id\": \"b94dbab7-9a9a-5ebe-b5a5-fc7d333ed571\", \"_class\": [\"Finding\", \"Vulnerability\"], \"_integrationInstanceId\": \"23a5d8fc-7560-4697-bba7-20d5e10fc4a6\", \"_beginOn\": \"2053-11-03T10:43:45.691Z\", \"displayName\": \"CVE-2025-49693\", \"_scope\": \"23a5d8fc-7560-4697-bba7-20d5e10fc4a6\", \"_integrationDefinitionId\": \"6c383413-9fe3-478f-a6a9-e95c728102d5\", \"_integrationName\": \"sbgq\", \"_type\": \"crowdstrike_vulnerability\", \"_integrationType\": \"crowdstrike\", \"_accountId\": \"ee360a88-2629-47ad-9a7c-d582455573f5\"}, \"properties\": {\"publishedOn\": \"2053-07-08T07:00:00.000Z\", \"score\": 7.8, \"tag.Jira\": \"IS60896\", \"id\": \"80ffc3e6562889481a3ecc073001e8f7_94304facac714d6dfba48f58ffb53428\", \"cveId\": \"CVE-2025-49693\", \"impact\": 5.9, \"tag.Production\": true, \"updatedOn\": \"2053-11-03T01:35:08.000Z\", \"exprtRating\": \"MEDIUM\", \"name\": \"CVE-2025-49693\", \"aid\": \"80ffc3e6562889481a3ecc073001e8f7\", \"exploitability\": 1.8, \"status\": \"reopen\", \"cid\": \"6ff35cc3f82b9f79c045b05f09caae00\", \"numericSeverity\": 7, \"productNameVersion\": \"Windows 11 23h2\", \"tag.AccountName\": \"sbgq\", \"description\": \"Summary\\n\\n\\n\\nCVE-2025-49693 is a Double Free vulnerability affecting Microsoft Brokering File System.\", \"createdOn\": \"2053-09-12T05:06:36.000Z\", \"exploitStatus\": 0, \"public\": true, \"vector\": \"CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H\", \"raw_severity\": \"High\", \"severity\": \"high\", \"category\": \"Host\", \"vendorAdvisory\": [\"https://msrc.microsoft.com/update-guide/en-us/vulnerability/CVE-2025-49693\", \"https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-49693\"], \"open\": true}}",
+        "start": "2053-11-03T10:43:45.691Z",
+        "type": [
+          "info"
+        ]
+      },
+      "jupiter_one": {
+        "asset": {
+          "entity": {
+            "_account_id": "ee360a88-2629-47ad-9a7c-d582455573f5",
+            "_begin_on": "2053-11-03T10:43:45.691Z",
+            "_class": [
+              "Finding",
+              "Vulnerability"
+            ],
+            "_created_on": "2053-11-03T10:43:45.691Z",
+            "_deleted": false,
+            "_id": "b94dbab7-9a9a-5ebe-b5a5-fc7d333ed571",
+            "_integration_class": [
+              "EPP",
+              "EDR",
+              "EndpointSecurity"
+            ],
+            "_integration_definition_id": "6c383413-9fe3-478f-a6a9-e95c728102d5",
+            "_integration_instance_id": "23a5d8fc-7560-4697-bba7-20d5e10fc4a6",
+            "_integration_name": "sbgq",
+            "_integration_type": "crowdstrike",
+            "_key": "80ffc3e6562889481a3ecc073001e8f7_94304facac714d6dfba48f58ffb53428",
+            "_scope": "23a5d8fc-7560-4697-bba7-20d5e10fc4a6",
+            "_source": "integration-managed",
+            "_type": "crowdstrike_vulnerability",
+            "_version": "1",
+            "display_name": "CVE-2025-49693"
+          },
+          "id": "b94dbab7-9a9a-5ebe-b5a5-fc7d333ed571",
+          "properties": {
+            "aid": "80ffc3e6562889481a3ecc073001e8f7",
+            "category": "Host",
+            "cid": "6ff35cc3f82b9f79c045b05f09caae00",
+            "created_on": "2053-09-12T05:06:36.000Z",
+            "cve_id": "CVE-2025-49693",
+            "description": "Summary\n\n\n\nCVE-2025-49693 is a Double Free vulnerability affecting Microsoft Brokering File System.",
+            "exploit_status": 0,
+            "exploitability": 1.8,
+            "exprt_rating": "MEDIUM",
+            "id": "80ffc3e6562889481a3ecc073001e8f7_94304facac714d6dfba48f58ffb53428",
+            "impact": 5.9,
+            "name": "CVE-2025-49693",
+            "numeric_severity": 7,
+            "open": true,
+            "product_name_version": "Windows 11 23h2",
+            "public": true,
+            "published_on": "2053-07-08T07:00:00.000Z",
+            "raw_severity": "High",
+            "score": 7.8,
+            "severity": "high",
+            "status": "reopen",
+            "tag": {
+              "account_name": "sbgq",
+              "jira": "IS60896",
+              "production": true
+            },
+            "updated_on": "2053-11-03T01:35:08.000Z",
+            "vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+            "vendor_advisory": [
+              "https://msrc.microsoft.com/update-guide/en-us/vulnerability/CVE-2025-49693",
+              "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-49693"
+            ]
+          }
+        }
+      },
+      "message": "Summary\n\n\n\nCVE-2025-49693 is a Double Free vulnerability affecting Microsoft Brokering File System.",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "vulnerability": {
+        "category": [
+          "Host"
+        ],
+        "description": "Summary\n\n\n\nCVE-2025-49693 is a Double Free vulnerability affecting Microsoft Brokering File System.",
+        "enumeration": "CVE",
+        "id": "CVE-2025-49693",
+        "score": {
+          "base": 7.8
+        },
+        "severity": "high"
+      }
+    },
+    {
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "event": {
+        "created": "2053-11-03T09:42:05.322Z",
+        "id": "ca319b2d-364c-5031-a3a6-8ba3c0ecbea7",
+        "kind": "alert",
+        "original": "{\"id\":\"ca319b2d-364c-5031-a3a6-8ba3c0ecbea7\",\"entity\":{\"_version\":1,\"_deleted\":false,\"_integrationClass\":[\"EPP\",\"EDR\",\"EndpointSecurity\"],\"_source\":\"integration-managed\",\"displayName\":\"ZsldUauhpmhcgc\",\"_integrationDefinitionId\":\"6c383413-9fe3-478f-a6a9-e95c728102d5\",\"_type\":\"crowdstrike_alert\",\"_integrationType\":\"crowdstrike\",\"_createdOn\":\"2053-11-03T09:42:05.322Z\",\"_key\":\"ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488\",\"_id\":\"ca319b2d-364c-5031-a3a6-8ba3c0ecbea7\",\"_class\":[\"Finding\"],\"_integrationInstanceId\":\"b5c4d654-c5d9-4b78-9e86-463981dab82f\",\"_beginOn\":\"2053-11-03T09:42:05.322Z\",\"_scope\":\"b5c4d654-c5d9-4b78-9e86-463981dab82f\",\"_integrationName\":\"sbgq\",\"_accountId\":\"ee360a88-2629-47ad-9a7c-d582455573f5\"},\"properties\":{\"deviceId\":\"faaffbd961a37a6f90d72afb0b20a9d4\",\"detectedOn\":\"2053-11-03T07:00:56.621Z\",\"objective\":\"Follow Through\",\"tag.Jira\":\"IS60896\",\"aggregateId\":\"aa03bcce7e2e64facf57e52671fceb9dccf295cd156db10170eca731f8a9c03f\",\"dataDomains\":\"Endpoint\",\"id\":\"ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488\",\"falconHostLink\":\"https://falcon.us-2.crowdstrike.com/automated-leads/6ff35cc3f82b9f79c045b05f09caae00:ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488?_cid=g04000alcejocicbgp7infyokz7bajkq\",\"updatedOn\":\"2053-11-03T08:01:00.649Z\",\"filename\":\"python.exe\",\"deviceLocalIp\":\"198.51.100.1\",\"status\":\"new\",\"createdOn\":\"2053-11-03T07:02:00.991Z\",\"tactic\":\"Impact\",\"deviceStatus\":\"normal\",\"scenario\":\"ransomware\",\"product\":\"automated-lead-context\",\"userId\":\"S-1-5-18\",\"parentFilename\":\"rundll32.exe\",\"sourceProducts\":\"Automated Leads\",\"severityName\":\"High\",\"open\":true,\"mitreAttack\":\"Impact (TA0040) - Data Encrypted for Impact (T1486)\",\"cmdline\":\"\\\"C:\\\\Program Files\\\\MySQL\\\\MySQL Workbench 8.0 CE\\\\python.exe\\\" -mcompileall ..\",\"filepath\":\"\\\\Device\\\\HarddiskVolume3\\\\Program Files\\\\MySQL\\\\MySQL Workbench 8.0 CE\\\\python.exe\",\"techniqueId\":\"T1486\",\"name\":\"ZsldUauhpmhcgc\",\"tacticId\":\"TA0040\",\"deviceExternalIp\":\"192.0.2.218\",\"cid\":\"6ff35cc3f82b9f79c045b05f09caae00\",\"deviceMacAddress\":\"09-49-74-49-85-50\",\"numericSeverity\":70,\"tag.AccountName\":\"sbgq\",\"sourceVendors\":\"CrowdStrike\",\"description\":\"A process associated with a known ransomware campaign launched. Investigate the host for signs of a ransomware attack.\",\"technique\":\"Data Encrypted for Impact\",\"deviceOsVersion\":\"Windows Server 2022\",\"deviceHostname\":\"WIN-9L94MPLCTI5\",\"devicePlatformName\":\"Windows\",\"severity\":\"High\",\"userName\":\"SPR-1N89YTMDHX0$\",\"childProcessIds\":\"pid:faaffbd961a37a6f90d72afb0b20a9d4:485362198808\",\"category\":\"Endpoint\",\"compositeId\":\"6ff35cc3f82b9f79c045b05f09caae00:ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488\",\"parentCmdline\":\"rundll32.exe \\\"C:\\\\Windows\\\\Installer\\\\MSI9B63.tmp\\\",zzzzInvokeManagedCustomActionOutOfProc SfxCA_937663500 15 MySQLCA!MySQLCA.CustomActions.PrecompilePythonFiles\"}}",
+        "start": "2053-11-03T09:42:05.322Z"
+      },
+      "host": {
+        "hostname": "WIN-9L94MPLCTI5",
+        "id": "faaffbd961a37a6f90d72afb0b20a9d4",
+        "mac": [
+          "09-49-74-49-85-50"
+        ],
+        "os": {
+          "platform": "Windows",
+          "version": "Windows Server 2022"
+        }
+      },
+      "jupiter_one": {
+        "asset": {
+          "entity": {
+            "_account_id": "ee360a88-2629-47ad-9a7c-d582455573f5",
+            "_begin_on": "2053-11-03T09:42:05.322Z",
+            "_class": [
+              "Finding"
+            ],
+            "_created_on": "2053-11-03T09:42:05.322Z",
+            "_deleted": false,
+            "_id": "ca319b2d-364c-5031-a3a6-8ba3c0ecbea7",
+            "_integration_class": [
+              "EPP",
+              "EDR",
+              "EndpointSecurity"
+            ],
+            "_integration_definition_id": "6c383413-9fe3-478f-a6a9-e95c728102d5",
+            "_integration_instance_id": "b5c4d654-c5d9-4b78-9e86-463981dab82f",
+            "_integration_name": "sbgq",
+            "_integration_type": "crowdstrike",
+            "_key": "ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488",
+            "_scope": "b5c4d654-c5d9-4b78-9e86-463981dab82f",
+            "_source": "integration-managed",
+            "_type": "crowdstrike_alert",
+            "_version": "1",
+            "display_name": "ZsldUauhpmhcgc"
+          },
+          "id": "ca319b2d-364c-5031-a3a6-8ba3c0ecbea7",
+          "properties": {
+            "aggregate_id": "aa03bcce7e2e64facf57e52671fceb9dccf295cd156db10170eca731f8a9c03f",
+            "category": "Endpoint",
+            "child_process_ids": "pid:faaffbd961a37a6f90d72afb0b20a9d4:485362198808",
+            "cid": "6ff35cc3f82b9f79c045b05f09caae00",
+            "cmdline": "\"C:\\Program Files\\MySQL\\MySQL Workbench 8.0 CE\\python.exe\" -mcompileall ..",
+            "composite_id": "6ff35cc3f82b9f79c045b05f09caae00:ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488",
+            "created_on": "2053-11-03T07:02:00.991Z",
+            "data_domains": "Endpoint",
+            "description": "A process associated with a known ransomware campaign launched. Investigate the host for signs of a ransomware attack.",
+            "detected_on": "2053-11-03T07:00:56.621Z",
+            "device_external_ip": "192.0.2.218",
+            "device_hostname": "WIN-9L94MPLCTI5",
+            "device_id": "faaffbd961a37a6f90d72afb0b20a9d4",
+            "device_local_ip": "198.51.100.1",
+            "device_mac_address": "09-49-74-49-85-50",
+            "device_os_version": "Windows Server 2022",
+            "device_platform_name": "Windows",
+            "device_status": "normal",
+            "falcon_host_link": "https://falcon.us-2.crowdstrike.com/automated-leads/6ff35cc3f82b9f79c045b05f09caae00:ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488?_cid=g04000alcejocicbgp7infyokz7bajkq",
+            "filename": "python.exe",
+            "filepath": "\\Device\\HarddiskVolume3\\Program Files\\MySQL\\MySQL Workbench 8.0 CE\\python.exe",
+            "id": "ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488",
+            "mitre_attack": "Impact (TA0040) - Data Encrypted for Impact (T1486)",
+            "name": "ZsldUauhpmhcgc",
+            "numeric_severity": 70,
+            "objective": "Follow Through",
+            "open": true,
+            "parent_cmdline": "rundll32.exe \"C:\\Windows\\Installer\\MSI9B63.tmp\",zzzzInvokeManagedCustomActionOutOfProc SfxCA_937663500 15 MySQLCA!MySQLCA.CustomActions.PrecompilePythonFiles",
+            "parent_filename": "rundll32.exe",
+            "product": "automated-lead-context",
+            "scenario": "ransomware",
+            "severity": "High",
+            "severity_name": "High",
+            "source_products": "Automated Leads",
+            "source_vendors": "CrowdStrike",
+            "status": "new",
+            "tactic": "Impact",
+            "tactic_id": "TA0040",
+            "tag": {
+              "account_name": "sbgq",
+              "jira": "IS60896"
+            },
+            "technique": "Data Encrypted for Impact",
+            "technique_id": "T1486",
+            "updated_on": "2053-11-03T08:01:00.649Z",
+            "user_id": "S-1-5-18",
+            "user_name": "SPR-1N89YTMDHX0$"
+          }
+        }
+      },
+      "message": "A process associated with a known ransomware campaign launched. Investigate the host for signs of a ransomware attack.",
+      "related": {
+        "hosts": [
+          "WIN-9L94MPLCTI5"
+        ],
+        "ip": [
+          "198.51.100.1",
+          "192.0.2.218"
+        ],
+        "user": [
+          "S-1-5-18",
+          "SPR-1N89YTMDHX0$"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "indicator": {
+          "file": {
+            "name": "python.exe",
+            "path": "\\Device\\HarddiskVolume3\\Program Files\\MySQL\\MySQL Workbench 8.0 CE\\python.exe"
+          },
+          "ip": "192.0.2.218"
+        },
+        "tactic": {
+          "id": [
+            "TA0040"
+          ],
+          "name": [
+            "Impact"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1486"
+          ],
+          "name": [
+            "Data Encrypted for Impact"
+          ]
+        }
+      },
+      "user": {
+        "id": "S-1-5-18",
+        "name": "SPR-1N89YTMDHX0$"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\": \"6ebd4abc-f8e9-52cc-8630-f49f805a3180\", \"entity\": {\"_beginOn\": \"2053-11-04T06:48:22.119Z\", \"_endOn\": \"2053-11-06T06:48:22.119Z\", \"_createdOn\": \"2053-11-03T10:55:37.188Z\", \"displayName\": \"Rxye Czdgns\", \"_scope\": \"jupiterone\", \"_key\": \"alert:ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274\", \"_integrationDefinitionId\": \"ef60401a-0feb-4d37-98af-9572d67b2544\", \"_integrationName\": \"O4P9\", \"_version\": 1, \"_deleted\": false, \"_integrationClass\": [\"Device Management\", \"Endpoint Security\", \"IT Service Management\"], \"_type\": \"jupiterone_rule_alert\", \"_integrationType\": \"jupiterone\", \"_accountId\": \"ee360a88-2629-47ad-9a7c-d582455573f5\", \"_source\": \"system-internal\", \"_id\": \"6ebd4abc-f8e9-52cc-8630-f49f805a3180\", \"_class\": [\"Alert\"], \"_integrationInstanceId\": \"4ff533a7-eea7-40d8-9c4a-d9533192f0ce\"}, \"properties\": {\"numericSeverity\": 0, \"awsAccountId\": [], \"tag.AccountName\": [\"sbgq\", \"Eapbxq_Qgyclizlmu\", \"O4P9\", \"OmqxjcoNpd\"], \"webLink\": \"https://apps.us.jupiterone.io/alerts?alertId=ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274\", \"gcpProjectId\": [], \"description\": \"Rxye Czdgns\", \"createdOn\": \"2053-11-03T10:54:49.341Z\", \"azureAccountId\": [], \"id\": \"ruleAlert:f7201567-0ea6-4cb8-bacc-7503a3281274\", \"severity\": \"INFO\", \"level\": \"INFO\", \"active\": true, \"updatedOn\": \"2053-11-03T10:55:21.737Z\", \"totalNumberOfAffectedEntities\": 11131, \"name\": \"Rxye Czdgns\", \"category\": \"alert\", \"open\": true, \"status\": \"ACTIVE\"}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\": \"b94dbab7-9a9a-5ebe-b5a5-fc7d333ed571\", \"entity\": {\"_createdOn\": \"2053-11-03T10:43:45.691Z\", \"_key\": \"80ffc3e6562889481a3ecc073001e8f7_94304facac714d6dfba48f58ffb53428\", \"_version\": 1, \"_deleted\": false, \"_integrationClass\": [\"EPP\", \"EDR\", \"EndpointSecurity\"], \"_source\": \"integration-managed\", \"_id\": \"b94dbab7-9a9a-5ebe-b5a5-fc7d333ed571\", \"_class\": [\"Finding\", \"Vulnerability\"], \"_integrationInstanceId\": \"23a5d8fc-7560-4697-bba7-20d5e10fc4a6\", \"_beginOn\": \"2053-11-03T10:43:45.691Z\", \"displayName\": \"CVE-2025-49693\", \"_scope\": \"23a5d8fc-7560-4697-bba7-20d5e10fc4a6\", \"_integrationDefinitionId\": \"6c383413-9fe3-478f-a6a9-e95c728102d5\", \"_integrationName\": \"sbgq\", \"_type\": \"crowdstrike_vulnerability\", \"_integrationType\": \"crowdstrike\", \"_accountId\": \"ee360a88-2629-47ad-9a7c-d582455573f5\"}, \"properties\": {\"publishedOn\": \"2053-07-08T07:00:00.000Z\", \"score\": 7.8, \"tag.Jira\": \"IS60896\", \"id\": \"80ffc3e6562889481a3ecc073001e8f7_94304facac714d6dfba48f58ffb53428\", \"cveId\": \"CVE-2025-49693\", \"impact\": 5.9, \"tag.Production\": true, \"updatedOn\": \"2053-11-03T01:35:08.000Z\", \"exprtRating\": \"MEDIUM\", \"name\": \"CVE-2025-49693\", \"aid\": \"80ffc3e6562889481a3ecc073001e8f7\", \"exploitability\": 1.8, \"status\": \"reopen\", \"cid\": \"6ff35cc3f82b9f79c045b05f09caae00\", \"numericSeverity\": 7, \"productNameVersion\": \"Windows 11 23h2\", \"tag.AccountName\": \"sbgq\", \"description\": \"Summary\\n\\n\\n\\nCVE-2025-49693 is a Double Free vulnerability affecting Microsoft Brokering File System.\", \"createdOn\": \"2053-09-12T05:06:36.000Z\", \"exploitStatus\": 0, \"public\": true, \"vector\": \"CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H\", \"raw_severity\": \"High\", \"severity\": \"high\", \"category\": \"Host\", \"vendorAdvisory\": [\"https://msrc.microsoft.com/update-guide/en-us/vulnerability/CVE-2025-49693\", \"https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-49693\"], \"open\": true}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"ca319b2d-364c-5031-a3a6-8ba3c0ecbea7\",\"entity\":{\"_version\":1,\"_deleted\":false,\"_integrationClass\":[\"EPP\",\"EDR\",\"EndpointSecurity\"],\"_source\":\"integration-managed\",\"displayName\":\"ZsldUauhpmhcgc\",\"_integrationDefinitionId\":\"6c383413-9fe3-478f-a6a9-e95c728102d5\",\"_type\":\"crowdstrike_alert\",\"_integrationType\":\"crowdstrike\",\"_createdOn\":\"2053-11-03T09:42:05.322Z\",\"_key\":\"ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488\",\"_id\":\"ca319b2d-364c-5031-a3a6-8ba3c0ecbea7\",\"_class\":[\"Finding\"],\"_integrationInstanceId\":\"b5c4d654-c5d9-4b78-9e86-463981dab82f\",\"_beginOn\":\"2053-11-03T09:42:05.322Z\",\"_scope\":\"b5c4d654-c5d9-4b78-9e86-463981dab82f\",\"_integrationName\":\"sbgq\",\"_accountId\":\"ee360a88-2629-47ad-9a7c-d582455573f5\"},\"properties\":{\"deviceId\":\"faaffbd961a37a6f90d72afb0b20a9d4\",\"detectedOn\":\"2053-11-03T07:00:56.621Z\",\"objective\":\"Follow Through\",\"tag.Jira\":\"IS60896\",\"aggregateId\":\"aa03bcce7e2e64facf57e52671fceb9dccf295cd156db10170eca731f8a9c03f\",\"dataDomains\":\"Endpoint\",\"id\":\"ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488\",\"falconHostLink\":\"https://falcon.us-2.crowdstrike.com/automated-leads/6ff35cc3f82b9f79c045b05f09caae00:ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488?_cid=g04000alcejocicbgp7infyokz7bajkq\",\"updatedOn\":\"2053-11-03T08:01:00.649Z\",\"filename\":\"python.exe\",\"deviceLocalIp\":\"198.51.100.1\",\"status\":\"new\",\"createdOn\":\"2053-11-03T07:02:00.991Z\",\"tactic\":\"Impact\",\"deviceStatus\":\"normal\",\"scenario\":\"ransomware\",\"product\":\"automated-lead-context\",\"userId\":\"S-1-5-18\",\"parentFilename\":\"rundll32.exe\",\"sourceProducts\":\"Automated Leads\",\"severityName\":\"High\",\"open\":true,\"mitreAttack\":\"Impact (TA0040) - Data Encrypted for Impact (T1486)\",\"cmdline\":\"\\\"C:\\\\Program Files\\\\MySQL\\\\MySQL Workbench 8.0 CE\\\\python.exe\\\" -mcompileall ..\",\"filepath\":\"\\\\Device\\\\HarddiskVolume3\\\\Program Files\\\\MySQL\\\\MySQL Workbench 8.0 CE\\\\python.exe\",\"techniqueId\":\"T1486\",\"name\":\"ZsldUauhpmhcgc\",\"tacticId\":\"TA0040\",\"deviceExternalIp\":\"192.0.2.218\",\"cid\":\"6ff35cc3f82b9f79c045b05f09caae00\",\"deviceMacAddress\":\"09-49-74-49-85-50\",\"numericSeverity\":70,\"tag.AccountName\":\"sbgq\",\"sourceVendors\":\"CrowdStrike\",\"description\":\"A process associated with a known ransomware campaign launched. Investigate the host for signs of a ransomware attack.\",\"technique\":\"Data Encrypted for Impact\",\"deviceOsVersion\":\"Windows Server 2022\",\"deviceHostname\":\"WIN-9L94MPLCTI5\",\"devicePlatformName\":\"Windows\",\"severity\":\"High\",\"userName\":\"SPR-1N89YTMDHX0$\",\"childProcessIds\":\"pid:faaffbd961a37a6f90d72afb0b20a9d4:485362198808\",\"category\":\"Endpoint\",\"compositeId\":\"6ff35cc3f82b9f79c045b05f09caae00:ind:faaffbd961a37a6f90d72afb0b20a9d4:485359820702-10251-202153488\",\"parentCmdline\":\"rundll32.exe \\\"C:\\\\Windows\\\\Installer\\\\MSI9B63.tmp\\\",zzzzInvokeManagedCustomActionOutOfProc SfxCA_937663500 15 MySQLCA!MySQLCA.CustomActions.PrecompilePythonFiles\"}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "asset",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jupiter_one-asset-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "jupiter_one",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

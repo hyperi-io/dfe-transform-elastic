@@ -1,0 +1,77 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2045-10-09T16:13:19.576Z",
+      "destination": {
+        "address": "192.168.149.192",
+        "ip": "192.168.149.192",
+        "port": 445
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C9YAaEzWLL62yWMn5",
+        "kind": "event",
+        "original": "{\"ts\":2391178399.576613,\"uid\":\"C9YAaEzWLL62yWMn5\",\"id.orig_h\":\"192.168.33.187\",\"id.orig_p\":49239,\"id.resp_h\":\"192.168.149.192\",\"id.resp_p\":445,\"path\":\"\\u005c\\u005cadmin-pc\\u005cADMIN$\",\"share_type\":\"DISK\"}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:frSsUiYgD+uBHzydZ1SvAgBSHSA=",
+        "protocol": "smb",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "192.168.33.187",
+          "192.168.149.192"
+        ]
+      },
+      "source": {
+        "address": "192.168.33.187",
+        "ip": "192.168.33.187",
+        "port": 49239
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "session_id": "C9YAaEzWLL62yWMn5",
+        "smb_mapping": {
+          "path": "\\\\admin-pc\\ADMIN$",
+          "share_type": "DISK"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2391178399.576613,\"uid\":\"C9YAaEzWLL62yWMn5\",\"id.orig_h\":\"192.168.33.187\",\"id.orig_p\":49239,\"id.resp_h\":\"192.168.149.192\",\"id.resp_p\":445,\"path\":\"\\u005c\\u005cadmin-pc\\u005cADMIN$\",\"share_type\":\"DISK\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "smb_mapping",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-smb_mapping-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

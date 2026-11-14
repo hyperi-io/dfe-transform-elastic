@@ -92,9 +92,7 @@ impl Transform for Default {
 
             let _cond = { event.get("_tmp").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script
-                // Source: ctx._tmp?.values().removeIf(value -> value == \"-\");
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(r#"ctx._tmp?.values().removeIf(value -> value == \"-\");"#),
@@ -106,9 +104,7 @@ impl Transform for Default {
                     && event.get("_tmp.time_ms").is_some_and(|v| v.is_number())
             };
             if _cond {
-                // Painless script
-                // Source: ctx[\"@timestamp\"] = new Date(ctx._tmp.time_s * 1000 + ctx._tmp.time_ms);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -119,8 +115,7 @@ impl Transform for Default {
 
             let _cond = { event.get("_tmp.elapsed").is_some_and(|v| v.is_number()) };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event[\"duration\"] = ctx._tmp.elapsed * 1000000;
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new("_tmp.elapsed", "event.duration", Factor::Long(1000000)),

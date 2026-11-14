@@ -1,0 +1,64 @@
+{
+    "events": [
+        {
+            "message": {
+                "id": "e8be5b4d-a941-48c4-a389-6341cd257c0d",
+                "name": "OT Device #966",
+                "firstSeen": "2052-06-25T17:38:44.422095Z",
+                "lastSeen": "2053-02-25T04:54:57.955813Z",
+                "lastHit": "2053-02-25T01:14:13.485511Z",
+                "lastSnapshot": null,
+                "macs": {
+                    "nodes": [
+                        "a3:98:b5:a9:b5:43"
+                    ]
+                },
+                "ips": {
+                    "nodes": [
+                        "192.0.2.218"
+                    ]
+                },
+                "segments": {
+                    "nodes": [
+                        {
+                            "id": "452a4420-0fd8-4f40-ada5-b44735afbf20",
+                            "name": "OtDevice / 172.26.23.X",
+                            "type": "Filter",
+                            "archived": false,
+                            "system": true,
+                            "key": "AG1-633",
+                            "lastModifiedDate": null,
+                            "lastModifiedBy": null,
+                            "policies": {
+                                "nodes": []
+                            },
+                            "queries": {
+                                "nodes": []
+                            }
+                        }
+                    ]
+                },
+                "type": "OtDevice",
+                "superType": "OtDevice",
+                "category": "NetworkAssetsCategory",
+                "purdueLevel": "Level2",
+                "runStatus": "Unknown",
+                "runStatusTime": "0001-01-01T00:00:00Z",
+                "risk": {
+                    "totalRisk": "35.40130597317059"
+                },
+                "criticality": "MediumCriticality",
+                "hidden": false,
+                "lastUpdate": "2052-06-25T17:38:47.67543Z",
+                "directIps": {
+                    "nodes": [
+                        "192.0.2.218"
+                    ]
+                },
+                "directMacs": {
+                    "nodes": []
+                }
+            }
+        }
+    ]
+}

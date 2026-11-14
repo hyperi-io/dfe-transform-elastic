@@ -1,0 +1,122 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:03:27.709Z",
+            "log": {
+                "level": "information",
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4722_Account_Enabled.xml"
+                }
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "dc7c4198-83b5-441d-bfcd-19b01e4958b7"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "winlog": {
+                "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+                "channel": "Security",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "computer_name": "SOV-86VA2XP94FG",
+                "time_created": "2047-09-06T13:28:46.163Z",
+                "outcome": "success",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 2815,
+                "process": {
+                    "thread": {
+                        "id": 820
+                    },
+                    "pid": 780
+                },
+                "event_id": 4722,
+                "opcode": "Info",
+                "event_data": {
+                    "SubjectDomainName": "SOV-86VA2XP94FG",
+                    "SubjectLogonId": "0x264b2",
+                    "TargetUserName": "dverugdhn",
+                    "TargetDomainName": "SOV-86VA2XP94FG",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1000",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator"
+                },
+                "keywords": [
+                    "Audit Success"
+                ],
+                "level": "information"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4722,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            }
+        },
+        {
+            "@timestamp": "2049-04-15T19:03:27.709Z",
+            "event": {
+                "kind": "event",
+                "code": 4722,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "level": "information",
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4722_Account_Enabled.xml"
+                }
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "agent": {
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "dc7c4198-83b5-441d-bfcd-19b01e4958b7",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain"
+            },
+            "winlog": {
+                "process": {
+                    "pid": 780,
+                    "thread": {
+                        "id": 532
+                    }
+                },
+                "record_id": 2826,
+                "computer_name": "SOV-86VA2XP94FG",
+                "opcode": "Info",
+                "time_created": "2047-09-06T13:29:08.573Z",
+                "event_data": {
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1006",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "SubjectDomainName": "SOV-86VA2XP94FG",
+                    "SubjectLogonId": "0x264b2",
+                    "TargetUserName": "clckpvdht1519",
+                    "TargetDomainName": "SOV-86VA2XP94FG"
+                },
+                "channel": "Security",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+                "event_id": 4722,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "level": "information"
+            }
+        }
+    ]
+}

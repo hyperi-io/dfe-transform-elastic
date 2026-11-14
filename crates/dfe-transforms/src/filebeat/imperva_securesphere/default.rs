@@ -654,9 +654,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: if (ctx.cef?.extensions instanceof Map) {\n  boolean hasCustomString = true;\n  for (int i = 7; i <= 21 && hasCustomString; i++) {\n    String key = \"cs\" + i;\n    String labelKey = key + \"Label\";\n    if (ctx.cef.extensions.containsKey(key) || ctx.cef.extensions.containsKey(labelKey)) {\n      String newKey = \"custom_string\" + i;\n      ctx.imperva.securesphere.device[newKey] = [:];\n\n      if (ctx.cef.extensions.containsKey(key)) {\n        ctx.imperva.securesphere.device[newKey][\"value\"] = ctx.cef.extensions[key];\n      }\n      if (ctx.cef.extensions.containsKey(labelKey)) {\n        ctx.imperva.securesphere.device[newKey][\"label\"] = ctx.cef.extensions[labelKey];\n      }\n\n    } else {\n      // Let it break the loop if the key is not found.\n      hasCustomString = false;\n    }\n  }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -711,8 +709,7 @@ impl Transform for Default {
                 event.remove("imperva.securesphere.source.user_name");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

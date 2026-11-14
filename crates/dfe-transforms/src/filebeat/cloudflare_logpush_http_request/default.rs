@@ -109,9 +109,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: def convertToMillis(long timestamp) {\n  if (timestamp > (long)(1e18)) {\n    return timestamp/(long)(1e6)\n  } else if (timestamp < (long)(1e10))  {\n    return timestamp*(long)(1e3)\n  }\n  return timestamp\n}\nif (ctx.json?.EdgeStartTimestamp != null && ctx.json.EdgeStartTimestamp instanceof Number) {\n  ctx.json.EdgeStartTimestamp = convertToMillis(ctx.json.EdgeStartTimestamp);\n}\nif (ctx.json?.EdgeEndTimestamp != null && ctx.json.EdgeEndTimestamp instanceof Number) {\n  ctx.json.EdgeEndTimestamp = convertToMillis(ctx.json.EdgeEndTimestamp);\n}\nif (ctx.json?.Datetime != null && ctx.json.Datetime instanceof Number) {\n  ctx.json.Datetime = convertToMillis(ctx.json.Datetime);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3585,8 +3583,7 @@ impl Transform for Default {
                 event.remove("cloudflare_logpush.http_request.client.request.referer");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || v == 'N/A' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

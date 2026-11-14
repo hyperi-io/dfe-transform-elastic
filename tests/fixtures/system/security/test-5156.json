@@ -1,0 +1,55 @@
+{
+    "events": [
+        {
+            "event": {
+                "code": "5156",
+                "kind": "event",
+                "outcome": "success",
+                "provider": "Microsoft-Windows-Security-Auditing"
+            },
+            "host": {
+                "name": "CTSNMNEZ1.egmukjj.com"
+            },
+            "log": {
+                "level": "information"
+            },
+            "winlog": {
+                "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+                "channel": "Security",
+                "computer_name": "CTSNMNEZ1.egmukjj.com",
+                "event_data": {
+                    "SourceAddress": "10.26.228.122",
+                    "LayerName": "%%14611",
+                    "DestPort": "389",
+                    "FilterRTID": "67993",
+                    "RemoteMachineID": "S-1-0-0",
+                    "RemoteUserID": "S-1-0-0",
+                    "SourcePort": "49691",
+                    "Direction": "%%14593",
+                    "InterfaceIndex": "14",
+                    "LayerRTID": "48",
+                    "ProcessID": "3032",
+                    "Protocol": "6",
+                    "FilterOrigin": "Unknown",
+                    "DestAddress": "10.74.193.137",
+                    "Application": "\\device\\harddiskvolume3\\windows\\system32\\dsregcmd.exe"
+                },
+                "event_id": "5156",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "process": {
+                    "pid": 924,
+                    "thread": {
+                        "id": 12672
+                    }
+                },
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 7959006,
+                "time_created": "2051-01-17T22:18:03.5577972Z"
+            }
+        }
+    ]
+}

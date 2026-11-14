@@ -1,0 +1,305 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-01-25T15:14:39.460Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:13.477332082Z",
+        "original": "2052-01-25T15:14:39.460Z,Inbound Proxy Internal Send Connector,08DC1DB8591B22A0,0,,10.207.243.61:2525,*,None,Set Session Permissions"
+      },
+      "log": {
+        "file": {
+          "path": "SmtpSend"
+        }
+      },
+      "message": "2052-01-25T15:14:39.460Z,Inbound Proxy Internal Send Connector,08DC1DB8591B22A0,0,,10.207.243.61:2525,*,None,Set Session Permissions",
+      "microsoft": {
+        "exchange": {
+          "connectorid": "Inbound Proxy Internal Send Connector",
+          "context": "Set Session Permissions",
+          "data": "None",
+          "event": "*",
+          "logtype": "smtpsend",
+          "remoteendpoint": "10.207.243.61:2525",
+          "sequencenumber": 0,
+          "sessionid": "08DC1DB8591B22A0"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-01-25T15:14:39.460Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:13.477348403Z",
+        "original": "2052-01-25T15:14:39.460Z,Inbound Proxy Internal Send Connector,08DC1DB8591B22A0,1,,10.207.243.61:2525,*,,attempting to connect"
+      },
+      "log": {
+        "file": {
+          "path": "SmtpSend"
+        }
+      },
+      "message": "2052-01-25T15:14:39.460Z,Inbound Proxy Internal Send Connector,08DC1DB8591B22A0,1,,10.207.243.61:2525,*,,attempting to connect",
+      "microsoft": {
+        "exchange": {
+          "connectorid": "Inbound Proxy Internal Send Connector",
+          "context": "attempting to connect",
+          "event": "*",
+          "logtype": "smtpsend",
+          "remoteendpoint": "10.207.243.61:2525",
+          "sequencenumber": 1,
+          "sessionid": "08DC1DB8591B22A0"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-01-25T15:14:40.508Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:13.477351553Z",
+        "original": "2052-01-25T15:14:40.508Z,Inbound Proxy Internal Send Connector,08DC1DB8591B229F,2,,10.207.243.61:2525,*,,\"Failed to connect. Winsock error code: 10061, Win32 error code: 10061, Destination domain: internalproxy, Error Message: No connection could be made because the target machine actively refused it 10.207.243.61:2525.\""
+      },
+      "log": {
+        "file": {
+          "path": "SmtpSend"
+        }
+      },
+      "message": "2052-01-25T15:14:40.508Z,Inbound Proxy Internal Send Connector,08DC1DB8591B229F,2,,10.207.243.61:2525,*,,\"Failed to connect. Winsock error code: 10061, Win32 error code: 10061, Destination domain: internalproxy, Error Message: No connection could be made because the target machine actively refused it 10.207.243.61:2525.\"",
+      "microsoft": {
+        "exchange": {
+          "connectorid": "Inbound Proxy Internal Send Connector",
+          "context": "Failed to connect. Winsock error code: 10061, Win32 error code: 10061, Destination domain: internalproxy, Error Message: No connection could be made because the target machine actively refused it 10.207.243.61:2525.",
+          "event": "*",
+          "logtype": "smtpsend",
+          "remoteendpoint": "10.207.243.61:2525",
+          "sequencenumber": 2,
+          "sessionid": "08DC1DB8591B229F"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-01-25T15:14:39.026Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:13.477353333Z",
+        "original": "2052-01-25T15:14:39.026Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229A,1,10.207.243.61:25,10.87.246.155:53228,>,\"220 my-mail.my.domain.tld Microsoft ESMTP MAIL Service ready at Thu, 25 Jan 2024 16:14:38 +0100\","
+      },
+      "log": {
+        "file": {
+          "path": "SmtpRecive"
+        }
+      },
+      "message": "2052-01-25T15:14:39.026Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229A,1,10.207.243.61:25,10.87.246.155:53228,>,\"220 my-mail.my.domain.tld Microsoft ESMTP MAIL Service ready at Thu, 25 Jan 2024 16:14:38 +0100\",",
+      "microsoft": {
+        "exchange": {
+          "connectorid": "NETBIOS\\Default Frontend NETBIOS",
+          "data": "220 my-mail.my.domain.tld Microsoft ESMTP MAIL Service ready at Thu, 25 Jan 2024 16:14:38 +0100",
+          "event": ">",
+          "localendpoint": "10.207.243.61:25",
+          "remoteendpoint": "10.87.246.155:53228",
+          "sequencenumber": 1,
+          "sessionid": "08DC1DB8591B229A"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-01-25T15:14:39.026Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:13.477358123Z",
+        "original": "2052-01-25T15:14:39.026Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229B,0,10.207.243.61:25,10.87.246.155:53230,+,,"
+      },
+      "log": {
+        "file": {
+          "path": "SmtpRecive"
+        }
+      },
+      "message": "2052-01-25T15:14:39.026Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229B,0,10.207.243.61:25,10.87.246.155:53230,+,,",
+      "microsoft": {
+        "exchange": {
+          "connectorid": "NETBIOS\\Default Frontend NETBIOS",
+          "event": "+",
+          "localendpoint": "10.207.243.61:25",
+          "remoteendpoint": "10.87.246.155:53230",
+          "sequencenumber": 0,
+          "sessionid": "08DC1DB8591B229B"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-01-25T15:14:39.031Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:13.477359933Z",
+        "original": "2052-01-25T15:14:39.031Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229A,2,10.207.243.61:25,10.87.246.155:53228,<,EHLO mgt.my.domain.tld,"
+      },
+      "log": {
+        "file": {
+          "path": "SmtpRecive"
+        }
+      },
+      "message": "2052-01-25T15:14:39.031Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229A,2,10.207.243.61:25,10.87.246.155:53228,<,EHLO mgt.my.domain.tld,",
+      "microsoft": {
+        "exchange": {
+          "connectorid": "NETBIOS\\Default Frontend NETBIOS",
+          "data": "EHLO mgt.my.domain.tld",
+          "event": "<",
+          "localendpoint": "10.207.243.61:25",
+          "remoteendpoint": "10.87.246.155:53228",
+          "sequencenumber": 2,
+          "sessionid": "08DC1DB8591B229A"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-01-25T15:14:39.066Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:13.477361493Z",
+        "original": "2052-01-25T15:14:39.066Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229B,1,10.207.243.61:25,10.87.246.155:53230,>,\"220 my-mail.my.domain.tld Microsoft ESMTP MAIL Service ready at Thu, 25 Jan 2024 16:14:38 +0100\","
+      },
+      "log": {
+        "file": {
+          "path": "SmtpRecive"
+        }
+      },
+      "message": "2052-01-25T15:14:39.066Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229B,1,10.207.243.61:25,10.87.246.155:53230,>,\"220 my-mail.my.domain.tld Microsoft ESMTP MAIL Service ready at Thu, 25 Jan 2024 16:14:38 +0100\",",
+      "microsoft": {
+        "exchange": {
+          "connectorid": "NETBIOS\\Default Frontend NETBIOS",
+          "data": "220 my-mail.my.domain.tld Microsoft ESMTP MAIL Service ready at Thu, 25 Jan 2024 16:14:38 +0100",
+          "event": ">",
+          "localendpoint": "10.207.243.61:25",
+          "remoteendpoint": "10.87.246.155:53230",
+          "sequencenumber": 1,
+          "sessionid": "08DC1DB8591B229B"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "log": {
+        "file": {
+          "path": "SmtpSend"
+        }
+      },
+      "message": "2052-01-25T15:14:39.460Z,Inbound Proxy Internal Send Connector,08DC1DB8591B22A0,0,,10.207.243.61:2525,*,None,Set Session Permissions",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "log": {
+        "file": {
+          "path": "SmtpSend"
+        }
+      },
+      "message": "2052-01-25T15:14:39.460Z,Inbound Proxy Internal Send Connector,08DC1DB8591B22A0,1,,10.207.243.61:2525,*,,attempting to connect",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "log": {
+        "file": {
+          "path": "SmtpSend"
+        }
+      },
+      "message": "2052-01-25T15:14:40.508Z,Inbound Proxy Internal Send Connector,08DC1DB8591B229F,2,,10.207.243.61:2525,*,,\"Failed to connect. Winsock error code: 10061, Win32 error code: 10061, Destination domain: internalproxy, Error Message: No connection could be made because the target machine actively refused it 10.207.243.61:2525.\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "log": {
+        "file": {
+          "path": "SmtpRecive"
+        }
+      },
+      "message": "2052-01-25T15:14:39.026Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229A,1,10.207.243.61:25,10.87.246.155:53228,>,\"220 my-mail.my.domain.tld Microsoft ESMTP MAIL Service ready at Thu, 25 Jan 2024 16:14:38 +0100\",",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "log": {
+        "file": {
+          "path": "SmtpRecive"
+        }
+      },
+      "message": "2052-01-25T15:14:39.026Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229B,0,10.207.243.61:25,10.87.246.155:53230,+,,",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "log": {
+        "file": {
+          "path": "SmtpRecive"
+        }
+      },
+      "message": "2052-01-25T15:14:39.031Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229A,2,10.207.243.61:25,10.87.246.155:53228,<,EHLO mgt.my.domain.tld,",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "log": {
+        "file": {
+          "path": "SmtpRecive"
+        }
+      },
+      "message": "2052-01-25T15:14:39.066Z,NETBIOS\\Default Frontend NETBIOS,08DC1DB8591B229B,1,10.207.243.61:25,10.87.246.155:53230,>,\"220 my-mail.my.domain.tld Microsoft ESMTP MAIL Service ready at Thu, 25 Jan 2024 16:14:38 +0100\",",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "smtp",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-microsoft_exchange_server-smtp-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "microsoft_exchange_server",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

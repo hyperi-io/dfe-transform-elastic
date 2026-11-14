@@ -251,9 +251,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.watchguard_firebox?.log?.msg_id == null || params.get(ctx.watchguard_firebox.log.msg_id) == null) {\n  return;\n}\nparams.get(ctx.watchguard_firebox.log.msg_id).forEach((k, v) -> {\n  if (k.equals(\"log_type\")) {\n    ctx.watchguard_firebox.log[k] = v;\n  } else if (v instanceof List) {\n    ctx.event[k] = new ArrayList(v);\n  } else {\n    ctx.event[k] = v;\n  }\n});
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -15315,9 +15313,7 @@ impl Transform for Default {
                     })();
                     let _cond = { event.get("_temp").is_some_and(|v| v.is_string()) };
                     if _cond {
-                        // Painless script
-                        // Source: def kvStart = 0; def kvSplit = 0; def inQuote = false;\nPattern quotePattern = /^\\\"|\\\"$/;\nfor (int i = 0, n = ctx[\"_temp\"].length(); i < n; ++i) {\n  char c = ctx[\"_temp\"].charAt(i);\n  char c2 = i < n - 1 ? ctx[\"_temp\"].charAt(i + 1) : 0;\n\n  if (c == (char)'\"') {\n    if (inQuote && (c2 == 0 || c2 == (char)' ' || c2 == (char)':')) {\n      inQuote = false;\n    } else {\n      inQuote = true;\n    }\n  }\n  if (inQuote) {\n    continue;\n  }\n  if (c == (char)'=') {\n    kvSplit = i;\n  }\n  if (c == (char)'\"' || c == (char)' ' || c2 == 0) {\n    if (i != kvStart) {\n      def endIndex = i == n - 1 ? i + 1 : i;\n      def key = ctx[\"_temp\"].substring(kvStart, kvSplit);\n      def value = quotePattern.matcher(ctx[\"_temp\"].substring(kvSplit + 1, endIndex)).replaceAll(\"\");\n\n      if (key != '') {\n        ctx.watchguard_firebox.log.put(key, value);\n      }\n    }\n\n    kvStart = i + 1;\n    kvSplit = i + 1;\n  }\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -15756,8 +15752,7 @@ impl Transform for Default {
                     }
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: if (ctx.network == null) {\n  ctx.network = new HashMap();\n} if (ctx.source.bytes != null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes\n} else if (ctx.source.bytes == null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.destination.bytes\n} else if (ctx.source.bytes != null && ctx.destination.bytes == null) {\n  ctx.network.bytes = ctx.source.bytes\n}
+                        // The pipeline's script, emitted as the runtime's equivalent
                         sum_directions(event, &["bytes"]);
                         Ok(())
                     })();
@@ -16270,8 +16265,7 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("watchguard_firebox.log.duration") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: if (ctx.event == null) {\n  HashMap hm = new HashMap();\n  ctx.put('event', hm);\n} ctx.event.duration = ctx.watchguard_firebox.log.duration * 1000000000;
+                        // The pipeline's script, emitted as the runtime's equivalent
                         scale_field(
                             event,
                             &ScaleField::new(
@@ -18188,8 +18182,7 @@ impl Transform for Default {
                 event.remove("watchguard_firebox.log.syslog_timestamp");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

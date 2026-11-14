@@ -53,9 +53,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def flatTags = []; for (def t : ctx.tags) {\n  if (t instanceof Map && t.containsKey('name')) {\n    flatTags.add(t.name);\n  } else {\n    flatTags.add(t.toString());\n  }\n} ctx.tags = flatTags;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -68,9 +66,7 @@ impl Transform for Default {
 
             let _cond = { event.get("severity").is_some_and(|v| v.is_string()) };
             if _cond {
-                // Painless script
-                // Source: def s = ctx.severity.toLowerCase(); if (ctx.event == null) { ctx.event = [:]; } if (ctx.labels == null) { ctx.labels = [:]; }\nif (s == 'high') { \n  ctx.event.severity = 1; \n  ctx.labels.severity = 'High';\n} else if (s == 'medium') { \n  ctx.event.severity = 3; \n  ctx.labels.severity = 'Medium';\n} else if (s == 'low') { \n  ctx.event.severity = 5; \n  ctx.labels.severity = 'Low';\n} else { \n  ctx.event.severity = 5; \n  ctx.labels.severity = 'Unknown';\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -776,8 +772,7 @@ impl Transform for Default {
             event.remove("last_activity_timestamp");
             event.remove("created_at");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

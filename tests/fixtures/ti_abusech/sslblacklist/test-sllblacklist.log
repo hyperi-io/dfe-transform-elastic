@@ -1,0 +1,10 @@
+{"reason":"HijackLoader C&C","sha1":"440b673de1e1e1d61dc72a9ef864fb2862126ae2","ts":"2053-06-25T06:50:28Z"}
+{"reason":"ACRStealer C&C","sha1":"746b1359e7a5f4c32763db1c0e1a3f94e96783dc","ts":"2053-06-25T06:26:43Z"}
+{"reason":"QuasarRAT C&C","sha1":"d685c0b735afb1540ab1c74790b22f53fb970433","ts":"2053-06-25T06:24:44Z"}
+{"reason":"ResolverRAT C&C","sha1":"c469540cf038f80ddd4f5a40d2d859f708230568","ts":"2053-06-24T05:56:41Z"}
+{"reason":"ConnectWise C&C","sha1":"15f623202b498f30a88acd03a862251c243ea573","ts":"2053-06-24T05:31:47Z"}
+{"reason":"Havoc C&C","sha1":"d30400a239bec174b6fea5087249d236af9aa2db","ts":"2053-06-24T05:31:22Z"}
+{"reason":"AsyncRAT C&C","sha1":"e0c35b696ff15e1e23c0ba8f7a70431c22030a87","ts":"2053-06-24T05:31:06Z"}
+{"reason":"QuasarRAT C&C","sha1":"45f8004f2846c092d0c2e70227a43a515c86301a","ts":"2053-06-24T05:30:45Z"}
+{"reason":"QuasarRAT C&C","sha1":"156e0266d3be8b23e28c7253d0bb8855fbb9fd61","ts":"2053-06-24T05:30:41Z"}
+{"reason":"OffLoader C&C","sha1":"e571afd02df564c99d4a3fd660341d3ba0b1978e","ts":"2053-06-24T05:29:44Z"}

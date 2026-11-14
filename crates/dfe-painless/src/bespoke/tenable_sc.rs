@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `tenable_sc`'s asset, plugin and vulnerability scripts, transcribed.
+//! `tenable_sc`'s asset, plugin and vulnerability scripts, as the runtime runs them.
 //!
 //! Two of these matter more than they look: the vendor names the fields its
 //! own record is keyed by in a `uniqueness` string, so the key is assembled by
@@ -168,7 +168,7 @@ fn vulnerability_reference(event: &mut Event, _params: &Value) {
     );
 }
 
-/// Every `tenable_sc` script transcribed here.
+/// Every `tenable_sc` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "6b96f6739e95ba65ba9ddc8164987343fed09cc9933a23512f6404cebcabe74e",

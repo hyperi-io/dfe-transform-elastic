@@ -1,0 +1,133 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-platformlogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2020-11-03T09:06:42.000Z",
+      "agent": {
+        "ephemeral_id": "99d3ec59-35be-43a1-aa2f-cb12fb087ec0",
+        "id": "3c1bd107-f478-4ed9-bd29-81fdf4a82c53",
+        "name": "8643b9678fd7",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "azure": {
+        "platformlogs": {
+          "ActivityId": "38fa689a-e57c-423d-be1b-ecf506fd61e2",
+          "Caller": "Portal",
+          "Environment": "PROD",
+          "EventTimeString": "11/3/2020 9:06:42 AM +00:00",
+          "ScaleUnit": "PROD-AM3-AZ501",
+          "category": "OperationalLogs",
+          "event_category": "Administrative",
+          "properties": {
+            "Namespace": "obstesteventhubs",
+            "SubscriptionId": "1943492e-c5f0-42fa-80b4-4c5ad58c5efa"
+          },
+          "status": "Succeeded"
+        },
+        "resource": {
+          "group": "OBS-TEST",
+          "id": "/SUBSCRIPTIONS/1943492E-C5F0-42FA-80B4-4C5AD58C5EFA/RESOURCEGROUPS/OBS-TEST/PROVIDERS/MICROSOFT.EVENTHUB/NAMESPACES/OBSTESTEVENTHUBS",
+          "name": "OBSTESTEVENTHUBS",
+          "provider": "MICROSOFT.EVENTHUB/NAMESPACES"
+        },
+        "subscription_id": "1943492E-C5F0-42FA-80B4-4C5AD58C5EFA"
+      },
+      "cloud": {
+        "provider": "azure",
+        "region": "West Europe"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Retreive ConsumerGroup",
+        "dataset": "azure.platformlogs",
+        "kind": "event",
+        "module": "azure",
+        "original": "{\"ActivityId\":\"38fa689a-e57c-423d-be1b-ecf506fd61e2\",\"Caller\":\"Portal\",\"Environment\":\"PROD\",\"EventName\":\"Retreive ConsumerGroup\",\"EventProperties\":\"{\\\"SubscriptionId\\\":\\\"1943492e-c5f0-42fa-80b4-4c5ad58c5efa\\\",\\\"Namespace\\\":\\\"obstesteventhubs\\\"}\",\"EventTimeString\":\"11/3/2020 9:06:42 AM +00:00\",\"Region\":\"West Europe\",\"ScaleUnit\":\"PROD-AM3-AZ501\",\"Status\":\"Succeeded\",\"category\":\"OperationalLogs\",\"resourceId\":\"/SUBSCRIPTIONS/1943492E-C5F0-42FA-80B4-4C5AD58C5EFA/RESOURCEGROUPS/OBS-TEST/PROVIDERS/MICROSOFT.EVENTHUB/NAMESPACES/OBSTESTEVENTHUBS\"}",
+        "outcome": "success"
+      },
+      "fileset": {
+        "name": "platformlogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-platformlogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-04T03:45:12.535Z",
+      "agent": {
+        "ephemeral_id": "99d3ec59-35be-43a1-aa2f-cb12fb087ec0",
+        "id": "3c1bd107-f478-4ed9-bd29-81fdf4a82c53",
+        "name": "8643b9678fd7",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "azure.platformlogs",
+        "module": "azure"
+      },
+      "fileset": {
+        "name": "platformlogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "{\"ActivityId\":\"38fa689a-e57c-423d-be1b-ecf506fd61e2\",\"Caller\":\"Portal\",\"Environment\":\"PROD\",\"EventName\":\"Retreive ConsumerGroup\",\"EventProperties\":\"{\\\"SubscriptionId\\\":\\\"1943492e-c5f0-42fa-80b4-4c5ad58c5efa\\\",\\\"Namespace\\\":\\\"obstesteventhubs\\\"}\",\"EventTimeString\":\"11/3/2020 9:06:42 AM +00:00\",\"Region\":\"West Europe\",\"ScaleUnit\":\"PROD-AM3-AZ501\",\"Status\":\"Succeeded\",\"category\":\"OperationalLogs\",\"resourceId\":\"/SUBSCRIPTIONS/1943492E-C5F0-42FA-80B4-4C5AD58C5EFA/RESOURCEGROUPS/OBS-TEST/PROVIDERS/MICROSOFT.EVENTHUB/NAMESPACES/OBSTESTEVENTHUBS\"}",
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "platformlogs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-platformlogs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

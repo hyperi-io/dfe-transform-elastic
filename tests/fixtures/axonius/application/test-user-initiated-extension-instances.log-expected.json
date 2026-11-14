@@ -1,0 +1,183 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-05-26T00:01:44.000Z",
+      "axonius": {
+        "application": {
+          "accurate_for_datetime": "2026-05-26T00:01:44.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "azure_ad_adapter"
+          ],
+          "app_id": "Dc4BA8FbB6B934216b9c",
+          "application_and_account_name": "microsoft/azure_ad-demo",
+          "asset_type": "user_initiated_extension_instances",
+          "association_scope": "Specific User",
+          "event": {
+            "adapter_categories": [
+              "Directory",
+              "IAM",
+              "SaaS Management"
+            ],
+            "client_used": "67fd09bbfe1c8e812a176bb5",
+            "initial_plugin_unique_name": "azure_ad_adapter_0",
+            "plugin_name": "azure_ad_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "azure_ad_adapter_0",
+            "quick_id": "azure_ad_adapter_0!40e4eecb83b652212f98",
+            "type": "entitydata"
+          },
+          "extension_type": "User Consent",
+          "fetch_time": "2026-05-26T00:01:09.000Z",
+          "first_fetch_time": "2025-12-14T16:49:34.000Z",
+          "from_last_fetch": true,
+          "id": "40e4eecb83b652212f98",
+          "id_raw": "D11Dd10eABBe24F8Db1A/Dc4BA8FbB6B934216b9c",
+          "integration_type": "User Initiated",
+          "internal_axon_id": "8df33df0fac189906459f18314b5bc5d",
+          "is_fetched_from_adapter": true,
+          "is_operational": true,
+          "last_access": "2025-11-19T02:13:02.000Z",
+          "last_fetch_connection_id": "67fd09bbfe1c8e812a176bb5",
+          "last_fetch_connection_label": "azure_ad-demo",
+          "name": "Jira Cloud for Excel",
+          "never_accessed": false,
+          "not_fetched_count": 0,
+          "permissions": [
+            {
+              "name": "offline_access"
+            },
+            {
+              "alias": "Write Files Drive",
+              "hash_id": "AJbuNnBc/JoPDXIe",
+              "name": "Files.ReadWrite",
+              "scope_tag": "Drive"
+            },
+            {
+              "name": "User.Read"
+            },
+            {
+              "is_admin": false,
+              "name": "allow_language_selection"
+            },
+            {
+              "is_admin": false,
+              "name": "allow_user_modification"
+            },
+            {
+              "is_admin": false,
+              "name": "allow_account_management"
+            }
+          ],
+          "related_vendor_name": "Jira",
+          "sm_entity_type": "user_extension",
+          "source_application": "Microsoft",
+          "tenant_number": [
+            1
+          ],
+          "transform_unique_id": "8U2g7T68RSoXHIOfMGIgWZvFT4A=",
+          "type": "UserExtensions",
+          "user_account": {
+            "remote_id": "6c86b919-8c0e-4a6e-8128-b2dc2a43eb69"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "created": "2025-01-11T10:55:57.000Z",
+        "kind": "event",
+        "original": "{\"asset_type\":\"user_initiated_extension_instances\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:44 GMT\",\"adapter_categories\":[\"Directory\",\"IAM\",\"SaaS Management\"],\"client_used\":\"67fd09bbfe1c8e812a176bb5\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:44 GMT\",\"app_id\":\"Dc4BA8FbB6B934216b9c\",\"application_and_account_name\":\"microsoft/azure_ad-demo\",\"association_scope\":\"Specific User\",\"created\":\"Sat, 11 Jan 2025 10:55:57 GMT\",\"extension_type\":\"User Consent\",\"fetch_time\":\"Tue, 26 May 2026 00:01:09 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:49:34 GMT\",\"from_last_fetch\":true,\"id\":\"40e4eecb83b652212f98\",\"id_raw\":\"D11Dd10eABBe24F8Db1A/Dc4BA8FbB6B934216b9c\",\"integration_type\":\"User Initiated\",\"is_fetched_from_adapter\":true,\"is_operational\":true,\"last_access\":\"Wed, 19 Nov 2025 02:13:02 GMT\",\"last_fetch_connection_id\":\"67fd09bbfe1c8e812a176bb5\",\"last_fetch_connection_label\":\"azure_ad-demo\",\"name\":\"Jira Cloud for Excel\",\"never_accessed\":false,\"not_fetched_count\":0,\"permissions\":[{\"name\":\"offline_access\"},{\"alias\":\"Write Files Drive\",\"hash_id\":\"AJbuNnBc/JoPDXIe\",\"name\":\"Files.ReadWrite\",\"scope_tag\":\"Drive\"},{\"name\":\"User.Read\"},{\"is_admin\":false,\"name\":\"allow_language_selection\"},{\"is_admin\":false,\"name\":\"allow_user_modification\"},{\"is_admin\":false,\"name\":\"allow_account_management\"}],\"related_vendor_name\":\"Jira\",\"sm_entity_type\":\"user_extension\",\"source_application\":\"Microsoft\",\"tenant_number\":[\"1\"],\"type\":\"UserExtensions\",\"user_account\":{\"email\":\"oetzq.znwcsek@abui.local\",\"remote_id\":\"6c86b919-8c0e-4a6e-8128-b2dc2a43eb69\",\"username\":\"oetzq.znwcsek@abui.local\"}},\"initial_plugin_unique_name\":\"azure_ad_adapter_0\",\"plugin_name\":\"azure_ad_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"azure_ad_adapter_0\",\"quick_id\":\"azure_ad_adapter_0!40e4eecb83b652212f98\",\"type\":\"entitydata\"},\"internal_axon_id\":\"8df33df0fac189906459f18314b5bc5d\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "oetzq.znwcsek@abui.local"
+        ]
+      },
+      "user": {
+        "domain": "abui.local",
+        "email": "oetzq.znwcsek@abui.local",
+        "name": "oetzq.znwcsek@abui.local"
+      }
+    },
+    {
+      "@timestamp": "2026-05-26T00:18:16.000Z",
+      "axonius": {
+        "application": {
+          "adapter_list_length": 1,
+          "adapters": [
+            "azure_ad_adapter"
+          ],
+          "asset_type": "user_initiated_extension_instances",
+          "event": {
+            "association_type": "Tag",
+            "entity": "user_extensions",
+            "hidden_for_gui": true,
+            "name": "static_analysis_0_UserCountSchema",
+            "plugin_name": "static_analysis",
+            "plugin_unique_name": "static_analysis_0_UserCountSchema",
+            "type": "adapterdata"
+          },
+          "internal_axon_id": "8df33df0fac189906459f18314b5bc5d",
+          "transform_unique_id": "zG+kn40aOV+vMTa2EQH35MJFTYc=",
+          "user_count": 1,
+          "user_count_link": [
+            {
+              "bracketWeight": 0,
+              "compOp": "equals",
+              "field": "specific_data.data.mail",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0,
+              "value": "oetzq.znwcsek@abui.local"
+            }
+          ]
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"asset_type\":\"user_initiated_extension_instances\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:18:16 GMT\",\"action_if_exists\":\"update\",\"associated_adapters\":[],\"association_type\":\"Tag\",\"data\":{\"user_count\":1,\"user_count_link\":[{\"bracketWeight\":0,\"compOp\":\"equals\",\"field\":\"specific_data.data.mail\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"oetzq.znwcsek@abui.local\"}]},\"entity\":\"user_extensions\",\"hidden_for_gui\":true,\"name\":\"static_analysis_0_UserCountSchema\",\"plugin_name\":\"static_analysis\",\"plugin_unique_name\":\"static_analysis_0_UserCountSchema\",\"type\":\"adapterdata\"},\"internal_axon_id\":\"8df33df0fac189906459f18314b5bc5d\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "oetzq.znwcsek@abui.local"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"asset_type\":\"user_initiated_extension_instances\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:44 GMT\",\"adapter_categories\":[\"Directory\",\"IAM\",\"SaaS Management\"],\"client_used\":\"67fd09bbfe1c8e812a176bb5\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:44 GMT\",\"app_id\":\"Dc4BA8FbB6B934216b9c\",\"application_and_account_name\":\"microsoft/azure_ad-demo\",\"association_scope\":\"Specific User\",\"created\":\"Sat, 11 Jan 2025 10:55:57 GMT\",\"extension_type\":\"User Consent\",\"fetch_time\":\"Tue, 26 May 2026 00:01:09 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:49:34 GMT\",\"from_last_fetch\":true,\"id\":\"40e4eecb83b652212f98\",\"id_raw\":\"D11Dd10eABBe24F8Db1A/Dc4BA8FbB6B934216b9c\",\"integration_type\":\"User Initiated\",\"is_fetched_from_adapter\":true,\"is_operational\":true,\"last_access\":\"Wed, 19 Nov 2025 02:13:02 GMT\",\"last_fetch_connection_id\":\"67fd09bbfe1c8e812a176bb5\",\"last_fetch_connection_label\":\"azure_ad-demo\",\"name\":\"Jira Cloud for Excel\",\"never_accessed\":false,\"not_fetched_count\":0,\"permissions\":[{\"name\":\"offline_access\"},{\"alias\":\"Write Files Drive\",\"hash_id\":\"AJbuNnBc/JoPDXIe\",\"name\":\"Files.ReadWrite\",\"scope_tag\":\"Drive\"},{\"name\":\"User.Read\"},{\"is_admin\":false,\"name\":\"allow_language_selection\"},{\"is_admin\":false,\"name\":\"allow_user_modification\"},{\"is_admin\":false,\"name\":\"allow_account_management\"}],\"related_vendor_name\":\"Jira\",\"sm_entity_type\":\"user_extension\",\"source_application\":\"Microsoft\",\"tenant_number\":[\"1\"],\"type\":\"UserExtensions\",\"user_account\":{\"email\":\"oetzq.znwcsek@abui.local\",\"remote_id\":\"6c86b919-8c0e-4a6e-8128-b2dc2a43eb69\",\"username\":\"oetzq.znwcsek@abui.local\"}},\"initial_plugin_unique_name\":\"azure_ad_adapter_0\",\"plugin_name\":\"azure_ad_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"azure_ad_adapter_0\",\"quick_id\":\"azure_ad_adapter_0!40e4eecb83b652212f98\",\"type\":\"entitydata\"},\"internal_axon_id\":\"8df33df0fac189906459f18314b5bc5d\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}"
+    },
+    {
+      "message": "{\"asset_type\":\"user_initiated_extension_instances\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:18:16 GMT\",\"action_if_exists\":\"update\",\"associated_adapters\":[],\"association_type\":\"Tag\",\"data\":{\"user_count\":1,\"user_count_link\":[{\"bracketWeight\":0,\"compOp\":\"equals\",\"field\":\"specific_data.data.mail\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"oetzq.znwcsek@abui.local\"}]},\"entity\":\"user_extensions\",\"hidden_for_gui\":true,\"name\":\"static_analysis_0_UserCountSchema\",\"plugin_name\":\"static_analysis\",\"plugin_unique_name\":\"static_analysis_0_UserCountSchema\",\"type\":\"adapterdata\"},\"internal_axon_id\":\"8df33df0fac189906459f18314b5bc5d\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}"
+    }
+  ],
+  "meta": {
+    "data_stream": "application",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-axonius-application-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "axonius",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

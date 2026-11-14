@@ -56,8 +56,7 @@ impl Transform for Default {
                     });
                 }
                 // Begin nested pipeline: "plaintext"
-                // Painless script, resolved to its runners at generation time
-                // Source: if (ctx.message.charAt(0) == (char)(\"[\")) {\n  ctx.temp_message = \"ACCESS \" + ctx.message;\n} else if (ctx.message.substring(0, 7) == \"ACCESS \") {\n  ctx.temp_message = ctx.message;\n} else {\n  throw new Exception(\"Not a valid envoyproxy access log\");\n}
+                // The pipeline's script, emitted as the runtime's equivalent
                 ensure_prefix(
                     event,
                     &EnsurePrefix::new(
@@ -234,9 +233,7 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "dissect")?;
-                    // Painless script
-                    // Source: ctx.remove('temp_message'); throw new Exception(\"Dissect error: Not a valid envoyproxy access log\");
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -252,8 +249,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("dest") };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: if (ctx.dest == \"-\") {\n  ctx.remove('dest');\n} else {\n  ctx['destination'] = new HashMap();\n  def p = ctx.dest.indexOf (':');\n  def l = ctx.dest.length();\n  ctx.destination.address = ctx.dest.substring(0, p);\n  ctx.destination.port = ctx.dest.substring(p+1, l);\n} ctx.remove('dest');
+                    // The pipeline's script, emitted as the runtime's equivalent
                     split_at_delimiter(
                         event,
                         &SplitAtDelimiter::new(
@@ -292,9 +288,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("duration") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.event.duration = Math.round(ctx.duration * params.scale)
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -317,8 +311,7 @@ impl Transform for Default {
                     // Begin nested pipeline: "http"
                     let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: ctx['http'] = new HashMap(); def p = ctx.proto.indexOf ('/'); def l = ctx.proto.length(); ctx.http.version = ctx.proto.substring(p+1, l);
+                        // The pipeline's script, emitted as the runtime's equivalent
                         event.set("http", json!({}))?;
                         split_at_delimiter(
                             event,
@@ -369,9 +362,7 @@ impl Transform for Default {
                             && event.get_str("upstream_service_time") != Some("-")
                     };
                     if _cond {
-                        // Painless script
-                        // Source: ctx.envoyproxy.log.upstream_service_time = Math.round(Double.parseDouble(ctx.upstream_service_time) * params.scale)
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -566,8 +557,7 @@ impl Transform for Default {
             };
             if _cond {
                 // Begin nested pipeline: "plaintext"
-                // Painless script, resolved to its runners at generation time
-                // Source: if (ctx.message.charAt(0) == (char)(\"[\")) {\n  ctx.temp_message = \"ACCESS \" + ctx.message;\n} else if (ctx.message.substring(0, 7) == \"ACCESS \") {\n  ctx.temp_message = ctx.message;\n} else {\n  throw new Exception(\"Not a valid envoyproxy access log\");\n}
+                // The pipeline's script, emitted as the runtime's equivalent
                 ensure_prefix(
                     event,
                     &EnsurePrefix::new(
@@ -744,9 +734,7 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "dissect")?;
-                    // Painless script
-                    // Source: ctx.remove('temp_message'); throw new Exception(\"Dissect error: Not a valid envoyproxy access log\");
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -762,8 +750,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("dest") };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: if (ctx.dest == \"-\") {\n  ctx.remove('dest');\n} else {\n  ctx['destination'] = new HashMap();\n  def p = ctx.dest.indexOf (':');\n  def l = ctx.dest.length();\n  ctx.destination.address = ctx.dest.substring(0, p);\n  ctx.destination.port = ctx.dest.substring(p+1, l);\n} ctx.remove('dest');
+                    // The pipeline's script, emitted as the runtime's equivalent
                     split_at_delimiter(
                         event,
                         &SplitAtDelimiter::new(
@@ -802,9 +789,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("duration") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.event.duration = Math.round(ctx.duration * params.scale)
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -827,8 +812,7 @@ impl Transform for Default {
                     // Begin nested pipeline: "http"
                     let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: ctx['http'] = new HashMap(); def p = ctx.proto.indexOf ('/'); def l = ctx.proto.length(); ctx.http.version = ctx.proto.substring(p+1, l);
+                        // The pipeline's script, emitted as the runtime's equivalent
                         event.set("http", json!({}))?;
                         split_at_delimiter(
                             event,
@@ -879,9 +863,7 @@ impl Transform for Default {
                             && event.get_str("upstream_service_time") != Some("-")
                     };
                     if _cond {
-                        // Painless script
-                        // Source: ctx.envoyproxy.log.upstream_service_time = Math.round(Double.parseDouble(ctx.upstream_service_time) * params.scale)
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -1247,8 +1229,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '' || o == '-') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

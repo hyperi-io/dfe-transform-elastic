@@ -1,0 +1,141 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:47.001441623Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": 77,
+          "deletion_scheduled_at": "2027-02-06T23:07:47.001441623Z",
+          "expiration_ts": "2048-03-15T05:39:19.436Z",
+          "feed_id": 0,
+          "id": "171795710",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": true,
+          "itype": "mal_email",
+          "meta": {
+            "severity": "low"
+          },
+          "owner_organization_id": 67,
+          "retina_confidence": -1,
+          "source_reported_confidence": 77,
+          "status": "inactive",
+          "threat_type": "malware",
+          "type": "email",
+          "update_id": "358592413",
+          "uuid": "95f5830f-1b8a-4948-aa37-8e779f17751b",
+          "value": "lbzm_ieiu_ufywkc@xcyx.com"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2047-12-16T05:39:19.547Z",
+        "kind": "enrichment",
+        "severity": 21,
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "user": [
+          "lbzm_ieiu_ufywkc@xcyx.com"
+        ]
+      },
+      "tags": [
+        "test_email_test"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "email": {
+            "address": "lbzm_ieiu_ufywkc@xcyx.com"
+          },
+          "marking": {
+            "tlp": "WHITE"
+          },
+          "modified_at": "2048-04-01T12:57:12.067Z",
+          "name": "lbzm_ieiu_ufywkc@xcyx.com",
+          "provider": "Analyst",
+          "type": "email-addr"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": 77,
+        "created_by": null,
+        "created_ts": "2047-12-16T05:39:19.547Z",
+        "description": null,
+        "expiration_ts": "2048-03-15T05:39:19.436Z",
+        "feed_id": 0,
+        "id": 171795710,
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": true,
+        "itype": "mal_email",
+        "locations": [],
+        "meta": {
+          "detail2": "bifocals_deactivated_on_2048-04-01_12:56:09.793344",
+          "severity": "low"
+        },
+        "modified_ts": "2048-04-01T12:57:12.067Z",
+        "org": "",
+        "owner_organization_id": 67,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/171795710/",
+        "retina_confidence": -1,
+        "sort": [
+          358592413
+        ],
+        "source": "Analyst",
+        "source_locations": [],
+        "source_reported_confidence": 77,
+        "status": "inactive",
+        "subtype": null,
+        "tags": [
+          {
+            "id": "c5n",
+            "name": "test_email_test"
+          }
+        ],
+        "target_industry": [],
+        "threat_type": "malware",
+        "threatscore": 16,
+        "tlp": null,
+        "trusted_circle_ids": null,
+        "type": "email",
+        "update_id": 358592413,
+        "uuid": "95f5830f-1b8a-4948-aa37-8e779f17751b",
+        "value": "lbzm_ieiu_ufywkc@xcyx.com",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

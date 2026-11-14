@@ -160,8 +160,7 @@ impl Transform for Default {
                 event.remove("forescout.event.command");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n\tmap.values().removeIf(v -> {\n\t\tif (v instanceof Map) {\n\t\t\thandleMap(v);\n\t\t} else if (v instanceof List) {\n\t\t\thandleList(v);\n\t\t}\n\t\treturn v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n\t});\n}\nvoid handleList(List list) {\n\tlist.removeIf(v -> {\n\t\tif (v instanceof Map) {\n\t\t\thandleMap(v);\n\t\t} else if (v instanceof List) {\n\t\t\thandleList(v);\n\t\t}\n\t\treturn v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n\t});\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

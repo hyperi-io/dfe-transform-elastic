@@ -1,0 +1,3938 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-04T15:09:09.872Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event",
+        "original": "new user: name=systemd-journal-remote, UID=107, GID=113, home=/run/systemd, shell=/usr/sbin/nologin, from=/dev/pts/1",
+        "outcome": "success",
+        "type": [
+          "user",
+          "creation"
+        ]
+      },
+      "group": {
+        "id": "113"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "new user: name=systemd-journal-remote, UID=107, GID=113, home=/run/systemd, shell=/usr/sbin/nologin, from=/dev/pts/1",
+      "process": {
+        "args": [
+          "/sbin/useradd",
+          "-d",
+          "/run/systemd",
+          "-g",
+          "systemd-journal-remote",
+          "-s",
+          "/usr/sbin/nologin",
+          "-u",
+          "107",
+          "systemd-journal-remote"
+        ],
+        "args_count": 10,
+        "command_line": "/sbin/useradd -d /run/systemd -g systemd-journal-remote -s /usr/sbin/nologin -u 107 systemd-journal-remote",
+        "name": "useradd",
+        "pid": 19762
+      },
+      "related": {
+        "hosts": [
+          "apgyucne"
+        ],
+        "user": [
+          "systemd-journal-remote"
+        ]
+      },
+      "system": {
+        "auth": {
+          "useradd": {
+            "home": "/run/systemd",
+            "shell": "/usr/sbin/nologin, from=/dev/pts/1"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "107",
+        "name": "systemd-journal-remote",
+        "target": {
+          "id": "107",
+          "name": "systemd-journal-remote"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T21:24:41.568Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "process"
+        ],
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event",
+        "original": "     foo : user NOT in sudoers ; TTY=pts/0 ; PWD=/opt/Elastic/Agent/data/elastic-agent-8.15.42-SNAPSHOT-68be8a/logs ; USER=root ; COMMAND=/usr/bin/su",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 1
+        }
+      },
+      "message": "     foo : user NOT in sudoers ; TTY=pts/0 ; PWD=/opt/Elastic/Agent/data/elastic-agent-8.15.42-SNAPSHOT-68be8a/logs ; USER=root ; COMMAND=/usr/bin/su",
+      "process": {
+        "name": "sudo",
+        "pid": 34581
+      },
+      "related": {
+        "hosts": [
+          "apgyucne"
+        ],
+        "user": [
+          "     foo",
+          "root"
+        ]
+      },
+      "system": {
+        "auth": {
+          "sudo": {
+            "command": "/usr/bin/su",
+            "error": "user NOT in sudoers",
+            "pwd": "/opt/Elastic/Agent/data/elastic-agent-8.15.42-SNAPSHOT-68be8a/logs",
+            "tty": "pts/0",
+            "user": "root"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "1001"
+          },
+          "id": "1001",
+          "name": "root"
+        },
+        "id": "1000",
+        "name": "     foo"
+      }
+    },
+    {
+      "@timestamp": "2052-09-22T02:54:37.863Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ssh_login",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event",
+        "original": "Accepted publickey for vazmbnu from 10.169.91.248 port 48274 ssh2: ED25519 SHA256:k1kjhwoH/H3w31MbGOIGd7qxrkSQJnoAN0eYJVHDmmI",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Accepted publickey for vazmbnu from 10.169.91.248 port 48274 ssh2: ED25519 SHA256:k1kjhwoH/H3w31MbGOIGd7qxrkSQJnoAN0eYJVHDmmI",
+      "process": {
+        "args": [
+          "\"sshd: vazmbnu [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: vazmbnu [priv]\"",
+        "name": "sshd",
+        "pid": 26538
+      },
+      "related": {
+        "hosts": [
+          "hfwrdmu-bcbjaq-54"
+        ],
+        "ip": [
+          "10.169.91.248"
+        ],
+        "user": [
+          "vazmbnu"
+        ]
+      },
+      "source": {
+        "address": "10.169.91.248",
+        "ip": "10.169.91.248",
+        "port": 48274
+      },
+      "system": {
+        "auth": {
+          "ssh": {
+            "event": "Accepted",
+            "method": "publickey",
+            "signature": "ED25519 SHA256:k1kjhwoH/H3w31MbGOIGd7qxrkSQJnoAN0eYJVHDmmI"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0",
+        "name": "vazmbnu"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:03:46.702Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ssh_login",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event",
+        "original": "Accepted password for vazmbnu from 192.168.121.228 port 55310 ssh2",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Accepted password for vazmbnu from 192.168.121.228 port 55310 ssh2",
+      "process": {
+        "args": [
+          "\"sshd: vazmbnu [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: vazmbnu [priv]\"",
+        "name": "sshd",
+        "pid": 1710
+      },
+      "related": {
+        "hosts": [
+          "hfwrdmu-bcbjaq-54"
+        ],
+        "ip": [
+          "192.168.121.228"
+        ],
+        "user": [
+          "vazmbnu"
+        ]
+      },
+      "source": {
+        "address": "192.168.121.228",
+        "ip": "192.168.121.228",
+        "port": 55310
+      },
+      "system": {
+        "auth": {
+          "ssh": {
+            "event": "Accepted",
+            "method": "password"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0",
+        "name": "vazmbnu"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:03:58.280Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ssh_login",
+        "category": [
+          "authentication"
+        ],
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event",
+        "original": "Invalid user test from 192.168.121.228 port 48890",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Invalid user test from 192.168.121.228 port 48890",
+      "process": {
+        "args": [
+          "\"sshd: unknown [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: unknown [priv]\"",
+        "name": "sshd",
+        "pid": 1721
+      },
+      "related": {
+        "hosts": [
+          "hfwrdmu-bcbjaq-54"
+        ],
+        "ip": [
+          "192.168.121.228"
+        ],
+        "user": [
+          "test"
+        ]
+      },
+      "source": {
+        "address": "192.168.121.228",
+        "ip": "192.168.121.228"
+      },
+      "system": {
+        "auth": {
+          "ssh": {
+            "event": "Invalid"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0",
+        "name": "test"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:06:26.719Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ssh_login",
+        "category": [
+          "authentication"
+        ],
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event",
+        "original": "Failed password for root from 192.168.121.228 port 46632 ssh2",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Failed password for root from 192.168.121.228 port 46632 ssh2",
+      "process": {
+        "args": [
+          "\"sshd: root [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: root [priv]\"",
+        "name": "sshd",
+        "pid": 1723
+      },
+      "related": {
+        "hosts": [
+          "hfwrdmu-bcbjaq-54"
+        ],
+        "ip": [
+          "192.168.121.228"
+        ],
+        "user": [
+          "root"
+        ]
+      },
+      "source": {
+        "address": "192.168.121.228",
+        "ip": "192.168.121.228",
+        "port": 46632
+      },
+      "system": {
+        "auth": {
+          "ssh": {
+            "event": "Failed",
+            "method": "password"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0",
+        "name": "root"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:06:30.959Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ssh_login",
+        "category": [
+          "authentication"
+        ],
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event",
+        "original": "Failed password for root from 192.168.121.228 port 46632 ssh2",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Failed password for root from 192.168.121.228 port 46632 ssh2",
+      "process": {
+        "args": [
+          "\"sshd: root [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: root [priv]\"",
+        "name": "sshd",
+        "pid": 1723
+      },
+      "related": {
+        "hosts": [
+          "hfwrdmu-bcbjaq-54"
+        ],
+        "ip": [
+          "192.168.121.228"
+        ],
+        "user": [
+          "root"
+        ]
+      },
+      "source": {
+        "address": "192.168.121.228",
+        "ip": "192.168.121.228",
+        "port": 46632
+      },
+      "system": {
+        "auth": {
+          "ssh": {
+            "event": "Failed",
+            "method": "password"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0",
+        "name": "root"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:06:34.121Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ssh_login",
+        "category": [
+          "authentication"
+        ],
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event",
+        "original": "Failed password for root from 192.168.121.228 port 46632 ssh2",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Failed password for root from 192.168.121.228 port 46632 ssh2",
+      "process": {
+        "args": [
+          "\"sshd: root [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: root [priv]\"",
+        "name": "sshd",
+        "pid": 1723
+      },
+      "related": {
+        "hosts": [
+          "hfwrdmu-bcbjaq-54"
+        ],
+        "ip": [
+          "192.168.121.228"
+        ],
+        "user": [
+          "root"
+        ]
+      },
+      "source": {
+        "address": "192.168.121.228",
+        "ip": "192.168.121.228",
+        "port": 46632
+      },
+      "system": {
+        "auth": {
+          "ssh": {
+            "event": "Failed",
+            "method": "password"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0",
+        "name": "root"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:01:50.330Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "process"
+        ],
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event",
+        "original": " vazmbnu : TTY=pts/2 ; PWD=/home/vazmbnu ; USER=root ; COMMAND=/usr/bin/emacs /etc/ssh/sshd_config",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 5
+        }
+      },
+      "message": " vazmbnu : TTY=pts/2 ; PWD=/home/vazmbnu ; USER=root ; COMMAND=/usr/bin/emacs /etc/ssh/sshd_config",
+      "process": {
+        "args": [
+          "sudo",
+          "emacs",
+          "/etc/ssh/sshd_config"
+        ],
+        "args_count": 3,
+        "command_line": "sudo emacs /etc/ssh/sshd_config",
+        "name": "sudo",
+        "pid": 1582
+      },
+      "related": {
+        "hosts": [
+          "hfwrdmu-bcbjaq-54"
+        ],
+        "user": [
+          " vazmbnu",
+          "root"
+        ]
+      },
+      "system": {
+        "auth": {
+          "sudo": {
+            "command": "/usr/bin/emacs /etc/ssh/sshd_config",
+            "pwd": "/home/vazmbnu",
+            "tty": "pts/2",
+            "user": "root"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "effective": {
+          "name": "root"
+        },
+        "group": {
+          "id": "1000"
+        },
+        "id": "1000",
+        "name": " vazmbnu"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:09:40.758Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event",
+        "original": "new group: name=test, GID=1001",
+        "outcome": "success",
+        "type": [
+          "group",
+          "creation"
+        ]
+      },
+      "group": {
+        "id": "1001",
+        "name": "test"
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "new group: name=test, GID=1001",
+      "process": {
+        "args": [
+          "/sbin/groupadd",
+          "-g",
+          "1001",
+          "test"
+        ],
+        "args_count": 4,
+        "command_line": "/sbin/groupadd -g 1001 test",
+        "name": "groupadd",
+        "pid": 1743
+      },
+      "related": {
+        "hosts": [
+          "hfwrdmu-bcbjaq-54"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:10:21.529Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.323Z",
+        "kind": "event",
+        "original": "Session 8 logged out. Waiting for processes to exit."
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Session 8 logged out. Waiting for processes to exit.",
+      "process": {
+        "args": [
+          "/lib/systemd/systemd-logind"
+        ],
+        "args_count": 1,
+        "command_line": "/lib/systemd/systemd-logind",
+        "name": "systemd-logind",
+        "pid": 316
+      },
+      "related": {
+        "hosts": [
+          "hfwrdmu-bcbjaq-54"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0"
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T22:08:08.887Z",
+      "agent": {
+        "ephemeral_id": "6c8e4f7b-3c1d-4ebc-a32d-336fd8039c66",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2052-11-04T22:20:02.368Z",
+        "kind": "event",
+        "original": "delete user 'foo'",
+        "outcome": "success",
+        "type": [
+          "user",
+          "deletion"
+        ]
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "delete user 'foo'",
+      "process": {
+        "args": [
+          "/sbin/userdel",
+          "foo"
+        ],
+        "args_count": 2,
+        "command_line": "/sbin/userdel foo",
+        "name": "userdel",
+        "pid": 35602
+      },
+      "related": {
+        "hosts": [
+          "apgyucne"
+        ],
+        "user": [
+          "foo"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000",
+        "name": "foo",
+        "target": {
+          "name": "foo"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T22:10:19.867Z",
+      "agent": {
+        "ephemeral_id": "6c8e4f7b-3c1d-4ebc-a32d-336fd8039c66",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2052-11-04T22:20:02.368Z",
+        "kind": "event",
+        "original": "change user 'foo' expiration from 'never' to '2052-11-20'",
+        "outcome": "success",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "change user 'foo' expiration from 'never' to '2052-11-20'",
+      "process": {
+        "args": [
+          "usermod",
+          "--expiredate",
+          "2052-11-20",
+          "foo"
+        ],
+        "args_count": 4,
+        "command_line": "usermod --expiredate 2052-11-20 foo",
+        "name": "usermod",
+        "pid": 35643
+      },
+      "related": {
+        "hosts": [
+          "apgyucne"
+        ],
+        "user": [
+          "foo"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000",
+        "name": "foo",
+        "target": {
+          "name": "foo"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T22:11:04.382Z",
+      "agent": {
+        "ephemeral_id": "6c8e4f7b-3c1d-4ebc-a32d-336fd8039c66",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2052-11-04T22:20:02.368Z",
+        "kind": "event",
+        "original": "change user 'foo' expiration from '2052-11-20' to '2052-12-01'",
+        "outcome": "success",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "change user 'foo' expiration from '2052-11-20' to '2052-12-01'",
+      "process": {
+        "args": [
+          "usermod",
+          "--expiredate",
+          "2052-11-31",
+          "foo"
+        ],
+        "args_count": 4,
+        "command_line": "usermod --expiredate 2052-11-31 foo",
+        "name": "usermod",
+        "pid": 35654
+      },
+      "related": {
+        "hosts": [
+          "apgyucne"
+        ],
+        "user": [
+          "foo"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000",
+        "name": "foo",
+        "target": {
+          "name": "foo"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-11-01T16:33:00.076Z",
+      "agent": {
+        "ephemeral_id": "6bfc77b7-9436-44fe-8936-00ecb651c465",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "logged-off",
+        "category": [
+          "session"
+        ],
+        "created": "2052-11-04T22:55:09.330Z",
+        "kind": "event",
+        "original": "pam_unix(sudo:session): session closed for user root"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "pam_unix(sudo:session): session closed for user root",
+      "process": {
+        "args": [
+          "sudo",
+          "-E",
+          "-H",
+          "bash",
+          "-l"
+        ],
+        "args_count": 5,
+        "command_line": "sudo -E -H bash -l",
+        "name": "sudo",
+        "pid": 1057
+      },
+      "related": {
+        "hosts": [
+          "apgyucne"
+        ],
+        "user": [
+          "root"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "1000",
+        "name": "root"
+      }
+    },
+    {
+      "@timestamp": "2052-11-01T16:33:00.173Z",
+      "agent": {
+        "ephemeral_id": "6bfc77b7-9436-44fe-8936-00ecb651c465",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "logged-on",
+        "category": [
+          "session"
+        ],
+        "created": "2052-11-04T22:55:09.330Z",
+        "kind": "event",
+        "original": "pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)",
+      "process": {
+        "args": [
+          "sudo",
+          "-E",
+          "-H",
+          "bash",
+          "-l"
+        ],
+        "args_count": 5,
+        "command_line": "sudo -E -H bash -l",
+        "name": "sudo",
+        "pid": 1069
+      },
+      "related": {
+        "hosts": [
+          "apgyucne"
+        ],
+        "user": [
+          "root(uid=0)"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "effective": {
+          "name": "root(uid=0)"
+        },
+        "group": {
+          "id": "0"
+        },
+        "id": "1000",
+        "name": ""
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T22:37:27.141Z",
+      "agent": {
+        "ephemeral_id": "6bfc77b7-9436-44fe-8936-00ecb651c465",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "password-changed",
+        "category": [
+          "iam"
+        ],
+        "created": "2052-11-04T22:55:09.330Z",
+        "kind": "event",
+        "original": "pam_unix(passwd:chauthtok): password changed for fred",
+        "outcome": "success",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 5
+        }
+      },
+      "message": "pam_unix(passwd:chauthtok): password changed for fred",
+      "process": {
+        "args": [
+          "/bin/passwd",
+          "fred"
+        ],
+        "args_count": 2,
+        "command_line": "/bin/passwd fred",
+        "name": "passwd",
+        "pid": 36008
+      },
+      "related": {
+        "hosts": [
+          "apgyucne"
+        ],
+        "user": [
+          "fred"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000",
+        "name": "fred",
+        "target": {
+          "name": "fred"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T22:26:58.958Z",
+      "agent": {
+        "ephemeral_id": "6bfc77b7-9436-44fe-8936-00ecb651c465",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2052-11-04T22:55:09.330Z",
+        "kind": "event",
+        "original": "pam_ldap(sudo:account): error reading from nslcd: Connection reset by peer"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 3
+        }
+      },
+      "message": "pam_ldap(sudo:account): error reading from nslcd: Connection reset by peer",
+      "process": {
+        "args": [
+          "sudo",
+          "su"
+        ],
+        "args_count": 2,
+        "command_line": "sudo su",
+        "name": "sudo",
+        "pid": 35837
+      },
+      "related": {
+        "hosts": [
+          "apgyucne"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1000"
+        },
+        "id": "1000"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-11-04T15:09:09.872Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "3"
+        },
+        "custom": {
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Nov  4 15:09:09 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "8e52bb29e9774f0cfdf6211072ad6899"
+        },
+        "pid": 19762,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "/sbin/useradd -d /run/systemd -g systemd-journal-remote -s /usr/sbin/nologin -u 107 systemd-journal-remote",
+          "executable": "/usr/sbin/useradd",
+          "name": "useradd"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "new user: name=systemd-journal-remote, UID=107, GID=113, home=/run/systemd, shell=/usr/sbin/nologin, from=/dev/pts/1",
+      "process": {
+        "args": [
+          "/sbin/useradd",
+          "-d",
+          "/run/systemd",
+          "-g",
+          "systemd-journal-remote",
+          "-s",
+          "/usr/sbin/nologin",
+          "-u",
+          "107",
+          "systemd-journal-remote"
+        ],
+        "args_count": 10,
+        "command_line": "/sbin/useradd -d /run/systemd -g systemd-journal-remote -s /usr/sbin/nologin -u 107 systemd-journal-remote",
+        "pid": 19762,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "useradd",
+        "pid": 19762,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-3.scope",
+        "invocation_id": "12033af1833a7b81af70acd9324a0698",
+        "owner_uid": 1000,
+        "session": "3",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-3.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T21:24:41.568Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "3"
+        },
+        "custom": {
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Nov  4 21:24:41 "
+        },
+        "gid": 1001,
+        "host": {
+          "boot_id": "8e52bb29e9774f0cfdf6211072ad6899"
+        },
+        "pid": 34581,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "name": "sudo"
+        },
+        "uid": 1001
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 1
+        }
+      },
+      "message": "     foo : user NOT in sudoers ; TTY=pts/0 ; PWD=/opt/Elastic/Agent/data/elastic-agent-8.15.42-SNAPSHOT-68be8a/logs ; USER=root ; COMMAND=/usr/bin/su",
+      "process": {
+        "pid": 34581,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "sudo",
+        "priority": 1
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-3.scope",
+        "invocation_id": "12033af1833a7b81af70acd9324a0698",
+        "owner_uid": 1000,
+        "session": "3",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-3.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "1001"
+          },
+          "id": "1001"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-09-22T02:54:37.863Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "custom": {
+          "runtime_scope": "system",
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Sep 22 02:54:37 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "4bbc644ece7e53991da822d0782edb9a"
+        },
+        "pid": 26538,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "\"sshd: vazmbnu [priv]\"",
+          "executable": "/usr/sbin/sshd",
+          "name": "sshd"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Accepted publickey for vazmbnu from 10.169.91.248 port 48274 ssh2: ED25519 SHA256:k1kjhwoH/H3w31MbGOIGd7qxrkSQJnoAN0eYJVHDmmI",
+      "process": {
+        "args": [
+          "\"sshd: vazmbnu [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: vazmbnu [priv]\"",
+        "pid": 26538,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 4,
+        "identifier": "sshd",
+        "pid": 26538,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/system.slice/ssh.service",
+        "invocation_id": "c008bead7d2c504d6106e481994630b0",
+        "slice": "system.slice",
+        "transport": "syslog",
+        "unit": "ssh.service"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:03:46.702Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "custom": {
+          "runtime_scope": "system",
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Oct  1 14:03:46 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "4bbc644ece7e53991da822d0782edb9a"
+        },
+        "pid": 1710,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "\"sshd: vazmbnu [priv]\"",
+          "executable": "/usr/sbin/sshd",
+          "name": "sshd"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Accepted password for vazmbnu from 192.168.121.228 port 55310 ssh2",
+      "process": {
+        "args": [
+          "\"sshd: vazmbnu [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: vazmbnu [priv]\"",
+        "pid": 1710,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 4,
+        "identifier": "sshd",
+        "pid": 1710,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/system.slice/ssh.service",
+        "invocation_id": "3fd65674d50e2ae6ac43b23f39512a77",
+        "slice": "system.slice",
+        "transport": "syslog",
+        "unit": "ssh.service"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:03:58.280Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "custom": {
+          "runtime_scope": "system",
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Oct  1 14:03:58 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "4bbc644ece7e53991da822d0782edb9a"
+        },
+        "pid": 1721,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "\"sshd: unknown [priv]\"",
+          "executable": "/usr/sbin/sshd",
+          "name": "sshd"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Invalid user test from 192.168.121.228 port 48890",
+      "process": {
+        "args": [
+          "\"sshd: unknown [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: unknown [priv]\"",
+        "pid": 1721,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 4,
+        "identifier": "sshd",
+        "pid": 1721,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/system.slice/ssh.service",
+        "invocation_id": "3fd65674d50e2ae6ac43b23f39512a77",
+        "slice": "system.slice",
+        "transport": "syslog",
+        "unit": "ssh.service"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:06:26.719Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "custom": {
+          "runtime_scope": "system",
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Oct  1 14:06:26 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "4bbc644ece7e53991da822d0782edb9a"
+        },
+        "pid": 1723,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "\"sshd: root [priv]\"",
+          "executable": "/usr/sbin/sshd",
+          "name": "sshd"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Failed password for root from 192.168.121.228 port 46632 ssh2",
+      "process": {
+        "args": [
+          "\"sshd: root [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: root [priv]\"",
+        "pid": 1723,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 4,
+        "identifier": "sshd",
+        "pid": 1723,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/system.slice/ssh.service",
+        "invocation_id": "3fd65674d50e2ae6ac43b23f39512a77",
+        "slice": "system.slice",
+        "transport": "syslog",
+        "unit": "ssh.service"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:06:30.959Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "custom": {
+          "runtime_scope": "system",
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Oct  1 14:06:30 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "4bbc644ece7e53991da822d0782edb9a"
+        },
+        "pid": 1723,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "\"sshd: root [priv]\"",
+          "executable": "/usr/sbin/sshd",
+          "name": "sshd"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Failed password for root from 192.168.121.228 port 46632 ssh2",
+      "process": {
+        "args": [
+          "\"sshd: root [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: root [priv]\"",
+        "pid": 1723,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 4,
+        "identifier": "sshd",
+        "pid": 1723,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/system.slice/ssh.service",
+        "invocation_id": "3fd65674d50e2ae6ac43b23f39512a77",
+        "slice": "system.slice",
+        "transport": "syslog",
+        "unit": "ssh.service"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:06:34.121Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "custom": {
+          "runtime_scope": "system",
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Oct  1 14:06:34 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "4bbc644ece7e53991da822d0782edb9a"
+        },
+        "pid": 1723,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "\"sshd: root [priv]\"",
+          "executable": "/usr/sbin/sshd",
+          "name": "sshd"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Failed password for root from 192.168.121.228 port 46632 ssh2",
+      "process": {
+        "args": [
+          "\"sshd: root [priv]\""
+        ],
+        "args_count": 1,
+        "command_line": "\"sshd: root [priv]\"",
+        "pid": 1723,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 4,
+        "identifier": "sshd",
+        "pid": 1723,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/system.slice/ssh.service",
+        "invocation_id": "3fd65674d50e2ae6ac43b23f39512a77",
+        "slice": "system.slice",
+        "transport": "syslog",
+        "unit": "ssh.service"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:01:50.330Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "4"
+        },
+        "custom": {
+          "runtime_scope": "system",
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Oct  1 14:01:50 "
+        },
+        "gid": 1000,
+        "host": {
+          "boot_id": "4bbc644ece7e53991da822d0782edb9a"
+        },
+        "pid": 1582,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "sudo emacs /etc/ssh/sshd_config",
+          "executable": "/usr/bin/sudo",
+          "name": "sudo"
+        },
+        "uid": 1000
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 5
+        }
+      },
+      "message": " vazmbnu : TTY=pts/2 ; PWD=/home/vazmbnu ; USER=root ; COMMAND=/usr/bin/emacs /etc/ssh/sshd_config",
+      "process": {
+        "args": [
+          "sudo",
+          "emacs",
+          "/etc/ssh/sshd_config"
+        ],
+        "args_count": 3,
+        "command_line": "sudo emacs /etc/ssh/sshd_config",
+        "pid": 1582,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "sudo",
+        "priority": 5
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-4.scope",
+        "invocation_id": "79ab8512d12391fee3485a2132184237",
+        "owner_uid": 1000,
+        "session": "4",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-4.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "1000"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:09:40.758Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.322Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "8"
+        },
+        "custom": {
+          "runtime_scope": "system",
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Oct  1 14:09:40 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "4bbc644ece7e53991da822d0782edb9a"
+        },
+        "pid": 1743,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "/sbin/groupadd -g 1001 test",
+          "executable": "/usr/sbin/groupadd",
+          "name": "groupadd"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "new group: name=test, GID=1001",
+      "process": {
+        "args": [
+          "/sbin/groupadd",
+          "-g",
+          "1001",
+          "test"
+        ],
+        "args_count": 4,
+        "command_line": "/sbin/groupadd -g 1001 test",
+        "pid": 1743,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "groupadd",
+        "pid": 1743,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-8.scope",
+        "invocation_id": "c34be78e04f06e60afb84de237aa9f63",
+        "owner_uid": 1000,
+        "session": "8",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-8.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-10-01T14:10:21.529Z",
+      "agent": {
+        "ephemeral_id": "bfe021fd-fd9d-4bba-8ca9-5495fee45801",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T21:47:16.323Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "hfwrdmu-bcbjaq-54",
+        "id": "2b6bf0eb087b1bc921f5eede091c1f5a",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "code": {
+          "func": "session_stop_scope",
+          "line": 851
+        },
+        "custom": {
+          "leader": "1730",
+          "runtime_scope": "system",
+          "selinux_context": "unconfined\n",
+          "session_id": "8",
+          "tid": "316",
+          "user_id": "vazmbnu"
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "4bbc644ece7e53991da822d0782edb9a"
+        },
+        "pid": 316,
+        "process": {
+          "capabilities": "24420020f",
+          "command_line": "/lib/systemd/systemd-logind",
+          "executable": "/usr/lib/systemd/systemd-logind",
+          "name": "systemd-logind"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 4
+          },
+          "priority": 6
+        }
+      },
+      "message": "Session 8 logged out. Waiting for processes to exit.",
+      "process": {
+        "args": [
+          "/lib/systemd/systemd-logind"
+        ],
+        "args_count": 1,
+        "command_line": "/lib/systemd/systemd-logind",
+        "pid": 316,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_AUDIT_CONTROL",
+              "CAP_MAC_ADMIN"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 4,
+        "identifier": "systemd-logind",
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/system.slice/systemd-logind.service",
+        "invocation_id": "8553e723619c5f7e1894d5e0dc655a07",
+        "slice": "system.slice",
+        "transport": "journal",
+        "unit": "systemd-logind.service"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "0"
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T22:08:08.887Z",
+      "agent": {
+        "ephemeral_id": "6c8e4f7b-3c1d-4ebc-a32d-336fd8039c66",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T22:20:02.368Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "3"
+        },
+        "custom": {
+          "selinux_context": "unconfined\n",
+          "syslog_raw": "<86>Nov  4 22:08:08 userdel[35602]: delete user 'foo'\n",
+          "syslog_timestamp": "Nov  4 22:08:08 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "8e52bb29e9774f0cfdf6211072ad6899"
+        },
+        "pid": 35602,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "/sbin/userdel foo",
+          "executable": "/usr/sbin/userdel",
+          "name": "userdel"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "delete user 'foo'",
+      "process": {
+        "args": [
+          "/sbin/userdel",
+          "foo"
+        ],
+        "args_count": 2,
+        "command_line": "/sbin/userdel foo",
+        "pid": 35602,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "userdel",
+        "pid": 35602,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-3.scope",
+        "invocation_id": "12033af1833a7b81af70acd9324a0698",
+        "owner_uid": 1000,
+        "session": "3",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-3.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T22:10:19.867Z",
+      "agent": {
+        "ephemeral_id": "6c8e4f7b-3c1d-4ebc-a32d-336fd8039c66",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T22:20:02.368Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "3"
+        },
+        "custom": {
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Nov  4 22:10:19 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "8e52bb29e9774f0cfdf6211072ad6899"
+        },
+        "pid": 35643,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "usermod --expiredate 2052-11-20 foo",
+          "executable": "/usr/sbin/usermod",
+          "name": "usermod"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "change user 'foo' expiration from 'never' to '2052-11-20'",
+      "process": {
+        "args": [
+          "usermod",
+          "--expiredate",
+          "2052-11-20",
+          "foo"
+        ],
+        "args_count": 4,
+        "command_line": "usermod --expiredate 2052-11-20 foo",
+        "pid": 35643,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "usermod",
+        "pid": 35643,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-3.scope",
+        "invocation_id": "12033af1833a7b81af70acd9324a0698",
+        "owner_uid": 1000,
+        "session": "3",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-3.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T22:11:04.382Z",
+      "agent": {
+        "ephemeral_id": "6c8e4f7b-3c1d-4ebc-a32d-336fd8039c66",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T22:20:02.368Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "3"
+        },
+        "custom": {
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Nov  4 22:11:04 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "8e52bb29e9774f0cfdf6211072ad6899"
+        },
+        "pid": 35654,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "usermod --expiredate 2052-11-31 foo",
+          "executable": "/usr/sbin/usermod",
+          "name": "usermod"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "change user 'foo' expiration from '2052-11-20' to '2052-12-01'",
+      "process": {
+        "args": [
+          "usermod",
+          "--expiredate",
+          "2052-11-31",
+          "foo"
+        ],
+        "args_count": 4,
+        "command_line": "usermod --expiredate 2052-11-31 foo",
+        "pid": 35654,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "usermod",
+        "pid": 35654,
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-3.scope",
+        "invocation_id": "12033af1833a7b81af70acd9324a0698",
+        "owner_uid": 1000,
+        "session": "3",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-3.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-11-01T16:33:00.076Z",
+      "agent": {
+        "ephemeral_id": "6bfc77b7-9436-44fe-8936-00ecb651c465",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T22:55:09.330Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "3"
+        },
+        "custom": {
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Nov  1 16:33:00 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "0884e6afffac521f1ee97e811d83a4e0"
+        },
+        "pid": 1057,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "sudo -E -H bash -l",
+          "executable": "/usr/bin/sudo",
+          "name": "sudo"
+        },
+        "uid": 1000
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "pam_unix(sudo:session): session closed for user root",
+      "process": {
+        "args": [
+          "sudo",
+          "-E",
+          "-H",
+          "bash",
+          "-l"
+        ],
+        "args_count": 5,
+        "command_line": "sudo -E -H bash -l",
+        "pid": 1057,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "sudo",
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-3.scope",
+        "invocation_id": "458e0443c4b781d39ad9175c1ee15245",
+        "owner_uid": 1000,
+        "session": "3",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-3.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-11-01T16:33:00.173Z",
+      "agent": {
+        "ephemeral_id": "6bfc77b7-9436-44fe-8936-00ecb651c465",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T22:55:09.330Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "3"
+        },
+        "custom": {
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Nov  1 16:33:00 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "0884e6afffac521f1ee97e811d83a4e0"
+        },
+        "pid": 1069,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "sudo -E -H bash -l",
+          "executable": "/usr/bin/sudo",
+          "name": "sudo"
+        },
+        "uid": 1000
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 6
+        }
+      },
+      "message": "pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)",
+      "process": {
+        "args": [
+          "sudo",
+          "-E",
+          "-H",
+          "bash",
+          "-l"
+        ],
+        "args_count": 5,
+        "command_line": "sudo -E -H bash -l",
+        "pid": 1069,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "sudo",
+        "priority": 6
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-3.scope",
+        "invocation_id": "458e0443c4b781d39ad9175c1ee15245",
+        "owner_uid": 1000,
+        "session": "3",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-3.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "0"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T22:37:27.141Z",
+      "agent": {
+        "ephemeral_id": "6bfc77b7-9436-44fe-8936-00ecb651c465",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T22:55:09.330Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "3"
+        },
+        "custom": {
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Nov  4 22:37:27 "
+        },
+        "gid": 0,
+        "host": {
+          "boot_id": "8e52bb29e9774f0cfdf6211072ad6899"
+        },
+        "pid": 36008,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "/bin/passwd fred",
+          "executable": "/usr/bin/passwd",
+          "name": "passwd"
+        },
+        "uid": 0
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 5
+        }
+      },
+      "message": "pam_unix(passwd:chauthtok): password changed for fred",
+      "process": {
+        "args": [
+          "/bin/passwd",
+          "fred"
+        ],
+        "args_count": 2,
+        "command_line": "/bin/passwd fred",
+        "pid": 36008,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "passwd",
+        "pid": 36008,
+        "priority": 5
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-3.scope",
+        "invocation_id": "12033af1833a7b81af70acd9324a0698",
+        "owner_uid": 1000,
+        "session": "3",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-3.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "effective": {
+          "group": {
+            "id": "0"
+          },
+          "id": "0"
+        },
+        "id": "1000"
+      }
+    },
+    {
+      "@timestamp": "2052-11-04T22:26:58.958Z",
+      "agent": {
+        "ephemeral_id": "6bfc77b7-9436-44fe-8936-00ecb651c465",
+        "id": "49d1c268-2c48-47bf-8628-034c46147570",
+        "name": "apgyucne",
+        "type": "filebeat",
+        "version": "8.15.42"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "created": "2052-11-04T22:55:09.330Z",
+        "kind": "event"
+      },
+      "host": {
+        "hostname": "apgyucne",
+        "id": "5a9db650160d48d3a29167c79232ddd2",
+        "name": "apgyucne"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "input.type": "journald",
+      "journald": {
+        "audit": {
+          "login_uid": 1000,
+          "session": "3"
+        },
+        "custom": {
+          "selinux_context": "unconfined\n",
+          "syslog_timestamp": "Nov  4 22:26:58 "
+        },
+        "gid": 1000,
+        "host": {
+          "boot_id": "8e52bb29e9774f0cfdf6211072ad6899"
+        },
+        "pid": 35837,
+        "process": {
+          "capabilities": "1ffffffffff",
+          "command_line": "sudo su",
+          "executable": "/usr/bin/sudo",
+          "name": "sudo"
+        },
+        "uid": 1000
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 10
+          },
+          "priority": 3
+        }
+      },
+      "message": "pam_ldap(sudo:account): error reading from nslcd: Connection reset by peer",
+      "process": {
+        "args": [
+          "sudo",
+          "su"
+        ],
+        "args_count": 2,
+        "command_line": "sudo su",
+        "pid": 35837,
+        "thread": {
+          "capabilities": {
+            "effective": [
+              "CAP_CHOWN",
+              "CAP_DAC_OVERRIDE",
+              "CAP_DAC_READ_SEARCH",
+              "CAP_FOWNER",
+              "CAP_FSETID",
+              "CAP_KILL",
+              "CAP_SETGID",
+              "CAP_SETUID",
+              "CAP_SETPCAP",
+              "CAP_LINUX_IMMUTABLE",
+              "CAP_NET_BIND_SERVICE",
+              "CAP_NET_BROADCAST",
+              "CAP_NET_ADMIN",
+              "CAP_NET_RAW",
+              "CAP_IPC_LOCK",
+              "CAP_IPC_OWNER",
+              "CAP_SYS_MODULE",
+              "CAP_SYS_RAWIO",
+              "CAP_SYS_CHROOT",
+              "CAP_SYS_PTRACE",
+              "CAP_SYS_PACCT",
+              "CAP_SYS_ADMIN",
+              "CAP_SYS_BOOT",
+              "CAP_SYS_NICE",
+              "CAP_SYS_RESOURCE",
+              "CAP_SYS_TIME",
+              "CAP_SYS_TTY_CONFIG",
+              "CAP_MKNOD",
+              "CAP_LEASE",
+              "CAP_AUDIT_WRITE",
+              "CAP_AUDIT_CONTROL",
+              "CAP_SETFCAP",
+              "CAP_MAC_OVERRIDE",
+              "CAP_MAC_ADMIN",
+              "CAP_SYSLOG",
+              "CAP_WAKE_ALARM",
+              "CAP_BLOCK_SUSPEND",
+              "CAP_AUDIT_READ",
+              "CAP_PERFMON",
+              "CAP_BPF",
+              "CAP_CHECKPOINT_RESTORE"
+            ]
+          }
+        }
+      },
+      "syslog": {
+        "facility": 10,
+        "identifier": "sudo",
+        "priority": 3
+      },
+      "systemd": {
+        "cgroup": "/user.slice/user-1000.slice/session-3.scope",
+        "invocation_id": "12033af1833a7b81af70acd9324a0698",
+        "owner_uid": 1000,
+        "session": "3",
+        "slice": "user-1000.slice",
+        "transport": "syslog",
+        "unit": "session-3.scope",
+        "user_slice": "-.slice"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "group": {
+          "id": "1000"
+        },
+        "id": "1000"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "auth",
+    "dynamic_fields": {
+      "event.ingested": "^((?:(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?))(Z|[\\+-]\\d{2}:\\d{2})?)$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-auth-default",
+    "event_count": 18,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

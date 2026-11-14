@@ -1,0 +1,382 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-12-31T23:09:40.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user-authenticate-password",
+        "category": [
+          "authentication"
+        ],
+        "id": "f2b1992cc25c69a3e08a8d27f2d49f27",
+        "kind": "event",
+        "original": "{\"id\":\"f2b1992cc25c69a3e08a8d27f2d49f27\",\"action\":\"user.authenticate.password\",\"crud\":\"u\",\"is_failure\":true,\"received\":\"2046-12-31T23:09:40Z\",\"description\":null,\"actor\":{\"id\":\"bb3098ea-caae-4bd0-bbf8-3bdbcd5a5a67\",\"name\":\"pvdx4@example.com\"},\"is_anonymous\":null,\"target\":{\"id\":\"bb3098ea-caae-4bd0-bbf8-3bdbcd5a5a67\",\"name\":\"pvdx4@example.com\",\"type\":\"User\"},\"fields\":[{\"key\":\"message\",\"value\":\"Invalid credentials.\"},{\"key\":\"sessionToken\",\"value\":\"-\"},{\"key\":\"X-Forwarded-For\",\"value\":\"198.51.100.144, 192.0.2.57\"},{\"key\":\"X-Request-Uuid\",\"value\":\"87e5984f41949447658cf353fecd3bcb:dd19f39e7ec84ba80dec:8d7f958f8c3b770767af\"}]}",
+        "outcome": "failure",
+        "type": [
+          "start"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144",
+          "192.0.2.57"
+        ],
+        "user": [
+          "bb3098ea-caae-4bd0-bbf8-3bdbcd5a5a67",
+          "pvdx4",
+          "pvdx4@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tenable_io": {
+        "audit": {
+          "action": "user.authenticate.password",
+          "actor": {
+            "id": "bb3098ea-caae-4bd0-bbf8-3bdbcd5a5a67",
+            "name": "pvdx4@example.com"
+          },
+          "crud": "u",
+          "fields": {
+            "message": "Invalid credentials.",
+            "sessiontoken": "-",
+            "x-request-uuid": "87e5984f41949447658cf353fecd3bcb:dd19f39e7ec84ba80dec:8d7f958f8c3b770767af",
+            "x_forwarded_for": [
+              "198.51.100.144",
+              "192.0.2.57"
+            ]
+          },
+          "id": "f2b1992cc25c69a3e08a8d27f2d49f27",
+          "is_failure": true,
+          "received": "2046-12-31T23:09:40.000Z",
+          "target": {
+            "id": "bb3098ea-caae-4bd0-bbf8-3bdbcd5a5a67",
+            "name": "pvdx4@example.com",
+            "type": "User"
+          }
+        }
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "pvdx4@example.com",
+        "id": "bb3098ea-caae-4bd0-bbf8-3bdbcd5a5a67",
+        "name": "pvdx4",
+        "target": {
+          "domain": "example.com",
+          "email": "pvdx4@example.com",
+          "id": "bb3098ea-caae-4bd0-bbf8-3bdbcd5a5a67",
+          "name": "pvdx4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2046-12-31T23:33:01.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "session-create",
+        "category": [
+          "session"
+        ],
+        "id": "9ed34e87d3474ff985759d14ss703e4c",
+        "kind": "event",
+        "original": "{\"id\":\"9ed34e87d3474ff985759d14ss703e4c\",\"action\":\"session.create\",\"crud\":\"c\",\"is_failure\":false,\"received\":\"2046-12-31T23:33:01Z\",\"description\":null,\"actor\":{\"id\":null,\"name\":null},\"is_anonymous\":true,\"target\":{\"id\":\"c108f41c-4a47-44ef-9ea4-4680d165fd06\",\"name\":\"pvdx4@example.com\",\"type\":\"User\"},\"fields\":[{\"key\":\"X-Access-Type\",\"value\":\"Created by username\"}]}",
+        "outcome": "success",
+        "type": [
+          "start"
+        ]
+      },
+      "related": {
+        "user": [
+          "c108f41c-4a47-44ef-9ea4-4680d165fd06",
+          "pvdx4",
+          "pvdx4@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tenable_io": {
+        "audit": {
+          "action": "session.create",
+          "crud": "c",
+          "fields": {
+            "x-access-type": "Created by username"
+          },
+          "id": "9ed34e87d3474ff985759d14ss703e4c",
+          "is_anonymous": true,
+          "is_failure": false,
+          "received": "2046-12-31T23:33:01.000Z",
+          "target": {
+            "id": "c108f41c-4a47-44ef-9ea4-4680d165fd06",
+            "name": "pvdx4@example.com",
+            "type": "User"
+          }
+        }
+      },
+      "user": {
+        "target": {
+          "domain": "example.com",
+          "email": "pvdx4@example.com",
+          "id": "c108f41c-4a47-44ef-9ea4-4680d165fd06",
+          "name": "pvdx4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2046-12-31T23:40:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "session-delete",
+        "category": [
+          "session"
+        ],
+        "id": "cce0358acdf60749ceae8e1f40c563b9",
+        "kind": "event",
+        "original": "{\"id\":\"cce0358acdf60749ceae8e1f40c563b9\",\"action\":\"session.delete\",\"crud\":\"d\",\"is_failure\":false,\"received\":\"2046-12-31T23:40:57Z\",\"description\":null,\"actor\":{\"id\":\"c108f41c-4a47-44ef-9ea4-4680d165fd06\",\"name\":\"pvdx4@example.com\"},\"is_anonymous\":null,\"target\":{\"id\":\"bcce340\",\"name\":null,\"type\":\"Session\"},\"fields\":[{\"key\":\"message\",\"value\":\"session timeout\"}]}",
+        "outcome": "success",
+        "type": [
+          "end"
+        ]
+      },
+      "related": {
+        "user": [
+          "c108f41c-4a47-44ef-9ea4-4680d165fd06",
+          "pvdx4",
+          "pvdx4@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tenable_io": {
+        "audit": {
+          "action": "session.delete",
+          "actor": {
+            "id": "c108f41c-4a47-44ef-9ea4-4680d165fd06",
+            "name": "pvdx4@example.com"
+          },
+          "crud": "d",
+          "fields": {
+            "message": "session timeout"
+          },
+          "id": "cce0358acdf60749ceae8e1f40c563b9",
+          "is_failure": false,
+          "received": "2046-12-31T23:40:57.000Z",
+          "target": {
+            "id": "bcce340",
+            "type": "Session"
+          }
+        }
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "pvdx4@example.com",
+        "id": "c108f41c-4a47-44ef-9ea4-4680d165fd06",
+        "name": "pvdx4"
+      }
+    },
+    {
+      "@timestamp": "2046-12-31T09:23:12.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user-impersonation-start",
+        "category": [
+          "authentication"
+        ],
+        "id": "b2366f80ec8548d31b366802b6ab5075",
+        "kind": "event",
+        "original": "{\"id\":\"b2366f80ec8548d31b366802b6ab5075\",\"action\":\"user.impersonation.start\",\"crud\":\"u\",\"is_failure\":false,\"received\":\"2046-12-31T09:23:12Z\",\"description\":null,\"actor\":{\"id\":\"cc62c719-f4c8-48ac-9b0a-cfe063cce2fb\",\"name\":\"ivvpirmhzo@example.com\"},\"is_anonymous\":null,\"target\":{\"id\":\"cf19d148-b1e3-4497-9290-7ddaf58b67a7\",\"name\":\"pvdx4@example.com\",\"type\":\"User\"},\"fields\":[{\"key\":\"sessionToken\",\"value\":\"-\"},{\"key\":\"X-Access-Type\",\"value\":\"apikey\"},{\"key\":\"X-Forwarded-For\",\"value\":\"192.0.2.87\"},{\"key\":\"X-Request-Uuid\",\"value\":\"06b986c1ee79dc67aa2d2972208763fd:43cf99b77f783a962a1a\"}]}",
+        "outcome": "success",
+        "type": [
+          "start"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "cc62c719-f4c8-48ac-9b0a-cfe063cce2fb",
+          "ivvpirmhzo",
+          "ivvpirmhzo@example.com",
+          "cf19d148-b1e3-4497-9290-7ddaf58b67a7",
+          "pvdx4",
+          "pvdx4@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tenable_io": {
+        "audit": {
+          "action": "user.impersonation.start",
+          "actor": {
+            "id": "cc62c719-f4c8-48ac-9b0a-cfe063cce2fb",
+            "name": "ivvpirmhzo@example.com"
+          },
+          "crud": "u",
+          "fields": {
+            "sessiontoken": "-",
+            "x-access-type": "apikey",
+            "x-request-uuid": "06b986c1ee79dc67aa2d2972208763fd:43cf99b77f783a962a1a",
+            "x_forwarded_for": [
+              "192.0.2.87"
+            ]
+          },
+          "id": "b2366f80ec8548d31b366802b6ab5075",
+          "is_failure": false,
+          "received": "2046-12-31T09:23:12.000Z",
+          "target": {
+            "id": "cf19d148-b1e3-4497-9290-7ddaf58b67a7",
+            "name": "pvdx4@example.com",
+            "type": "User"
+          }
+        }
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "ivvpirmhzo@example.com",
+        "id": "cc62c719-f4c8-48ac-9b0a-cfe063cce2fb",
+        "name": "ivvpirmhzo",
+        "target": {
+          "domain": "example.com",
+          "email": "pvdx4@example.com",
+          "id": "cf19d148-b1e3-4497-9290-7ddaf58b67a7",
+          "name": "pvdx4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2046-12-31T01:40:07.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "session-delete",
+        "category": [
+          "session"
+        ],
+        "id": "dcef21625ab92a35ae3efef04a9fc7c7",
+        "kind": "event",
+        "original": "{\"id\":\"dcef21625ab92a35ae3efef04a9fc7c7\",\"action\":\"session.delete\",\"crud\":\"d\",\"is_failure\":false,\"received\":\"2046-12-31T01:40:07Z\",\"description\":null,\"actor\":{\"id\":\"d8450909-3e46-4e6b-9925-e808cbcd1e74\",\"name\":\"pvdx4@example.com\"},\"is_anonymous\":null,\"target\":{\"id\":\"12d024e\",\"name\":null,\"type\":\"Session\"},\"fields\":[{\"key\":\"message\",\"value\":\"session timeout\"}]}",
+        "outcome": "success",
+        "type": [
+          "end"
+        ]
+      },
+      "related": {
+        "user": [
+          "d8450909-3e46-4e6b-9925-e808cbcd1e74",
+          "pvdx4",
+          "pvdx4@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tenable_io": {
+        "audit": {
+          "action": "session.delete",
+          "actor": {
+            "id": "d8450909-3e46-4e6b-9925-e808cbcd1e74",
+            "name": "pvdx4@example.com"
+          },
+          "crud": "d",
+          "fields": {
+            "message": "session timeout"
+          },
+          "id": "dcef21625ab92a35ae3efef04a9fc7c7",
+          "is_failure": false,
+          "received": "2046-12-31T01:40:07.000Z",
+          "target": {
+            "id": "12d024e",
+            "type": "Session"
+          }
+        }
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "pvdx4@example.com",
+        "id": "d8450909-3e46-4e6b-9925-e808cbcd1e74",
+        "name": "pvdx4"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"f2b1992cc25c69a3e08a8d27f2d49f27\",\"action\":\"user.authenticate.password\",\"crud\":\"u\",\"is_failure\":true,\"received\":\"2046-12-31T23:09:40Z\",\"description\":null,\"actor\":{\"id\":\"bb3098ea-caae-4bd0-bbf8-3bdbcd5a5a67\",\"name\":\"pvdx4@example.com\"},\"is_anonymous\":null,\"target\":{\"id\":\"bb3098ea-caae-4bd0-bbf8-3bdbcd5a5a67\",\"name\":\"pvdx4@example.com\",\"type\":\"User\"},\"fields\":[{\"key\":\"message\",\"value\":\"Invalid credentials.\"},{\"key\":\"sessionToken\",\"value\":\"-\"},{\"key\":\"X-Forwarded-For\",\"value\":\"198.51.100.144, 192.0.2.57\"},{\"key\":\"X-Request-Uuid\",\"value\":\"87e5984f41949447658cf353fecd3bcb:dd19f39e7ec84ba80dec:8d7f958f8c3b770767af\"}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"9ed34e87d3474ff985759d14ss703e4c\",\"action\":\"session.create\",\"crud\":\"c\",\"is_failure\":false,\"received\":\"2046-12-31T23:33:01Z\",\"description\":null,\"actor\":{\"id\":null,\"name\":null},\"is_anonymous\":true,\"target\":{\"id\":\"c108f41c-4a47-44ef-9ea4-4680d165fd06\",\"name\":\"pvdx4@example.com\",\"type\":\"User\"},\"fields\":[{\"key\":\"X-Access-Type\",\"value\":\"Created by username\"}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"cce0358acdf60749ceae8e1f40c563b9\",\"action\":\"session.delete\",\"crud\":\"d\",\"is_failure\":false,\"received\":\"2046-12-31T23:40:57Z\",\"description\":null,\"actor\":{\"id\":\"c108f41c-4a47-44ef-9ea4-4680d165fd06\",\"name\":\"pvdx4@example.com\"},\"is_anonymous\":null,\"target\":{\"id\":\"bcce340\",\"name\":null,\"type\":\"Session\"},\"fields\":[{\"key\":\"message\",\"value\":\"session timeout\"}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"b2366f80ec8548d31b366802b6ab5075\",\"action\":\"user.impersonation.start\",\"crud\":\"u\",\"is_failure\":false,\"received\":\"2046-12-31T09:23:12Z\",\"description\":null,\"actor\":{\"id\":\"cc62c719-f4c8-48ac-9b0a-cfe063cce2fb\",\"name\":\"ivvpirmhzo@example.com\"},\"is_anonymous\":null,\"target\":{\"id\":\"cf19d148-b1e3-4497-9290-7ddaf58b67a7\",\"name\":\"pvdx4@example.com\",\"type\":\"User\"},\"fields\":[{\"key\":\"sessionToken\",\"value\":\"-\"},{\"key\":\"X-Access-Type\",\"value\":\"apikey\"},{\"key\":\"X-Forwarded-For\",\"value\":\"192.0.2.87\"},{\"key\":\"X-Request-Uuid\",\"value\":\"06b986c1ee79dc67aa2d2972208763fd:43cf99b77f783a962a1a\"}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"dcef21625ab92a35ae3efef04a9fc7c7\",\"action\":\"session.delete\",\"crud\":\"d\",\"is_failure\":false,\"received\":\"2046-12-31T01:40:07Z\",\"description\":null,\"actor\":{\"id\":\"d8450909-3e46-4e6b-9925-e808cbcd1e74\",\"name\":\"pvdx4@example.com\"},\"is_anonymous\":null,\"target\":{\"id\":\"12d024e\",\"name\":null,\"type\":\"Session\"},\"fields\":[{\"key\":\"message\",\"value\":\"session timeout\"}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tenable_io-audit-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "tenable_io",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

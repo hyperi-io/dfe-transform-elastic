@@ -137,9 +137,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("opencanary.logtype") };
             if _cond {
-                // Painless script
-                // Source: String logType = ctx.opencanary.logtype.toString(); if (ctx.log == null) {\n  ctx.log = new HashMap();\n} if (params.get(logType) == null) {\n  ctx.log['logger'] = logType;\n} else {\n  ctx.log['logger'] = params.get(logType);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1259,8 +1257,7 @@ impl Transform for Default {
                 })?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'undefined') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -89,8 +89,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.attributes.location") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def loc = ctx.json.attributes.location;\nfor (def key : new ArrayList(loc.keySet())) {\n  def val = loc.get(key);\n  if (val instanceof String && val.isEmpty()) {\n    loc.remove(key);\n  }\n}
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -286,9 +285,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.attributes.actor") };
             if _cond {
-                // Painless script
-                // Source: def actor = ctx.json.attributes.actor;\nboolean isUser = false;\nif (actor.email instanceof String && actor.email.indexOf('@') >= 0) {\n  isUser = true;\n} else if (actor.id instanceof String) {\n  String id = actor.id;\n  if (id.contains(':') || id ==~ /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/) {\n    isUser = true;\n  }\n}\nif (isUser) {\n  ctx.user = ctx.user != null ? ctx.user : new HashMap();\n  if (actor.id != null) {\n    ctx.user.id = actor.id;\n  }\n  if (actor.name != null) {\n    ctx.user.name = actor.name;\n  }\n  if (actor.email instanceof String && actor.email.indexOf('@') >= 0) {\n    ctx.user.email = actor.email;\n  }\n} else {\n  ctx.atlassian_cloud = ctx.atlassian_cloud != null ? ctx.atlassian_cloud : new HashMap();\n  ctx.atlassian_cloud.audit = ctx.atlassian_cloud.audit != null ? ctx.atlassian_cloud.audit : new HashMap();\n  ctx.atlassian_cloud.audit.actor = ctx.atlassian_cloud.audit.actor != null ? ctx.atlassian_cloud.audit.actor : new HashMap();\n  def app = ctx.atlassian_cloud.audit.actor.app != null ? ctx.atlassian_cloud.audit.actor.app : new HashMap();\n  if (actor.id != null) {\n    app.id = actor.id;\n  }\n  if (actor.name != null) {\n    app.name = actor.name;\n  }\n  ctx.atlassian_cloud.audit.actor.app = app;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -305,9 +302,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.action") };
             if _cond {
-                // Painless script
-                // Source: def action = ctx.event.action;\nctx.event.kind = 'event';\ndef mapping = null;\nif (params.exact.containsKey(action)) {\n  mapping = params.exact[action];\n}\nif (mapping == null && params.prefixes instanceof List) {\n  for (def entry : params.prefixes) {\n    if (action.startsWith(entry.prefix)) {\n      mapping = entry;\n      break;\n    }\n  }\n}\nif (mapping == null && action.endsWith(params.policy_suffix)) {\n  mapping = params.policy;\n}\nif (mapping == null) {\n  mapping = params.default;\n}\nctx.event.category = mapping.category;\nctx.event.type = mapping.type;\nif (mapping.containsKey('outcome')) {\n  ctx.event.outcome = mapping.outcome;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

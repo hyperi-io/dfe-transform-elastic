@@ -1,0 +1,154 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-04-10T20:32:26.677Z",
+      "cloud": {
+        "origin": {
+          "account": {
+            "id": "1ddbf452-3931-4f5c-aac5-6a5a9b8c4116"
+          },
+          "project": {
+            "id": "1569ffbf-3cb2-437b-91fc-97ea76a65301"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"level\": \"info\", \"time\": \"2053-04-10T20:32:26.677Z\", \"instance\": \"api-turbine-api-55674d58c-xphlb-d56157c8-db02-4c48-a6a7-02c1abf40598\", \"host\": \"turbine-api-55674d58c-xphlb\", \"service\": \"turbine-api\", \"version\": \"25.0.7 (gh-readonly-queue/release/25.0/pr-9272-e2409f7b9f9dc760320cb64e66f1c253fd328b71:b6f5d273)\", \"LogType\": \"Audit\", \"EventTime\": \"2053-04-10T20:32:26.677Z\", \"TenantId\": \"1569ffbf-3cb2-437b-91fc-97ea76a65301\", \"AccountId\": \"1ddbf452-3931-4f5c-aac5-6a5a9b8c4116\", \"User\": \"admin@dwofop.tld\", \"UserId\": \"1cf3ad52-e82f-486f-b702-127c723f5529\", \"Category\": \"Asset\", \"Description\": \"admin@dwofop.tld Created asset 67f82ada9deafb2d6ec46987\", \"ActionType\": \"Create\", \"Id\": \"67f82ada9deafb2d6ec46987\", \"NewValue\": \"{\\\"name\\\":\\\"ECK\\\",\\\"title\\\":\\\"ECK\\\",\\\"description\\\":\\\"\\\",\\\"testingEnabled\\\":false,\\\"interval\\\":15,\\\"poolId\\\":\\\"67f702c8921c9ee6262ed50a\\\",\\\"status\\\":\\\"inactive\\\",\\\"docSchemaVersion\\\":1,\\\"connectorAsset\\\":\\\"elasticsearch.http_basic\\\",\\\"params\\\":{\\\"url\\\":\\\"https://eck.domain.tld\\\",\\\"username\\\":\\\"gjycmye-cqdlm\\\",\\\"password\\\":\\\"**********\\\"},\\\"paramSchema\\\":{\\\"type\\\":\\\"object\\\",\\\"properties\\\":{\\\"url\\\":{\\\"title\\\":\\\"URL\\\",\\\"description\\\":\\\"A URL to the target host.\\\",\\\"type\\\":\\\"string\\\"},\\\"username\\\":{\\\"title\\\":\\\"Username\\\",\\\"description\\\":\\\"Username\\\",\\\"type\\\":\\\"string\\\"},\\\"password\\\":{\\\"title\\\":\\\"Password\\\",\\\"description\\\":\\\"Password\\\",\\\"type\\\":\\\"string\\\",\\\"format\\\":\\\"password\\\"},\\\"verify_ssl\\\":{\\\"title\\\":\\\"Verify SSL Certificates\\\",\\\"description\\\":\\\"Verify SSL certificate\\\",\\\"type\\\":\\\"boolean\\\"},\\\"http_proxy\\\":{\\\"title\\\":\\\"HTTP(s) Proxy\\\",\\\"description\\\":\\\"A proxy to route requests through.\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"url\\\",\\\"username\\\",\\\"password\\\"]},\\\"testParams\\\":{},\\\"testParamSchema\\\":{\\\"type\\\":\\\"object\\\",\\\"properties\\\":{\\\"url\\\":{\\\"title\\\":\\\"URL\\\",\\\"description\\\":\\\"A URL to the target host.\\\",\\\"type\\\":\\\"string\\\"},\\\"username\\\":{\\\"title\\\":\\\"Username\\\",\\\"description\\\":\\\"Username\\\",\\\"type\\\":\\\"string\\\"},\\\"password\\\":{\\\"title\\\":\\\"Password\\\",\\\"description\\\":\\\"Password\\\",\\\"type\\\":\\\"string\\\",\\\"format\\\":\\\"password\\\"},\\\"verify_ssl\\\":{\\\"title\\\":\\\"Verify SSL Certificates\\\",\\\"description\\\":\\\"Verify SSL certificate\\\",\\\"type\\\":\\\"boolean\\\"},\\\"http_proxy\\\":{\\\"title\\\":\\\"HTTP(s) Proxy\\\",\\\"description\\\":\\\"A proxy to route requests through.\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"url\\\",\\\"username\\\",\\\"password\\\"]},\\\"isCustom\\\":false,\\\"meta\\\":{\\\"sharingUid\\\":\\\"3a4ddceb-6663-4a99-83a0-e2d0696af182\\\"},\\\"audit\\\":{\\\"version\\\":1,\\\"created\\\":{\\\"date\\\":\\\"2053-04-10T20:32:26.533Z\\\",\\\"user\\\":{\\\"id\\\":\\\"1cf3ad52-e82f-486f-b702-127c723f5529\\\",\\\"username\\\":\\\"admin@dwofop.tld\\\"},\\\"authProvider\\\":{\\\"id\\\":\\\"\\\",\\\"title\\\":\\\"Swimlane\\\"}},\\\"modified\\\":{\\\"date\\\":\\\"2053-04-10T20:32:26.533Z\\\",\\\"user\\\":{\\\"id\\\":\\\"1cf3ad52-e82f-486f-b702-127c723f5529\\\",\\\"username\\\":\\\"admin@dwofop.tld\\\"},\\\"authProvider\\\":{\\\"id\\\":\\\"\\\",\\\"title\\\":\\\"Swimlane\\\"}}},\\\"id\\\":\\\"67f82ada9deafb2d6ec46987\\\"}\", \"SourceIp\": [ \"198.51.100.211\" ], \"UserAgent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36\", \"EventOutcome\": \"Success\", \"Endpoint\": \"/v1/asset\", \"Referer\": \"https://turbine.domain.tld/account/1ddbf452-3931-4f5c-aac5-6a5a9b8c4116/tenant/1569ffbf-3cb2-437b-91fc-97ea76a65301/canvas/assets\", \"IsAdmin\": true, \"AuthenticationType\": \"JWT\"}",
+        "outcome": "success",
+        "type": [
+          "creation"
+        ]
+      },
+      "log": {
+        "category": "Asset",
+        "type": "Audit"
+      },
+      "message": "admin@dwofop.tld Created asset 67f82ada9deafb2d6ec46987: ECK with Id: 67f82ada9deafb2d6ec46987",
+      "related": {
+        "user": [
+          "admin",
+          "admin@dwofop.tld"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/v1/asset"
+      },
+      "user": {
+        "authentication": {
+          "type": "jwt"
+        },
+        "domain": "dwofop.tld",
+        "email": "admin@dwofop.tld",
+        "id": "1cf3ad52-e82f-486f-b702-127c723f5529",
+        "name": "admin"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "135.0.0.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-10T20:32:26.677Z",
+      "cloud": {
+        "origin": {
+          "account": {
+            "id": "1ddbf452-3931-4f5c-aac5-6a5a9b8c4116"
+          },
+          "project": {
+            "id": "1569ffbf-3cb2-437b-91fc-97ea76a65301"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"level\": \"info\", \"time\": \"2053-04-10T20:32:26.677Z\", \"instance\": \"api-turbine-api-55674d58c-xphlb-d56157c8-db02-4c48-a6a7-02c1abf40598\", \"host\": \"turbine-api-55674d58c-xphlb\", \"service\": \"turbine-api\", \"version\": \"25.0.7 (gh-readonly-queue/release/25.0/pr-9272-e2409f7b9f9dc760320cb64e66f1c253fd328b71:b6f5d273)\", \"LogType\": \"Audit\", \"EventTime\": \"2053-04-10T20:32:26.677Z\", \"TenantId\": \"1569ffbf-3cb2-437b-91fc-97ea76a65301\", \"AccountId\": \"1ddbf452-3931-4f5c-aac5-6a5a9b8c4116\", \"User\": \"admin@dwofop.tld\", \"UserId\": \"1cf3ad52-e82f-486f-b702-127c723f5529\", \"Category\": \"Asset\", \"Description\": \"admin@dwofop.tld Created asset 67f82ada9deafb2d6ec46987\", \"ActionType\": \"Create\", \"Id\": \"67f82ada9deafb2d6ec46987\", \"NewValue\": \"{\\\"name\\\":\\\"ECK\\\",\\\"title\\\":\\\"ECK\\\",\\\"description\\\":\\\"\\\",\\\"testingEnabled\\\":false,\\\"interval\\\":15,\\\"poolId\\\":\\\"67f702c8921c9ee6262ed50a\\\",\\\"status\\\":\\\"inactive\\\",\\\"docSchemaVersion\\\":1,\\\"connectorAsset\\\":\\\"elasticsearch.http_basic\\\",\\\"params\\\":{\\\"url\\\":\\\"https://eck.domain.tld\\\",\\\"username\\\":\\\"gjycmye-cqdlm\\\",\\\"password\\\":\\\"**********\\\"},\\\"paramSchema\\\":{\\\"type\\\":\\\"object\\\",\\\"properties\\\":{\\\"url\\\":{\\\"title\\\":\\\"URL\\\",\\\"description\\\":\\\"A URL to the target host.\\\",\\\"type\\\":\\\"string\\\"},\\\"username\\\":{\\\"title\\\":\\\"Username\\\",\\\"description\\\":\\\"Username\\\",\\\"type\\\":\\\"string\\\"},\\\"password\\\":{\\\"title\\\":\\\"Password\\\",\\\"description\\\":\\\"Password\\\",\\\"type\\\":\\\"string\\\",\\\"format\\\":\\\"password\\\"},\\\"verify_ssl\\\":{\\\"title\\\":\\\"Verify SSL Certificates\\\",\\\"description\\\":\\\"Verify SSL certificate\\\",\\\"type\\\":\\\"boolean\\\"},\\\"http_proxy\\\":{\\\"title\\\":\\\"HTTP(s) Proxy\\\",\\\"description\\\":\\\"A proxy to route requests through.\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"url\\\",\\\"username\\\",\\\"password\\\"]},\\\"testParams\\\":{},\\\"testParamSchema\\\":{\\\"type\\\":\\\"object\\\",\\\"properties\\\":{\\\"url\\\":{\\\"title\\\":\\\"URL\\\",\\\"description\\\":\\\"A URL to the target host.\\\",\\\"type\\\":\\\"string\\\"},\\\"username\\\":{\\\"title\\\":\\\"Username\\\",\\\"description\\\":\\\"Username\\\",\\\"type\\\":\\\"string\\\"},\\\"password\\\":{\\\"title\\\":\\\"Password\\\",\\\"description\\\":\\\"Password\\\",\\\"type\\\":\\\"string\\\",\\\"format\\\":\\\"password\\\"},\\\"verify_ssl\\\":{\\\"title\\\":\\\"Verify SSL Certificates\\\",\\\"description\\\":\\\"Verify SSL certificate\\\",\\\"type\\\":\\\"boolean\\\"},\\\"http_proxy\\\":{\\\"title\\\":\\\"HTTP(s) Proxy\\\",\\\"description\\\":\\\"A proxy to route requests through.\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"url\\\",\\\"username\\\",\\\"password\\\"]},\\\"isCustom\\\":false,\\\"meta\\\":{\\\"sharingUid\\\":\\\"3a4ddceb-6663-4a99-83a0-e2d0696af182\\\"},\\\"audit\\\":{\\\"version\\\":1,\\\"created\\\":{\\\"date\\\":\\\"2053-04-10T20:32:26.533Z\\\",\\\"user\\\":{\\\"id\\\":\\\"1cf3ad52-e82f-486f-b702-127c723f5529\\\",\\\"username\\\":\\\"admin@dwofop.tld\\\"},\\\"authProvider\\\":{\\\"id\\\":\\\"\\\",\\\"title\\\":\\\"Swimlane\\\"}},\\\"modified\\\":{\\\"date\\\":\\\"2053-04-10T20:32:26.533Z\\\",\\\"user\\\":{\\\"id\\\":\\\"1cf3ad52-e82f-486f-b702-127c723f5529\\\",\\\"username\\\":\\\"admin@dwofop.tld\\\"},\\\"authProvider\\\":{\\\"id\\\":\\\"\\\",\\\"title\\\":\\\"Swimlane\\\"}}},\\\"id\\\":\\\"67f82ada9deafb2d6ec46987\\\"}\", \"SourceIp\": \"198.51.100.211\", \"UserAgent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36\", \"EventOutcome\": \"Success\", \"Endpoint\": \"/v1/asset\", \"Referer\": \"https://turbine.domain.tld/account/1ddbf452-3931-4f5c-aac5-6a5a9b8c4116/tenant/1569ffbf-3cb2-437b-91fc-97ea76a65301/canvas/assets\", \"IsAdmin\": true, \"AuthenticationType\": \"JWT\"}",
+        "outcome": "success",
+        "type": [
+          "creation"
+        ]
+      },
+      "log": {
+        "category": "Asset",
+        "type": "Audit"
+      },
+      "message": "admin@dwofop.tld Created asset 67f82ada9deafb2d6ec46987: ECK with Id: 67f82ada9deafb2d6ec46987",
+      "related": {
+        "user": [
+          "admin",
+          "admin@dwofop.tld"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/v1/asset"
+      },
+      "user": {
+        "authentication": {
+          "type": "jwt"
+        },
+        "domain": "dwofop.tld",
+        "email": "admin@dwofop.tld",
+        "id": "1cf3ad52-e82f-486f-b702-127c723f5529",
+        "name": "admin"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "135.0.0.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"level\": \"info\", \"time\": \"2053-04-10T20:32:26.677Z\", \"instance\": \"api-turbine-api-55674d58c-xphlb-d56157c8-db02-4c48-a6a7-02c1abf40598\", \"host\": \"turbine-api-55674d58c-xphlb\", \"service\": \"turbine-api\", \"version\": \"25.0.7 (gh-readonly-queue/release/25.0/pr-9272-e2409f7b9f9dc760320cb64e66f1c253fd328b71:b6f5d273)\", \"LogType\": \"Audit\", \"EventTime\": \"2053-04-10T20:32:26.677Z\", \"TenantId\": \"1569ffbf-3cb2-437b-91fc-97ea76a65301\", \"AccountId\": \"1ddbf452-3931-4f5c-aac5-6a5a9b8c4116\", \"User\": \"admin@dwofop.tld\", \"UserId\": \"1cf3ad52-e82f-486f-b702-127c723f5529\", \"Category\": \"Asset\", \"Description\": \"admin@dwofop.tld Created asset 67f82ada9deafb2d6ec46987\", \"ActionType\": \"Create\", \"Id\": \"67f82ada9deafb2d6ec46987\", \"NewValue\": \"{\\\"name\\\":\\\"ECK\\\",\\\"title\\\":\\\"ECK\\\",\\\"description\\\":\\\"\\\",\\\"testingEnabled\\\":false,\\\"interval\\\":15,\\\"poolId\\\":\\\"67f702c8921c9ee6262ed50a\\\",\\\"status\\\":\\\"inactive\\\",\\\"docSchemaVersion\\\":1,\\\"connectorAsset\\\":\\\"elasticsearch.http_basic\\\",\\\"params\\\":{\\\"url\\\":\\\"https://eck.domain.tld\\\",\\\"username\\\":\\\"gjycmye-cqdlm\\\",\\\"password\\\":\\\"**********\\\"},\\\"paramSchema\\\":{\\\"type\\\":\\\"object\\\",\\\"properties\\\":{\\\"url\\\":{\\\"title\\\":\\\"URL\\\",\\\"description\\\":\\\"A URL to the target host.\\\",\\\"type\\\":\\\"string\\\"},\\\"username\\\":{\\\"title\\\":\\\"Username\\\",\\\"description\\\":\\\"Username\\\",\\\"type\\\":\\\"string\\\"},\\\"password\\\":{\\\"title\\\":\\\"Password\\\",\\\"description\\\":\\\"Password\\\",\\\"type\\\":\\\"string\\\",\\\"format\\\":\\\"password\\\"},\\\"verify_ssl\\\":{\\\"title\\\":\\\"Verify SSL Certificates\\\",\\\"description\\\":\\\"Verify SSL certificate\\\",\\\"type\\\":\\\"boolean\\\"},\\\"http_proxy\\\":{\\\"title\\\":\\\"HTTP(s) Proxy\\\",\\\"description\\\":\\\"A proxy to route requests through.\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"url\\\",\\\"username\\\",\\\"password\\\"]},\\\"testParams\\\":{},\\\"testParamSchema\\\":{\\\"type\\\":\\\"object\\\",\\\"properties\\\":{\\\"url\\\":{\\\"title\\\":\\\"URL\\\",\\\"description\\\":\\\"A URL to the target host.\\\",\\\"type\\\":\\\"string\\\"},\\\"username\\\":{\\\"title\\\":\\\"Username\\\",\\\"description\\\":\\\"Username\\\",\\\"type\\\":\\\"string\\\"},\\\"password\\\":{\\\"title\\\":\\\"Password\\\",\\\"description\\\":\\\"Password\\\",\\\"type\\\":\\\"string\\\",\\\"format\\\":\\\"password\\\"},\\\"verify_ssl\\\":{\\\"title\\\":\\\"Verify SSL Certificates\\\",\\\"description\\\":\\\"Verify SSL certificate\\\",\\\"type\\\":\\\"boolean\\\"},\\\"http_proxy\\\":{\\\"title\\\":\\\"HTTP(s) Proxy\\\",\\\"description\\\":\\\"A proxy to route requests through.\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"url\\\",\\\"username\\\",\\\"password\\\"]},\\\"isCustom\\\":false,\\\"meta\\\":{\\\"sharingUid\\\":\\\"3a4ddceb-6663-4a99-83a0-e2d0696af182\\\"},\\\"audit\\\":{\\\"version\\\":1,\\\"created\\\":{\\\"date\\\":\\\"2053-04-10T20:32:26.533Z\\\",\\\"user\\\":{\\\"id\\\":\\\"1cf3ad52-e82f-486f-b702-127c723f5529\\\",\\\"username\\\":\\\"admin@dwofop.tld\\\"},\\\"authProvider\\\":{\\\"id\\\":\\\"\\\",\\\"title\\\":\\\"Swimlane\\\"}},\\\"modified\\\":{\\\"date\\\":\\\"2053-04-10T20:32:26.533Z\\\",\\\"user\\\":{\\\"id\\\":\\\"1cf3ad52-e82f-486f-b702-127c723f5529\\\",\\\"username\\\":\\\"admin@dwofop.tld\\\"},\\\"authProvider\\\":{\\\"id\\\":\\\"\\\",\\\"title\\\":\\\"Swimlane\\\"}}},\\\"id\\\":\\\"67f82ada9deafb2d6ec46987\\\"}\", \"SourceIp\": [ \"198.51.100.211\" ], \"UserAgent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36\", \"EventOutcome\": \"Success\", \"Endpoint\": \"/v1/asset\", \"Referer\": \"https://turbine.domain.tld/account/1ddbf452-3931-4f5c-aac5-6a5a9b8c4116/tenant/1569ffbf-3cb2-437b-91fc-97ea76a65301/canvas/assets\", \"IsAdmin\": true, \"AuthenticationType\": \"JWT\"}"
+    },
+    {
+      "message": "{\"level\": \"info\", \"time\": \"2053-04-10T20:32:26.677Z\", \"instance\": \"api-turbine-api-55674d58c-xphlb-d56157c8-db02-4c48-a6a7-02c1abf40598\", \"host\": \"turbine-api-55674d58c-xphlb\", \"service\": \"turbine-api\", \"version\": \"25.0.7 (gh-readonly-queue/release/25.0/pr-9272-e2409f7b9f9dc760320cb64e66f1c253fd328b71:b6f5d273)\", \"LogType\": \"Audit\", \"EventTime\": \"2053-04-10T20:32:26.677Z\", \"TenantId\": \"1569ffbf-3cb2-437b-91fc-97ea76a65301\", \"AccountId\": \"1ddbf452-3931-4f5c-aac5-6a5a9b8c4116\", \"User\": \"admin@dwofop.tld\", \"UserId\": \"1cf3ad52-e82f-486f-b702-127c723f5529\", \"Category\": \"Asset\", \"Description\": \"admin@dwofop.tld Created asset 67f82ada9deafb2d6ec46987\", \"ActionType\": \"Create\", \"Id\": \"67f82ada9deafb2d6ec46987\", \"NewValue\": \"{\\\"name\\\":\\\"ECK\\\",\\\"title\\\":\\\"ECK\\\",\\\"description\\\":\\\"\\\",\\\"testingEnabled\\\":false,\\\"interval\\\":15,\\\"poolId\\\":\\\"67f702c8921c9ee6262ed50a\\\",\\\"status\\\":\\\"inactive\\\",\\\"docSchemaVersion\\\":1,\\\"connectorAsset\\\":\\\"elasticsearch.http_basic\\\",\\\"params\\\":{\\\"url\\\":\\\"https://eck.domain.tld\\\",\\\"username\\\":\\\"gjycmye-cqdlm\\\",\\\"password\\\":\\\"**********\\\"},\\\"paramSchema\\\":{\\\"type\\\":\\\"object\\\",\\\"properties\\\":{\\\"url\\\":{\\\"title\\\":\\\"URL\\\",\\\"description\\\":\\\"A URL to the target host.\\\",\\\"type\\\":\\\"string\\\"},\\\"username\\\":{\\\"title\\\":\\\"Username\\\",\\\"description\\\":\\\"Username\\\",\\\"type\\\":\\\"string\\\"},\\\"password\\\":{\\\"title\\\":\\\"Password\\\",\\\"description\\\":\\\"Password\\\",\\\"type\\\":\\\"string\\\",\\\"format\\\":\\\"password\\\"},\\\"verify_ssl\\\":{\\\"title\\\":\\\"Verify SSL Certificates\\\",\\\"description\\\":\\\"Verify SSL certificate\\\",\\\"type\\\":\\\"boolean\\\"},\\\"http_proxy\\\":{\\\"title\\\":\\\"HTTP(s) Proxy\\\",\\\"description\\\":\\\"A proxy to route requests through.\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"url\\\",\\\"username\\\",\\\"password\\\"]},\\\"testParams\\\":{},\\\"testParamSchema\\\":{\\\"type\\\":\\\"object\\\",\\\"properties\\\":{\\\"url\\\":{\\\"title\\\":\\\"URL\\\",\\\"description\\\":\\\"A URL to the target host.\\\",\\\"type\\\":\\\"string\\\"},\\\"username\\\":{\\\"title\\\":\\\"Username\\\",\\\"description\\\":\\\"Username\\\",\\\"type\\\":\\\"string\\\"},\\\"password\\\":{\\\"title\\\":\\\"Password\\\",\\\"description\\\":\\\"Password\\\",\\\"type\\\":\\\"string\\\",\\\"format\\\":\\\"password\\\"},\\\"verify_ssl\\\":{\\\"title\\\":\\\"Verify SSL Certificates\\\",\\\"description\\\":\\\"Verify SSL certificate\\\",\\\"type\\\":\\\"boolean\\\"},\\\"http_proxy\\\":{\\\"title\\\":\\\"HTTP(s) Proxy\\\",\\\"description\\\":\\\"A proxy to route requests through.\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"url\\\",\\\"username\\\",\\\"password\\\"]},\\\"isCustom\\\":false,\\\"meta\\\":{\\\"sharingUid\\\":\\\"3a4ddceb-6663-4a99-83a0-e2d0696af182\\\"},\\\"audit\\\":{\\\"version\\\":1,\\\"created\\\":{\\\"date\\\":\\\"2053-04-10T20:32:26.533Z\\\",\\\"user\\\":{\\\"id\\\":\\\"1cf3ad52-e82f-486f-b702-127c723f5529\\\",\\\"username\\\":\\\"admin@dwofop.tld\\\"},\\\"authProvider\\\":{\\\"id\\\":\\\"\\\",\\\"title\\\":\\\"Swimlane\\\"}},\\\"modified\\\":{\\\"date\\\":\\\"2053-04-10T20:32:26.533Z\\\",\\\"user\\\":{\\\"id\\\":\\\"1cf3ad52-e82f-486f-b702-127c723f5529\\\",\\\"username\\\":\\\"admin@dwofop.tld\\\"},\\\"authProvider\\\":{\\\"id\\\":\\\"\\\",\\\"title\\\":\\\"Swimlane\\\"}}},\\\"id\\\":\\\"67f82ada9deafb2d6ec46987\\\"}\", \"SourceIp\": \"198.51.100.211\", \"UserAgent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36\", \"EventOutcome\": \"Success\", \"Endpoint\": \"/v1/asset\", \"Referer\": \"https://turbine.domain.tld/account/1ddbf452-3931-4f5c-aac5-6a5a9b8c4116/tenant/1569ffbf-3cb2-437b-91fc-97ea76a65301/canvas/assets\", \"IsAdmin\": true, \"AuthenticationType\": \"JWT\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "turbine_api",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-swimlane-turbine_api-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "swimlane",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

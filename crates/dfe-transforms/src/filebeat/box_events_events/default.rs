@@ -99,9 +99,7 @@ impl Transform for Default {
 
             event.set("event.type", Value::Array(vec![]))?;
 
-            // Painless script
-            // Source: def eventType = params.getOrDefault(ctx.box.event_type, null);\nif (eventType != null) {\n  for (category in eventType.map.get('category')) {\n    ctx.event.category.add(category);\n  }\n  for ( type in eventType.map.get('type')) {\n    ctx.event.type.add(type);\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -589,9 +587,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
-            // Source: // event.[category|type] _should_ already have been populated by SHIELD_ALERT mapping\nif (ctx.event?.action.equals(\"SHIELD_ALERT\")) {\n  if (ctx.threat == null) {\n    ctx.threat = new HashMap();\n  }\n  if (ctx.related == null) {\n    ctx.related = new HashMap();\n  }\n  if (ctx.related.ip == null) {\n    ctx.related.ip = new ArrayList();\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -599,9 +595,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: if (ctx.rule?.category == null || !ctx.rule.category.equals(\"Suspicious Sessions\")) {\n  return;\n}\nctx.event.category.add(\"network\");\nctx.event.type.add(\"access\");\nctx.event.type.add(\"connection\");\nif (ctx.threat.enrichments == null) {\n  ctx.threat.enrichments = new ArrayList();\n}\nfor (session in ctx.box.additional_details?.shield_alert?.alert_summary?.sessions) {\n  if (session.session_type?.equals(\"suspicious\")) {\n    for (activity in session.activities) {\n      if (ctx.shield_date == null) {\n        ctx.shield_date = activity.occurred_at;\n      }\n      Map indicator = new HashMap();\n      indicator.indicator = new HashMap();\n      Map location = new HashMap();\n      location.put(\"lon\",activity.ip_info.longitude);\n      location.put(\"lat\",activity.ip_info.latitude);\n      Map geo = new HashMap();\n      geo.put(\"ip\",activity.ip_info.ip);\n      geo.put(\"location\",location);\n      indicator.indicator.put(\"geo\",geo);\n      indicator.indicator.put(\"description\",\n        \"IP \" + activity.ip_info.ip + \" was observed to \" +\n        activity.event_type + \" \" + activity.item_type + \" \" +\n        activity.item_path + \"/\" + activity.item_name + \" by \" +\n      activity.service_name);\n      indicator.indicator.put(\"provider\",activity.service_name);\n      indicator.indicator.put(\"type\",\"user-account\");\n      ctx.threat.enrichments.add(indicator);\n      ctx.related.ip.add(geo.ip);\n    }\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -609,9 +603,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: if (ctx.rule?.category == null || !ctx.rule.category.equals(\"Suspicious Locations\")) {\n  return;\n}\nctx.event.category.add(\"network\");\nctx.event.type.add(\"access\");\nctx.event.type.add(\"connection\");\nif (ctx?.threat?.enrichments == null) {\n  ctx.threat.enrichments = new ArrayList();\n}\nfor (alert_activity in ctx.box.additional_details?.shield_alert?.alert_summary?.alert_activities) {\n  if (ctx.shield_date == null) {\n    ctx.shield_date = alert_activity.occurred_at;\n  }\n  Map indicator = new HashMap();\n  indicator.indicator = new HashMap();\n  Map location = new HashMap();\n  location.put(\"lon\",alert_activity.ip_info?.longitude);\n  location.put(\"lat\",alert_activity.ip_info?.latitude);\n  Map geo = new HashMap();\n  geo.put(\"ip\",alert_activity.ip_info.ip);\n  geo.put(\"location\",location);\n  indicator.indicator.put(\"geo\",geo);\n  indicator.indicator.put(\"description\",\n    \"IP \" + alert_activity.ip_info.ip + \" was observed to \" +\n    alert_activity.event_type + \" \" + alert_activity.item_type + \" \" +\n    alert_activity.item_path + \"/\" + alert_activity.item_name + \" by \" +\n    alert_activity.service_name);\n  indicator.indicator.put(\"provider\",alert_activity.service_name);\n  if (alert_activity.ip_info.ip.indexOf(\":\") != -1) {\n    indicator.indicator.put(\"type\",\"ipv6-addr\");\n  } else {\n    indicator.indicator.put(\"type\",\"ipv4-addr\");\n  }\n  ctx.threat.enrichments.add(indicator);\n  ctx.related.ip.add(geo.ip);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -619,9 +611,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: if (ctx.rule?.category == null || !ctx.rule.category.equals(\"Anomalous Download\")) {\n  return;\n}\nctx.event.category.add(\"file\");\nctx.event.type.add(\"access\");\nif (ctx?.threat?.enrichments == null) {\n  ctx.threat.enrichments = new ArrayList();\n}\nList l = new ArrayList();\nif (ctx.box.additional_details?.shield_alert?.alert_summary != null) {\n  if (ctx.shield_date == null) {\n    ctx.shield_date = ctx.box.additional_details.shield_alert.alert_summary.anomaly_period.date_range?.start_date;\n  }\n  for (ip in ctx.box.additional_details.shield_alert.alert_summary.download_ips) {\n    l.add(ip.ip);\n    Map indicator = new HashMap();\n    indicator.indicator = new HashMap();\n    indicator.indicator.ip = ip.ip;\n    indicator.indicator.description = ctx.box.additional_details.shield_alert.alert_summary.description;\n    indicator.indicator.first_seen = ctx.box.additional_details.shield_alert.alert_summary.anomaly_period.date_range.start_date;\n    indicator.indicator.last_seen = ctx.box.additional_details.shield_alert.alert_summary.anomaly_period.date_range.end_date;\n    indicator.indicator.sightings = ctx.box.additional_details.shield_alert.alert_summary.historical_period.downloaded_files_count;\n    indicator.indicator.type = \"file\";\n    ctx.threat.enrichments.add(indicator);\n    ctx.related.ip.add(ip.ip);\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -629,9 +619,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: if (ctx.rule?.category == null || !ctx.rule.category.equals(\"Malicious Content\")) {\n  return;\n}\nctx.event.category.add(\"file\");\nctx.event.category.add(\"malware\");\nctx.event.type.add(\"info\");\nif (ctx?.threat?.indicator == null) {\n  ctx.threat.indicator = new HashMap();\n}\nif (ctx.box?.additional_details?.shield_alert?.alert_summary?.upload_activity != null &&\n  ctx.box.additional_details.shield_alert.malware_info != null) {\n  if (ctx.shield_date == null) {\n    ctx.shield_date = ctx.box?.additional_details?.shield_alert?.alert_summary?.upload_activity?.occurred_at;\n  }\n  ctx.threat.indicator.description =\n    ctx.box.additional_details.shield_alert.malware_info.malware_name +\n    \", \" + ctx.box.additional_details.shield_alert.malware_info.family +\n    \", \" + ctx.box.additional_details.shield_alert.malware_info.file_name +\n    \" Detected by Box Shield from IP \" + ctx.box.additional_details.shield_alert.alert_summary.upload_activity.ip_info.ip +\n    \". \" + ctx.box.additional_details.shield_alert.malware_info.description +\n    \" see \" + ctx.box.additional_details.shield_alert.malware_info.detail_link;\n  ctx.threat.indicator.ip = ctx.box.additional_details.shield_alert.alert_summary.upload_activity.ip_info.ip;\n  ctx.threat.indicator.provider = ctx.box.additional_details.shield_alert.alert_summary.upload_activity.service_name;\n  ctx.threat.indicator.first_seen = ctx.box.additional_details.shield_alert.malware_info.first_seen;\n  ctx.threat.indicator.last_seen = ctx.box.additional_details.shield_alert.malware_info.last_seen;\n  ctx.threat.indicator.reference = ctx.box.additional_details.shield_alert.malware_info.detail_link;\n  ctx.related.ip.add(ctx.threat.indicator.ip);\n}\nctx.threat.indicator.type = \"software\";\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -1057,9 +1045,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx.event.category != null) {\n  ctx.event.category = ctx.event.category.stream()\n    .distinct()\n    .collect(Collectors.toList());\n}\nif (ctx.event.type != null) {\n  ctx.event.type = ctx.event.type.stream()\n    .distinct()\n    .collect(Collectors.toList());\n}\nif (ctx.related != null) {\n  if (ctx.related.ip != null) {\n    ctx.related.ip = ctx.related.ip.stream()\n      .filter(Objects::nonNull)\n      .distinct()\n      .collect(Collectors.toList());\n  }\n}\nif (ctx.box?.additional_details?.shield_alert?.alert_summary?.download_ips != null) {\n  ctx.box.additional_details.shield_alert.alert_summary.download_ips = ctx.box.additional_details.shield_alert.alert_summary.download_ips.stream()\n    .filter(Objects::nonNull)\n    .distinct()\n    .collect(Collectors.toList());\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -1355,9 +1341,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
-            // Source: if (ctx.box?.additional_details?.shield_alert?.priority != null) {\n  ctx.threat.indicator.confidence =\n    ctx.box.additional_details.shield_alert.priority.substring(0, 1).toUpperCase() +\n    ctx.box.additional_details.shield_alert.priority.substring(1);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -1553,8 +1537,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

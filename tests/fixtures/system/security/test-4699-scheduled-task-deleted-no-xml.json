@@ -1,0 +1,81 @@
+{
+  "events": [
+    {
+      "event": {
+        "code": "4699",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "hostname": "omqteieaxg",
+        "mac": [
+          "10-1E-27-2C-5D-6A",
+          "97-6F-44-3A-3A-38"
+        ],
+        "os": {
+          "version": "10.0",
+          "name": "Windows Server 2019 Datacenter Evaluation",
+          "type": "windows",
+          "family": "windows",
+          "build": "17763.7792",
+          "kernel": "10.0.17763.7786 (WinBuild.160101.0800)",
+          "platform": "windows"
+        },
+        "name": "omqteieaxg",
+        "architecture": "x86_64",
+        "ip": [
+          "fe80::446e:78f1:40eb:7acc",
+          "192.168.166.98",
+          "fe80::f917:7719:d642:c19c",
+          "192.168.207.180"
+        ],
+        "id": "7b02abea-e8ee-48ef-8b27-a9d8ab74863e"
+      },
+      "log": {
+        "level": "information"
+      },
+      "user": {
+        "id": "S-1-5-18",
+        "name": "OMQTEIEAXG$",
+        "domain": "NORTH"
+      },
+      "winlog": {
+        "event_data": {
+          "ParentProcessId": "632",
+          "FQDN": "omqteieaxg.qhqop.pdjchovsvchpp.local",
+          "TaskName": "\\Microsoft\\Windows\\Windows Defender\\Windows Defender Scheduled Scan",
+          "SubjectUserSid": "S-1-5-18",
+          "ClientProcessId": "4588",
+          "RpcCallClientLocality": "0",
+          "SubjectLogonId": "0x3e7",
+          "ClientProcessStartKey": "6192449487634693",
+          "SubjectUserName": "OMQTEIEAXG$",
+          "SubjectDomainName": "NORTH"
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "computer_name": "omqteieaxg.qhqop.pdjchovsvchpp.local",
+        "process": {
+          "pid": 640,
+          "thread": {
+            "id": 10604
+          }
+        },
+        "keywords": [
+          "Audit Success"
+        ],
+        "record_id": "266164",
+        "logon": {
+          "id": "0x3e7"
+        },
+        "activity_id": "{50ac050a-75ac-0591-fc18-bb55dd15db01}",
+        "version": 1,
+        "task": "Other Object Access Events",
+        "event_id": "4699",
+        "channel": "Security",
+        "opcode": "Info"
+      }
+    }
+  ]
+}

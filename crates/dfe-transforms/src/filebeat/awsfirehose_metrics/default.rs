@@ -303,9 +303,7 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script
-            // Source: List metricNames = new ArrayList(); if (ctx.aws != null && ctx.aws instanceof Map) {\n    for (entry in ctx.aws.entrySet()) {\n        def nestedMap = entry.getValue();\n        if (nestedMap instanceof Map) { // Get the top-level key (firehose, cloudwatch, etc.)\n            def metricsMap = nestedMap.get(\"metrics\"); // Get aws.*.metrics.*\n            if (metricsMap instanceof Map) {\n                metricNames.addAll(metricsMap.keySet());\n                break;\n            }\n        }\n    }\n} Collections.sort(metricNames); ctx.aws.metrics_names = metricNames;
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

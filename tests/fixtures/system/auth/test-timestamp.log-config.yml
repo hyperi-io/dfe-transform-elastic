@@ -1,0 +1,7 @@
+# Test inputs for this directory's fixtures.
+fields:
+  event:
+    timezone: '+0000'
+  input.type: log
+dynamic_fields:
+  event.ingested: .*

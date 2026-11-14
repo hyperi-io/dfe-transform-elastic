@@ -1,0 +1,1242 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-06-02T15:45:19.173Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "created": "2054-06-02T15:45:19.173Z",
+        "id": "68ec3b8f3c395289c30d16f88d4dd914",
+        "kind": "event",
+        "original": "{\"id\":\"68ec3b8f3c395289c30d16f88d4dd914\",\"novel\":false,\"type\":\"Workforce\",\"source_type\":\"MalwareLogs\",\"subject\":\"sxudcq.gzrebv@nkqgcwwbx.online\",\"password\":{\"type\":\"clear\",\"hashes\":[{\"algorithm\":\"SHA1\",\"hash\":\"8494610d157e4c8f3ea4a17ed89f3b75bcb3389d\"},{\"algorithm\":\"SHA256\",\"hash\":\"ae0345112b3fa76822e63b5c54a94e01fdf2efd069fd599270b0969c64af9ace\"},{\"algorithm\":\"NTLM\",\"hash\":\"aa9d33c50980fb12938edfed1509bc86\"},{\"algorithm\":\"MD5\",\"hash\":\"ae11b529c8650e76a5b7051bb8982a30\"}],\"properties\":[\"Letter\",\"Number\",\"Symbol\",\"UpperCase\",\"LowerCase\",\"AtLeast12Characters\"],\"cleartext_hint\":\"wt\",\"cleartext\":\"REDACTME123!\"},\"authorization_service\":{\"url\":\"https://norsegods.online/user/account\",\"domain\":\"norsegods.online\",\"fqdn\":\"norsegods.online\",\"technology\":[],\"protocols\":[\"https\"]},\"cookies\":[],\"malware_family\":{\"name\":\"LummaC2\",\"id\":\"nlflWX\"},\"dump\":{\"name\":\"Stealer Malware Logs 2054-06-02\",\"source\":\"s3://rf-id-outbox/malware_logs/raw/2054-06-02/demo/lumma/754749a1.zip\",\"description\":\"This credential data was derived from stealer malware logs.\",\"downloaded\":\"2054-06-02T15:30:37.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-06-02T12:45:00.000Z\",\"os\":\"Windows 10 Pro (10.0.19045) x64\",\"os_username\":\"edzy_vtat_wsfthz\",\"malware_file\":\"C:\\\\Users\\\\edzy_vtat_wsfthz\\\\Desktop\\\\Release\\\\New-Inst.exe\",\"timezone\":\"UTC+02:00\",\"computer_name\":\"FBXZ-TA-V7ZDA2RK\",\"antivirus\":[\"Windows Defender\"]},\"infrastructure\":{\"ip\":\"203.0.113.234\"},\"location\":{\"country\":{\"name\":\"Vhrerf\",\"displayName\":\"Vhrerf\",\"countryCode\":\"616\",\"alpha2Code\":\"PL\",\"alpha3Code\":\"POL\"}}},\"created\":\"2054-06-02T15:45:19.173Z\"}",
+        "type": [
+          "indicator",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "FBXZ-TA-V7ZDA2RK",
+        "os": {
+          "full": "Windows 10 Pro (10.0.19045) x64",
+          "type": "windows"
+        }
+      },
+      "recordedfuture": {
+        "identity_detection": {
+          "authorization_service": {
+            "domain": "norsegods.online",
+            "fqdn": "norsegods.online",
+            "protocols": [
+              "https"
+            ]
+          },
+          "detection_type": "Workforce",
+          "dump": {
+            "compromise": {
+              "antivirus": [
+                "Windows Defender"
+              ],
+              "malware_file": "C:\\Users\\edzy_vtat_wsfthz\\Desktop\\Release\\New-Inst.exe",
+              "os_username": "edzy_vtat_wsfthz",
+              "timezone": "UTC+02:00"
+            },
+            "description": "This credential data was derived from stealer malware logs.",
+            "downloaded": "2054-06-02T15:30:37.000Z",
+            "infrastructure": {
+              "ip": "203.0.113.234"
+            },
+            "location": {
+              "country": {
+                "alpha3Code": "POL",
+                "countryCode": "616",
+                "name": "Vhrerf"
+              }
+            },
+            "name": "Stealer Malware Logs 2054-06-02",
+            "source": "s3://rf-id-outbox/malware_logs/raw/2054-06-02/demo/lumma/754749a1.zip"
+          },
+          "exfiltration_date": "2054-06-02T12:45:00.000Z",
+          "novel": false,
+          "password": {
+            "cleartext": "REDACTME123!",
+            "cleartext_hint": "wt",
+            "hashes": {
+              "md5": "ae11b529c8650e76a5b7051bb8982a30",
+              "ntlm": "aa9d33c50980fb12938edfed1509bc86",
+              "sha1": "8494610d157e4c8f3ea4a17ed89f3b75bcb3389d",
+              "sha256": "ae0345112b3fa76822e63b5c54a94e01fdf2efd069fd599270b0969c64af9ace"
+            },
+            "properties": [
+              "Letter",
+              "Number",
+              "Symbol",
+              "UpperCase",
+              "LowerCase",
+              "AtLeast12Characters"
+            ],
+            "type": "clear"
+          },
+          "source_type": "MalwareLogs"
+        }
+      },
+      "related": {
+        "hash": [
+          "8494610d157e4c8f3ea4a17ed89f3b75bcb3389d",
+          "ae0345112b3fa76822e63b5c54a94e01fdf2efd069fd599270b0969c64af9ace",
+          "aa9d33c50980fb12938edfed1509bc86",
+          "ae11b529c8650e76a5b7051bb8982a30"
+        ],
+        "hosts": [
+          "norsegods.online",
+          "FBXZ-TA-V7ZDA2RK"
+        ],
+        "ip": [
+          "203.0.113.234"
+        ],
+        "user": [
+          "sxudcq.gzrebv@nkqgcwwbx.online",
+          "edzy_vtat_wsfthz"
+        ]
+      },
+      "source": {
+        "geo": {
+          "country_iso_code": "PL",
+          "country_name": "Vhrerf"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "software": {
+          "id": "nlflWX",
+          "name": "LummaC2"
+        }
+      },
+      "url": {
+        "domain": "norsegods.online",
+        "original": "https://norsegods.online/user/account",
+        "path": "/user/account",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "sxudcq.gzrebv@nkqgcwwbx.online",
+        "name": "sxudcq.gzrebv@nkqgcwwbx.online"
+      }
+    },
+    {
+      "@timestamp": "2054-06-02T15:45:19.097Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "created": "2054-06-02T15:45:19.097Z",
+        "id": "7edbe3acbf31bd9db3672f44d5dabaf7",
+        "kind": "event",
+        "original": "{\"id\":\"7edbe3acbf31bd9db3672f44d5dabaf7\",\"novel\":true,\"type\":\"External\",\"source_type\":\"MalwareLogs\",\"subject\":\"basqn.qmpiuzni@nkqgcwwbx.online\",\"password\":{\"type\":\"clear\",\"hashes\":[{\"algorithm\":\"SHA256\",\"hash_prefix\":\"b82d246e\"},{\"algorithm\":\"NTLM\",\"hash\":\"3bec27f1221e3f886a5a1fbb4180bdf1\"}],\"properties\":[\"Letter\",\"Number\",\"UpperCase\",\"LowerCase\",\"AtLeast12Characters\"],\"cleartext_hint\":\"ja\"},\"authorization_service\":{\"url\":\"https://norsegods.online/DesktopWeb/\",\"domain\":\"norsegods.online\",\"fqdn\":\"norsegods.online\",\"technology\":[{\"name\":\"Virtual Desktop\",\"id\":\"Ig409I\"},{\"name\":\"Citrix Virtual Apps and Desktops\",\"id\":\"ZNkiC2\",\"category\":\"Ig409I\"}],\"protocols\":[\"https\"]},\"cookies\":[{\"dns\":\".norsegods.online\",\"name\":\"session_id\",\"http\":true,\"expiration\":\"2054-08-25T09:57:39.000Z\",\"secure\":true,\"value\":\"3e2b1a0c-6a1e-4f5d-b6a5-c1b0b0a4a9c1\"}],\"malware_family\":{\"name\":\"Vidar\",\"id\":\"YuDlEm\"},\"dump\":{\"name\":\"Stealer Malware Logs 2054-06-02\",\"source\":\"s3://rf-id-outbox/malware_logs/raw/2054-06-02/demo/vidar/9ab54b58.zip\",\"description\":\"This credential data was derived from stealer malware logs.\",\"downloaded\":\"2054-06-02T15:30:37.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-06-02T12:45:00.000Z\",\"os\":\"Windows 10 Enterprise\",\"os_username\":\"demo_user_sxwxml\",\"timezone\":\"UTC+05:00\",\"computer_name\":\"EDSW-EZYRFPDZ\",\"antivirus\":[\"Windows Defender\"]},\"infrastructure\":{\"ip\":\"198.51.100.137\"},\"location\":{\"country\":{\"name\":\"Bkbjca\",\"displayName\":\"Bkbjca\",\"countryCode\":\"250\",\"alpha2Code\":\"FR\",\"alpha3Code\":\"FRA\"}}},\"created\":\"2054-06-02T15:45:19.097Z\"}",
+        "type": [
+          "indicator",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "EDSW-EZYRFPDZ",
+        "os": {
+          "full": "Windows 10 Enterprise",
+          "type": "windows"
+        }
+      },
+      "recordedfuture": {
+        "identity_detection": {
+          "authorization_service": {
+            "domain": "norsegods.online",
+            "fqdn": "norsegods.online",
+            "protocols": [
+              "https"
+            ],
+            "technology": [
+              {
+                "id": "Ig409I",
+                "name": "Virtual Desktop"
+              },
+              {
+                "category": "Ig409I",
+                "id": "ZNkiC2",
+                "name": "Citrix Virtual Apps and Desktops"
+              }
+            ]
+          },
+          "cookies": [
+            {
+              "dns": ".norsegods.online",
+              "expiration": "2054-08-25T09:57:39.000Z",
+              "http": true,
+              "name": "session_id",
+              "secure": true,
+              "value": "3e2b1a0c-6a1e-4f5d-b6a5-c1b0b0a4a9c1"
+            }
+          ],
+          "detection_type": "External",
+          "dump": {
+            "compromise": {
+              "antivirus": [
+                "Windows Defender"
+              ],
+              "os_username": "demo_user_sxwxml",
+              "timezone": "UTC+05:00"
+            },
+            "description": "This credential data was derived from stealer malware logs.",
+            "downloaded": "2054-06-02T15:30:37.000Z",
+            "infrastructure": {
+              "ip": "198.51.100.137"
+            },
+            "location": {
+              "country": {
+                "alpha3Code": "FRA",
+                "countryCode": "250",
+                "name": "Bkbjca"
+              }
+            },
+            "name": "Stealer Malware Logs 2054-06-02",
+            "source": "s3://rf-id-outbox/malware_logs/raw/2054-06-02/demo/vidar/9ab54b58.zip"
+          },
+          "exfiltration_date": "2054-06-02T12:45:00.000Z",
+          "novel": true,
+          "password": {
+            "cleartext_hint": "ja",
+            "hashes": {
+              "ntlm": "3bec27f1221e3f886a5a1fbb4180bdf1",
+              "sha256_prefix": "b82d246e"
+            },
+            "properties": [
+              "Letter",
+              "Number",
+              "UpperCase",
+              "LowerCase",
+              "AtLeast12Characters"
+            ],
+            "type": "clear"
+          },
+          "source_type": "MalwareLogs"
+        }
+      },
+      "related": {
+        "hash": [
+          "3bec27f1221e3f886a5a1fbb4180bdf1"
+        ],
+        "hosts": [
+          "norsegods.online",
+          "EDSW-EZYRFPDZ"
+        ],
+        "ip": [
+          "198.51.100.137"
+        ],
+        "user": [
+          "basqn.qmpiuzni@nkqgcwwbx.online",
+          "demo_user_sxwxml"
+        ]
+      },
+      "source": {
+        "geo": {
+          "country_iso_code": "FR",
+          "country_name": "Bkbjca"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "software": {
+          "id": "YuDlEm",
+          "name": "Vidar"
+        }
+      },
+      "url": {
+        "domain": "norsegods.online",
+        "original": "https://norsegods.online/DesktopWeb/",
+        "path": "/DesktopWeb/",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "basqn.qmpiuzni@nkqgcwwbx.online",
+        "name": "basqn.qmpiuzni@nkqgcwwbx.online"
+      }
+    },
+    {
+      "@timestamp": "2054-06-02T16:00:00.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2054-06-02T16:00:00.000Z",
+        "id": "a5d1c8f2f5a1917032649935abcdfd81",
+        "kind": "event",
+        "original": "{\"id\":\"a5d1c8f2f5a1917032649935abcdfd81\",\"novel\":false,\"type\":\"Vip\",\"source_type\":\"DatabaseDumps\",\"subject\":\"demo_vip_user\",\"password\":{\"type\":\"hash\",\"hashes\":[{\"algorithm\":\"SHA256\",\"hash\":\"b2c2b90097ae9c649beaa1a3909ee30018bd89c4010d188ef381820e4047c441\"}],\"properties\":[\"Letter\",\"Number\"],\"cleartext_hint\":\"de\"},\"authorization_service\":{\"url\":\"https://portal.example.com/login\",\"domain\":\"portal.example.com\",\"fqdn\":\"portal.example.com\",\"technology\":[],\"protocols\":[\"https\"]},\"cookies\":[],\"malware_family\":{\"name\":\"Unknown\",\"id\":\"UnKn0w\"},\"dump\":{\"name\":\"Example Database Dump 2054-05-15\",\"type\":\"DatabaseDump\",\"source\":\"s3://rf-id-outbox/database_dumps/raw/2054-05-15/demo/example.zip\",\"description\":\"Credential data from a third-party database breach.\",\"downloaded\":\"2054-05-15T10:00:00.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-05-10T08:00:00.000Z\",\"os\":\"Unknown\",\"os_username\":\"demo_vip_user\",\"timezone\":\"UTC+00:00\",\"computer_name\":\"UNKNOWN\",\"antivirus\":[]},\"infrastructure\":{\"ip\":\"198.51.100.42\"},\"location\":{\"country\":{\"name\":\"Lywybb Xqavfo\",\"displayName\":\"Lywybb Xqavfo\",\"countryCode\":\"840\",\"alpha2Code\":\"US\",\"alpha3Code\":\"USA\"}},\"breaches\":[{\"name\":\"ExampleCorp Breach 2026\",\"domain\":\"example.com\",\"type\":\"Database\",\"breached\":\"2054-05-01T00:00:00.000Z\"}]},\"created\":\"2054-06-02T16:00:00.000Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "host": {
+        "name": "UNKNOWN",
+        "os": {
+          "full": "Unknown"
+        }
+      },
+      "recordedfuture": {
+        "identity_detection": {
+          "authorization_service": {
+            "domain": "portal.example.com",
+            "fqdn": "portal.example.com",
+            "protocols": [
+              "https"
+            ]
+          },
+          "detection_type": "Vip",
+          "dump": {
+            "breaches": [
+              {
+                "breached": "2054-05-01T00:00:00.000Z",
+                "domain": "example.com",
+                "name": "ExampleCorp Breach 2026",
+                "type": "Database"
+              }
+            ],
+            "compromise": {
+              "os_username": "demo_vip_user",
+              "timezone": "UTC+00:00"
+            },
+            "description": "Credential data from a third-party database breach.",
+            "downloaded": "2054-05-15T10:00:00.000Z",
+            "infrastructure": {
+              "ip": "198.51.100.42"
+            },
+            "location": {
+              "country": {
+                "alpha3Code": "USA",
+                "countryCode": "840",
+                "name": "Lywybb Xqavfo"
+              }
+            },
+            "name": "Example Database Dump 2054-05-15",
+            "source": "s3://rf-id-outbox/database_dumps/raw/2054-05-15/demo/example.zip",
+            "type": "DatabaseDump"
+          },
+          "exfiltration_date": "2054-05-10T08:00:00.000Z",
+          "novel": false,
+          "password": {
+            "cleartext_hint": "de",
+            "hashes": {
+              "sha256": "b2c2b90097ae9c649beaa1a3909ee30018bd89c4010d188ef381820e4047c441"
+            },
+            "properties": [
+              "Letter",
+              "Number"
+            ],
+            "type": "hash"
+          },
+          "source_type": "DatabaseDumps"
+        }
+      },
+      "related": {
+        "hash": [
+          "b2c2b90097ae9c649beaa1a3909ee30018bd89c4010d188ef381820e4047c441"
+        ],
+        "hosts": [
+          "portal.example.com",
+          "UNKNOWN"
+        ],
+        "ip": [
+          "198.51.100.42"
+        ],
+        "user": [
+          "demo_vip_user"
+        ]
+      },
+      "source": {
+        "geo": {
+          "country_iso_code": "US",
+          "country_name": "Lywybb Xqavfo"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "software": {
+          "id": "UnKn0w",
+          "name": "Unknown"
+        }
+      },
+      "url": {
+        "domain": "portal.example.com",
+        "original": "https://portal.example.com/login",
+        "path": "/login",
+        "scheme": "https"
+      },
+      "user": {
+        "name": "demo_vip_user"
+      }
+    },
+    {
+      "@timestamp": "2054-04-10T09:15:42.300Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "created": "2054-04-10T09:15:42.300Z",
+        "id": "a8a1b4c185922587897b8e2d9b0c0c21",
+        "kind": "event",
+        "original": "{\"id\":\"a8a1b4c185922587897b8e2d9b0c0c21\",\"organization_id\":\"uhash:Kd83nReQ1\",\"novel\":true,\"type\":\"Workforce\",\"source_type\":\"MalwareCombolists\",\"subject\":\"pxij.vhphzugeer@awmaue-dpix.io\",\"password\":{\"type\":\"hash\",\"hashes\":[{\"algorithm\":\"SHA512\",\"hash\":\"cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e\"},{\"algorithm\":\"SHA256\",\"hash\":\"bf931389bc9dadafaca396e23a49cc9ea889fcf1612d5c07a7148846cced84af\"},{\"algorithm\":\"NTLM\",\"hash\":\"40d8efb3d47fc707c16e24a1c0d974b8\"}],\"properties\":[\"Letter\",\"Number\",\"Symbol\",\"MixedCase\",\"AtLeast16Characters\"],\"cleartext_hint\":\"As\"},\"authorization_service\":{\"url\":\"https://vpn.asgard-corp.io/remote/login\",\"domain\":\"awmaue-dpix.io\",\"fqdn\":\"vpn.awmaue-dpix.io\",\"technology\":[{\"name\":\"VPN\",\"id\":\"CAfZv\"},{\"name\":\"Fortinet FortiGate\",\"id\":\"Ft1nT2\",\"category\":\"CAfZv\"}],\"protocols\":[\"https\"]},\"cookies\":[{\"dns\":\".asgard-corp.io\",\"name\":\"SVPNCOOKIE\",\"http\":true,\"expiration\":\"2055-01-15T00:00:00.000Z\",\"secure\":true,\"value\":\"54bd8286628e7089b3af29fe8fd005a0a8a1ba089a42dec998ef8523753d3807\"},{\"dns\":\".asgard-corp.io\",\"name\":\"tracking\",\"http\":false,\"expiration\":\"2052-01-01T00:00:00.000Z\",\"secure\":false,\"value\":\"137425bc3e399ff086eb7e817cc0a71cbe4b08bdd23f6488c6df67ee4aad5296\"}],\"malware_family\":{\"name\":\"RedLine\",\"id\":\"RdLnE0\"},\"dump\":{\"name\":\"Combolist Compilation 2054-04-10\",\"type\":\"Combolist\",\"source\":\"s3://rf-id-outbox/combolists/raw/2054-04-10/demo/redline/aa11bb22.zip\",\"description\":\"Credential data compiled from multiple malware combolists.\",\"downloaded\":\"2054-04-10T09:00:00.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-04-08T22:10:05.000Z\",\"os\":\"Ubuntu Linux 22.04 LTS\",\"os_username\":\"ulij\",\"malware_file\":\"/home/ulij/.cache/.update/agent.elf\",\"timezone\":\"UTC+01:00\",\"computer_name\":\"FRLBIA-KUO-80\",\"uac\":\"NotApplicable\",\"antivirus\":[\"ClamAV\",\"Sophos\"]},\"infrastructure\":{\"ip\":\"203.0.113.77\"},\"location\":{\"country\":{\"name\":\"Iotqbx\",\"displayName\":\"Iotqbx\",\"countryCode\":\"578\",\"alpha2Code\":\"NO\",\"alpha3Code\":\"NOR\"},\"city\":\"Oslo\",\"state\":\"Oslo\",\"postal_code\":\"0150\"}},\"created\":\"2054-04-10T09:15:42.300Z\"}",
+        "type": [
+          "indicator",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "FRLBIA-KUO-80",
+        "os": {
+          "full": "Ubuntu Linux 22.04 LTS",
+          "type": "linux"
+        }
+      },
+      "recordedfuture": {
+        "identity_detection": {
+          "authorization_service": {
+            "domain": "awmaue-dpix.io",
+            "fqdn": "vpn.awmaue-dpix.io",
+            "protocols": [
+              "https"
+            ],
+            "technology": [
+              {
+                "id": "CAfZv",
+                "name": "VPN"
+              },
+              {
+                "category": "CAfZv",
+                "id": "Ft1nT2",
+                "name": "Fortinet FortiGate"
+              }
+            ]
+          },
+          "cookies": [
+            {
+              "dns": ".asgard-corp.io",
+              "expiration": "2055-01-15T00:00:00.000Z",
+              "http": true,
+              "name": "SVPNCOOKIE",
+              "secure": true,
+              "value": "54bd8286628e7089b3af29fe8fd005a0a8a1ba089a42dec998ef8523753d3807"
+            },
+            {
+              "dns": ".asgard-corp.io",
+              "expiration": "2052-01-01T00:00:00.000Z",
+              "http": false,
+              "name": "tracking",
+              "secure": false,
+              "value": "137425bc3e399ff086eb7e817cc0a71cbe4b08bdd23f6488c6df67ee4aad5296"
+            }
+          ],
+          "detection_type": "Workforce",
+          "dump": {
+            "compromise": {
+              "antivirus": [
+                "ClamAV",
+                "Sophos"
+              ],
+              "malware_file": "/home/ulij/.cache/.update/agent.elf",
+              "os_username": "ulij",
+              "timezone": "UTC+01:00",
+              "uac": "NotApplicable"
+            },
+            "description": "Credential data compiled from multiple malware combolists.",
+            "downloaded": "2054-04-10T09:00:00.000Z",
+            "infrastructure": {
+              "ip": "203.0.113.77"
+            },
+            "location": {
+              "country": {
+                "alpha3Code": "NOR",
+                "countryCode": "578",
+                "name": "Iotqbx"
+              },
+              "state": "Oslo"
+            },
+            "name": "Combolist Compilation 2054-04-10",
+            "source": "s3://rf-id-outbox/combolists/raw/2054-04-10/demo/redline/aa11bb22.zip",
+            "type": "Combolist"
+          },
+          "exfiltration_date": "2054-04-08T22:10:05.000Z",
+          "novel": true,
+          "organization_id": "uhash:Kd83nReQ1",
+          "password": {
+            "cleartext_hint": "As",
+            "hashes": {
+              "ntlm": "40d8efb3d47fc707c16e24a1c0d974b8",
+              "sha256": "bf931389bc9dadafaca396e23a49cc9ea889fcf1612d5c07a7148846cced84af",
+              "sha512": "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"
+            },
+            "properties": [
+              "Letter",
+              "Number",
+              "Symbol",
+              "MixedCase",
+              "AtLeast16Characters"
+            ],
+            "type": "hash"
+          },
+          "source_type": "MalwareCombolists"
+        }
+      },
+      "related": {
+        "hash": [
+          "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e",
+          "bf931389bc9dadafaca396e23a49cc9ea889fcf1612d5c07a7148846cced84af",
+          "40d8efb3d47fc707c16e24a1c0d974b8"
+        ],
+        "hosts": [
+          "awmaue-dpix.io",
+          "vpn.awmaue-dpix.io",
+          "FRLBIA-KUO-80"
+        ],
+        "ip": [
+          "203.0.113.77"
+        ],
+        "user": [
+          "pxij.vhphzugeer@awmaue-dpix.io",
+          "ulij"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "Oslo",
+          "country_iso_code": "NO",
+          "country_name": "Iotqbx",
+          "postal_code": "0150"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "software": {
+          "id": "RdLnE0",
+          "name": "RedLine"
+        }
+      },
+      "url": {
+        "domain": "vpn.asgard-corp.io",
+        "original": "https://vpn.asgard-corp.io/remote/login",
+        "path": "/remote/login",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "pxij.vhphzugeer@awmaue-dpix.io",
+        "name": "pxij.vhphzugeer@awmaue-dpix.io"
+      }
+    },
+    {
+      "@timestamp": "2054-03-01T12:30:00.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2054-03-01T12:30:00.000Z",
+        "id": "d7b6d05830037b1b7e9e5b6c26b8d6c7",
+        "kind": "event",
+        "original": "{\"id\":\"d7b6d05830037b1b7e9e5b6c26b8d6c7\",\"novel\":false,\"type\":\"External\",\"source_type\":\"DatabaseDumps\",\"subject\":\"cpfvd.sdlbweox@fweloif-hkuo.com\",\"password\":{\"type\":\"clear\",\"hashes\":[{\"algorithm\":\"MD5\",\"hash\":\"3d5eaa4e8ce821a66e7864fcd545fb33\"},{\"algorithm\":\"SHA1\",\"hash\":\"3eae11e4e2f94f7e5662255d0cc2620a8cc37ac3\"}],\"properties\":[\"Letter\",\"LowerCase\",\"AtLeast8Characters\"],\"cleartext_hint\":\"pa\",\"cleartext\":\"5398aa4aed1d91cd2b5fe79529895caf5f11daf7e27b2f5ae6c51f66c6fd1b2a\"},\"authorization_service\":{\"url\":\"https://www.example-shop.com/account/login\",\"domain\":\"fweloif-hkuo.com\",\"fqdn\":\"www.fweloif-hkuo.com\",\"technology\":[],\"protocols\":[\"https\"]},\"cookies\":[],\"malware_family\":{\"name\":\"Unknown\",\"id\":\"UnKn0w\"},\"dump\":{\"name\":\"Example-Shop Database Leak\",\"type\":\"DatabaseDump\",\"source\":\"s3://rf-id-outbox/database_dumps/raw/2054-03-01/demo/example-shop.zip\",\"description\":\"Credential data from a third-party e-commerce database breach.\",\"downloaded\":\"2054-03-01T12:00:00.000Z\",\"infrastructure\":{\"ip\":\"198.51.100.205\"},\"location\":{\"country\":{\"name\":\"Hfsuboz\",\"displayName\":\"Hfsuboz\",\"countryCode\":\"276\",\"alpha2Code\":\"DE\",\"alpha3Code\":\"DEU\"},\"city\":\"Berlin\",\"address1\":\"Friedrichstrasse 100\",\"address2\":\"Etage 3\",\"postal_code\":\"10117\",\"zip\":\"10117\"},\"breaches\":[{\"name\":\"Example-Shop Breach 2025\",\"domain\":\"fweloif-hkuo.com\",\"type\":\"Database\",\"breached\":\"2053-12-20T00:00:00.000Z\",\"start\":\"2053-12-01T00:00:00.000Z\",\"stop\":\"2053-12-18T00:00:00.000Z\",\"precision\":\"DAY\",\"description\":\"User database with emails and salted hashes was exfiltrated.\",\"site_description\":\"Online retail platform.\"},{\"name\":\"OldForum Leak\",\"domain\":\"pvaamizv.net\",\"type\":\"Database\",\"breached\":\"2049-05-10T00:00:00.000Z\"}]},\"created\":\"2054-03-01T12:30:00.000Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "recordedfuture": {
+        "identity_detection": {
+          "authorization_service": {
+            "domain": "fweloif-hkuo.com",
+            "fqdn": "www.fweloif-hkuo.com",
+            "protocols": [
+              "https"
+            ]
+          },
+          "detection_type": "External",
+          "dump": {
+            "breaches": [
+              {
+                "breached": "2053-12-20T00:00:00.000Z",
+                "description": "User database with emails and salted hashes was exfiltrated.",
+                "domain": "fweloif-hkuo.com",
+                "name": "Example-Shop Breach 2025",
+                "precision": "DAY",
+                "site_description": "Online retail platform.",
+                "start": "2053-12-01T00:00:00.000Z",
+                "stop": "2053-12-18T00:00:00.000Z",
+                "type": "Database"
+              },
+              {
+                "breached": "2049-05-10T00:00:00.000Z",
+                "domain": "pvaamizv.net",
+                "name": "OldForum Leak",
+                "type": "Database"
+              }
+            ],
+            "description": "Credential data from a third-party e-commerce database breach.",
+            "downloaded": "2054-03-01T12:00:00.000Z",
+            "infrastructure": {
+              "ip": "198.51.100.205"
+            },
+            "location": {
+              "address1": "Friedrichstrasse 100",
+              "address2": "Etage 3",
+              "country": {
+                "alpha3Code": "DEU",
+                "countryCode": "276",
+                "name": "Hfsuboz"
+              },
+              "zip": "10117"
+            },
+            "name": "Example-Shop Database Leak",
+            "source": "s3://rf-id-outbox/database_dumps/raw/2054-03-01/demo/example-shop.zip",
+            "type": "DatabaseDump"
+          },
+          "novel": false,
+          "password": {
+            "cleartext": "5398aa4aed1d91cd2b5fe79529895caf5f11daf7e27b2f5ae6c51f66c6fd1b2a",
+            "cleartext_hint": "pa",
+            "hashes": {
+              "md5": "3d5eaa4e8ce821a66e7864fcd545fb33",
+              "sha1": "3eae11e4e2f94f7e5662255d0cc2620a8cc37ac3"
+            },
+            "properties": [
+              "Letter",
+              "LowerCase",
+              "AtLeast8Characters"
+            ],
+            "type": "clear"
+          },
+          "source_type": "DatabaseDumps"
+        }
+      },
+      "related": {
+        "hash": [
+          "3d5eaa4e8ce821a66e7864fcd545fb33",
+          "3eae11e4e2f94f7e5662255d0cc2620a8cc37ac3"
+        ],
+        "hosts": [
+          "fweloif-hkuo.com",
+          "www.fweloif-hkuo.com"
+        ],
+        "ip": [
+          "198.51.100.205"
+        ],
+        "user": [
+          "cpfvd.sdlbweox@fweloif-hkuo.com"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "Berlin",
+          "country_iso_code": "DE",
+          "country_name": "Hfsuboz",
+          "postal_code": "10117"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "software": {
+          "id": "UnKn0w",
+          "name": "Unknown"
+        }
+      },
+      "url": {
+        "domain": "www.example-shop.com",
+        "original": "https://www.example-shop.com/account/login",
+        "path": "/account/login",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "cpfvd.sdlbweox@fweloif-hkuo.com",
+        "name": "cpfvd.sdlbweox@fweloif-hkuo.com"
+      }
+    },
+    {
+      "@timestamp": "2054-02-14T07:00:00.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2054-02-14T07:00:00.000Z",
+        "id": "c2b6811015045f4b6d2c4a6a5f5c5f6e",
+        "kind": "event",
+        "original": "{\"id\":\"c2b6811015045f4b6d2c4a6a5f5c5f6e\",\"organization_id\":\"uhash:Pm91xTveB\",\"novel\":true,\"type\":\"Vip\",\"source_type\":\"DatabaseCombolists\",\"subject\":\"vvig.kxjduszfl@zbpnfyib-carr.com\",\"password\":{\"type\":\"clear\",\"hashes\":[{\"algorithm\":\"SHA256\",\"hash\":\"6a04c20b94fcf24ba77c205c7c20544267472d092317dbe1d60c8d016058a8ab\"},{\"algorithm\":\"SHA512\",\"hash_prefix\":\"cf83e1357eefb8bd\"},{\"algorithm\":\"NTLM\",\"hash_prefix\":\"fb2cd176\"}],\"properties\":[\"Letter\",\"Number\",\"Symbol\",\"UpperCase\",\"LowerCase\",\"MixedCase\",\"AtLeast24Characters\"],\"cleartext_hint\":\"Va\"},\"authorization_service\":{\"url\":\"https://mail.valhalla-bank.com/owa/\",\"domain\":\"zbpnfyib-carr.com\",\"fqdn\":\"mail.zbpnfyib-carr.com\",\"technology\":[{\"name\":\"Webmail\",\"id\":\"WbM4l1\"},{\"name\":\"Microsoft Outlook Web Access\",\"id\":\"OwA2k9\",\"category\":\"WbM4l1\"},{\"name\":\"Okta Single Sign-On\",\"id\":\"Okt4Ss\"}],\"protocols\":[\"https\",\"http\"]},\"cookies\":[{\"dns\":\".valhalla-bank.com\",\"name\":\"OWA-session\",\"http\":true,\"expiration\":\"2055-06-30T23:59:59.000Z\",\"secure\":true,\"value\":\"8c96643481b1e09ee46f72068d3fc8619d40d756049387d89c7543598c2f0b32\"}],\"malware_family\":{\"name\":\"Raccoon\",\"id\":\"Rc00n1\"},\"dump\":{\"name\":\"VIP Combolist 2054-02-14\",\"type\":\"Combolist\",\"source\":\"s3://rf-id-outbox/combolists/raw/2054-02-14/demo/raccoon/ff00ee11.zip\",\"description\":\"High-value credential set compiled from database and malware combolists.\",\"downloaded\":\"2054-02-14T06:45:00.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-02-10T18:30:00.000Z\",\"os\":\"macOS 14.2\",\"os_username\":\"ynnx\",\"malware_file\":\"/Users/ynnx/Library/Caches/com.apple.helper/agent\",\"timezone\":\"UTC-05:00\",\"computer_name\":\"XAKZCTRC-TEA-79\",\"uac\":\"AllowAll\",\"antivirus\":[]},\"infrastructure\":{\"ip\":\"2001:db8:3c4d:15::1a2b\"},\"location\":{\"country\":{\"name\":\"Lywybb Xqavfo\",\"displayName\":\"Lywybb Xqavfo\",\"countryCode\":\"840\",\"alpha2Code\":\"US\",\"alpha3Code\":\"USA\"},\"city\":\"New York\",\"state\":\"NY\",\"address\":\"350 Fifth Avenue\",\"postal_code\":\"10118\"}},\"created\":\"2054-02-14T07:00:00.000Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "host": {
+        "name": "XAKZCTRC-TEA-79",
+        "os": {
+          "full": "macOS 14.2",
+          "type": "macos"
+        }
+      },
+      "recordedfuture": {
+        "identity_detection": {
+          "authorization_service": {
+            "domain": "zbpnfyib-carr.com",
+            "fqdn": "mail.zbpnfyib-carr.com",
+            "protocols": [
+              "https",
+              "http"
+            ],
+            "technology": [
+              {
+                "id": "WbM4l1",
+                "name": "Webmail"
+              },
+              {
+                "category": "WbM4l1",
+                "id": "OwA2k9",
+                "name": "Microsoft Outlook Web Access"
+              },
+              {
+                "id": "Okt4Ss",
+                "name": "Okta Single Sign-On"
+              }
+            ]
+          },
+          "cookies": [
+            {
+              "dns": ".valhalla-bank.com",
+              "expiration": "2055-06-30T23:59:59.000Z",
+              "http": true,
+              "name": "OWA-session",
+              "secure": true,
+              "value": "8c96643481b1e09ee46f72068d3fc8619d40d756049387d89c7543598c2f0b32"
+            }
+          ],
+          "detection_type": "Vip",
+          "dump": {
+            "compromise": {
+              "malware_file": "/Users/ynnx/Library/Caches/com.apple.helper/agent",
+              "os_username": "ynnx",
+              "timezone": "UTC-05:00",
+              "uac": "AllowAll"
+            },
+            "description": "High-value credential set compiled from database and malware combolists.",
+            "downloaded": "2054-02-14T06:45:00.000Z",
+            "infrastructure": {
+              "ip": "2001:db8:3c4d:15::1a2b"
+            },
+            "location": {
+              "address": "350 Fifth Avenue",
+              "country": {
+                "alpha3Code": "USA",
+                "countryCode": "840",
+                "name": "Lywybb Xqavfo"
+              },
+              "state": "NY"
+            },
+            "name": "VIP Combolist 2054-02-14",
+            "source": "s3://rf-id-outbox/combolists/raw/2054-02-14/demo/raccoon/ff00ee11.zip",
+            "type": "Combolist"
+          },
+          "exfiltration_date": "2054-02-10T18:30:00.000Z",
+          "novel": true,
+          "organization_id": "uhash:Pm91xTveB",
+          "password": {
+            "cleartext_hint": "Va",
+            "hashes": {
+              "ntlm_prefix": "fb2cd176",
+              "sha256": "6a04c20b94fcf24ba77c205c7c20544267472d092317dbe1d60c8d016058a8ab",
+              "sha512_prefix": "cf83e1357eefb8bd"
+            },
+            "properties": [
+              "Letter",
+              "Number",
+              "Symbol",
+              "UpperCase",
+              "LowerCase",
+              "MixedCase",
+              "AtLeast24Characters"
+            ],
+            "type": "clear"
+          },
+          "source_type": "DatabaseCombolists"
+        }
+      },
+      "related": {
+        "hash": [
+          "6a04c20b94fcf24ba77c205c7c20544267472d092317dbe1d60c8d016058a8ab"
+        ],
+        "hosts": [
+          "zbpnfyib-carr.com",
+          "mail.zbpnfyib-carr.com",
+          "XAKZCTRC-TEA-79"
+        ],
+        "ip": [
+          "2001:db8:3c4d:15::1a2b"
+        ],
+        "user": [
+          "vvig.kxjduszfl@zbpnfyib-carr.com",
+          "ynnx"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "New York",
+          "country_iso_code": "US",
+          "country_name": "Lywybb Xqavfo",
+          "postal_code": "10118"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "software": {
+          "id": "Rc00n1",
+          "name": "Raccoon"
+        }
+      },
+      "url": {
+        "domain": "mail.valhalla-bank.com",
+        "original": "https://mail.valhalla-bank.com/owa/",
+        "path": "/owa/",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "vvig.kxjduszfl@zbpnfyib-carr.com",
+        "name": "vvig.kxjduszfl@zbpnfyib-carr.com"
+      }
+    },
+    {
+      "@timestamp": "2054-05-20T03:20:11.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "created": "2054-05-20T03:20:11.000Z",
+        "id": "b35604305f3e0f0f3f5f1d0b1a0c3b7d",
+        "kind": "event",
+        "original": "{\"id\":\"b35604305f3e0f0f3f5f1d0b1a0c3b7d\",\"novel\":false,\"type\":\"Workforce\",\"source_type\":\"MalwareLogs\",\"subject\":\"hla.oasmhmt@awmaue-dpix.io\",\"password\":{\"type\":\"clear\",\"hashes\":[{\"algorithm\":\"SHA1\",\"hash\":\"8a9a8e03da3951db00b38264226dc57631b2912d\"},{\"algorithm\":\"SHA256\",\"hash\":\"7b948169bb93390786f0d34a0ef5079032843c2f2eeadaf11c74db026a0465a7\"},{\"algorithm\":\"MD5\",\"hash\":\"f44aac3128bb36efde91e128c43e224d\"},{\"algorithm\":\"NTLM\",\"hash\":\"1179a9eaec5ac076cd92acd202e6572b\"}],\"properties\":[\"Number\",\"AtLeast8Characters\"],\"cleartext_hint\":\"12\"},\"authorization_service\":{\"url\":\"https://portal.asgard-corp.io/login\",\"domain\":\"awmaue-dpix.io\",\"fqdn\":\"portal.awmaue-dpix.io\",\"technology\":[{\"name\":\"Citrix\",\"id\":\"Ctx001\"}],\"protocols\":[\"https\"]},\"cookies\":[{\"dns\":\".asgard-corp.io\",\"name\":\"JSESSIONID\",\"http\":true,\"expiration\":\"2054-12-31T12:00:00.000Z\",\"secure\":true,\"value\":\"d5eb1926a38ce67593f8c3d1fd5587cb02463cf7d5b36dd4958ba6362fbccb27\"}],\"malware_family\":{\"name\":\"Anubis\",\"id\":\"Anb1s2\"},\"dump\":{\"name\":\"Mobile Stealer Logs 2054-05-20\",\"source\":\"s3://rf-id-outbox/malware_logs/raw/2054-05-20/demo/anubis/bb22cc33.zip\",\"description\":\"This credential data was derived from mobile stealer malware logs.\",\"downloaded\":\"2054-05-20T03:00:00.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-05-19T20:05:00.000Z\",\"os\":\"Android 13\",\"os_username\":\"sif\",\"timezone\":\"UTC+01:00\",\"computer_name\":\"GZ-N250A\",\"antivirus\":[\"Google Play Protect\"]},\"infrastructure\":{\"ip\":\"203.0.113.150\"},\"location\":{\"country\":{\"name\":\"Lywybb Oilmdhk of Great Britain and Northern Ireland (the)\",\"displayName\":\"Lywybb Oilmdhk\",\"countryCode\":\"826\",\"alpha2Code\":\"GB\",\"alpha3Code\":\"GBR\"},\"city\":\"London\"}},\"created\":\"2054-05-20T03:20:11.000Z\"}",
+        "type": [
+          "indicator",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "GZ-N250A",
+        "os": {
+          "full": "Android 13",
+          "type": "android"
+        }
+      },
+      "recordedfuture": {
+        "identity_detection": {
+          "authorization_service": {
+            "domain": "awmaue-dpix.io",
+            "fqdn": "portal.awmaue-dpix.io",
+            "protocols": [
+              "https"
+            ],
+            "technology": [
+              {
+                "id": "Ctx001",
+                "name": "Citrix"
+              }
+            ]
+          },
+          "cookies": [
+            {
+              "dns": ".asgard-corp.io",
+              "expiration": "2054-12-31T12:00:00.000Z",
+              "http": true,
+              "name": "JSESSIONID",
+              "secure": true,
+              "value": "d5eb1926a38ce67593f8c3d1fd5587cb02463cf7d5b36dd4958ba6362fbccb27"
+            }
+          ],
+          "detection_type": "Workforce",
+          "dump": {
+            "compromise": {
+              "antivirus": [
+                "Google Play Protect"
+              ],
+              "os_username": "sif",
+              "timezone": "UTC+01:00"
+            },
+            "description": "This credential data was derived from mobile stealer malware logs.",
+            "downloaded": "2054-05-20T03:00:00.000Z",
+            "infrastructure": {
+              "ip": "203.0.113.150"
+            },
+            "location": {
+              "country": {
+                "alpha3Code": "GBR",
+                "countryCode": "826",
+                "name": "Lywybb Oilmdhk of Great Britain and Northern Ireland (the)"
+              }
+            },
+            "name": "Mobile Stealer Logs 2054-05-20",
+            "source": "s3://rf-id-outbox/malware_logs/raw/2054-05-20/demo/anubis/bb22cc33.zip"
+          },
+          "exfiltration_date": "2054-05-19T20:05:00.000Z",
+          "novel": false,
+          "password": {
+            "cleartext_hint": "12",
+            "hashes": {
+              "md5": "f44aac3128bb36efde91e128c43e224d",
+              "ntlm": "1179a9eaec5ac076cd92acd202e6572b",
+              "sha1": "8a9a8e03da3951db00b38264226dc57631b2912d",
+              "sha256": "7b948169bb93390786f0d34a0ef5079032843c2f2eeadaf11c74db026a0465a7"
+            },
+            "properties": [
+              "Number",
+              "AtLeast8Characters"
+            ],
+            "type": "clear"
+          },
+          "source_type": "MalwareLogs"
+        }
+      },
+      "related": {
+        "hash": [
+          "8a9a8e03da3951db00b38264226dc57631b2912d",
+          "7b948169bb93390786f0d34a0ef5079032843c2f2eeadaf11c74db026a0465a7",
+          "f44aac3128bb36efde91e128c43e224d",
+          "1179a9eaec5ac076cd92acd202e6572b"
+        ],
+        "hosts": [
+          "awmaue-dpix.io",
+          "portal.awmaue-dpix.io",
+          "GZ-N250A"
+        ],
+        "ip": [
+          "203.0.113.150"
+        ],
+        "user": [
+          "hla.oasmhmt@awmaue-dpix.io",
+          "sif"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "London",
+          "country_iso_code": "GB",
+          "country_name": "Lywybb Oilmdhk"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "software": {
+          "id": "Anb1s2",
+          "name": "Anubis"
+        }
+      },
+      "url": {
+        "domain": "portal.asgard-corp.io",
+        "original": "https://portal.asgard-corp.io/login",
+        "path": "/login",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "hla.oasmhmt@awmaue-dpix.io",
+        "name": "hla.oasmhmt@awmaue-dpix.io"
+      }
+    },
+    {
+      "@timestamp": "2054-06-25T11:30:00.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "created": "2054-06-25T11:30:00.000Z",
+        "id": "8756734f9d0c8b7c1b2e5d0e1b9e1a38",
+        "kind": "event",
+        "original": "{\"id\":\"8756734f9d0c8b7c1b2e5d0e1b9e1a38\",\"novel\":true,\"type\":\"External\",\"source_type\":\"MalwareLogs\",\"subject\":\"afsfj.lynpreszmtfm@example.org\",\"dump\":{\"name\":\"Stealer Malware Logs 2054-06-25\",\"source\":\"s3://rf-id-outbox/malware_logs/raw/2054-06-25/demo/generic/cc33dd44.zip\",\"downloaded\":\"2054-06-25T11:00:00.000Z\"},\"created\":\"2054-06-25T11:30:00.000Z\"}",
+        "type": [
+          "indicator",
+          "info"
+        ]
+      },
+      "recordedfuture": {
+        "identity_detection": {
+          "detection_type": "External",
+          "dump": {
+            "downloaded": "2054-06-25T11:00:00.000Z",
+            "name": "Stealer Malware Logs 2054-06-25",
+            "source": "s3://rf-id-outbox/malware_logs/raw/2054-06-25/demo/generic/cc33dd44.zip"
+          },
+          "novel": true,
+          "source_type": "MalwareLogs"
+        }
+      },
+      "related": {
+        "user": [
+          "afsfj.lynpreszmtfm@example.org"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "afsfj.lynpreszmtfm@example.org",
+        "name": "afsfj.lynpreszmtfm@example.org"
+      }
+    },
+    {
+      "@timestamp": "2054-01-05T08:30:00.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2054-01-05T08:30:00.000Z",
+        "id": "24506b6e7d9b3a5c7c3d8b6a6f8a2445",
+        "kind": "event",
+        "original": "{\"id\":\"24506b6e7d9b3a5c7c3d8b6a6f8a2445\",\"organization_id\":\"uhash:Zq44wEsdC\",\"novel\":false,\"type\":\"Workforce\",\"source_type\":\"DatabaseDumps\",\"subject\":\"sny.jcxpaapbt@kybpcxd-kefqui.com\",\"password\":{\"type\":\"hash\",\"hashes\":[{\"algorithm\":\"SHA256\",\"hash\":\"3d71a2598fff754abc613783a878b2cb2e95c5e8d2c3f6c5d15f3e0f7f0b9b1b\"},{\"algorithm\":\"SHA1\",\"hash_prefix\":\"a4226c6c\"},{\"algorithm\":\"MD5\",\"hash_prefix\":\"669dd9a7\"}],\"properties\":[\"Letter\",\"Number\",\"Symbol\",\"UpperCase\",\"LowerCase\",\"AtLeast12Characters\"],\"cleartext_hint\":\"Mi\"},\"authorization_service\":{\"url\":\"https://ehr.midgard-health.com/portal\",\"domain\":\"kybpcxd-kefqui.com\",\"fqdn\":\"dtq.kybpcxd-kefqui.com\",\"technology\":[],\"protocols\":[\"https\"]},\"cookies\":[],\"malware_family\":{\"name\":\"Unknown\",\"id\":\"UnKn0w\"},\"dump\":{\"name\":\"Midgard Health Data Breach\",\"type\":\"DatabaseDump\",\"source\":\"s3://rf-id-outbox/database_dumps/raw/2054-01-05/demo/midgard-health.zip\",\"description\":\"Patient portal credential data from a healthcare breach.\",\"downloaded\":\"2054-01-05T08:00:00.000Z\",\"compromise\":{\"exfiltration_date\":\"2053-12-28T14:00:00.000Z\",\"os\":\"Windows Server 2019\",\"os_username\":\"svc_backup\",\"malware_file\":\"C:\\\\ProgramData\\\\svc\\\\dump.exe\",\"timezone\":\"UTC+00:00\",\"computer_name\":\"YLBNDYE-AD-37\",\"uac\":\"AdminApproval\",\"antivirus\":[\"Windows Defender\",\"CrowdStrike\"]},\"infrastructure\":{\"ip\":\"198.51.100.88\"},\"location\":{\"country\":{\"name\":\"Kkdacn\",\"displayName\":\"Kkdacn\",\"countryCode\":\"752\",\"alpha2Code\":\"SE\",\"alpha3Code\":\"SWE\"},\"city\":\"Stockholm\",\"state\":\"Stockholm County\",\"address\":\"Sveavagen 44\",\"address1\":\"Sveavagen 44\",\"address2\":\"Plan 5\",\"postal_code\":\"11134\",\"zip\":\"11134\"},\"breaches\":[{\"name\":\"Midgard Health Breach 2025\",\"domain\":\"kybpcxd-kefqui.com\",\"type\":\"Database\",\"breached\":\"2053-12-25T00:00:00.000Z\",\"start\":\"2053-11-01T00:00:00.000Z\",\"stop\":\"2053-12-24T00:00:00.000Z\",\"precision\":\"MONTH\",\"description\":\"EHR patient portal database compromised.\",\"site_description\":\"Regional healthcare provider.\"},{\"name\":\"VendorX Leak\",\"domain\":\"mavbhqo.io\",\"type\":\"Database\",\"breached\":\"2052-08-15T00:00:00.000Z\",\"precision\":\"YEAR\"}]},\"created\":\"2054-01-05T08:30:00.000Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "host": {
+        "name": "YLBNDYE-AD-37",
+        "os": {
+          "full": "Windows Server 2019",
+          "type": "windows"
+        }
+      },
+      "recordedfuture": {
+        "identity_detection": {
+          "authorization_service": {
+            "domain": "kybpcxd-kefqui.com",
+            "fqdn": "dtq.kybpcxd-kefqui.com",
+            "protocols": [
+              "https"
+            ]
+          },
+          "detection_type": "Workforce",
+          "dump": {
+            "breaches": [
+              {
+                "breached": "2053-12-25T00:00:00.000Z",
+                "description": "EHR patient portal database compromised.",
+                "domain": "kybpcxd-kefqui.com",
+                "name": "Midgard Health Breach 2025",
+                "precision": "MONTH",
+                "site_description": "Regional healthcare provider.",
+                "start": "2053-11-01T00:00:00.000Z",
+                "stop": "2053-12-24T00:00:00.000Z",
+                "type": "Database"
+              },
+              {
+                "breached": "2052-08-15T00:00:00.000Z",
+                "domain": "mavbhqo.io",
+                "name": "VendorX Leak",
+                "precision": "YEAR",
+                "type": "Database"
+              }
+            ],
+            "compromise": {
+              "antivirus": [
+                "Windows Defender",
+                "CrowdStrike"
+              ],
+              "malware_file": "C:\\ProgramData\\svc\\dump.exe",
+              "os_username": "svc_backup",
+              "timezone": "UTC+00:00",
+              "uac": "AdminApproval"
+            },
+            "description": "Patient portal credential data from a healthcare breach.",
+            "downloaded": "2054-01-05T08:00:00.000Z",
+            "infrastructure": {
+              "ip": "198.51.100.88"
+            },
+            "location": {
+              "address": "Sveavagen 44",
+              "address1": "Sveavagen 44",
+              "address2": "Plan 5",
+              "country": {
+                "alpha3Code": "SWE",
+                "countryCode": "752",
+                "name": "Kkdacn"
+              },
+              "state": "Stockholm County",
+              "zip": "11134"
+            },
+            "name": "Midgard Health Data Breach",
+            "source": "s3://rf-id-outbox/database_dumps/raw/2054-01-05/demo/midgard-health.zip",
+            "type": "DatabaseDump"
+          },
+          "exfiltration_date": "2053-12-28T14:00:00.000Z",
+          "novel": false,
+          "organization_id": "uhash:Zq44wEsdC",
+          "password": {
+            "cleartext_hint": "Mi",
+            "hashes": {
+              "md5_prefix": "669dd9a7",
+              "sha1_prefix": "a4226c6c",
+              "sha256": "3d71a2598fff754abc613783a878b2cb2e95c5e8d2c3f6c5d15f3e0f7f0b9b1b"
+            },
+            "properties": [
+              "Letter",
+              "Number",
+              "Symbol",
+              "UpperCase",
+              "LowerCase",
+              "AtLeast12Characters"
+            ],
+            "type": "hash"
+          },
+          "source_type": "DatabaseDumps"
+        }
+      },
+      "related": {
+        "hash": [
+          "3d71a2598fff754abc613783a878b2cb2e95c5e8d2c3f6c5d15f3e0f7f0b9b1b"
+        ],
+        "hosts": [
+          "kybpcxd-kefqui.com",
+          "dtq.kybpcxd-kefqui.com",
+          "YLBNDYE-AD-37"
+        ],
+        "ip": [
+          "198.51.100.88"
+        ],
+        "user": [
+          "sny.jcxpaapbt@kybpcxd-kefqui.com",
+          "svc_backup"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "Stockholm",
+          "country_iso_code": "SE",
+          "country_name": "Kkdacn",
+          "postal_code": "11134"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "software": {
+          "id": "UnKn0w",
+          "name": "Unknown"
+        }
+      },
+      "url": {
+        "domain": "ehr.midgard-health.com",
+        "original": "https://ehr.midgard-health.com/portal",
+        "path": "/portal",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "sny.jcxpaapbt@kybpcxd-kefqui.com",
+        "name": "sny.jcxpaapbt@kybpcxd-kefqui.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"68ec3b8f3c395289c30d16f88d4dd914\",\"novel\":false,\"type\":\"Workforce\",\"source_type\":\"MalwareLogs\",\"subject\":\"sxudcq.gzrebv@nkqgcwwbx.online\",\"password\":{\"type\":\"clear\",\"hashes\":[{\"algorithm\":\"SHA1\",\"hash\":\"8494610d157e4c8f3ea4a17ed89f3b75bcb3389d\"},{\"algorithm\":\"SHA256\",\"hash\":\"ae0345112b3fa76822e63b5c54a94e01fdf2efd069fd599270b0969c64af9ace\"},{\"algorithm\":\"NTLM\",\"hash\":\"aa9d33c50980fb12938edfed1509bc86\"},{\"algorithm\":\"MD5\",\"hash\":\"ae11b529c8650e76a5b7051bb8982a30\"}],\"properties\":[\"Letter\",\"Number\",\"Symbol\",\"UpperCase\",\"LowerCase\",\"AtLeast12Characters\"],\"cleartext_hint\":\"wt\",\"cleartext\":\"REDACTME123!\"},\"authorization_service\":{\"url\":\"https://norsegods.online/user/account\",\"domain\":\"norsegods.online\",\"fqdn\":\"norsegods.online\",\"technology\":[],\"protocols\":[\"https\"]},\"cookies\":[],\"malware_family\":{\"name\":\"LummaC2\",\"id\":\"nlflWX\"},\"dump\":{\"name\":\"Stealer Malware Logs 2054-06-02\",\"source\":\"s3://rf-id-outbox/malware_logs/raw/2054-06-02/demo/lumma/754749a1.zip\",\"description\":\"This credential data was derived from stealer malware logs.\",\"downloaded\":\"2054-06-02T15:30:37.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-06-02T12:45:00.000Z\",\"os\":\"Windows 10 Pro (10.0.19045) x64\",\"os_username\":\"edzy_vtat_wsfthz\",\"malware_file\":\"C:\\\\Users\\\\edzy_vtat_wsfthz\\\\Desktop\\\\Release\\\\New-Inst.exe\",\"timezone\":\"UTC+02:00\",\"computer_name\":\"FBXZ-TA-V7ZDA2RK\",\"antivirus\":[\"Windows Defender\"]},\"infrastructure\":{\"ip\":\"203.0.113.234\"},\"location\":{\"country\":{\"name\":\"Vhrerf\",\"displayName\":\"Vhrerf\",\"countryCode\":\"616\",\"alpha2Code\":\"PL\",\"alpha3Code\":\"POL\"}}},\"created\":\"2054-06-02T15:45:19.173Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"7edbe3acbf31bd9db3672f44d5dabaf7\",\"novel\":true,\"type\":\"External\",\"source_type\":\"MalwareLogs\",\"subject\":\"basqn.qmpiuzni@nkqgcwwbx.online\",\"password\":{\"type\":\"clear\",\"hashes\":[{\"algorithm\":\"SHA256\",\"hash_prefix\":\"b82d246e\"},{\"algorithm\":\"NTLM\",\"hash\":\"3bec27f1221e3f886a5a1fbb4180bdf1\"}],\"properties\":[\"Letter\",\"Number\",\"UpperCase\",\"LowerCase\",\"AtLeast12Characters\"],\"cleartext_hint\":\"ja\"},\"authorization_service\":{\"url\":\"https://norsegods.online/DesktopWeb/\",\"domain\":\"norsegods.online\",\"fqdn\":\"norsegods.online\",\"technology\":[{\"name\":\"Virtual Desktop\",\"id\":\"Ig409I\"},{\"name\":\"Citrix Virtual Apps and Desktops\",\"id\":\"ZNkiC2\",\"category\":\"Ig409I\"}],\"protocols\":[\"https\"]},\"cookies\":[{\"dns\":\".norsegods.online\",\"name\":\"session_id\",\"http\":true,\"expiration\":\"2054-08-25T09:57:39.000Z\",\"secure\":true,\"value\":\"3e2b1a0c-6a1e-4f5d-b6a5-c1b0b0a4a9c1\"}],\"malware_family\":{\"name\":\"Vidar\",\"id\":\"YuDlEm\"},\"dump\":{\"name\":\"Stealer Malware Logs 2054-06-02\",\"source\":\"s3://rf-id-outbox/malware_logs/raw/2054-06-02/demo/vidar/9ab54b58.zip\",\"description\":\"This credential data was derived from stealer malware logs.\",\"downloaded\":\"2054-06-02T15:30:37.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-06-02T12:45:00.000Z\",\"os\":\"Windows 10 Enterprise\",\"os_username\":\"demo_user_sxwxml\",\"timezone\":\"UTC+05:00\",\"computer_name\":\"EDSW-EZYRFPDZ\",\"antivirus\":[\"Windows Defender\"]},\"infrastructure\":{\"ip\":\"198.51.100.137\"},\"location\":{\"country\":{\"name\":\"Bkbjca\",\"displayName\":\"Bkbjca\",\"countryCode\":\"250\",\"alpha2Code\":\"FR\",\"alpha3Code\":\"FRA\"}}},\"created\":\"2054-06-02T15:45:19.097Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"a5d1c8f2f5a1917032649935abcdfd81\",\"novel\":false,\"type\":\"Vip\",\"source_type\":\"DatabaseDumps\",\"subject\":\"demo_vip_user\",\"password\":{\"type\":\"hash\",\"hashes\":[{\"algorithm\":\"SHA256\",\"hash\":\"b2c2b90097ae9c649beaa1a3909ee30018bd89c4010d188ef381820e4047c441\"}],\"properties\":[\"Letter\",\"Number\"],\"cleartext_hint\":\"de\"},\"authorization_service\":{\"url\":\"https://portal.example.com/login\",\"domain\":\"portal.example.com\",\"fqdn\":\"portal.example.com\",\"technology\":[],\"protocols\":[\"https\"]},\"cookies\":[],\"malware_family\":{\"name\":\"Unknown\",\"id\":\"UnKn0w\"},\"dump\":{\"name\":\"Example Database Dump 2054-05-15\",\"type\":\"DatabaseDump\",\"source\":\"s3://rf-id-outbox/database_dumps/raw/2054-05-15/demo/example.zip\",\"description\":\"Credential data from a third-party database breach.\",\"downloaded\":\"2054-05-15T10:00:00.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-05-10T08:00:00.000Z\",\"os\":\"Unknown\",\"os_username\":\"demo_vip_user\",\"timezone\":\"UTC+00:00\",\"computer_name\":\"UNKNOWN\",\"antivirus\":[]},\"infrastructure\":{\"ip\":\"198.51.100.42\"},\"location\":{\"country\":{\"name\":\"Lywybb Xqavfo\",\"displayName\":\"Lywybb Xqavfo\",\"countryCode\":\"840\",\"alpha2Code\":\"US\",\"alpha3Code\":\"USA\"}},\"breaches\":[{\"name\":\"ExampleCorp Breach 2026\",\"domain\":\"example.com\",\"type\":\"Database\",\"breached\":\"2054-05-01T00:00:00.000Z\"}]},\"created\":\"2054-06-02T16:00:00.000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"a8a1b4c185922587897b8e2d9b0c0c21\",\"organization_id\":\"uhash:Kd83nReQ1\",\"novel\":true,\"type\":\"Workforce\",\"source_type\":\"MalwareCombolists\",\"subject\":\"pxij.vhphzugeer@awmaue-dpix.io\",\"password\":{\"type\":\"hash\",\"hashes\":[{\"algorithm\":\"SHA512\",\"hash\":\"cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e\"},{\"algorithm\":\"SHA256\",\"hash\":\"bf931389bc9dadafaca396e23a49cc9ea889fcf1612d5c07a7148846cced84af\"},{\"algorithm\":\"NTLM\",\"hash\":\"40d8efb3d47fc707c16e24a1c0d974b8\"}],\"properties\":[\"Letter\",\"Number\",\"Symbol\",\"MixedCase\",\"AtLeast16Characters\"],\"cleartext_hint\":\"As\"},\"authorization_service\":{\"url\":\"https://vpn.asgard-corp.io/remote/login\",\"domain\":\"awmaue-dpix.io\",\"fqdn\":\"vpn.awmaue-dpix.io\",\"technology\":[{\"name\":\"VPN\",\"id\":\"CAfZv\"},{\"name\":\"Fortinet FortiGate\",\"id\":\"Ft1nT2\",\"category\":\"CAfZv\"}],\"protocols\":[\"https\"]},\"cookies\":[{\"dns\":\".asgard-corp.io\",\"name\":\"SVPNCOOKIE\",\"http\":true,\"expiration\":\"2055-01-15T00:00:00.000Z\",\"secure\":true,\"value\":\"54bd8286628e7089b3af29fe8fd005a0a8a1ba089a42dec998ef8523753d3807\"},{\"dns\":\".asgard-corp.io\",\"name\":\"tracking\",\"http\":false,\"expiration\":\"2052-01-01T00:00:00.000Z\",\"secure\":false,\"value\":\"137425bc3e399ff086eb7e817cc0a71cbe4b08bdd23f6488c6df67ee4aad5296\"}],\"malware_family\":{\"name\":\"RedLine\",\"id\":\"RdLnE0\"},\"dump\":{\"name\":\"Combolist Compilation 2054-04-10\",\"type\":\"Combolist\",\"source\":\"s3://rf-id-outbox/combolists/raw/2054-04-10/demo/redline/aa11bb22.zip\",\"description\":\"Credential data compiled from multiple malware combolists.\",\"downloaded\":\"2054-04-10T09:00:00.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-04-08T22:10:05.000Z\",\"os\":\"Ubuntu Linux 22.04 LTS\",\"os_username\":\"ulij\",\"malware_file\":\"/home/ulij/.cache/.update/agent.elf\",\"timezone\":\"UTC+01:00\",\"computer_name\":\"FRLBIA-KUO-80\",\"uac\":\"NotApplicable\",\"antivirus\":[\"ClamAV\",\"Sophos\"]},\"infrastructure\":{\"ip\":\"203.0.113.77\"},\"location\":{\"country\":{\"name\":\"Iotqbx\",\"displayName\":\"Iotqbx\",\"countryCode\":\"578\",\"alpha2Code\":\"NO\",\"alpha3Code\":\"NOR\"},\"city\":\"Oslo\",\"state\":\"Oslo\",\"postal_code\":\"0150\"}},\"created\":\"2054-04-10T09:15:42.300Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"d7b6d05830037b1b7e9e5b6c26b8d6c7\",\"novel\":false,\"type\":\"External\",\"source_type\":\"DatabaseDumps\",\"subject\":\"cpfvd.sdlbweox@fweloif-hkuo.com\",\"password\":{\"type\":\"clear\",\"hashes\":[{\"algorithm\":\"MD5\",\"hash\":\"3d5eaa4e8ce821a66e7864fcd545fb33\"},{\"algorithm\":\"SHA1\",\"hash\":\"3eae11e4e2f94f7e5662255d0cc2620a8cc37ac3\"}],\"properties\":[\"Letter\",\"LowerCase\",\"AtLeast8Characters\"],\"cleartext_hint\":\"pa\",\"cleartext\":\"5398aa4aed1d91cd2b5fe79529895caf5f11daf7e27b2f5ae6c51f66c6fd1b2a\"},\"authorization_service\":{\"url\":\"https://www.example-shop.com/account/login\",\"domain\":\"fweloif-hkuo.com\",\"fqdn\":\"www.fweloif-hkuo.com\",\"technology\":[],\"protocols\":[\"https\"]},\"cookies\":[],\"malware_family\":{\"name\":\"Unknown\",\"id\":\"UnKn0w\"},\"dump\":{\"name\":\"Example-Shop Database Leak\",\"type\":\"DatabaseDump\",\"source\":\"s3://rf-id-outbox/database_dumps/raw/2054-03-01/demo/example-shop.zip\",\"description\":\"Credential data from a third-party e-commerce database breach.\",\"downloaded\":\"2054-03-01T12:00:00.000Z\",\"infrastructure\":{\"ip\":\"198.51.100.205\"},\"location\":{\"country\":{\"name\":\"Hfsuboz\",\"displayName\":\"Hfsuboz\",\"countryCode\":\"276\",\"alpha2Code\":\"DE\",\"alpha3Code\":\"DEU\"},\"city\":\"Berlin\",\"address1\":\"Friedrichstrasse 100\",\"address2\":\"Etage 3\",\"postal_code\":\"10117\",\"zip\":\"10117\"},\"breaches\":[{\"name\":\"Example-Shop Breach 2025\",\"domain\":\"fweloif-hkuo.com\",\"type\":\"Database\",\"breached\":\"2053-12-20T00:00:00.000Z\",\"start\":\"2053-12-01T00:00:00.000Z\",\"stop\":\"2053-12-18T00:00:00.000Z\",\"precision\":\"DAY\",\"description\":\"User database with emails and salted hashes was exfiltrated.\",\"site_description\":\"Online retail platform.\"},{\"name\":\"OldForum Leak\",\"domain\":\"pvaamizv.net\",\"type\":\"Database\",\"breached\":\"2049-05-10T00:00:00.000Z\"}]},\"created\":\"2054-03-01T12:30:00.000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"c2b6811015045f4b6d2c4a6a5f5c5f6e\",\"organization_id\":\"uhash:Pm91xTveB\",\"novel\":true,\"type\":\"Vip\",\"source_type\":\"DatabaseCombolists\",\"subject\":\"vvig.kxjduszfl@zbpnfyib-carr.com\",\"password\":{\"type\":\"clear\",\"hashes\":[{\"algorithm\":\"SHA256\",\"hash\":\"6a04c20b94fcf24ba77c205c7c20544267472d092317dbe1d60c8d016058a8ab\"},{\"algorithm\":\"SHA512\",\"hash_prefix\":\"cf83e1357eefb8bd\"},{\"algorithm\":\"NTLM\",\"hash_prefix\":\"fb2cd176\"}],\"properties\":[\"Letter\",\"Number\",\"Symbol\",\"UpperCase\",\"LowerCase\",\"MixedCase\",\"AtLeast24Characters\"],\"cleartext_hint\":\"Va\"},\"authorization_service\":{\"url\":\"https://mail.valhalla-bank.com/owa/\",\"domain\":\"zbpnfyib-carr.com\",\"fqdn\":\"mail.zbpnfyib-carr.com\",\"technology\":[{\"name\":\"Webmail\",\"id\":\"WbM4l1\"},{\"name\":\"Microsoft Outlook Web Access\",\"id\":\"OwA2k9\",\"category\":\"WbM4l1\"},{\"name\":\"Okta Single Sign-On\",\"id\":\"Okt4Ss\"}],\"protocols\":[\"https\",\"http\"]},\"cookies\":[{\"dns\":\".valhalla-bank.com\",\"name\":\"OWA-session\",\"http\":true,\"expiration\":\"2055-06-30T23:59:59.000Z\",\"secure\":true,\"value\":\"8c96643481b1e09ee46f72068d3fc8619d40d756049387d89c7543598c2f0b32\"}],\"malware_family\":{\"name\":\"Raccoon\",\"id\":\"Rc00n1\"},\"dump\":{\"name\":\"VIP Combolist 2054-02-14\",\"type\":\"Combolist\",\"source\":\"s3://rf-id-outbox/combolists/raw/2054-02-14/demo/raccoon/ff00ee11.zip\",\"description\":\"High-value credential set compiled from database and malware combolists.\",\"downloaded\":\"2054-02-14T06:45:00.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-02-10T18:30:00.000Z\",\"os\":\"macOS 14.2\",\"os_username\":\"ynnx\",\"malware_file\":\"/Users/ynnx/Library/Caches/com.apple.helper/agent\",\"timezone\":\"UTC-05:00\",\"computer_name\":\"XAKZCTRC-TEA-79\",\"uac\":\"AllowAll\",\"antivirus\":[]},\"infrastructure\":{\"ip\":\"2001:db8:3c4d:15::1a2b\"},\"location\":{\"country\":{\"name\":\"Lywybb Xqavfo\",\"displayName\":\"Lywybb Xqavfo\",\"countryCode\":\"840\",\"alpha2Code\":\"US\",\"alpha3Code\":\"USA\"},\"city\":\"New York\",\"state\":\"NY\",\"address\":\"350 Fifth Avenue\",\"postal_code\":\"10118\"}},\"created\":\"2054-02-14T07:00:00.000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"b35604305f3e0f0f3f5f1d0b1a0c3b7d\",\"novel\":false,\"type\":\"Workforce\",\"source_type\":\"MalwareLogs\",\"subject\":\"hla.oasmhmt@awmaue-dpix.io\",\"password\":{\"type\":\"clear\",\"hashes\":[{\"algorithm\":\"SHA1\",\"hash\":\"8a9a8e03da3951db00b38264226dc57631b2912d\"},{\"algorithm\":\"SHA256\",\"hash\":\"7b948169bb93390786f0d34a0ef5079032843c2f2eeadaf11c74db026a0465a7\"},{\"algorithm\":\"MD5\",\"hash\":\"f44aac3128bb36efde91e128c43e224d\"},{\"algorithm\":\"NTLM\",\"hash\":\"1179a9eaec5ac076cd92acd202e6572b\"}],\"properties\":[\"Number\",\"AtLeast8Characters\"],\"cleartext_hint\":\"12\"},\"authorization_service\":{\"url\":\"https://portal.asgard-corp.io/login\",\"domain\":\"awmaue-dpix.io\",\"fqdn\":\"portal.awmaue-dpix.io\",\"technology\":[{\"name\":\"Citrix\",\"id\":\"Ctx001\"}],\"protocols\":[\"https\"]},\"cookies\":[{\"dns\":\".asgard-corp.io\",\"name\":\"JSESSIONID\",\"http\":true,\"expiration\":\"2054-12-31T12:00:00.000Z\",\"secure\":true,\"value\":\"d5eb1926a38ce67593f8c3d1fd5587cb02463cf7d5b36dd4958ba6362fbccb27\"}],\"malware_family\":{\"name\":\"Anubis\",\"id\":\"Anb1s2\"},\"dump\":{\"name\":\"Mobile Stealer Logs 2054-05-20\",\"source\":\"s3://rf-id-outbox/malware_logs/raw/2054-05-20/demo/anubis/bb22cc33.zip\",\"description\":\"This credential data was derived from mobile stealer malware logs.\",\"downloaded\":\"2054-05-20T03:00:00.000Z\",\"compromise\":{\"exfiltration_date\":\"2054-05-19T20:05:00.000Z\",\"os\":\"Android 13\",\"os_username\":\"sif\",\"timezone\":\"UTC+01:00\",\"computer_name\":\"GZ-N250A\",\"antivirus\":[\"Google Play Protect\"]},\"infrastructure\":{\"ip\":\"203.0.113.150\"},\"location\":{\"country\":{\"name\":\"Lywybb Oilmdhk of Great Britain and Northern Ireland (the)\",\"displayName\":\"Lywybb Oilmdhk\",\"countryCode\":\"826\",\"alpha2Code\":\"GB\",\"alpha3Code\":\"GBR\"},\"city\":\"London\"}},\"created\":\"2054-05-20T03:20:11.000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"8756734f9d0c8b7c1b2e5d0e1b9e1a38\",\"novel\":true,\"type\":\"External\",\"source_type\":\"MalwareLogs\",\"subject\":\"afsfj.lynpreszmtfm@example.org\",\"dump\":{\"name\":\"Stealer Malware Logs 2054-06-25\",\"source\":\"s3://rf-id-outbox/malware_logs/raw/2054-06-25/demo/generic/cc33dd44.zip\",\"downloaded\":\"2054-06-25T11:00:00.000Z\"},\"created\":\"2054-06-25T11:30:00.000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"24506b6e7d9b3a5c7c3d8b6a6f8a2445\",\"organization_id\":\"uhash:Zq44wEsdC\",\"novel\":false,\"type\":\"Workforce\",\"source_type\":\"DatabaseDumps\",\"subject\":\"sny.jcxpaapbt@kybpcxd-kefqui.com\",\"password\":{\"type\":\"hash\",\"hashes\":[{\"algorithm\":\"SHA256\",\"hash\":\"3d71a2598fff754abc613783a878b2cb2e95c5e8d2c3f6c5d15f3e0f7f0b9b1b\"},{\"algorithm\":\"SHA1\",\"hash_prefix\":\"a4226c6c\"},{\"algorithm\":\"MD5\",\"hash_prefix\":\"669dd9a7\"}],\"properties\":[\"Letter\",\"Number\",\"Symbol\",\"UpperCase\",\"LowerCase\",\"AtLeast12Characters\"],\"cleartext_hint\":\"Mi\"},\"authorization_service\":{\"url\":\"https://ehr.midgard-health.com/portal\",\"domain\":\"kybpcxd-kefqui.com\",\"fqdn\":\"dtq.kybpcxd-kefqui.com\",\"technology\":[],\"protocols\":[\"https\"]},\"cookies\":[],\"malware_family\":{\"name\":\"Unknown\",\"id\":\"UnKn0w\"},\"dump\":{\"name\":\"Midgard Health Data Breach\",\"type\":\"DatabaseDump\",\"source\":\"s3://rf-id-outbox/database_dumps/raw/2054-01-05/demo/midgard-health.zip\",\"description\":\"Patient portal credential data from a healthcare breach.\",\"downloaded\":\"2054-01-05T08:00:00.000Z\",\"compromise\":{\"exfiltration_date\":\"2053-12-28T14:00:00.000Z\",\"os\":\"Windows Server 2019\",\"os_username\":\"svc_backup\",\"malware_file\":\"C:\\\\ProgramData\\\\svc\\\\dump.exe\",\"timezone\":\"UTC+00:00\",\"computer_name\":\"YLBNDYE-AD-37\",\"uac\":\"AdminApproval\",\"antivirus\":[\"Windows Defender\",\"CrowdStrike\"]},\"infrastructure\":{\"ip\":\"198.51.100.88\"},\"location\":{\"country\":{\"name\":\"Kkdacn\",\"displayName\":\"Kkdacn\",\"countryCode\":\"752\",\"alpha2Code\":\"SE\",\"alpha3Code\":\"SWE\"},\"city\":\"Stockholm\",\"state\":\"Stockholm County\",\"address\":\"Sveavagen 44\",\"address1\":\"Sveavagen 44\",\"address2\":\"Plan 5\",\"postal_code\":\"11134\",\"zip\":\"11134\"},\"breaches\":[{\"name\":\"Midgard Health Breach 2025\",\"domain\":\"kybpcxd-kefqui.com\",\"type\":\"Database\",\"breached\":\"2053-12-25T00:00:00.000Z\",\"start\":\"2053-11-01T00:00:00.000Z\",\"stop\":\"2053-12-24T00:00:00.000Z\",\"precision\":\"MONTH\",\"description\":\"EHR patient portal database compromised.\",\"site_description\":\"Regional healthcare provider.\"},{\"name\":\"VendorX Leak\",\"domain\":\"mavbhqo.io\",\"type\":\"Database\",\"breached\":\"2052-08-15T00:00:00.000Z\",\"precision\":\"YEAR\"}]},\"created\":\"2054-01-05T08:30:00.000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "identity_detection",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_recordedfuture-identity_detection-default",
+    "event_count": 9,
+    "numeric_keyword_fields": [],
+    "package": "ti_recordedfuture",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

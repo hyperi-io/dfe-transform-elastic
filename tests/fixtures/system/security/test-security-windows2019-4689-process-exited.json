@@ -1,0 +1,178 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:07:58.995Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "vazmbnu"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "ea42b6a2-d2ce-42b2-8045-03e5150aa5f8"
+            },
+            "winlog": {
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-11-14T21:26:49.496Z",
+                "event_data": {
+                    "Status": "0x0",
+                    "ProcessId": "0x1524",
+                    "ProcessName": "C:\\Windows\\System32\\wevtutil.exe",
+                    "SubjectUserSid": "S-1-5-21-1610636575-2290000098-1654242922-1000",
+                    "SubjectUserName": "vazmbnu",
+                    "SubjectDomainName": "VAGRANT",
+                    "SubjectLogonId": "0x274a2"
+                },
+                "channel": "Security",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "vazmbnu",
+                "opcode": "Info",
+                "outcome": "success",
+                "level": "information",
+                "process": {
+                    "pid": 4,
+                    "thread": {
+                        "id": 1168
+                    }
+                },
+                "event_id": 4689,
+                "record_id": 7538,
+                "keywords": [
+                    "Audit Success"
+                ]
+            },
+            "event": {
+                "code": 4689,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "kind": "event"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2019_4689_Process_Exited.xml"
+                },
+                "level": "information"
+            }
+        },
+        {
+            "@timestamp": "2049-04-15T19:07:58.995Z",
+            "host": {
+                "name": "vazmbnu"
+            },
+            "agent": {
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "ea42b6a2-d2ce-42b2-8045-03e5150aa5f8",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "winlog": {
+                "channel": "Security",
+                "event_id": 4689,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 7542,
+                "computer_name": "vazmbnu",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "outcome": "success",
+                "level": "information",
+                "event_data": {
+                    "ProcessName": "C:\\Windows\\System32\\taskhostw.exe",
+                    "SubjectUserSid": "S-1-5-21-1610636575-2290000098-1654242922-1000",
+                    "SubjectUserName": "vazmbnu",
+                    "SubjectDomainName": "VAGRANT",
+                    "SubjectLogonId": "0x274f1",
+                    "Status": "0x0",
+                    "ProcessId": "0xf94"
+                },
+                "process": {
+                    "pid": 4,
+                    "thread": {
+                        "id": 500
+                    }
+                },
+                "opcode": "Info",
+                "time_created": "2047-11-14T21:27:46.960Z"
+            },
+            "event": {
+                "code": 4689,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "kind": "event"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2019_4689_Process_Exited.xml"
+                },
+                "level": "information"
+            }
+        },
+        {
+            "@timestamp": "2049-04-15T19:07:58.995Z",
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2019_4689_Process_Exited.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "vazmbnu"
+            },
+            "agent": {
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "ea42b6a2-d2ce-42b2-8045-03e5150aa5f8",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain"
+            },
+            "winlog": {
+                "keywords": [
+                    "Audit Success"
+                ],
+                "level": "information",
+                "channel": "Security",
+                "record_id": 7544,
+                "computer_name": "vazmbnu",
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-11-14T21:28:18.460Z",
+                "outcome": "success",
+                "event_data": {
+                    "ProcessName": "C:\\Windows\\System32\\wevtutil.exe",
+                    "SubjectUserSid": "S-1-5-21-1610636575-2290000098-1654242922-1000",
+                    "SubjectUserName": "vazmbnu",
+                    "SubjectDomainName": "VAGRANT",
+                    "SubjectLogonId": "0x274a2",
+                    "Status": "0x0",
+                    "ProcessId": "0xac8"
+                },
+                "event_id": 4689,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "process": {
+                    "pid": 4,
+                    "thread": {
+                        "id": 5636
+                    }
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4689,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            }
+        }
+    ]
+}

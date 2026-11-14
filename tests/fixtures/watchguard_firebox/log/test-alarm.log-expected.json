@@ -1,0 +1,1819 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl (2052-05-10T09:49:05) firewall: msg_id=\"3000-0152\" IPv4 source route attack from 10.198.60.197 detected. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142
+        }
+      },
+      "message": "IPv4 source route attack from 10.198.60.197 detected.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "10.198.60.197"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "10.198.60.197"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "log_type": "alarm",
+          "msg_id": "3000-0152",
+          "policy_name": "IPS",
+          "source_ip": "10.198.60.197",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "10.230.239.10"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall: msg_id=\"3000-0153\" SYN flood attack against 10.230.239.10 from 192.0.2.54 detected. 500 SYN packets dropped since last alarm. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142
+        }
+      },
+      "message": "SYN flood attack against 10.230.239.10 from 192.0.2.54 detected. 500 SYN packets dropped since last alarm.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "10.230.239.10",
+          "192.0.2.54"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "10.230.239.10",
+          "log_type": "alarm",
+          "msg_id": "3000-0153",
+          "packets_count": 500,
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "192.0.2.54",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl (2052-05-10T09:49:05) firewall: msg_id=\"020B-0001\" BOVPN tunnel 'tunnel.2' local 172.27.172.198/255.255.255.255 remote 172.31.188.111/255.255.255.255 under gateway 'gateway.1' is down. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142
+        }
+      },
+      "message": "BOVPN tunnel 'tunnel.2' local 172.27.172.198/255.255.255.255 remote 172.31.188.111/255.255.255.255 under gateway 'gateway.1' is down.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "gateway": "gateway.1",
+          "local": "172.27.172.198/255.255.255.255",
+          "log_type": "alarm",
+          "msg_id": "020B-0001",
+          "policy_name": "IPS",
+          "remote": "172.31.188.111/255.255.255.255",
+          "status": "down",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z",
+          "tunnel_name": "tunnel.2",
+          "tunnel_type": "BOVPN"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "10.230.239.10"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0154\" ICMP flood attack against 10.230.239.10 from 192.0.2.54 detected. 500 ICMP flood packets dropped since last alarm. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "ICMP flood attack against 10.230.239.10 from 192.0.2.54 detected. 500 ICMP flood packets dropped since last alarm.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "10.230.239.10",
+          "192.0.2.54"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "10.230.239.10",
+          "log_type": "alarm",
+          "msg_id": "3000-0154",
+          "packets_count": 500,
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "192.0.2.54",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "192.0.2.54"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0155\" UDP flood attack against 192.0.2.54 from 192.0.2.54 detected. 500 UDP flood packets dropped since last alarm. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "UDP flood attack against 192.0.2.54 from 192.0.2.54 detected. 500 UDP flood packets dropped since last alarm.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "192.0.2.54"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "192.0.2.54",
+          "log_type": "alarm",
+          "msg_id": "3000-0155",
+          "packets_count": 500,
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "192.0.2.54",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "192.0.2.54"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0156\" IPSEC flood attack against 192.0.2.54 from 192.0.2.54 detected. 500 IPSEC flood packets dropped since last alarm. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "IPSEC flood attack against 192.0.2.54 from 192.0.2.54 detected. 500 IPSEC flood packets dropped since last alarm.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "192.0.2.54"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "192.0.2.54",
+          "log_type": "alarm",
+          "msg_id": "3000-0156",
+          "packets_count": 500,
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "192.0.2.54",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "192.0.2.54"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0157\" IKE flood attack against 192.0.2.54 from 192.0.2.54 detected. 500 IKE flood packets dropped since last alarm. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "IKE flood attack against 192.0.2.54 from 192.0.2.54 detected. 500 IKE flood packets dropped since last alarm.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "192.0.2.54"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "192.0.2.54",
+          "log_type": "alarm",
+          "msg_id": "3000-0157",
+          "packets_count": 500,
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "192.0.2.54",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "192.0.2.54"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0158\" IP scan attack against 192.0.2.54 from 192.0.2.54 detected. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "IP scan attack against 192.0.2.54 from 192.0.2.54 detected.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "192.0.2.54"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "192.0.2.54",
+          "log_type": "alarm",
+          "msg_id": "3000-0158",
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "192.0.2.54",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "192.0.2.54"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0159\" PORT scan attack against 192.0.2.54 from 192.0.2.54 detected. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "PORT scan attack against 192.0.2.54 from 192.0.2.54 detected.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "192.0.2.54"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "192.0.2.54",
+          "log_type": "alarm",
+          "msg_id": "3000-0159",
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "192.0.2.54",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0161\" DDOS from client 10.198.60.197 detected. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "DDOS from client 10.198.60.197 detected.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "10.198.60.197"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "10.198.60.197"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "log_type": "alarm",
+          "msg_id": "3000-0161",
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "10.198.60.197",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0162\" SYN flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 SYN packets dropped since last alarm. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "SYN flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 SYN packets dropped since last alarm.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "log_type": "alarm",
+          "msg_id": "3000-0162",
+          "packets_count": 100,
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "10.198.60.197"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0160\" DDOS against server 10.198.60.197 detected. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "DDOS against server 10.198.60.197 detected.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "10.198.60.197"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "10.198.60.197",
+          "log_type": "alarm",
+          "msg_id": "3000-0160",
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0163\" ICMP flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 ICMP packets dropped since last alarm. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "ICMP flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 ICMP packets dropped since last alarm.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "log_type": "alarm",
+          "msg_id": "3000-0163",
+          "packets_count": 100,
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0164\" UDP flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 UDP packets dropped since last alarm. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "UDP flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 UDP packets dropped since last alarm.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "log_type": "alarm",
+          "msg_id": "3000-0164",
+          "packets_count": 100,
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0165\" IPSEC flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 IPSEC packets dropped since last alarm. (IPS)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "IPSEC flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 IPSEC packets dropped since last alarm.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+        ]
+      },
+      "rule": {
+        "name": [
+          "IPS"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "log_type": "alarm",
+          "msg_id": "3000-0165",
+          "packets_count": 100,
+          "policy_name": "IPS",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0166\" IKE flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 IKE packets dropped since last alarm. (HTTP-Client.Standard.1-px)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "IKE flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 IKE packets dropped since last alarm.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+        ]
+      },
+      "rule": {
+        "name": [
+          "HTTP-Client.Standard.1-px"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "log_type": "alarm",
+          "msg_id": "3000-0166",
+          "packets_count": 100,
+          "policy_name": "HTTP-Client.Standard.1-px",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "198.51.100.124",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0167\" Policy Name: HTTP-00 Source IP Address: 10.129.17.24 Source Port: 4107 Destination IP Address: 198.51.100.124 Destination Port: 80 (HTTP-py)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "Policy Name: HTTP-00 Source IP Address: 10.129.17.24 Source Port: 4107 Destination IP Address: 198.51.100.124 Destination Port: 80",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "198.51.100.124",
+          "10.129.17.24"
+        ]
+      },
+      "rule": {
+        "name": [
+          "HTTP-00",
+          "HTTP-py"
+        ]
+      },
+      "source": {
+        "ip": "10.129.17.24",
+        "port": 4107
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "198.51.100.124",
+          "destination_port": 80,
+          "log_type": "alarm",
+          "msg_id": "3000-0167",
+          "pcy_name": "HTTP-00",
+          "policy_name": "HTTP-py",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "10.129.17.24",
+          "source_port": 4107,
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "192.0.2.54"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0168\" Blocked site: Traffic detected from 10.209.157.224 to 192.0.2.54. (Block-Site-Notif)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "Blocked site: Traffic detected from 10.209.157.224 to 192.0.2.54.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "10.209.157.224"
+        ]
+      },
+      "rule": {
+        "name": [
+          "Block-Site-Notif"
+        ]
+      },
+      "source": {
+        "ip": "10.209.157.224"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "192.0.2.54",
+          "log_type": "alarm",
+          "msg_id": "3000-0168",
+          "policy_name": "Block-Site-Notif",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "10.209.157.224",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "192.0.2.54"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0169\" IP spoofing: Traffic detected from 10.209.157.224 to 192.0.2.54. (HTTP-Client.Standard.1-px)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "IP spoofing: Traffic detected from 10.209.157.224 to 192.0.2.54.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "10.209.157.224"
+        ]
+      },
+      "rule": {
+        "name": [
+          "HTTP-Client.Standard.1-px"
+        ]
+      },
+      "source": {
+        "ip": "10.209.157.224"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "192.0.2.54",
+          "log_type": "alarm",
+          "msg_id": "3000-0169",
+          "policy_name": "HTTP-Client.Standard.1-px",
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "10.209.157.224",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0170\" The total number of current sessions (1024) has reached the high water mark (1024). (HTTP-Client.Standard.1-px)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "The total number of current sessions (1024) has reached the high water mark (1024).",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ]
+      },
+      "rule": {
+        "name": [
+          "HTTP-Client.Standard.1-px"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "current_session": 1024,
+          "limit": 1024,
+          "log_type": "alarm",
+          "msg_id": "3000-0170",
+          "policy_name": "HTTP-Client.Standard.1-px",
+          "serial_number": "FVE6035FD3AE3",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0171\" The number of connections (2048) has reached the configured limit (2048). (HTTP-Client.Standard.1-px)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "The number of connections (2048) has reached the configured limit (2048).",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ]
+      },
+      "rule": {
+        "name": [
+          "HTTP-Client.Standard.1-px"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "current_connection": 2048,
+          "limit": 2048,
+          "log_type": "alarm",
+          "msg_id": "3000-0171",
+          "policy_name": "HTTP-Client.Standard.1-px",
+          "serial_number": "FVE6035FD3AE3",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-05-10T15:19:05.000+05:30",
+      "destination": {
+        "ip": "192.0.2.54"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "alert",
+        "original": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0172\" Blocked port: Traffic detected from 10.209.157.224 to 192.0.2.54 on port 513. (Blocked Ports)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "Blocked port: Traffic detected from 10.209.157.224 to 192.0.2.54 on port 513.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "10.209.157.224"
+        ]
+      },
+      "rule": {
+        "name": [
+          "Blocked Ports"
+        ]
+      },
+      "source": {
+        "ip": "10.209.157.224"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "192.0.2.54",
+          "log_type": "alarm",
+          "msg_id": "3000-0172",
+          "policy_name": "Blocked Ports",
+          "port": 513,
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "10.209.157.224",
+          "syslog_timestamp": "2026-05-10T15:19:05.000+05:30",
+          "timestamp": "2052-05-10T09:49:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-08-06T08:51:27.000+05:30",
+      "destination": {
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "alert",
+        "original": "<142>Aug  6 08:51:27 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-08-06T03:31:27) firewall[10]: msg_id=\"3000-0172\" Blocked port: Traffic detected from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 to 192.0.2.87 on port 513. (Blocked Ports)",
+        "outcome": "unknown",
+        "timezone": "+05:30",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "appname": "firewall",
+          "hostname": "VftboIocjd-Blhcegl",
+          "priority": 142,
+          "procid": "10"
+        }
+      },
+      "message": "Blocked port: Traffic detected from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 to 192.0.2.87 on port 513.",
+      "observer": {
+        "hostname": "VftboIocjd-Blhcegl",
+        "product": "Firebox",
+        "serial_number": "FVE6035FD3AE3",
+        "type": "firewall",
+        "vendor": "WatchGuard"
+      },
+      "related": {
+        "hosts": [
+          "VftboIocjd-Blhcegl"
+        ],
+        "ip": [
+          "192.0.2.87",
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+        ]
+      },
+      "rule": {
+        "name": [
+          "Blocked Ports"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "watchguard_firebox": {
+        "log": {
+          "destination_ip": "192.0.2.87",
+          "log_type": "alarm",
+          "msg_id": "3000-0172",
+          "policy_name": "Blocked Ports",
+          "port": 513,
+          "serial_number": "FVE6035FD3AE3",
+          "source_ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "syslog_timestamp": "2026-08-06T08:51:27.000+05:30",
+          "timestamp": "2052-08-06T03:31:27.000Z"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl (2052-05-10T09:49:05) firewall: msg_id=\"3000-0152\" IPv4 source route attack from 10.198.60.197 detected. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall: msg_id=\"3000-0153\" SYN flood attack against 10.230.239.10 from 192.0.2.54 detected. 500 SYN packets dropped since last alarm. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl (2052-05-10T09:49:05) firewall: msg_id=\"020B-0001\" BOVPN tunnel 'tunnel.2' local 172.27.172.198/255.255.255.255 remote 172.31.188.111/255.255.255.255 under gateway 'gateway.1' is down. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0154\" ICMP flood attack against 10.230.239.10 from 192.0.2.54 detected. 500 ICMP flood packets dropped since last alarm. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0155\" UDP flood attack against 192.0.2.54 from 192.0.2.54 detected. 500 UDP flood packets dropped since last alarm. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0156\" IPSEC flood attack against 192.0.2.54 from 192.0.2.54 detected. 500 IPSEC flood packets dropped since last alarm. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0157\" IKE flood attack against 192.0.2.54 from 192.0.2.54 detected. 500 IKE flood packets dropped since last alarm. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0158\" IP scan attack against 192.0.2.54 from 192.0.2.54 detected. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0159\" PORT scan attack against 192.0.2.54 from 192.0.2.54 detected. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0161\" DDOS from client 10.198.60.197 detected. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0162\" SYN flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 SYN packets dropped since last alarm. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0160\" DDOS against server 10.198.60.197 detected. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0163\" ICMP flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 ICMP packets dropped since last alarm. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0164\" UDP flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 UDP packets dropped since last alarm. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0165\" IPSEC flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 IPSEC packets dropped since last alarm. (IPS)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0166\" IKE flood attack against 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 detected. 100 IKE packets dropped since last alarm. (HTTP-Client.Standard.1-px)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0167\" Policy Name: HTTP-00 Source IP Address: 10.129.17.24 Source Port: 4107 Destination IP Address: 198.51.100.124 Destination Port: 80 (HTTP-py)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0168\" Blocked site: Traffic detected from 10.209.157.224 to 192.0.2.54. (Block-Site-Notif)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0169\" IP spoofing: Traffic detected from 10.209.157.224 to 192.0.2.54. (HTTP-Client.Standard.1-px)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0170\" The total number of current sessions (1024) has reached the high water mark (1024). (HTTP-Client.Standard.1-px)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0171\" The number of connections (2048) has reached the configured limit (2048). (HTTP-Client.Standard.1-px)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>May 10 15:19:05 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-05-10T09:49:05) firewall[10]: msg_id=\"3000-0172\" Blocked port: Traffic detected from 10.209.157.224 to 192.0.2.54 on port 513. (Blocked Ports)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+05:30"
+      },
+      "message": "<142>Aug  6 08:51:27 VftboIocjd-Blhcegl FVE6035FD3AE3 (2052-08-06T03:31:27) firewall[10]: msg_id=\"3000-0172\" Blocked port: Traffic detected from 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 to 192.0.2.87 on port 513. (Blocked Ports)",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}",
+      "watchguard_firebox.log.syslog_timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-watchguard_firebox-log-default",
+    "event_count": 23,
+    "numeric_keyword_fields": [],
+    "package": "watchguard_firebox",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,3690 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-30T20:19:48.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "token_name": "test",
+            "token_tag": "a2016e37f505d94441c45007c9bb6837"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "token_create",
+        "category": [
+          "iam"
+        ],
+        "id": "24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"token_create\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543\",\"interface\":\"\",\"metadata\":{\"token_name\":\"test\",\"token_tag\":\"a2016e37f505d94441c45007c9bb6837\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-11-30T20:19:48Z\"}",
+        "outcome": "success",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-11-30T20:19:27.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "new_token_status": "deleted",
+            "old_token_status": "active",
+            "token_name": "test",
+            "token_tag": "36a4dfc3bbb674213415312edb3a09d8"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "token_revoke",
+        "category": [
+          "iam"
+        ],
+        "id": "9329a742-2a0a-4191-83b1-da82c14d4f08",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"token_revoke\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"9329a742-2a0a-4191-83b1-da82c14d4f08\",\"interface\":\"\",\"metadata\":{\"new_token_status\":\"deleted\",\"old_token_status\":\"active\",\"token_name\":\"test\",\"token_tag\":\"36a4dfc3bbb674213415312edb3a09d8\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-11-30T20:19:27Z\"}",
+        "outcome": "success",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-11-30T20:18:43.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "user"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "api_key_view",
+        "category": [
+          "iam"
+        ],
+        "id": "df491a46-b86a-4bd5-98fa-8fed17e1541e",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"API_key_view\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"df491a46-b86a-4bd5-98fa-8fed17e1541e\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"user\"},\"when\":\"2049-11-30T20:18:43Z\"}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-11-30T13:42:17.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "user"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "api_key_view",
+        "category": [
+          "iam"
+        ],
+        "id": "bc4c157b-63b4-4cec-9611-b2deb4ea190c",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"API_key_view\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"bc4c157b-63b4-4cec-9611-b2deb4ea190c\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"user\"},\"when\":\"2049-11-30T13:42:17Z\"}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-11-30T13:42:04.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rotate_api_key",
+        "category": [
+          "iam"
+        ],
+        "id": "5c8491b1-a507-5f36-9806-32be79735504",
+        "kind": "event",
+        "original": "{\"action\":{\"info\":\"key digest: d4d7c051a3fb379a81f0e81992beb0ed5396cf7b9b4709e8c4de3953105ab0d8\",\"result\":true,\"type\":\"rotate_API_key\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"5c8491b1-a507-5f36-9806-32be79735504\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-11-30T13:42:04Z\"}",
+        "outcome": "success",
+        "type": [
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-11-30T13:42:04.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "d4d7c051a3fb379a81f0e81992beb0ed5396cf7b9b4709e8c4de3953105ab0d8",
+            "type": "api_key"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "api_key_created",
+        "category": [
+          "iam"
+        ],
+        "id": "1521e148-1413-526a-a6e5-42077e12e2a9",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"API_key_created\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"1521e148-1413-526a-a6e5-42077e12e2a9\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"d4d7c051a3fb379a81f0e81992beb0ed5396cf7b9b4709e8c4de3953105ab0d8\",\"type\":\"api_key\"},\"when\":\"2049-11-30T13:42:04Z\"}",
+        "outcome": "success",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-11-30T13:36:45.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "token_name": "test",
+            "token_tag": "36a4dfc3bbb674213415312edb3a09d8"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "token_create",
+        "category": [
+          "iam"
+        ],
+        "id": "fdaac494-e93b-4e5c-a7ea-2c83b93aa2f4",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"token_create\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"fdaac494-e93b-4e5c-a7ea-2c83b93aa2f4\",\"interface\":\"\",\"metadata\":{\"token_name\":\"test\",\"token_tag\":\"36a4dfc3bbb674213415312edb3a09d8\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-11-30T13:36:45Z\"}",
+        "outcome": "success",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-11-30T13:34:03.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "id": "6391e5ef-dabf-557c-ad57-4c3cb29885fd",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"login\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"6391e5ef-dabf-557c-ad57-4c3cb29885fd\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-11-30T13:34:03Z\"}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-10-17T10:13:46.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "type": "zone"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "purge",
+        "category": [
+          "configuration"
+        ],
+        "id": "4bcdaad0-efa7-5494-9d05-f887bcd3c109",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"purge\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"4bcdaad0-efa7-5494-9d05-f887bcd3c109\",\"interface\":\"\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"type\":\"zone\"},\"when\":\"2049-10-17T10:13:46Z\"}",
+        "outcome": "success",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-10-10T10:13:46.214Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "system"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "early_hints": "Default",
+            "http_2": "Enabled",
+            "min_tls_version": "TLSv1.0",
+            "quic": "Default",
+            "session_tickets": "Enabled",
+            "tls_13": "Default",
+            "zero_rtt": "Default"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "type": "zone"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "tls_settings_deployed",
+        "category": [
+          "configuration"
+        ],
+        "id": "7be5e6ac-5292-4726-8a05-4dbb3ca61165",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"tls_settings_deployed\"},\"actor\":{\"id\":\"1\",\"type\":\"system\"},\"id\":\"7be5e6ac-5292-4726-8a05-4dbb3ca61165\",\"interface\":\"\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"ciphers\":\"\",\"early_hints\":\"Default\",\"http_2\":\"Enabled\",\"min_tls_version\":\"TLSv1.0\",\"quic\":\"Default\",\"session_tickets\":\"Enabled\",\"tls_13\":\"Default\",\"zero_rtt\":\"Default\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"type\":\"zone\"},\"when\":\"2049-10-10T10:13:46.214209Z\"}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "1"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "1"
+      }
+    },
+    {
+      "@timestamp": "2049-10-10T10:13:44.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "type": "zone"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "delete",
+        "category": [
+          "configuration"
+        ],
+        "id": "04dad887-ccd9-532f-ba18-4baae95cc661",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"delete\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"04dad887-ccd9-532f-ba18-4baae95cc661\",\"interface\":\"\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"type\":\"zone\"},\"when\":\"2049-10-10T10:13:44Z\"}",
+        "outcome": "success",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:38:04.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "new_token_status": "deleted",
+            "old_token_status": "active",
+            "token_name": "Read analytics and logs",
+            "token_tag": "7371116654ad8cd24bfe095f4aab20eb"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "token_revoke",
+        "category": [
+          "iam"
+        ],
+        "id": "211786b0-aa01-41bb-91e6-71efc424bdac",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"token_revoke\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"211786b0-aa01-41bb-91e6-71efc424bdac\",\"interface\":\"\",\"metadata\":{\"new_token_status\":\"deleted\",\"old_token_status\":\"active\",\"token_name\":\"Read analytics and logs\",\"token_tag\":\"7371116654ad8cd24bfe095f4aab20eb\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:38:04Z\"}",
+        "outcome": "success",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:38:01.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "new_token_status": "deleted",
+            "old_token_status": "active",
+            "token_name": "Read all resources",
+            "token_tag": "98eed916a3a4d5d4387118897a648a6b"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "token_revoke",
+        "category": [
+          "iam"
+        ],
+        "id": "0b0ed469-5794-437e-beef-d0474e1b2cff",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"token_revoke\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"0b0ed469-5794-437e-beef-d0474e1b2cff\",\"interface\":\"\",\"metadata\":{\"new_token_status\":\"deleted\",\"old_token_status\":\"active\",\"token_name\":\"Read all resources\",\"token_tag\":\"98eed916a3a4d5d4387118897a648a6b\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:38:01Z\"}",
+        "outcome": "success",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:36:30.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "new_token_hash": "3fca824aa55dd634eed8515afcb594babcbe75cda55a93860b46228ff1ddb42c",
+            "old_token_hash": "e3e3a2dc4e94c1d18e9619d8b3da23e9343d42a774cf1c34d22c21a45ea402b5",
+            "token_name": "Read all resources",
+            "token_tag": "98eed916a3a4d5d4387118897a648a6b"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "token_roll",
+        "category": [
+          "iam"
+        ],
+        "id": "2fd079b8-3782-41c3-b61b-257cac8b368c",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"token_roll\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"2fd079b8-3782-41c3-b61b-257cac8b368c\",\"interface\":\"\",\"metadata\":{\"new_token_hash\":\"3fca824aa55dd634eed8515afcb594babcbe75cda55a93860b46228ff1ddb42c\",\"old_token_hash\":\"e3e3a2dc4e94c1d18e9619d8b3da23e9343d42a774cf1c34d22c21a45ea402b5\",\"token_name\":\"Read all resources\",\"token_tag\":\"98eed916a3a4d5d4387118897a648a6b\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:36:30Z\"}",
+        "outcome": "success",
+        "type": [
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:33:55.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "token_name": "Read analytics and logs",
+            "token_tag": "7371116654ad8cd24bfe095f4aab20eb"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "token_create",
+        "category": [
+          "iam"
+        ],
+        "id": "cc29f2d4-00bf-4077-a32a-5d9601e68a0a",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"token_create\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"cc29f2d4-00bf-4077-a32a-5d9601e68a0a\",\"interface\":\"\",\"metadata\":{\"token_name\":\"Read analytics and logs\",\"token_tag\":\"7371116654ad8cd24bfe095f4aab20eb\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:33:55Z\"}",
+        "outcome": "success",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:20:00.289Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "firebase=frc-scout",
+            "id": "984a5c233ce81cccd074f8459369ba2d",
+            "name": "example.com",
+            "proxied": false,
+            "ttl": 1,
+            "type": "TXT",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065315",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "58725ea5-3651-412e-8f61-89bba5efa0a3",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"58725ea5-3651-412e-8f61-89bba5efa0a3\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"null\",\"oldValue\":\"null\",\"oldValueJson\":{\"content\":\"firebase=frc-scout\",\"id\":\"984a5c233ce81cccd074f8459369ba2d\",\"name\":\"example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065315\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:20:00.289876Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:58.237Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "v=spf1 include:_spf.firebasemail.com ~all",
+            "id": "2284627114dd0fa5e7e1fcd8a33ffb4d",
+            "name": "example.com",
+            "proxied": false,
+            "ttl": 1,
+            "type": "TXT",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065318",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "88b43f92-d539-4542-8530-02fbcb20d639",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"88b43f92-d539-4542-8530-02fbcb20d639\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"null\",\"oldValue\":\"null\",\"oldValueJson\":{\"content\":\"v=spf1 include:_spf.firebasemail.com ~all\",\"id\":\"2284627114dd0fa5e7e1fcd8a33ffb4d\",\"name\":\"example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065318\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:58.237877Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:55.959Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "xClZppVPmuzSwaAIv-asdfasdfasdfa",
+            "id": "3c9a12612052d029a580295466eba605",
+            "name": "_acme-challenge.example.com",
+            "proxied": false,
+            "ttl": 1,
+            "type": "TXT",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065321",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "e27f3692-8a29-45e6-8c54-65861f7f90fb",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"e27f3692-8a29-45e6-8c54-65861f7f90fb\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"xClZppVPmuzSwaAIv-asdfasdfasdfa\",\"id\":\"3c9a12612052d029a580295466eba605\",\"name\":\"_acme-challenge.example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065321\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:55.959347Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:53.671Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "gmr-smtp-in.l.google.com",
+            "id": "5526cdfe53476cd14df2d60881eb0556",
+            "name": "example.com",
+            "priority": 5,
+            "proxied": false,
+            "ttl": 1,
+            "type": "MX",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065324",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "ba50de97-5523-4389-8abd-3a8770f326ff",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"ba50de97-5523-4389-8abd-3a8770f326ff\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"gmr-smtp-in.l.google.com\",\"id\":\"5526cdfe53476cd14df2d60881eb0556\",\"name\":\"example.com\",\"priority\":5,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065324\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:53.671977Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:51.321Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "alt1.gmr-smtp-in.l.google.com",
+            "id": "c61334318a72a8880edd0c92846c2c62",
+            "name": "example.com",
+            "priority": 10,
+            "proxied": false,
+            "ttl": 1,
+            "type": "MX",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065330",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "d327d838-5f87-4d39-8fe2-4bbb2f105aed",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"d327d838-5f87-4d39-8fe2-4bbb2f105aed\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"alt1.gmr-smtp-in.l.google.com\",\"id\":\"c61334318a72a8880edd0c92846c2c62\",\"name\":\"example.com\",\"priority\":10,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065330\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:51.321861Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:48.875Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "alt2.gmr-smtp-in.l.google.com",
+            "id": "f69c3fe0b8a01e76b69a075c129de5c0",
+            "name": "example.com",
+            "priority": 20,
+            "proxied": false,
+            "ttl": 1,
+            "type": "MX",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065333",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "a4efd896-5c0d-45dc-8461-1450b740889e",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"a4efd896-5c0d-45dc-8461-1450b740889e\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"alt2.gmr-smtp-in.l.google.com\",\"id\":\"f69c3fe0b8a01e76b69a075c129de5c0\",\"name\":\"example.com\",\"priority\":20,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065333\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:48.87573Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:46.609Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "alt3.gmr-smtp-in.l.google.com",
+            "id": "4fe76e9b789c398470dbd8bd433655a6",
+            "name": "example.com",
+            "priority": 30,
+            "proxied": false,
+            "ttl": 1,
+            "type": "MX",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065336",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "cd50a0fc-08f5-46a6-b0df-5a01a0bfc19d",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"cd50a0fc-08f5-46a6-b0df-5a01a0bfc19d\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"alt3.gmr-smtp-in.l.google.com\",\"id\":\"4fe76e9b789c398470dbd8bd433655a6\",\"name\":\"example.com\",\"priority\":30,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065336\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:46.609249Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:44.409Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "alt4.gmr-smtp-in.l.google.com",
+            "id": "f70ae1e7265eeafb564096f16b37e361",
+            "name": "example.com",
+            "priority": 40,
+            "proxied": false,
+            "ttl": 1,
+            "type": "MX",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065339",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "aa4fb6f8-feec-4881-a7c4-0909659f912a",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"aa4fb6f8-feec-4881-a7c4-0909659f912a\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"alt4.gmr-smtp-in.l.google.com\",\"id\":\"f70ae1e7265eeafb564096f16b37e361\",\"name\":\"example.com\",\"priority\":40,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065339\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:44.409826Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:41.639Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "connect.domains.google.com",
+            "id": "c58c499b7052faa7e8aba28f59e2712b",
+            "name": "_domainconnect.example.com",
+            "proxied": true,
+            "ttl": 1,
+            "type": "CNAME",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065345",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "46557ef4-2ebb-4da2-9455-1ee0dc7b883c",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"46557ef4-2ebb-4da2-9455-1ee0dc7b883c\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"connect.domains.google.com\",\"id\":\"c58c499b7052faa7e8aba28f59e2712b\",\"name\":\"_domainconnect.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"CNAME\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065345\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:41.639476Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:33.480Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "198.51.100.144",
+            "id": "44749c656ae3bd10ca4e98dd7606d996",
+            "name": "test.example.com",
+            "proxied": true,
+            "ttl": 1,
+            "type": "A",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065342",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "6c690481-c809-4d4f-95a3-ea1b6dec70ea",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"6c690481-c809-4d4f-95a3-ea1b6dec70ea\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"44749c656ae3bd10ca4e98dd7606d996\",\"name\":\"test.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065342\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:33.480205Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:27.804Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "198.51.100.144",
+            "id": "d25753c254a8da1c6478b36e2793bcd6",
+            "name": "test2.example.com",
+            "proxied": true,
+            "ttl": 1,
+            "type": "A",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065354",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "3f9184d9-0e8e-43db-8fe3-13b07d87361f",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"3f9184d9-0e8e-43db-8fe3-13b07d87361f\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"d25753c254a8da1c6478b36e2793bcd6\",\"name\":\"test2.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065354\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:27.804305Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:19:23.918Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "old_value": {
+            "content": "198.51.100.144",
+            "id": "16a1aeb043f6352a55bf73008a611779",
+            "name": "another.example.com",
+            "proxied": true,
+            "ttl": 1,
+            "type": "A",
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065351",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_del",
+        "category": [
+          "configuration"
+        ],
+        "id": "be6750d9-9c91-48a5-a792-eb121b518e94",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"be6750d9-9c91-48a5-a792-eb121b518e94\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"16a1aeb043f6352a55bf73008a611779\",\"name\":\"another.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065351\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:23.918098Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "deletion"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.883Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "198.51.100.144",
+            "id": "d25753c254a8da1c6478b36e2793bcd6",
+            "name": "asdf.example.com",
+            "proxied": true,
+            "ttl": 1,
+            "type": "A",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065354",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "8c118756-dbb3-4075-8017-70821392c74d",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"8c118756-dbb3-4075-8017-70821392c74d\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"d25753c254a8da1c6478b36e2793bcd6\",\"name\":\"asdf.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065354\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883896Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.883Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "198.51.100.144",
+            "id": "16a1aeb043f6352a55bf73008a611779",
+            "name": "tbh.example.com",
+            "proxied": true,
+            "ttl": 1,
+            "type": "A",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065351",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "685ead04-8a0d-4c1d-9d2a-4dc82b96b587",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"685ead04-8a0d-4c1d-9d2a-4dc82b96b587\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"16a1aeb043f6352a55bf73008a611779\",\"name\":\"tbh.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065351\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883815Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.883Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "198.51.100.144",
+            "id": "6d68a4701270ee8c96e526354b3ec4e1",
+            "name": "stuff.example.com",
+            "proxied": true,
+            "ttl": 1,
+            "type": "A",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065348",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "782642d0-2326-43aa-b700-313e92d90f50",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"782642d0-2326-43aa-b700-313e92d90f50\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"6d68a4701270ee8c96e526354b3ec4e1\",\"name\":\"stuff.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065348\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883723Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.883Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "connect.domains.google.com",
+            "id": "c58c499b7052faa7e8aba28f59e2712b",
+            "name": "_domainconnect.example.com",
+            "proxied": true,
+            "ttl": 1,
+            "type": "CNAME",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065345",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "9a5e7531-03bc-49be-a4a8-5f16989ea2c2",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"9a5e7531-03bc-49be-a4a8-5f16989ea2c2\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"connect.domains.google.com\",\"id\":\"c58c499b7052faa7e8aba28f59e2712b\",\"name\":\"_domainconnect.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"CNAME\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065345\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883628Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.883Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "198.51.100.144",
+            "id": "44749c656ae3bd10ca4e98dd7606d996",
+            "name": "bob.example.com",
+            "proxied": true,
+            "ttl": 1,
+            "type": "A",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065342",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "832fbfb0-8c75-46bf-99e5-79a4cab017d4",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"832fbfb0-8c75-46bf-99e5-79a4cab017d4\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"44749c656ae3bd10ca4e98dd7606d996\",\"name\":\"bob.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065342\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883551Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.883Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "alt4.gmr-smtp-in.l.google.com",
+            "id": "f70ae1e7265eeafb564096f16b37e361",
+            "name": "example.com",
+            "priority": 40,
+            "proxied": false,
+            "ttl": 1,
+            "type": "MX",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065339",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "cd86ed6d-b6be-4c6e-b78f-2477ce3d2f9d",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"cd86ed6d-b6be-4c6e-b78f-2477ce3d2f9d\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"alt4.gmr-smtp-in.l.google.com\",\"id\":\"f70ae1e7265eeafb564096f16b37e361\",\"name\":\"example.com\",\"priority\":40,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065339\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883448Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.883Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "alt3.gmr-smtp-in.l.google.com",
+            "id": "4fe76e9b789c398470dbd8bd433655a6",
+            "name": "example.com",
+            "priority": 30,
+            "proxied": false,
+            "ttl": 1,
+            "type": "MX",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065336",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "5bef9c90-df14-403c-873c-b70a05722714",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"5bef9c90-df14-403c-873c-b70a05722714\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"alt3.gmr-smtp-in.l.google.com\",\"id\":\"4fe76e9b789c398470dbd8bd433655a6\",\"name\":\"example.com\",\"priority\":30,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065336\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883312Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.883Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "alt2.gmr-smtp-in.l.google.com",
+            "id": "f69c3fe0b8a01e76b69a075c129de5c0",
+            "name": "example.com",
+            "priority": 20,
+            "proxied": false,
+            "ttl": 1,
+            "type": "MX",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065333",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "0fc1b7c3-63ed-4dfc-963c-46dc45653ca6",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"0fc1b7c3-63ed-4dfc-963c-46dc45653ca6\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"alt2.gmr-smtp-in.l.google.com\",\"id\":\"f69c3fe0b8a01e76b69a075c129de5c0\",\"name\":\"example.com\",\"priority\":20,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065333\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883214Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.883Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "alt1.gmr-smtp-in.l.google.com",
+            "id": "c61334318a72a8880edd0c92846c2c62",
+            "name": "example.com",
+            "priority": 10,
+            "proxied": false,
+            "ttl": 1,
+            "type": "MX",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065330",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "57fb006f-5e93-4a40-84dd-9486da7900df",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"57fb006f-5e93-4a40-84dd-9486da7900df\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"alt1.gmr-smtp-in.l.google.com\",\"id\":\"c61334318a72a8880edd0c92846c2c62\",\"name\":\"example.com\",\"priority\":10,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065330\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883111Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.883Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "gmr-smtp-in.l.google.com",
+            "id": "5526cdfe53476cd14df2d60881eb0556",
+            "name": "example.com",
+            "priority": 5,
+            "proxied": false,
+            "ttl": 1,
+            "type": "MX",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065324",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "c4fe0c16-0775-4f6b-b597-e10a03cf4871",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"c4fe0c16-0775-4f6b-b597-e10a03cf4871\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"gmr-smtp-in.l.google.com\",\"id\":\"5526cdfe53476cd14df2d60881eb0556\",\"name\":\"example.com\",\"priority\":5,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065324\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883012Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.882Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "xClZppVPmuzSwaAIvasdffPmsr3hzfV0kd04M",
+            "id": "3c9a12612052d029a580295466eba605",
+            "name": "_acme-challenge.example.com",
+            "proxied": false,
+            "ttl": 1,
+            "type": "TXT",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065321",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "62213099-3e84-4f84-9e15-ffdfe894bf93",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"62213099-3e84-4f84-9e15-ffdfe894bf93\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"xClZppVPmuzSwaAIvasdffPmsr3hzfV0kd04M\",\"id\":\"3c9a12612052d029a580295466eba605\",\"name\":\"_acme-challenge.example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065321\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.882912Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.882Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "v=spf1 include:_spf.firebasemail.com ~all",
+            "id": "2284627114dd0fa5e7e1fcd8a33ffb4d",
+            "name": "example.com",
+            "proxied": false,
+            "ttl": 1,
+            "type": "TXT",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065318",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "24e4e96c-10e8-4576-96a4-89d56d0faeb4",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"24e4e96c-10e8-4576-96a4-89d56d0faeb4\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"v=spf1 include:_spf.firebasemail.com ~all\",\"id\":\"2284627114dd0fa5e7e1fcd8a33ffb4d\",\"name\":\"example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065318\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.882783Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:17.882Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "content": "firebase=frc-scout",
+            "id": "984a5c233ce81cccd074f8459369ba2d",
+            "name": "example.com",
+            "proxied": false,
+            "ttl": 1,
+            "type": "TXT",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "10715065315",
+            "type": "DNS_record"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rec_add",
+        "category": [
+          "configuration"
+        ],
+        "id": "2d88dbcd-30e0-4a97-9715-8029678397d1",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"2d88dbcd-30e0-4a97-9715-8029678397d1\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"firebase=frc-scout\",\"id\":\"984a5c233ce81cccd074f8459369ba2d\",\"name\":\"example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065315\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.882594Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:14:10.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "pending",
+        "category": [
+          "configuration"
+        ],
+        "id": "b27977dc-43a9-5a2d-9cb6-a41068a8748f",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"pending\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"b27977dc-43a9-5a2d-9cb6-a41068a8748f\",\"interface\":\"UI\",\"metadata\":{\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\",\"type\":\"account\"},\"when\":\"2049-08-09T10:14:10Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:13:45.956Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "system"
+          },
+          "metadata": {
+            "zone_name": "example.com"
+          },
+          "new_value": {
+            "http_2": "Enabled",
+            "min_tls_version": "TLSv1.0",
+            "quic": "Default",
+            "session_tickets": "Enabled",
+            "tls_13": "Default",
+            "zero_rtt": "Default"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "type": "zone"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "tls_settings_deployed",
+        "category": [
+          "configuration"
+        ],
+        "id": "a540ce33-4822-4f1c-86f1-240ef25b838e",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"tls_settings_deployed\"},\"actor\":{\"id\":\"1\",\"type\":\"system\"},\"id\":\"a540ce33-4822-4f1c-86f1-240ef25b838e\",\"interface\":\"\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"ciphers\":\"\",\"http_2\":\"Enabled\",\"min_tls_version\":\"TLSv1.0\",\"quic\":\"Default\",\"session_tickets\":\"Enabled\",\"tls_13\":\"Default\",\"zero_rtt\":\"Default\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"type\":\"zone\"},\"when\":\"2049-08-09T10:13:45.956041Z\"}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "1"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "1"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:13:42.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "zone_id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "add",
+        "category": [
+          "configuration"
+        ],
+        "id": "5020c329-fdce-5b30-81f0-51dcb1cf24fb",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"5020c329-fdce-5b30-81f0-51dcb1cf24fb\",\"interface\":\"UI\",\"metadata\":{\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\",\"type\":\"account\"},\"when\":\"2049-08-09T10:13:42Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:13:42.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "name": "IPv6",
+            "type": "network",
+            "value": true,
+            "zone_name": "example.com"
+          },
+          "owner": {
+            "id": "eojhfbg334i88zs2pr2rd7wr82jf2h95"
+          },
+          "resource": {
+            "id": "u3fp685o1wjk5zq6hxa6a53oh49u3ek2",
+            "type": "zone"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "change_setting",
+        "category": [
+          "configuration"
+        ],
+        "id": "207ac9f8-396a-5877-9347-d1f0dccb0230",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"change_setting\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"207ac9f8-396a-5877-9347-d1f0dccb0230\",\"interface\":\"UI\",\"metadata\":{\"name\":\"IPv6\",\"type\":\"network\",\"value\":true,\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"type\":\"zone\"},\"when\":\"2049-08-09T10:13:42Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:06:47.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "metadata": {
+            "token_name": "Read all resources",
+            "token_tag": "98eed916a3a4d5d4387118897a648a6b"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "token_create",
+        "category": [
+          "iam"
+        ],
+        "id": "8f40bb7a-3a9d-4968-b229-bd2c9092f182",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"token_create\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"8f40bb7a-3a9d-4968-b229-bd2c9092f182\",\"interface\":\"\",\"metadata\":{\"token_name\":\"Read all resources\",\"token_tag\":\"98eed916a3a4d5d4387118897a648a6b\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:06:47Z\"}",
+        "outcome": "success",
+        "type": [
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-08-09T10:03:16.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "id": "743e1837-60f0-5857-9fc8-fd5d88147f32",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"login\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"743e1837-60f0-5857-9fc8-fd5d88147f32\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:03:16Z\"}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2049-05-10T12:26:19.000Z",
+      "cloud": {
+        "account": {
+          "id": "abcd1234"
+        },
+        "provider": "cloudflare"
+      },
+      "cloudflare": {
+        "audit": {
+          "actor": {
+            "type": "user"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "id": "8c4b5159-f138-58df-8911-67afbb1dc7ca",
+        "kind": "event",
+        "original": "{\"action\":{\"result\":true,\"type\":\"login\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"type\":\"user\"},\"id\":\"8c4b5159-f138-58df-8911-67afbb1dc7ca\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-05-10T12:26:19Z\"}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s"
+        ]
+      },
+      "source": {
+        "address": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+        "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"token_create\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543\",\"interface\":\"\",\"metadata\":{\"token_name\":\"test\",\"token_tag\":\"a2016e37f505d94441c45007c9bb6837\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-11-30T20:19:48Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"token_revoke\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"9329a742-2a0a-4191-83b1-da82c14d4f08\",\"interface\":\"\",\"metadata\":{\"new_token_status\":\"deleted\",\"old_token_status\":\"active\",\"token_name\":\"test\",\"token_tag\":\"36a4dfc3bbb674213415312edb3a09d8\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-11-30T20:19:27Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"API_key_view\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"df491a46-b86a-4bd5-98fa-8fed17e1541e\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"user\"},\"when\":\"2049-11-30T20:18:43Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"API_key_view\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"bc4c157b-63b4-4cec-9611-b2deb4ea190c\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"user\"},\"when\":\"2049-11-30T13:42:17Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"info\":\"key digest: d4d7c051a3fb379a81f0e81992beb0ed5396cf7b9b4709e8c4de3953105ab0d8\",\"result\":true,\"type\":\"rotate_API_key\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"5c8491b1-a507-5f36-9806-32be79735504\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-11-30T13:42:04Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"API_key_created\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"1521e148-1413-526a-a6e5-42077e12e2a9\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"d4d7c051a3fb379a81f0e81992beb0ed5396cf7b9b4709e8c4de3953105ab0d8\",\"type\":\"api_key\"},\"when\":\"2049-11-30T13:42:04Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"token_create\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"fdaac494-e93b-4e5c-a7ea-2c83b93aa2f4\",\"interface\":\"\",\"metadata\":{\"token_name\":\"test\",\"token_tag\":\"36a4dfc3bbb674213415312edb3a09d8\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-11-30T13:36:45Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"login\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"6391e5ef-dabf-557c-ad57-4c3cb29885fd\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-11-30T13:34:03Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"purge\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"4bcdaad0-efa7-5494-9d05-f887bcd3c109\",\"interface\":\"\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"type\":\"zone\"},\"when\":\"2049-10-17T10:13:46Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"tls_settings_deployed\"},\"actor\":{\"id\":\"1\",\"type\":\"system\"},\"id\":\"7be5e6ac-5292-4726-8a05-4dbb3ca61165\",\"interface\":\"\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"ciphers\":\"\",\"early_hints\":\"Default\",\"http_2\":\"Enabled\",\"min_tls_version\":\"TLSv1.0\",\"quic\":\"Default\",\"session_tickets\":\"Enabled\",\"tls_13\":\"Default\",\"zero_rtt\":\"Default\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"type\":\"zone\"},\"when\":\"2049-10-10T10:13:46.214209Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"delete\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"04dad887-ccd9-532f-ba18-4baae95cc661\",\"interface\":\"\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"type\":\"zone\"},\"when\":\"2049-10-10T10:13:44Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"token_revoke\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"211786b0-aa01-41bb-91e6-71efc424bdac\",\"interface\":\"\",\"metadata\":{\"new_token_status\":\"deleted\",\"old_token_status\":\"active\",\"token_name\":\"Read analytics and logs\",\"token_tag\":\"7371116654ad8cd24bfe095f4aab20eb\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:38:04Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"token_revoke\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"0b0ed469-5794-437e-beef-d0474e1b2cff\",\"interface\":\"\",\"metadata\":{\"new_token_status\":\"deleted\",\"old_token_status\":\"active\",\"token_name\":\"Read all resources\",\"token_tag\":\"98eed916a3a4d5d4387118897a648a6b\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:38:01Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"token_roll\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"2fd079b8-3782-41c3-b61b-257cac8b368c\",\"interface\":\"\",\"metadata\":{\"new_token_hash\":\"3fca824aa55dd634eed8515afcb594babcbe75cda55a93860b46228ff1ddb42c\",\"old_token_hash\":\"e3e3a2dc4e94c1d18e9619d8b3da23e9343d42a774cf1c34d22c21a45ea402b5\",\"token_name\":\"Read all resources\",\"token_tag\":\"98eed916a3a4d5d4387118897a648a6b\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:36:30Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"token_create\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"cc29f2d4-00bf-4077-a32a-5d9601e68a0a\",\"interface\":\"\",\"metadata\":{\"token_name\":\"Read analytics and logs\",\"token_tag\":\"7371116654ad8cd24bfe095f4aab20eb\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:33:55Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"58725ea5-3651-412e-8f61-89bba5efa0a3\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"null\",\"oldValue\":\"null\",\"oldValueJson\":{\"content\":\"firebase=frc-scout\",\"id\":\"984a5c233ce81cccd074f8459369ba2d\",\"name\":\"example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065315\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:20:00.289876Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"88b43f92-d539-4542-8530-02fbcb20d639\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"null\",\"oldValue\":\"null\",\"oldValueJson\":{\"content\":\"v=spf1 include:_spf.firebasemail.com ~all\",\"id\":\"2284627114dd0fa5e7e1fcd8a33ffb4d\",\"name\":\"example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065318\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:58.237877Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"e27f3692-8a29-45e6-8c54-65861f7f90fb\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"xClZppVPmuzSwaAIv-asdfasdfasdfa\",\"id\":\"3c9a12612052d029a580295466eba605\",\"name\":\"_acme-challenge.example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065321\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:55.959347Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"ba50de97-5523-4389-8abd-3a8770f326ff\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"gmr-smtp-in.l.google.com\",\"id\":\"5526cdfe53476cd14df2d60881eb0556\",\"name\":\"example.com\",\"priority\":5,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065324\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:53.671977Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"d327d838-5f87-4d39-8fe2-4bbb2f105aed\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"alt1.gmr-smtp-in.l.google.com\",\"id\":\"c61334318a72a8880edd0c92846c2c62\",\"name\":\"example.com\",\"priority\":10,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065330\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:51.321861Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"a4efd896-5c0d-45dc-8461-1450b740889e\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"alt2.gmr-smtp-in.l.google.com\",\"id\":\"f69c3fe0b8a01e76b69a075c129de5c0\",\"name\":\"example.com\",\"priority\":20,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065333\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:48.87573Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"cd50a0fc-08f5-46a6-b0df-5a01a0bfc19d\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"alt3.gmr-smtp-in.l.google.com\",\"id\":\"4fe76e9b789c398470dbd8bd433655a6\",\"name\":\"example.com\",\"priority\":30,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065336\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:46.609249Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"aa4fb6f8-feec-4881-a7c4-0909659f912a\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"alt4.gmr-smtp-in.l.google.com\",\"id\":\"f70ae1e7265eeafb564096f16b37e361\",\"name\":\"example.com\",\"priority\":40,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065339\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:44.409826Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"46557ef4-2ebb-4da2-9455-1ee0dc7b883c\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"connect.domains.google.com\",\"id\":\"c58c499b7052faa7e8aba28f59e2712b\",\"name\":\"_domainconnect.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"CNAME\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065345\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:41.639476Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"6c690481-c809-4d4f-95a3-ea1b6dec70ea\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"44749c656ae3bd10ca4e98dd7606d996\",\"name\":\"test.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065342\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:33.480205Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"3f9184d9-0e8e-43db-8fe3-13b07d87361f\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"d25753c254a8da1c6478b36e2793bcd6\",\"name\":\"test2.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065354\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:27.804305Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_del\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"be6750d9-9c91-48a5-a792-eb121b518e94\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"oldValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"16a1aeb043f6352a55bf73008a611779\",\"name\":\"another.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065351\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:19:23.918098Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"8c118756-dbb3-4075-8017-70821392c74d\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"d25753c254a8da1c6478b36e2793bcd6\",\"name\":\"asdf.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065354\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883896Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"685ead04-8a0d-4c1d-9d2a-4dc82b96b587\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"16a1aeb043f6352a55bf73008a611779\",\"name\":\"tbh.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065351\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883815Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"782642d0-2326-43aa-b700-313e92d90f50\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"6d68a4701270ee8c96e526354b3ec4e1\",\"name\":\"stuff.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065348\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883723Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"9a5e7531-03bc-49be-a4a8-5f16989ea2c2\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"connect.domains.google.com\",\"id\":\"c58c499b7052faa7e8aba28f59e2712b\",\"name\":\"_domainconnect.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"CNAME\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065345\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883628Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"832fbfb0-8c75-46bf-99e5-79a4cab017d4\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"198.51.100.144\",\"id\":\"44749c656ae3bd10ca4e98dd7606d996\",\"name\":\"bob.example.com\",\"proxied\":true,\"ttl\":1,\"type\":\"A\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065342\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883551Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"cd86ed6d-b6be-4c6e-b78f-2477ce3d2f9d\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"alt4.gmr-smtp-in.l.google.com\",\"id\":\"f70ae1e7265eeafb564096f16b37e361\",\"name\":\"example.com\",\"priority\":40,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065339\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883448Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"5bef9c90-df14-403c-873c-b70a05722714\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"alt3.gmr-smtp-in.l.google.com\",\"id\":\"4fe76e9b789c398470dbd8bd433655a6\",\"name\":\"example.com\",\"priority\":30,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065336\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883312Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"0fc1b7c3-63ed-4dfc-963c-46dc45653ca6\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"alt2.gmr-smtp-in.l.google.com\",\"id\":\"f69c3fe0b8a01e76b69a075c129de5c0\",\"name\":\"example.com\",\"priority\":20,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065333\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883214Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"57fb006f-5e93-4a40-84dd-9486da7900df\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"alt1.gmr-smtp-in.l.google.com\",\"id\":\"c61334318a72a8880edd0c92846c2c62\",\"name\":\"example.com\",\"priority\":10,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065330\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883111Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"c4fe0c16-0775-4f6b-b597-e10a03cf4871\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"gmr-smtp-in.l.google.com\",\"id\":\"5526cdfe53476cd14df2d60881eb0556\",\"name\":\"example.com\",\"priority\":5,\"proxied\":false,\"ttl\":1,\"type\":\"MX\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065324\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.883012Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"62213099-3e84-4f84-9e15-ffdfe894bf93\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"xClZppVPmuzSwaAIvasdffPmsr3hzfV0kd04M\",\"id\":\"3c9a12612052d029a580295466eba605\",\"name\":\"_acme-challenge.example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065321\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.882912Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"24e4e96c-10e8-4576-96a4-89d56d0faeb4\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"v=spf1 include:_spf.firebasemail.com ~all\",\"id\":\"2284627114dd0fa5e7e1fcd8a33ffb4d\",\"name\":\"example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065318\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.882783Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"rec_add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"2d88dbcd-30e0-4a97-9715-8029678397d1\",\"interface\":\"UI\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"content\":\"firebase=frc-scout\",\"id\":\"984a5c233ce81cccd074f8459369ba2d\",\"name\":\"example.com\",\"proxied\":false,\"ttl\":1,\"type\":\"TXT\",\"zone_name\":\"example.com\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"10715065315\",\"type\":\"DNS_record\"},\"when\":\"2049-08-09T10:14:17.882594Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"pending\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"b27977dc-43a9-5a2d-9cb6-a41068a8748f\",\"interface\":\"UI\",\"metadata\":{\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\",\"type\":\"account\"},\"when\":\"2049-08-09T10:14:10Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"tls_settings_deployed\"},\"actor\":{\"id\":\"1\",\"type\":\"system\"},\"id\":\"a540ce33-4822-4f1c-86f1-240ef25b838e\",\"interface\":\"\",\"metadata\":{\"zone_name\":\"example.com\"},\"newValue\":\"\",\"newValueJson\":{\"ciphers\":\"\",\"http_2\":\"Enabled\",\"min_tls_version\":\"TLSv1.0\",\"quic\":\"Default\",\"session_tickets\":\"Enabled\",\"tls_13\":\"Default\",\"zero_rtt\":\"Default\"},\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"type\":\"zone\"},\"when\":\"2049-08-09T10:13:45.956041Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"add\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"5020c329-fdce-5b30-81f0-51dcb1cf24fb\",\"interface\":\"UI\",\"metadata\":{\"zone_id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\",\"type\":\"account\"},\"when\":\"2049-08-09T10:13:42Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"change_setting\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"207ac9f8-396a-5877-9347-d1f0dccb0230\",\"interface\":\"UI\",\"metadata\":{\"name\":\"IPv6\",\"type\":\"network\",\"value\":true,\"zone_name\":\"example.com\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"eojhfbg334i88zs2pr2rd7wr82jf2h95\"},\"resource\":{\"id\":\"u3fp685o1wjk5zq6hxa6a53oh49u3ek2\",\"type\":\"zone\"},\"when\":\"2049-08-09T10:13:42Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"token_create\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"8f40bb7a-3a9d-4968-b229-bd2c9092f182\",\"interface\":\"\",\"metadata\":{\"token_name\":\"Read all resources\",\"token_tag\":\"98eed916a3a4d5d4387118897a648a6b\"},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:06:47Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"login\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"198.51.100.144\",\"type\":\"user\"},\"id\":\"743e1837-60f0-5857-9fc8-fd5d88147f32\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-08-09T10:03:16Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"action\":{\"result\":true,\"type\":\"login\"},\"actor\":{\"email\":\"user@example.com\",\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"type\":\"user\"},\"id\":\"8c4b5159-f138-58df-8911-67afbb1dc7ca\",\"interface\":\"\",\"metadata\":{},\"newValue\":\"\",\"oldValue\":\"\",\"owner\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\"},\"resource\":{\"id\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"type\":\"account\"},\"when\":\"2049-05-10T12:26:19Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "account_id": "abcd1234"
+      },
+      "message": "{\"errors\":[],\"messages\":[],\"result\":[],\"success\":true}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "event.ingested": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare-audit-default",
+    "event_count": 48,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

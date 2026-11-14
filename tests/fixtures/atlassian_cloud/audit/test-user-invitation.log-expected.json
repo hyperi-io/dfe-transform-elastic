@@ -1,0 +1,106 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-05-19T11:00:00.000Z",
+      "atlassian_cloud": {
+        "audit": {
+          "container": [
+            {
+              "attributes": {
+                "name": "Example Corp"
+              },
+              "id": "08166994-2766-0080-0901-658708848682",
+              "type": "organization"
+            }
+          ],
+          "context": [
+            {
+              "attributes": {
+                "email": "deytl.dazss@example.com"
+              },
+              "id": "35141762-6013-0062-0792-653559351551",
+              "type": "invited-user"
+            }
+          ],
+          "location": {
+            "geo": "EU"
+          },
+          "message": {
+            "format": "text/plain"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "user_invitation_sent",
+        "category": [
+          "iam"
+        ],
+        "created": "2054-05-19T11:00:01.000Z",
+        "id": "f7095655-6440-4763-8901-513267835522",
+        "kind": "event",
+        "original": "{\"type\":\"events\",\"id\":\"f7095655-6440-4763-8901-513267835522\",\"attributes\":{\"time\":\"2054-05-19T11:00:00.000Z\",\"processedAt\":\"2054-05-19T11:00:01.000Z\",\"action\":\"user_invitation_sent\",\"actor\":{\"id\":\"712020:ebbbbdcf-dfaf-beea-bbac-daaebcfdfbaf\",\"name\":\"Bob Smith\",\"email\":\"drc.zsgwr@example.com\"},\"context\":[{\"id\":\"35141762-6013-0062-0792-653559351551\",\"type\":\"invited-user\",\"attributes\":{\"email\":\"deytl.dazss@example.com\"}}],\"container\":[{\"id\":\"08166994-2766-0080-0901-658708848682\",\"type\":\"organization\",\"attributes\":{\"name\":\"Example Corp\"}}],\"location\":{\"ip\":\"203.0.113.10\",\"geo\":\"EU\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Bob Smith invited deytl.dazss@example.com to the organization.\",\"format\":\"text/plain\"}}",
+        "outcome": "success",
+        "type": [
+          "user",
+          "creation"
+        ]
+      },
+      "message": "Bob Smith invited deytl.dazss@example.com to the organization.",
+      "observer": {
+        "product": "Atlassian Cloud",
+        "type": "saas",
+        "vendor": "Atlassian"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.10"
+        ],
+        "user": [
+          "Bob Smith",
+          "drc.zsgwr@example.com"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "Example City",
+          "country_name": "Example Country"
+        },
+        "ip": "203.0.113.10"
+      },
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "drc.zsgwr@example.com",
+        "id": "712020:ebbbbdcf-dfaf-beea-bbac-daaebcfdfbaf",
+        "name": "Bob Smith"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"type\":\"events\",\"id\":\"f7095655-6440-4763-8901-513267835522\",\"attributes\":{\"time\":\"2054-05-19T11:00:00.000Z\",\"processedAt\":\"2054-05-19T11:00:01.000Z\",\"action\":\"user_invitation_sent\",\"actor\":{\"id\":\"712020:ebbbbdcf-dfaf-beea-bbac-daaebcfdfbaf\",\"name\":\"Bob Smith\",\"email\":\"drc.zsgwr@example.com\"},\"context\":[{\"id\":\"35141762-6013-0062-0792-653559351551\",\"type\":\"invited-user\",\"attributes\":{\"email\":\"deytl.dazss@example.com\"}}],\"container\":[{\"id\":\"08166994-2766-0080-0901-658708848682\",\"type\":\"organization\",\"attributes\":{\"name\":\"Example Corp\"}}],\"location\":{\"ip\":\"203.0.113.10\",\"geo\":\"EU\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Bob Smith invited deytl.dazss@example.com to the organization.\",\"format\":\"text/plain\"}}",
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_cloud-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

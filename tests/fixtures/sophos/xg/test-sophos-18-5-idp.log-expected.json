@@ -1,0 +1,503 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-05-23T16:20:34.000+01:00",
+      "destination": {
+        "ip": "10.130.250.88",
+        "port": 25
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "detect",
+        "category": [
+          "intrusion_detection",
+          "network"
+        ],
+        "code": "06001",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-05-23 time=16:20:34 timezone=\"BST\" device_name=\"JG460\" device_id=SFDemo-f64dd6be log_id=020703406001 log_type=\"IDP\" log_component=\"Anomaly\" log_subtype=\"Detect\" priority=Warning idp_policy_id=1 fw_rule_id=2 user_name=\"\" signature_id=26022 signature_msg=\"FILE-PDF EmbeddedFile contained within a PDF\" classification=\"A Network Trojan was detected\" rule_priority=1 src_ip=10.134.161.78 src_country_code=R1 dst_ip=10.130.250.88 dst_country_code=R1 protocol=\"TCP\" src_port=28938 dst_port=25 platform=\"Windows\" category=\"Malware Communication\" target=\"Server\"",
+        "outcome": "success",
+        "severity": 4,
+        "timezone": "Etc/GMT-1",
+        "type": [
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "community_id": "1:+8bu05Vf4Wjdz+DrUOCHV0AuUuk=",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "SFDemo-f64dd6be",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ],
+        "ip": [
+          "10.134.161.78",
+          "10.130.250.88"
+        ]
+      },
+      "rule": {
+        "category": "A Network Trojan was detected",
+        "id": "26022",
+        "name": "FILE-PDF EmbeddedFile contained within a PDF"
+      },
+      "sophos": {
+        "xg": {
+          "category": "Malware Communication",
+          "device": "SFW",
+          "device_name": "JG460",
+          "dst_country_code": "R1",
+          "fw_rule_id": "2",
+          "idp_policy_id": "1",
+          "log_component": "Anomaly",
+          "log_id": "020703406001",
+          "log_subtype": "Detect",
+          "log_type": "IDP",
+          "platform": "Windows",
+          "priority": "Warning",
+          "rule_priority": "1",
+          "src_country_code": "R1",
+          "target": "Server",
+          "timezone": "BST"
+        }
+      },
+      "source": {
+        "ip": "10.134.161.78",
+        "port": 28938
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-05-23T16:16:43.000+01:00",
+      "destination": {
+        "ip": "10.66.213.108",
+        "port": 25
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "drop",
+        "category": [
+          "intrusion_detection",
+          "network"
+        ],
+        "code": "06002",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-05-23 time=16:16:43 timezone=\"BST\" device_name=\"JG460\" device_id=SFDemo-f64dd6be log_id=020704406002 log_type=\"IDP\" log_component=\"Anomaly\" log_subtype=\"Drop\" priority=Warning idp_policy_id=1 fw_rule_id=2 user_name=\"\" signature_id=26022 signature_msg=\"FILE-PDF EmbeddedFile contained within a PDF\" classification=\"A Network Trojan was detected\" rule_priority=1 src_ip=10.41.183.131 src_country_code=R1 dst_ip=10.66.213.108 dst_country_code=R1 protocol=\"TCP\" src_port=40140 dst_port=25 platform=\"Windows\" category=\"Malware Communication\" target=\"Server\"",
+        "outcome": "success",
+        "severity": 4,
+        "timezone": "Etc/GMT-1",
+        "type": [
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "community_id": "1:FV+joGapMXgCkOz5WsuhNomnwZw=",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "SFDemo-f64dd6be",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ],
+        "ip": [
+          "10.41.183.131",
+          "10.66.213.108"
+        ]
+      },
+      "rule": {
+        "category": "A Network Trojan was detected",
+        "id": "26022",
+        "name": "FILE-PDF EmbeddedFile contained within a PDF"
+      },
+      "sophos": {
+        "xg": {
+          "category": "Malware Communication",
+          "device": "SFW",
+          "device_name": "JG460",
+          "dst_country_code": "R1",
+          "fw_rule_id": "2",
+          "idp_policy_id": "1",
+          "log_component": "Anomaly",
+          "log_id": "020704406002",
+          "log_subtype": "Drop",
+          "log_type": "IDP",
+          "platform": "Windows",
+          "priority": "Warning",
+          "rule_priority": "1",
+          "src_country_code": "R1",
+          "target": "Server",
+          "timezone": "BST"
+        }
+      },
+      "source": {
+        "ip": "10.41.183.131",
+        "port": 40140
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-05-23T15:49:38.000+01:00",
+      "destination": {
+        "ip": "10.213.24.33",
+        "port": 111
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "detect",
+        "category": [
+          "intrusion_detection",
+          "network"
+        ],
+        "code": "07001",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-05-23 time=15:49:38 timezone=\"BST\" device_name=\"JG460\" device_id=SFDemo-f64dd6be log_id=020803407001 log_type=\"IDP\" log_component=\"Signatures\" log_subtype=\"Detect\" priority=Warning idp_policy_id=1 fw_rule_id=2 user_name=\"\" signature_id=584 signature_msg=\"PROTOCOL-RPC portmap rusers request UDP\" classification=\"Decode of an RPC Query\" rule_priority=5 src_ip=10.23.145.81 src_country_code=R1 dst_ip=10.213.24.33 dst_country_code=R1 protocol=\"UDP\" src_port=21378 dst_port=111 platform=\"BSD,Linux,Mac,Solaris,Unix\" category=\"Operating System and Services\" target=\"Server\"",
+        "outcome": "success",
+        "severity": 4,
+        "timezone": "Etc/GMT-1",
+        "type": [
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "community_id": "1:r1W/YxnAiAOonVP6AoaUXXVMpxg=",
+        "transport": "udp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "SFDemo-f64dd6be",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ],
+        "ip": [
+          "10.23.145.81",
+          "10.213.24.33"
+        ]
+      },
+      "rule": {
+        "category": "Decode of an RPC Query",
+        "id": "584",
+        "name": "PROTOCOL-RPC portmap rusers request UDP"
+      },
+      "sophos": {
+        "xg": {
+          "category": "Operating System and Services",
+          "device": "SFW",
+          "device_name": "JG460",
+          "dst_country_code": "R1",
+          "fw_rule_id": "2",
+          "idp_policy_id": "1",
+          "log_component": "Signatures",
+          "log_id": "020803407001",
+          "log_subtype": "Detect",
+          "log_type": "IDP",
+          "platform": "BSD,Linux,Mac,Solaris,Unix",
+          "priority": "Warning",
+          "rule_priority": "5",
+          "src_country_code": "R1",
+          "target": "Server",
+          "timezone": "BST"
+        }
+      },
+      "source": {
+        "ip": "10.23.145.81",
+        "port": 21378
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2045-02-01T12:51:35.000+05:30",
+      "destination": {
+        "ip": "10.138.93.175",
+        "port": 40575
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "drop",
+        "category": [
+          "intrusion_detection",
+          "network"
+        ],
+        "code": "07002",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2045-02-01 time=12:51:35 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024- P29PUA log_id=020804407002 log_type=\"IDP\" log_component=\"Signatures\" log_subtype=\"Drop\" status=\"\" priority=Warning idp_policy_id=2 fw_rule_id=1 user_name=\"\" signature_id=1151209031 signature_msg=\"Autodesk Design Review GIF GlobalColorTable DataSubBlock Buffer Overflow\" classification=\"Unknown\" rule_priority=3 src_ip=192.0.2.170 src_country_code=HKG dst_ip=10.138.93.175 dst_country_code=R1 protocol=\"TCP\" src_port=80 dst_port=40575 platform=\" Windows\" category=\"Application and Software\" target=\"Client\"",
+        "outcome": "success",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "community_id": "1:RJQAVwRCupUkqSGwZaWwyZ3u0Jg=",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C44313350024- P29PUA",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ],
+        "ip": [
+          "192.0.2.170",
+          "10.138.93.175"
+        ]
+      },
+      "rule": {
+        "category": "Unknown",
+        "id": "1151209031",
+        "name": "Autodesk Design Review GIF GlobalColorTable DataSubBlock Buffer Overflow"
+      },
+      "sophos": {
+        "xg": {
+          "category": "Application and Software",
+          "device": "SFW",
+          "device_name": "FT189gKJ-WN",
+          "dst_country_code": "R1",
+          "fw_rule_id": "1",
+          "idp_policy_id": "2",
+          "log_component": "Signatures",
+          "log_id": "020804407002",
+          "log_subtype": "Drop",
+          "log_type": "IDP",
+          "platform": " Windows",
+          "priority": "Warning",
+          "rule_priority": "3",
+          "src_country_code": "HKG",
+          "target": "Client",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "ip": "192.0.2.170",
+        "port": 80
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-05-23 time=16:20:34 timezone=\"BST\" device_name=\"JG460\" device_id=SFDemo-f64dd6be log_id=020703406001 log_type=\"IDP\" log_component=\"Anomaly\" log_subtype=\"Detect\" priority=Warning idp_policy_id=1 fw_rule_id=2 user_name=\"\" signature_id=26022 signature_msg=\"FILE-PDF EmbeddedFile contained within a PDF\" classification=\"A Network Trojan was detected\" rule_priority=1 src_ip=10.134.161.78 src_country_code=R1 dst_ip=10.130.250.88 dst_country_code=R1 protocol=\"TCP\" src_port=28938 dst_port=25 platform=\"Windows\" category=\"Malware Communication\" target=\"Server\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-05-23 time=16:16:43 timezone=\"BST\" device_name=\"JG460\" device_id=SFDemo-f64dd6be log_id=020704406002 log_type=\"IDP\" log_component=\"Anomaly\" log_subtype=\"Drop\" priority=Warning idp_policy_id=1 fw_rule_id=2 user_name=\"\" signature_id=26022 signature_msg=\"FILE-PDF EmbeddedFile contained within a PDF\" classification=\"A Network Trojan was detected\" rule_priority=1 src_ip=10.41.183.131 src_country_code=R1 dst_ip=10.66.213.108 dst_country_code=R1 protocol=\"TCP\" src_port=40140 dst_port=25 platform=\"Windows\" category=\"Malware Communication\" target=\"Server\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-05-23 time=15:49:38 timezone=\"BST\" device_name=\"JG460\" device_id=SFDemo-f64dd6be log_id=020803407001 log_type=\"IDP\" log_component=\"Signatures\" log_subtype=\"Detect\" priority=Warning idp_policy_id=1 fw_rule_id=2 user_name=\"\" signature_id=584 signature_msg=\"PROTOCOL-RPC portmap rusers request UDP\" classification=\"Decode of an RPC Query\" rule_priority=5 src_ip=10.23.145.81 src_country_code=R1 dst_ip=10.213.24.33 dst_country_code=R1 protocol=\"UDP\" src_port=21378 dst_port=111 platform=\"BSD,Linux,Mac,Solaris,Unix\" category=\"Operating System and Services\" target=\"Server\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2045-02-01 time=12:51:35 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024- P29PUA log_id=020804407002 log_type=\"IDP\" log_component=\"Signatures\" log_subtype=\"Drop\" status=\"\" priority=Warning idp_policy_id=2 fw_rule_id=1 user_name=\"\" signature_id=1151209031 signature_msg=\"Autodesk Design Review GIF GlobalColorTable DataSubBlock Buffer Overflow\" classification=\"Unknown\" rule_priority=3 src_ip=192.0.2.170 src_country_code=HKG dst_ip=10.138.93.175 dst_country_code=R1 protocol=\"TCP\" src_port=80 dst_port=40575 platform=\" Windows\" category=\"Application and Software\" target=\"Client\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "xg",
+    "dynamic_fields": {
+      "network.community_id": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sophos-xg-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "sophos",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

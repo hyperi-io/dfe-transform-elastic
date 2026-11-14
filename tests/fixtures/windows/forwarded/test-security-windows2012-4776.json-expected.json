@@ -1,0 +1,154 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-04-01T08:45:42.187Z",
+      "agent": {
+        "ephemeral_id": "c2ea1cd4-0490-4bf5-ab03-b34facc582ff",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "credential-validated",
+        "category": [
+          "authentication"
+        ],
+        "code": "4776",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4776.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "ev_aav"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "ev_aav"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "PackageName": "MICROSOFT_AUTHENTICATION_PACKAGE_V1_0",
+          "Status": "0x0",
+          "TargetUserName": "ev_aav",
+          "Workstation": "FPS56047"
+        },
+        "event_id": "4776",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "failure": {
+            "status": "Status OK."
+          }
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 496,
+          "thread": {
+            "id": 1864
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "5040222",
+        "time_created": "2048-04-01T08:45:42.187Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:09:39.132Z",
+      "agent": {
+        "ephemeral_id": "c2ea1cd4-0490-4bf5-ab03-b34facc582ff",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4776,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4776.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "PackageName": "MICROSOFT_AUTHENTICATION_PACKAGE_V1_0",
+          "Status": "0x0",
+          "TargetUserName": "ev_aav",
+          "Workstation": "FPS56047"
+        },
+        "event_id": 4776,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 496,
+          "thread": {
+            "id": 1864
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 5040222,
+        "time_created": "2048-04-01T08:45:42.187Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

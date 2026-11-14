@@ -27,9 +27,7 @@ impl Transform for Default {
                     && event.get_str("message").is_some_and(|s| s.ends_with(","))
             };
             if _cond {
-                // Painless script
-                // Source: ctx.message = ctx.message.substring(0, ctx.message.length() - 1);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -138,8 +136,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("mysqlenterprise.audit") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v instanceof String && v.isEmpty() == true);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -201,9 +198,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("process.args") };
             if _cond {
-                // Painless script
-                // Source: ctx.process.args_count = ctx.process.args.length;\nif (ctx.process.args.length > 0) {\n  ctx.process.executable = ctx.process.args[0];\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

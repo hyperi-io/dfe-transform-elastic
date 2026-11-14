@@ -1,0 +1,2142 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-17T14:08:08.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "connection_id": "110577675",
+          "destination_interface": "Inside",
+          "source_interface": "Outside",
+          "source_username": "LOCAL\\Elastic",
+          "termination_user": "zzzzzz"
+        }
+      },
+      "destination": {
+        "address": "10.209.4.133",
+        "ip": "10.209.4.133",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "flow-expiration",
+        "category": [
+          "network"
+        ],
+        "code": "302016",
+        "dataset": "cisco.asa",
+        "duration": 0,
+        "end": "2048-04-17T14:08:08.000-02:00",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Apr 17 2048 14:08:08 SNL-ASA-VPN-A01 : %ASA-6-302016: Teardown UDP connection 110577675 for Outside:10.239.159.79/53723(LOCAL\\Elastic) to Inside:10.209.4.133/53 duration 0:00:00 bytes 148 (zzzzzz)",
+        "outcome": "success",
+        "severity": 6,
+        "start": "2048-04-17T16:08:08.000Z",
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "SNL-ASA-VPN-A01"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "informational",
+        "offset": 0
+      },
+      "network": {
+        "bytes": 148,
+        "community_id": "1:sOww7RYoGcDiVpXvico2K379QU0=",
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "Inside"
+          }
+        },
+        "hostname": "SNL-ASA-VPN-A01",
+        "ingress": {
+          "interface": {
+            "name": "Outside"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "SNL-ASA-VPN-A01"
+        ],
+        "ip": [
+          "10.239.159.79",
+          "10.209.4.133"
+        ],
+        "user": [
+          "Elastic"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.239.159.79",
+        "ip": "10.239.159.79",
+        "port": 53723,
+        "user": {
+          "name": "Elastic"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-17T14:00:31.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "destination_interface": "Outside",
+          "rule_name": "Inside_access_in",
+          "source_interface": "Inside"
+        }
+      },
+      "destination": {
+        "address": "10.239.159.79",
+        "ip": "10.239.159.79"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "106023",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Apr 17 2048 14:00:31 SNL-ASA-VPN-A01 : %ASA-4-106023: Deny icmp src Inside:10.239.159.79 dst Outside:10.239.159.79 (type 11, code 0) by access-group \"Inside_access_in\" [0x0, 0x0]",
+        "outcome": "failure",
+        "severity": 4,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "SNL-ASA-VPN-A01"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "warning",
+        "offset": 200
+      },
+      "network": {
+        "community_id": "1:iMKFlbw55pD/JnVgMZr2KkK271Y=",
+        "iana_number": "1",
+        "transport": "icmp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "Outside"
+          }
+        },
+        "hostname": "SNL-ASA-VPN-A01",
+        "ingress": {
+          "interface": {
+            "name": "Inside"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "SNL-ASA-VPN-A01"
+        ],
+        "ip": [
+          "10.239.159.79"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.239.159.79",
+        "ip": "10.239.159.79"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2041-04-15T09:36:50.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "destination_interface": "outside",
+          "rule_name": "acl_dmz",
+          "source_interface": "dmz"
+        }
+      },
+      "destination": {
+        "address": "10.239.159.79",
+        "ip": "10.239.159.79",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "106023",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Apr 15 2041 09:36:50: %ASA-4-106023: Deny tcp src dmz:10.239.159.79/6316 dst outside:10.239.159.79/53 type 3, code 0, by access-group \"acl_dmz\" [0xe3afb522, 0x0]",
+        "outcome": "failure",
+        "severity": 4,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "warning",
+        "offset": 381
+      },
+      "network": {
+        "community_id": "1:hkkskpxaDINazcW8AT5Noo+3dBY=",
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "dmz"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "10.239.159.79"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.239.159.79",
+        "ip": "10.239.159.79",
+        "port": 6316
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-17T14:16:20.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "destination_interface": "Outside",
+          "rule_name": "Inside_access_in",
+          "source_interface": "Inside",
+          "source_username": "LOCAL\\Elastic"
+        }
+      },
+      "destination": {
+        "address": "10.239.159.79",
+        "ip": "10.239.159.79",
+        "port": 57621
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "106023",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Apr 17 2048 14:16:20 SNL-ASA-VPN-A01 : %ASA-4-106023: Deny udp src Inside:10.239.159.79/57621(LOCAL\\Elastic) dst Outside:10.239.159.79/57621 by access-group \"Inside_access_in\" [0x0, 0x0]",
+        "outcome": "failure",
+        "severity": 4,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "SNL-ASA-VPN-A01"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "warning",
+        "offset": 545
+      },
+      "network": {
+        "community_id": "1:t5WY6iCxEea8FW25SVssWynY7E8=",
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "Outside"
+          }
+        },
+        "hostname": "SNL-ASA-VPN-A01",
+        "ingress": {
+          "interface": {
+            "name": "Inside"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "SNL-ASA-VPN-A01"
+        ],
+        "ip": [
+          "10.239.159.79"
+        ],
+        "user": [
+          "Elastic"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.239.159.79",
+        "ip": "10.239.159.79",
+        "port": 57621,
+        "user": {
+          "name": "Elastic"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-17T14:15:07.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "address": "10.239.159.79",
+        "ip": "10.239.159.79"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "106017",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Apr 17 2048 14:15:07 SNL-ASA-VPN-A01 : %ASA-2-106017: Deny IP due to Land Attack from 10.239.159.79 to 10.239.159.79",
+        "outcome": "failure",
+        "severity": 2,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "SNL-ASA-VPN-A01"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "critical",
+        "offset": 734
+      },
+      "observer": {
+        "hostname": "SNL-ASA-VPN-A01",
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "SNL-ASA-VPN-A01"
+        ],
+        "ip": [
+          "10.239.159.79"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.239.159.79",
+        "ip": "10.239.159.79"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-17T14:15:07.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "icmp_code": 0,
+          "icmp_type": 134,
+          "source_interface": "ISP1"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "313008",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Apr 17 2048 14:15:07 SNL-ASA-VPN-A01 : %ASA-3-313008: Denied IPv6-ICMP type=134, code=0 from fe80::1ff:fe23:4567:890a on interface ISP1",
+        "outcome": "failure",
+        "severity": 3,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "SNL-ASA-VPN-A01"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "error",
+        "offset": 853
+      },
+      "network": {
+        "iana_number": "58",
+        "transport": "ipv6-icmp"
+      },
+      "observer": {
+        "hostname": "SNL-ASA-VPN-A01",
+        "ingress": {
+          "interface": {
+            "name": "ISP1"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "SNL-ASA-VPN-A01"
+        ],
+        "ip": [
+          "fe80::1ff:fe23:4567:890a"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "fe80::1ff:fe23:4567:890a",
+        "ip": "fe80::1ff:fe23:4567:890a"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-06-08T12:59:57.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "destination_interface": "identity",
+          "icmp_code": 9,
+          "mapped_destination_ip": "10.156.201.142",
+          "mapped_destination_port": 0,
+          "mapped_source_ip": "10.211.88.47",
+          "mapped_source_port": 8795,
+          "source_interface": "Inside"
+        }
+      },
+      "destination": {
+        "address": "10.156.201.142",
+        "ip": "10.156.201.142",
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "313009",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jun 08 2048 12:59:57: %ASA-4-313009: Denied invalid ICMP code 9, for Inside:10.211.88.47/8795 (10.211.88.47/8795) to identity:10.156.201.142/0 (10.156.201.142/0), ICMP id 295, ICMP type 8",
+        "outcome": "failure",
+        "severity": 4,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "warning",
+        "offset": 989
+      },
+      "network": {
+        "community_id": "1:VDEcvlD9fAd96Lm+God2lddvEEw=",
+        "iana_number": "1",
+        "transport": "icmp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "identity"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "Inside"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "10.211.88.47",
+          "10.156.201.142"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.211.88.47",
+        "ip": "10.211.88.47",
+        "port": 8795
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-10-20T15:42:53.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "destination_interface": "inside",
+          "rule_name": "incoming",
+          "source_interface": "dmz2"
+        }
+      },
+      "destination": {
+        "address": "127.3.4.5",
+        "ip": "127.3.4.5",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "106100",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Oct 20 2047 15:42:53: %ASA-6-106100: access-list incoming permitted udp dmz2/127.2.3.4(56575) -> inside/127.3.4.5(53) hit-cnt 1 first hit [0x93d0e533, 0x578ef52f]",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "informational",
+        "offset": 1171
+      },
+      "network": {
+        "community_id": "1:F0lY+M777B6QL2SDSKa9RfuUJ7s=",
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "inside"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "dmz2"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "127.2.3.4",
+          "127.3.4.5"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "127.2.3.4",
+        "ip": "127.2.3.4",
+        "port": 56575
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-10-20T15:42:54.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "destination_interface": "inside",
+          "rule_name": "incoming",
+          "source_interface": "dmz2"
+        }
+      },
+      "destination": {
+        "address": "127.3.4.5",
+        "ip": "127.3.4.5",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "106100",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Oct 20 2047 15:42:54: %ASA-6-106100: access-list incoming permitted udp dmz2/127.2.3.4(56575)(LOCAL\\\\username) -> inside/127.3.4.5(53) hit-cnt 1 first hit [0x93d0e533, 0x578ef52f]",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "informational",
+        "offset": 1334
+      },
+      "network": {
+        "community_id": "1:F0lY+M777B6QL2SDSKa9RfuUJ7s=",
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "inside"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "dmz2"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "127.2.3.4",
+          "127.3.4.5"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "127.2.3.4",
+        "ip": "127.2.3.4",
+        "port": 56575
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-08-06T11:01:37.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "destination_interface": "inside",
+          "rule_name": "dev_inward_client",
+          "source_interface": "outside",
+          "suffix": "session"
+        }
+      },
+      "destination": {
+        "address": "10.223.223.40",
+        "ip": "10.223.223.40",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "106102",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Aug  6 2048 11:01:37: %ASA-session-3-106102: access-list dev_inward_client permitted udp for user redacted outside/10.123.123.20(49721) -> inside/10.223.223.40(53) hit-cnt 1 first hit [0x3c8b88c1, 0xbee595c3]",
+        "outcome": "success",
+        "severity": 3,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "error",
+        "offset": 1514
+      },
+      "network": {
+        "community_id": "1:kRCfRJ9T/IeRNAhAhzOsF6EjIV4=",
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "inside"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "outside"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "10.123.123.20",
+          "10.223.223.40"
+        ],
+        "user": [
+          "redacted"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.123.123.20",
+        "ip": "10.123.123.20",
+        "port": 49721
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "redacted"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-08-06T11:01:38.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "destination_interface": "outside",
+          "rule_name": "filter",
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "1.2.33.40",
+        "ip": "1.2.33.40",
+        "port": 8080
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "106103",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Aug  6 2048 11:01:38: %ASA-1-106103: access-list filter denied icmp for user joe inside/10.1.2.3(64321) -> outside/1.2.33.40(8080) hit-cnt 1 first hit [0x3c8b88c1, 0xbee595c3]",
+        "outcome": "failure",
+        "severity": 1,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 1723
+      },
+      "network": {
+        "community_id": "1:cJpy7sqGDQbchRUXDtR8k10HinM=",
+        "iana_number": "1",
+        "transport": "icmp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "10.1.2.3",
+          "1.2.33.40"
+        ],
+        "user": [
+          "joe"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.1.2.3",
+        "ip": "10.1.2.3",
+        "port": 64321
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "joe"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2050-06-21T11:47:08.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "connection_id": "7",
+          "destination_interface": "inside",
+          "mapped_destination_ip": "203.0.113.248",
+          "mapped_destination_port": 9803,
+          "mapped_source_ip": "203.0.113.138",
+          "mapped_source_port": 3424,
+          "source_interface": "outside",
+          "source_user_security_group_tag": 123,
+          "source_username": "LOCAL\\alice",
+          "termination_user": "bob"
+        }
+      },
+      "destination": {
+        "address": "203.0.113.248",
+        "ip": "203.0.113.248",
+        "port": 9803
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "flow-creation",
+        "category": [
+          "network"
+        ],
+        "code": "302015",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jun 21 2050 11:47:08: %ASA-6-302015: Built inbound UDP connection 7 for outside:203.0.113.138/3424 (203.0.113.138/3424)(LOCAL\\alice, 123) to inside:203.0.113.248/9803 (203.0.113.248/9803) (bob)",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "informational",
+        "offset": 1899
+      },
+      "network": {
+        "community_id": "1:dSm7242wZUL2IJGuu4Vs70L/EDE=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "inside"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "outside"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138",
+          "203.0.113.248"
+        ],
+        "user": [
+          "alice"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "203.0.113.138",
+        "ip": "203.0.113.138",
+        "port": 3424,
+        "user": {
+          "name": "alice"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2050-06-21T11:47:08.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "connection_id": "7",
+          "destination_interface": "inside",
+          "mapped_destination_ip": "203.0.113.248",
+          "mapped_destination_port": 9803,
+          "mapped_source_ip": "203.0.113.138",
+          "mapped_source_port": 3424,
+          "source_interface": "outside",
+          "source_username": "LOCAL\\alice",
+          "termination_user": "bob"
+        }
+      },
+      "destination": {
+        "address": "203.0.113.248",
+        "ip": "203.0.113.248",
+        "port": 9803
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "flow-creation",
+        "category": [
+          "network"
+        ],
+        "code": "302015",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jun 21 2050 11:47:08: %ASA-6-302015: Built inbound UDP connection 7 for outside:203.0.113.138/3424 (203.0.113.138/3424)(LOCAL\\alice) to inside:203.0.113.248/9803 (203.0.113.248/9803) (bob)",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "informational",
+        "offset": 2089
+      },
+      "network": {
+        "community_id": "1:dSm7242wZUL2IJGuu4Vs70L/EDE=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "inside"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "outside"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138",
+          "203.0.113.248"
+        ],
+        "user": [
+          "alice"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "203.0.113.138",
+        "ip": "203.0.113.138",
+        "port": 3424,
+        "user": {
+          "name": "alice"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2050-06-21T11:47:09.000-02:00",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "connection_id": "7",
+          "destination_interface": "inside",
+          "destination_user_security_group_tag": 246,
+          "destination_username": "LOCAL\\dave",
+          "mapped_destination_ip": "203.0.113.248",
+          "mapped_destination_port": 9803,
+          "mapped_source_ip": "203.0.113.138",
+          "mapped_source_port": 3424,
+          "source_interface": "outside",
+          "source_user_security_group_tag": 123,
+          "source_username": "LOCAL\\alice",
+          "termination_user": "bob"
+        }
+      },
+      "destination": {
+        "address": "203.0.113.248",
+        "ip": "203.0.113.248",
+        "port": 9803,
+        "user": {
+          "name": "dave"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "flow-creation",
+        "category": [
+          "network"
+        ],
+        "code": "302015",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jun 21 2050 11:47:09: %ASA-6-302015: Built inbound UDP connection 7 for outside:203.0.113.138/3424 (203.0.113.138/3424)(LOCAL\\alice, 123) to inside:203.0.113.248/9803 (203.0.113.248/9803)(LOCAL\\dave, 246) (bob)",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "informational",
+        "offset": 2274
+      },
+      "network": {
+        "community_id": "1:dSm7242wZUL2IJGuu4Vs70L/EDE=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "inside"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "outside"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138",
+          "203.0.113.248"
+        ],
+        "user": [
+          "dave",
+          "alice"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "203.0.113.138",
+        "ip": "203.0.113.138",
+        "port": 3424,
+        "user": {
+          "name": "alice"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "dave"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "Apr 17 2048 14:08:08 SNL-ASA-VPN-A01 : %ASA-6-302016: Teardown UDP connection 110577675 for Outside:10.239.159.79/53723(LOCAL\\Elastic) to Inside:10.209.4.133/53 duration 0:00:00 bytes 148 (zzzzzz)",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 200
+      },
+      "message": "Apr 17 2048 14:00:31 SNL-ASA-VPN-A01 : %ASA-4-106023: Deny icmp src Inside:10.239.159.79 dst Outside:10.239.159.79 (type 11, code 0) by access-group \"Inside_access_in\" [0x0, 0x0]",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 381
+      },
+      "message": "Apr 15 2041 09:36:50: %ASA-4-106023: Deny tcp src dmz:10.239.159.79/6316 dst outside:10.239.159.79/53 type 3, code 0, by access-group \"acl_dmz\" [0xe3afb522, 0x0]",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 545
+      },
+      "message": "Apr 17 2048 14:16:20 SNL-ASA-VPN-A01 : %ASA-4-106023: Deny udp src Inside:10.239.159.79/57621(LOCAL\\Elastic) dst Outside:10.239.159.79/57621 by access-group \"Inside_access_in\" [0x0, 0x0]",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 734
+      },
+      "message": "Apr 17 2048 14:15:07 SNL-ASA-VPN-A01 : %ASA-2-106017: Deny IP due to Land Attack from 10.239.159.79 to 10.239.159.79",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 853
+      },
+      "message": "Apr 17 2048 14:15:07 SNL-ASA-VPN-A01 : %ASA-3-313008: Denied IPv6-ICMP type=134, code=0 from fe80::1ff:fe23:4567:890a on interface ISP1",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 989
+      },
+      "message": "Jun 08 2048 12:59:57: %ASA-4-313009: Denied invalid ICMP code 9, for Inside:10.211.88.47/8795 (10.211.88.47/8795) to identity:10.156.201.142/0 (10.156.201.142/0), ICMP id 295, ICMP type 8",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1171
+      },
+      "message": "Oct 20 2047 15:42:53: %ASA-6-106100: access-list incoming permitted udp dmz2/127.2.3.4(56575) -> inside/127.3.4.5(53) hit-cnt 1 first hit [0x93d0e533, 0x578ef52f]",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1334
+      },
+      "message": "Oct 20 2047 15:42:54: %ASA-6-106100: access-list incoming permitted udp dmz2/127.2.3.4(56575)(LOCAL\\\\username) -> inside/127.3.4.5(53) hit-cnt 1 first hit [0x93d0e533, 0x578ef52f]",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1514
+      },
+      "message": "Aug  6 2048 11:01:37: %ASA-session-3-106102: access-list dev_inward_client permitted udp for user redacted outside/10.123.123.20(49721) -> inside/10.223.223.40(53) hit-cnt 1 first hit [0x3c8b88c1, 0xbee595c3]",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1723
+      },
+      "message": "Aug  6 2048 11:01:38: %ASA-1-106103: access-list filter denied icmp for user joe inside/10.1.2.3(64321) -> outside/1.2.33.40(8080) hit-cnt 1 first hit [0x3c8b88c1, 0xbee595c3]",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1899
+      },
+      "message": "Jun 21 2050 11:47:08: %ASA-6-302015: Built inbound UDP connection 7 for outside:203.0.113.138/3424 (203.0.113.138/3424)(LOCAL\\alice, 123) to inside:203.0.113.248/9803 (203.0.113.248/9803) (bob)",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2089
+      },
+      "message": "Jun 21 2050 11:47:08: %ASA-6-302015: Built inbound UDP connection 7 for outside:203.0.113.138/3424 (203.0.113.138/3424)(LOCAL\\alice) to inside:203.0.113.248/9803 (203.0.113.248/9803) (bob)",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T02:58:26.582Z",
+      "agent": {
+        "ephemeral_id": "fa977503-1fb6-4bb2-9fad-158ad431d04d",
+        "id": "123d1558-9d0e-420d-99dd-4af81aa5c9a6",
+        "name": "d662c57def6b",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2274
+      },
+      "message": "Jun 21 2050 11:47:09: %ASA-6-302015: Built inbound UDP connection 7 for outside:203.0.113.138/3424 (203.0.113.138/3424)(LOCAL\\alice, 123) to inside:203.0.113.248/9803 (203.0.113.248/9803)(LOCAL\\dave, 246) (bob)",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$",
+      "event.end": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$",
+      "event.start": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_asa-log-default",
+    "event_count": 14,
+    "numeric_keyword_fields": [],
+    "package": "cisco_asa",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

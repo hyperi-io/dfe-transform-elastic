@@ -1,0 +1,67 @@
+{
+    "events": [
+        {
+            "agent": {
+                "name": "karpov",
+                "id": "feb0ffe9-7a81-4759-b900-62d313b09e56",
+                "type": "metricbeat",
+                "ephemeral_id": "ebb2c36d-d277-4c1c-a7bd-b1d315ba41da",
+                "version": "8.15.2"
+            },
+            "elastic_agent": {
+                "id": "feb0ffe9-7a81-4759-b900-62d313b09e56",
+                "version": "8.15.2",
+                "snapshot": true
+            },
+            "panw": {
+                "system": {
+                    "filesystem.use_percent": 93,
+                    "filesystem.available": 109521666048,
+                    "filesystem.name": "/dev/sda8",
+                    "filesystem.mounted": "/opt/panlogs",
+                    "filesystem.size": 185757335552,
+                    "filesystem.used": 67645734912,
+                    "cpu": {
+                        "hi": 1,
+                        "wait": 15,
+                        "system": 25,
+                        "idle": 30,
+                        "steal": 45,
+                        "system_int": 60,
+                        "user": 85,
+                        "nice": 95.62
+                    }
+                }
+            },
+            "tags": [
+                "forwarded",
+                "panw_metrics-system"
+            ],
+            "observer.vendor": "Palo Alto",
+            "@timestamp": "2052-10-03T19:37:43.626Z",
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "observer.type": "firewall",
+            "data_stream": {
+                "namespace": "default",
+                "type": "metrics",
+                "dataset": "panw_metrics.system"
+            },
+            "service": {
+                "type": "panw"
+            },
+            "metricset": {
+                "period": 10000,
+                "name": "system"
+            },
+            "event": {
+                "duration": 5448934535,
+                "agent_id_status": "verified",
+                "ingested": "2052-10-03T19:37:49Z",
+                "module": "panw",
+                "dataset": "panw_metrics.system"
+            }
+        }
+    ]
+}

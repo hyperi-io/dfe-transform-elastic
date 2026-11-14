@@ -1,0 +1,76 @@
+{
+  "expected": [
+    {
+      "crowdstrike": {
+        "idp": {
+          "security_assessment": {
+            "assessment_factors": [
+              {
+                "likelihood": "HIGH",
+                "risk_factor_type": "WEAK_PASSWORD_POLICY",
+                "severity": "LOW"
+              }
+            ],
+            "assessment_factors_nested": [
+              {
+                "likelihood": "HIGH",
+                "risk_factor_type": "WEAK_PASSWORD_POLICY",
+                "severity": "LOW"
+              }
+            ],
+            "overall_score_level": "HIGH"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "identity_protection_assessment",
+        "category": [
+          "configuration"
+        ],
+        "kind": "state",
+        "original": "{\"domain\":\"DOMAIN_B\",\"security_assessment\":{\"assessmentFactors\":[{\"likelihood\":\"HIGH\",\"riskFactorType\":\"WEAK_PASSWORD_POLICY\",\"severity\":\"LOW\"}],\"overallScore\":0.75,\"overallScoreLevel\":\"HIGH\"}}",
+        "risk_score": 0.75,
+        "risk_score_norm": 75,
+        "severity": 73,
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "DOMAIN_B"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "DOMAIN_B"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "enable_nested_assessment_factors": true
+      },
+      "message": "{\"domain\":\"DOMAIN_B\",\"security_assessment\":{\"assessmentFactors\":[{\"likelihood\":\"HIGH\",\"riskFactorType\":\"WEAK_PASSWORD_POLICY\",\"severity\":\"LOW\"}],\"overallScore\":0.75,\"overallScoreLevel\":\"HIGH\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "identity_protection_assessment",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-identity_protection_assessment-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

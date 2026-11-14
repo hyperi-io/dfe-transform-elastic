@@ -1,0 +1,179 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-04T04:51:18.033Z",
+      "agent": {
+        "ephemeral_id": "8ec27101-08f4-4601-88e9-5189fd145348",
+        "hostname": "Wfmmax1",
+        "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+        "type": "winlogbeat",
+        "version": "7.3.1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "object-was-requested-with-intent-to-delete",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "code": "4659",
+        "created": "2051-01-04T04:51:18.878Z",
+        "kind": "event",
+        "type": [
+          "change"
+        ]
+      },
+      "file": {
+        "path": "C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\Windows\\WER\\ERC\\statecache.lock"
+      },
+      "host": {
+        "name": "Wfmmax1"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "A handle to an object was requested with intent to delete.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-21-1280187532-2219128962-763009249-500\n\tAccount Name:\t\tadministrator\n\tAccount Domain:\t\tTEST1\n\tLogon ID:\t\t0x56B3A\n\nObject:\n\tObject Server:\tSecurity\n\tObject Type:\tFile\n\tObject Name:\tC:\\Users\\Administrator\\AppData\\Local\\Microsoft\\Windows\\WER\\ERC\\statecache.lock\n\tHandle ID:\t0x0\n\nProcess Information:\n\tProcess ID:\t0x1884\n\nAccess Request Information:\n\tTransaction ID:\t{00000000-0000-0000-0000-000000000000}\n\tAccesses:\t-\n\tAccess Mask:\t0x0\n\tPrivileges Used for Access Check:\t-",
+      "process": {
+        "pid": 6276
+      },
+      "related": {
+        "user": [
+          "administrator"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TEST1",
+        "id": "S-1-5-21-1280187532-2219128962-763009249-500",
+        "name": "administrator"
+      },
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "Wfmmax1.xcyu5.local",
+        "event_data": {
+          "AccessList": [
+            "4417",
+            "4418"
+          ],
+          "AccessListDescription": [
+            "WriteData (or AddFile)",
+            "AppendData (or AddSubdirectory or CreatePipeInstance)"
+          ],
+          "AccessMask": [
+            "0x10000"
+          ],
+          "AccessMaskDescription": [
+            "DELETE"
+          ],
+          "HandleId": "0x0",
+          "ObjectName": "C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\Windows\\WER\\ERC\\statecache.lock",
+          "ObjectServer": "Security",
+          "ObjectType": "File",
+          "SubjectDomainName": "TEST1",
+          "SubjectLogonId": "0x56b3a",
+          "SubjectUserName": "administrator",
+          "SubjectUserSid": "S-1-5-21-1280187532-2219128962-763009249-500"
+        },
+        "event_id": "4659",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x56b3a"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 5012
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "623425676",
+        "task": "File System"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2051-01-04T04:51:18.033Z",
+      "agent": {
+        "ephemeral_id": "8ec27101-08f4-4601-88e9-5189fd145348",
+        "hostname": "Wfmmax1",
+        "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+        "type": "winlogbeat",
+        "version": "7.3.1"
+      },
+      "ecs": {
+        "version": "1.0.1"
+      },
+      "event": {
+        "action": "File System",
+        "code": 4659,
+        "created": "2051-01-04T04:51:18.878Z",
+        "kind": "event"
+      },
+      "host": {
+        "name": "Wfmmax1"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "A handle to an object was requested with intent to delete.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-21-1280187532-2219128962-763009249-500\n\tAccount Name:\t\tadministrator\n\tAccount Domain:\t\tTEST1\n\tLogon ID:\t\t0x56B3A\n\nObject:\n\tObject Server:\tSecurity\n\tObject Type:\tFile\n\tObject Name:\tC:\\Users\\Administrator\\AppData\\Local\\Microsoft\\Windows\\WER\\ERC\\statecache.lock\n\tHandle ID:\t0x0\n\nProcess Information:\n\tProcess ID:\t0x1884\n\nAccess Request Information:\n\tTransaction ID:\t{00000000-0000-0000-0000-000000000000}\n\tAccesses:\t-\n\tAccess Mask:\t0x0\n\tPrivileges Used for Access Check:\t-",
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "Wfmmax1.xcyu5.local",
+        "event_data": {
+          "AccessList": "%%4417 %%4418",
+          "AccessMask": "0x10000",
+          "HandleId": "0x0",
+          "ObjectName": "C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\Windows\\WER\\ERC\\statecache.lock",
+          "ObjectServer": "Security",
+          "ObjectType": "File",
+          "PrivilegeList": "-",
+          "ProcessId": "0x1884",
+          "SubjectDomainName": "TEST1",
+          "SubjectLogonId": "0x56b3a",
+          "SubjectUserName": "administrator",
+          "SubjectUserSid": "S-1-5-21-1280187532-2219128962-763009249-500",
+          "TransactionId": "{00000000-0000-0000-0000-000000000000}"
+        },
+        "event_id": 4659,
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 5012
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 623425676,
+        "task": "File System"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -51,44 +51,21 @@ fn a_numeric_processor_timezone_shifts_the_instant() {
 }
 
 /// A named zone in the text shifts the instant; reading it as UTC puts the
-/// event hours out rather than failing visibly. The text and the instant
-/// Elasticsearch wrote for it are the first year-bearing device timestamp in
-/// the Elastic data's `cisco/nexus/test-nexus.log-expected.json`.
-#[cfg(feature = "testutil")]
+/// event hours out rather than failing visibly. `AEST` is ten hours ahead, so
+/// a Nexus device stamp written at 13:55 in Sydney is 03:55 UTC.
 #[test]
-#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
-#[allow(clippy::expect_used, clippy::panic)]
+#[allow(clippy::panic)]
 fn a_named_zone_shifts_the_instant() {
-    let path =
-        dfe_runtime::testutil::elastic_fixtures().join("cisco/nexus/test-nexus.log-expected.json");
-    let text =
-        std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
-    let expected: Vec<serde_json::Value> = serde_json::from_str(&text)
-        .unwrap_or_else(|e| panic!("{}: not a JSON array: {e}", path.display()));
-
-    // `<year> <month> <day> <time>.<millis> <zone>:`, the day space-padded.
-    let stamp =
-        regex::Regex::new(r"(\d{4} [A-Z][a-z]{2} +\d{1,2} \d{2}:\d{2}:\d{2}\.\d{3}) ([A-Z]{3,4}):")
-            .expect("the pattern compiles");
-    let (written, instant) = expected
-        .iter()
-        .find_map(|doc| {
-            let found = stamp.captures(doc["event"]["original"].as_str()?)?;
-            let zone = found.get(2)?.as_str();
-            if matches!(zone, "UTC" | "GMT") {
-                return None;
-            }
-            let wall: Vec<&str> = found.get(1)?.as_str().split_whitespace().collect();
-            let instant = doc["cisco_nexus"]["log"]["time"].as_str()?;
-            Some((format!("{} {zone}", wall.join(" ")), instant))
-        })
-        .unwrap_or_else(|| panic!("{} has no named-zone timestamp", path.display()));
-
-    let parsed = parse_date(&written, &["yyyy MMM d HH:mm:ss.SSS zzz"], None)
+    let written = "2023 May 3 13:55:35.928 AEST";
+    let parsed = parse_date(written, &["yyyy MMM d HH:mm:ss.SSS zzz"], None)
         .unwrap_or_else(|| panic!("`{written}` did not parse"));
     let at = |text: &str| {
         chrono::DateTime::parse_from_rfc3339(text)
             .unwrap_or_else(|e| panic!("`{text}` is not RFC 3339: {e}"))
     };
-    assert_eq!(at(&parsed), at(instant), "`{written}`");
+    assert_eq!(
+        at(&parsed),
+        at("2023-05-03T03:55:35.928+00:00"),
+        "`{written}`"
+    );
 }

@@ -1,0 +1,2 @@
+2054-05-17T18:04:00.000000+00:00 kzno71081 usermod[5678901]: add 'testuser' to group 'wheel'
+2054-05-17T18:04:01.000000+00:00 kzno71081 usermod[5678902]: add 'testuser' to shadow group 'shadow'

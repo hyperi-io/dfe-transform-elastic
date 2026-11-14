@@ -1,0 +1,93 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2045-10-25T19:18:37.814Z",
+      "destination": {
+        "address": "192.168.33.187",
+        "ip": "192.168.33.187",
+        "port": 445
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "authentication"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CHphiNUKDC20fsy09",
+        "kind": "event",
+        "original": "{\"ts\":2392571917.814467,\"uid\":\"CHphiNUKDC20fsy09\",\"id.orig_h\":\"192.168.106.114\",\"id.orig_p\":46785,\"id.resp_h\":\"192.168.33.187\",\"id.resp_p\":445,\"username\":\"UbfcI\",\"hostname\":\"sedANxx55JvtHvqo\",\"domainname\":\"egmukjj.local\",\"server_nb_computer_name\":\"VICTIM-PC\",\"server_dns_computer_name\":\"Uyanyn-SC.egmukjj.local\",\"server_tree_name\":\"egmukjj.local\"}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:/8il85VVjOYWvNvZGxcDfuTIGYY=",
+        "protocol": "ntlm",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "192.168.106.114",
+          "192.168.33.187"
+        ],
+        "user": [
+          "UbfcI"
+        ]
+      },
+      "source": {
+        "address": "192.168.106.114",
+        "ip": "192.168.106.114",
+        "port": 46785
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "egmukjj.local",
+        "name": "UbfcI"
+      },
+      "zeek": {
+        "ntlm": {
+          "domain": "egmukjj.local",
+          "hostname": "sedANxx55JvtHvqo",
+          "server": {
+            "name": {
+              "dns": "Uyanyn-SC.egmukjj.local",
+              "netbios": "VICTIM-PC",
+              "tree": "egmukjj.local"
+            }
+          },
+          "username": "UbfcI"
+        },
+        "session_id": "CHphiNUKDC20fsy09"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2392571917.814467,\"uid\":\"CHphiNUKDC20fsy09\",\"id.orig_h\":\"192.168.106.114\",\"id.orig_p\":46785,\"id.resp_h\":\"192.168.33.187\",\"id.resp_p\":445,\"username\":\"UbfcI\",\"hostname\":\"sedANxx55JvtHvqo\",\"domainname\":\"egmukjj.local\",\"server_nb_computer_name\":\"VICTIM-PC\",\"server_dns_computer_name\":\"Uyanyn-SC.egmukjj.local\",\"server_tree_name\":\"egmukjj.local\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "ntlm",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-ntlm-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

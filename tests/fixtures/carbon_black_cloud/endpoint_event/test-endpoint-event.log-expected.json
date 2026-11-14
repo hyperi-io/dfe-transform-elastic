@@ -1,0 +1,2740 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-02-10T11:50:51.686Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:51:33 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.139",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:50:51.686294 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Sophos Ltd",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\LOCAL SERVICE"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.regmod"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_CREATE_KEY",
+        "category": [
+          "registry"
+        ],
+        "original": "{\"type\":\"endpoint.event.regmod\",\"process_guid\":\"XXXXXXXX-003bbea3-00000d5c-00000000-1d807ba90168b3b\",\"parent_guid\":\"XXXXXXXX-003bbea3-00000334-00000000-1d807ba80c7d2d9\",\"backend_timestamp\":\"2050-02-10 11:51:33 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"1\",\"device_name\":\"xxx\\\\DESKTOP-001\",\"device_external_ip\":\"192.0.2.139\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CREATE_KEY\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:50:51.686294 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":3420,\"parent_pid\":820,\"process_publisher\":[{\"name\":\"Sophos Ltd\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files (x86)\\\\sophos\\\\health\\\\sophoshealth.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"6a6077aa4858bbd39f78dc01d58aaa02\",\"5c36873e6d8911f4752492a8f2f24e9d5aa31b67215e97c8812af6d55fc866b2\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files (x86)\\\\Sophos\\\\Health\\\\SophosHealth.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\LOCAL SERVICE\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"regmod_name\":\"HKLM\\\\SOFTWARE\\\\WOW6432Node\\\\Sophos\\\\Health\\\\PersistedStatus\\\\24989209144180\"}",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "hostname": "DESKTOP-001",
+        "id": "1",
+        "ip": [
+          "192.0.2.139"
+        ],
+        "name": "DESKTOP-001",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\"C:\\Program Files (x86)\\Sophos\\Health\\SophosHealth.exe\"",
+        "entity_id": "XXXXXXXX-003bbea3-00000d5c-00000000-1d807ba90168b3b",
+        "executable": "c:\\program files (x86)\\sophos\\health\\sophoshealth.exe",
+        "hash": {
+          "md5": "6a6077aa4858bbd39f78dc01d58aaa02",
+          "sha256": "5c36873e6d8911f4752492a8f2f24e9d5aa31b67215e97c8812af6d55fc866b2"
+        },
+        "parent": {
+          "command_line": "C:\\WINDOWS\\system32\\services.exe",
+          "entity_id": "XXXXXXXX-003bbea3-00000334-00000000-1d807ba80c7d2d9",
+          "executable": "c:\\windows\\system32\\services.exe",
+          "hash": {
+            "md5": "e3a192cb443a87731a6333192150c8a3",
+            "sha256": "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+          },
+          "pid": 820
+        },
+        "pid": 3420
+      },
+      "registry": {
+        "path": "HKLM\\SOFTWARE\\WOW6432Node\\Sophos\\Health\\PersistedStatus\\24989209144180"
+      },
+      "related": {
+        "hash": [
+          "5c36873e6d8911f4752492a8f2f24e9d5aa31b67215e97c8812af6d55fc866b2",
+          "6a6077aa4858bbd39f78dc01d58aaa02",
+          "e3a192cb443a87731a6333192150c8a3",
+          "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+        ],
+        "hosts": [
+          "DESKTOP-001",
+          "xxx"
+        ],
+        "ip": [
+          "192.0.2.139"
+        ],
+        "user": [
+          "NT AUTHORITY\\LOCAL SERVICE"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "xxx"
+      }
+    },
+    {
+      "@timestamp": "2050-02-10T11:50:36.152Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:51:33 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.139",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:50:36.152789 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Sophos Ltd",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\LOCAL SERVICE"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.regmod"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_WRITE_VALUE",
+        "category": [
+          "registry"
+        ],
+        "original": "{\"type\":\"endpoint.event.regmod\",\"process_guid\":\"XXXXXXXX-003bbea3-00000d5c-00000000-1d807ba90168b3b\",\"parent_guid\":\"XXXXXXXX-003bbea3-00000334-00000000-1d807ba80c7d2d9\",\"backend_timestamp\":\"2050-02-10 11:51:33 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"2\",\"device_name\":\"CCMNWGR-164\",\"device_external_ip\":\"192.0.2.139\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_WRITE_VALUE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:50:36.152789 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":3420,\"parent_pid\":820,\"process_publisher\":[{\"name\":\"Sophos Ltd\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files (x86)\\\\sophos\\\\health\\\\sophoshealth.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"6a6077aa4858bbd39f78dc01d58aaa02\",\"5c36873e6d8911f4752492a8f2f24e9d5aa31b67215e97c8812af6d55fc866b2\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files (x86)\\\\Sophos\\\\Health\\\\SophosHealth.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\LOCAL SERVICE\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"regmod_name\":\"HKLM\\\\SOFTWARE\\\\WOW6432Node\\\\Sophos\\\\Health\\\\PersistedStatus\\\\24989053024832\\\\threatService.Sophos Safestore\"}",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "hostname": "CCMNWGR-164",
+        "id": "2",
+        "ip": [
+          "192.0.2.139"
+        ],
+        "name": "CCMNWGR-164",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\"C:\\Program Files (x86)\\Sophos\\Health\\SophosHealth.exe\"",
+        "entity_id": "XXXXXXXX-003bbea3-00000d5c-00000000-1d807ba90168b3b",
+        "executable": "c:\\program files (x86)\\sophos\\health\\sophoshealth.exe",
+        "hash": {
+          "md5": "6a6077aa4858bbd39f78dc01d58aaa02",
+          "sha256": "5c36873e6d8911f4752492a8f2f24e9d5aa31b67215e97c8812af6d55fc866b2"
+        },
+        "parent": {
+          "command_line": "C:\\WINDOWS\\system32\\services.exe",
+          "entity_id": "XXXXXXXX-003bbea3-00000334-00000000-1d807ba80c7d2d9",
+          "executable": "c:\\windows\\system32\\services.exe",
+          "hash": {
+            "md5": "e3a192cb443a87731a6333192150c8a3",
+            "sha256": "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+          },
+          "pid": 820
+        },
+        "pid": 3420
+      },
+      "registry": {
+        "path": "HKLM\\SOFTWARE\\WOW6432Node\\Sophos\\Health\\PersistedStatus\\24989053024832\\threatService.Sophos Safestore"
+      },
+      "related": {
+        "hash": [
+          "5c36873e6d8911f4752492a8f2f24e9d5aa31b67215e97c8812af6d55fc866b2",
+          "6a6077aa4858bbd39f78dc01d58aaa02",
+          "e3a192cb443a87731a6333192150c8a3",
+          "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+        ],
+        "hosts": [
+          "CCMNWGR-164"
+        ],
+        "ip": [
+          "192.0.2.139"
+        ],
+        "user": [
+          "NT AUTHORITY\\LOCAL SERVICE"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:51:55.630Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:52:50 +0000 UTC"
+          },
+          "crossproc": {
+            "action": "ACTION_OPEN_PROCESS_HANDLE",
+            "guid": "XXXXXXXX-003d902d-00001310-00000000-1d81e748c4adb37",
+            "hash": {
+              "md5": "1208451dc64074578776759210b88f62",
+              "sha256": "7d6a3188816b08b8d36e841df6c0c928319ce5232432df364c272f6833ab24a2"
+            },
+            "name": "c:\\windows\\system32\\route.exe",
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "target": true
+          },
+          "device": {
+            "external_ip": "192.0.2.97",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:51:55.6308645 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows Publisher",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "target_cmdline": "\"route.exe\" print",
+          "type": "endpoint.event.crossproc"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_OPEN_PROCESS_HANDLE",
+        "category": [
+          "process"
+        ],
+        "original": "{\"type\":\"endpoint.event.crossproc\",\"process_guid\":\"XXXXXXXX-003d902d-000001c4-00000000-1d74d6bb295fbac\",\"parent_guid\":\"XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"3\",\"device_name\":\"CALVGOS-244\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_OPEN_PROCESS_HANDLE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:55.6308645 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":452,\"parent_pid\":640,\"process_publisher\":[{\"name\":\"Microsoft Windows Publisher\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\svchost.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"3483c82c08c4183d9c18560799588406\",\"cb017d3b57ce76f63c4671945d3ab0bd037c35d02f5a905780167941afe3d442\"],\"parent_hash\":[\"edf287b6ef2ef1b65f935008b96e0438\",\"50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1\"],\"process_cmdline\":\"C:\\\\windows\\\\System32\\\\svchost.exe -k LocalSystemNetworkRestricted -p\",\"parent_cmdline\":\"C:\\\\windows\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"crossproc_name\":\"c:\\\\windows\\\\system32\\\\route.exe\",\"crossproc_guid\":\"XXXXXXXX-003d902d-00001310-00000000-1d81e748c4adb37\",\"crossproc_hash\":[\"1208451dc64074578776759210b88f62\",\"7d6a3188816b08b8d36e841df6c0c928319ce5232432df364c272f6833ab24a2\"],\"crossproc_action\":\"ACTION_OPEN_PROCESS_HANDLE\",\"crossproc_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"crossproc_reputation\":\"REP_RESOLVING\",\"crossproc_target\":true,\"target_cmdline\":\"\\\"route.exe\\\" print\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "CALVGOS-244",
+        "id": "3",
+        "ip": [
+          "192.0.2.97"
+        ],
+        "name": "CALVGOS-244",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "C:\\windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+        "entity_id": "XXXXXXXX-003d902d-000001c4-00000000-1d74d6bb295fbac",
+        "executable": "c:\\windows\\system32\\svchost.exe",
+        "hash": {
+          "md5": "3483c82c08c4183d9c18560799588406",
+          "sha256": "cb017d3b57ce76f63c4671945d3ab0bd037c35d02f5a905780167941afe3d442"
+        },
+        "parent": {
+          "command_line": "C:\\windows\\system32\\services.exe",
+          "entity_id": "XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7",
+          "executable": "c:\\windows\\system32\\services.exe",
+          "hash": {
+            "md5": "edf287b6ef2ef1b65f935008b96e0438",
+            "sha256": "50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1"
+          },
+          "pid": 640
+        },
+        "pid": 452
+      },
+      "related": {
+        "hash": [
+          "1208451dc64074578776759210b88f62",
+          "3483c82c08c4183d9c18560799588406",
+          "50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1",
+          "7d6a3188816b08b8d36e841df6c0c928319ce5232432df364c272f6833ab24a2",
+          "cb017d3b57ce76f63c4671945d3ab0bd037c35d02f5a905780167941afe3d442",
+          "edf287b6ef2ef1b65f935008b96e0438"
+        ],
+        "hosts": [
+          "CALVGOS-244"
+        ],
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:51:40.240Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:52:50 +0000 UTC"
+          },
+          "crossproc": {
+            "action": "ACTION_OPEN_PROCESS_HANDLE",
+            "guid": "XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13",
+            "hash": {
+              "md5": "1958aedb46ebdcfc919cf0abe73d287c",
+              "sha256": "3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac"
+            },
+            "name": "c:\\windows\\system32\\netstat.exe",
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "target": true
+          },
+          "device": {
+            "external_ip": "192.0.2.97",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:51:40.2402718 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "target_cmdline": "\"netstat.exe\" /a /b /o",
+          "type": "endpoint.event.crossproc"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_OPEN_PROCESS_HANDLE",
+        "category": [
+          "process"
+        ],
+        "original": "{\"type\":\"endpoint.event.crossproc\",\"process_guid\":\"XXXXXXXX-003d902d-00000e08-00000000-1d81e74906feadc\",\"parent_guid\":\"XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"4\",\"device_name\":\"FFKUZIO-237\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_OPEN_PROCESS_HANDLE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:40.2402718 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":3592,\"parent_pid\":4676,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\conhost.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\netstat.exe\",\"process_hash\":[\"d2e5c6e6578bdbbf1a930e1643d6d23e\",\"afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53\"],\"parent_hash\":[\"1958aedb46ebdcfc919cf0abe73d287c\",\"3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac\"],\"process_cmdline\":\"\\\\??\\\\C:\\\\windows\\\\system32\\\\conhost.exe 0xffffffff -ForceV1\",\"parent_cmdline\":\"\\\"netstat.exe\\\" /a /b /o\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"crossproc_name\":\"c:\\\\windows\\\\system32\\\\netstat.exe\",\"crossproc_guid\":\"XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13\",\"crossproc_hash\":[\"1958aedb46ebdcfc919cf0abe73d287c\",\"3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac\"],\"crossproc_action\":\"ACTION_OPEN_PROCESS_HANDLE\",\"crossproc_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"crossproc_reputation\":\"REP_RESOLVING\",\"crossproc_target\":true,\"target_cmdline\":\"\\\"netstat.exe\\\" /a /b /o\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "FFKUZIO-237",
+        "id": "4",
+        "ip": [
+          "192.0.2.97"
+        ],
+        "name": "FFKUZIO-237",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\\??\\C:\\windows\\system32\\conhost.exe 0xffffffff -ForceV1",
+        "entity_id": "XXXXXXXX-003d902d-00000e08-00000000-1d81e74906feadc",
+        "executable": "c:\\windows\\system32\\conhost.exe",
+        "hash": {
+          "md5": "d2e5c6e6578bdbbf1a930e1643d6d23e",
+          "sha256": "afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53"
+        },
+        "parent": {
+          "command_line": "\"netstat.exe\" /a /b /o",
+          "entity_id": "XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13",
+          "executable": "c:\\windows\\system32\\netstat.exe",
+          "hash": {
+            "md5": "1958aedb46ebdcfc919cf0abe73d287c",
+            "sha256": "3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac"
+          },
+          "pid": 4676
+        },
+        "pid": 3592
+      },
+      "related": {
+        "hash": [
+          "1958aedb46ebdcfc919cf0abe73d287c",
+          "3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac",
+          "afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53",
+          "d2e5c6e6578bdbbf1a930e1643d6d23e"
+        ],
+        "hosts": [
+          "FFKUZIO-237"
+        ],
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:51:40.177Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:52:50 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.97",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:51:40.1777718 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "modload": {
+            "count": 2,
+            "effective_reputation": "REP_WHITE",
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS"
+                ]
+              }
+            ]
+          },
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.moduleload"
+        }
+      },
+      "dll": {
+        "hash": {
+          "md5": "f072ff49229c7476c3ffa2bcd07df689",
+          "sha256": "037c7a1d819c46a403a9712c469c0cdf3c9a644cdd4419fc221b540dad975612"
+        },
+        "path": "c:\\windows\\system32\\fltlib.dll"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_LOAD_MODULE",
+        "category": [
+          "process"
+        ],
+        "original": "{\"type\":\"endpoint.event.moduleload\",\"process_guid\":\"XXXXXXXX-003d902d-00000e08-00000000-1d81e74906feadc\",\"parent_guid\":\"XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"5\",\"device_name\":\"EAQKWUR-129\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_MODULE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:40.1777718 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":3592,\"parent_pid\":4676,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\conhost.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\netstat.exe\",\"process_hash\":[\"d2e5c6e6578bdbbf1a930e1643d6d23e\",\"afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53\"],\"parent_hash\":[\"1958aedb46ebdcfc919cf0abe73d287c\",\"3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac\"],\"process_cmdline\":\"\\\\??\\\\C:\\\\windows\\\\system32\\\\conhost.exe 0xffffffff -ForceV1\",\"parent_cmdline\":\"\\\"netstat.exe\\\" /a /b /o\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"modload_name\":\"c:\\\\windows\\\\system32\\\\fltlib.dll\",\"modload_count\":2,\"modload_effective_reputation\":\"REP_WHITE\",\"modload_hash\":[\"f072ff49229c7476c3ffa2bcd07df689\",\"037c7a1d819c46a403a9712c469c0cdf3c9a644cdd4419fc221b540dad975612\"],\"modload_md5\":\"f072ff49229c7476c3ffa2bcd07df689\",\"modload_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS\"}],\"modload_sha256\":\"037c7a1d819c46a403a9712c469c0cdf3c9a644cdd4419fc221b540dad975612\"}",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "hostname": "EAQKWUR-129",
+        "id": "5",
+        "ip": [
+          "192.0.2.97"
+        ],
+        "name": "EAQKWUR-129",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\\??\\C:\\windows\\system32\\conhost.exe 0xffffffff -ForceV1",
+        "entity_id": "XXXXXXXX-003d902d-00000e08-00000000-1d81e74906feadc",
+        "executable": "c:\\windows\\system32\\conhost.exe",
+        "hash": {
+          "md5": "d2e5c6e6578bdbbf1a930e1643d6d23e",
+          "sha256": "afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53"
+        },
+        "parent": {
+          "command_line": "\"netstat.exe\" /a /b /o",
+          "entity_id": "XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13",
+          "executable": "c:\\windows\\system32\\netstat.exe",
+          "hash": {
+            "md5": "1958aedb46ebdcfc919cf0abe73d287c",
+            "sha256": "3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac"
+          },
+          "pid": 4676
+        },
+        "pid": 3592
+      },
+      "related": {
+        "hash": [
+          "037c7a1d819c46a403a9712c469c0cdf3c9a644cdd4419fc221b540dad975612",
+          "1958aedb46ebdcfc919cf0abe73d287c",
+          "3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac",
+          "afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53",
+          "d2e5c6e6578bdbbf1a930e1643d6d23e",
+          "f072ff49229c7476c3ffa2bcd07df689"
+        ],
+        "hosts": [
+          "EAQKWUR-129"
+        ],
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:51:37.880Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:52:50 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.97",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:51:37.8809009 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "modload": {
+            "count": 8,
+            "effective_reputation": "REP_WHITE",
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS"
+                ]
+              }
+            ]
+          },
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.moduleload"
+        }
+      },
+      "dll": {
+        "hash": {
+          "md5": "2c5430f24ece4b73cd325e5845331ff2",
+          "sha256": "dae41b2308fce58aba7d0e9f63c0fd5c8dc31fb4393c266cf57e6b011fda461a"
+        },
+        "path": "c:\\windows\\system32\\dnsapi.dll"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_LOAD_MODULE",
+        "category": [
+          "process"
+        ],
+        "original": "{\"type\":\"endpoint.event.moduleload\",\"process_guid\":\"XXXXXXXX-003d902d-0000030c-00000000-1d81e748e552c86\",\"parent_guid\":\"XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"6\",\"device_name\":\"ECIQNNZ-955\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_MODULE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:37.8809009 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":780,\"parent_pid\":1684,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\arp.exe\",\"parent_path\":\"c:\\\\windowsazure\\\\guestagent_2.7.41491.1010_2049-05-11_233023\\\\guestagent\\\\windowsazureguestagent.exe\",\"process_hash\":[\"77ac00f370d4d3539d77ef4660d718ab\",\"69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b\"],\"parent_hash\":[\"65cb567df7737535a5a1c907b3932685\",\"41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6\"],\"process_cmdline\":\"\\\"arp.exe\\\" /a\",\"parent_cmdline\":\"C:\\\\WindowsAzure\\\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\\\GuestAgent\\\\WindowsAzureGuestAgent.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"modload_name\":\"c:\\\\windows\\\\system32\\\\dnsapi.dll\",\"modload_count\":8,\"modload_effective_reputation\":\"REP_WHITE\",\"modload_hash\":[\"2c5430f24ece4b73cd325e5845331ff2\",\"dae41b2308fce58aba7d0e9f63c0fd5c8dc31fb4393c266cf57e6b011fda461a\"],\"modload_md5\":\"2c5430f24ece4b73cd325e5845331ff2\",\"modload_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS\"}],\"modload_sha256\":\"dae41b2308fce58aba7d0e9f63c0fd5c8dc31fb4393c266cf57e6b011fda461a\"}",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "hostname": "ECIQNNZ-955",
+        "id": "6",
+        "ip": [
+          "192.0.2.97"
+        ],
+        "name": "ECIQNNZ-955",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\"arp.exe\" /a",
+        "entity_id": "XXXXXXXX-003d902d-0000030c-00000000-1d81e748e552c86",
+        "executable": "c:\\windows\\system32\\arp.exe",
+        "hash": {
+          "md5": "77ac00f370d4d3539d77ef4660d718ab",
+          "sha256": "69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b"
+        },
+        "parent": {
+          "command_line": "C:\\WindowsAzure\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\GuestAgent\\WindowsAzureGuestAgent.exe",
+          "entity_id": "XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62",
+          "executable": "c:\\windowsazure\\guestagent_2.7.41491.1010_2049-05-11_233023\\guestagent\\windowsazureguestagent.exe",
+          "hash": {
+            "md5": "65cb567df7737535a5a1c907b3932685",
+            "sha256": "41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6"
+          },
+          "pid": 1684
+        },
+        "pid": 780
+      },
+      "related": {
+        "hash": [
+          "2c5430f24ece4b73cd325e5845331ff2",
+          "41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6",
+          "65cb567df7737535a5a1c907b3932685",
+          "69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b",
+          "77ac00f370d4d3539d77ef4660d718ab",
+          "dae41b2308fce58aba7d0e9f63c0fd5c8dc31fb4393c266cf57e6b011fda461a"
+        ],
+        "hosts": [
+          "ECIQNNZ-955"
+        ],
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:51:39.521Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:52:50 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.97",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:51:39.5215212 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "grandparent": {
+              "command_line": "C:\\windows\\system32\\services.exe",
+              "entity_id": "XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7",
+              "executable": "c:\\windows\\system32\\services.exe",
+              "hash": {
+                "md5": "edf287b6ef2ef1b65f935008b96e0438",
+                "sha256": "50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1"
+              },
+              "pid": 640,
+              "reputation": "REP_RESOLVING"
+            },
+            "parent": {
+              "publisher": [
+                {
+                  "name": "Microsoft Corporation",
+                  "state": [
+                    "FILE_SIGNATURE_STATE_SIGNED",
+                    "FILE_SIGNATURE_STATE_VERIFIED",
+                    "FILE_SIGNATURE_STATE_TRUSTED"
+                  ]
+                }
+              ],
+              "reputation": "REP_RESOLVING",
+              "terminated": false,
+              "username": "NT AUTHORITY\\SYSTEM"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "target_cmdline": "\"netstat.exe\" /a /b /o",
+          "type": "endpoint.event.procstart"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_CREATE_PROCESS",
+        "category": [
+          "process"
+        ],
+        "original": "{\"type\":\"endpoint.event.procstart\",\"process_guid\":\"XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62\",\"parent_guid\":\"XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"7\",\"device_name\":\"DEGHWUJ-135\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CREATE_PROCESS\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:39.5215212 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":1684,\"parent_pid\":640,\"process_publisher\":[{\"name\":\"Microsoft Corporation\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\windowsazure\\\\guestagent_2.7.41491.1010_2049-05-11_233023\\\\guestagent\\\\windowsazureguestagent.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"65cb567df7737535a5a1c907b3932685\",\"41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6\"],\"parent_hash\":[\"edf287b6ef2ef1b65f935008b96e0438\",\"50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1\"],\"process_cmdline\":\"C:\\\\WindowsAzure\\\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\\\GuestAgent\\\\WindowsAzureGuestAgent.exe\",\"parent_cmdline\":\"C:\\\\windows\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"childproc_name\":\"c:\\\\windows\\\\system32\\\\netstat.exe\",\"childproc_hash\":[\"1958aedb46ebdcfc919cf0abe73d287c\",\"3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac\"],\"childproc_pid\":4676,\"childproc_guid\":\"XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13\",\"childproc_username\":\"NT AUTHORITY\\\\SYSTEM\",\"childproc_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"childproc_reputation\":\"REP_RESOLVING\",\"target_cmdline\":\"\\\"netstat.exe\\\" /a /b /o\"}",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "hostname": "DEGHWUJ-135",
+        "id": "7",
+        "ip": [
+          "192.0.2.97"
+        ],
+        "name": "DEGHWUJ-135",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "entity_id": "XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13",
+        "executable": "c:\\windows\\system32\\netstat.exe",
+        "hash": {
+          "md5": "1958aedb46ebdcfc919cf0abe73d287c",
+          "sha256": "3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac"
+        },
+        "parent": {
+          "command_line": "C:\\WindowsAzure\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\GuestAgent\\WindowsAzureGuestAgent.exe",
+          "entity_id": "XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62",
+          "executable": "c:\\windowsazure\\guestagent_2.7.41491.1010_2049-05-11_233023\\guestagent\\windowsazureguestagent.exe",
+          "hash": {
+            "md5": "65cb567df7737535a5a1c907b3932685",
+            "sha256": "41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6"
+          },
+          "pid": 1684
+        },
+        "pid": 4676,
+        "user": {
+          "name": "NT AUTHORITY\\SYSTEM"
+        }
+      },
+      "related": {
+        "hash": [
+          "1958aedb46ebdcfc919cf0abe73d287c",
+          "3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac",
+          "41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6",
+          "50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1",
+          "65cb567df7737535a5a1c907b3932685",
+          "edf287b6ef2ef1b65f935008b96e0438"
+        ],
+        "hosts": [
+          "DEGHWUJ-135"
+        ],
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:51:36.552Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:52:50 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.97",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:51:36.5527783 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "grandparent": {
+              "command_line": "C:\\windows\\system32\\services.exe",
+              "entity_id": "XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7",
+              "executable": "c:\\windows\\system32\\services.exe",
+              "hash": {
+                "md5": "edf287b6ef2ef1b65f935008b96e0438",
+                "sha256": "50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1"
+              },
+              "pid": 640,
+              "reputation": "REP_RESOLVING"
+            },
+            "parent": {
+              "publisher": [
+                {
+                  "name": "Microsoft Corporation",
+                  "state": [
+                    "FILE_SIGNATURE_STATE_SIGNED",
+                    "FILE_SIGNATURE_STATE_VERIFIED",
+                    "FILE_SIGNATURE_STATE_TRUSTED"
+                  ]
+                }
+              ],
+              "reputation": "REP_RESOLVING",
+              "terminated": false,
+              "username": "NT AUTHORITY\\SYSTEM"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "target_cmdline": "\"arp.exe\" /a",
+          "type": "endpoint.event.procstart"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_CREATE_PROCESS",
+        "category": [
+          "process"
+        ],
+        "original": "{\"type\":\"endpoint.event.procstart\",\"process_guid\":\"XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62\",\"parent_guid\":\"XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"8\",\"device_name\":\"BDKJMWS-755\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CREATE_PROCESS\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:36.5527783 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":1684,\"parent_pid\":640,\"process_publisher\":[{\"name\":\"Microsoft Corporation\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\windowsazure\\\\guestagent_2.7.41491.1010_2049-05-11_233023\\\\guestagent\\\\windowsazureguestagent.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"65cb567df7737535a5a1c907b3932685\",\"41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6\"],\"parent_hash\":[\"edf287b6ef2ef1b65f935008b96e0438\",\"50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1\"],\"process_cmdline\":\"C:\\\\WindowsAzure\\\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\\\GuestAgent\\\\WindowsAzureGuestAgent.exe\",\"parent_cmdline\":\"C:\\\\windows\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"childproc_name\":\"c:\\\\windows\\\\system32\\\\arp.exe\",\"childproc_hash\":[\"77ac00f370d4d3539d77ef4660d718ab\",\"69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b\"],\"childproc_pid\":780,\"childproc_guid\":\"XXXXXXXX-003d902d-0000030c-00000000-1d81e748e552c86\",\"childproc_username\":\"NT AUTHORITY\\\\SYSTEM\",\"childproc_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"childproc_reputation\":\"REP_RESOLVING\",\"target_cmdline\":\"\\\"arp.exe\\\" /a\"}",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "hostname": "BDKJMWS-755",
+        "id": "8",
+        "ip": [
+          "192.0.2.97"
+        ],
+        "name": "BDKJMWS-755",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "entity_id": "XXXXXXXX-003d902d-0000030c-00000000-1d81e748e552c86",
+        "executable": "c:\\windows\\system32\\arp.exe",
+        "hash": {
+          "md5": "77ac00f370d4d3539d77ef4660d718ab",
+          "sha256": "69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b"
+        },
+        "parent": {
+          "command_line": "C:\\WindowsAzure\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\GuestAgent\\WindowsAzureGuestAgent.exe",
+          "entity_id": "XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62",
+          "executable": "c:\\windowsazure\\guestagent_2.7.41491.1010_2049-05-11_233023\\guestagent\\windowsazureguestagent.exe",
+          "hash": {
+            "md5": "65cb567df7737535a5a1c907b3932685",
+            "sha256": "41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6"
+          },
+          "pid": 1684
+        },
+        "pid": 780,
+        "user": {
+          "name": "NT AUTHORITY\\SYSTEM"
+        }
+      },
+      "related": {
+        "hash": [
+          "41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6",
+          "50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1",
+          "65cb567df7737535a5a1c907b3932685",
+          "69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b",
+          "77ac00f370d4d3539d77ef4660d718ab",
+          "edf287b6ef2ef1b65f935008b96e0438"
+        ],
+        "hosts": [
+          "BDKJMWS-755"
+        ],
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:51:38.068Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:52:50 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.97",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:51:38.0684013 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "duration": 1,
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": true,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "target_cmdline": "\\??\\C:\\windows\\system32\\conhost.exe 0xffffffff -ForceV1",
+          "type": "endpoint.event.procend"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_PROCESS_TERMINATE",
+        "original": "{\"type\":\"endpoint.event.procend\",\"process_guid\":\"XXXXXXXX-003d902d-000011b4-00000000-1d81e748eb2042e\",\"parent_guid\":\"XXXXXXXX-003d902d-0000030c-00000000-1d81e748e552c86\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"9\",\"device_name\":\"CBMHTGX-609\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_PROCESS_TERMINATE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:38.0684013 +0000 UTC\",\"process_terminated\":true,\"process_duration\":1,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4532,\"parent_pid\":780,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\conhost.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\arp.exe\",\"process_hash\":[\"d2e5c6e6578bdbbf1a930e1643d6d23e\",\"afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53\"],\"parent_hash\":[\"77ac00f370d4d3539d77ef4660d718ab\",\"69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b\"],\"process_cmdline\":\"\\\\??\\\\C:\\\\windows\\\\system32\\\\conhost.exe 0xffffffff -ForceV1\",\"parent_cmdline\":\"\\\"arp.exe\\\" /a\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"target_cmdline\":\"\\\\??\\\\C:\\\\windows\\\\system32\\\\conhost.exe 0xffffffff -ForceV1\"}"
+      },
+      "host": {
+        "hostname": "CBMHTGX-609",
+        "id": "9",
+        "ip": [
+          "192.0.2.97"
+        ],
+        "name": "CBMHTGX-609",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\\??\\C:\\windows\\system32\\conhost.exe 0xffffffff -ForceV1",
+        "entity_id": "XXXXXXXX-003d902d-000011b4-00000000-1d81e748eb2042e",
+        "executable": "c:\\windows\\system32\\conhost.exe",
+        "hash": {
+          "md5": "d2e5c6e6578bdbbf1a930e1643d6d23e",
+          "sha256": "afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53"
+        },
+        "parent": {
+          "command_line": "\"arp.exe\" /a",
+          "entity_id": "XXXXXXXX-003d902d-0000030c-00000000-1d81e748e552c86",
+          "executable": "c:\\windows\\system32\\arp.exe",
+          "hash": {
+            "md5": "77ac00f370d4d3539d77ef4660d718ab",
+            "sha256": "69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b"
+          },
+          "pid": 780
+        },
+        "pid": 4532
+      },
+      "related": {
+        "hash": [
+          "69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b",
+          "77ac00f370d4d3539d77ef4660d718ab",
+          "afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53",
+          "d2e5c6e6578bdbbf1a930e1643d6d23e"
+        ],
+        "hosts": [
+          "CBMHTGX-609"
+        ],
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:51:35.068Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:52:50 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.97",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:51:35.0684097 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "duration": 2,
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": true,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "target_cmdline": "\"route.exe\" print",
+          "type": "endpoint.event.procend"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_PROCESS_TERMINATE",
+        "original": "{\"type\":\"endpoint.event.procend\",\"process_guid\":\"XXXXXXXX-003d902d-00001310-00000000-1d81e748c4adb37\",\"parent_guid\":\"XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"10\",\"device_name\":\"EEHKQQL-734\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_PROCESS_TERMINATE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:35.0684097 +0000 UTC\",\"process_terminated\":true,\"process_duration\":2,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4880,\"parent_pid\":1684,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\route.exe\",\"parent_path\":\"c:\\\\windowsazure\\\\guestagent_2.7.41491.1010_2049-05-11_233023\\\\guestagent\\\\windowsazureguestagent.exe\",\"process_hash\":[\"1208451dc64074578776759210b88f62\",\"7d6a3188816b08b8d36e841df6c0c928319ce5232432df364c272f6833ab24a2\"],\"parent_hash\":[\"65cb567df7737535a5a1c907b3932685\",\"41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6\"],\"process_cmdline\":\"\\\"route.exe\\\" print\",\"parent_cmdline\":\"C:\\\\WindowsAzure\\\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\\\GuestAgent\\\\WindowsAzureGuestAgent.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"target_cmdline\":\"\\\"route.exe\\\" print\"}"
+      },
+      "host": {
+        "hostname": "EEHKQQL-734",
+        "id": "10",
+        "ip": [
+          "192.0.2.97"
+        ],
+        "name": "EEHKQQL-734",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\"route.exe\" print",
+        "entity_id": "XXXXXXXX-003d902d-00001310-00000000-1d81e748c4adb37",
+        "executable": "c:\\windows\\system32\\route.exe",
+        "hash": {
+          "md5": "1208451dc64074578776759210b88f62",
+          "sha256": "7d6a3188816b08b8d36e841df6c0c928319ce5232432df364c272f6833ab24a2"
+        },
+        "parent": {
+          "command_line": "C:\\WindowsAzure\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\GuestAgent\\WindowsAzureGuestAgent.exe",
+          "entity_id": "XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62",
+          "executable": "c:\\windowsazure\\guestagent_2.7.41491.1010_2049-05-11_233023\\guestagent\\windowsazureguestagent.exe",
+          "hash": {
+            "md5": "65cb567df7737535a5a1c907b3932685",
+            "sha256": "41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6"
+          },
+          "pid": 1684
+        },
+        "pid": 4880
+      },
+      "related": {
+        "hash": [
+          "1208451dc64074578776759210b88f62",
+          "41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6",
+          "65cb567df7737535a5a1c907b3932685",
+          "7d6a3188816b08b8d36e841df6c0c928319ce5232432df364c272f6833ab24a2"
+        ],
+        "hosts": [
+          "EEHKQQL-734"
+        ],
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:51:35.443Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:52:50 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.97",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:51:35.4434036 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Corporation",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.filemod"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_FILE_MOD_OPEN | ACTION_FILE_OPEN_DELETE",
+        "category": [
+          "file"
+        ],
+        "original": "{\"type\":\"endpoint.event.filemod\",\"process_guid\":\"XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62\",\"parent_guid\":\"XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"11\",\"device_name\":\"AAYZHQT-216\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_FILE_MOD_OPEN | ACTION_FILE_OPEN_DELETE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:35.4434036 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":1684,\"parent_pid\":640,\"process_publisher\":[{\"name\":\"Microsoft Corporation\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\windowsazure\\\\guestagent_2.7.41491.1010_2049-05-11_233023\\\\guestagent\\\\windowsazureguestagent.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"65cb567df7737535a5a1c907b3932685\",\"41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6\"],\"parent_hash\":[\"edf287b6ef2ef1b65f935008b96e0438\",\"50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1\"],\"process_cmdline\":\"C:\\\\WindowsAzure\\\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\\\GuestAgent\\\\WindowsAzureGuestAgent.exe\",\"parent_cmdline\":\"C:\\\\windows\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"filemod_hash\":[\"\",\"\"],\"filemod_name\":\"c:\\\\windowsazure\\\\logs\\\\aggregatestatus\\\\aggregatestatus_20220210114710865.json\"}",
+        "type": [
+          "change"
+        ]
+      },
+      "file": {
+        "path": "c:\\windowsazure\\logs\\aggregatestatus\\aggregatestatus_20220210114710865.json"
+      },
+      "host": {
+        "hostname": "AAYZHQT-216",
+        "id": "11",
+        "ip": [
+          "192.0.2.97"
+        ],
+        "name": "AAYZHQT-216",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "C:\\WindowsAzure\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\GuestAgent\\WindowsAzureGuestAgent.exe",
+        "entity_id": "XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62",
+        "executable": "c:\\windowsazure\\guestagent_2.7.41491.1010_2049-05-11_233023\\guestagent\\windowsazureguestagent.exe",
+        "hash": {
+          "md5": "65cb567df7737535a5a1c907b3932685",
+          "sha256": "41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6"
+        },
+        "parent": {
+          "command_line": "C:\\windows\\system32\\services.exe",
+          "entity_id": "XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7",
+          "executable": "c:\\windows\\system32\\services.exe",
+          "hash": {
+            "md5": "edf287b6ef2ef1b65f935008b96e0438",
+            "sha256": "50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1"
+          },
+          "pid": 640
+        },
+        "pid": 1684
+      },
+      "related": {
+        "hash": [
+          "41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6",
+          "50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1",
+          "65cb567df7737535a5a1c907b3932685",
+          "edf287b6ef2ef1b65f935008b96e0438"
+        ],
+        "hosts": [
+          "AAYZHQT-216"
+        ],
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:49:37.539Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:50:50 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "198.51.100.57",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:49:37.5392491 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Carbon Black, Inc.",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.filemod"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_FILE_MOD_OPEN | ACTION_FILE_OPEN_READ | ACTION_FILE_OPEN_WRITE",
+        "category": [
+          "file"
+        ],
+        "original": "{\"type\":\"endpoint.event.filemod\",\"process_guid\":\"XXXXXXXX-003dd2d5-00000a24-00000000-1d81e7447aed7aa\",\"parent_guid\":\"XXXXXXXX-003dd2d5-00000ce4-00000000-1d7d6729f74b35a\",\"backend_timestamp\":\"2050-02-10 11:50:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"13\",\"device_name\":\"FBXSMZL-961\",\"device_external_ip\":\"198.51.100.57\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_FILE_MOD_OPEN | ACTION_FILE_OPEN_READ | ACTION_FILE_OPEN_WRITE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:49:37.5392491 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":2596,\"parent_pid\":3300,\"process_publisher\":[{\"name\":\"Carbon Black, Inc.\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\confer\\\\scanner\\\\scanhost.exe\",\"parent_path\":\"c:\\\\program files\\\\confer\\\\repmgr.exe\",\"process_hash\":[\"fd24cc9d2dd65951223d7759c3aa77ae\",\"7d4ac24e43f2506c9b43ba0335fb81d0f29a7b7fe4e50524863cee2bf50b5a39\"],\"parent_hash\":[\"671715c5003b3b54a6708fe2e5c2c51b\",\"121ed3c63a010a7060fe415999d922ee1d0afd045928341c6628ef08881de315\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Confer\\\\scanner\\\\scanhost.exe\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Confer\\\\RepMgr.exe\\\"\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"filemod_hash\":[\"\",\"\"],\"filemod_name\":\"c:\\\\programdata\\\\carbonblack\\\\logs\\\\scanhost.log\"}",
+        "type": [
+          "change"
+        ]
+      },
+      "file": {
+        "path": "c:\\programdata\\carbonblack\\logs\\scanhost.log"
+      },
+      "host": {
+        "hostname": "FBXSMZL-961",
+        "id": "13",
+        "ip": [
+          "198.51.100.57"
+        ],
+        "name": "FBXSMZL-961",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\"C:\\Program Files\\Confer\\scanner\\scanhost.exe\"",
+        "entity_id": "XXXXXXXX-003dd2d5-00000a24-00000000-1d81e7447aed7aa",
+        "executable": "c:\\program files\\confer\\scanner\\scanhost.exe",
+        "hash": {
+          "md5": "fd24cc9d2dd65951223d7759c3aa77ae",
+          "sha256": "7d4ac24e43f2506c9b43ba0335fb81d0f29a7b7fe4e50524863cee2bf50b5a39"
+        },
+        "parent": {
+          "command_line": "\"C:\\Program Files\\Confer\\RepMgr.exe\"",
+          "entity_id": "XXXXXXXX-003dd2d5-00000ce4-00000000-1d7d6729f74b35a",
+          "executable": "c:\\program files\\confer\\repmgr.exe",
+          "hash": {
+            "md5": "671715c5003b3b54a6708fe2e5c2c51b",
+            "sha256": "121ed3c63a010a7060fe415999d922ee1d0afd045928341c6628ef08881de315"
+          },
+          "pid": 3300
+        },
+        "pid": 2596
+      },
+      "related": {
+        "hash": [
+          "121ed3c63a010a7060fe415999d922ee1d0afd045928341c6628ef08881de315",
+          "671715c5003b3b54a6708fe2e5c2c51b",
+          "7d4ac24e43f2506c9b43ba0335fb81d0f29a7b7fe4e50524863cee2bf50b5a39",
+          "fd24cc9d2dd65951223d7759c3aa77ae"
+        ],
+        "hosts": [
+          "FBXSMZL-961"
+        ],
+        "ip": [
+          "198.51.100.57"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:48:14.278Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:50:50 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "198.51.100.57",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:48:14.2785426 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Carbon Black, Inc.",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.netconn"
+        }
+      },
+      "client": {
+        "ip": "127.0.0.1",
+        "port": 62909
+      },
+      "destination": {
+        "ip": "127.0.0.1",
+        "port": 49707
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_CONNECTION_CREATE",
+        "category": [
+          "network"
+        ],
+        "original": "{\"type\":\"endpoint.event.netconn\",\"process_guid\":\"XXXXXXXX-003dd2d5-00000344-00000000-1d81e74160752cc\",\"parent_guid\":\"XXXXXXXX-003dd2d5-00000ce4-00000000-1d7d6729f74b35a\",\"backend_timestamp\":\"2050-02-10 11:50:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"12\",\"device_name\":\"CDQQRGW-677\",\"device_external_ip\":\"198.51.100.57\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CONNECTION_CREATE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:14.2785426 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":836,\"parent_pid\":3300,\"process_publisher\":[{\"name\":\"Carbon Black, Inc.\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\confer\\\\scanner\\\\scanhost.exe\",\"parent_path\":\"c:\\\\program files\\\\confer\\\\repmgr.exe\",\"process_hash\":[\"fd24cc9d2dd65951223d7759c3aa77ae\",\"7d4ac24e43f2506c9b43ba0335fb81d0f29a7b7fe4e50524863cee2bf50b5a39\"],\"parent_hash\":[\"671715c5003b3b54a6708fe2e5c2c51b\",\"121ed3c63a010a7060fe415999d922ee1d0afd045928341c6628ef08881de315\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Confer\\\\scanner\\\\scanhost.exe\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Confer\\\\RepMgr.exe\\\"\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"remote_port\":49707,\"remote_ip\":\"127.0.0.1\",\"local_port\":62909,\"local_ip\":\"127.0.0.1\",\"netconn_domain\":\"\",\"netconn_inbound\":false,\"netconn_protocol\":\"PROTO_TCP\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "hostname": "CDQQRGW-677",
+        "id": "12",
+        "ip": [
+          "198.51.100.57"
+        ],
+        "name": "CDQQRGW-677",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "network": {
+        "direction": "outbound",
+        "transport": "tcp"
+      },
+      "process": {
+        "command_line": "\"C:\\Program Files\\Confer\\scanner\\scanhost.exe\"",
+        "entity_id": "XXXXXXXX-003dd2d5-00000344-00000000-1d81e74160752cc",
+        "executable": "c:\\program files\\confer\\scanner\\scanhost.exe",
+        "hash": {
+          "md5": "fd24cc9d2dd65951223d7759c3aa77ae",
+          "sha256": "7d4ac24e43f2506c9b43ba0335fb81d0f29a7b7fe4e50524863cee2bf50b5a39"
+        },
+        "parent": {
+          "command_line": "\"C:\\Program Files\\Confer\\RepMgr.exe\"",
+          "entity_id": "XXXXXXXX-003dd2d5-00000ce4-00000000-1d7d6729f74b35a",
+          "executable": "c:\\program files\\confer\\repmgr.exe",
+          "hash": {
+            "md5": "671715c5003b3b54a6708fe2e5c2c51b",
+            "sha256": "121ed3c63a010a7060fe415999d922ee1d0afd045928341c6628ef08881de315"
+          },
+          "pid": 3300
+        },
+        "pid": 836
+      },
+      "related": {
+        "hash": [
+          "121ed3c63a010a7060fe415999d922ee1d0afd045928341c6628ef08881de315",
+          "671715c5003b3b54a6708fe2e5c2c51b",
+          "7d4ac24e43f2506c9b43ba0335fb81d0f29a7b7fe4e50524863cee2bf50b5a39",
+          "fd24cc9d2dd65951223d7759c3aa77ae"
+        ],
+        "hosts": [
+          "CDQQRGW-677"
+        ],
+        "ip": [
+          "198.51.100.57",
+          "127.0.0.1"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1",
+        "port": 62909
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:45:02.888Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:49:36 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.22",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:45:02.8882089 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Stellar Cyber Inc",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.netconn"
+        }
+      },
+      "client": {
+        "ip": "127.0.0.1",
+        "port": 9716
+      },
+      "destination": {
+        "ip": "198.51.100.57",
+        "port": 9001
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_CONNECTION_LISTEN",
+        "category": [
+          "network"
+        ],
+        "original": "{\"type\":\"endpoint.event.netconn\",\"process_guid\":\"XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7\",\"parent_guid\":\"XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4\",\"backend_timestamp\":\"2050-02-10 11:49:36 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"14\",\"device_name\":\"AFSUKZI-727\",\"device_external_ip\":\"192.0.2.22\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CONNECTION_LISTEN\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:45:02.8882089 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":9000,\"parent_pid\":720,\"process_publisher\":[{\"name\":\"Stellar Cyber Inc\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"2343aa8e2cd2830546ada0be44ff3887\",\"5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"remote_port\":9001,\"remote_ip\":\"198.51.100.57\",\"local_port\":9716,\"local_ip\":\"127.0.0.1\",\"netconn_domain\":\"\",\"netconn_inbound\":false,\"netconn_protocol\":\"PROTO_TCP\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "hostname": "AFSUKZI-727",
+        "id": "14",
+        "ip": [
+          "192.0.2.22"
+        ],
+        "name": "AFSUKZI-727",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "network": {
+        "direction": "outbound",
+        "transport": "tcp"
+      },
+      "process": {
+        "command_line": "\"C:\\Program Files\\Aella\\aella_conf_win_srv\\aella_conf_win_srv.exe\"",
+        "entity_id": "XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7",
+        "executable": "c:\\program files\\aella\\aella_conf_win_srv\\aella_conf_win_srv.exe",
+        "hash": {
+          "md5": "2343aa8e2cd2830546ada0be44ff3887",
+          "sha256": "5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599"
+        },
+        "parent": {
+          "command_line": "C:\\WINDOWS\\system32\\services.exe",
+          "entity_id": "XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4",
+          "executable": "c:\\windows\\system32\\services.exe",
+          "hash": {
+            "md5": "e3a192cb443a87731a6333192150c8a3",
+            "sha256": "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+          },
+          "pid": 720
+        },
+        "pid": 9000
+      },
+      "related": {
+        "hash": [
+          "2343aa8e2cd2830546ada0be44ff3887",
+          "5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599",
+          "e3a192cb443a87731a6333192150c8a3",
+          "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+        ],
+        "hosts": [
+          "AFSUKZI-727"
+        ],
+        "ip": [
+          "127.0.0.1",
+          "192.0.2.22"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1",
+        "port": 9716
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:45:02.888Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:49:36 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.22",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:45:02.8882089 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Stellar Cyber Inc",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.netconn"
+        }
+      },
+      "client": {
+        "ip": "127.0.0.1",
+        "port": 9716
+      },
+      "destination": {
+        "ip": "127.0.0.1",
+        "port": 9716
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_CONNECTION_LISTEN",
+        "category": [
+          "network"
+        ],
+        "original": "{\"type\":\"endpoint.event.netconn\",\"process_guid\":\"XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7\",\"parent_guid\":\"XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4\",\"backend_timestamp\":\"2050-02-10 11:49:36 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"14\",\"device_name\":\"AFSUKZI-727\",\"device_external_ip\":\"192.0.2.22\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CONNECTION_LISTEN\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:45:02.8882089 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":9000,\"parent_pid\":720,\"process_publisher\":[{\"name\":\"Stellar Cyber Inc\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"2343aa8e2cd2830546ada0be44ff3887\",\"5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"remote_port\":9001,\"remote_ip\":\"198.51.100.57\",\"local_port\":9716,\"local_ip\":\"127.0.0.1\",\"netconn_domain\":\"\",\"netconn_inbound\":true,\"netconn_protocol\":\"PROTO_TCP\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "hostname": "AFSUKZI-727",
+        "id": "14",
+        "ip": [
+          "192.0.2.22"
+        ],
+        "name": "AFSUKZI-727",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "network": {
+        "direction": "inbound",
+        "transport": "tcp"
+      },
+      "process": {
+        "command_line": "\"C:\\Program Files\\Aella\\aella_conf_win_srv\\aella_conf_win_srv.exe\"",
+        "entity_id": "XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7",
+        "executable": "c:\\program files\\aella\\aella_conf_win_srv\\aella_conf_win_srv.exe",
+        "hash": {
+          "md5": "2343aa8e2cd2830546ada0be44ff3887",
+          "sha256": "5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599"
+        },
+        "parent": {
+          "command_line": "C:\\WINDOWS\\system32\\services.exe",
+          "entity_id": "XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4",
+          "executable": "c:\\windows\\system32\\services.exe",
+          "hash": {
+            "md5": "e3a192cb443a87731a6333192150c8a3",
+            "sha256": "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+          },
+          "pid": 720
+        },
+        "pid": 9000
+      },
+      "related": {
+        "hash": [
+          "2343aa8e2cd2830546ada0be44ff3887",
+          "5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599",
+          "e3a192cb443a87731a6333192150c8a3",
+          "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+        ],
+        "hosts": [
+          "AFSUKZI-727"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "198.51.100.57",
+          "127.0.0.1"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.57",
+        "port": 9001
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:48:05.272Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:48:51 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "198.51.100.144",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:48:05.2725926 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "scriptload": {
+            "count": 1,
+            "effective_reputation": "REP_NOT_LISTED",
+            "publisher": [
+              {
+                "state": [
+                  "FILE_SIGNATURE_STATE_NOT_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING"
+          },
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.scriptload"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_LOAD_SCRIPT",
+        "category": [
+          "process",
+          "file"
+        ],
+        "original": "{\"type\":\"endpoint.event.scriptload\",\"process_guid\":\"XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff32\",\"parent_guid\":\"XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49\",\"backend_timestamp\":\"2050-02-10 11:48:51 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"15\",\"device_name\":\"EFOKKMG-864\",\"device_external_ip\":\"198.51.100.144\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_SCRIPT\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:05.2725926 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4600,\"parent_pid\":6728,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\cscript.exe\",\"parent_path\":\"c:\\\\program files\\\\microsoft monitoring agent\\\\agent\\\\monitoringhost.exe\",\"process_hash\":[\"22443cf22dddfcb9e9fc619c7e9c71ba\",\"ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09\"],\"parent_hash\":[\"5e894149e4d32ac849c937d94d625640\",\"c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22\"],\"process_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cscript.exe\\\" /nologo \\\"MonitorKnowledgeDiscovery.vbs\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe\\\" -Embedding\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"scriptload_count\":1,\"scriptload_reputation\":\"REP_RESOLVING\",\"scriptload_effective_reputation\":\"REP_NOT_LISTED\",\"scriptload_publisher\":[{\"state\":\"FILE_SIGNATURE_STATE_NOT_SIGNED\"}]}",
+        "type": [
+          "start",
+          "access"
+        ]
+      },
+      "host": {
+        "hostname": "EFOKKMG-864",
+        "id": "15",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "name": "EFOKKMG-864",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\"C:\\WINDOWS\\system32\\cscript.exe\" /nologo \"MonitorKnowledgeDiscovery.vbs\"",
+        "entity_id": "XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff32",
+        "executable": "c:\\windows\\system32\\cscript.exe",
+        "hash": {
+          "md5": "22443cf22dddfcb9e9fc619c7e9c71ba",
+          "sha256": "ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09"
+        },
+        "parent": {
+          "command_line": "\"C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe\" -Embedding",
+          "entity_id": "XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49",
+          "executable": "c:\\program files\\microsoft monitoring agent\\agent\\monitoringhost.exe",
+          "hash": {
+            "md5": "5e894149e4d32ac849c937d94d625640",
+            "sha256": "c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22"
+          },
+          "pid": 6728
+        },
+        "pid": 4600
+      },
+      "related": {
+        "hash": [
+          "22443cf22dddfcb9e9fc619c7e9c71ba",
+          "5e894149e4d32ac849c937d94d625640",
+          "ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09",
+          "c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22"
+        ],
+        "hosts": [
+          "EFOKKMG-864"
+        ],
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:48:05.272Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:48:51 +0000 UTC"
+          },
+          "create_time": "2050-02-10T08:03:29.540Z",
+          "device": {
+            "external_ip": "198.51.100.144",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:48:05.2725926 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "scriptload": {
+            "count": 1,
+            "effective_reputation": "REP_NOT_LISTED",
+            "publisher": [
+              {
+                "state": [
+                  "FILE_SIGNATURE_STATE_NOT_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING"
+          },
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.scriptload"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_LOAD_SCRIPT",
+        "category": [
+          "process",
+          "file"
+        ],
+        "original": "{\"type\":\"endpoint.event.scriptload\",\"process_guid\":\"XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33\",\"parent_guid\":\"XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49\",\"backend_timestamp\":\"2050-02-10 11:48:51 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"16\",\"device_name\":\"EFOKKMG-864\",\"device_external_ip\":\"198.51.100.144\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_SCRIPT\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:05.2725926 +0000 UTC\",\"create_time\": \"2050-02-10T08:03:29.540Z\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4600,\"parent_pid\":6728,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\cscript.exe\",\"parent_path\":\"c:\\\\program files\\\\microsoft monitoring agent\\\\agent\\\\monitoringhost.exe\",\"process_hash\":[\"22443cf22dddfcb9e9fc619c7e9c71ba\",\"ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09\"],\"parent_hash\":[\"5e894149e4d32ac849c937d94d625640\",\"c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22\"],\"process_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cscript.exe\\\" /nologo \\\"MonitorKnowledgeDiscovery.vbs\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe\\\" -Embedding\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"scriptload_count\":1,\"scriptload_reputation\":\"REP_RESOLVING\",\"scriptload_effective_reputation\":\"REP_NOT_LISTED\",\"scriptload_publisher\":[{\"state\":\"FILE_SIGNATURE_STATE_NOT_SIGNED\"}]}",
+        "type": [
+          "start",
+          "access"
+        ]
+      },
+      "host": {
+        "hostname": "EFOKKMG-864",
+        "id": "16",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "name": "EFOKKMG-864",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\"C:\\WINDOWS\\system32\\cscript.exe\" /nologo \"MonitorKnowledgeDiscovery.vbs\"",
+        "entity_id": "XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33",
+        "executable": "c:\\windows\\system32\\cscript.exe",
+        "hash": {
+          "md5": "22443cf22dddfcb9e9fc619c7e9c71ba",
+          "sha256": "ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09"
+        },
+        "parent": {
+          "command_line": "\"C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe\" -Embedding",
+          "entity_id": "XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49",
+          "executable": "c:\\program files\\microsoft monitoring agent\\agent\\monitoringhost.exe",
+          "hash": {
+            "md5": "5e894149e4d32ac849c937d94d625640",
+            "sha256": "c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22"
+          },
+          "pid": 6728
+        },
+        "pid": 4600
+      },
+      "related": {
+        "hash": [
+          "22443cf22dddfcb9e9fc619c7e9c71ba",
+          "5e894149e4d32ac849c937d94d625640",
+          "ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09",
+          "c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22"
+        ],
+        "hosts": [
+          "EFOKKMG-864"
+        ],
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:48:05.272Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:48:51 +0000 UTC"
+          },
+          "create_time": "2050-02-10T08:03:29.540Z",
+          "device": {
+            "external_ip": "198.51.100.144",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:48:05.272 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "scriptload": {
+            "count": 1,
+            "effective_reputation": "REP_NOT_LISTED",
+            "publisher": [
+              {
+                "state": [
+                  "FILE_SIGNATURE_STATE_NOT_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING"
+          },
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.scriptload"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_LOAD_SCRIPT",
+        "category": [
+          "process",
+          "file"
+        ],
+        "original": "{\"type\":\"endpoint.event.scriptload\",\"process_guid\":\"XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33\",\"parent_guid\":\"XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49\",\"backend_timestamp\":\"2050-02-10 11:48:51 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"16\",\"device_name\":\"EFOKKMG-864\",\"device_external_ip\":\"198.51.100.144\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_SCRIPT\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:05.272 +0000 UTC\",\"create_time\": \"2050-02-10T08:03:29.540Z\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4600,\"parent_pid\":6728,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\cscript.exe\",\"parent_path\":\"c:\\\\program files\\\\microsoft monitoring agent\\\\agent\\\\monitoringhost.exe\",\"process_hash\":[\"22443cf22dddfcb9e9fc619c7e9c71ba\",\"ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09\"],\"parent_hash\":[\"5e894149e4d32ac849c937d94d625640\",\"c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22\"],\"process_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cscript.exe\\\" /nologo \\\"MonitorKnowledgeDiscovery.vbs\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe\\\" -Embedding\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"scriptload_count\":1,\"scriptload_reputation\":\"REP_RESOLVING\",\"scriptload_effective_reputation\":\"REP_NOT_LISTED\",\"scriptload_publisher\":[{\"state\":\"FILE_SIGNATURE_STATE_NOT_SIGNED\"}]}",
+        "type": [
+          "start",
+          "access"
+        ]
+      },
+      "host": {
+        "hostname": "EFOKKMG-864",
+        "id": "16",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "name": "EFOKKMG-864",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\"C:\\WINDOWS\\system32\\cscript.exe\" /nologo \"MonitorKnowledgeDiscovery.vbs\"",
+        "entity_id": "XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33",
+        "executable": "c:\\windows\\system32\\cscript.exe",
+        "hash": {
+          "md5": "22443cf22dddfcb9e9fc619c7e9c71ba",
+          "sha256": "ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09"
+        },
+        "parent": {
+          "command_line": "\"C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe\" -Embedding",
+          "entity_id": "XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49",
+          "executable": "c:\\program files\\microsoft monitoring agent\\agent\\monitoringhost.exe",
+          "hash": {
+            "md5": "5e894149e4d32ac849c937d94d625640",
+            "sha256": "c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22"
+          },
+          "pid": 6728
+        },
+        "pid": 4600
+      },
+      "related": {
+        "hash": [
+          "22443cf22dddfcb9e9fc619c7e9c71ba",
+          "5e894149e4d32ac849c937d94d625640",
+          "ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09",
+          "c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22"
+        ],
+        "hosts": [
+          "EFOKKMG-864"
+        ],
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:48:05.200Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:48:51 +0000 UTC"
+          },
+          "create_time": "2050-02-10T08:03:29.540Z",
+          "device": {
+            "external_ip": "198.51.100.144",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:48:05.2 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "scriptload": {
+            "count": 1,
+            "effective_reputation": "REP_NOT_LISTED",
+            "publisher": [
+              {
+                "state": [
+                  "FILE_SIGNATURE_STATE_NOT_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING"
+          },
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.scriptload"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_LOAD_SCRIPT",
+        "category": [
+          "process",
+          "file"
+        ],
+        "original": "{\"type\":\"endpoint.event.scriptload\",\"process_guid\":\"XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33\",\"parent_guid\":\"XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49\",\"backend_timestamp\":\"2050-02-10 11:48:51 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"16\",\"device_name\":\"EFOKKMG-864\",\"device_external_ip\":\"198.51.100.144\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_SCRIPT\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:05.2 +0000 UTC\",\"create_time\": \"2050-02-10T08:03:29.540Z\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4600,\"parent_pid\":6728,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\cscript.exe\",\"parent_path\":\"c:\\\\program files\\\\microsoft monitoring agent\\\\agent\\\\monitoringhost.exe\",\"process_hash\":[\"22443cf22dddfcb9e9fc619c7e9c71ba\",\"ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09\"],\"parent_hash\":[\"5e894149e4d32ac849c937d94d625640\",\"c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22\"],\"process_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cscript.exe\\\" /nologo \\\"MonitorKnowledgeDiscovery.vbs\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe\\\" -Embedding\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"scriptload_count\":1,\"scriptload_reputation\":\"REP_RESOLVING\",\"scriptload_effective_reputation\":\"REP_NOT_LISTED\",\"scriptload_publisher\":[{\"state\":\"FILE_SIGNATURE_STATE_NOT_SIGNED\"}]}",
+        "type": [
+          "start",
+          "access"
+        ]
+      },
+      "host": {
+        "hostname": "EFOKKMG-864",
+        "id": "16",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "name": "EFOKKMG-864",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\"C:\\WINDOWS\\system32\\cscript.exe\" /nologo \"MonitorKnowledgeDiscovery.vbs\"",
+        "entity_id": "XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33",
+        "executable": "c:\\windows\\system32\\cscript.exe",
+        "hash": {
+          "md5": "22443cf22dddfcb9e9fc619c7e9c71ba",
+          "sha256": "ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09"
+        },
+        "parent": {
+          "command_line": "\"C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe\" -Embedding",
+          "entity_id": "XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49",
+          "executable": "c:\\program files\\microsoft monitoring agent\\agent\\monitoringhost.exe",
+          "hash": {
+            "md5": "5e894149e4d32ac849c937d94d625640",
+            "sha256": "c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22"
+          },
+          "pid": 6728
+        },
+        "pid": 4600
+      },
+      "related": {
+        "hash": [
+          "22443cf22dddfcb9e9fc619c7e9c71ba",
+          "5e894149e4d32ac849c937d94d625640",
+          "ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09",
+          "c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22"
+        ],
+        "hosts": [
+          "EFOKKMG-864"
+        ],
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:48:05.000Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:48:51 +0000 UTC"
+          },
+          "create_time": "2050-02-10T08:03:29.540Z",
+          "device": {
+            "external_ip": "198.51.100.144",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:48:05 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Microsoft Windows",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED",
+                  "FILE_SIGNATURE_STATE_OS",
+                  "FILE_SIGNATURE_STATE_CATALOG_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "scriptload": {
+            "count": 1,
+            "effective_reputation": "REP_NOT_LISTED",
+            "publisher": [
+              {
+                "state": [
+                  "FILE_SIGNATURE_STATE_NOT_SIGNED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING"
+          },
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.scriptload"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_LOAD_SCRIPT",
+        "category": [
+          "process",
+          "file"
+        ],
+        "original": "{\"type\":\"endpoint.event.scriptload\",\"process_guid\":\"XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33\",\"parent_guid\":\"XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49\",\"backend_timestamp\":\"2050-02-10 11:48:51 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"16\",\"device_name\":\"EFOKKMG-864\",\"device_external_ip\":\"198.51.100.144\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_SCRIPT\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:05 +0000 UTC\",\"create_time\": \"2050-02-10T08:03:29.540Z\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4600,\"parent_pid\":6728,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\cscript.exe\",\"parent_path\":\"c:\\\\program files\\\\microsoft monitoring agent\\\\agent\\\\monitoringhost.exe\",\"process_hash\":[\"22443cf22dddfcb9e9fc619c7e9c71ba\",\"ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09\"],\"parent_hash\":[\"5e894149e4d32ac849c937d94d625640\",\"c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22\"],\"process_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cscript.exe\\\" /nologo \\\"MonitorKnowledgeDiscovery.vbs\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe\\\" -Embedding\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"scriptload_count\":1,\"scriptload_reputation\":\"REP_RESOLVING\",\"scriptload_effective_reputation\":\"REP_NOT_LISTED\",\"scriptload_publisher\":[{\"state\":\"FILE_SIGNATURE_STATE_NOT_SIGNED\"}]}",
+        "type": [
+          "start",
+          "access"
+        ]
+      },
+      "host": {
+        "hostname": "EFOKKMG-864",
+        "id": "16",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "name": "EFOKKMG-864",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "process": {
+        "command_line": "\"C:\\WINDOWS\\system32\\cscript.exe\" /nologo \"MonitorKnowledgeDiscovery.vbs\"",
+        "entity_id": "XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33",
+        "executable": "c:\\windows\\system32\\cscript.exe",
+        "hash": {
+          "md5": "22443cf22dddfcb9e9fc619c7e9c71ba",
+          "sha256": "ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09"
+        },
+        "parent": {
+          "command_line": "\"C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe\" -Embedding",
+          "entity_id": "XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49",
+          "executable": "c:\\program files\\microsoft monitoring agent\\agent\\monitoringhost.exe",
+          "hash": {
+            "md5": "5e894149e4d32ac849c937d94d625640",
+            "sha256": "c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22"
+          },
+          "pid": 6728
+        },
+        "pid": 4600
+      },
+      "related": {
+        "hash": [
+          "22443cf22dddfcb9e9fc619c7e9c71ba",
+          "5e894149e4d32ac849c937d94d625640",
+          "ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09",
+          "c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22"
+        ],
+        "hosts": [
+          "EFOKKMG-864"
+        ],
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:45:02.888Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:49:36 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.22",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:45:02.8882089 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Stellar Cyber Inc",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.netconn"
+        }
+      },
+      "client": {
+        "ip": "127.0.0.1",
+        "port": 9716
+      },
+      "destination": {
+        "ip": "127.0.0.1",
+        "port": 9716
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_CONNECTION_LISTEN",
+        "category": [
+          "network"
+        ],
+        "original": "{\"type\":\"endpoint.event.netconn\",\"process_guid\":\"XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7\",\"parent_guid\":\"XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4\",\"backend_timestamp\":\"2050-02-10 11:49:36 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"14\",\"device_name\":\"AFSUKZI-727\",\"device_external_ip\":\"192.0.2.22\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CONNECTION_LISTEN\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:45:02.8882089 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":9000,\"parent_pid\":720,\"process_publisher\":[{\"name\":\"Stellar Cyber Inc\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"2343aa8e2cd2830546ada0be44ff3887\",\"5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"remote_port\":9001,\"remote_ip\":\"198.51.100.57\",\"local_port\":9716,\"local_ip\":\"127.0.0.1\",\"netconn_domain\":\"example.com\",\"netconn_inbound\":true,\"netconn_protocol\":\"PROTO_TCP\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "hostname": "AFSUKZI-727",
+        "id": "14",
+        "ip": [
+          "192.0.2.22"
+        ],
+        "name": "AFSUKZI-727",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "network": {
+        "direction": "inbound",
+        "transport": "tcp"
+      },
+      "process": {
+        "command_line": "\"C:\\Program Files\\Aella\\aella_conf_win_srv\\aella_conf_win_srv.exe\"",
+        "entity_id": "XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7",
+        "executable": "c:\\program files\\aella\\aella_conf_win_srv\\aella_conf_win_srv.exe",
+        "hash": {
+          "md5": "2343aa8e2cd2830546ada0be44ff3887",
+          "sha256": "5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599"
+        },
+        "parent": {
+          "command_line": "C:\\WINDOWS\\system32\\services.exe",
+          "entity_id": "XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4",
+          "executable": "c:\\windows\\system32\\services.exe",
+          "hash": {
+            "md5": "e3a192cb443a87731a6333192150c8a3",
+            "sha256": "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+          },
+          "pid": 720
+        },
+        "pid": 9000
+      },
+      "related": {
+        "hash": [
+          "2343aa8e2cd2830546ada0be44ff3887",
+          "5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599",
+          "e3a192cb443a87731a6333192150c8a3",
+          "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+        ],
+        "hosts": [
+          "AFSUKZI-727"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "198.51.100.57",
+          "127.0.0.1"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "source": {
+        "domain": "example.com",
+        "ip": "198.51.100.57",
+        "port": 9001
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T11:45:02.888Z",
+      "carbon_black_cloud": {
+        "endpoint_event": {
+          "backend": {
+            "timestamp": "2050-02-10 11:49:36 +0000 UTC"
+          },
+          "device": {
+            "external_ip": "192.0.2.22",
+            "os": "WINDOWS",
+            "timestamp": "2050-02-10 11:45:02.8882089 +0000 UTC"
+          },
+          "event_origin": "EDR",
+          "organization_key": "XXXXXXXX",
+          "process": {
+            "parent": {
+              "reputation": "REP_RESOLVING"
+            },
+            "publisher": [
+              {
+                "name": "Stellar Cyber Inc",
+                "state": [
+                  "FILE_SIGNATURE_STATE_SIGNED",
+                  "FILE_SIGNATURE_STATE_VERIFIED",
+                  "FILE_SIGNATURE_STATE_TRUSTED"
+                ]
+              }
+            ],
+            "reputation": "REP_RESOLVING",
+            "terminated": false,
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "schema": 1,
+          "sensor_action": "ACTION_ALLOW",
+          "type": "endpoint.event.netconn"
+        }
+      },
+      "client": {
+        "ip": "127.0.0.1",
+        "port": 9716
+      },
+      "destination": {
+        "domain": "example.com",
+        "ip": "198.51.100.57",
+        "port": 9001
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ACTION_CONNECTION_LISTEN",
+        "category": [
+          "network"
+        ],
+        "original": "{\"type\":\"endpoint.event.netconn\",\"process_guid\":\"XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7\",\"parent_guid\":\"XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4\",\"backend_timestamp\":\"2050-02-10 11:49:36 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"14\",\"device_name\":\"AFSUKZI-727\",\"device_external_ip\":\"192.0.2.22\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CONNECTION_LISTEN\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:45:02.8882089 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":9000,\"parent_pid\":720,\"process_publisher\":[{\"name\":\"Stellar Cyber Inc\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"2343aa8e2cd2830546ada0be44ff3887\",\"5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"remote_port\":9001,\"remote_ip\":\"198.51.100.57\",\"local_port\":9716,\"local_ip\":\"127.0.0.1\",\"netconn_domain\":\"example.com\",\"netconn_inbound\":false,\"netconn_protocol\":\"PROTO_TCP\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "hostname": "AFSUKZI-727",
+        "id": "14",
+        "ip": [
+          "192.0.2.22"
+        ],
+        "name": "AFSUKZI-727",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "network": {
+        "direction": "outbound",
+        "transport": "tcp"
+      },
+      "process": {
+        "command_line": "\"C:\\Program Files\\Aella\\aella_conf_win_srv\\aella_conf_win_srv.exe\"",
+        "entity_id": "XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7",
+        "executable": "c:\\program files\\aella\\aella_conf_win_srv\\aella_conf_win_srv.exe",
+        "hash": {
+          "md5": "2343aa8e2cd2830546ada0be44ff3887",
+          "sha256": "5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599"
+        },
+        "parent": {
+          "command_line": "C:\\WINDOWS\\system32\\services.exe",
+          "entity_id": "XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4",
+          "executable": "c:\\windows\\system32\\services.exe",
+          "hash": {
+            "md5": "e3a192cb443a87731a6333192150c8a3",
+            "sha256": "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+          },
+          "pid": 720
+        },
+        "pid": 9000
+      },
+      "related": {
+        "hash": [
+          "2343aa8e2cd2830546ada0be44ff3887",
+          "5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599",
+          "e3a192cb443a87731a6333192150c8a3",
+          "ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163"
+        ],
+        "hosts": [
+          "AFSUKZI-727"
+        ],
+        "ip": [
+          "127.0.0.1",
+          "192.0.2.22"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1",
+        "port": 9716
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"type\":\"endpoint.event.regmod\",\"process_guid\":\"XXXXXXXX-003bbea3-00000d5c-00000000-1d807ba90168b3b\",\"parent_guid\":\"XXXXXXXX-003bbea3-00000334-00000000-1d807ba80c7d2d9\",\"backend_timestamp\":\"2050-02-10 11:51:33 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"1\",\"device_name\":\"xxx\\\\DESKTOP-001\",\"device_external_ip\":\"192.0.2.139\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CREATE_KEY\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:50:51.686294 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":3420,\"parent_pid\":820,\"process_publisher\":[{\"name\":\"Sophos Ltd\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files (x86)\\\\sophos\\\\health\\\\sophoshealth.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"6a6077aa4858bbd39f78dc01d58aaa02\",\"5c36873e6d8911f4752492a8f2f24e9d5aa31b67215e97c8812af6d55fc866b2\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files (x86)\\\\Sophos\\\\Health\\\\SophosHealth.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\LOCAL SERVICE\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"regmod_name\":\"HKLM\\\\SOFTWARE\\\\WOW6432Node\\\\Sophos\\\\Health\\\\PersistedStatus\\\\24989209144180\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.regmod\",\"process_guid\":\"XXXXXXXX-003bbea3-00000d5c-00000000-1d807ba90168b3b\",\"parent_guid\":\"XXXXXXXX-003bbea3-00000334-00000000-1d807ba80c7d2d9\",\"backend_timestamp\":\"2050-02-10 11:51:33 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"2\",\"device_name\":\"CCMNWGR-164\",\"device_external_ip\":\"192.0.2.139\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_WRITE_VALUE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:50:36.152789 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":3420,\"parent_pid\":820,\"process_publisher\":[{\"name\":\"Sophos Ltd\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files (x86)\\\\sophos\\\\health\\\\sophoshealth.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"6a6077aa4858bbd39f78dc01d58aaa02\",\"5c36873e6d8911f4752492a8f2f24e9d5aa31b67215e97c8812af6d55fc866b2\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files (x86)\\\\Sophos\\\\Health\\\\SophosHealth.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\LOCAL SERVICE\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"regmod_name\":\"HKLM\\\\SOFTWARE\\\\WOW6432Node\\\\Sophos\\\\Health\\\\PersistedStatus\\\\24989053024832\\\\threatService.Sophos Safestore\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.crossproc\",\"process_guid\":\"XXXXXXXX-003d902d-000001c4-00000000-1d74d6bb295fbac\",\"parent_guid\":\"XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"3\",\"device_name\":\"CALVGOS-244\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_OPEN_PROCESS_HANDLE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:55.6308645 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":452,\"parent_pid\":640,\"process_publisher\":[{\"name\":\"Microsoft Windows Publisher\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\svchost.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"3483c82c08c4183d9c18560799588406\",\"cb017d3b57ce76f63c4671945d3ab0bd037c35d02f5a905780167941afe3d442\"],\"parent_hash\":[\"edf287b6ef2ef1b65f935008b96e0438\",\"50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1\"],\"process_cmdline\":\"C:\\\\windows\\\\System32\\\\svchost.exe -k LocalSystemNetworkRestricted -p\",\"parent_cmdline\":\"C:\\\\windows\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"crossproc_name\":\"c:\\\\windows\\\\system32\\\\route.exe\",\"crossproc_guid\":\"XXXXXXXX-003d902d-00001310-00000000-1d81e748c4adb37\",\"crossproc_hash\":[\"1208451dc64074578776759210b88f62\",\"7d6a3188816b08b8d36e841df6c0c928319ce5232432df364c272f6833ab24a2\"],\"crossproc_action\":\"ACTION_OPEN_PROCESS_HANDLE\",\"crossproc_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"crossproc_reputation\":\"REP_RESOLVING\",\"crossproc_target\":true,\"target_cmdline\":\"\\\"route.exe\\\" print\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.crossproc\",\"process_guid\":\"XXXXXXXX-003d902d-00000e08-00000000-1d81e74906feadc\",\"parent_guid\":\"XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"4\",\"device_name\":\"FFKUZIO-237\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_OPEN_PROCESS_HANDLE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:40.2402718 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":3592,\"parent_pid\":4676,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\conhost.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\netstat.exe\",\"process_hash\":[\"d2e5c6e6578bdbbf1a930e1643d6d23e\",\"afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53\"],\"parent_hash\":[\"1958aedb46ebdcfc919cf0abe73d287c\",\"3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac\"],\"process_cmdline\":\"\\\\??\\\\C:\\\\windows\\\\system32\\\\conhost.exe 0xffffffff -ForceV1\",\"parent_cmdline\":\"\\\"netstat.exe\\\" /a /b /o\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"crossproc_name\":\"c:\\\\windows\\\\system32\\\\netstat.exe\",\"crossproc_guid\":\"XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13\",\"crossproc_hash\":[\"1958aedb46ebdcfc919cf0abe73d287c\",\"3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac\"],\"crossproc_action\":\"ACTION_OPEN_PROCESS_HANDLE\",\"crossproc_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"crossproc_reputation\":\"REP_RESOLVING\",\"crossproc_target\":true,\"target_cmdline\":\"\\\"netstat.exe\\\" /a /b /o\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.moduleload\",\"process_guid\":\"XXXXXXXX-003d902d-00000e08-00000000-1d81e74906feadc\",\"parent_guid\":\"XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"5\",\"device_name\":\"EAQKWUR-129\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_MODULE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:40.1777718 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":3592,\"parent_pid\":4676,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\conhost.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\netstat.exe\",\"process_hash\":[\"d2e5c6e6578bdbbf1a930e1643d6d23e\",\"afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53\"],\"parent_hash\":[\"1958aedb46ebdcfc919cf0abe73d287c\",\"3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac\"],\"process_cmdline\":\"\\\\??\\\\C:\\\\windows\\\\system32\\\\conhost.exe 0xffffffff -ForceV1\",\"parent_cmdline\":\"\\\"netstat.exe\\\" /a /b /o\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"modload_name\":\"c:\\\\windows\\\\system32\\\\fltlib.dll\",\"modload_count\":2,\"modload_effective_reputation\":\"REP_WHITE\",\"modload_hash\":[\"f072ff49229c7476c3ffa2bcd07df689\",\"037c7a1d819c46a403a9712c469c0cdf3c9a644cdd4419fc221b540dad975612\"],\"modload_md5\":\"f072ff49229c7476c3ffa2bcd07df689\",\"modload_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS\"}],\"modload_sha256\":\"037c7a1d819c46a403a9712c469c0cdf3c9a644cdd4419fc221b540dad975612\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.moduleload\",\"process_guid\":\"XXXXXXXX-003d902d-0000030c-00000000-1d81e748e552c86\",\"parent_guid\":\"XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"6\",\"device_name\":\"ECIQNNZ-955\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_MODULE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:37.8809009 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":780,\"parent_pid\":1684,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\arp.exe\",\"parent_path\":\"c:\\\\windowsazure\\\\guestagent_2.7.41491.1010_2049-05-11_233023\\\\guestagent\\\\windowsazureguestagent.exe\",\"process_hash\":[\"77ac00f370d4d3539d77ef4660d718ab\",\"69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b\"],\"parent_hash\":[\"65cb567df7737535a5a1c907b3932685\",\"41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6\"],\"process_cmdline\":\"\\\"arp.exe\\\" /a\",\"parent_cmdline\":\"C:\\\\WindowsAzure\\\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\\\GuestAgent\\\\WindowsAzureGuestAgent.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"modload_name\":\"c:\\\\windows\\\\system32\\\\dnsapi.dll\",\"modload_count\":8,\"modload_effective_reputation\":\"REP_WHITE\",\"modload_hash\":[\"2c5430f24ece4b73cd325e5845331ff2\",\"dae41b2308fce58aba7d0e9f63c0fd5c8dc31fb4393c266cf57e6b011fda461a\"],\"modload_md5\":\"2c5430f24ece4b73cd325e5845331ff2\",\"modload_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS\"}],\"modload_sha256\":\"dae41b2308fce58aba7d0e9f63c0fd5c8dc31fb4393c266cf57e6b011fda461a\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.procstart\",\"process_guid\":\"XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62\",\"parent_guid\":\"XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"7\",\"device_name\":\"DEGHWUJ-135\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CREATE_PROCESS\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:39.5215212 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":1684,\"parent_pid\":640,\"process_publisher\":[{\"name\":\"Microsoft Corporation\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\windowsazure\\\\guestagent_2.7.41491.1010_2049-05-11_233023\\\\guestagent\\\\windowsazureguestagent.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"65cb567df7737535a5a1c907b3932685\",\"41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6\"],\"parent_hash\":[\"edf287b6ef2ef1b65f935008b96e0438\",\"50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1\"],\"process_cmdline\":\"C:\\\\WindowsAzure\\\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\\\GuestAgent\\\\WindowsAzureGuestAgent.exe\",\"parent_cmdline\":\"C:\\\\windows\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"childproc_name\":\"c:\\\\windows\\\\system32\\\\netstat.exe\",\"childproc_hash\":[\"1958aedb46ebdcfc919cf0abe73d287c\",\"3d390d5106693ddc0cc4e635d671ddb6e5dff7d82945e1ec5d218ee5968716ac\"],\"childproc_pid\":4676,\"childproc_guid\":\"XXXXXXXX-003d902d-00001244-00000000-1d81e748f8b0d13\",\"childproc_username\":\"NT AUTHORITY\\\\SYSTEM\",\"childproc_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"childproc_reputation\":\"REP_RESOLVING\",\"target_cmdline\":\"\\\"netstat.exe\\\" /a /b /o\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.procstart\",\"process_guid\":\"XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62\",\"parent_guid\":\"XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"8\",\"device_name\":\"BDKJMWS-755\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CREATE_PROCESS\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:36.5527783 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":1684,\"parent_pid\":640,\"process_publisher\":[{\"name\":\"Microsoft Corporation\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\windowsazure\\\\guestagent_2.7.41491.1010_2049-05-11_233023\\\\guestagent\\\\windowsazureguestagent.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"65cb567df7737535a5a1c907b3932685\",\"41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6\"],\"parent_hash\":[\"edf287b6ef2ef1b65f935008b96e0438\",\"50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1\"],\"process_cmdline\":\"C:\\\\WindowsAzure\\\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\\\GuestAgent\\\\WindowsAzureGuestAgent.exe\",\"parent_cmdline\":\"C:\\\\windows\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"childproc_name\":\"c:\\\\windows\\\\system32\\\\arp.exe\",\"childproc_hash\":[\"77ac00f370d4d3539d77ef4660d718ab\",\"69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b\"],\"childproc_pid\":780,\"childproc_guid\":\"XXXXXXXX-003d902d-0000030c-00000000-1d81e748e552c86\",\"childproc_username\":\"NT AUTHORITY\\\\SYSTEM\",\"childproc_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"childproc_reputation\":\"REP_RESOLVING\",\"target_cmdline\":\"\\\"arp.exe\\\" /a\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.procend\",\"process_guid\":\"XXXXXXXX-003d902d-000011b4-00000000-1d81e748eb2042e\",\"parent_guid\":\"XXXXXXXX-003d902d-0000030c-00000000-1d81e748e552c86\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"9\",\"device_name\":\"CBMHTGX-609\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_PROCESS_TERMINATE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:38.0684013 +0000 UTC\",\"process_terminated\":true,\"process_duration\":1,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4532,\"parent_pid\":780,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\conhost.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\arp.exe\",\"process_hash\":[\"d2e5c6e6578bdbbf1a930e1643d6d23e\",\"afb80f7f469773781879ccc78e930fa29510cc7eb59a7fcb282dc5e7d5717e53\"],\"parent_hash\":[\"77ac00f370d4d3539d77ef4660d718ab\",\"69ebc86af0d9e40e7a25cbad6784975088deb74ab4883572783e20065c09fb4b\"],\"process_cmdline\":\"\\\\??\\\\C:\\\\windows\\\\system32\\\\conhost.exe 0xffffffff -ForceV1\",\"parent_cmdline\":\"\\\"arp.exe\\\" /a\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"target_cmdline\":\"\\\\??\\\\C:\\\\windows\\\\system32\\\\conhost.exe 0xffffffff -ForceV1\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.procend\",\"process_guid\":\"XXXXXXXX-003d902d-00001310-00000000-1d81e748c4adb37\",\"parent_guid\":\"XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"10\",\"device_name\":\"EEHKQQL-734\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_PROCESS_TERMINATE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:35.0684097 +0000 UTC\",\"process_terminated\":true,\"process_duration\":2,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4880,\"parent_pid\":1684,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\route.exe\",\"parent_path\":\"c:\\\\windowsazure\\\\guestagent_2.7.41491.1010_2049-05-11_233023\\\\guestagent\\\\windowsazureguestagent.exe\",\"process_hash\":[\"1208451dc64074578776759210b88f62\",\"7d6a3188816b08b8d36e841df6c0c928319ce5232432df364c272f6833ab24a2\"],\"parent_hash\":[\"65cb567df7737535a5a1c907b3932685\",\"41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6\"],\"process_cmdline\":\"\\\"route.exe\\\" print\",\"parent_cmdline\":\"C:\\\\WindowsAzure\\\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\\\GuestAgent\\\\WindowsAzureGuestAgent.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"target_cmdline\":\"\\\"route.exe\\\" print\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.filemod\",\"process_guid\":\"XXXXXXXX-003d902d-00000694-00000000-1d7540221dedd62\",\"parent_guid\":\"XXXXXXXX-003d902d-00000280-00000000-1d74d6bb1e536c7\",\"backend_timestamp\":\"2050-02-10 11:52:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"11\",\"device_name\":\"AAYZHQT-216\",\"device_external_ip\":\"192.0.2.97\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_FILE_MOD_OPEN | ACTION_FILE_OPEN_DELETE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:51:35.4434036 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":1684,\"parent_pid\":640,\"process_publisher\":[{\"name\":\"Microsoft Corporation\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\windowsazure\\\\guestagent_2.7.41491.1010_2049-05-11_233023\\\\guestagent\\\\windowsazureguestagent.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"65cb567df7737535a5a1c907b3932685\",\"41a3201b0087643af55e2ee509d43d3cf5ae65632d9f5416c7f67a9121ce24f6\"],\"parent_hash\":[\"edf287b6ef2ef1b65f935008b96e0438\",\"50c8185366a434c171a79f5da899ab8bf9d335032bdd9c1f879ef24786345be1\"],\"process_cmdline\":\"C:\\\\WindowsAzure\\\\GuestAgent_2.7.41491.1010_2049-05-11_233023\\\\GuestAgent\\\\WindowsAzureGuestAgent.exe\",\"parent_cmdline\":\"C:\\\\windows\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"filemod_hash\":[\"\",\"\"],\"filemod_name\":\"c:\\\\windowsazure\\\\logs\\\\aggregatestatus\\\\aggregatestatus_20220210114710865.json\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.filemod\",\"process_guid\":\"XXXXXXXX-003dd2d5-00000a24-00000000-1d81e7447aed7aa\",\"parent_guid\":\"XXXXXXXX-003dd2d5-00000ce4-00000000-1d7d6729f74b35a\",\"backend_timestamp\":\"2050-02-10 11:50:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"13\",\"device_name\":\"FBXSMZL-961\",\"device_external_ip\":\"198.51.100.57\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_FILE_MOD_OPEN | ACTION_FILE_OPEN_READ | ACTION_FILE_OPEN_WRITE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:49:37.5392491 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":2596,\"parent_pid\":3300,\"process_publisher\":[{\"name\":\"Carbon Black, Inc.\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\confer\\\\scanner\\\\scanhost.exe\",\"parent_path\":\"c:\\\\program files\\\\confer\\\\repmgr.exe\",\"process_hash\":[\"fd24cc9d2dd65951223d7759c3aa77ae\",\"7d4ac24e43f2506c9b43ba0335fb81d0f29a7b7fe4e50524863cee2bf50b5a39\"],\"parent_hash\":[\"671715c5003b3b54a6708fe2e5c2c51b\",\"121ed3c63a010a7060fe415999d922ee1d0afd045928341c6628ef08881de315\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Confer\\\\scanner\\\\scanhost.exe\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Confer\\\\RepMgr.exe\\\"\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"filemod_hash\":[\"\",\"\"],\"filemod_name\":\"c:\\\\programdata\\\\carbonblack\\\\logs\\\\scanhost.log\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.netconn\",\"process_guid\":\"XXXXXXXX-003dd2d5-00000344-00000000-1d81e74160752cc\",\"parent_guid\":\"XXXXXXXX-003dd2d5-00000ce4-00000000-1d7d6729f74b35a\",\"backend_timestamp\":\"2050-02-10 11:50:50 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"12\",\"device_name\":\"CDQQRGW-677\",\"device_external_ip\":\"198.51.100.57\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CONNECTION_CREATE\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:14.2785426 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":836,\"parent_pid\":3300,\"process_publisher\":[{\"name\":\"Carbon Black, Inc.\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\confer\\\\scanner\\\\scanhost.exe\",\"parent_path\":\"c:\\\\program files\\\\confer\\\\repmgr.exe\",\"process_hash\":[\"fd24cc9d2dd65951223d7759c3aa77ae\",\"7d4ac24e43f2506c9b43ba0335fb81d0f29a7b7fe4e50524863cee2bf50b5a39\"],\"parent_hash\":[\"671715c5003b3b54a6708fe2e5c2c51b\",\"121ed3c63a010a7060fe415999d922ee1d0afd045928341c6628ef08881de315\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Confer\\\\scanner\\\\scanhost.exe\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Confer\\\\RepMgr.exe\\\"\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"remote_port\":49707,\"remote_ip\":\"127.0.0.1\",\"local_port\":62909,\"local_ip\":\"127.0.0.1\",\"netconn_domain\":\"\",\"netconn_inbound\":false,\"netconn_protocol\":\"PROTO_TCP\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.netconn\",\"process_guid\":\"XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7\",\"parent_guid\":\"XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4\",\"backend_timestamp\":\"2050-02-10 11:49:36 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"14\",\"device_name\":\"AFSUKZI-727\",\"device_external_ip\":\"192.0.2.22\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CONNECTION_LISTEN\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:45:02.8882089 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":9000,\"parent_pid\":720,\"process_publisher\":[{\"name\":\"Stellar Cyber Inc\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"2343aa8e2cd2830546ada0be44ff3887\",\"5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"remote_port\":9001,\"remote_ip\":\"198.51.100.57\",\"local_port\":9716,\"local_ip\":\"127.0.0.1\",\"netconn_domain\":\"\",\"netconn_inbound\":false,\"netconn_protocol\":\"PROTO_TCP\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.netconn\",\"process_guid\":\"XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7\",\"parent_guid\":\"XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4\",\"backend_timestamp\":\"2050-02-10 11:49:36 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"14\",\"device_name\":\"AFSUKZI-727\",\"device_external_ip\":\"192.0.2.22\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CONNECTION_LISTEN\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:45:02.8882089 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":9000,\"parent_pid\":720,\"process_publisher\":[{\"name\":\"Stellar Cyber Inc\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"2343aa8e2cd2830546ada0be44ff3887\",\"5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"remote_port\":9001,\"remote_ip\":\"198.51.100.57\",\"local_port\":9716,\"local_ip\":\"127.0.0.1\",\"netconn_domain\":\"\",\"netconn_inbound\":true,\"netconn_protocol\":\"PROTO_TCP\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.scriptload\",\"process_guid\":\"XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff32\",\"parent_guid\":\"XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49\",\"backend_timestamp\":\"2050-02-10 11:48:51 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"15\",\"device_name\":\"EFOKKMG-864\",\"device_external_ip\":\"198.51.100.144\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_SCRIPT\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:05.2725926 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4600,\"parent_pid\":6728,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\cscript.exe\",\"parent_path\":\"c:\\\\program files\\\\microsoft monitoring agent\\\\agent\\\\monitoringhost.exe\",\"process_hash\":[\"22443cf22dddfcb9e9fc619c7e9c71ba\",\"ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09\"],\"parent_hash\":[\"5e894149e4d32ac849c937d94d625640\",\"c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22\"],\"process_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cscript.exe\\\" /nologo \\\"MonitorKnowledgeDiscovery.vbs\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe\\\" -Embedding\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"scriptload_count\":1,\"scriptload_reputation\":\"REP_RESOLVING\",\"scriptload_effective_reputation\":\"REP_NOT_LISTED\",\"scriptload_publisher\":[{\"state\":\"FILE_SIGNATURE_STATE_NOT_SIGNED\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.scriptload\",\"process_guid\":\"XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33\",\"parent_guid\":\"XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49\",\"backend_timestamp\":\"2050-02-10 11:48:51 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"16\",\"device_name\":\"EFOKKMG-864\",\"device_external_ip\":\"198.51.100.144\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_SCRIPT\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:05.2725926 +0000 UTC\",\"create_time\": \"2050-02-10T08:03:29.540Z\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4600,\"parent_pid\":6728,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\cscript.exe\",\"parent_path\":\"c:\\\\program files\\\\microsoft monitoring agent\\\\agent\\\\monitoringhost.exe\",\"process_hash\":[\"22443cf22dddfcb9e9fc619c7e9c71ba\",\"ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09\"],\"parent_hash\":[\"5e894149e4d32ac849c937d94d625640\",\"c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22\"],\"process_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cscript.exe\\\" /nologo \\\"MonitorKnowledgeDiscovery.vbs\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe\\\" -Embedding\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"scriptload_count\":1,\"scriptload_reputation\":\"REP_RESOLVING\",\"scriptload_effective_reputation\":\"REP_NOT_LISTED\",\"scriptload_publisher\":[{\"state\":\"FILE_SIGNATURE_STATE_NOT_SIGNED\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.scriptload\",\"process_guid\":\"XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33\",\"parent_guid\":\"XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49\",\"backend_timestamp\":\"2050-02-10 11:48:51 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"16\",\"device_name\":\"EFOKKMG-864\",\"device_external_ip\":\"198.51.100.144\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_SCRIPT\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:05.272 +0000 UTC\",\"create_time\": \"2050-02-10T08:03:29.540Z\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4600,\"parent_pid\":6728,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\cscript.exe\",\"parent_path\":\"c:\\\\program files\\\\microsoft monitoring agent\\\\agent\\\\monitoringhost.exe\",\"process_hash\":[\"22443cf22dddfcb9e9fc619c7e9c71ba\",\"ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09\"],\"parent_hash\":[\"5e894149e4d32ac849c937d94d625640\",\"c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22\"],\"process_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cscript.exe\\\" /nologo \\\"MonitorKnowledgeDiscovery.vbs\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe\\\" -Embedding\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"scriptload_count\":1,\"scriptload_reputation\":\"REP_RESOLVING\",\"scriptload_effective_reputation\":\"REP_NOT_LISTED\",\"scriptload_publisher\":[{\"state\":\"FILE_SIGNATURE_STATE_NOT_SIGNED\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.scriptload\",\"process_guid\":\"XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33\",\"parent_guid\":\"XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49\",\"backend_timestamp\":\"2050-02-10 11:48:51 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"16\",\"device_name\":\"EFOKKMG-864\",\"device_external_ip\":\"198.51.100.144\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_SCRIPT\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:05.2 +0000 UTC\",\"create_time\": \"2050-02-10T08:03:29.540Z\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4600,\"parent_pid\":6728,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\cscript.exe\",\"parent_path\":\"c:\\\\program files\\\\microsoft monitoring agent\\\\agent\\\\monitoringhost.exe\",\"process_hash\":[\"22443cf22dddfcb9e9fc619c7e9c71ba\",\"ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09\"],\"parent_hash\":[\"5e894149e4d32ac849c937d94d625640\",\"c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22\"],\"process_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cscript.exe\\\" /nologo \\\"MonitorKnowledgeDiscovery.vbs\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe\\\" -Embedding\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"scriptload_count\":1,\"scriptload_reputation\":\"REP_RESOLVING\",\"scriptload_effective_reputation\":\"REP_NOT_LISTED\",\"scriptload_publisher\":[{\"state\":\"FILE_SIGNATURE_STATE_NOT_SIGNED\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.scriptload\",\"process_guid\":\"XXXXXXXX-004e050d-000011f8-00000000-1d81e740ff3ff33\",\"parent_guid\":\"XXXXXXXX-004e050d-00001a48-00000000-1d81e206b2e4f49\",\"backend_timestamp\":\"2050-02-10 11:48:51 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"16\",\"device_name\":\"EFOKKMG-864\",\"device_external_ip\":\"198.51.100.144\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_LOAD_SCRIPT\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:48:05 +0000 UTC\",\"create_time\": \"2050-02-10T08:03:29.540Z\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":4600,\"parent_pid\":6728,\"process_publisher\":[{\"name\":\"Microsoft Windows\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED | FILE_SIGNATURE_STATE_OS | FILE_SIGNATURE_STATE_CATALOG_SIGNED\"}],\"process_path\":\"c:\\\\windows\\\\system32\\\\cscript.exe\",\"parent_path\":\"c:\\\\program files\\\\microsoft monitoring agent\\\\agent\\\\monitoringhost.exe\",\"process_hash\":[\"22443cf22dddfcb9e9fc619c7e9c71ba\",\"ab16ab3a018c593a24e1aebfd0c4c368551d011451717911d2e77507f03f6c09\"],\"parent_hash\":[\"5e894149e4d32ac849c937d94d625640\",\"c02688156898ab3933c3423cefe9f251a6b21e95bdd7b5da283f5e81020c3f22\"],\"process_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cscript.exe\\\" /nologo \\\"MonitorKnowledgeDiscovery.vbs\\\"\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe\\\" -Embedding\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"scriptload_count\":1,\"scriptload_reputation\":\"REP_RESOLVING\",\"scriptload_effective_reputation\":\"REP_NOT_LISTED\",\"scriptload_publisher\":[{\"state\":\"FILE_SIGNATURE_STATE_NOT_SIGNED\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.netconn\",\"process_guid\":\"XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7\",\"parent_guid\":\"XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4\",\"backend_timestamp\":\"2050-02-10 11:49:36 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"14\",\"device_name\":\"AFSUKZI-727\",\"device_external_ip\":\"192.0.2.22\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CONNECTION_LISTEN\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:45:02.8882089 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":9000,\"parent_pid\":720,\"process_publisher\":[{\"name\":\"Stellar Cyber Inc\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"2343aa8e2cd2830546ada0be44ff3887\",\"5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"remote_port\":9001,\"remote_ip\":\"198.51.100.57\",\"local_port\":9716,\"local_ip\":\"127.0.0.1\",\"netconn_domain\":\"example.com\",\"netconn_inbound\":true,\"netconn_protocol\":\"PROTO_TCP\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"type\":\"endpoint.event.netconn\",\"process_guid\":\"XXXXXXXX-00442a47-00002328-00000000-1d81e73a30955e7\",\"parent_guid\":\"XXXXXXXX-00442a47-000002d0-00000000-1d807560b2edfc4\",\"backend_timestamp\":\"2050-02-10 11:49:36 +0000 UTC\",\"org_key\":\"XXXXXXXX\",\"device_id\":\"14\",\"device_name\":\"AFSUKZI-727\",\"device_external_ip\":\"192.0.2.22\",\"device_os\":\"WINDOWS\",\"device_group\":\"\",\"action\":\"ACTION_CONNECTION_LISTEN\",\"schema\":1,\"device_timestamp\":\"2050-02-10 11:45:02.8882089 +0000 UTC\",\"process_terminated\":false,\"process_reputation\":\"REP_RESOLVING\",\"parent_reputation\":\"REP_RESOLVING\",\"process_pid\":9000,\"parent_pid\":720,\"process_publisher\":[{\"name\":\"Stellar Cyber Inc\",\"state\":\"FILE_SIGNATURE_STATE_SIGNED | FILE_SIGNATURE_STATE_VERIFIED | FILE_SIGNATURE_STATE_TRUSTED\"}],\"process_path\":\"c:\\\\program files\\\\aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\",\"parent_path\":\"c:\\\\windows\\\\system32\\\\services.exe\",\"process_hash\":[\"2343aa8e2cd2830546ada0be44ff3887\",\"5da0c6e83bf0cf560b4b13373d9bb66d3c0e68f7c63b51e6af6b8932e85e5599\"],\"parent_hash\":[\"e3a192cb443a87731a6333192150c8a3\",\"ffbac2d0b147e3fa049d973f6c488ad276e33d2d653717434b9e5f2917afd163\"],\"process_cmdline\":\"\\\"C:\\\\Program Files\\\\Aella\\\\aella_conf_win_srv\\\\aella_conf_win_srv.exe\\\"\",\"parent_cmdline\":\"C:\\\\WINDOWS\\\\system32\\\\services.exe\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"sensor_action\":\"ACTION_ALLOW\",\"event_origin\":\"EDR\",\"remote_port\":9001,\"remote_ip\":\"198.51.100.57\",\"local_port\":9716,\"local_ip\":\"127.0.0.1\",\"netconn_domain\":\"example.com\",\"netconn_inbound\":false,\"netconn_protocol\":\"PROTO_TCP\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "endpoint_event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-carbon_black_cloud-endpoint_event-default",
+    "event_count": 22,
+    "numeric_keyword_fields": [
+      "carbon_black_cloud.endpoint_event.process.grandparent.pid"
+    ],
+    "package": "carbon_black_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

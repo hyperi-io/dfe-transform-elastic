@@ -1,0 +1,25 @@
+{
+  "expected": [
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"limit\":1000,\"offset\":9001,\"records\":[],\"total\":144}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_jira-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_jira",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

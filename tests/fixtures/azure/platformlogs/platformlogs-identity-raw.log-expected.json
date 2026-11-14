@@ -1,0 +1,132 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-platformlogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-11-09T10:57:31.000Z",
+      "agent": {
+        "ephemeral_id": "ab048e6a-7ecd-4729-a8f6-274e59a60a50",
+        "id": "4aeb634a-fe68-447c-ae69-8a351d8eef06",
+        "name": "e17d2e0373a3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "azure": {
+        "platformlogs": {
+          "Cloud": "AzureCloud",
+          "Environment": "prod",
+          "category": "kube-audit",
+          "ccpNamespace": "5e4bf4baee195b00017cdbfa",
+          "event_category": "Administrative",
+          "identity_name": "Michael Dell",
+          "operation_name": "Microsoft.ContainerService/managedClusters/diagnosticLogs/Read",
+          "properties": {
+            "log": {
+              "kind": "Event"
+            },
+            "pod": "kube-apiserver-666bd4b459-hjgdc"
+          }
+        },
+        "resource": {
+          "group": "OBS-INFRASTRUCTURE",
+          "id": "/SUBSCRIPTIONS/69FD8B08-6B7D-4897-8555-FB37D8ACD234/RESOURCEGROUPS/OBS-INFRASTRUCTURE/PROVIDERS/MICROSOFT.CONTAINERSERVICE/MANAGEDCLUSTERS/OBSKUBE",
+          "name": "OBSKUBE",
+          "provider": "MICROSOFT.CONTAINERSERVICE/MANAGEDCLUSTERS"
+        },
+        "subscription_id": "69FD8B08-6B7D-4897-8555-FB37D8ACD234"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Microsoft.ContainerService/managedClusters/diagnosticLogs/Read",
+        "dataset": "azure.platformlogs",
+        "kind": "event",
+        "module": "azure",
+        "original": "{\"Cloud\":\"AzureCloud\",\"Environment\":\"prod\",\"category\":\"kube-audit\",\"ccpNamespace\":\"5e4bf4baee195b00017cdbfa\",\"identity\":\"Michael Dell\",\"operationName\":\"Microsoft.ContainerService/managedClusters/diagnosticLogs/Read\",\"properties\":{\"log\":\"{\\\"kind\\\":\\\"Event\\\"}\",\"pod\":\"kube-apiserver-666bd4b459-hjgdc\"},\"resourceId\":\"/SUBSCRIPTIONS/69FD8B08-6B7D-4897-8555-FB37D8ACD234/RESOURCEGROUPS/OBS-INFRASTRUCTURE/PROVIDERS/MICROSOFT.CONTAINERSERVICE/MANAGEDCLUSTERS/OBSKUBE\",\"time\":\"2048-11-09T10:57:31.0000000Z\"}"
+      },
+      "fileset": {
+        "name": "platformlogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-platformlogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-04T03:45:57.121Z",
+      "agent": {
+        "ephemeral_id": "ab048e6a-7ecd-4729-a8f6-274e59a60a50",
+        "id": "4aeb634a-fe68-447c-ae69-8a351d8eef06",
+        "name": "e17d2e0373a3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "azure.platformlogs",
+        "module": "azure"
+      },
+      "fileset": {
+        "name": "platformlogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "{\"Cloud\":\"AzureCloud\",\"Environment\":\"prod\",\"category\":\"kube-audit\",\"ccpNamespace\":\"5e4bf4baee195b00017cdbfa\",\"identity\":\"Michael Dell\",\"operationName\":\"Microsoft.ContainerService/managedClusters/diagnosticLogs/Read\",\"properties\":{\"log\":\"{\\\"kind\\\":\\\"Event\\\"}\",\"pod\":\"kube-apiserver-666bd4b459-hjgdc\"},\"resourceId\":\"/SUBSCRIPTIONS/69FD8B08-6B7D-4897-8555-FB37D8ACD234/RESOURCEGROUPS/OBS-INFRASTRUCTURE/PROVIDERS/MICROSOFT.CONTAINERSERVICE/MANAGEDCLUSTERS/OBSKUBE\",\"time\":\"2048-11-09T10:57:31.0000000Z\"}",
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "platformlogs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-platformlogs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,5 @@
+[2050-09-14T09:31:20,934][INFO ][logstash.javapipeline    ][standalone-pipeline] Pipeline started {"pipeline.id"=>"standalone-pipeline"}
+[2050-09-14T09:31:20,934][INFO ][logstash.javapipeline    ][pipeline-with-memory-queue] Pipeline started {"pipeline.id"=>"pipeline-with-memory-queue"}
+[2050-09-14T09:31:20,936][INFO ][logstash.javapipeline    ][pipeline-with-persisted-queue] Pipeline started {"pipeline.id"=>"pipeline-with-persisted-queue"}
+[2050-09-14T09:31:20,946][INFO ][logstash.agent           ] Pipelines running {:count=>3, :running_pipelines=>[:"pipeline-with-memory-queue", :"standalone-pipeline", :"pipeline-with-persisted-queue"], :non_running_pipelines=>[]}
+[2051-10-03T17:21:54,573][DEBUG][logstash.filters.sleep   ][test][aa54d6911cc511bb024253be59e888bab66d46846cace2d1c1d6cd0ebba184e5] Sleeping {:delay=>1}

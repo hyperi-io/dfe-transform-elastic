@@ -215,9 +215,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.secure_endpoint.tactics") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.threat == null) {\n    ctx.threat = new HashMap();\n}\nif (ctx.threat.technique == null) {\n    ctx.threat.technique = new HashMap();\n}\nif (ctx.threat.technique.id == null) {\n    ctx.threat.technique.id = new ArrayList();\n}\nif (ctx.threat.technique.name == null) {\n    ctx.threat.technique.name = new ArrayList();\n}\nif (ctx.threat.technique.reference == null) {\n    ctx.threat.technique.reference = new ArrayList();\n}\nfor (technique in ctx.cisco?.secure_endpoint?.techniques) {\n    if (technique.name != null) {\n        if (!ctx.threat.technique.name.contains(technique.name)) {\n            ctx.threat.technique.name.add(technique.name);  \n        }\n    }\n    if (technique.external_id != null) {\n        if (!ctx.threat.technique.id.contains(technique.external_id)) {\n            ctx.threat.technique.id.add(technique.external_id);  \n        }\n    }\n    if (technique.mitre_url != null) {\n        if (!ctx.threat.technique.reference.contains(technique.mitre_url)) {\n            ctx.threat.technique.reference.add(technique.mitre_url);  \n        }\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -228,9 +226,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.secure_endpoint.tactics") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.threat == null) {\n    ctx.threat = new HashMap();\n}\nif (ctx.threat.tactic == null) {\n    ctx.threat.tactic = new HashMap();\n}\nif (ctx.threat.tactic.id == null) {\n    ctx.threat.tactic.id = new ArrayList();\n}\nif (ctx.threat.tactic.name == null) {\n    ctx.threat.tactic.name = new ArrayList();\n}\nif (ctx.threat.tactic.reference == null) {\n    ctx.threat.tactic.reference = new ArrayList();\n}\nfor (tactic in ctx.cisco?.secure_endpoint?.tactics) {\n    if (tactic.name != null) {\n        if (!ctx.threat.tactic.name.contains(tactic.name)) {\n            ctx.threat.tactic.name.add(tactic.name);  \n        }\n    }\n    if (tactic.external_id != null) {\n        if (!ctx.threat.tactic.id.contains(tactic.external_id)) {\n            ctx.threat.tactic.id.add(tactic.external_id);  \n        }\n    }\n    if (tactic.mitre_url != null) {\n        if (!ctx.threat.tactic.reference.contains(tactic.mitre_url)) {\n            ctx.threat.tactic.reference.add(tactic.mitre_url);  \n        }\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -263,9 +259,7 @@ impl Transform for Default {
                     })
             };
             if _cond {
-                // Painless script
-                // Source: def domain = \"\";\ndef nameArray = ctx.host.name.toString().splitOnToken(\".\");\nif (ctx.host == null) {\n    ctx.host = new HashMap();\n}\nif (nameArray.length > 0) {\n    for (int i = 1; i < nameArray.length; i++) {\n    domain += nameArray[i] + (i < nameArray.length - 1 ? \".\" : \"\");\n    }\n    ctx.host.hostname = nameArray[0];\n    ctx.host.domain = domain; \n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -292,9 +286,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.secure_endpoint.computer.network_addresses") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.host == null) {\n    ctx.host = new HashMap();\n}\nif (ctx.host.ip == null) {\n    ctx.host.ip = new ArrayList();\n}\nif (ctx.host.mac == null) {\n    ctx.host.mac = new ArrayList();\n}\nfor (addr in ctx.cisco.secure_endpoint.computer.network_addresses) {\n    if (addr.ip != null && !addr.ip.isEmpty()) {\n        if (!ctx.host.ip.contains(addr.ip)) {\n            ctx.host.ip.add(addr.ip);\n        }\n    }\n    if (addr.mac != null && !addr.mac.isEmpty()) {\n        def mac_addr = addr.mac.replace(\":\",\"-\").toUpperCase();\n        if (!ctx.host.mac.contains(mac_addr)) {\n            ctx.host.mac.add(mac_addr);\n        }\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -547,9 +539,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: def commandLine = ctx.cisco?.secure_endpoint?.command_line?.arguments;\nif (commandLine != null) {\n  commandLine = commandLine.trim();\n  if (commandLine != \"\") {\n    ctx.process.command_line = commandLine;\n\n    def args = [];\n    for (def v : / /.split(commandLine)) {\n      if (v != \"\") {\n        args.add(v);\n      }\n    }\n    if (args.size() > 0) {\n      ctx.process.args = args;\n    }\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -559,9 +549,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("process.args") };
             if _cond {
-                // Painless script
-                // Source: ctx.process.args_count = ctx.process.args.length;\nif (ctx.process.args.length > 0) {\n  ctx.process.executable = ctx.process.args[0];\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -755,9 +743,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.secure_endpoint.computer.network_addresses") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.related == null) {\n    ctx.related = new HashMap();\n}\nif (ctx.related?.ip == null) {\n    ctx.related.ip = new ArrayList();\n}\nfor (addr in ctx.cisco?.secure_endpoint?.computer?.network_addresses) {\n    if (addr.ip != null && !addr.ip.isEmpty()) {\n        if (!ctx.related.ip.contains(addr.ip)) {\n            ctx.related.ip.add(addr.ip);  \n        }\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -768,9 +754,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.secure_endpoint.computer.network_addresses") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.cisco?.secure_endpoint?.related == null) {\n    ctx.cisco.secure_endpoint.related = new HashMap();\n}\nif (ctx.cisco?.secure_endpoint?.related?.mac == null) {\n    ctx.cisco.secure_endpoint.related.mac = new ArrayList();\n}\nfor (addr in ctx.cisco?.secure_endpoint?.computer?.network_addresses) {\n    if (addr.mac != null && !addr.mac.isEmpty()) {\n        if (!ctx.cisco.secure_endpoint.related.mac.contains(addr.mac)) {\n            def mac_addr = addr.mac.replace(\":\",\"-\").toUpperCase();\n            ctx.cisco.secure_endpoint.related.mac.add(mac_addr);\n        }\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -970,8 +954,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean dropEmptyFields(Object object) {\n    if (object == null || object == '') {\n    return true;\n    } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n    } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n    }\n    return false;\n}\ndropEmptyFields(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

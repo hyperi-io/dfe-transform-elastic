@@ -1,0 +1,66 @@
+{
+  "expected": [
+    {
+      "event": {
+        "kind": "event",
+        "original": "Dec 13 11:35:28 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:28.420 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSAgentApp updateProductWithProductID:usingEngine:] Checking for updates for \"All Products\" using engine <KSUpdateEngine:0x100341a00\n\t\tticketStore=<KSPersistentTicketStore:0x100204520 store=<KSKeyedPersistentStore:0x100213290\n\t\t\tpath=\"/Users/qhs/Library/Google/GoogleSoftwareUpdate/TicketStore/Keystone.ticketstore\"\n\t\t\tlockFile=<KSLockFile:0x1002160e0\n\t\t\t\tpath=\"/Users/qhs/Library/Google/GoogleSoftwareUpdate/TicketStore/Keystone.ticketstore.lock\"\n\t\t\t\tlocked=NO\n\t\t\t>\n\t\t>>\n\t\tprocessor=<KSActionProcessor:0x1003bb5f0\n\t\t\tdelegate=<KSUpdateEngine:0x100341a00>\n\t\t\tisProcessing=NO actionsCompleted=0 progress=0.00\n\t\t\terrors=0 currentActionErrors=0\n\t\t\tevents=0 currentActionEvents=0\n\t\t\tactionQueue=( )\n\t\t>\n\t\tdelegate=(null)\n\t\tserverInfoStore=(null)\n\t\terrors=0\n\t>",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log"
+    },
+    {
+      "event": {
+        "kind": "event",
+        "original": "Dec 13 11:35:28 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:28.421 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSUpdateEngine updateAllExceptProduct:] KSUpdateEngine updating all installed products, except:'com.google.Keystone'.",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log"
+    },
+    {
+      "event": {
+        "kind": "event",
+        "original": "Apr 4 03:39:57 --- last message repeated 1 time ---",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log"
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "kind": "event",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log",
+      "message": "Dec 13 11:35:28 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:28.420 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSAgentApp updateProductWithProductID:usingEngine:] Checking for updates for \"All Products\" using engine <KSUpdateEngine:0x100341a00\n\t\tticketStore=<KSPersistentTicketStore:0x100204520 store=<KSKeyedPersistentStore:0x100213290\n\t\t\tpath=\"/Users/qhs/Library/Google/GoogleSoftwareUpdate/TicketStore/Keystone.ticketstore\"\n\t\t\tlockFile=<KSLockFile:0x1002160e0\n\t\t\t\tpath=\"/Users/qhs/Library/Google/GoogleSoftwareUpdate/TicketStore/Keystone.ticketstore.lock\"\n\t\t\t\tlocked=NO\n\t\t\t>\n\t\t>>\n\t\tprocessor=<KSActionProcessor:0x1003bb5f0\n\t\t\tdelegate=<KSUpdateEngine:0x100341a00>\n\t\t\tisProcessing=NO actionsCompleted=0 progress=0.00\n\t\t\terrors=0 currentActionErrors=0\n\t\t\tevents=0 currentActionEvents=0\n\t\t\tactionQueue=( )\n\t\t>\n\t\tdelegate=(null)\n\t\tserverInfoStore=(null)\n\t\terrors=0\n\t>"
+    },
+    {
+      "event": {
+        "kind": "event",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log",
+      "message": "Dec 13 11:35:28 d-oef-kqjn-epd-ofi GoogleSoftwareUpdateAgent[21412]: 2044-12-13 11:35:28.421 GoogleSoftwareUpdateAgent[21412/0x700007399000] [lvl=2] -[KSUpdateEngine updateAllExceptProduct:] KSUpdateEngine updating all installed products, except:'com.google.Keystone'."
+    },
+    {
+      "event": {
+        "kind": "event",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log",
+      "message": "Apr 4 03:39:57 --- last message repeated 1 time ---"
+    }
+  ],
+  "meta": {
+    "data_stream": "syslog",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}-[0-9]{2}:[0-9]{2}$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-syslog-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

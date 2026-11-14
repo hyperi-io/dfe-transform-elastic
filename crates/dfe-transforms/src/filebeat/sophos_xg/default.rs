@@ -76,8 +76,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("sophos.xg") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def lowercaseMap = [:];\nfor(def entry : ctx.sophos.xg.entrySet()){\n  lowercaseMap.put(entry.getKey().toLowerCase(), entry.getValue());\n}\nctx.sophos.xg = lowercaseMap;\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 rewrite_keys(
                     event,
                     &RewriteKeys::new(
@@ -143,9 +142,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp_.tz") && event.get_str("_temp_.tz") != Some("") };
             if _cond {
-                // Painless script
-                // Source: def conf = ctx['_conf']; if (conf == null) return;\ndef mappings = conf.tz_map; if (mappings == null) return;\ndef tz_log = ctx._temp_.tz; for (def item : mappings) {\n  if (item.tz_short == tz_log) {\n    ctx._temp_.tz = item.tz_long;\n    break;\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -391,8 +388,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("sophos.xg.duration") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event.duration = Integer.parseInt(ctx.sophos.xg.duration) * 1000000000L; ctx.event.start = ctx['@timestamp']; ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ctx.event.end = start.plus(ctx.event.duration, ChronoUnit.NANOS);
+                // The pipeline's script, emitted as the runtime's equivalent
                 duration_window(
                     event,
                     &DurationWindow::new(
@@ -403,9 +399,7 @@ impl Transform for Default {
                 );
             }
 
-            // Painless script
-            // Source: ctx.sophos?.xg.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -546,9 +540,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("observer.serial_number") };
             if _cond {
-                // Painless script
-                // Source: def conf = ctx['_conf']; if (conf == null) return; def serial = ctx.observer.serial_number; def mappings = conf.mappings; if (mappings == null) return; def name = conf['default']; for (def item : mappings) {\n  if (item.serial_number == serial) {\n    name = item.hostname;\n    break;\n  }\n} if (ctx.host == null) {\n  ctx.host = new HashMap();\n} ctx.host.name = name;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3029,9 +3021,7 @@ impl Transform for Default {
                         event.remove("_ingest");
                     }
                 }
-                // Painless script
-                // Source: if (ctx.sophos?.xg?.responsetime != null && ctx.sophos.xg.responsetime > 0) {\n  ctx.event.duration = ctx.sophos.xg.responsetime * 1000; \n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3590,8 +3580,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions_into_existing(event, &["bytes"]);
                     Ok(())
                 })();
@@ -3602,8 +3591,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.network.packets = ctx.source.packets + ctx.destination.packets
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions_into_existing(event, &["packets"]);
                     Ok(())
                 })();

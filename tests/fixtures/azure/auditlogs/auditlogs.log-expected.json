@@ -1,0 +1,159 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-auditlogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-10-18T15:30:51.027Z",
+      "agent": {
+        "ephemeral_id": "fc0ebc44-f08b-4438-9cc7-35bf2755f462",
+        "id": "b2513a40-5362-4ffd-9cfa-1f29661e6ab5",
+        "name": "1fe047c88019",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "azure": {
+        "auditlogs": {
+          "category": "AuditLogs",
+          "identity": "Ddvzcb Ldtglxqcwyks Mfqrgbd",
+          "operation_name": "Update device",
+          "operation_version": "1.0",
+          "properties": {
+            "activity_datetime": "2047-10-18T15:30:51.0273716+00:00",
+            "activity_display_name": "Update device",
+            "category": "Device",
+            "correlation_id": "0b3db4c2-692d-49c6-a66f-a98001d93f82",
+            "id": "Directory_ESQ",
+            "initiated_by": {
+              "app": {
+                "displayName": "Ddvzcb Ldtglxqcwyks Mfqrgbd",
+                "servicePrincipalId": "0b3db4c2-692d-49c6-a66f-a98001d93f82"
+              }
+            },
+            "logged_by_service": "Core Directory",
+            "operation_type": "Update",
+            "result_reason": "",
+            "target_resources": {
+              "0": {
+                "display_name": "LAPTOP-12",
+                "id": "0b3db4c2-692d-49c6-a66f-a98001d93f82",
+                "modified_properties": {
+                  "0": {
+                    "display_name": "Vwbvhbae Vyfbkfd Rstsankufy",
+                    "new_value": "\"\""
+                  }
+                },
+                "type": "Device"
+              }
+            }
+          },
+          "result_signature": "None"
+        },
+        "correlation_id": "0b3db4c2-692d-49c6-a66f-a98001d93f82",
+        "resource": {
+          "id": "/tenants/0b3db4c2-692d-49c6-a66f-a98001d93f82/providers/Microsoft.aadiam",
+          "provider": "Microsoft.aadiam"
+        },
+        "tenant_id": "0b3db4c2-692d-49c6-a66f-a98001d93f82"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Update device",
+        "dataset": "azure.auditlogs",
+        "duration": 0,
+        "kind": "event",
+        "module": "azure",
+        "original": "{\"category\":\"AuditLogs\",\"correlationId\":\"0b3db4c2-692d-49c6-a66f-a98001d93f82\",\"durationMs\":0,\"identity\":\"Ddvzcb Ldtglxqcwyks Mfqrgbd\",\"level\":\"Informational\",\"operationName\":\"Update device\",\"operationVersion\":\"1.0\",\"properties\":{\"activityDateTime\":\"2047-10-18T15:30:51.0273716+00:00\",\"activityDisplayName\":\"Update device\",\"category\":\"Device\",\"correlationId\":\"0b3db4c2-692d-49c6-a66f-a98001d93f82\",\"id\":\"Directory_ESQ\",\"initiatedBy\":{\"app\":{\"appId\":null,\"displayName\":\"Ddvzcb Ldtglxqcwyks Mfqrgbd\",\"servicePrincipalId\":\"0b3db4c2-692d-49c6-a66f-a98001d93f82\",\"servicePrincipalName\":null}},\"loggedByService\":\"Core Directory\",\"operationType\":\"Update\",\"result\":\"success\",\"resultReason\":\"\",\"targetResources\":[{\"displayName\":\"LAPTOP-12\",\"id\":\"0b3db4c2-692d-49c6-a66f-a98001d93f82\",\"modifiedProperties\":[{\"displayName\":\"Vwbvhbae Vyfbkfd Rstsankufy\",\"newValue\":\"\\\"\\\"\",\"oldValue\":null}],\"type\":\"Device\"}]},\"resourceId\":\"/tenants/0b3db4c2-692d-49c6-a66f-a98001d93f82/providers/Microsoft.aadiam\",\"resultSignature\":\"None\",\"tenantId\":\"0b3db4c2-692d-49c6-a66f-a98001d93f82\",\"time\":\"2047-10-18T15:30:51.0273716Z\"}",
+        "outcome": "success"
+      },
+      "fileset": {
+        "name": "auditlogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "Informational",
+        "offset": 0
+      },
+      "related": {
+        "entity": [
+          "0b3db4c2-692d-49c6-a66f-a98001d93f82"
+        ]
+      },
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-auditlogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-23T04:42:03.480Z",
+      "agent": {
+        "ephemeral_id": "fc0ebc44-f08b-4438-9cc7-35bf2755f462",
+        "id": "b2513a40-5362-4ffd-9cfa-1f29661e6ab5",
+        "name": "1fe047c88019",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "azure.auditlogs",
+        "module": "azure"
+      },
+      "fileset": {
+        "name": "auditlogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "{\"category\":\"AuditLogs\",\"correlationId\":\"0b3db4c2-692d-49c6-a66f-a98001d93f82\",\"durationMs\":0,\"identity\":\"Ddvzcb Ldtglxqcwyks Mfqrgbd\",\"level\":\"Informational\",\"operationName\":\"Update device\",\"operationVersion\":\"1.0\",\"properties\":{\"activityDateTime\":\"2047-10-18T15:30:51.0273716+00:00\",\"activityDisplayName\":\"Update device\",\"category\":\"Device\",\"correlationId\":\"0b3db4c2-692d-49c6-a66f-a98001d93f82\",\"id\":\"Directory_ESQ\",\"initiatedBy\":{\"app\":{\"appId\":null,\"displayName\":\"Ddvzcb Ldtglxqcwyks Mfqrgbd\",\"servicePrincipalId\":\"0b3db4c2-692d-49c6-a66f-a98001d93f82\",\"servicePrincipalName\":null}},\"loggedByService\":\"Core Directory\",\"operationType\":\"Update\",\"result\":\"success\",\"resultReason\":\"\",\"targetResources\":[{\"displayName\":\"LAPTOP-12\",\"id\":\"0b3db4c2-692d-49c6-a66f-a98001d93f82\",\"modifiedProperties\":[{\"displayName\":\"Vwbvhbae Vyfbkfd Rstsankufy\",\"newValue\":\"\\\"\\\"\",\"oldValue\":null}],\"type\":\"Device\"}]},\"resourceId\":\"/tenants/0b3db4c2-692d-49c6-a66f-a98001d93f82/providers/Microsoft.aadiam\",\"resultSignature\":\"None\",\"tenantId\":\"0b3db4c2-692d-49c6-a66f-a98001d93f82\",\"time\":\"2047-10-18T15:30:51.0273716Z\"}",
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "auditlogs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-auditlogs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

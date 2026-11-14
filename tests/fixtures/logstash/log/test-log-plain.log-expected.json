@@ -1,0 +1,139 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-09-14T09:31:20.934Z",
+      "event": {
+        "created": "2050-09-14T09:31:20.934Z",
+        "ingested": "2026-11-13T23:04:02.875408552Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "logstash": {
+        "log": {
+          "module": "logstash.javapipeline",
+          "pipeline_id": "standalone-pipeline"
+        }
+      },
+      "message": "Pipeline started {\"pipeline.id\"=>\"standalone-pipeline\"}"
+    },
+    {
+      "@timestamp": "2050-09-14T09:31:20.934Z",
+      "event": {
+        "created": "2050-09-14T09:31:20.934Z",
+        "ingested": "2026-11-13T23:04:02.875416212Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "logstash": {
+        "log": {
+          "module": "logstash.javapipeline",
+          "pipeline_id": "pipeline-with-memory-queue"
+        }
+      },
+      "message": "Pipeline started {\"pipeline.id\"=>\"pipeline-with-memory-queue\"}"
+    },
+    {
+      "@timestamp": "2050-09-14T09:31:20.936Z",
+      "event": {
+        "created": "2050-09-14T09:31:20.936Z",
+        "ingested": "2026-11-13T23:04:02.875416922Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "logstash": {
+        "log": {
+          "module": "logstash.javapipeline",
+          "pipeline_id": "pipeline-with-persisted-queue"
+        }
+      },
+      "message": "Pipeline started {\"pipeline.id\"=>\"pipeline-with-persisted-queue\"}"
+    },
+    {
+      "@timestamp": "2050-09-14T09:31:20.946Z",
+      "event": {
+        "created": "2050-09-14T09:31:20.946Z",
+        "ingested": "2026-11-13T23:04:02.875417402Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "logstash": {
+        "log": {
+          "module": "logstash.agent"
+        }
+      },
+      "message": "Pipelines running {:count=>3, :running_pipelines=>[:\"pipeline-with-memory-queue\", :\"standalone-pipeline\", :\"pipeline-with-persisted-queue\"], :non_running_pipelines=>[]}"
+    },
+    {
+      "@timestamp": "2051-10-03T17:21:54.573Z",
+      "event": {
+        "created": "2051-10-03T17:21:54.573Z",
+        "ingested": "2026-11-13T23:04:02.875417862Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "DEBUG"
+      },
+      "logstash": {
+        "log": {
+          "module": "logstash.filters.sleep",
+          "pipeline_id": "test",
+          "plugin_id": "aa54d6911cc511bb024253be59e888bab66d46846cace2d1c1d6cd0ebba184e5"
+        }
+      },
+      "message": "Sleeping {:delay=>1}"
+    }
+  ],
+  "input": [
+    {
+      "message": "[2050-09-14T09:31:20,934][INFO ][logstash.javapipeline    ][standalone-pipeline] Pipeline started {\"pipeline.id\"=>\"standalone-pipeline\"}"
+    },
+    {
+      "message": "[2050-09-14T09:31:20,934][INFO ][logstash.javapipeline    ][pipeline-with-memory-queue] Pipeline started {\"pipeline.id\"=>\"pipeline-with-memory-queue\"}"
+    },
+    {
+      "message": "[2050-09-14T09:31:20,936][INFO ][logstash.javapipeline    ][pipeline-with-persisted-queue] Pipeline started {\"pipeline.id\"=>\"pipeline-with-persisted-queue\"}"
+    },
+    {
+      "message": "[2050-09-14T09:31:20,946][INFO ][logstash.agent           ] Pipelines running {:count=>3, :running_pipelines=>[:\"pipeline-with-memory-queue\", :\"standalone-pipeline\", :\"pipeline-with-persisted-queue\"], :non_running_pipelines=>[]}"
+    },
+    {
+      "message": "[2051-10-03T17:21:54,573][DEBUG][logstash.filters.sleep   ][test][aa54d6911cc511bb024253be59e888bab66d46846cace2d1c1d6cd0ebba184e5] Sleeping {:delay=>1}"
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.created": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-logstash-log-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "logstash",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

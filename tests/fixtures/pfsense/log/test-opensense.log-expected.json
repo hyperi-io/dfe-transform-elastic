@@ -1,0 +1,577 @@
+{
+  "expected": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jan 1 02:21:38 dijdibup.kuwkbjub.net filterlog[97530]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,12617,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49724,853,0,S,1891286705,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,12617,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49724,853,0,S,1891286705,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:WtiiaN0kyEdSWJRfRJ+7nhliuHw=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "name": "dijdibup.kuwkbjub.net",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 12617,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 97530
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49724
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "ff02::1:2",
+        "ip": "ff02::1:2",
+        "port": 547
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Dec 31 22:02:55 dijdibup.kuwkbjub.net filterlog[15307]: 6,,,1000000105,igb1.27,match,block,in,6,0x00,0xf6279,1,UDP,17,32,fe80::208:9bff:fef3:652b,ff02::1:2,546,547,32",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "6,,,1000000105,igb1.27,match,block,in,6,0x00,0xf6279,1,UDP,17,32,fe80::208:9bff:fef3:652b,ff02::1:2,546,547,32",
+      "network": {
+        "bytes": 32,
+        "community_id": "1:S6E0S9O3vdACB/y4guu8ivBG4KE=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv6",
+        "vlan": {
+          "id": "27"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.27"
+          },
+          "vlan": {
+            "id": "27"
+          }
+        },
+        "name": "dijdibup.kuwkbjub.net",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "1",
+          "flow_label": "0xf6279",
+          "tos": "0x00"
+        },
+        "udp": {
+          "length": 32
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 15307
+      },
+      "related": {
+        "ip": [
+          "ff02::1:2",
+          "fe80::208:9bff:fef3:652b"
+        ]
+      },
+      "rule": {
+        "id": "1000000105"
+      },
+      "source": {
+        "address": "fe80::208:9bff:fef3:652b",
+        "ip": "fe80::208:9bff:fef3:652b",
+        "port": 546
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "client": {
+        "mac": "8A-07-07-C3-EE-77"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "DHCPDISCOVER",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<190>Dec 31 22:06:16 dijdibup.kuwkbjub.net dhcpd[40152]: DHCPDISCOVER from 8a:07:07:c3:ee:77 via eth0.60",
+        "provider": "dhcpd",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 190
+        }
+      },
+      "message": "DHCPDISCOVER from 8a:07:07:c3:ee:77 via eth0.60",
+      "network": {
+        "protocol": "dhcp",
+        "transport": "udp",
+        "vlan": {
+          "id": "60"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "eth0.60"
+          },
+          "vlan": {
+            "id": "60"
+          }
+        },
+        "name": "dijdibup.kuwkbjub.net",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "dhcpd",
+        "pid": 40152
+      },
+      "source": {
+        "mac": "8A-07-07-C3-EE-77"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "client": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "api.pjcxgicyxysdw.org",
+          "registered_domain": "pjcxgicyxysdw.org",
+          "subdomain": "api",
+          "top_level_domain": "org",
+          "type": "A"
+        },
+        "type": "question"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>Dec 31 22:06:33 dijdibup.kuwkbjub.net unbound[75499]: [26931:0] info: 192.168.124.110 api.pjcxgicyxysdw.org. A IN",
+        "provider": "unbound",
+        "type": [
+          "connection"
+        ]
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "[26931:0] info: 192.168.124.110 api.pjcxgicyxysdw.org. A IN",
+      "network": {
+        "protocol": "dns",
+        "type": "ipv4"
+      },
+      "observer": {
+        "name": "dijdibup.kuwkbjub.net",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "unbound",
+        "pid": 75499
+      },
+      "related": {
+        "ip": [
+          "192.168.124.110"
+        ]
+      },
+      "source": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-09T20:44:11.000Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "10.182.2.165",
+        "ip": "10.182.2.165",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2050-06-09T14:44:11-06:00 OPNsense.example.com filterlog 76404 - [meta sequenceId=\"1\"] 124,,,eed139152a56b13e88260fb4267d64d2,ixl1_vlan70,match,pass,out,4,0x0,,63,5687,0,DF,6,tcp,60,192.168.124.110,10.182.2.165,40370,80,0,S,3364871769,,65535,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-06:00",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "124,,,eed139152a56b13e88260fb4267d64d2,ixl1_vlan70,match,pass,out,4,0x0,,63,5687,0,DF,6,tcp,60,192.168.124.110,10.182.2.165,40370,80,0,S,3364871769,,65535,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:o6xabrnaW5KGpfMZlOAeQXIh2do=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "ixl1_vlan70"
+          }
+        },
+        "name": "OPNsense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 5687,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 65535
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 76404
+      },
+      "related": {
+        "ip": [
+          "10.182.2.165",
+          "192.168.124.110"
+        ]
+      },
+      "rule": {
+        "id": "eed139152a56b13e88260fb4267d64d2"
+      },
+      "source": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110",
+        "port": 40370
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-05-15T15:54:18.000Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.168.37.32",
+        "ip": "192.168.37.32",
+        "port": 137
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2050-05-15T11:54:18-04:00 tku320.xcyx.ijhxb.net filterlog 76549 - [meta sequenceId=\"7299\"] 13,,,16f8eee751b45e0a90500fd92e8ff721,igb1,match,block,in,4,0x0,,128,56110,0,none,17,udp,78,192.168.37.138,192.168.37.32,137,137,58",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-04:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "13,,,16f8eee751b45e0a90500fd92e8ff721,igb1,match,block,in,4,0x0,,128,56110,0,none,17,udp,78,192.168.37.138,192.168.37.32,137,137,58",
+      "network": {
+        "bytes": 78,
+        "community_id": "1:D0c8v45Oq4v/xB4/ryaVXL04KlI=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1"
+          }
+        },
+        "name": "tku320.xcyx.ijhxb.net",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "none",
+          "id": 56110,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 128
+        },
+        "udp": {
+          "length": 58
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 76549
+      },
+      "related": {
+        "ip": [
+          "192.168.37.32",
+          "192.168.37.138"
+        ]
+      },
+      "rule": {
+        "id": "16f8eee751b45e0a90500fd92e8ff721"
+      },
+      "source": {
+        "address": "192.168.37.138",
+        "ip": "192.168.37.138",
+        "port": 137
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jan 1 02:21:38 dijdibup.kuwkbjub.net filterlog[97530]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,12617,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49724,853,0,S,1891286705,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Dec 31 22:02:55 dijdibup.kuwkbjub.net filterlog[15307]: 6,,,1000000105,igb1.27,match,block,in,6,0x00,0xf6279,1,UDP,17,32,fe80::208:9bff:fef3:652b,ff02::1:2,546,547,32",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<190>Dec 31 22:06:16 dijdibup.kuwkbjub.net dhcpd[40152]: DHCPDISCOVER from 8a:07:07:c3:ee:77 via eth0.60",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>Dec 31 22:06:33 dijdibup.kuwkbjub.net unbound[75499]: [26931:0] info: 192.168.124.110 api.pjcxgicyxysdw.org. A IN",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2050-06-09T14:44:11-06:00 OPNsense.example.com filterlog 76404 - [meta sequenceId=\"1\"] 124,,,eed139152a56b13e88260fb4267d64d2,ixl1_vlan70,match,pass,out,4,0x0,,63,5687,0,DF,6,tcp,60,192.168.124.110,10.182.2.165,40370,80,0,S,3364871769,,65535,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2050-05-15T11:54:18-04:00 tku320.xcyx.ijhxb.net filterlog 76549 - [meta sequenceId=\"7299\"] 13,,,16f8eee751b45e0a90500fd92e8ff721,igb1,match,block,in,4,0x0,,128,56110,0,none,17,udp,78,192.168.37.138,192.168.37.32,137,137,58",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<13>1 2050-05-15T11:39:04-04:00 tku320.xcyx.ijhxb.net /flowd_aggregate.py 73841 - [meta sequenceId=\"3653\"] vacuum done",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-pfsense-log-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "pfsense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

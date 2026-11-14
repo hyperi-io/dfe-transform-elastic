@@ -230,9 +230,7 @@ impl Transform for Default {
                 event.has_value("nginx_ingress_controller.access.upstream.response.length_list") && event.get("nginx_ingress_controller.access.upstream.response.length_list").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
-                // Painless script
-                // Source: try {\n  if (ctx.nginx_ingress_controller.access.upstream.response.length_list.length == null) {\n    return;\n  }\n  int last_length = 0;\n  for (def item : ctx.nginx_ingress_controller.access.upstream.response.length_list) {\n    last_length =  Integer.parseInt(item);\n  }\n  ctx.nginx_ingress_controller.access.upstream.response.length = last_length;\n} catch (Exception e) {\n  ctx.nginx_ingress_controller.access.upstream.response.length = null;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -245,9 +243,7 @@ impl Transform for Default {
                 event.has_value("nginx_ingress_controller.access.upstream.response.time_list") && event.get("nginx_ingress_controller.access.upstream.response.time_list").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
-                // Painless script
-                // Source: try {\n  if (ctx.nginx_ingress_controller.access.upstream.response.time_list.length == null) {\n    return;\n  }\n  float res_time = 0;\n  for (def item : ctx.nginx_ingress_controller.access.upstream.response.time_list) {\n    res_time = res_time + Float.parseFloat(item);\n  }\n  ctx.nginx_ingress_controller.access.upstream.response.time = res_time;\n} catch (Exception e) {\n  ctx.nginx_ingress_controller.access.upstream.response.time = null;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -260,9 +256,7 @@ impl Transform for Default {
                 event.has_value("nginx_ingress_controller.access.upstream.response.status_code_list") && event.get("nginx_ingress_controller.access.upstream.response.status_code_list").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
-                // Painless script
-                // Source: try {\n  if (ctx.nginx_ingress_controller.access.upstream.response.status_code_list.length == null) {\n    return;\n  }\n  int last_status_code;\n  for (def item : ctx.nginx_ingress_controller.access.upstream.response.status_code_list) {\n    last_status_code = Integer.parseInt(item);\n  }\n  ctx.nginx_ingress_controller.access.upstream.response.status_code = last_status_code;\n} catch (Exception e) {\n  ctx.nginx_ingress_controller.access.upstream.response.status_code = null;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -275,9 +269,7 @@ impl Transform for Default {
                 event.has_value("nginx_ingress_controller.access.upstream_address_list") && event.get("nginx_ingress_controller.access.upstream_address_list").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
-                // Painless script
-                // Source: try {\n  if (ctx.nginx_ingress_controller.access.upstream_address_list.length == null) {\n    return;\n  }\n  def last_upstream = \"\";\n  for (def item : ctx.nginx_ingress_controller.access.upstream_address_list) {\n    last_upstream = item;\n  }\n  \n  ctx.nginx_ingress_controller.access.upstream.address = last_upstream;\n} catch (Exception e) {\n  ctx.nginx_ingress_controller.access.upstream.address = null;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -399,9 +391,7 @@ impl Transform for Default {
                 event.has_value("nginx_ingress_controller.access.remote_ip_list") && event.get("nginx_ingress_controller.access.remote_ip_list").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
-                // Painless script
-                // Source: boolean isPrivate(def dot, def ip) {\n  try {\n    StringTokenizer tok = new StringTokenizer(ip, dot);\n    int firstByte = Integer.parseInt(tok.nextToken());\n    int secondByte = Integer.parseInt(tok.nextToken());\n    if (firstByte == 10) {\n      return true;\n    }\n    if (firstByte == 192 && secondByte == 168) {\n      return true;\n    }\n    if (firstByte == 172 && secondByte >= 16 && secondByte <= 31) {\n      return true;\n    }\n    if (firstByte == 127) {\n      return true;\n    }\n    return false;\n  }\n  catch (Exception e) {\n    return false;\n  }\n} try {\n  ctx.source.address = null;\n  if (ctx.nginx_ingress_controller.access.remote_ip_list == null) {\n    return;\n  }\n  def found = false;\n  for (def item : ctx.nginx_ingress_controller.access.remote_ip_list) {\n    if (!isPrivate(params.dot, item)) {\n      ctx.source.address = item;\n      found = true;\n      break;\n    }\n  }\n  if (!found) {\n    ctx.source.address = ctx.nginx_ingress_controller.access.remote_ip_list[0];\n  }\n} catch (Exception e) {\n  ctx.source.address = null;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -629,8 +619,7 @@ impl Transform for Default {
             event.remove("nginx_ingress_controller.access.info");
             event.remove("nginx_ingress_controller.access.upstream.address");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1,0 +1,121 @@
+{
+  "expected": [
+    {
+      "couchbase": {
+        "node": {
+          "commands": {
+            "get": {
+              "count": 3
+            }
+          },
+          "couch": {
+            "docs": {
+              "data_size": {
+                "bytes": 15159455
+              },
+              "disk_size": {
+                "bytes": 180662848
+              }
+            },
+            "spatial": {
+              "data_size": {
+                "bytes": 0
+              },
+              "disk_size": {
+                "bytes": 0
+              }
+            },
+            "views": {
+              "data_size": {
+                "bytes": 0
+              },
+              "disk_size": {
+                "bytes": 769535
+              }
+            }
+          },
+          "cpu_utilization_rate": {
+            "pct": 35.48799182422075
+          },
+          "current_items": {
+            "total": 15644,
+            "value": 15644
+          },
+          "ep_bg_fetched": 1,
+          "get": {
+            "hits": 3
+          },
+          "hostname": "192.168.69.100:8091",
+          "memcached": {
+            "allocated": {
+              "bytes": 6242
+            },
+            "reserved": {
+              "bytes": 6242
+            }
+          },
+          "memory": {
+            "free": {
+              "bytes": 2721206272
+            },
+            "total": {
+              "bytes": 8181792768
+            },
+            "used": {
+              "bytes": 88866928
+            }
+          },
+          "operations": {
+            "count": 1
+          },
+          "swap": {
+            "total": {
+              "bytes": 4160745472
+            },
+            "used": {
+              "bytes": 518635520
+            }
+          },
+          "uptime": {
+            "sec": 697032
+          },
+          "vb_replica": {
+            "items": {
+              "current": 0
+            }
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "kind": "metric",
+        "module": "couchbase",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"addressFamily\":\"inet\",\"addressFamilyOnly\":false,\"clusterCompatibility\":458753,\"clusterMembership\":\"active\",\"configuredHostname\":\"127.0.0.1:8091\",\"couchApiBase\":\"http://192.168.69.100:8092/\",\"couchApiBaseHTTPS\":\"https://192.168.69.100:18092/\",\"cpuCount\":4,\"externalListeners\":[{\"afamily\":\"inet\",\"nodeEncryption\":false}],\"hostname\":\"192.168.69.100:8091\",\"interestingStats\":{\"cmd_get\":3,\"couch_docs_actual_disk_size\":180662848,\"couch_docs_data_size\":15159455,\"couch_spatial_data_size\":0,\"couch_spatial_disk_size\":0,\"couch_views_actual_disk_size\":769535,\"couch_views_data_size\":0,\"curr_items\":15644,\"curr_items_tot\":15644,\"ep_bg_fetched\":1,\"get_hits\":3,\"index_data_size\":2627525,\"index_disk_size\":3983391,\"mem_used\":88866928,\"ops\":1,\"vb_active_num_non_resident\":1971,\"vb_replica_curr_items\":0},\"mcdMemoryAllocated\":6242,\"mcdMemoryReserved\":6242,\"memoryFree\":2721206272,\"memoryTotal\":8181792768,\"nodeEncryption\":false,\"nodeHash\":20429757,\"nodeUUID\":\"785c8ceb8153290d689ce05550c7525c\",\"os\":\"x86_64-pc-linux-gnu\",\"otpNode\":\"hx_3@dd.local\",\"ports\":{\"direct\":11210,\"distTCP\":21100,\"distTLS\":21150,\"httpsCAPI\":18092,\"httpsMgmt\":18091},\"recoveryType\":\"none\",\"serverGroup\":\"Group 1\",\"services\":[\"fts\",\"index\",\"kv\",\"n1ql\"],\"status\":\"healthy\",\"systemStats\":{\"allocstall\":23290,\"cpu_cores_available\":4,\"cpu_stolen_rate\":0,\"cpu_utilization_rate\":35.48799182422075,\"mem_free\":2721206272,\"mem_limit\":8181792768,\"mem_total\":8181792768,\"swap_total\":4160745472,\"swap_used\":518635520},\"thisNode\":true,\"uptime\":\"697032\",\"version\":\"7.1.0-2556-enterprise\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "node",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-couchbase-node-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "couchbase",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

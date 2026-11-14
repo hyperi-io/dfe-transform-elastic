@@ -1,0 +1,82 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2036-07-17T07:51:27.437Z",
+      "destination": {
+        "address": "192.168.254.142",
+        "ip": "192.168.254.142",
+        "port": 3306
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "query",
+        "category": [
+          "network",
+          "database"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C5Hol527kLMUw36hj3",
+        "kind": "event",
+        "original": "{\"ts\":2099893887.437392,\"uid\":\"C5Hol527kLMUw36hj3\",\"id.orig_h\":\"192.168.254.142\",\"id.orig_p\":56162,\"id.resp_h\":\"192.168.254.142\",\"id.resp_p\":3306,\"cmd\":\"query\",\"arg\":\"select count(*) from foo\",\"success\":true,\"rows\":1}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:+2iYKqShQbMm6RKxm9dTWnWjAt0=",
+        "protocol": "mysql",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "192.168.254.142"
+        ]
+      },
+      "source": {
+        "address": "192.168.254.142",
+        "ip": "192.168.254.142",
+        "port": 56162
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "mysql": {
+          "arg": "select count(*) from foo",
+          "cmd": "query",
+          "rows": 1,
+          "success": true
+        },
+        "session_id": "C5Hol527kLMUw36hj3"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2099893887.437392,\"uid\":\"C5Hol527kLMUw36hj3\",\"id.orig_h\":\"192.168.254.142\",\"id.orig_p\":56162,\"id.resp_h\":\"192.168.254.142\",\"id.resp_p\":3306,\"cmd\":\"query\",\"arg\":\"select count(*) from foo\",\"success\":true,\"rows\":1}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "mysql",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-mysql-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

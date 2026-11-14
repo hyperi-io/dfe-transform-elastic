@@ -1,0 +1,111 @@
+{
+    "events": [
+        {
+            "cloud": {
+                "instance": {
+                    "name": "obstestmemleak",
+                    "id": "8db212de-88a0-42fe-bfb4-a18468cb0c12"
+                },
+                "provider": "azure",
+                "machine": {
+                    "type": "Standard_B2ms"
+                },
+                "region": "westeurope",
+                "account": {
+                    "id": "69fd8b08-6b7d-4897-8555-fb37d8acd234"
+                }
+            },
+            "@timestamp": "2049-07-26T09:52:00.000Z",
+            "service": {
+                "type": "azure"
+            },
+            "data_stream": {
+                "namespace": "default",
+                "type": "metrics",
+                "dataset": "azure.compute_vm"
+            },
+            "host": {
+                "hostname": "ezdhdr-bldfh-dvenz",
+                "disk": {
+                    "read": {
+                        "bytes": 380741.72
+                    }
+                },
+                "os": {
+                    "kernel": "4.19.128-microsoft-standard",
+                    "codename": "Core",
+                    "name": "CentOS Linux",
+                    "family": "redhat",
+                    "type": "linux",
+                    "version": "7 (Core)",
+                    "platform": "centos"
+                },
+                "containerized": true,
+                "ip": [
+                    "172.26.228.241"
+                ],
+                "name": "obstestmemleak",
+                "cpu": {
+                    "usage": 0.027239999999999997
+                },
+                "id": "f7512aff323cc3de64d5c928b009c7bd",
+                "mac": [
+                    "93:53:ca:27:11:68"
+                ],
+                "architecture": "x86_64",
+                "network": {
+                    "ingress": {
+                        "bytes": 5100050.0,
+                        "packets": 5183139.0
+                    }
+                }
+            },
+            "metricset": {
+                "period": 300000,
+                "name": "monitor"
+            },
+            "event": {
+                "duration": 1585511300,
+                "agent_id_status": "verified",
+                "ingested": "2049-07-26T10:02:20.417443300Z",
+                "module": "azure",
+                "dataset": "azure.compute_vm"
+            },
+            "azure": {
+                "subscription_id": "69fd8b08-6b7d-4897-8555-fb37d8acd234",
+                "timegrain": "PT5M",
+                "resource": {
+                    "name": "obstestmemleak",
+                    "id": "/subscriptions/69fd8b08-6b7d-4897-8555-fb37d8acd234/resourceGroups/obs-infrastructure/providers/Microsoft.Compute/virtualMachines/obstestmemleak",
+                    "type": "Microsoft.Compute/virtualMachines",
+                    "group": "obs-infrastructure",
+                    "tags": {
+                        "vmtest1": "value3",
+                        "vmtest": "value1, value 2"
+                    }
+                },
+                "namespace": "Microsoft.Compute/virtualMachines",
+                "monitor": {
+                    "inbound_flows_maximum_creation_rate": {
+                        "avg": 203
+                    },
+                    "disk_read_bytes": {
+                        "total": 380741.72
+                    },
+                    "percentage_cpu": {
+                        "avg": 2.7239999999999998
+                    },
+                    "network_in": {
+                        "total": 5183139.0
+                    },
+                    "network_in_total": {
+                        "total": 5100050.0
+                    },
+                    "outbound_flows_maximum_creation_rate": {
+                        "avg": 203
+                    }
+                }
+            }
+        }
+    ]
+}

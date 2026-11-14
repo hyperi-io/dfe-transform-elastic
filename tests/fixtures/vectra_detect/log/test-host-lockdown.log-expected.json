@@ -1,0 +1,118 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-02-14T08:52:22.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "unlock",
+        "category": [
+          "host"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_host_lockdown -: {\"version\": \"7.4\", \"host_id\": 231, \"user\": \"jdaptddelm\", \"headend_addr\": \"203.0.113.248\", \"host_name\": \"bmygfd-g573\", \"href\": \"https://x29-1-13.sc.tvec/hosts/231\", \"action\": \"unlock\", \"success\": true, \"will_retry\": false, \"category\": \"HOST_LOCKDOWN\", \"edr_type\": \"sentinelone\", \"vectra_timestamp\": \"2559977542\"}",
+        "outcome": "success",
+        "reference": "https://x29-1-13.sc.tvec/hosts/231",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "bmygfd-g573",
+        "id": "231"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "hosts": [
+          "bmygfd-g573"
+        ],
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "jdaptddelm"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "domain": "x29-1-13.sc.tvec",
+        "original": "https://x29-1-13.sc.tvec/hosts/231",
+        "path": "/hosts/231",
+        "scheme": "https"
+      },
+      "user": {
+        "name": "jdaptddelm"
+      },
+      "vectra_detect": {
+        "log": {
+          "action": "unlock",
+          "category": "HOST_LOCKDOWN",
+          "edr_type": "sentinelone",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_host_lockdown",
+          "headend_addr": "203.0.113.248",
+          "host": {
+            "id": "231",
+            "name": "bmygfd-g573"
+          },
+          "href": "https://x29-1-13.sc.tvec/hosts/231",
+          "success": true,
+          "user": {
+            "name": "jdaptddelm"
+          },
+          "vectra_timestamp": "2051-02-14T08:52:22.000Z",
+          "version": "7.4",
+          "will_retry": false
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_host_lockdown -: {\"version\": \"7.4\", \"host_id\": 231, \"user\": \"jdaptddelm\", \"headend_addr\": \"203.0.113.248\", \"host_name\": \"bmygfd-g573\", \"href\": \"https://x29-1-13.sc.tvec/hosts/231\", \"action\": \"unlock\", \"success\": true, \"will_retry\": false, \"category\": \"HOST_LOCKDOWN\", \"edr_type\": \"sentinelone\", \"vectra_timestamp\": \"2559977542\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-vectra_detect-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [
+      "vectra_detect.log.host.groups.id",
+      "vectra_detect.log.host.groups.triage_filters.id"
+    ],
+    "package": "vectra_detect",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

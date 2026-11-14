@@ -1,0 +1,425 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-04-27T11:11:47.028-08:00",
+      "cisco_ise": {
+        "log": {
+          "acct": {
+            "authentic": "RADIUS",
+            "session": {
+              "id": "00000000/e0:bf:6a:73:17:8e/20879"
+            },
+            "status": {
+              "type": "Start"
+            }
+          },
+          "acs": {
+            "session": {
+              "id": "hxtq.mio.com/176956368/1092777"
+            }
+          },
+          "airespace": {
+            "wlan": {
+              "id": 1
+            }
+          },
+          "allowed_protocol": {
+            "matched": {
+              "rule": "Default"
+            }
+          },
+          "called_station": {
+            "id": "56-87-69-59-9f-b2"
+          },
+          "calling_station": {
+            "id": "c2-fc-6e-11-30-6d"
+          },
+          "category": {
+            "name": "CISE_RADIUS_Accounting"
+          },
+          "class": "CACS:0a2025060001794f52cfa877:hxtq.mio.com/176956368/1092772",
+          "config_version": {
+            "id": 33
+          },
+          "cpm": {
+            "session": {
+              "id": "0a222bc0000000d123e111f0"
+            }
+          },
+          "event": {
+            "timestamp": "2042-01-10T07:59:55.000Z"
+          },
+          "framed": {
+            "ip": "203.0.113.248"
+          },
+          "location": "Location#All Locations#SJC#WNBU",
+          "message": {
+            "code": "3000",
+            "description": "Radius-Accounting: RADIUS Accounting start request",
+            "id": "0000070618"
+          },
+          "nas": {
+            "identifier": "Acme_fe:56:00",
+            "ip": "192.0.2.170",
+            "port": {
+              "number": 13,
+              "type": "Wireless - IEEE 802.11"
+            }
+          },
+          "network": {
+            "device": {
+              "groups": [
+                "Location#All Locations#SJC#WNBU",
+                "Device Type#All Device Types#Wireless#WLC"
+              ],
+              "name": "WNBU-WLC1"
+            }
+          },
+          "request": {
+            "latency": 6
+          },
+          "segment": {
+            "number": 0,
+            "total": 1
+          },
+          "selected": {
+            "access": {
+              "service": "Default Network Access"
+            }
+          },
+          "step": [
+            "11004",
+            "11017",
+            "15049",
+            "15008",
+            "15048",
+            "15048",
+            "15048",
+            "15004",
+            "15006",
+            "11005"
+          ],
+          "tunnel": {
+            "medium": {
+              "type": "(tag=0) 802"
+            },
+            "private": {
+              "group_id": "(tag=0) 70"
+            },
+            "type": "(tag=0) VLAN"
+          }
+        }
+      },
+      "client": {
+        "ip": "192.0.2.170"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "radius-accounting",
+        "category": [
+          "configuration"
+        ],
+        "code": "3000",
+        "kind": "event",
+        "original": "<182>Apr 27 11:11:47 hxtq.mio.com CISE_RADIUS_Accounting 0000070618 1 0 2048-04-27 11:11:47.028075 -08:00 0091827141 3000 NOTICE Radius-Accounting: RADIUS Accounting start request, ConfigVersionId=33, Device IP Address=192.0.2.170, RequestLatency=6, NetworkDeviceName=WNBU-WLC1, User-Name=nisehorrrrn, NAS-IP-Address=192.0.2.170, NAS-Port=13, Framed-IP-Address=203.0.113.248, Class=CACS:0a2025060001794f52cfa877:hxtq.mio.com/176956368/1092772, Called-Station-ID=56-87-69-59-9f-b2, Calling-Station-ID=c2-fc-6e-11-30-6d, NAS-Identifier=Acme_fe:56:00, Acct-Status-Type=Start, Acct-Session-Id=00000000/e0:bf:6a:73:17:8e/20879, Acct-Authentic=RADIUS, Event-Timestamp=2272953595, NAS-Port-Type=Wireless - IEEE 802.11, Tunnel-Type=(tag=0) VLAN, Tunnel-Medium-Type=(tag=0) 802, Tunnel-Private-Group-ID=(tag=0) 70, Airespace-Wlan-Id=1, AcsSessionID=hxtq.mio.com/176956368/1092777, SelectedAccessService=Default Network Access, Step=11004, Step=11017, Step=15049, Step=15008, Step=15048, Step=15048, Step=15048, Step=15004, Step=15006, Step=11005, NetworkDeviceGroups=Location#All Locations#SJC#WNBU, NetworkDeviceGroups=Device Type#All Device Types#Wireless#WLC, CPMSessionID=0a222bc0000000d123e111f0, AllowedProtocolMatchedRule=Default, Location=Location#All Locations#SJC#WNBU, Device Type=Device Type#All Device Types#Wireless#WLC",
+        "sequence": 91827141,
+        "timezone": "-08:00",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "hxtq.mio.com"
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "priority": 182,
+          "severity": {
+            "name": "notice"
+          }
+        }
+      },
+      "message": "2048-04-27 11:11:47.028075 -08:00 0091827141 3000 NOTICE Radius-Accounting: RADIUS Accounting start request, ConfigVersionId=33, Device IP Address=192.0.2.170, RequestLatency=6, NetworkDeviceName=WNBU-WLC1, User-Name=nisehorrrrn, NAS-IP-Address=192.0.2.170, NAS-Port=13, Framed-IP-Address=203.0.113.248, Class=CACS:0a2025060001794f52cfa877:hxtq.mio.com/176956368/1092772, Called-Station-ID=56-87-69-59-9f-b2, Calling-Station-ID=c2-fc-6e-11-30-6d, NAS-Identifier=Acme_fe:56:00, Acct-Status-Type=Start, Acct-Session-Id=00000000/e0:bf:6a:73:17:8e/20879, Acct-Authentic=RADIUS, Event-Timestamp=2272953595, NAS-Port-Type=Wireless - IEEE 802.11, Tunnel-Type=(tag=0) VLAN, Tunnel-Medium-Type=(tag=0) 802, Tunnel-Private-Group-ID=(tag=0) 70, Airespace-Wlan-Id=1, AcsSessionID=hxtq.mio.com/176956368/1092777, SelectedAccessService=Default Network Access, Step=11004, Step=11017, Step=15049, Step=15008, Step=15048, Step=15048, Step=15048, Step=15004, Step=15006, Step=11005, NetworkDeviceGroups=Location#All Locations#SJC#WNBU, NetworkDeviceGroups=Device Type#All Device Types#Wireless#WLC, CPMSessionID=0a222bc0000000d123e111f0, AllowedProtocolMatchedRule=Default, Location=Location#All Locations#SJC#WNBU, Device Type=Device Type#All Device Types#Wireless#WLC",
+      "related": {
+        "hosts": [
+          "hxtq.mio.com"
+        ],
+        "ip": [
+          "192.0.2.170",
+          "203.0.113.248"
+        ],
+        "user": [
+          "nisehorrrrn"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "nisehorrrrn"
+      }
+    },
+    {
+      "@timestamp": "2048-04-27T11:18:08.144-08:00",
+      "cisco_ise": {
+        "log": {
+          "acct": {
+            "authentic": "RADIUS",
+            "delay_time": 0,
+            "input": {
+              "octets": 43000,
+              "packets": 471
+            },
+            "output": {
+              "octets": 140998,
+              "packets": 262
+            },
+            "session": {
+              "id": "0000AAAA/1a:4d:0f:45:6c:76/24927",
+              "time": 209
+            },
+            "status": {
+              "type": "Stop"
+            },
+            "terminate_cause": "User Request"
+          },
+          "called_station": {
+            "id": "56-87-69-59-9f-b2"
+          },
+          "calling_station": {
+            "id": "3a-6d-8c-15-2d-52"
+          },
+          "category": {
+            "name": "CISE_RADIUS_Accounting"
+          },
+          "class": "CACS:0a202506000193a252d04b55:piu.w.mio.com/176956368/1154568",
+          "config_version": {
+            "id": 33
+          },
+          "framed": {
+            "ip": "203.0.113.248"
+          },
+          "message": {
+            "code": "3001",
+            "description": "Radius-Accounting: RADIUS Accounting stop request",
+            "id": "0000142722"
+          },
+          "nas": {
+            "identifier": "Cisco_fe:56:00",
+            "ip": "192.0.2.170",
+            "port": {
+              "number": 13
+            }
+          },
+          "network": {
+            "device": {
+              "name": "WNBU-WLC1"
+            }
+          },
+          "request": {
+            "latency": 4
+          },
+          "segment": {
+            "number": 0,
+            "total": 1
+          }
+        }
+      },
+      "client": {
+        "ip": "192.0.2.170"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "radius-accounting",
+        "category": [
+          "configuration"
+        ],
+        "code": "3001",
+        "kind": "event",
+        "original": "<182>Apr 27 11:18:08 piu.w.mio.com CISE_RADIUS_Accounting 0000142722 1 0 2048-04-27 11:18:08.144167 -08:00 0096217580 3001 NOTICE Radius-Accounting: RADIUS Accounting stop request, ConfigVersionId=33, Device IP Address=192.0.2.170, RequestLatency=4, NetworkDeviceName=WNBU-WLC1, User-Name=businesskent, NAS-IP-Address=192.0.2.170, NAS-Port=13, Framed-IP-Address=203.0.113.248, Class=CACS:0a202506000193a252d04b55:piu.w.mio.com/176956368/1154568, Called-Station-ID=56-87-69-59-9f-b2, Calling-Station-ID=3a-6d-8c-15-2d-52, NAS-Identifier=Cisco_fe:56:00, Acct-Status-Type=Stop, Acct-Delay-Time=0, Acct-Input-Octets=43000, Acct-Output-Octets=140998, Acct-Session-Id=0000AAAA/1a:4d:0f:45:6c:76/24927, Acct-Authentic=RADIUS, Acct-Session-Time=209, Acct-Input-Packets=471, Acct-Output-Packets=262, Acct-Terminate-Cause=User Request, undefined-52=",
+        "sequence": 96217580,
+        "timezone": "-08:00",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "piu.w.mio.com"
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "priority": 182,
+          "severity": {
+            "name": "notice"
+          }
+        }
+      },
+      "message": "2048-04-27 11:18:08.144167 -08:00 0096217580 3001 NOTICE Radius-Accounting: RADIUS Accounting stop request, ConfigVersionId=33, Device IP Address=192.0.2.170, RequestLatency=4, NetworkDeviceName=WNBU-WLC1, User-Name=businesskent, NAS-IP-Address=192.0.2.170, NAS-Port=13, Framed-IP-Address=203.0.113.248, Class=CACS:0a202506000193a252d04b55:piu.w.mio.com/176956368/1154568, Called-Station-ID=56-87-69-59-9f-b2, Calling-Station-ID=3a-6d-8c-15-2d-52, NAS-Identifier=Cisco_fe:56:00, Acct-Status-Type=Stop, Acct-Delay-Time=0, Acct-Input-Octets=43000, Acct-Output-Octets=140998, Acct-Session-Id=0000AAAA/1a:4d:0f:45:6c:76/24927, Acct-Authentic=RADIUS, Acct-Session-Time=209, Acct-Input-Packets=471, Acct-Output-Packets=262, Acct-Terminate-Cause=User Request, undefined-52=",
+      "related": {
+        "hosts": [
+          "piu.w.mio.com"
+        ],
+        "ip": [
+          "192.0.2.170",
+          "203.0.113.248"
+        ],
+        "user": [
+          "businesskent"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "businesskent"
+      }
+    },
+    {
+      "@timestamp": "2026-04-27T11:18:08.000Z",
+      "cisco_ise": {
+        "log": {
+          "acct": {
+            "authentic": "RADIUS",
+            "delay_time": 0,
+            "input": {
+              "octets": 43000,
+              "packets": 471
+            },
+            "output": {
+              "octets": 140998,
+              "packets": 262
+            },
+            "session": {
+              "id": "0000AAAA/1a:4d:0f:45:6c:76/24927",
+              "time": 209
+            },
+            "status": {
+              "type": "Stop"
+            },
+            "terminate_cause": "User Request"
+          },
+          "called_station": {
+            "id": "56-87-69-59-9f-b2"
+          },
+          "calling_station": {
+            "id": "3a-6d-8c-15-2d-52"
+          },
+          "category": {
+            "name": "CISE_RADIUS_Accounting"
+          },
+          "class": "CACS:0a202506000193a252d04b55:piu.w.mio.com/176956368/1154568",
+          "config_version": {
+            "id": 35
+          },
+          "framed": {
+            "ip": "203.0.113.248"
+          },
+          "message": {
+            "id": "0000142672"
+          },
+          "nas": {
+            "identifier": "Cisco_fe:56:00",
+            "ip": "192.0.2.170",
+            "port": {
+              "number": 17
+            }
+          },
+          "network": {
+            "device": {
+              "name": "WNBU-WLC1"
+            }
+          },
+          "request": {
+            "latency": 8
+          },
+          "segment": {
+            "number": 1,
+            "total": 2
+          }
+        }
+      },
+      "client": {
+        "ip": "198.51.100.211"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "<182>Apr 27 11:18:08 piu.w.mio.com CISE_RADIUS_Accounting 0000142672 2 1 ConfigVersionId=35, Device IP Address=198.51.100.211, RequestLatency=8, NetworkDeviceName=WNBU-WLC1, User-Name=businesskent, NAS-IP-Address=192.0.2.170, NAS-Port=17, Framed-IP-Address=203.0.113.248, Class=CACS:0a202506000193a252d04b55:piu.w.mio.com/176956368/1154568, Called-Station-ID=56-87-69-59-9f-b2, Calling-Station-ID=3a-6d-8c-15-2d-52, NAS-Identifier=Cisco_fe:56:00, Acct-Status-Type=Stop, Acct-Delay-Time=0, Acct-Input-Octets=43000, Acct-Output-Octets=140998, Acct-Session-Id=0000AAAA/1a:4d:0f:45:6c:76/24927, Acct-Authentic=RADIUS, Acct-Session-Time=209, Acct-Input-Packets=471, Acct-Output-Packets=262, Acct-Terminate-Cause=User Request, undefined-52=",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "piu.w.mio.com"
+      },
+      "log": {
+        "syslog": {
+          "priority": 182
+        }
+      },
+      "message": "ConfigVersionId=35, Device IP Address=198.51.100.211, RequestLatency=8, NetworkDeviceName=WNBU-WLC1, User-Name=businesskent, NAS-IP-Address=192.0.2.170, NAS-Port=17, Framed-IP-Address=203.0.113.248, Class=CACS:0a202506000193a252d04b55:piu.w.mio.com/176956368/1154568, Called-Station-ID=56-87-69-59-9f-b2, Calling-Station-ID=3a-6d-8c-15-2d-52, NAS-Identifier=Cisco_fe:56:00, Acct-Status-Type=Stop, Acct-Delay-Time=0, Acct-Input-Octets=43000, Acct-Output-Octets=140998, Acct-Session-Id=0000AAAA/1a:4d:0f:45:6c:76/24927, Acct-Authentic=RADIUS, Acct-Session-Time=209, Acct-Input-Packets=471, Acct-Output-Packets=262, Acct-Terminate-Cause=User Request, undefined-52=",
+      "related": {
+        "hosts": [
+          "piu.w.mio.com"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "192.0.2.170",
+          "203.0.113.248"
+        ],
+        "user": [
+          "businesskent"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "businesskent"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "<182>Apr 27 11:11:47 hxtq.mio.com CISE_RADIUS_Accounting 0000070618 1 0 2048-04-27 11:11:47.028075 -08:00 0091827141 3000 NOTICE Radius-Accounting: RADIUS Accounting start request, ConfigVersionId=33, Device IP Address=192.0.2.170, RequestLatency=6, NetworkDeviceName=WNBU-WLC1, User-Name=nisehorrrrn, NAS-IP-Address=192.0.2.170, NAS-Port=13, Framed-IP-Address=203.0.113.248, Class=CACS:0a2025060001794f52cfa877:hxtq.mio.com/176956368/1092772, Called-Station-ID=56-87-69-59-9f-b2, Calling-Station-ID=c2-fc-6e-11-30-6d, NAS-Identifier=Acme_fe:56:00, Acct-Status-Type=Start, Acct-Session-Id=00000000/e0:bf:6a:73:17:8e/20879, Acct-Authentic=RADIUS, Event-Timestamp=2272953595, NAS-Port-Type=Wireless - IEEE 802.11, Tunnel-Type=(tag=0) VLAN, Tunnel-Medium-Type=(tag=0) 802, Tunnel-Private-Group-ID=(tag=0) 70, Airespace-Wlan-Id=1, AcsSessionID=hxtq.mio.com/176956368/1092777, SelectedAccessService=Default Network Access, Step=11004, Step=11017, Step=15049, Step=15008, Step=15048, Step=15048, Step=15048, Step=15004, Step=15006, Step=11005, NetworkDeviceGroups=Location#All Locations#SJC#WNBU, NetworkDeviceGroups=Device Type#All Device Types#Wireless#WLC, CPMSessionID=0a222bc0000000d123e111f0, AllowedProtocolMatchedRule=Default, Location=Location#All Locations#SJC#WNBU, Device Type=Device Type#All Device Types#Wireless#WLC",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<182>Apr 27 11:18:08 piu.w.mio.com CISE_RADIUS_Accounting 0000142722 1 0 2048-04-27 11:18:08.144167 -08:00 0096217580 3001 NOTICE Radius-Accounting: RADIUS Accounting stop request, ConfigVersionId=33, Device IP Address=192.0.2.170, RequestLatency=4, NetworkDeviceName=WNBU-WLC1, User-Name=businesskent, NAS-IP-Address=192.0.2.170, NAS-Port=13, Framed-IP-Address=203.0.113.248, Class=CACS:0a202506000193a252d04b55:piu.w.mio.com/176956368/1154568, Called-Station-ID=56-87-69-59-9f-b2, Calling-Station-ID=3a-6d-8c-15-2d-52, NAS-Identifier=Cisco_fe:56:00, Acct-Status-Type=Stop, Acct-Delay-Time=0, Acct-Input-Octets=43000, Acct-Output-Octets=140998, Acct-Session-Id=0000AAAA/1a:4d:0f:45:6c:76/24927, Acct-Authentic=RADIUS, Acct-Session-Time=209, Acct-Input-Packets=471, Acct-Output-Packets=262, Acct-Terminate-Cause=User Request, undefined-52=",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<182>Apr 27 11:18:08 piu.w.mio.com CISE_RADIUS_Accounting 0000142672 2 1 ConfigVersionId=35, Device IP Address=198.51.100.211, RequestLatency=8, NetworkDeviceName=WNBU-WLC1, User-Name=businesskent, NAS-IP-Address=192.0.2.170, NAS-Port=17, Framed-IP-Address=203.0.113.248, Class=CACS:0a202506000193a252d04b55:piu.w.mio.com/176956368/1154568, Called-Station-ID=56-87-69-59-9f-b2, Calling-Station-ID=3a-6d-8c-15-2d-52, NAS-Identifier=Cisco_fe:56:00, Acct-Status-Type=Stop, Acct-Delay-Time=0, Acct-Input-Octets=43000, Acct-Output-Octets=140998, Acct-Session-Id=0000AAAA/1a:4d:0f:45:6c:76/24927, Acct-Authentic=RADIUS, Acct-Session-Time=209, Acct-Input-Packets=471, Acct-Output-Packets=262, Acct-Terminate-Cause=User Request, undefined-52=",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_ise-log-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cisco_ise",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

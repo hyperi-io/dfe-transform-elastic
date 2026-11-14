@@ -1,0 +1,96 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.springcloudlogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"ApplicationConsole\"}",
+      "routing": {
+        "category": "ApplicationConsole"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.springcloudlogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"SystemLogs\"}",
+      "routing": {
+        "category": "SystemLogs"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.springcloudlogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"IngressLogs\"}",
+      "routing": {
+        "category": "IngressLogs"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.springcloudlogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"BuildLogs\"}",
+      "routing": {
+        "category": "BuildLogs"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.springcloudlogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"ContainerEventLogs\"}",
+      "routing": {
+        "category": "ContainerEventLogs"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category\":\"ApplicationConsole\"}"
+    },
+    {
+      "message": "{\"category\":\"SystemLogs\"}"
+    },
+    {
+      "message": "{\"category\":\"IngressLogs\"}"
+    },
+    {
+      "message": "{\"category\":\"BuildLogs\"}"
+    },
+    {
+      "message": "{\"category\":\"ContainerEventLogs\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-events-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

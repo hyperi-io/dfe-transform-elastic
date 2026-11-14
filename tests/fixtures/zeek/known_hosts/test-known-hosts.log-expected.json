@@ -1,0 +1,226 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-01-03T01:19:26.260Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "host"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":\"2049-01-03T01:19:26.260073Z\",\"host\":\"192.168.194.171\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.194.171"
+        ]
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.168.194.171"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-01-03T01:19:27.353Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "host"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":\"2049-01-03T01:19:27.353353Z\",\"host\":\"192.168.67.50\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.67.50"
+        ]
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.168.67.50"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-01-03T01:19:32.488Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "host"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":\"2049-01-03T01:19:32.488179Z\",\"host\":\"192.168.34.107\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.34.107"
+        ]
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.168.34.107"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-01-03T01:19:58.792Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "host"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":\"2049-01-03T01:19:58.792683Z\",\"host\":\"192.168.250.100\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.250.100"
+        ]
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.168.250.100"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-01-03T12:17:22.496Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "host"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":\"2049-01-03T12:17:22.496004Z\",\"host\":\"192.168.99.127\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.99.127"
+        ]
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.168.99.127"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":\"2049-01-03T01:19:26.260073Z\",\"host\":\"192.168.194.171\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":\"2049-01-03T01:19:27.353353Z\",\"host\":\"192.168.67.50\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":\"2049-01-03T01:19:32.488179Z\",\"host\":\"192.168.34.107\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":\"2049-01-03T01:19:58.792683Z\",\"host\":\"192.168.250.100\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":\"2049-01-03T12:17:22.496004Z\",\"host\":\"192.168.99.127\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "known_hosts",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-known_hosts-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

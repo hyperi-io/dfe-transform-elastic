@@ -1,0 +1,2561 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-12-11T22:46:23.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "eofn-tjy-bnmur.abf.com",
+          "registered_domain": "abf.com",
+          "subdomain": "eofn-tjy-bnmur",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:23Z\",\"query_name\":\"eofn-tjy-bnmur.abf.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"48701\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "eofn-tjy-bnmur.abf.com"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 48701
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:23.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "qz-306-97-86-858.db5.internal",
+            "type": "PTR"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "192.0.2.167.in-addr.arpa",
+          "type": "PTR"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:23Z\",\"query_name\":\"192.0.2.167.in-addr.arpa.\",\"query_type\":\"PTR\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"qz-306-97-86-858.db5.internal.\",\"Type\":\"PTR\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"47924\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "qz-306-97-86-858.db5.internal"
+        ],
+        "ip": [
+          "172.28.71.215",
+          "167.2.0.192"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 47924
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:23.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "does-not-exist.example.com",
+          "registered_domain": "example.com",
+          "subdomain": "does-not-exist",
+          "top_level_domain": "com",
+          "type": "AAAA"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:23Z\",\"query_name\":\"does-not-exist.example.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"48701\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "does-not-exist.example.com"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 48701
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:24.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "__cloud_init_expected_not_found__",
+          "type": "AAAA"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"__cloud_init_expected_not_found__.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"37272\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "__cloud_init_expected_not_found__"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 37272
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:24.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "example.invalid",
+          "type": "AAAA"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"example.invalid.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"53211\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "example.invalid"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 53211
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:24.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "__cloud_init_expected_not_found__",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"__cloud_init_expected_not_found__.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"37272\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "__cloud_init_expected_not_found__"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 37272
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:24.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "instance-data",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"instance-data.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"56779\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "instance-data"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 56779
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:24.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "instance-data",
+          "type": "AAAA"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"instance-data.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"56779\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "instance-data"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 56779
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:24.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "__cloud_init_expected_not_found__.ec2.internal",
+          "type": "AAAA"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"__cloud_init_expected_not_found__.ec2.internal.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"56468\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "__cloud_init_expected_not_found__.ec2.internal"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 56468
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:24.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "example.invalid",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"example.invalid.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"53211\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "example.invalid"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 53211
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:26.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "s3-r-w.dualstack.us-east-1.amazonaws.com",
+            "name": "s3-r-w.dualstack.us-east-1.amazonaws.com",
+            "type": "CNAME"
+          },
+          {
+            "class": "IN",
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "type": "AAAA"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "amazonlinux-2-repos-us-east-1.s3.dualstack.us-east-1.amazonaws.com",
+          "registered_domain": "s3.dualstack.us-east-1.amazonaws.com",
+          "subdomain": "amazonlinux-2-repos-us-east-1",
+          "top_level_domain": "dualstack.us-east-1.amazonaws.com",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"amazonlinux-2-repos-us-east-1.s3.dualstack.us-east-1.amazonaws.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"s3-r-w.dualstack.us-east-1.amazonaws.com.\",\"Type\":\"CNAME\",\"Class\":\"IN\"},{\"Rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"Type\":\"AAAA\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"43312\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "s3-r-w.dualstack.us-east-1.amazonaws.com",
+          "amazonlinux-2-repos-us-east-1.s3.dualstack.us-east-1.amazonaws.com"
+        ],
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 43312
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:26.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "ec2-instance-connect.us-east-1.amazonaws.com",
+          "registered_domain": "us-east-1.amazonaws.com",
+          "subdomain": "ec2-instance-connect",
+          "top_level_domain": "amazonaws.com",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"ec2-instance-connect.us-east-1.amazonaws.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"39727\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "ec2-instance-connect.us-east-1.amazonaws.com"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 39727
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:26.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "s3-r-w.dualstack.us-east-1.amazonaws.com",
+            "name": "s3-r-w.dualstack.us-east-1.amazonaws.com",
+            "type": "CNAME"
+          },
+          {
+            "class": "IN",
+            "data": "192.0.2.22",
+            "type": "A"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "amazonlinux-2-repos-us-east-1.s3.dualstack.us-east-1.amazonaws.com",
+          "registered_domain": "s3.dualstack.us-east-1.amazonaws.com",
+          "subdomain": "amazonlinux-2-repos-us-east-1",
+          "top_level_domain": "dualstack.us-east-1.amazonaws.com",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"amazonlinux-2-repos-us-east-1.s3.dualstack.us-east-1.amazonaws.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"s3-r-w.dualstack.us-east-1.amazonaws.com.\",\"Type\":\"CNAME\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"43312\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "s3-r-w.dualstack.us-east-1.amazonaws.com",
+          "amazonlinux-2-repos-us-east-1.s3.dualstack.us-east-1.amazonaws.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 43312
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:26.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "192.0.2.22",
+            "type": "A"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "s3-r-w.dualstack.us-east-1.amazonaws.com",
+          "registered_domain": "us-east-1.amazonaws.com",
+          "subdomain": "s3-r-w.dualstack",
+          "top_level_domain": "amazonaws.com",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"s3-r-w.dualstack.us-east-1.amazonaws.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"43312\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "s3-r-w.dualstack.us-east-1.amazonaws.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 43312
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:26.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "type": "AAAA"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "s3-r-w.dualstack.us-east-1.amazonaws.com",
+          "registered_domain": "us-east-1.amazonaws.com",
+          "subdomain": "s3-r-w.dualstack",
+          "top_level_domain": "amazonaws.com",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"s3-r-w.dualstack.us-east-1.amazonaws.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"Type\":\"AAAA\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"43312\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "s3-r-w.dualstack.us-east-1.amazonaws.com"
+        ],
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 43312
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:26.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "192.0.2.22",
+            "type": "A"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "ec2-instance-connect.us-east-1.amazonaws.com",
+          "registered_domain": "us-east-1.amazonaws.com",
+          "subdomain": "ec2-instance-connect",
+          "top_level_domain": "amazonaws.com",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"ec2-instance-connect.us-east-1.amazonaws.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"39727\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "ec2-instance-connect.us-east-1.amazonaws.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 39727
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:27.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "s3-r-w.us-east-1.amazonaws.com",
+          "registered_domain": "us-east-1.amazonaws.com",
+          "subdomain": "s3-r-w",
+          "top_level_domain": "amazonaws.com",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:27Z\",\"query_name\":\"s3-r-w.us-east-1.amazonaws.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"44474\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "s3-r-w.us-east-1.amazonaws.com"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 44474
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:27.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "198.51.100.111",
+            "type": "A"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "s3-r-w.us-east-1.amazonaws.com",
+          "registered_domain": "us-east-1.amazonaws.com",
+          "subdomain": "s3-r-w",
+          "top_level_domain": "amazonaws.com",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:27Z\",\"query_name\":\"s3-r-w.us-east-1.amazonaws.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"198.51.100.111\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"44474\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "s3-r-w.us-east-1.amazonaws.com"
+        ],
+        "ip": [
+          "198.51.100.111",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 44474
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:27.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "s3-r-w.us-east-1.amazonaws.com",
+            "name": "s3-r-w.us-east-1.amazonaws.com",
+            "type": "CNAME"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "amazonlinux-2-repos-us-east-1.s3.us-east-1.amazonaws.com",
+          "registered_domain": "us-east-1.amazonaws.com",
+          "subdomain": "amazonlinux-2-repos-us-east-1.s3",
+          "top_level_domain": "amazonaws.com",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:27Z\",\"query_name\":\"amazonlinux-2-repos-us-east-1.s3.us-east-1.amazonaws.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"s3-r-w.us-east-1.amazonaws.com.\",\"Type\":\"CNAME\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"44474\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "s3-r-w.us-east-1.amazonaws.com",
+          "amazonlinux-2-repos-us-east-1.s3.us-east-1.amazonaws.com"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 44474
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:27.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "s3-r-w.us-east-1.amazonaws.com",
+            "name": "s3-r-w.us-east-1.amazonaws.com",
+            "type": "CNAME"
+          },
+          {
+            "class": "IN",
+            "data": "192.0.2.22",
+            "type": "A"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "amazonlinux-2-repos-us-east-1.s3.us-east-1.amazonaws.com",
+          "registered_domain": "us-east-1.amazonaws.com",
+          "subdomain": "amazonlinux-2-repos-us-east-1.s3",
+          "top_level_domain": "amazonaws.com",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:27Z\",\"query_name\":\"amazonlinux-2-repos-us-east-1.s3.us-east-1.amazonaws.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"s3-r-w.us-east-1.amazonaws.com.\",\"Type\":\"CNAME\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"44474\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "s3-r-w.us-east-1.amazonaws.com",
+          "amazonlinux-2-repos-us-east-1.s3.us-east-1.amazonaws.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 44474
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:39.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "192.0.2.169.in-addr.arpa",
+          "type": "PTR"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:39Z\",\"query_name\":\"192.0.2.169.in-addr.arpa.\",\"query_type\":\"PTR\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.26.5.90\",\"srcport\":\"59464\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "172.26.5.90",
+          "169.2.0.192"
+        ]
+      },
+      "source": {
+        "address": "172.26.5.90",
+        "ip": "172.26.5.90",
+        "port": 59464
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:49.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "1.cpbkis.ruoq.uit.org",
+          "registered_domain": "uit.org",
+          "subdomain": "1.cpbkis.ruoq",
+          "top_level_domain": "org",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"1.cpbkis.ruoq.uit.org.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"46159\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "1.cpbkis.ruoq.uit.org"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 46159
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:49.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "type": "AAAA"
+          },
+          {
+            "class": "IN",
+            "data": "2001:db8:4467:bae5:e8f4:65d5:c7d:d228",
+            "type": "AAAA"
+          },
+          {
+            "class": "IN",
+            "data": "2001:db8:4d4c:5120:6ea2:8931:1ad:683a",
+            "type": "AAAA"
+          },
+          {
+            "class": "IN",
+            "data": "2001:db8:4d78:dc46:b1a6:8337:27f3:c8a3",
+            "type": "AAAA"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "2.cpbkis.ruoq.uit.org",
+          "registered_domain": "uit.org",
+          "subdomain": "2.cpbkis.ruoq",
+          "top_level_domain": "org",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"2.cpbkis.ruoq.uit.org.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"Type\":\"AAAA\",\"Class\":\"IN\"},{\"Rdata\":\"2001:db8:4467:bae5:e8f4:65d5:c7d:d228\",\"Type\":\"AAAA\",\"Class\":\"IN\"},{\"Rdata\":\"2001:db8:4d4c:5120:6ea2:8931:1ad:683a\",\"Type\":\"AAAA\",\"Class\":\"IN\"},{\"Rdata\":\"2001:db8:4d78:dc46:b1a6:8337:27f3:c8a3\",\"Type\":\"AAAA\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"49167\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "2.cpbkis.ruoq.uit.org"
+        ],
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "2001:db8:4467:bae5:e8f4:65d5:c7d:d228",
+          "2001:db8:4d4c:5120:6ea2:8931:1ad:683a",
+          "2001:db8:4d78:dc46:b1a6:8337:27f3:c8a3",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 49167
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:49.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "0.cpbkis.ruoq.uit.org",
+          "registered_domain": "uit.org",
+          "subdomain": "0.cpbkis.ruoq",
+          "top_level_domain": "org",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"0.cpbkis.ruoq.uit.org.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"51725\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "0.cpbkis.ruoq.uit.org"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 51725
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:49.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "198.51.100.111",
+            "type": "A"
+          },
+          {
+            "class": "IN",
+            "data": "192.0.2.97",
+            "type": "A"
+          },
+          {
+            "class": "IN",
+            "data": "198.51.100.135",
+            "type": "A"
+          },
+          {
+            "class": "IN",
+            "data": "192.0.2.139",
+            "type": "A"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "0.cpbkis.ruoq.uit.org",
+          "registered_domain": "uit.org",
+          "subdomain": "0.cpbkis.ruoq",
+          "top_level_domain": "org",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"0.cpbkis.ruoq.uit.org.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"198.51.100.111\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.97\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"198.51.100.135\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.139\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"51725\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "0.cpbkis.ruoq.uit.org"
+        ],
+        "ip": [
+          "198.51.100.111",
+          "192.0.2.97",
+          "198.51.100.135",
+          "192.0.2.139",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 51725
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:49.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "192.0.2.87",
+            "type": "A"
+          },
+          {
+            "class": "IN",
+            "data": "198.51.100.111",
+            "type": "A"
+          },
+          {
+            "class": "IN",
+            "data": "192.0.2.22",
+            "type": "A"
+          },
+          {
+            "class": "IN",
+            "data": "192.0.2.87",
+            "type": "A"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "1.cpbkis.ruoq.uit.org",
+          "registered_domain": "uit.org",
+          "subdomain": "1.cpbkis.ruoq",
+          "top_level_domain": "org",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"1.cpbkis.ruoq.uit.org.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"192.0.2.87\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"198.51.100.111\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.87\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"46159\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "1.cpbkis.ruoq.uit.org"
+        ],
+        "ip": [
+          "192.0.2.87",
+          "198.51.100.111",
+          "192.0.2.22",
+          "192.0.2.87",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 46159
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:46:49.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "198.51.100.111",
+            "type": "A"
+          },
+          {
+            "class": "IN",
+            "data": "192.0.2.139",
+            "type": "A"
+          },
+          {
+            "class": "IN",
+            "data": "192.0.2.22",
+            "type": "A"
+          },
+          {
+            "class": "IN",
+            "data": "192.0.2.87",
+            "type": "A"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "2.cpbkis.ruoq.uit.org",
+          "registered_domain": "uit.org",
+          "subdomain": "2.cpbkis.ruoq",
+          "top_level_domain": "org",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"2.cpbkis.ruoq.uit.org.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"198.51.100.111\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.139\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.87\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"49167\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "2.cpbkis.ruoq.uit.org"
+        ],
+        "ip": [
+          "198.51.100.111",
+          "192.0.2.139",
+          "192.0.2.22",
+          "192.0.2.87",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 49167
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:47:41.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "192.0.2.140.in-addr.arpa",
+          "type": "PTR"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:47:41Z\",\"query_name\":\"192.0.2.140.in-addr.arpa.\",\"query_type\":\"PTR\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"39685\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "172.28.71.215",
+          "140.2.0.192"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 39685
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:48:12.000Z",
+      "aws": {
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "203.0.113.61",
+            "type": "A"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "test.example.com",
+          "registered_domain": "example.com",
+          "subdomain": "test",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:48:12Z\",\"query_name\":\"test.example.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"203.0.113.61\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"58350\",\"transport\":\"UDP\",\"srcids\":{}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "test.example.com"
+        ],
+        "ip": [
+          "203.0.113.61",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 58350
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:48:12.000Z",
+      "aws": {
+        "instance_id": "i-079c44232510ca8ff",
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "instance": {
+          "id": "i-079c44232510ca8ff"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "test.example.com",
+          "registered_domain": "example.com",
+          "subdomain": "test",
+          "top_level_domain": "com",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:48:12Z\",\"query_name\":\"test.example.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"38200\",\"transport\":\"UDP\",\"srcids\":{\"instance\":\"i-079c44232510ca8ff\"}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "test.example.com"
+        ],
+        "ip": [
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 38200
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:48:30.000Z",
+      "aws": {
+        "instance_id": "i-079c44232510ca8ff",
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "instance": {
+          "id": "i-079c44232510ca8ff"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "ec2-89.160.20.112.compute-1.amazonaws.com",
+            "type": "PTR"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "192.0.2.140.in-addr.arpa",
+          "type": "PTR"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:48:30Z\",\"query_name\":\"192.0.2.140.in-addr.arpa.\",\"query_type\":\"PTR\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"ec2-89.160.20.112.compute-1.amazonaws.com.\",\"Type\":\"PTR\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"47882\",\"transport\":\"UDP\",\"srcids\":{\"instance\":\"i-079c44232510ca8ff\"}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "ec2-89.160.20.112.compute-1.amazonaws.com"
+        ],
+        "ip": [
+          "172.28.71.215",
+          "140.2.0.192"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 47882
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:48:33.000Z",
+      "aws": {
+        "instance_id": "i-079c44232510ca8ff",
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "instance": {
+          "id": "i-079c44232510ca8ff"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "test.example.com",
+            "name": "test.example.com",
+            "type": "CNAME"
+          },
+          {
+            "class": "IN",
+            "data": "203.0.113.61",
+            "type": "A"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "abcd.example.com",
+          "registered_domain": "example.com",
+          "subdomain": "abcd",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:48:33Z\",\"query_name\":\"abcd.example.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"test.example.com.\",\"Type\":\"CNAME\",\"Class\":\"IN\"},{\"Rdata\":\"203.0.113.61\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"52785\",\"transport\":\"UDP\",\"srcids\":{\"instance\":\"i-079c44232510ca8ff\"}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "test.example.com",
+          "abcd.example.com"
+        ],
+        "ip": [
+          "203.0.113.61",
+          "172.28.71.215"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 52785
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-02-04T17:51:55.000Z",
+      "aws": {
+        "instance_id": "i-0d15cd0d3example",
+        "route53": {
+          "firewall": {
+            "action": "BLOCK",
+            "domain_list": {
+              "id": "rslvr-fdl-01234567890abcdef"
+            },
+            "rule_group": {
+              "id": "rslvr-frg-01234567890abcdef"
+            }
+          }
+        },
+        "vpc_id": "vpc-7example"
+      },
+      "cloud": {
+        "account": {
+          "id": "111122223333"
+        },
+        "instance": {
+          "id": "i-0d15cd0d3example"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "203.0.113.9",
+            "type": "PTR"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "203.0.113.213.in-addr.arpa",
+          "type": "PTR"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"srcaddr\":\"198.51.100.111\",\"vpc_id\":\"vpc-7example\",\"answers\":[{\"Rdata\":\"203.0.113.9\",\"Type\":\"PTR\",\"Class\":\"IN\"}],\"firewall_rule_group_id\":\"rslvr-frg-01234567890abcdef\",\"firewall_rule_action\":\"BLOCK\",\"query_name\":\"203.0.113.213.in-addr.arpa.\",\"firewall_domain_list_id\":\"rslvr-fdl-01234567890abcdef\",\"query_class\":\"IN\",\"srcids\":{\"instance\":\"i-0d15cd0d3example\"},\"rcode\":\"NOERROR\",\"query_type\":\"PTR\",\"transport\":\"UDP\",\"version\":\"1.100000\",\"account_id\":\"111122223333\",\"srcport\":\"56067\",\"query_timestamp\":\"2049-02-04T17:51:55Z\",\"region\":\"us-east-1\"}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "203.0.113.9"
+        ],
+        "ip": [
+          "198.51.100.111",
+          "213.113.0.203"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111",
+        "port": 56067
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-11T22:48:30.000Z",
+      "aws": {
+        "instance_id": "i-079c44232510ca8ff",
+        "vpc_id": "vpc-01e31a7c"
+      },
+      "cloud": {
+        "account": {
+          "id": "626345947581"
+        },
+        "instance": {
+          "id": "i-079c44232510ca8ff"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "ec2-89.160.20.112.compute-1.amazonaws.com",
+            "type": "PTR"
+          }
+        ],
+        "question": {
+          "class": "IN",
+          "name": "6.c.f.6.a.9.0.e.2.b.9.a.2.f.1.9.2.0.0.4.d.d.a.0.0.4.f.c.2.0.a.2.ip6.arpa",
+          "type": "PTR"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:48:30Z\",\"query_name\":\"6.c.f.6.a.9.0.e.2.b.9.a.2.f.1.9.2.0.0.4.d.d.a.0.0.4.f.c.2.0.a.2.ip6.arpa\",\"query_type\":\"PTR\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"ec2-89.160.20.112.compute-1.amazonaws.com.\",\"Type\":\"PTR\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"47882\",\"transport\":\"UDP\",\"srcids\":{\"instance\":\"i-079c44232510ca8ff\"}}",
+        "outcome": "success",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "ec2-89.160.20.112.compute-1.amazonaws.com"
+        ],
+        "ip": [
+          "172.28.71.215",
+          "2a02:cf40:0add:4002:91f2:a9b2:e09a:6fc6"
+        ]
+      },
+      "source": {
+        "address": "172.28.71.215",
+        "ip": "172.28.71.215",
+        "port": 47882
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:23Z\",\"query_name\":\"eofn-tjy-bnmur.abf.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"48701\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:23Z\",\"query_name\":\"192.0.2.167.in-addr.arpa.\",\"query_type\":\"PTR\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"qz-306-97-86-858.db5.internal.\",\"Type\":\"PTR\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"47924\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:23Z\",\"query_name\":\"does-not-exist.example.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"48701\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"__cloud_init_expected_not_found__.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"37272\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"example.invalid.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"53211\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"__cloud_init_expected_not_found__.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"37272\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"instance-data.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"56779\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"instance-data.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"56779\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"__cloud_init_expected_not_found__.ec2.internal.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"56468\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:24Z\",\"query_name\":\"example.invalid.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"53211\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"amazonlinux-2-repos-us-east-1.s3.dualstack.us-east-1.amazonaws.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"s3-r-w.dualstack.us-east-1.amazonaws.com.\",\"Type\":\"CNAME\",\"Class\":\"IN\"},{\"Rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"Type\":\"AAAA\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"43312\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"ec2-instance-connect.us-east-1.amazonaws.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"39727\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"amazonlinux-2-repos-us-east-1.s3.dualstack.us-east-1.amazonaws.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"s3-r-w.dualstack.us-east-1.amazonaws.com.\",\"Type\":\"CNAME\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"43312\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"s3-r-w.dualstack.us-east-1.amazonaws.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"43312\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"s3-r-w.dualstack.us-east-1.amazonaws.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"Type\":\"AAAA\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"43312\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:26Z\",\"query_name\":\"ec2-instance-connect.us-east-1.amazonaws.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"39727\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:27Z\",\"query_name\":\"s3-r-w.us-east-1.amazonaws.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"44474\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:27Z\",\"query_name\":\"s3-r-w.us-east-1.amazonaws.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"198.51.100.111\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"44474\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:27Z\",\"query_name\":\"amazonlinux-2-repos-us-east-1.s3.us-east-1.amazonaws.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"s3-r-w.us-east-1.amazonaws.com.\",\"Type\":\"CNAME\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"44474\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:27Z\",\"query_name\":\"amazonlinux-2-repos-us-east-1.s3.us-east-1.amazonaws.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"s3-r-w.us-east-1.amazonaws.com.\",\"Type\":\"CNAME\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"44474\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:39Z\",\"query_name\":\"192.0.2.169.in-addr.arpa.\",\"query_type\":\"PTR\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.26.5.90\",\"srcport\":\"59464\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"1.cpbkis.ruoq.uit.org.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"46159\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"2.cpbkis.ruoq.uit.org.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"Type\":\"AAAA\",\"Class\":\"IN\"},{\"Rdata\":\"2001:db8:4467:bae5:e8f4:65d5:c7d:d228\",\"Type\":\"AAAA\",\"Class\":\"IN\"},{\"Rdata\":\"2001:db8:4d4c:5120:6ea2:8931:1ad:683a\",\"Type\":\"AAAA\",\"Class\":\"IN\"},{\"Rdata\":\"2001:db8:4d78:dc46:b1a6:8337:27f3:c8a3\",\"Type\":\"AAAA\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"49167\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"0.cpbkis.ruoq.uit.org.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"51725\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"0.cpbkis.ruoq.uit.org.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"198.51.100.111\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.97\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"198.51.100.135\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.139\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"51725\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"1.cpbkis.ruoq.uit.org.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"192.0.2.87\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"198.51.100.111\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.87\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"46159\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:46:49Z\",\"query_name\":\"2.cpbkis.ruoq.uit.org.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"198.51.100.111\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.139\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.22\",\"Type\":\"A\",\"Class\":\"IN\"},{\"Rdata\":\"192.0.2.87\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"49167\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:47:41Z\",\"query_name\":\"192.0.2.140.in-addr.arpa.\",\"query_type\":\"PTR\",\"query_class\":\"IN\",\"rcode\":\"NXDOMAIN\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"39685\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:48:12Z\",\"query_name\":\"test.example.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"203.0.113.61\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"58350\",\"transport\":\"UDP\",\"srcids\":{}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:48:12Z\",\"query_name\":\"test.example.com.\",\"query_type\":\"AAAA\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"38200\",\"transport\":\"UDP\",\"srcids\":{\"instance\":\"i-079c44232510ca8ff\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:48:30Z\",\"query_name\":\"192.0.2.140.in-addr.arpa.\",\"query_type\":\"PTR\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"ec2-89.160.20.112.compute-1.amazonaws.com.\",\"Type\":\"PTR\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"47882\",\"transport\":\"UDP\",\"srcids\":{\"instance\":\"i-079c44232510ca8ff\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:48:33Z\",\"query_name\":\"abcd.example.com.\",\"query_type\":\"A\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"test.example.com.\",\"Type\":\"CNAME\",\"Class\":\"IN\"},{\"Rdata\":\"203.0.113.61\",\"Type\":\"A\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"52785\",\"transport\":\"UDP\",\"srcids\":{\"instance\":\"i-079c44232510ca8ff\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"srcaddr\":\"198.51.100.111\",\"vpc_id\":\"vpc-7example\",\"answers\":[{\"Rdata\":\"203.0.113.9\",\"Type\":\"PTR\",\"Class\":\"IN\"}],\"firewall_rule_group_id\":\"rslvr-frg-01234567890abcdef\",\"firewall_rule_action\":\"BLOCK\",\"query_name\":\"203.0.113.213.in-addr.arpa.\",\"firewall_domain_list_id\":\"rslvr-fdl-01234567890abcdef\",\"query_class\":\"IN\",\"srcids\":{\"instance\":\"i-0d15cd0d3example\"},\"rcode\":\"NOERROR\",\"query_type\":\"PTR\",\"transport\":\"UDP\",\"version\":\"1.100000\",\"account_id\":\"111122223333\",\"srcport\":\"56067\",\"query_timestamp\":\"2049-02-04T17:51:55Z\",\"region\":\"us-east-1\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"1.100000\",\"account_id\":\"626345947581\",\"region\":\"us-east-1\",\"vpc_id\":\"vpc-01e31a7c\",\"query_timestamp\":\"2049-12-11T22:48:30Z\",\"query_name\":\"6.c.f.6.a.9.0.e.2.b.9.a.2.f.1.9.2.0.0.4.d.d.a.0.0.4.f.c.2.0.a.2.ip6.arpa\",\"query_type\":\"PTR\",\"query_class\":\"IN\",\"rcode\":\"NOERROR\",\"answers\":[{\"Rdata\":\"ec2-89.160.20.112.compute-1.amazonaws.com.\",\"Type\":\"PTR\",\"Class\":\"IN\"}],\"srcaddr\":\"172.28.71.215\",\"srcport\":\"47882\",\"transport\":\"UDP\",\"srcids\":{\"instance\":\"i-079c44232510ca8ff\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "route53_resolver_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-route53_resolver_logs-default",
+    "event_count": 34,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

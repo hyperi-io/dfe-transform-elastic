@@ -119,9 +119,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def merge(Map dst, Map src) {\n  for (def k: src.keySet()) {\n    if (src.get(k) instanceof Map && dst.get(k) instanceof Map) {\n      dst.put(k, merge(dst.get(k), src.get(k)));\n    } else if (src.get(k) instanceof List && dst.get(k) instanceof List) {\n      def c = dst.get(k);\n      for (def e: src.get(k)) {\n        if (!c.contains(e)) {\n          c.add(e);\n        }\n      }\n    } else {\n        dst.put(k, src.get(k));\n    }\n  }\n  return dst;\n}\nmerge(ctx, ctx.splunk.search.ecs_result);\nctx.splunk.search.remove(\"ecs_result\");
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -330,8 +328,7 @@ impl Transform for Default {
 
             event.remove("tmp");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

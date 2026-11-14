@@ -1,0 +1,63 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:05:23.416Z",
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4767_Account_Unlocked.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "agent": {
+                "ephemeral_id": "2da944a1-bbf3-42c8-8d7f-59ff5e4d1c7f",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "winlog": {
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 2892,
+                "time_created": "2047-09-06T13:40:52.314Z",
+                "level": "information",
+                "process": {
+                    "pid": 780,
+                    "thread": {
+                        "id": 808
+                    }
+                },
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "event_id": 4767,
+                "computer_name": "SOV-86VA2XP94FG",
+                "opcode": "Info",
+                "outcome": "success",
+                "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+                "channel": "Security",
+                "event_data": {
+                    "TargetUserName": "avexgxagdln7",
+                    "TargetDomainName": "SOV-86VA2XP94FG",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1005",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "SubjectDomainName": "SOV-86VA2XP94FG",
+                    "SubjectLogonId": "0x264b2"
+                }
+            },
+            "event": {
+                "outcome": "success",
+                "kind": "event",
+                "code": 4767,
+                "provider": "Microsoft-Windows-Security-Auditing"
+            }
+        }
+    ]
+}

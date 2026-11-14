@@ -1,0 +1,7 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+  - o365.metrics.sharepoint_site_usage_storage
+dynamic_fields:
+  event.ingested: .*

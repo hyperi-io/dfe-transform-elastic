@@ -1,0 +1,333 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-12-18T06:20:30.293664Z",
+      "destination": {
+        "ip": [
+          "172.28.206.116"
+        ],
+        "mac": [
+          "19-29-41-DE-57-13"
+        ]
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "dataset": "tenable_ot_security.events",
+        "id": "f37fc2b3-805d-4ff6-b168-14db6d413892",
+        "kind": "event",
+        "module": "tenable_ot_security",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.218"
+        ]
+      },
+      "network": {
+        "protocol": [
+          "UNKNOWN"
+        ]
+      },
+      "related": {
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": [
+          "192.0.2.218"
+        ],
+        "mac": [
+          "03-66-82-BC-24-59"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "tenable_ot_security": {
+        "events": {
+          "category": "NetworkEvents",
+          "completion": "CompletionUnknown",
+          "continuous": false,
+          "dst_ip": "172.28.206.116",
+          "dst_mac": "19-29-41-DE-57-13",
+          "event_type": {
+            "actions": [
+              "Syslog",
+              "Email"
+            ],
+            "can_capture": false,
+            "category": "NetworkEvents",
+            "description": "Asset Not Seen for 1 Hour",
+            "exclusion": "Asset",
+            "group": "InactiveNetworkInterfaceEvent",
+            "schema": "AssetSchema",
+            "type": "InactiveAssetOneHour"
+          },
+          "has_details": true,
+          "hit_id": "f37fc2b3-805d-4ff6-b168-14db6d413892",
+          "id": "f37fc2b3-805d-4ff6-b168-14db6d413892",
+          "log_id": 4165781,
+          "payload_size": 0,
+          "policy": {
+            "aggregated_events_count": {
+              "last24h": 0,
+              "last30d": 20059,
+              "last7d": 3458
+            },
+            "archived": false,
+            "continuous": false,
+            "disable_after_hit": false,
+            "disabled": false,
+            "event_type_details": {
+              "actions": [
+                "Syslog",
+                "Email"
+              ],
+              "can_capture": false,
+              "category": "NetworkEvents",
+              "description": "Asset Not Seen for 1 Hour",
+              "exclusion": "Asset",
+              "group": "InactiveNetworkInterfaceEvent",
+              "schema": "AssetSchema",
+              "type": "InactiveAssetOneHour"
+            },
+            "id": "ba60d401-4db6-4860-84d9-78dadbcb380e",
+            "index": 164,
+            "key": "P3-1",
+            "level": "Low",
+            "paused": false,
+            "schedule": {
+              "group": {
+                "archived": false,
+                "id": "d5338158-6852-49db-9b68-3a59159f23f9",
+                "key": "PG4-2",
+                "name": "Any Time",
+                "system": true,
+                "type": "Function",
+                "usage_info": {
+                  "editable": false,
+                  "used": true
+                },
+                "used_in_restrictions": false
+              },
+              "negate": false
+            },
+            "schema": "AssetSchema",
+            "snapshot": false,
+            "system": true,
+            "title": "Asset Not Seen for 1 Hour"
+          },
+          "protocol": "Unknown",
+          "protocol_raw": "UNKNOWN",
+          "resolved": false,
+          "resolved_user": "admin",
+          "severity": "Low",
+          "src_interface": {
+            "family": "VMware",
+            "first_seen": "2052-06-25T17:19:17.949295Z",
+            "id": "061db4aa-84c4-4207-b323-607fc7c47eb8",
+            "ip_trail": [
+              {
+                "ip": "172.28.206.116",
+                "is_active": true,
+                "start_time": "2052-06-25T17:19:17.949295Z"
+              }
+            ],
+            "ips": [
+              {
+                "ip": "172.28.206.116",
+                "open_ports": {
+                  "in_on_demand_scan": false,
+                  "scanned_once": false
+                }
+              }
+            ],
+            "last_seen": "2053-03-08T05:00:03.145012Z",
+            "mac": "03-66-82-BC-24-59"
+          },
+          "src_ip": "192.0.2.218",
+          "src_mac": "03-66-82-BC-24-59",
+          "src_names": [
+            "NPW-PT1-WINXP32"
+          ],
+          "time": "2052-12-18T06:20:30.293664Z",
+          "type": "InactiveAssetOneHour"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": {
+        "category": "NetworkEvents",
+        "comment": null,
+        "completion": "CompletionUnknown",
+        "continuous": false,
+        "dstIP": "172.28.206.116",
+        "dstInterface": null,
+        "dstMac": "19:29:41:DE:57:13",
+        "dstNames": {
+          "nodes": []
+        },
+        "eventType": {
+          "actions": [
+            "Syslog",
+            "Email"
+          ],
+          "canCapture": false,
+          "category": "NetworkEvents",
+          "description": "Asset Not Seen for 1 Hour",
+          "exclusion": "Asset",
+          "family": null,
+          "group": "InactiveNetworkInterfaceEvent",
+          "schema": "AssetSchema",
+          "type": "InactiveAssetOneHour"
+        },
+        "hasDetails": true,
+        "hitId": "f37fc2b3-805d-4ff6-b168-14db6d413892",
+        "id": "f37fc2b3-805d-4ff6-b168-14db6d413892",
+        "logId": 4165781,
+        "payloadSize": 0,
+        "policy": {
+          "actions": {
+            "nodes": []
+          },
+          "aggregatedEventsCount": {
+            "last24h": 0,
+            "last30d": 20059,
+            "last7d": 3458
+          },
+          "archived": false,
+          "continuous": false,
+          "disableAfterHit": false,
+          "disabled": false,
+          "eventTypeDetails": {
+            "actions": [
+              "Syslog",
+              "Email"
+            ],
+            "canCapture": false,
+            "category": "NetworkEvents",
+            "description": "Asset Not Seen for 1 Hour",
+            "exclusion": "Asset",
+            "family": null,
+            "group": "InactiveNetworkInterfaceEvent",
+            "schema": "AssetSchema",
+            "type": "InactiveAssetOneHour"
+          },
+          "exclusions": {
+            "nodes": []
+          },
+          "id": "ba60d401-4db6-4860-84d9-78dadbcb380e",
+          "index": 164,
+          "key": "P3-1",
+          "lastModifiedBy": null,
+          "lastModifiedDate": null,
+          "level": "Low",
+          "paused": false,
+          "portGroup": null,
+          "protocolGroup": null,
+          "ruleGroup": null,
+          "schedule": {
+            "group": {
+              "archived": false,
+              "id": "d5338158-6852-49db-9b68-3a59159f23f9",
+              "key": "PG4-2",
+              "lastModifiedBy": null,
+              "lastModifiedDate": null,
+              "name": "Any Time",
+              "system": true,
+              "type": "Function",
+              "usageInfo": {
+                "editable": false,
+                "used": true
+              },
+              "usedInRestrictions": false
+            },
+            "negate": false
+          },
+          "schema": "AssetSchema",
+          "snapshot": false,
+          "system": true,
+          "tagGroup": null,
+          "title": "Asset Not Seen for 1 Hour",
+          "valueGroup": null
+        },
+        "port": null,
+        "protocol": "Unknown",
+        "protocolNiceName": null,
+        "protocolRaw": "UNKNOWN",
+        "resolved": false,
+        "resolvedTs": null,
+        "resolvedUser": "admin",
+        "severity": "Low",
+        "srcIP": "192.0.2.218",
+        "srcInterface": {
+          "dnsNames": {
+            "nodes": []
+          },
+          "family": "VMware",
+          "firstSeen": "2052-06-25T17:19:17.949295Z",
+          "id": "061db4aa-84c4-4207-b323-607fc7c47eb8",
+          "ipTrail": {
+            "nodes": [
+              {
+                "endTime": null,
+                "ip": "172.28.206.116",
+                "isActive": true,
+                "startTime": "2052-06-25T17:19:17.949295Z"
+              }
+            ]
+          },
+          "ips": {
+            "nodes": [
+              {
+                "dnsNames": {
+                  "nodes": []
+                },
+                "ip": "172.28.206.116",
+                "openPorts": {
+                  "inOnDemandScan": false,
+                  "ports": {
+                    "nodes": []
+                  },
+                  "scannedOnce": false
+                }
+              }
+            ]
+          },
+          "lastSeen": "2053-03-08T05:00:03.145012Z",
+          "mac": "03:66:82:bc:24:59"
+        },
+        "srcMac": "03:66:82:BC:24:59",
+        "srcNames": {
+          "nodes": [
+            "NPW-PT1-WINXP32"
+          ]
+        },
+        "time": "2052-12-18T06:20:30.293664Z",
+        "type": "InactiveAssetOneHour"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tenable_ot_security-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "tenable_ot_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

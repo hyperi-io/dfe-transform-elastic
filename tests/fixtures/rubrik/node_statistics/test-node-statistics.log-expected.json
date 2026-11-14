@@ -1,0 +1,135 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-02-04T00:29:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "kind": "metric",
+        "original": "{\"clusterId\":\"2888bbf5-1dc3-4ac4-b105-0b59a2470c71\",\"clusterName\":\"aks-brik\",\"clusterType\":\"Robo\",\"cpuStat\":56,\"iopsReadsPerSecond\":1,\"iopsWritesPerSecond\":270,\"networkBytesReceived\":361,\"networkBytesTransmitted\":545,\"nodeId\":\"VRVW423514397\",\"readThroughputBytesPerSecond\":50312,\"time\":\"2053-02-04T00:29:00.000Z\",\"usedMemoryStat\":84,\"writeThroughputBytesPerSecond\":1967273}"
+      },
+      "rubrik": {
+        "cluster": {
+          "id": "2888bbf5-1dc3-4ac4-b105-0b59a2470c71",
+          "name": "aks-brik",
+          "type": "Robo"
+        },
+        "node_statistics": {
+          "cpu_stat": {
+            "pct": 56
+          },
+          "iops": {
+            "reads": 1,
+            "writes": 270
+          },
+          "network": {
+            "received": {
+              "bytes": 361
+            },
+            "transmitted": {
+              "bytes": 545
+            }
+          },
+          "node_id": "VRVW423514397",
+          "throughput": {
+            "read": {
+              "bytes": 50312
+            },
+            "write": {
+              "bytes": 1967273
+            }
+          },
+          "time": "2053-02-04T00:29:00.000Z",
+          "used_memory": {
+            "pct": 84
+          }
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "kind": "metric",
+        "original": "{\"clusterId\":\"00000000-0000-0000-0000-000000000000\",\"clusterName\":\"Polaris\",\"clusterType\":\"Polaris\",\"cpuStat\":null,\"iopsReadsPerSecond\":null,\"iopsWritesPerSecond\":null,\"networkBytesReceived\":null,\"networkBytesTransmitted\":null,\"nodeId\":null,\"readThroughputBytesPerSecond\":null,\"time\":null,\"usedMemoryStat\":null,\"writeThroughputBytesPerSecond\":null}"
+      },
+      "rubrik": {
+        "cluster": {
+          "id": "00000000-0000-0000-0000-000000000000",
+          "name": "Polaris",
+          "type": "Polaris"
+        }
+      }
+    },
+    {
+      "@timestamp": "2053-02-04T08:20:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "kind": "metric",
+        "original": "{\"clusterId\":\"2a3c27d1-a042-4bfa-be10-78e16cafe888\",\"clusterName\":\"401-rubrik\",\"clusterType\":\"OnPrem\",\"cpuStat\":9,\"iopsReadsPerSecond\":62,\"iopsWritesPerSecond\":1264,\"networkBytesReceived\":1682240,\"networkBytesTransmitted\":2632609,\"nodeId\":\"RVM151S004012\",\"readThroughputBytesPerSecond\":5474082,\"time\":\"2053-02-04T08:20:00.000Z\",\"usedMemoryStat\":0,\"writeThroughputBytesPerSecond\":5932046}"
+      },
+      "rubrik": {
+        "cluster": {
+          "id": "2a3c27d1-a042-4bfa-be10-78e16cafe888",
+          "name": "401-rubrik",
+          "type": "OnPrem"
+        },
+        "node_statistics": {
+          "cpu_stat": {
+            "pct": 9
+          },
+          "iops": {
+            "reads": 62,
+            "writes": 1264
+          },
+          "network": {
+            "received": {
+              "bytes": 1682240
+            },
+            "transmitted": {
+              "bytes": 2632609
+            }
+          },
+          "node_id": "RVM151S004012",
+          "throughput": {
+            "read": {
+              "bytes": 5474082
+            },
+            "write": {
+              "bytes": 5932046
+            }
+          },
+          "time": "2053-02-04T08:20:00.000Z",
+          "used_memory": {
+            "pct": 0
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"clusterId\":\"2888bbf5-1dc3-4ac4-b105-0b59a2470c71\",\"clusterName\":\"aks-brik\",\"clusterType\":\"Robo\",\"cpuStat\":56,\"iopsReadsPerSecond\":1,\"iopsWritesPerSecond\":270,\"networkBytesReceived\":361,\"networkBytesTransmitted\":545,\"nodeId\":\"VRVW423514397\",\"readThroughputBytesPerSecond\":50312,\"time\":\"2053-02-04T00:29:00.000Z\",\"usedMemoryStat\":84,\"writeThroughputBytesPerSecond\":1967273}"
+    },
+    {
+      "message": "{\"clusterId\":\"00000000-0000-0000-0000-000000000000\",\"clusterName\":\"Polaris\",\"clusterType\":\"Polaris\",\"cpuStat\":null,\"iopsReadsPerSecond\":null,\"iopsWritesPerSecond\":null,\"networkBytesReceived\":null,\"networkBytesTransmitted\":null,\"nodeId\":null,\"readThroughputBytesPerSecond\":null,\"time\":null,\"usedMemoryStat\":null,\"writeThroughputBytesPerSecond\":null}"
+    },
+    {
+      "message": "{\"clusterId\":\"2a3c27d1-a042-4bfa-be10-78e16cafe888\",\"clusterName\":\"401-rubrik\",\"clusterType\":\"OnPrem\",\"cpuStat\":9,\"iopsReadsPerSecond\":62,\"iopsWritesPerSecond\":1264,\"networkBytesReceived\":1682240,\"networkBytesTransmitted\":2632609,\"nodeId\":\"RVM151S004012\",\"readThroughputBytesPerSecond\":5474082,\"time\":\"2053-02-04T08:20:00.000Z\",\"usedMemoryStat\":0,\"writeThroughputBytesPerSecond\":5932046}"
+    }
+  ],
+  "meta": {
+    "data_stream": "node_statistics",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-rubrik-node_statistics-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "rubrik",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

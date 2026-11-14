@@ -1,0 +1,168 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-03-19T05:33:46.125Z",
+      "agent": {
+        "ephemeral_id": "dbaba478-c8ba-4b57-a67f-ae9be931dfa5",
+        "id": "1172f772-b8fb-4e80-8e39-a58d789ae5c5",
+        "name": "WIN2K19-50-13-53",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "cryptographic-operation",
+        "category": [
+          "file"
+        ],
+        "code": "5061",
+        "created": "2053-04-29T08:57:28.307Z",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft Software Key Storage Provider",
+        "type": [
+          "access"
+        ]
+      },
+      "host": {
+        "name": "RJH-C4HNQ420X94"
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "Cryptographic operation.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-19\n\tAccount Name:\t\tLOCAL SERVICE\n\tAccount Domain:\t\tNT AUTHORITY\n\tLogon ID:\t\t0x3e5\n\nCryptographic Parameters:\n\tProvider Name:\tMicrosoft Software Key Storage Provider\n\tAlgorithm Name:\tECDSA_P256\n\tKey Name:\tMicrosoft Connected Devices Platform device certificate\n\tKey Type:\tUser key.\n\nCryptographic Operation:\n\tOperation:\tOpen Key.\n\tReturn Code:\t0x0",
+      "related": {
+        "user": [
+          "LOCAL SERVICE"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "id": "S-1-5-19",
+        "name": "LOCAL SERVICE"
+      },
+      "winlog": {
+        "activity_id": "{4AEBDEDF-7968-0937-CABF-DA7D3079BE96}",
+        "channel": "Security",
+        "computer_name": "RJH-C4HNQ420X94",
+        "event_data": {
+          "AlgorithmName": "ECDSA_P256",
+          "KeyName": "Microsoft Connected Devices Platform device certificate",
+          "KeyType": "User key.",
+          "Operation": "Open Key.",
+          "ProviderName": "Microsoft Software Key Storage Provider",
+          "ReturnCode": "0x1",
+          "ReturnCodeOutcome": "Failure",
+          "SubjectDomainName": "NT AUTHORITY",
+          "SubjectLogonId": "0x3e5",
+          "SubjectUserName": "LOCAL SERVICE",
+          "SubjectUserSid": "S-1-5-19"
+        },
+        "event_id": "5061",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x3e5"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 680,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "13893",
+        "task": "System Integrity"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-03-19T05:33:46.125Z",
+      "agent": {
+        "ephemeral_id": "dbaba478-c8ba-4b57-a67f-ae9be931dfa5",
+        "id": "1172f772-b8fb-4e80-8e39-a58d789ae5c5",
+        "name": "WIN2K19-50-13-53",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "action": "System Integrity",
+        "code": "5061",
+        "created": "2053-04-29T08:57:28.307Z",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "RJH-C4HNQ420X94"
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "Cryptographic operation.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-19\n\tAccount Name:\t\tLOCAL SERVICE\n\tAccount Domain:\t\tNT AUTHORITY\n\tLogon ID:\t\t0x3e5\n\nCryptographic Parameters:\n\tProvider Name:\tMicrosoft Software Key Storage Provider\n\tAlgorithm Name:\tECDSA_P256\n\tKey Name:\tMicrosoft Connected Devices Platform device certificate\n\tKey Type:\tUser key.\n\nCryptographic Operation:\n\tOperation:\tOpen Key.\n\tReturn Code:\t0x0",
+      "winlog": {
+        "activity_id": "{4AEBDEDF-7968-0937-CABF-DA7D3079BE96}",
+        "channel": "Security",
+        "computer_name": "RJH-C4HNQ420X94",
+        "event_data": {
+          "AlgorithmName": "ECDSA_P256",
+          "KeyName": "Microsoft Connected Devices Platform device certificate",
+          "KeyType": "User key.",
+          "Operation": "Open Key.",
+          "ProviderName": "Microsoft Software Key Storage Provider",
+          "ReturnCode": "0x1",
+          "SubjectDomainName": "NT AUTHORITY",
+          "SubjectLogonId": "0x3e5",
+          "SubjectUserName": "LOCAL SERVICE",
+          "SubjectUserSid": "S-1-5-19"
+        },
+        "event_id": "5061",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 680,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 13893,
+        "task": "System Integrity"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

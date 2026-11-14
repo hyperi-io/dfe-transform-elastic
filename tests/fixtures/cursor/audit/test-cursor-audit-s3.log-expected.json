@@ -1,0 +1,727 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-04-08T16:20:57.867Z",
+      "cursor": {
+        "audit": {
+          "auth_id": "auth0|anon-6",
+          "ghost_mode": true,
+          "privacy_mode": "PRIVACY_MODE_NO_STORAGE",
+          "request_id": "sdvkakMbgGcpHc_9b7ce59d-25f0-513e-78b5-6cc41430dd34",
+          "role": "member",
+          "source": "autoEnroll",
+          "team_id": "15767141"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "add_user",
+        "category": [
+          "iam"
+        ],
+        "id": "9a83f2fe-517c-4ad1-8960-5e4474618940",
+        "kind": "event",
+        "original": "{\"add_user\":{\"invite_id\":\"\",\"invited_by_email\":\"\",\"invited_by_user_id\":\"0\",\"role\":\"member\",\"source\":\"autoEnroll\",\"team_id\":\"15767141\",\"user_email\":\"eupn-ttfs-2@example.com\"},\"ip_address\":\"unknown\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-6\",\"ghost_mode\":true,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_STORAGE\\\"}\",\"request_id\":\"sdvkakMbgGcpHc_9b7ce59d-25f0-513e-78b5-6cc41430dd34\"},\"id\":\"9a83f2fe-517c-4ad1-8960-5e4474618940\",\"timestamp\":\"2054-04-08T16:20:57.867Z\"},\"team_id\":\"15767141\",\"user_email\":\"unknown\"}",
+        "outcome": "success",
+        "provider": "cursor",
+        "type": [
+          "user",
+          "creation"
+        ]
+      },
+      "related": {
+        "user": [
+          "eupn-ttfs-2@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "target": {
+          "email": "eupn-ttfs-2@example.com"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-13T20:10:55.654Z",
+      "cursor": {
+        "audit": {
+          "auth_id": "auth0|anon-15",
+          "ghost_mode": false,
+          "privacy_mode": "PRIVACY_MODE_NO_TRAINING",
+          "request_id": "c0b4e3f9-6387-39ac-cced-570119aaaeab",
+          "team_id": "15767141"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "add_user_to_directory_group",
+        "category": [
+          "iam"
+        ],
+        "id": "c7a2a4a1-f6b1-4d2a-6e7b-3a1b6a5a9f8b",
+        "kind": "event",
+        "original": "{\"add_user_to_directory_group\":{\"group_id\":\"grp_abc123\",\"user_email\":\"dwpg-ynft-45@example.com\"},\"ip_address\":\"198.51.100.15\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-15\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"c0b4e3f9-6387-39ac-cced-570119aaaeab\"},\"id\":\"c7a2a4a1-f6b1-4d2a-6e7b-3a1b6a5a9f8b\",\"timestamp\":\"2054-04-13T20:10:55.654Z\"},\"team_id\":\"15767141\",\"user_email\":\"fqmy-qwat-37@example.com\"}",
+        "outcome": "success",
+        "provider": "cursor",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.15"
+        ],
+        "user": [
+          "fqmy-qwat-37@example.com",
+          "dwpg-ynft-45@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.15"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "fqmy-qwat-37@example.com",
+        "target": {
+          "email": "dwpg-ynft-45@example.com",
+          "group": {
+            "id": "grp_abc123"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-14T09:25:45.456Z",
+      "cursor": {
+        "audit": {
+          "action": "create",
+          "api_key_id": "1122334455",
+          "auth_id": "auth0|anon-18",
+          "ghost_mode": false,
+          "privacy_mode": "PRIVACY_MODE_NO_TRAINING",
+          "repo_scope": [
+            "repo-alpha",
+            "repo-beta"
+          ],
+          "repo_scope_enabled": true,
+          "request_id": "92b85f48-4e3c-2d3f-9276-497502edafab",
+          "service_account_id": "sa_001",
+          "service_account_name": "build-bot",
+          "team_id": "15767141"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "api_key",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "id": "a0c5e1e6-c8e2-8c7c-0d3d-0f5a3e5f5820",
+        "kind": "event",
+        "original": "{\"api_key\":{\"action\":\"create\",\"api_key_id\":\"1122334455\",\"repo_scope\":[\"repo-alpha\",\"repo-beta\"],\"repo_scope_enabled\":true,\"service_account_id\":\"sa_001\",\"service_account_name\":\"build-bot\"},\"ip_address\":\"198.51.100.17\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-18\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"92b85f48-4e3c-2d3f-9276-497502edafab\"},\"id\":\"a0c5e1e6-c8e2-8c7c-0d3d-0f5a3e5f5820\",\"timestamp\":\"2054-04-14T09:25:45.456Z\"},\"team_id\":\"15767141\",\"user_email\":\"frtr-jtcn-32@example.com\"}",
+        "outcome": "success",
+        "provider": "cursor",
+        "type": [
+          "admin"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.17"
+        ],
+        "user": [
+          "frtr-jtcn-32@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.17"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "frtr-jtcn-32@example.com"
+      }
+    },
+    {
+      "@timestamp": "2054-04-14T11:45:33.012Z",
+      "cursor": {
+        "audit": {
+          "action": "create",
+          "auth_id": "auth0|anon-20",
+          "ghost_mode": false,
+          "privacy_mode": "PRIVACY_MODE_NO_TRAINING",
+          "request_id": "fd75fd82-fb50-dd64-eb15-ca2099960208",
+          "scope": "team",
+          "scoped_to_repos": [
+            "repo-alpha"
+          ],
+          "secret_name": "GITHUB_TOKEN",
+          "team_id": "15767141"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "cloud_agent_secret",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "id": "b5b6f3c2-e7c0-0f3d-2e9c-3f7a11466679",
+        "kind": "event",
+        "original": "{\"cloud_agent_secret\":{\"action\":\"create\",\"scope\":\"team\",\"scoped_to_repos\":[\"repo-alpha\"],\"secret_name\":\"GITHUB_TOKEN\"},\"ip_address\":\"198.51.100.19\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-20\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"fd75fd82-fb50-dd64-eb15-ca2099960208\"},\"id\":\"b5b6f3c2-e7c0-0f3d-2e9c-3f7a11466679\",\"timestamp\":\"2054-04-14T11:45:33.012Z\"},\"team_id\":\"15767141\",\"user_email\":\"cuxo-lrcj-10@example.com\"}",
+        "outcome": "success",
+        "provider": "cursor",
+        "type": [
+          "admin"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.19"
+        ],
+        "user": [
+          "cuxo-lrcj-10@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.19"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "cuxo-lrcj-10@example.com"
+      }
+    },
+    {
+      "@timestamp": "2054-04-14T12:30:05.678Z",
+      "cursor": {
+        "audit": {
+          "auth_id": "auth0|anon-21",
+          "ghost_mode": false,
+          "new_value": "enabled",
+          "old_value": "disabled",
+          "privacy_mode": "PRIVACY_MODE_NO_TRAINING",
+          "request_id": "ea83dc22-ef07-ef83-fa29-967900574760",
+          "setting_name": "auto_merge",
+          "source": "dashboard",
+          "team_id": "15767141"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "cloud_agent_user_settings",
+        "category": [
+          "configuration"
+        ],
+        "id": "b4e1f2b0-f2e9-1b0b-3d2c-8f8758728450",
+        "kind": "event",
+        "original": "{\"cloud_agent_user_settings\":{\"new_value\":\"enabled\",\"old_value\":\"disabled\",\"setting_name\":\"auto_merge\",\"source\":\"dashboard\"},\"ip_address\":\"198.51.100.20\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-21\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"ea83dc22-ef07-ef83-fa29-967900574760\"},\"id\":\"b4e1f2b0-f2e9-1b0b-3d2c-8f8758728450\",\"timestamp\":\"2054-04-14T12:30:05.678Z\"},\"team_id\":\"15767141\",\"user_email\":\"ajit-rrcx-78@example.com\"}",
+        "outcome": "success",
+        "provider": "cursor",
+        "type": [
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.20"
+        ],
+        "user": [
+          "ajit-rrcx-78@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.20"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "ajit-rrcx-78@example.com"
+      }
+    },
+    {
+      "@timestamp": "2054-04-14T14:20:44.678Z",
+      "cursor": {
+        "audit": {
+          "auth_id": "auth0|anon-23",
+          "ghost_mode": false,
+          "invite_id": "inv_abc2",
+          "personal_message": "no",
+          "privacy_mode": "PRIVACY_MODE_NO_TRAINING",
+          "request_id": "dd82ed64-de19-7750-9433-965984410136",
+          "role": "member",
+          "sender_email": "fqoj-oibr-69@example.com",
+          "sender_user_id": "23",
+          "team_id": "15767141"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "invite_email_sent",
+        "category": [
+          "iam"
+        ],
+        "id": "d4c5e2e9-c3e6-3b4d-5e80-083408464600",
+        "kind": "event",
+        "original": "{\"invite_email_sent\":{\"invite_id\":\"inv_abc2\",\"personal_message\":\"no\",\"recipient_email\":\"brtq-wkdu-86@example.com\",\"role\":\"member\",\"sender_email\":\"fqoj-oibr-69@example.com\",\"sender_user_id\":\"23\"},\"ip_address\":\"198.51.100.22\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-23\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"dd82ed64-de19-7750-9433-965984410136\"},\"id\":\"d4c5e2e9-c3e6-3b4d-5e80-083408464600\",\"timestamp\":\"2054-04-14T14:20:44.678Z\"},\"team_id\":\"15767141\",\"user_email\":\"fqoj-oibr-69@example.com\"}",
+        "outcome": "success",
+        "provider": "cursor",
+        "type": [
+          "user",
+          "admin"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.22"
+        ],
+        "user": [
+          "fqoj-oibr-69@example.com",
+          "brtq-wkdu-86@example.com",
+          "23"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.22"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "fqoj-oibr-69@example.com",
+        "target": {
+          "email": "brtq-wkdu-86@example.com"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-14T13:10:22.345Z",
+      "cursor": {
+        "audit": {
+          "action": "create",
+          "auth_id": "auth0|anon-22",
+          "creator_email": "doum-jgek-56@example.com",
+          "creator_user_id": "22",
+          "expires_in_seconds": 604800,
+          "ghost_mode": false,
+          "invite_id": "inv_abc1",
+          "privacy_mode": "PRIVACY_MODE_NO_TRAINING",
+          "request_id": "dd59ee42-ca24-fe56-7999-380418785903",
+          "role": "member",
+          "team_id": "15767141"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "invite_link",
+        "category": [
+          "iam"
+        ],
+        "id": "a2c8e0c2-c2c2-2a4a-4e7d-756604273128",
+        "kind": "event",
+        "original": "{\"invite_link\":{\"action\":\"create\",\"creator_email\":\"doum-jgek-56@example.com\",\"creator_user_id\":\"22\",\"expires_in_seconds\":\"604800\",\"invite_id\":\"inv_abc1\",\"role\":\"member\"},\"ip_address\":\"198.51.100.21\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-22\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"dd59ee42-ca24-fe56-7999-380418785903\"},\"id\":\"a2c8e0c2-c2c2-2a4a-4e7d-756604273128\",\"timestamp\":\"2054-04-14T13:10:22.345Z\"},\"team_id\":\"15767141\",\"user_email\":\"doum-jgek-56@example.com\"}",
+        "outcome": "success",
+        "provider": "cursor",
+        "type": [
+          "user",
+          "admin"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.21"
+        ],
+        "user": [
+          "doum-jgek-56@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.21"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "doum-jgek-56@example.com"
+      }
+    },
+    {
+      "@timestamp": "2054-04-10T16:18:22.401Z",
+      "cursor": {
+        "audit": {
+          "ghost_mode": true,
+          "login_type": "LOGIN_TYPE_WEB",
+          "privacy_mode": "PRIVACY_MODE_NO_STORAGE",
+          "request_id": "xetsbqNamLauJa_0a53f460-3253-5f4b-c008-b2635eb0eef5",
+          "success": false,
+          "team_id": "15767141"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "id": "b3a0e46e-6e64-4b0b-9e1b-4c9b29e31a15",
+        "kind": "event",
+        "original": "{\"ip_address\":\"198.51.100.3\",\"login\":{\"login_type\":\"LOGIN_TYPE_WEB\",\"success\":false},\"metadata\":{\"context\":{\"auth_id\":\"\",\"ghost_mode\":true,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_STORAGE\\\"}\",\"request_id\":\"xetsbqNamLauJa_0a53f460-3253-5f4b-c008-b2635eb0eef5\"},\"id\":\"b3a0e46e-6e64-4b0b-9e1b-4c9b29e31a15\",\"timestamp\":\"2054-04-10T16:18:22.401Z\"},\"team_id\":\"15767141\",\"user_email\":\"crtp-hsdi-9@example.com\"}",
+        "outcome": "failure",
+        "provider": "cursor",
+        "type": [
+          "start"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.3"
+        ],
+        "user": [
+          "crtp-hsdi-9@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.3"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "crtp-hsdi-9@example.com"
+      }
+    },
+    {
+      "@timestamp": "2054-04-14T08:15:30.123Z",
+      "cursor": {
+        "audit": {
+          "action": "create",
+          "api_key_id": "9876543210",
+          "api_key_name": "ci-pipeline-key",
+          "auth_id": "auth0|anon-16",
+          "ghost_mode": false,
+          "organization_id": "org_xyz789",
+          "privacy_mode": "PRIVACY_MODE_NO_TRAINING",
+          "request_id": "0b1f9d1d-5e3e-6972-98ac-febc47489092",
+          "team_id": "15767141"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "organization_api_key",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "id": "f6c7c4d7-d6c7-7c4c-9b92-f1f8f6d9b2a0",
+        "kind": "event",
+        "original": "{\"ip_address\":\"198.51.100.16\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-16\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"0b1f9d1d-5e3e-6972-98ac-febc47489092\"},\"id\":\"f6c7c4d7-d6c7-7c4c-9b92-f1f8f6d9b2a0\",\"timestamp\":\"2054-04-14T08:15:30.123Z\"},\"organization_api_key\":{\"action\":\"create\",\"api_key_id\":\"9876543210\",\"api_key_name\":\"ci-pipeline-key\",\"organization_id\":\"org_xyz789\"},\"team_id\":\"15767141\",\"user_email\":\"anup-nucx-16@example.com\"}",
+        "outcome": "success",
+        "provider": "cursor",
+        "type": [
+          "admin"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.16"
+        ],
+        "user": [
+          "anup-nucx-16@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.16"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "anup-nucx-16@example.com"
+      }
+    },
+    {
+      "@timestamp": "2054-04-14T16:30:48.123Z",
+      "cursor": {
+        "audit": {
+          "auth_id": "auth0|anon-25",
+          "ghost_mode": false,
+          "git_org_owner": "acme-corp",
+          "git_provider": "github",
+          "privacy_mode": "PRIVACY_MODE_NO_TRAINING",
+          "reason": "scope_not_allowed",
+          "request_id": "fa571160-7461-1197-3091-705105567320",
+          "result": "blocked",
+          "team_id": "15767141",
+          "user_id": "25"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "protected_git_scope_access_check",
+        "category": [
+          "iam"
+        ],
+        "id": "e1e1d8f5-f9e9-5c54-7219-140917268441",
+        "kind": "event",
+        "original": "{\"ip_address\":\"198.51.100.24\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-25\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"fa571160-7461-1197-3091-705105567320\"},\"id\":\"e1e1d8f5-f9e9-5c54-7219-140917268441\",\"timestamp\":\"2054-04-14T16:30:48.123Z\"},\"protected_git_scope_access_check\":{\"git_enterprise_uuid\":\"\",\"git_org_owner\":\"acme-corp\",\"git_provider\":\"github\",\"reason\":\"scope_not_allowed\",\"result\":\"blocked\",\"user_id\":\"25\"},\"team_id\":\"15767141\",\"user_email\":\"djqw-qwek-04@example.com\"}",
+        "outcome": "failure",
+        "provider": "cursor",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.24"
+        ],
+        "user": [
+          "djqw-qwek-04@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.24"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "djqw-qwek-04@example.com"
+      }
+    },
+    {
+      "@timestamp": "2054-04-14T15:05:11.901Z",
+      "cursor": {
+        "audit": {
+          "action": "create",
+          "auth_id": "auth0|anon-24",
+          "ghost_mode": false,
+          "git_org_owner": "acme-corp",
+          "git_provider": "github",
+          "privacy_mode": "PRIVACY_MODE_NO_TRAINING",
+          "request_id": "ca85ba35-0254-9329-1634-706715284872",
+          "scope_id": "pgs_001",
+          "team_id": "15767141",
+          "user_id": "24"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "protected_git_scope",
+        "category": [
+          "configuration"
+        ],
+        "id": "c2d1f0d5-e2f5-4c5a-6759-226036758618",
+        "kind": "event",
+        "original": "{\"ip_address\":\"198.51.100.23\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-24\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"ca85ba35-0254-9329-1634-706715284872\"},\"id\":\"c2d1f0d5-e2f5-4c5a-6759-226036758618\",\"timestamp\":\"2054-04-14T15:05:11.901Z\"},\"protected_git_scope\":{\"action\":\"create\",\"git_enterprise_uuid\":\"\",\"git_org_owner\":\"acme-corp\",\"git_provider\":\"github\",\"scope_id\":\"pgs_001\",\"user_id\":\"24\"},\"team_id\":\"15767141\",\"user_email\":\"brtq-wkdu-86@example.com\"}",
+        "outcome": "success",
+        "provider": "cursor",
+        "type": [
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.23"
+        ],
+        "user": [
+          "brtq-wkdu-86@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.23"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "brtq-wkdu-86@example.com"
+      }
+    },
+    {
+      "@timestamp": "2054-04-14T10:05:12.789Z",
+      "cursor": {
+        "audit": {
+          "action": "create",
+          "auth_id": "auth0|anon-19",
+          "ghost_mode": false,
+          "privacy_mode": "PRIVACY_MODE_NO_TRAINING",
+          "request_id": "30fd98ef-39ae-7940-1455-685842dbdabf",
+          "service_account_id": "sa_002",
+          "service_account_name": "ops-automation",
+          "team_id": "15767141"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "service_account",
+        "category": [
+          "iam"
+        ],
+        "id": "f8e5c6a2-f2b9-9e0b-1c5b-0b5e7b650520",
+        "kind": "event",
+        "original": "{\"ip_address\":\"198.51.100.18\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-19\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"30fd98ef-39ae-7940-1455-685842dbdabf\"},\"id\":\"f8e5c6a2-f2b9-9e0b-1c5b-0b5e7b650520\",\"timestamp\":\"2054-04-14T10:05:12.789Z\"},\"service_account\":{\"action\":\"create\",\"service_account_id\":\"sa_002\",\"service_account_name\":\"ops-automation\"},\"team_id\":\"15767141\",\"user_email\":\"djlv-txdj-47@example.com\"}",
+        "outcome": "success",
+        "provider": "cursor",
+        "type": [
+          "admin"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.18"
+        ],
+        "user": [
+          "djlv-txdj-47@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.18"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "djlv-txdj-47@example.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"add_user\":{\"invite_id\":\"\",\"invited_by_email\":\"\",\"invited_by_user_id\":\"0\",\"role\":\"member\",\"source\":\"autoEnroll\",\"team_id\":\"15767141\",\"user_email\":\"eupn-ttfs-2@example.com\"},\"ip_address\":\"unknown\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-6\",\"ghost_mode\":true,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_STORAGE\\\"}\",\"request_id\":\"sdvkakMbgGcpHc_9b7ce59d-25f0-513e-78b5-6cc41430dd34\"},\"id\":\"9a83f2fe-517c-4ad1-8960-5e4474618940\",\"timestamp\":\"2054-04-08T16:20:57.867Z\"},\"team_id\":\"15767141\",\"user_email\":\"unknown\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"add_user_to_directory_group\":{\"group_id\":\"grp_abc123\",\"user_email\":\"dwpg-ynft-45@example.com\"},\"ip_address\":\"198.51.100.15\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-15\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"c0b4e3f9-6387-39ac-cced-570119aaaeab\"},\"id\":\"c7a2a4a1-f6b1-4d2a-6e7b-3a1b6a5a9f8b\",\"timestamp\":\"2054-04-13T20:10:55.654Z\"},\"team_id\":\"15767141\",\"user_email\":\"fqmy-qwat-37@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"api_key\":{\"action\":\"create\",\"api_key_id\":\"1122334455\",\"repo_scope\":[\"repo-alpha\",\"repo-beta\"],\"repo_scope_enabled\":true,\"service_account_id\":\"sa_001\",\"service_account_name\":\"build-bot\"},\"ip_address\":\"198.51.100.17\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-18\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"92b85f48-4e3c-2d3f-9276-497502edafab\"},\"id\":\"a0c5e1e6-c8e2-8c7c-0d3d-0f5a3e5f5820\",\"timestamp\":\"2054-04-14T09:25:45.456Z\"},\"team_id\":\"15767141\",\"user_email\":\"frtr-jtcn-32@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"cloud_agent_secret\":{\"action\":\"create\",\"scope\":\"team\",\"scoped_to_repos\":[\"repo-alpha\"],\"secret_name\":\"GITHUB_TOKEN\"},\"ip_address\":\"198.51.100.19\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-20\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"fd75fd82-fb50-dd64-eb15-ca2099960208\"},\"id\":\"b5b6f3c2-e7c0-0f3d-2e9c-3f7a11466679\",\"timestamp\":\"2054-04-14T11:45:33.012Z\"},\"team_id\":\"15767141\",\"user_email\":\"cuxo-lrcj-10@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"cloud_agent_user_settings\":{\"new_value\":\"enabled\",\"old_value\":\"disabled\",\"setting_name\":\"auto_merge\",\"source\":\"dashboard\"},\"ip_address\":\"198.51.100.20\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-21\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"ea83dc22-ef07-ef83-fa29-967900574760\"},\"id\":\"b4e1f2b0-f2e9-1b0b-3d2c-8f8758728450\",\"timestamp\":\"2054-04-14T12:30:05.678Z\"},\"team_id\":\"15767141\",\"user_email\":\"ajit-rrcx-78@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"invite_email_sent\":{\"invite_id\":\"inv_abc2\",\"personal_message\":\"no\",\"recipient_email\":\"brtq-wkdu-86@example.com\",\"role\":\"member\",\"sender_email\":\"fqoj-oibr-69@example.com\",\"sender_user_id\":\"23\"},\"ip_address\":\"198.51.100.22\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-23\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"dd82ed64-de19-7750-9433-965984410136\"},\"id\":\"d4c5e2e9-c3e6-3b4d-5e80-083408464600\",\"timestamp\":\"2054-04-14T14:20:44.678Z\"},\"team_id\":\"15767141\",\"user_email\":\"fqoj-oibr-69@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"invite_link\":{\"action\":\"create\",\"creator_email\":\"doum-jgek-56@example.com\",\"creator_user_id\":\"22\",\"expires_in_seconds\":\"604800\",\"invite_id\":\"inv_abc1\",\"role\":\"member\"},\"ip_address\":\"198.51.100.21\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-22\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"dd59ee42-ca24-fe56-7999-380418785903\"},\"id\":\"a2c8e0c2-c2c2-2a4a-4e7d-756604273128\",\"timestamp\":\"2054-04-14T13:10:22.345Z\"},\"team_id\":\"15767141\",\"user_email\":\"doum-jgek-56@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"ip_address\":\"198.51.100.3\",\"login\":{\"login_type\":\"LOGIN_TYPE_WEB\",\"success\":false},\"metadata\":{\"context\":{\"auth_id\":\"\",\"ghost_mode\":true,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_STORAGE\\\"}\",\"request_id\":\"xetsbqNamLauJa_0a53f460-3253-5f4b-c008-b2635eb0eef5\"},\"id\":\"b3a0e46e-6e64-4b0b-9e1b-4c9b29e31a15\",\"timestamp\":\"2054-04-10T16:18:22.401Z\"},\"team_id\":\"15767141\",\"user_email\":\"crtp-hsdi-9@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"ip_address\":\"198.51.100.16\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-16\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"0b1f9d1d-5e3e-6972-98ac-febc47489092\"},\"id\":\"f6c7c4d7-d6c7-7c4c-9b92-f1f8f6d9b2a0\",\"timestamp\":\"2054-04-14T08:15:30.123Z\"},\"organization_api_key\":{\"action\":\"create\",\"api_key_id\":\"9876543210\",\"api_key_name\":\"ci-pipeline-key\",\"organization_id\":\"org_xyz789\"},\"team_id\":\"15767141\",\"user_email\":\"anup-nucx-16@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"ip_address\":\"198.51.100.24\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-25\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"fa571160-7461-1197-3091-705105567320\"},\"id\":\"e1e1d8f5-f9e9-5c54-7219-140917268441\",\"timestamp\":\"2054-04-14T16:30:48.123Z\"},\"protected_git_scope_access_check\":{\"git_enterprise_uuid\":\"\",\"git_org_owner\":\"acme-corp\",\"git_provider\":\"github\",\"reason\":\"scope_not_allowed\",\"result\":\"blocked\",\"user_id\":\"25\"},\"team_id\":\"15767141\",\"user_email\":\"djqw-qwek-04@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"ip_address\":\"198.51.100.23\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-24\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"ca85ba35-0254-9329-1634-706715284872\"},\"id\":\"c2d1f0d5-e2f5-4c5a-6759-226036758618\",\"timestamp\":\"2054-04-14T15:05:11.901Z\"},\"protected_git_scope\":{\"action\":\"create\",\"git_enterprise_uuid\":\"\",\"git_org_owner\":\"acme-corp\",\"git_provider\":\"github\",\"scope_id\":\"pgs_001\",\"user_id\":\"24\"},\"team_id\":\"15767141\",\"user_email\":\"brtq-wkdu-86@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"ip_address\":\"198.51.100.18\",\"metadata\":{\"context\":{\"auth_id\":\"auth0|anon-19\",\"ghost_mode\":false,\"privacy_mode\":\"{\\\"privacyMode\\\":\\\"PRIVACY_MODE_NO_TRAINING\\\"}\",\"request_id\":\"30fd98ef-39ae-7940-1455-685842dbdabf\"},\"id\":\"f8e5c6a2-f2b9-9e0b-1c5b-0b5e7b650520\",\"timestamp\":\"2054-04-14T10:05:12.789Z\"},\"service_account\":{\"action\":\"create\",\"service_account_id\":\"sa_002\",\"service_account_name\":\"ops-automation\"},\"team_id\":\"15767141\",\"user_email\":\"djlv-txdj-47@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cursor-audit-default",
+    "event_count": 12,
+    "numeric_keyword_fields": [],
+    "package": "cursor",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

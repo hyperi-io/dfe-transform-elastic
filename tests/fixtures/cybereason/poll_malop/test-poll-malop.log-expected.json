@@ -1,0 +1,198 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-03-04T19:12:56.110Z",
+      "cybereason": {
+        "poll_malop": {
+          "class": ".MalopInboxModel",
+          "closed": false,
+          "closer_name": "Closer Name",
+          "containers": [
+            "Testing"
+          ],
+          "creation_time": "2051-09-15T23:52:35.604Z",
+          "data": {
+            "close_time": "2051-11-23T06:45:15.015Z",
+            "detection_type": "CUSTOM_RULE",
+            "priority": "LOW",
+            "severity": "High",
+            "status": "Active",
+            "type": "CUSTOM_RULE"
+          },
+          "decision_statuses": [
+            "Testing"
+          ],
+          "detection": {
+            "engines": [
+              "EDR"
+            ],
+            "types": [
+              "calc_Custom_Rule"
+            ]
+          },
+          "display_name": "zfkwtxfz-ftmukytrefm.etc",
+          "edr": true,
+          "empty": true,
+          "escalated": false,
+          "group": "82c35cfa-3a50-4252-8015-e6275ddb4eb2",
+          "guid": "AAAA05JzW7vmNhCD",
+          "icon_base64": "muhk",
+          "labels": [
+            "IT-Pending",
+            "Testing"
+          ],
+          "last_update_time": "2052-03-04T19:12:56.110Z",
+          "machines": [
+            {
+              "class": ".MachineInboxModel",
+              "connected": false,
+              "display_name": "d3dock-poc",
+              "empty": true,
+              "guid": "lbnnvBCi55eyTiwX",
+              "isolated": false,
+              "last_connected": "2024-01-07T06:23:30.725Z",
+              "os_type": "WINDOWS"
+            },
+            {
+              "class": ".MachineInboxModel",
+              "connected": true,
+              "display_name": "dtfaqddssi",
+              "empty": true,
+              "guid": "zpP73xCi55eyTiwX",
+              "isolated": true,
+              "last_connected": "2024-03-18T08:30:50.941Z",
+              "os_type": "linux"
+            },
+            {
+              "class": ".MachineInboxModel",
+              "connected": false,
+              "display_name": "dim-win10",
+              "empty": true,
+              "guid": "7vCmFBCi55eyTiwX",
+              "isolated": false,
+              "last_connected": "2024-03-17T16:21:34.714Z",
+              "os_type": "xyz"
+            }
+          ],
+          "primary_root_cause_name": "zfkwtxfz-ftmukytrefm.etc",
+          "priority": "HIGH",
+          "root_cause_element": {
+            "hashes": "f7d66641c064bfc92f05133cfb0fbdc7946a5b51",
+            "names_count": 1,
+            "type": "Process"
+          },
+          "severity": "High",
+          "status": "Active",
+          "users": [
+            {
+              "admin": false,
+              "display_name": "d3dock-poc\\administrator",
+              "domain_user": false,
+              "guid": "AAAAGGHyKbMGbI4y",
+              "local_system": false
+            },
+            {
+              "admin": false,
+              "display_name": "dtfaqddssi\\system",
+              "domain_user": false,
+              "guid": "AAAAGK97gKTvmLc3",
+              "local_system": true
+            },
+            {
+              "admin": false,
+              "display_name": "cy\\cymulator",
+              "domain_user": false,
+              "guid": "AAAAGGZ3xLXVm27e",
+              "local_system": false
+            }
+          ]
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "created": "2051-09-15T23:52:35.604Z",
+        "id": "AAAA05JzW7vmNhCD",
+        "kind": "alert",
+        "original": "{\"@class\":\".MalopInboxModel\",\"guid\":\"AAAA05JzW7vmNhCD\",\"closerName\":\"Closer Name\",\"displayName\":\"zfkwtxfz-ftmukytrefm.etc\",\"rootCauseElementType\":\"Process\",\"primaryRootCauseName\":\"zfkwtxfz-ftmukytrefm.etc\",\"rootCauseElementNamesCount\":1,\"detectionEngines\":[\"EDR\"],\"detectionTypes\":[\"calc_Custom_Rule\"],\"malopDetectionType\":\"CUSTOM_RULE\",\"creationTime\":2578434755604,\"lastUpdateTime\":2593192376110,\"iconBase64\":\"muhk\",\"priority\":\"HIGH\",\"group\":\"82c35cfa-3a50-4252-8015-e6275ddb4eb2\",\"rootCauseElementHashes\": \"f7d66641c064bfc92f05133cfb0fbdc7946a5b51\",\"status\":\"Active\",\"severity\":\"High\",\"machines\":[{\"@class\":\".MachineInboxModel\",\"guid\":\"lbnnvBCi55eyTiwX\",\"displayName\":\"d3dock-poc\",\"osType\":\"WINDOWS\",\"connected\":false,\"isolated\":false,\"lastConnected\":1704608610725,\"empty\":true},{\"@class\":\".MachineInboxModel\",\"guid\":\"zpP73xCi55eyTiwX\",\"displayName\":\"dtfaqddssi\",\"osType\":\"linux\",\"connected\":true,\"isolated\":true,\"lastConnected\":1710750650941,\"empty\":true},{\"@class\":\".MachineInboxModel\",\"guid\":\"7vCmFBCi55eyTiwX\",\"displayName\":\"dim-win10\",\"osType\":\"xyz\",\"connected\":false,\"isolated\":false,\"lastConnected\":1710692494714,\"empty\":true}],\"users\":[{\"guid\":\"AAAAGGHyKbMGbI4y\",\"displayName\":\"d3dock-poc\\\\administrator\",\"admin\":false,\"localSystem\":false,\"domainUser\":false},{\"guid\":\"AAAAGK97gKTvmLc3\",\"displayName\":\"dtfaqddssi\\\\system\",\"admin\":false,\"localSystem\":true,\"domainUser\":false},{\"guid\":\"AAAAGGZ3xLXVm27e\",\"displayName\":\"cy\\\\cymulator\",\"admin\":false,\"localSystem\":false,\"domainUser\":false}],\"containers\":[\"Testing\"],\"labels\":[\"IT-Pending\", \"Testing\"],\"decisionStatuses\":[\"Testing\"],\"malopCloseTime\":2584334715015,\"escalated\":false,\"malopStatus\":\"Active\",\"malopSeverity\":\"High\",\"edr\":true,\"malopType\":\"CUSTOM_RULE\",\"malopPriority\":\"LOW\",\"closed\":false,\"empty\":true}",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "id": [
+          "82c35cfa-3a50-4252-8015-e6275ddb4eb2"
+        ]
+      },
+      "host": {
+        "id": [
+          "lbnnvBCi55eyTiwX",
+          "zpP73xCi55eyTiwX",
+          "7vCmFBCi55eyTiwX"
+        ],
+        "name": [
+          "d3dock-poc",
+          "dtfaqddssi",
+          "dim-win10"
+        ],
+        "os": {
+          "type": [
+            "windows",
+            "linux"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "f7d66641c064bfc92f05133cfb0fbdc7946a5b51"
+        ],
+        "hosts": [
+          "d3dock-poc",
+          "dtfaqddssi",
+          "dim-win10",
+          "lbnnvBCi55eyTiwX",
+          "zpP73xCi55eyTiwX",
+          "7vCmFBCi55eyTiwX",
+          "WINDOWS",
+          "linux",
+          "xyz"
+        ],
+        "user": [
+          "d3dock-poc\\administrator",
+          "dtfaqddssi\\system",
+          "cy\\cymulator",
+          "AAAAGGHyKbMGbI4y",
+          "AAAAGK97gKTvmLc3",
+          "AAAAGGZ3xLXVm27e"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"@class\":\".MalopInboxModel\",\"guid\":\"AAAA05JzW7vmNhCD\",\"closerName\":\"Closer Name\",\"displayName\":\"zfkwtxfz-ftmukytrefm.etc\",\"rootCauseElementType\":\"Process\",\"primaryRootCauseName\":\"zfkwtxfz-ftmukytrefm.etc\",\"rootCauseElementNamesCount\":1,\"detectionEngines\":[\"EDR\"],\"detectionTypes\":[\"calc_Custom_Rule\"],\"malopDetectionType\":\"CUSTOM_RULE\",\"creationTime\":2578434755604,\"lastUpdateTime\":2593192376110,\"iconBase64\":\"muhk\",\"priority\":\"HIGH\",\"group\":\"82c35cfa-3a50-4252-8015-e6275ddb4eb2\",\"rootCauseElementHashes\": \"f7d66641c064bfc92f05133cfb0fbdc7946a5b51\",\"status\":\"Active\",\"severity\":\"High\",\"machines\":[{\"@class\":\".MachineInboxModel\",\"guid\":\"lbnnvBCi55eyTiwX\",\"displayName\":\"d3dock-poc\",\"osType\":\"WINDOWS\",\"connected\":false,\"isolated\":false,\"lastConnected\":1704608610725,\"empty\":true},{\"@class\":\".MachineInboxModel\",\"guid\":\"zpP73xCi55eyTiwX\",\"displayName\":\"dtfaqddssi\",\"osType\":\"linux\",\"connected\":true,\"isolated\":true,\"lastConnected\":1710750650941,\"empty\":true},{\"@class\":\".MachineInboxModel\",\"guid\":\"7vCmFBCi55eyTiwX\",\"displayName\":\"dim-win10\",\"osType\":\"xyz\",\"connected\":false,\"isolated\":false,\"lastConnected\":1710692494714,\"empty\":true}],\"users\":[{\"guid\":\"AAAAGGHyKbMGbI4y\",\"displayName\":\"d3dock-poc\\\\administrator\",\"admin\":false,\"localSystem\":false,\"domainUser\":false},{\"guid\":\"AAAAGK97gKTvmLc3\",\"displayName\":\"dtfaqddssi\\\\system\",\"admin\":false,\"localSystem\":true,\"domainUser\":false},{\"guid\":\"AAAAGGZ3xLXVm27e\",\"displayName\":\"cy\\\\cymulator\",\"admin\":false,\"localSystem\":false,\"domainUser\":false}],\"containers\":[\"Testing\"],\"labels\":[\"IT-Pending\", \"Testing\"],\"decisionStatuses\":[\"Testing\"],\"malopCloseTime\":2584334715015,\"escalated\":false,\"malopStatus\":\"Active\",\"malopSeverity\":\"High\",\"edr\":true,\"malopType\":\"CUSTOM_RULE\",\"malopPriority\":\"LOW\",\"closed\":false,\"empty\":true}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "poll_malop",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cybereason-poll_malop-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "cybereason",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

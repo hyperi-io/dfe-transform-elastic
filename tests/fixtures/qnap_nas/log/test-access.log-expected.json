@@ -1,0 +1,1001 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-10-30T20:24:24.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "create-directory",
+        "category": [
+          "file"
+        ],
+        "created": "2026-10-30T20:24:24.000Z",
+        "kind": "event",
+        "original": "<30>Oct 30 20:24:24 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: path/to/files/New folder, Action: Create Directory",
+        "provider": "conn-log",
+        "type": [
+          "creation"
+        ]
+      },
+      "file": {
+        "path": "path/to/files/New folder"
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 14629
+      },
+      "qnap": {
+        "nas": {
+          "connection_type": "Samba",
+          "file": {
+            "path": "path/to/files/New folder"
+          }
+        }
+      },
+      "related": {
+        "hosts": [
+          "user-laptop"
+        ],
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "admin.user"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "domain": "user-laptop",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin.user"
+      }
+    },
+    {
+      "@timestamp": "2026-10-30T20:24:25.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login-fail",
+        "category": [
+          "authentication"
+        ],
+        "created": "2026-10-30T20:24:25.000Z",
+        "kind": "event",
+        "original": "<30>Oct 30 20:24:25 yvbn-veg02 qulogd[14629]: conn log: Users: guest, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: ---, Action: Login Fail",
+        "outcome": "failure",
+        "provider": "conn-log",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 14629
+      },
+      "qnap": {
+        "nas": {
+          "connection_type": "Samba"
+        }
+      },
+      "related": {
+        "hosts": [
+          "user-laptop"
+        ],
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "guest"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "domain": "user-laptop",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "guest"
+      }
+    },
+    {
+      "@timestamp": "2026-10-30T20:35:25.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login-success",
+        "category": [
+          "authentication"
+        ],
+        "created": "2026-10-30T20:35:25.000Z",
+        "kind": "event",
+        "original": "<30>Oct 30 20:35:25 yvbn-veg02 qulogd[14629]: conn log: Users: guest, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: ---, Action: Login Success",
+        "outcome": "success",
+        "provider": "conn-log",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 14629
+      },
+      "qnap": {
+        "nas": {
+          "connection_type": "Samba"
+        }
+      },
+      "related": {
+        "hosts": [
+          "user-laptop"
+        ],
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "guest"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "domain": "user-laptop",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "guest"
+      }
+    },
+    {
+      "@timestamp": "2026-11-21T14:42:18.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login-success",
+        "category": [
+          "authentication"
+        ],
+        "created": "2026-11-21T14:42:18.000Z",
+        "kind": "event",
+        "original": "<30>Nov 21 14:42:18 yvbn-veg02 qulogd[14387]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: ---, Connection type: HTTP/HTTPS, Accessed resources: Administration, Action: Login Success",
+        "outcome": "success",
+        "provider": "conn-log",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 14387
+      },
+      "qnap": {
+        "nas": {
+          "application": "Administration",
+          "connection_type": "HTTP/HTTPS"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "admin.user"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin.user"
+      }
+    },
+    {
+      "@timestamp": "2026-10-30T20:35:25.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logout",
+        "category": [
+          "authentication"
+        ],
+        "created": "2026-10-30T20:35:25.000Z",
+        "kind": "event",
+        "original": "<30>Oct 30 20:35:25 yvbn-veg02 qulogd[14629]: conn log: Users: guest, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: HTTP/HTTPS, Accessed resources: ---, Action: Logout",
+        "provider": "conn-log",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 14629
+      },
+      "qnap": {
+        "nas": {
+          "connection_type": "HTTP/HTTPS"
+        }
+      },
+      "related": {
+        "hosts": [
+          "user-laptop"
+        ],
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "guest"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "domain": "user-laptop",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "guest"
+      }
+    },
+    {
+      "@timestamp": "2026-10-30T20:24:30.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "file"
+        ],
+        "created": "2026-10-30T20:24:30.000Z",
+        "kind": "event",
+        "original": "<30>Oct 30 20:24:30 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: ---, Connection type: HTTP/HTTPS, Accessed resources: [File Station] /Browser Station/admin, Action: Read",
+        "provider": "conn-log",
+        "type": [
+          "access"
+        ]
+      },
+      "file": {
+        "path": "/Browser Station/admin"
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 14629
+      },
+      "qnap": {
+        "nas": {
+          "application": "File Station",
+          "connection_type": "HTTP/HTTPS",
+          "file": {
+            "path": "/Browser Station/admin"
+          }
+        }
+      },
+      "related": {
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "admin.user"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin.user"
+      }
+    },
+    {
+      "@timestamp": "2026-10-30T20:24:30.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "rename",
+        "category": [
+          "file"
+        ],
+        "created": "2026-10-30T20:24:30.000Z",
+        "kind": "event",
+        "original": "<30>Oct 30 20:24:30 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: path/to/files/New folder -> path/to/files/asdf, Action: Rename",
+        "provider": "conn-log",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 14629
+      },
+      "qnap": {
+        "nas": {
+          "application": "path/to/files/New folder -> path/to/files/asdf",
+          "connection_type": "Samba"
+        }
+      },
+      "related": {
+        "hosts": [
+          "user-laptop"
+        ],
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "admin.user"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "domain": "user-laptop",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin.user"
+      }
+    },
+    {
+      "@timestamp": "2026-10-30T20:24:33.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "delete",
+        "category": [
+          "file"
+        ],
+        "created": "2026-10-30T20:24:33.000Z",
+        "kind": "event",
+        "original": "<30>Oct 30 20:24:33 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: path/to/files/asdf, Action: Delete",
+        "provider": "conn-log",
+        "type": [
+          "deletion"
+        ]
+      },
+      "file": {
+        "path": "path/to/files/asdf"
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 14629
+      },
+      "qnap": {
+        "nas": {
+          "connection_type": "Samba",
+          "file": {
+            "path": "path/to/files/asdf"
+          }
+        }
+      },
+      "related": {
+        "hosts": [
+          "user-laptop"
+        ],
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "admin.user"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "domain": "user-laptop",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin.user"
+      }
+    },
+    {
+      "@timestamp": "2026-10-30T20:43:19.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "file"
+        ],
+        "created": "2026-10-30T20:43:19.000Z",
+        "kind": "event",
+        "original": "<30>Oct 30 20:43:19 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: path/to/files/picture.jpg, Action: Read",
+        "provider": "conn-log",
+        "type": [
+          "access"
+        ]
+      },
+      "file": {
+        "extension": "jpg",
+        "path": "path/to/files/picture.jpg"
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 14629
+      },
+      "qnap": {
+        "nas": {
+          "connection_type": "Samba",
+          "file": {
+            "path": "path/to/files/picture.jpg"
+          }
+        }
+      },
+      "related": {
+        "hosts": [
+          "user-laptop"
+        ],
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "admin.user"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "domain": "user-laptop",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin.user"
+      }
+    },
+    {
+      "@timestamp": "2026-10-30T20:43:19.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "add",
+        "category": [
+          "file"
+        ],
+        "created": "2026-10-30T20:43:19.000Z",
+        "kind": "event",
+        "original": "<30>Oct 30 20:43:19 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: path/to/files/picture.jpg, Action: Add",
+        "provider": "conn-log",
+        "type": [
+          "creation"
+        ]
+      },
+      "file": {
+        "extension": "jpg",
+        "path": "path/to/files/picture.jpg"
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 14629
+      },
+      "qnap": {
+        "nas": {
+          "connection_type": "Samba",
+          "file": {
+            "path": "path/to/files/picture.jpg"
+          }
+        }
+      },
+      "related": {
+        "hosts": [
+          "user-laptop"
+        ],
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "admin.user"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "domain": "user-laptop",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin.user"
+      }
+    },
+    {
+      "@timestamp": "2026-01-29T08:47:53.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login-fail",
+        "category": [
+          "authentication"
+        ],
+        "created": "2026-01-29T08:47:53.000Z",
+        "kind": "event",
+        "original": "<28>Jan 29 08:47:53 yvbn-veg02 qulogd[15278]: conn log: Users: domain\\admin.user, Source IP: 10.127.178.126, Computer name: ---, Connection type: HTTPS, Accessed resources: Administration, Action: Login Fail",
+        "outcome": "failure",
+        "provider": "conn-log",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 28
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 15278
+      },
+      "qnap": {
+        "nas": {
+          "application": "Administration",
+          "connection_type": "HTTPS"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "admin.user"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "domain",
+        "name": "admin.user"
+      }
+    },
+    {
+      "@timestamp": "2026-05-06T07:08:13.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login-fail",
+        "category": [
+          "authentication"
+        ],
+        "created": "2026-05-06T07:08:13.000Z",
+        "kind": "event",
+        "original": "<28>May  6 07:08:13 yvbn-veg02 qulogd[2554]: conn log: Users: TESTDOMAIN\\PC-TEST-0001*, Source IP: 10.127.178.126, Computer name: pc-test-0001, Connection type: SAMBA, Accessed resources: ---, Action: Login Fail",
+        "outcome": "failure",
+        "provider": "conn-log",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 28
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 2554
+      },
+      "qnap": {
+        "nas": {
+          "connection_type": "SAMBA"
+        }
+      },
+      "related": {
+        "hosts": [
+          "pc-test-0001"
+        ],
+        "ip": [
+          "10.127.178.126"
+        ],
+        "user": [
+          "PC-TEST-0001*"
+        ]
+      },
+      "source": {
+        "address": "10.127.178.126",
+        "domain": "pc-test-0001",
+        "ip": "10.127.178.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TESTDOMAIN",
+        "name": "PC-TEST-0001*"
+      }
+    },
+    {
+      "@timestamp": "2026-05-06T04:07:56.000Z",
+      "_tmp.tz_offset": "-05:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login-fail",
+        "category": [
+          "authentication"
+        ],
+        "created": "2026-05-06T04:07:56.000Z",
+        "kind": "event",
+        "original": "<28>May  6 04:07:56 yvbn-veg02 qulogd[1743]: conn log: Users: **test*ldap***testhost-smb-abc123**lower*test**.w.n, Source IP: 10.182.2.165, Computer name: Unknown, Connection type: SAMBA, Accessed resources: ---, Action: Login Fail",
+        "outcome": "failure",
+        "provider": "conn-log",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "yvbn-veg02"
+      },
+      "log": {
+        "syslog": {
+          "priority": 28
+        }
+      },
+      "observer": {
+        "product": "NAS",
+        "type": "nas",
+        "vendor": "QNAP"
+      },
+      "process": {
+        "name": "qulogd",
+        "pid": 1743
+      },
+      "qnap": {
+        "nas": {
+          "connection_type": "SAMBA"
+        }
+      },
+      "related": {
+        "hosts": [
+          "Unknown"
+        ],
+        "ip": [
+          "10.182.2.165"
+        ],
+        "user": [
+          "**test*ldap***testhost-smb-abc123**lower*test**.w.n"
+        ]
+      },
+      "source": {
+        "address": "10.182.2.165",
+        "domain": "Unknown",
+        "ip": "10.182.2.165"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "**test*ldap***testhost-smb-abc123**lower*test**.w.n"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<30>Oct 30 20:24:24 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: path/to/files/New folder, Action: Create Directory",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<30>Oct 30 20:24:25 yvbn-veg02 qulogd[14629]: conn log: Users: guest, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: ---, Action: Login Fail",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<30>Oct 30 20:35:25 yvbn-veg02 qulogd[14629]: conn log: Users: guest, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: ---, Action: Login Success",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<30>Nov 21 14:42:18 yvbn-veg02 qulogd[14387]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: ---, Connection type: HTTP/HTTPS, Accessed resources: Administration, Action: Login Success",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<30>Oct 30 20:35:25 yvbn-veg02 qulogd[14629]: conn log: Users: guest, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: HTTP/HTTPS, Accessed resources: ---, Action: Logout",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<30>Oct 30 20:24:30 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: ---, Connection type: HTTP/HTTPS, Accessed resources: [File Station] /Browser Station/admin, Action: Read",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<30>Oct 30 20:24:30 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: path/to/files/New folder -> path/to/files/asdf, Action: Rename",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<30>Oct 30 20:24:33 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: path/to/files/asdf, Action: Delete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<30>Oct 30 20:43:19 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: path/to/files/picture.jpg, Action: Read",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<30>Oct 30 20:43:19 yvbn-veg02 qulogd[14629]: conn log: Users: admin.user, Source IP: 10.127.178.126, Computer name: user-laptop, Connection type: Samba, Accessed resources: path/to/files/picture.jpg, Action: Add",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<28>Jan 29 08:47:53 yvbn-veg02 qulogd[15278]: conn log: Users: domain\\admin.user, Source IP: 10.127.178.126, Computer name: ---, Connection type: HTTPS, Accessed resources: Administration, Action: Login Fail",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<28>May  6 07:08:13 yvbn-veg02 qulogd[2554]: conn log: Users: TESTDOMAIN\\PC-TEST-0001*, Source IP: 10.127.178.126, Computer name: pc-test-0001, Connection type: SAMBA, Accessed resources: ---, Action: Login Fail",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-05:00",
+      "message": "<28>May  6 04:07:56 yvbn-veg02 qulogd[1743]: conn log: Users: **test*ldap***testhost-smb-abc123**lower*test**.w.n, Source IP: 10.182.2.165, Computer name: Unknown, Connection type: SAMBA, Accessed resources: ---, Action: Login Fail",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}-[0-9]{2}:[0-9]{2}$",
+      "event.created": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}-[0-9]{2}:[0-9]{2}$",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-qnap_nas-log-default",
+    "event_count": 13,
+    "numeric_keyword_fields": [],
+    "package": "qnap_nas",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

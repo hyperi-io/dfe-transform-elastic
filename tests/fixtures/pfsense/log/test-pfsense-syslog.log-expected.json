@@ -1,0 +1,1712 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-07-04T00:10:14.578Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:14.578288-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,32989,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49652,853,0,S,1818117648,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,32989,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49652,853,0,S,1818117648,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:56c4nYidv6eKxaNQ9t8tfhOoG24=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 32989,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49652
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:14.578Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:14.578309-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,28831,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49616,853,0,S,3664924520,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,28831,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49616,853,0,S,3664924520,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:DFdKPRWlL8oFFVv/b9gxOlpiIB4=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 28831,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49616
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:14.578Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "10.149.188.201",
+        "ip": "10.149.188.201",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:14.578333-05:00 pfSense.example.com filterlog 72237 - - 115,,,1534283903,igb1.27,match,pass,in,4,0x0,,63,29559,0,DF,17,udp,69,10.221.16.45,10.149.188.201,52797,53,49",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "115,,,1534283903,igb1.27,match,pass,in,4,0x0,,63,29559,0,DF,17,udp,69,10.221.16.45,10.149.188.201,52797,53,49",
+      "network": {
+        "bytes": 69,
+        "community_id": "1:758yM9/vqK+9GKDd+hMW3y45Zgo=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "27"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.27"
+          },
+          "vlan": {
+            "id": "27"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 29559,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "udp": {
+          "length": 49
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "10.149.188.201",
+          "10.221.16.45"
+        ]
+      },
+      "rule": {
+        "id": "1534283903"
+      },
+      "source": {
+        "address": "10.221.16.45",
+        "ip": "10.221.16.45",
+        "port": 52797
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:14.578Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:14.578227-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,39730,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49636,853,0,S,2795136451,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,39730,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49636,853,0,S,2795136451,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:TOtQnkxkL5sqZUzqWLr5rvNhDL0=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 39730,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49636
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:14.578Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:14.578265-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,18713,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49668,853,0,S,1623026256,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,18713,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49668,853,0,S,1623026256,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:Qs9mP2ZLjrYoi8bNzotzL6SzFBk=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 18713,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49668
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:14.578Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:14.578380-05:00 pfSense.example.com filterlog 72237 - - 118,,,1534283903,igb1.12,match,pass,in,4,0x0,,64,58337,0,DF,6,tcp,64,10.203.84.56,127.0.0.1,62132,53,0,S,3671644853,,32768,,mss;nop;wscale;sackOK;nop;nop;nop;nop;TS",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "118,,,1534283903,igb1.12,match,pass,in,4,0x0,,64,58337,0,DF,6,tcp,64,10.203.84.56,127.0.0.1,62132,53,0,S,3671644853,,32768,,mss;nop;wscale;sackOK;nop;nop;nop;nop;TS",
+      "network": {
+        "bytes": 64,
+        "community_id": "1:4xHMoRWAh2tCHpymSZqUzI2dph8=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 58337,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 64
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "nop",
+            "wscale",
+            "sackOK",
+            "nop",
+            "nop",
+            "nop",
+            "nop",
+            "TS"
+          ],
+          "window": 32768
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1",
+          "10.203.84.56"
+        ]
+      },
+      "rule": {
+        "id": "1534283903"
+      },
+      "source": {
+        "address": "10.203.84.56",
+        "ip": "10.203.84.56",
+        "port": 62132
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:15.590Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:15.590254-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,51373,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56520,853,0,S,2661102197,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,51373,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56520,853,0,S,2661102197,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:iBmr874SAhkI02nclfdykNkrtrU=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 51373,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 56520
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:15.590Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:15.590217-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,18714,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49668,853,0,S,1623026256,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,18714,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49668,853,0,S,1623026256,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:Qs9mP2ZLjrYoi8bNzotzL6SzFBk=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 18714,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49668
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:15.590Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "10.149.188.201",
+        "ip": "10.149.188.201",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:15.590279-05:00 pfSense.example.com filterlog 72237 - - 115,,,1534283903,igb1.27,match,pass,in,4,0x0,,64,3666,0,DF,17,udp,69,10.131.67.15,10.149.188.201,26641,53,49",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "115,,,1534283903,igb1.27,match,pass,in,4,0x0,,64,3666,0,DF,17,udp,69,10.131.67.15,10.149.188.201,26641,53,49",
+      "network": {
+        "bytes": 69,
+        "community_id": "1:bAi1TpZfjKp8emacpUfIITRE7Eo=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "27"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.27"
+          },
+          "vlan": {
+            "id": "27"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 3666,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 64
+        },
+        "udp": {
+          "length": 49
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "10.149.188.201",
+          "10.131.67.15"
+        ]
+      },
+      "rule": {
+        "id": "1534283903"
+      },
+      "source": {
+        "address": "10.131.67.15",
+        "ip": "10.131.67.15",
+        "port": 26641
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:15.590Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:15.590303-05:00 pfSense.example.com filterlog 72237 - - 115,,,1534283903,igb1.27,match,pass,in,4,0x0,,64,51896,0,DF,17,udp,69,10.131.67.15,192.168.124.110,26641,53,49",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "115,,,1534283903,igb1.27,match,pass,in,4,0x0,,64,51896,0,DF,17,udp,69,10.131.67.15,192.168.124.110,26641,53,49",
+      "network": {
+        "bytes": 69,
+        "community_id": "1:L1yacwChxbONQXquHxZ80Q3QlSY=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "27"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.27"
+          },
+          "vlan": {
+            "id": "27"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 51896,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 64
+        },
+        "udp": {
+          "length": 49
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.168.124.110",
+          "10.131.67.15"
+        ]
+      },
+      "rule": {
+        "id": "1534283903"
+      },
+      "source": {
+        "address": "10.131.67.15",
+        "ip": "10.131.67.15",
+        "port": 26641
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:15.590Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:15.590325-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,543,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56542,853,0,S,3798927693,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,543,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56542,853,0,S,3798927693,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:HMCjRaYi6cRX+ackZqCSRAFS/LQ=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 543,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 56542
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:15.590Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:15.590347-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,46364,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49656,853,0,S,1642052952,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,46364,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49656,853,0,S,1642052952,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:Kg85UrFlGO8HWB0LuKtDCHv+5T8=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 46364,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49656
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T00:10:15.590Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 1900
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-07-03T19:10:15.590370-05:00 pfSense.example.com filterlog 72237 - - 183,,,1520797915,igb1.40,match,pass,in,4,0x0,,1,56778,0,DF,17,udp,200,10.39.188.92,192.0.2.87,58037,1900,180",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "183,,,1520797915,igb1.40,match,pass,in,4,0x0,,1,56778,0,DF,17,udp,200,10.39.188.92,192.0.2.87,58037,1900,180",
+      "network": {
+        "bytes": 200,
+        "community_id": "1:Z6fn4GuAGys+hHlyd8961FHCQ+8=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "40"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.40"
+          },
+          "vlan": {
+            "id": "40"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 56778,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 1
+        },
+        "udp": {
+          "length": 180
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.39.188.92"
+        ]
+      },
+      "rule": {
+        "id": "1520797915"
+      },
+      "source": {
+        "address": "10.39.188.92",
+        "ip": "10.39.188.92",
+        "port": 58037
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-09-14T20:31:58.860Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "224.0.0.1",
+        "ip": "224.0.0.1"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2049-09-14T15:31:58.860079-05:00 pfSense.example.com filterlog 72913 - - 176,,,1520797901,igb1.50,ip-option,pass,in,4,0xc0,,1,20651,0,none,2,igmp,32,10.89.105.100,224.0.0.1,datalength=8",
+        "provider": "filterlog",
+        "reason": "ip-option",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "176,,,1520797901,igb1.50,ip-option,pass,in,4,0xc0,,1,20651,0,none,2,igmp,32,10.89.105.100,224.0.0.1,datalength=8",
+      "network": {
+        "bytes": 32,
+        "community_id": "1:sf8436ZgDcBDYAzbjxA9arg0pB4=",
+        "direction": "inbound",
+        "iana_number": "2",
+        "packets": 8,
+        "transport": "igmp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "50"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.50"
+          },
+          "vlan": {
+            "id": "50"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "none",
+          "id": 20651,
+          "offset": 0,
+          "tos": "0xc0",
+          "ttl": 1
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72913
+      },
+      "related": {
+        "ip": [
+          "224.0.0.1",
+          "10.89.105.100"
+        ]
+      },
+      "rule": {
+        "id": "1520797901"
+      },
+      "source": {
+        "address": "10.89.105.100",
+        "ip": "10.89.105.100"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-06-13T17:19:42.319Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "224.0.0.1",
+        "ip": "224.0.0.1"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2051-06-13T20:19:42.319750+03:00 pfSense.example.com filterlog 30459 - - 4,,,1000000103,em0,match,block,in,4,0x28,,53,28808,0,none,1,icmp,56,10.89.105.100,224.0.0.1,unreachport,10.89.105.100,UDP,5336",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "+03:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "4,,,1000000103,em0,match,block,in,4,0x28,,53,28808,0,none,1,icmp,56,10.89.105.100,224.0.0.1,unreachport,10.89.105.100,UDP,5336",
+      "network": {
+        "bytes": 56,
+        "community_id": "1:Brf+MRd1nxbTuZSWRlqYxPQ2540=",
+        "direction": "inbound",
+        "iana_number": "1",
+        "transport": "icmp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "em0"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "icmp": {
+          "destination": {
+            "ip": "10.89.105.100"
+          },
+          "type": "unreachport",
+          "unreachable": {
+            "port": 5336,
+            "protocol_id": "UDP"
+          }
+        },
+        "ip": {
+          "flags": "none",
+          "id": 28808,
+          "offset": 0,
+          "tos": "0x28",
+          "ttl": 53
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 30459
+      },
+      "related": {
+        "ip": [
+          "224.0.0.1",
+          "10.89.105.100"
+        ]
+      },
+      "rule": {
+        "id": "1000000103"
+      },
+      "source": {
+        "address": "10.89.105.100",
+        "ip": "10.89.105.100"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-06-13T17:19:42.354Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "224.0.0.1",
+        "ip": "224.0.0.1"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>1 2051-06-13T20:19:42.354112+03:00 pfSense.example.com filterlog 30459 - - 4,,,1000000103,em0,match,block,in,4,0x28,,53,28808,0,none,1,icmp,56,10.89.105.100,224.0.0.1,unreachproto,[10.89.105.100],[17]",
+        "provider": "filterlog",
+        "reason": "match",
+        "timezone": "+03:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "4,,,1000000103,em0,match,block,in,4,0x28,,53,28808,0,none,1,icmp,56,10.89.105.100,224.0.0.1,unreachproto,[10.89.105.100],[17]",
+      "network": {
+        "bytes": 56,
+        "community_id": "1:Brf+MRd1nxbTuZSWRlqYxPQ2540=",
+        "direction": "inbound",
+        "iana_number": "1",
+        "transport": "icmp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "em0"
+          }
+        },
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "icmp": {
+          "destination": {
+            "ip": "10.89.105.100"
+          },
+          "type": "unreachproto",
+          "unreachable": {
+            "protocol_id": "17"
+          }
+        },
+        "ip": {
+          "flags": "none",
+          "id": 28808,
+          "offset": 0,
+          "tos": "0x28",
+          "ttl": 53
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 30459
+      },
+      "related": {
+        "ip": [
+          "224.0.0.1",
+          "10.89.105.100"
+        ]
+      },
+      "rule": {
+        "id": "1000000103"
+      },
+      "source": {
+        "address": "10.89.105.100",
+        "ip": "10.89.105.100"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:14.578288-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,32989,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49652,853,0,S,1818117648,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:14.578309-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,28831,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49616,853,0,S,3664924520,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:14.578333-05:00 pfSense.example.com filterlog 72237 - - 115,,,1534283903,igb1.27,match,pass,in,4,0x0,,63,29559,0,DF,17,udp,69,10.221.16.45,10.149.188.201,52797,53,49",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:14.578227-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,39730,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49636,853,0,S,2795136451,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:14.578265-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,18713,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49668,853,0,S,1623026256,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:14.578380-05:00 pfSense.example.com filterlog 72237 - - 118,,,1534283903,igb1.12,match,pass,in,4,0x0,,64,58337,0,DF,6,tcp,64,10.203.84.56,127.0.0.1,62132,53,0,S,3671644853,,32768,,mss;nop;wscale;sackOK;nop;nop;nop;nop;TS",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:15.590254-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,51373,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56520,853,0,S,2661102197,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:15.590217-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,18714,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49668,853,0,S,1623026256,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:15.590279-05:00 pfSense.example.com filterlog 72237 - - 115,,,1534283903,igb1.27,match,pass,in,4,0x0,,64,3666,0,DF,17,udp,69,10.131.67.15,10.149.188.201,26641,53,49",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:15.590303-05:00 pfSense.example.com filterlog 72237 - - 115,,,1534283903,igb1.27,match,pass,in,4,0x0,,64,51896,0,DF,17,udp,69,10.131.67.15,192.168.124.110,26641,53,49",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:15.590325-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,543,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56542,853,0,S,3798927693,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:15.590347-05:00 pfSense.example.com filterlog 72237 - - 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,46364,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49656,853,0,S,1642052952,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-07-03T19:10:15.590370-05:00 pfSense.example.com filterlog 72237 - - 183,,,1520797915,igb1.40,match,pass,in,4,0x0,,1,56778,0,DF,17,udp,200,10.39.188.92,192.0.2.87,58037,1900,180",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2049-09-14T15:31:58.860079-05:00 pfSense.example.com filterlog 72913 - - 176,,,1520797901,igb1.50,ip-option,pass,in,4,0xc0,,1,20651,0,none,2,igmp,32,10.89.105.100,224.0.0.1,datalength=8",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2051-06-13T20:19:42.319750+03:00 pfSense.example.com filterlog 30459 - - 4,,,1000000103,em0,match,block,in,4,0x28,,53,28808,0,none,1,icmp,56,10.89.105.100,224.0.0.1,unreachport,10.89.105.100,UDP,5336",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>1 2051-06-13T20:19:42.354112+03:00 pfSense.example.com filterlog 30459 - - 4,,,1000000103,em0,match,block,in,4,0x28,,53,28808,0,none,1,icmp,56,10.89.105.100,224.0.0.1,unreachproto,[10.89.105.100],[17]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-pfsense-log-default",
+    "event_count": 16,
+    "numeric_keyword_fields": [],
+    "package": "pfsense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

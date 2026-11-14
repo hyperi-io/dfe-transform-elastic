@@ -1,0 +1,493 @@
+{
+  "expected": [
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "18",
+          "product": "Vaporware",
+          "vendor": "Elastic",
+          "version": "1.0.0-alpha"
+        },
+        "extensions": {
+          "destinationAddress": "192.168.57.33",
+          "destinationPort": 443,
+          "eventId": 3457,
+          "requestContext": "https://www.google.com",
+          "requestMethod": "POST",
+          "requestUrl": "https://www.example.com/cart",
+          "sourceAddress": "198.51.100.144",
+          "sourceGeoLatitude": 38.915,
+          "sourceGeoLongitude": -77.511,
+          "sourcePort": 33876,
+          "sourceServiceName": "httpd",
+          "transportProtocol": "TCP"
+        },
+        "name": "Web request",
+        "severity": "low",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "192.168.57.33",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "18",
+        "id": "3457",
+        "original": "CEF:0|Elastic|Vaporware|1.0.0-alpha|18|Web request|low|eventId=3457 requestMethod=POST slat=38.915 slong=-77.511 proto=TCP sourceServiceName=httpd requestContext=https://www.google.com src=198.51.100.144 spt=33876 dst=192.168.57.33 dpt=443 request=https://www.example.com/cart",
+        "severity": 0
+      },
+      "http": {
+        "request": {
+          "method": "POST",
+          "referrer": "https://www.google.com"
+        }
+      },
+      "message": "Web request",
+      "network": {
+        "community_id": "1:z2Ukw5ZFO9bdoA7i7HqtYdUgPXg=",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Vaporware",
+        "vendor": "Elastic",
+        "version": "1.0.0-alpha"
+      },
+      "related": {
+        "ip": [
+          "192.168.57.33",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "geo": {
+          "location": {
+            "lat": 38.915,
+            "lon": -77.511
+          }
+        },
+        "ip": "198.51.100.144",
+        "port": 33876,
+        "service": {
+          "name": "httpd"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "https://www.example.com/cart"
+      }
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "18",
+          "product": "Vaporware",
+          "vendor": "Elastic",
+          "version": "1.0.0-alpha"
+        },
+        "extensions": {
+          "destinationAddress": "198.51.100.144",
+          "destinationPort": 443,
+          "destinationTranslatedAddress": "10.182.2.165",
+          "destinationUserName": "alice",
+          "eventId": 123,
+          "fileHash": "ff6fce42e708aa76154c11f1c83821ff",
+          "oldFileHash": "a0019282949f10e91a82a706249e61af",
+          "sourceAddress": "198.51.100.144",
+          "sourcePort": 33876,
+          "sourceUserName": "bob"
+        },
+        "name": "Authentication",
+        "severity": "low",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "198.51.100.144",
+        "nat": {
+          "ip": "10.182.2.165"
+        },
+        "port": 443,
+        "user": {
+          "name": "alice"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "18",
+        "id": "123",
+        "original": "CEF:0|Elastic|Vaporware|1.0.0-alpha|18|Authentication|low|eventId=123 src=198.51.100.144 spt=33876 dst=198.51.100.144 dpt=443 duser=alice suser=bob destinationTranslatedAddress=10.182.2.165 fileHash=ff6fce42e708aa76154c11f1c83821ff oldFileHash=a0019282949f10e91a82a706249e61af",
+        "severity": 0
+      },
+      "message": "Authentication",
+      "observer": {
+        "product": "Vaporware",
+        "vendor": "Elastic",
+        "version": "1.0.0-alpha"
+      },
+      "related": {
+        "hash": [
+          "ff6fce42e708aa76154c11f1c83821ff",
+          "a0019282949f10e91a82a706249e61af"
+        ],
+        "ip": [
+          "198.51.100.144",
+          "10.182.2.165"
+        ],
+        "user": [
+          "alice",
+          "bob"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144",
+        "port": 33876,
+        "user": {
+          "name": "bob"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "18",
+          "product": "Vaporware",
+          "vendor": "Elastic",
+          "version": "1.0.0-alpha"
+        },
+        "extensions": {
+          "destinationUserPrivileges": "root",
+          "sourceUserPrivileges": "user"
+        },
+        "name": "Authentication",
+        "severity": "low",
+        "version": "0"
+      },
+      "destination": {
+        "user": {
+          "group": {
+            "name": "root"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "18",
+        "original": "CEF:0|Elastic|Vaporware|1.0.0-alpha|18|Authentication|low|spriv=user dpriv=root",
+        "severity": 0
+      },
+      "message": "Authentication",
+      "observer": {
+        "product": "Vaporware",
+        "vendor": "Elastic",
+        "version": "1.0.0-alpha"
+      },
+      "source": {
+        "user": {
+          "group": {
+            "name": "user"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "18",
+          "product": "Vaporware",
+          "vendor": "Elastic",
+          "version": "1.0.0-alpha"
+        },
+        "extensions": {
+          "destinationAddress": "192.168.97.98",
+          "message": "This event is padded with whitespace",
+          "sourceAddress": "192.168.66.100"
+        },
+        "name": "Authentication",
+        "severity": "low",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "192.168.97.98"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "18",
+        "original": "CEF:0|Elastic|Vaporware|1.0.0-alpha|18|Authentication|low|message=This event is padded with whitespace dst=192.168.97.98 src=192.168.66.100     ",
+        "severity": 0
+      },
+      "message": "This event is padded with whitespace",
+      "observer": {
+        "product": "Vaporware",
+        "vendor": "Elastic",
+        "version": "1.0.0-alpha"
+      },
+      "related": {
+        "ip": [
+          "192.168.97.98",
+          "192.168.66.100"
+        ]
+      },
+      "source": {
+        "ip": "192.168.66.100"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "18",
+          "product": "Vaporware",
+          "vendor": "Elastic",
+          "version": "1.0.0-alpha"
+        },
+        "extensions": {
+          "destinationAddress": "192.168.57.33",
+          "destinationPort": 443,
+          "eventId": 3457,
+          "requestContext": "https://www.google.com",
+          "requestMethod": "POST",
+          "requestUrl": "https://www.example.com/cart",
+          "sourceAddress": "198.51.100.144",
+          "sourceGeoLatitude": 38.915,
+          "sourceGeoLongitude": -77.511,
+          "sourcePort": 33876,
+          "sourceServiceName": "httpd",
+          "transportProtocol": "TCP"
+        },
+        "name": "Web request",
+        "severity": "low",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "192.168.57.33",
+        "port": 443
+      },
+      "event": {
+        "code": "18",
+        "id": 3457,
+        "original": "CEF:0|Elastic|Vaporware|1.0.0-alpha|18|Web request|low|eventId=3457 requestMethod=POST slat=38.915 slong=-77.511 proto=TCP sourceServiceName=httpd requestContext=https://www.google.com src=198.51.100.144 spt=33876 dst=192.168.57.33 dpt=443 request=https://www.example.com/cart",
+        "severity": 0
+      },
+      "http": {
+        "request": {
+          "method": "POST",
+          "referrer": "https://www.google.com"
+        }
+      },
+      "message": "Web request",
+      "network": {
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Vaporware",
+        "vendor": "Elastic",
+        "version": "1.0.0-alpha"
+      },
+      "source": {
+        "geo": {
+          "location": {
+            "lat": 38.915,
+            "lon": -77.511
+          }
+        },
+        "ip": "198.51.100.144",
+        "port": 33876,
+        "service": {
+          "name": "httpd"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "original": "https://www.example.com/cart"
+      }
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "18",
+          "product": "Vaporware",
+          "vendor": "Elastic",
+          "version": "1.0.0-alpha"
+        },
+        "extensions": {
+          "destinationAddress": "198.51.100.144",
+          "destinationPort": 443,
+          "destinationTranslatedAddress": "10.182.2.165",
+          "destinationUserName": "alice",
+          "eventId": 123,
+          "fileHash": "ff6fce42e708aa76154c11f1c83821ff",
+          "oldFileHash": "a0019282949f10e91a82a706249e61af",
+          "sourceAddress": "198.51.100.144",
+          "sourcePort": 33876,
+          "sourceUserName": "bob"
+        },
+        "name": "Authentication",
+        "severity": "low",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "198.51.100.144",
+        "nat": {
+          "ip": "10.182.2.165"
+        },
+        "port": 443,
+        "user": {
+          "name": "alice"
+        }
+      },
+      "event": {
+        "code": "18",
+        "id": 123,
+        "original": "CEF:0|Elastic|Vaporware|1.0.0-alpha|18|Authentication|low|eventId=123 src=198.51.100.144 spt=33876 dst=198.51.100.144 dpt=443 duser=alice suser=bob destinationTranslatedAddress=10.182.2.165 fileHash=ff6fce42e708aa76154c11f1c83821ff oldFileHash=a0019282949f10e91a82a706249e61af",
+        "severity": 0
+      },
+      "message": "Authentication",
+      "observer": {
+        "product": "Vaporware",
+        "vendor": "Elastic",
+        "version": "1.0.0-alpha"
+      },
+      "source": {
+        "ip": "198.51.100.144",
+        "port": 33876,
+        "user": {
+          "name": "bob"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "18",
+          "product": "Vaporware",
+          "vendor": "Elastic",
+          "version": "1.0.0-alpha"
+        },
+        "extensions": {
+          "destinationUserPrivileges": "root",
+          "sourceUserPrivileges": "user"
+        },
+        "name": "Authentication",
+        "severity": "low",
+        "version": "0"
+      },
+      "destination": {
+        "user": {
+          "group": {
+            "name": "root"
+          }
+        }
+      },
+      "event": {
+        "code": "18",
+        "original": "CEF:0|Elastic|Vaporware|1.0.0-alpha|18|Authentication|low|spriv=user dpriv=root",
+        "severity": 0
+      },
+      "message": "Authentication",
+      "observer": {
+        "product": "Vaporware",
+        "vendor": "Elastic",
+        "version": "1.0.0-alpha"
+      },
+      "source": {
+        "user": {
+          "group": {
+            "name": "user"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "18",
+          "product": "Vaporware",
+          "vendor": "Elastic",
+          "version": "1.0.0-alpha"
+        },
+        "extensions": {
+          "destinationAddress": "192.168.97.98",
+          "message": "This event is padded with whitespace",
+          "sourceAddress": "192.168.66.100"
+        },
+        "name": "Authentication",
+        "severity": "low",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "192.168.97.98"
+      },
+      "event": {
+        "code": "18",
+        "original": "CEF:0|Elastic|Vaporware|1.0.0-alpha|18|Authentication|low|message=This event is padded with whitespace dst=192.168.97.98 src=192.168.66.100     ",
+        "severity": 0
+      },
+      "message": "This event is padded with whitespace",
+      "observer": {
+        "product": "Vaporware",
+        "vendor": "Elastic",
+        "version": "1.0.0-alpha"
+      },
+      "source": {
+        "ip": "192.168.66.100"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cef-log-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "cef",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -140,9 +140,7 @@ impl Transform for Default {
                 event.set("event.created", v)?;
             }
 
-            // Painless script
-            // Source: def gc = ctx?.elasticsearch?.server?.gc; def observationDuration = gc?.observation_duration; if (observationDuration != null) {\n  if (observationDuration.unit == params.seconds_unit) {\n    observationDuration.ms = observationDuration.time * params.ms_in_one_s;\n  }\n  if (observationDuration.unit == params.milliseconds_unit) {\n    observationDuration.ms = observationDuration.time;\n  }\n  if (observationDuration.unit == params.minutes_unit) {\n    observationDuration.ms = observationDuration.time * params.ms_in_one_m;\n  }\n} def collectionDuration = gc?.collection_duration; if (collectionDuration != null) {\n  if (collectionDuration.unit == params.seconds_unit) {\n    collectionDuration.ms = collectionDuration.time * params.ms_in_one_s;\n  }\n  if (collectionDuration.unit == params.milliseconds_unit) {\n    collectionDuration.ms = collectionDuration.time;\n  }\n  if (collectionDuration.unit == params.minutes_unit) {\n    collectionDuration.ms = collectionDuration.time * params.ms_in_one_m;\n  }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -157,9 +155,7 @@ impl Transform for Default {
 
             event.set("event.category", Value::Array(vec![json!("database")]))?;
 
-            // Painless script
-            // Source: def errorLevels = ['FATAL', 'ERROR']; if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n    ctx.event.type = ['error'];\n  } else {\n    ctx.event.type = ['info'];\n  }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

@@ -1,0 +1,199 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-07-13T22:22:46.000Z",
+            "network": {
+                "application": "DNS"
+            },
+            "host": {
+                "name": "co8-50-6-111"
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "event": {
+                "original": "CEF:0|Infoblox|Data Connector|2.1.3|RPZ-QNAME-PASSTHRU|RPZ EVENT QNAME PASSTHRU|8|app=DNS InfobloxCSiteId=4d752ed0ff284d80ddf140dee7965d39 InfobloxB1DNSTags=\"APP_Uncategorized,CAT_Internet Services,CAT_Parked Domain,multi-domain.surbl,surbl-lite\" dvc=192.0.2.54 dvchost= InfobloxB1DHCPFingerprint= InfobloxB1OPHName=ns1.mhesi.go.th InfobloxB1FeedName=SURBL_Multi InfobloxB1FeedType=FQDN InfobloxB1OPHIPAddress=203.0.113.177 InfobloxB1Network=\"ns1.mhesi.go.th (DFP)\" InfobloxB1SrcOSVersion= InfobloxB1PolicyAction=Log InfobloxB1PolicyName=\"Default Global Policy\" InfobloxB1ThreatIndicator=hznlr.com msg=\"rpz QNAME PASSTHRU rewrite mveu.hznlr.com. [A] via phnyr-dphauu.snhbx.mveu.hznlr.com.\" InfobloxB1ConnectionType=dfp InfobloxPolicyID=61445 InfobloxDomainCat= src=192.0.2.54 destinationDnsDomain=mveu.hznlr.com. spt=34640 InfobloxDNSQType=A InfobloxB1Region=ap-southeast-1 dst=198.51.100.162 InfobloxRPZ=multi-domain.surbl act=PASSTHRU smac=45:15:31:c1:60:9b InfobloxThreatConfidence=100 InfobloxThreatLevel=100 InfobloxThreatProperty=UncategorizedThreat_Generic InfobloxRPZRule=phnyr-dphauu.snhbx.mveu.hznlr.com. suser= InfobloxDNSView=1",
+                "code": "RPZ-QNAME-PASSTHRU",
+                "severity": 8,
+                "action": "PASSTHRU"
+            },
+            "observer": {
+                "vendor": "Infoblox",
+                "product": "Data Connector",
+                "version": "2.1.3",
+                "ip": [
+                    "192.0.2.54"
+                ]
+            },
+            "source": {
+                "port": 34640,
+                "mac": "16-20-61-A6-16-3B",
+                "ip": "192.0.2.54"
+            },
+            "destination": {
+                "ip": "198.51.100.162",
+                "domain": "mveu.hznlr.com."
+            },
+            "agent": {
+                "type": "filebeat",
+                "version": "9.1.0",
+                "ephemeral_id": "2a33b34d-d167-4ccc-8868-d3462a50d4dd",
+                "id": "06d736b4-52a0-41ec-b0d6-f78467472a47",
+                "name": "co8-50-6-111"
+            },
+            "log": {
+                "syslog": {
+                    "severity": {
+                        "code": 2,
+                        "name": "Critical"
+                    },
+                    "appname": "dataconnector",
+                    "msgid": "RPZ-QNAME-PASSTHRU",
+                    "version": "1",
+                    "priority": 130,
+                    "facility": {
+                        "code": 16,
+                        "name": "local0"
+                    }
+                },
+                "offset": 0
+            },
+            "input": {
+                "type": "filestream"
+            },
+            "cef": {
+                "severity": "8",
+                "extensions": {
+                    "InfobloxB1DHCPFingerprint": "",
+                    "InfobloxPolicyID": "61445",
+                    "destinationDnsDomain": "mveu.hznlr.com.",
+                    "InfobloxDomainCat": "",
+                    "InfobloxB1ThreatIndicator": "hznlr.com",
+                    "InfobloxThreatLevel": "100",
+                    "sourceAddress": "192.0.2.54",
+                    "InfobloxB1PolicyName": "\"Default Global Policy\"",
+                    "sourcePort": 34640,
+                    "InfobloxB1DNSTags": "\"APP_Uncategorized,CAT_Internet Services,CAT_Parked Domain,multi-domain.surbl,surbl-lite\"",
+                    "InfobloxB1FeedType": "FQDN",
+                    "InfobloxRPZRule": "phnyr-dphauu.snhbx.mveu.hznlr.com.",
+                    "InfobloxCSiteId": "4d752ed0ff284d80ddf140dee7965d39",
+                    "InfobloxDNSQType": "A",
+                    "InfobloxB1ConnectionType": "dfp",
+                    "InfobloxRPZ": "multi-domain.surbl",
+                    "InfobloxDNSView": "1",
+                    "deviceAddress": "192.0.2.54",
+                    "message": "\"rpz QNAME PASSTHRU rewrite mveu.hznlr.com. [A] via phnyr-dphauu.snhbx.mveu.hznlr.com.\"",
+                    "deviceAction": "PASSTHRU",
+                    "InfobloxThreatProperty": "UncategorizedThreat_Generic",
+                    "InfobloxThreatConfidence": "100",
+                    "InfobloxB1Region": "ap-southeast-1",
+                    "applicationProtocol": "DNS",
+                    "InfobloxB1PolicyAction": "Log",
+                    "sourceMacAddress": "45:15:31:c1:60:9b",
+                    "InfobloxB1OPHIPAddress": "203.0.113.177",
+                    "InfobloxB1SrcOSVersion": "",
+                    "destinationAddress": "198.51.100.162",
+                    "InfobloxB1OPHName": "ns1.mhesi.go.th",
+                    "InfobloxB1FeedName": "SURBL_Multi",
+                    "InfobloxB1Network": "\"ns1.mhesi.go.th (DFP)\""
+                },
+                "version": "0",
+                "device": {
+                    "product": "Data Connector",
+                    "version": "2.1.3",
+                    "event_class_id": "RPZ-QNAME-PASSTHRU",
+                    "vendor": "Infoblox"
+                },
+                "name": "RPZ EVENT QNAME PASSTHRU"
+            },
+            "message": "\"rpz QNAME PASSTHRU rewrite mveu.hznlr.com. [A] via phnyr-dphauu.snhbx.mveu.hznlr.com.\""
+        },
+        {
+            "@timestamp": "2049-07-13T22:27:38.000Z",
+            "agent": {
+                "ephemeral_id": "e0257dec-e101-4991-acc1-f17350562eb6",
+                "id": "585524c3-207d-48f5-8514-8637bb67e1f0",
+                "name": "co8-50-6-111",
+                "type": "filebeat",
+                "version": "9.1.0"
+            },
+            "event": {
+                "original": "CEF:0|Infoblox|Data Connector|2.1.3|RPZ-IP-PASSTHRU|RPZ EVENT IP PASSTHRU|1|app=DNS InfobloxCSiteId=4d752ed0ff284d80ddf140dee7965d39 InfobloxB1DNSTags=APP_Uncategorized,CAT_Business,eecn-ip,sanctions-ip dvc=192.0.2.54 dvchost= InfobloxB1DHCPFingerprint= InfobloxB1OPHName=ns1.mhesi.go.th InfobloxB1FeedName=Sanctions_IP InfobloxB1FeedType=\"IP Address\" InfobloxB1OPHIPAddress=203.0.113.138 InfobloxB1Network=\"ns1.mhesi.go.th (DFP)\" InfobloxB1SrcOSVersion= InfobloxB1PolicyAction=Log InfobloxB1PolicyName=\"Default Global Policy\" InfobloxB1ThreatIndicator=192.0.2.134/11 msg=\"rpz IP PASSTHRU rewrite d.dns.omin.net. [A] via sanctions-ip.89.160.20.112/28\" InfobloxB1ConnectionType=dfp InfobloxPolicyID=61445 InfobloxDomainCat= src=192.0.2.54 destinationDnsDomain=d.dns.omin.net. spt=35576 InfobloxDNSQType=A InfobloxB1Region=ap-southeast-1 dst= InfobloxRPZ=sanctions-ip act=PASSTHRU smac= InfobloxThreatConfidence=100 InfobloxThreatLevel=0 InfobloxThreatProperty=OFACSanction InfobloxRPZRule=sanctions-ip.89.160.20.112/28 suser= InfobloxDNSView=default",
+                "code": "RPZ-IP-PASSTHRU",
+                "severity": 1,
+                "action": "PASSTHRU"
+            },
+            "observer": {
+                "version": "2.1.3",
+                "ip": [
+                    "192.0.2.54"
+                ],
+                "vendor": "Infoblox",
+                "product": "Data Connector"
+            },
+            "source": {
+                "port": 35576,
+                "ip": "192.0.2.54"
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "host": {
+                "name": "co8-50-6-111"
+            },
+            "input": {
+                "type": "filestream"
+            },
+            "cef": {
+                "name": "RPZ EVENT IP PASSTHRU",
+                "severity": "1",
+                "extensions": {
+                    "sourcePort": 35576,
+                    "InfobloxDNSView": "default",
+                    "InfobloxB1Network": "\"ns1.mhesi.go.th (DFP)\"",
+                    "InfobloxThreatLevel": "0",
+                    "InfobloxDomainCat": "",
+                    "applicationProtocol": "DNS",
+                    "InfobloxB1PolicyName": "\"Default Global Policy\"",
+                    "destinationDnsDomain": "d.dns.omin.net.",
+                    "InfobloxThreatConfidence": "100",
+                    "InfobloxB1OPHName": "ns1.mhesi.go.th",
+                    "InfobloxB1DNSTags": "APP_Uncategorized,CAT_Business,eecn-ip,sanctions-ip",
+                    "InfobloxB1OPHIPAddress": "203.0.113.138",
+                    "InfobloxPolicyID": "61445",
+                    "InfobloxB1FeedName": "Sanctions_IP",
+                    "deviceAddress": "192.0.2.54",
+                    "InfobloxRPZ": "sanctions-ip",
+                    "InfobloxDNSQType": "A",
+                    "InfobloxThreatProperty": "OFACSanction",
+                    "deviceAction": "PASSTHRU",
+                    "InfobloxB1DHCPFingerprint": "",
+                    "InfobloxRPZRule": "sanctions-ip.89.160.20.112/28",
+                    "InfobloxB1FeedType": "\"IP Address\"",
+                    "sourceAddress": "192.0.2.54",
+                    "InfobloxB1SrcOSVersion": "",
+                    "InfobloxB1ThreatIndicator": "192.0.2.134/11",
+                    "InfobloxCSiteId": "4d752ed0ff284d80ddf140dee7965d39",
+                    "InfobloxB1Region": "ap-southeast-1",
+                    "message": "\"rpz IP PASSTHRU rewrite d.dns.omin.net. [A] via sanctions-ip.89.160.20.112/28\"",
+                    "InfobloxB1PolicyAction": "Log",
+                    "InfobloxB1ConnectionType": "dfp"
+                },
+                "version": "0",
+                "device": {
+                    "vendor": "Infoblox",
+                    "product": "Data Connector",
+                    "version": "2.1.3",
+                    "event_class_id": "RPZ-IP-PASSTHRU"
+                }
+            },
+            "message": "\"rpz IP PASSTHRU rewrite d.dns.omin.net. [A] via sanctions-ip.89.160.20.112/28\"",
+            "destination": {
+                "domain": "d.dns.omin.net."
+            },
+            "network": {
+                "application": "DNS"
+            }
+        }
+    ]
+}

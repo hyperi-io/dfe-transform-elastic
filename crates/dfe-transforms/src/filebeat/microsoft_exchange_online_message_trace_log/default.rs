@@ -113,7 +113,7 @@ impl Transform for Default {
                 return Ok(TransformResult::Drop);
             }
 
-            // SKIPPED: condition not transpiled: ctx.microsoft?.online_message_trace?.Status?.equalsIgnoreCase(ctx._conf?.drop_status) == true
+            // SKIPPED: the pipeline's condition has no equivalent here
             #[allow(unreachable_code, unused_variables)]
             if false {
                 return Ok(TransformResult::Drop);
@@ -472,9 +472,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_conf.local_domains") };
             if _cond {
-                // Painless script
-                // Source: if (!(ctx._conf.local_domains instanceof List)) {ctx._conf.local_domains = [ctx._conf.local_domains]}\ndef destination_internal = 0;\ndef source_internal = 0;\nfor (local_domain in ctx._conf.local_domains) {\n  if (ctx.destination?.domain instanceof String && ctx.destination.domain.equalsIgnoreCase(local_domain)){\n    destination_internal = 1;\n  }\n  if (ctx.source?.domain instanceof String && ctx.source.domain.equalsIgnoreCase(local_domain)){\n    source_internal = 1;\n  }\n}\nif (source_internal == 1 && destination_internal == 1){ctx.email.direction = \"internal\";}\nelse if (source_internal == 0 && destination_internal == 0){ctx.email.direction = \"external\";}\nelse if (source_internal == 1 && destination_internal == 0){ctx.email.direction = \"outbound\";}\nelse if (source_internal == 0 && destination_internal == 1){ctx.email.direction = \"inbound\";}\nelse {ctx.email.direction = \"unknown\";}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -705,9 +703,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: if (ctx.user?.name != null && ctx.user.name.length == 1) {\n  ctx.user.name = ctx.user.name[0];\n}\nif (ctx.user?.email != null && ctx.user.email.length == 1) {\n  ctx.user.email = ctx.user.email[0];\n}\nif (ctx.user?.id != null && ctx.user.id.length == 1) {\n  ctx.user.id = ctx.user.id[0];\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -795,8 +791,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

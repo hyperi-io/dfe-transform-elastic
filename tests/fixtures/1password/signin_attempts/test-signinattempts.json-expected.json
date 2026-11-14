@@ -1,0 +1,154 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-08-11T14:28:03.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success",
+        "category": [
+          "authentication"
+        ],
+        "created": "2049-08-30T22:57:42.484Z",
+        "kind": "event",
+        "original": "{\"uuid\":\"HGIF4OEWXDTVWKEQDIWTKV26HU\",\"session_uuid\":\"UED4KFZ5BH37IQWTJ7LG4VPWK7\",\"timestamp\":\"2049-08-11T14:28:03Z\",\"country\":\"AR\",\"category\":\"success\",\"type\":\"credentials_ok\",\"details\":null,\"target_user\":{\"uuid\":\"OJQGU46KAPROEJLCK674RHSAY5\",\"name\":\"Name\",\"email\":\"duclh@2seiilvpf.com\"},\"client\":{\"app_name\":\"1Password Browser Extension\",\"app_version\":\"1109\",\"platform_name\":\"Chrome\",\"platform_version\":\"93.0.4577.62\",\"os_name\":\"Android\",\"os_version\":\"10\",\"ip_address\":\"198.51.100.144\"}}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "os": {
+          "name": "Android",
+          "version": "10"
+        }
+      },
+      "onepassword": {
+        "client": {
+          "app_name": "1Password Browser Extension",
+          "app_version": "1109",
+          "platform_name": "Chrome",
+          "platform_version": "93.0.4577.62"
+        },
+        "country": "AR",
+        "session_uuid": "UED4KFZ5BH37IQWTJ7LG4VPWK7",
+        "type": "credentials_ok",
+        "uuid": "HGIF4OEWXDTVWKEQDIWTKV26HU"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "OJQGU46KAPROEJLCK674RHSAY5",
+          "duclh@2seiilvpf.com",
+          "Name"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "duclh@2seiilvpf.com",
+        "full_name": "Name",
+        "id": "OJQGU46KAPROEJLCK674RHSAY5",
+        "name": "Name"
+      }
+    },
+    {
+      "@timestamp": "2049-08-11T15:04:22.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "credentials_failed",
+        "category": [
+          "authentication"
+        ],
+        "created": "2049-08-30T22:57:42.484Z",
+        "kind": "event",
+        "original": "{\"uuid\":\"QVWKEOEWXU2DIDHWTK6HGIF4TV\",\"session_uuid\":\"UED4KFZ5BH37IQWTJ7LG4VPWK7\",\"timestamp\":\"2049-08-11T15:04:22Z\",\"country\":\"AR\",\"category\":\"credentials_failed\",\"type\":\"password_secret_bad\",\"details\":null,\"target_user\":{\"uuid\":\"OJQGU46KAPROEJLCK674RHSAY5\",\"name\":\"Name\",\"email\":\"duclh@2seiilvpf.com\"},\"client\":{\"app_name\":\"1Password Browser Extension\",\"app_version\":\"1109\",\"platform_name\":\"Chrome\",\"platform_version\":\"93.0.4577.62\",\"os_name\":\"Android\",\"os_version\":\"10\",\"ip_address\":\"198.51.100.144\"}}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "os": {
+          "name": "Android",
+          "version": "10"
+        }
+      },
+      "onepassword": {
+        "client": {
+          "app_name": "1Password Browser Extension",
+          "app_version": "1109",
+          "platform_name": "Chrome",
+          "platform_version": "93.0.4577.62"
+        },
+        "country": "AR",
+        "session_uuid": "UED4KFZ5BH37IQWTJ7LG4VPWK7",
+        "type": "password_secret_bad",
+        "uuid": "QVWKEOEWXU2DIDHWTK6HGIF4TV"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "OJQGU46KAPROEJLCK674RHSAY5",
+          "duclh@2seiilvpf.com",
+          "Name"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "duclh@2seiilvpf.com",
+        "full_name": "Name",
+        "id": "OJQGU46KAPROEJLCK674RHSAY5",
+        "name": "Name"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-08-30T22:57:42.484Z",
+      "message": "{\"uuid\":\"HGIF4OEWXDTVWKEQDIWTKV26HU\",\"session_uuid\":\"UED4KFZ5BH37IQWTJ7LG4VPWK7\",\"timestamp\":\"2049-08-11T14:28:03Z\",\"country\":\"AR\",\"category\":\"success\",\"type\":\"credentials_ok\",\"details\":null,\"target_user\":{\"uuid\":\"OJQGU46KAPROEJLCK674RHSAY5\",\"name\":\"Name\",\"email\":\"duclh@2seiilvpf.com\"},\"client\":{\"app_name\":\"1Password Browser Extension\",\"app_version\":\"1109\",\"platform_name\":\"Chrome\",\"platform_version\":\"93.0.4577.62\",\"os_name\":\"Android\",\"os_version\":\"10\",\"ip_address\":\"198.51.100.144\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-08-30T22:57:42.484Z",
+      "message": "{\"uuid\":\"QVWKEOEWXU2DIDHWTK6HGIF4TV\",\"session_uuid\":\"UED4KFZ5BH37IQWTJ7LG4VPWK7\",\"timestamp\":\"2049-08-11T15:04:22Z\",\"country\":\"AR\",\"category\":\"credentials_failed\",\"type\":\"password_secret_bad\",\"details\":null,\"target_user\":{\"uuid\":\"OJQGU46KAPROEJLCK674RHSAY5\",\"name\":\"Name\",\"email\":\"duclh@2seiilvpf.com\"},\"client\":{\"app_name\":\"1Password Browser Extension\",\"app_version\":\"1109\",\"platform_name\":\"Chrome\",\"platform_version\":\"93.0.4577.62\",\"os_name\":\"Android\",\"os_version\":\"10\",\"ip_address\":\"198.51.100.144\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "signin_attempts",
+    "dynamic_fields": {
+      "event.ingested": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-1password-signin_attempts-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "1password",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

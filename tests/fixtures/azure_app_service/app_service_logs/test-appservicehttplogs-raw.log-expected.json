@@ -1,0 +1,188 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-12-14T12:18:26.484Z",
+      "azure": {
+        "app_service": {
+          "category": "AppServiceHTTPLogs",
+          "properties": {
+            "client_ip": "203.0.113.138",
+            "computer_name": "MFEQP96110E",
+            "cookie": "-",
+            "cs_bytes": 1523,
+            "cs_host": "user-test.scm.azurewebsites.net",
+            "cs_method": "POST",
+            "cs_uri_query": "X-ARR-LOG-ID=820c7fb2-39cd-4d85-b6a4-2ae740926440",
+            "cs_uri_stem": "/api/command",
+            "cs_username": "-",
+            "referer": "-",
+            "result": "Success",
+            "s_port": "443",
+            "sc_bytes": 778,
+            "sc_status": 200,
+            "sc_substatus": "0",
+            "sc_win32status": "0",
+            "time_taken": 1793,
+            "user_agent": "Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/108.0.0.0+Safari/537.36"
+          }
+        },
+        "resource": {
+          "group": "USER-TEST",
+          "id": "/SUBSCRIPTIONS/18CD6EA9-97D0-468A-A821-3CE5656B76EA/RESOURCEGROUPS/USER-TEST/PROVIDERS/MICROSOFT.WEB/SITES/APP-TEST",
+          "name": "APP-TEST",
+          "provider": "MICROSOFT.WEB/SITES"
+        },
+        "subscription_id": "18CD6EA9-97D0-468A-A821-3CE5656B76EA"
+      },
+      "cloud": {
+        "account": {
+          "id": "18CD6EA9-97D0-468A-A821-3CE5656B76EA"
+        },
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"time\": \"2050-12-14T12:18:26.4843064Z\", \"resourceId\": \"/SUBSCRIPTIONS/18CD6EA9-97D0-468A-A821-3CE5656B76EA/RESOURCEGROUPS/USER-TEST/PROVIDERS/MICROSOFT.WEB/SITES/APP-TEST\", \"category\": \"AppServiceHTTPLogs\", \"properties\": {\"CsMethod\":\"POST\",\"CsUriStem\":\"/api/command\",\"SPort\":\"443\",\"CIp\":\"203.0.113.138\",\"UserAgent\":\"Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/108.0.0.0+Safari/537.36\",\"CsHost\":\"user-test.scm.azurewebsites.net\",\"ScStatus\":200,\"ScSubStatus\":\"0\",\"ScWin32Status\":\"0\",\"ScBytes\":778,\"CsBytes\":1523,\"TimeTaken\":1793,\"Result\":\"Success\",\"Cookie\":\"-\",\"CsUriQuery\":\"X-ARR-LOG-ID=820c7fb2-39cd-4d85-b6a4-2ae740926440\",\"CsUsername\":\"-\",\"Referer\":\"-\",\"ComputerName\":\"MFEQP96110E\"}}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-12-14T12:18:26.484Z",
+      "azure": {
+        "app_service": {
+          "category": "AppServiceHTTPLogs",
+          "properties": {
+            "client_ip": "203.0.113.138",
+            "computer_name": "MFEQP96110E",
+            "cookie": "-",
+            "cs_bytes": 1523,
+            "cs_host": "user-test.scm.azurewebsites.net",
+            "cs_method": "POST",
+            "cs_uri_query": "X-ARR-LOG-ID=8c5ac052-2dcd-47df-8ccb-7a1122dfb5d6",
+            "cs_uri_stem": "/api/command",
+            "cs_username": "-",
+            "referer": "-",
+            "result": "Success",
+            "s_port": "443",
+            "sc_bytes": 778,
+            "sc_status": 200,
+            "sc_substatus": "0",
+            "sc_win32status": "0",
+            "time_taken": 2578,
+            "user_agent": "Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/108.0.0.0+Safari/537.36"
+          }
+        },
+        "resource": {
+          "group": "USER-TEST",
+          "id": "/SUBSCRIPTIONS/18CD6EA9-97D0-468A-A821-3CE5656B76EA/RESOURCEGROUPS/USER-TEST/PROVIDERS/MICROSOFT.WEB/SITES/APP-TEST",
+          "name": "APP-TEST",
+          "provider": "MICROSOFT.WEB/SITES"
+        },
+        "subscription_id": "18CD6EA9-97D0-468A-A821-3CE5656B76EA"
+      },
+      "cloud": {
+        "account": {
+          "id": "18CD6EA9-97D0-468A-A821-3CE5656B76EA"
+        },
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{ \"time\": \"2050-12-14T12:18:26.4844541Z\", \"resourceId\": \"/SUBSCRIPTIONS/18CD6EA9-97D0-468A-A821-3CE5656B76EA/RESOURCEGROUPS/USER-TEST/PROVIDERS/MICROSOFT.WEB/SITES/APP-TEST\", \"category\": \"AppServiceHTTPLogs\", \"properties\": {\"CsMethod\":\"POST\",\"CsUriStem\":\"/api/command\",\"SPort\":\"443\",\"CIp\":\"203.0.113.138\",\"UserAgent\":\"Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/108.0.0.0+Safari/537.36\",\"CsHost\":\"user-test.scm.azurewebsites.net\",\"ScStatus\":200,\"ScSubStatus\":\"0\",\"ScWin32Status\":\"0\",\"ScBytes\":778,\"CsBytes\":1523,\"TimeTaken\":2578,\"Result\":\"Success\",\"Cookie\":\"-\",\"CsUriQuery\":\"X-ARR-LOG-ID=8c5ac052-2dcd-47df-8ccb-7a1122dfb5d6\",\"CsUsername\":\"-\",\"Referer\":\"-\",\"ComputerName\":\"MFEQP96110E\"}}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-09-18T09:18:29.915Z",
+      "azure": {
+        "app_service": {
+          "category": "AppServiceHTTPLogs",
+          "event_ip_address": "10.73.76.136",
+          "event_primary_stamp_name": "waws-prod-am2-713",
+          "event_stamp_name": "waws-prod-am2-713",
+          "event_stamp_type": "Stamp",
+          "host": "gt9tmbyxg9369PC",
+          "properties": {
+            "client_ip": "127.0.0.1",
+            "computer_name": "gt9tmbyxg9369PC",
+            "cookie": "ARRAffinity: d4d2dcbd48c3f0f39b870d4a6034249b8c4fc5ee781b453eaa459ff370767972; ",
+            "cs_bytes": 864,
+            "cs_host": "example-markdown-app.azurewebsites.net",
+            "cs_method": "GET",
+            "cs_uri_query": "",
+            "cs_uri_stem": "/",
+            "cs_username": "",
+            "protocol": "HTTP/1.1",
+            "referer": "",
+            "result": "Success",
+            "s_port": "80",
+            "sc_bytes": 25461,
+            "sc_status": 200,
+            "time_taken": 3,
+            "user_agent": "AlwaysOn"
+          }
+        },
+        "resource": {
+          "group": "EXAMPLE-BICEP-APP-SERVICE",
+          "id": "/SUBSCRIPTIONS/74151156-8129-1661-1888-8796136039CE/RESOURCEGROUPS/EXAMPLE-BICEP-APP-SERVICE/PROVIDERS/MICROSOFT.WEB/SITES/EXAMPLE-MARKDOWN-APP",
+          "name": "EXAMPLE-MARKDOWN-APP",
+          "provider": "MICROSOFT.WEB/SITES"
+        },
+        "subscription_id": "74151156-8129-1661-1888-8796136039CE"
+      },
+      "cloud": {
+        "account": {
+          "id": "74151156-8129-1661-1888-8796136039CE"
+        },
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"EventIpAddress\":\"10.73.76.136\",\"EventPrimaryStampName\":\"waws-prod-am2-713\",\"EventStampName\":\"waws-prod-am2-713\",\"EventStampType\":\"Stamp\",\"EventTime\":\"2052-09-18T09:18:29.9152940Z\",\"Host\":\"gt9tmbyxg9369PC\",\"category\":\"AppServiceHTTPLogs\",\"properties\":\"{\\\"CsHost\\\":\\\"example-markdown-app.azurewebsites.net\\\",\\\"CIp\\\":\\\"127.0.0.1\\\",\\\"SPort\\\":\\\"80\\\",\\\"CsUriStem\\\":\\\"\\\\/\\\",\\\"CsUriQuery\\\":\\\"\\\",\\\"CsMethod\\\":\\\"GET\\\",\\\"TimeTaken\\\":3,\\\"ScStatus\\\":\\\"200\\\",\\\"Result\\\":\\\"Success\\\",\\\"CsBytes\\\":\\\"864\\\",\\\"ScBytes\\\":\\\"25461\\\",\\\"UserAgent\\\":\\\"AlwaysOn\\\",\\\"Cookie\\\":\\\"ARRAffinity: d4d2dcbd48c3f0f39b870d4a6034249b8c4fc5ee781b453eaa459ff370767972; \\\",\\\"CsUsername\\\":\\\"\\\",\\\"Referer\\\":\\\"\\\",\\\"ComputerName\\\":\\\"gt9tmbyxg9369PC\\\",\\\"Protocol\\\":\\\"HTTP\\\\/1.1\\\"}\",\"resourceId\":\"/SUBSCRIPTIONS/74151156-8129-1661-1888-8796136039CE/RESOURCEGROUPS/EXAMPLE-BICEP-APP-SERVICE/PROVIDERS/MICROSOFT.WEB/SITES/EXAMPLE-MARKDOWN-APP\",\"time\":\"2052-09-18T09:18:29.9152940Z\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\": \"2050-12-14T12:18:26.4843064Z\", \"resourceId\": \"/SUBSCRIPTIONS/18CD6EA9-97D0-468A-A821-3CE5656B76EA/RESOURCEGROUPS/USER-TEST/PROVIDERS/MICROSOFT.WEB/SITES/APP-TEST\", \"category\": \"AppServiceHTTPLogs\", \"properties\": {\"CsMethod\":\"POST\",\"CsUriStem\":\"/api/command\",\"SPort\":\"443\",\"CIp\":\"203.0.113.138\",\"UserAgent\":\"Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/108.0.0.0+Safari/537.36\",\"CsHost\":\"user-test.scm.azurewebsites.net\",\"ScStatus\":200,\"ScSubStatus\":\"0\",\"ScWin32Status\":\"0\",\"ScBytes\":778,\"CsBytes\":1523,\"TimeTaken\":1793,\"Result\":\"Success\",\"Cookie\":\"-\",\"CsUriQuery\":\"X-ARR-LOG-ID=820c7fb2-39cd-4d85-b6a4-2ae740926440\",\"CsUsername\":\"-\",\"Referer\":\"-\",\"ComputerName\":\"MFEQP96110E\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{ \"time\": \"2050-12-14T12:18:26.4844541Z\", \"resourceId\": \"/SUBSCRIPTIONS/18CD6EA9-97D0-468A-A821-3CE5656B76EA/RESOURCEGROUPS/USER-TEST/PROVIDERS/MICROSOFT.WEB/SITES/APP-TEST\", \"category\": \"AppServiceHTTPLogs\", \"properties\": {\"CsMethod\":\"POST\",\"CsUriStem\":\"/api/command\",\"SPort\":\"443\",\"CIp\":\"203.0.113.138\",\"UserAgent\":\"Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/108.0.0.0+Safari/537.36\",\"CsHost\":\"user-test.scm.azurewebsites.net\",\"ScStatus\":200,\"ScSubStatus\":\"0\",\"ScWin32Status\":\"0\",\"ScBytes\":778,\"CsBytes\":1523,\"TimeTaken\":2578,\"Result\":\"Success\",\"Cookie\":\"-\",\"CsUriQuery\":\"X-ARR-LOG-ID=8c5ac052-2dcd-47df-8ccb-7a1122dfb5d6\",\"CsUsername\":\"-\",\"Referer\":\"-\",\"ComputerName\":\"MFEQP96110E\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"EventIpAddress\":\"10.73.76.136\",\"EventPrimaryStampName\":\"waws-prod-am2-713\",\"EventStampName\":\"waws-prod-am2-713\",\"EventStampType\":\"Stamp\",\"EventTime\":\"2052-09-18T09:18:29.9152940Z\",\"Host\":\"gt9tmbyxg9369PC\",\"category\":\"AppServiceHTTPLogs\",\"properties\":\"{\\\"CsHost\\\":\\\"example-markdown-app.azurewebsites.net\\\",\\\"CIp\\\":\\\"127.0.0.1\\\",\\\"SPort\\\":\\\"80\\\",\\\"CsUriStem\\\":\\\"\\\\/\\\",\\\"CsUriQuery\\\":\\\"\\\",\\\"CsMethod\\\":\\\"GET\\\",\\\"TimeTaken\\\":3,\\\"ScStatus\\\":\\\"200\\\",\\\"Result\\\":\\\"Success\\\",\\\"CsBytes\\\":\\\"864\\\",\\\"ScBytes\\\":\\\"25461\\\",\\\"UserAgent\\\":\\\"AlwaysOn\\\",\\\"Cookie\\\":\\\"ARRAffinity: d4d2dcbd48c3f0f39b870d4a6034249b8c4fc5ee781b453eaa459ff370767972; \\\",\\\"CsUsername\\\":\\\"\\\",\\\"Referer\\\":\\\"\\\",\\\"ComputerName\\\":\\\"gt9tmbyxg9369PC\\\",\\\"Protocol\\\":\\\"HTTP\\\\/1.1\\\"}\",\"resourceId\":\"/SUBSCRIPTIONS/74151156-8129-1661-1888-8796136039CE/RESOURCEGROUPS/EXAMPLE-BICEP-APP-SERVICE/PROVIDERS/MICROSOFT.WEB/SITES/EXAMPLE-MARKDOWN-APP\",\"time\":\"2052-09-18T09:18:29.9152940Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "app_service_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_app_service-app_service_logs-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "azure_app_service",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

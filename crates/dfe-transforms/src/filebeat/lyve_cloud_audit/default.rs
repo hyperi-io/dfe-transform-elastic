@@ -355,9 +355,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("related.ip") && event.has_value("_failed_ips") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.related.ip.removeAll(ctx[\"_failed_ips\"]);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(r#"ctx.related.ip.removeAll(ctx[\"_failed_ips\"]);"#),
@@ -367,9 +365,7 @@ impl Transform for Default {
                     event.has_value("related.ip") && event.get("related.ip").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.client = new HashMap(); ctx.client[\"ip\"] = ctx.related.ip[-1];
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

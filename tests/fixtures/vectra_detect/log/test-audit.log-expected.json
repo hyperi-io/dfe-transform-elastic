@@ -1,0 +1,709 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-02-13T20:11:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_audit -: {\"user\": \"jdaptddelm\", \"role\": \"Admin\", \"source_ip\": \"203.0.113.248\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"Saved host severity report: ID 1\", \"vectra_timestamp\": \"2559931918\"}",
+        "outcome": "success"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "p43-5-20.ma.tvec",
+        "ip": [
+          "192.168.49.7"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "hosts": [
+          "p43-5-20.ma.tvec"
+        ],
+        "ip": [
+          "192.168.49.7",
+          "203.0.113.248"
+        ],
+        "user": [
+          "jdaptddelm"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "jdaptddelm",
+        "roles": [
+          "Admin"
+        ]
+      },
+      "vectra_detect": {
+        "log": {
+          "dvchost": "p43-5-20.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_audit",
+          "headend_addr": "192.168.49.7",
+          "message": "Saved host severity report: ID 1",
+          "result": "success",
+          "role": "Admin",
+          "source": {
+            "ip": "203.0.113.248"
+          },
+          "user": {
+            "name": "jdaptddelm"
+          },
+          "vectra_timestamp": "2051-02-13T20:11:58.000Z",
+          "version": "7.4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-02-14T09:12:14.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_audit -: {\"user\": \"\", \"role\": \"\", \"source_ip\": \"192.168.117.194\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"failure\", \"message\": \"invalid authentication token '766a********' used for API request\", \"vectra_timestamp\": \"2559978734\"}",
+        "outcome": "failure"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "p43-5-20.ma.tvec",
+        "ip": [
+          "192.168.49.7"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "hosts": [
+          "p43-5-20.ma.tvec"
+        ],
+        "ip": [
+          "192.168.49.7",
+          "192.168.117.194"
+        ]
+      },
+      "source": {
+        "ip": "192.168.117.194"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "vectra_detect": {
+        "log": {
+          "dvchost": "p43-5-20.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_audit",
+          "headend_addr": "192.168.49.7",
+          "message": "invalid authentication token '766a********' used for API request",
+          "result": "failure",
+          "source": {
+            "ip": "192.168.117.194"
+          },
+          "vectra_timestamp": "2051-02-14T09:12:14.000Z",
+          "version": "7.4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-02-17T22:00:04.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_audit -: {\"user\": \"admin\", \"role\": \"Super Admin\", \"source_ip\": \"192.168.117.194\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"delete triage filter \\\"Safe Applications\\\" - id 30 Hidden HTTPS Tunnel\", \"vectra_timestamp\": \"2560284004\"}",
+        "outcome": "success"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "p43-5-20.ma.tvec",
+        "ip": [
+          "192.168.49.7"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "hosts": [
+          "p43-5-20.ma.tvec"
+        ],
+        "ip": [
+          "192.168.49.7",
+          "192.168.117.194"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "192.168.117.194"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "admin",
+        "roles": [
+          "Super Admin"
+        ]
+      },
+      "vectra_detect": {
+        "log": {
+          "dvchost": "p43-5-20.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_audit",
+          "headend_addr": "192.168.49.7",
+          "message": "delete triage filter \"Safe Applications\" - id 30 Hidden HTTPS Tunnel",
+          "result": "success",
+          "role": "Super Admin",
+          "source": {
+            "ip": "192.168.117.194"
+          },
+          "user": {
+            "name": "admin"
+          },
+          "vectra_timestamp": "2051-02-17T22:00:04.000Z",
+          "version": "7.4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-02-17T22:00:04.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_audit -: {\"user\": \"admin\", \"role\": \"Super Admin\", \"source_ip\": \"192.168.117.194\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"[table:host][id:193] with tags ['Emmet', 'tenable scanner'] was changed to []\", \"vectra_timestamp\": \"2560284004\"}",
+        "outcome": "success"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "p43-5-20.ma.tvec",
+        "ip": [
+          "192.168.49.7"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "hosts": [
+          "p43-5-20.ma.tvec"
+        ],
+        "ip": [
+          "192.168.49.7",
+          "192.168.117.194"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "192.168.117.194"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "admin",
+        "roles": [
+          "Super Admin"
+        ]
+      },
+      "vectra_detect": {
+        "log": {
+          "dvchost": "p43-5-20.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_audit",
+          "headend_addr": "192.168.49.7",
+          "message": "[table:host][id:193] with tags ['Emmet', 'tenable scanner'] was changed to []",
+          "result": "success",
+          "role": "Super Admin",
+          "source": {
+            "ip": "192.168.117.194"
+          },
+          "user": {
+            "name": "admin"
+          },
+          "vectra_timestamp": "2051-02-17T22:00:04.000Z",
+          "version": "7.4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-02-14T04:42:07.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_audit -: {\"user\": \"jdaptddelm\", \"role\": \"Admin\", \"source_ip\": \"192.168.117.194\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"create sensor M365 Test\", \"vectra_timestamp\": \"2559962527\"}",
+        "outcome": "success"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "p43-5-20.ma.tvec",
+        "ip": [
+          "192.168.49.7"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "hosts": [
+          "p43-5-20.ma.tvec"
+        ],
+        "ip": [
+          "192.168.49.7",
+          "192.168.117.194"
+        ],
+        "user": [
+          "jdaptddelm"
+        ]
+      },
+      "source": {
+        "ip": "192.168.117.194"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "jdaptddelm",
+        "roles": [
+          "Admin"
+        ]
+      },
+      "vectra_detect": {
+        "log": {
+          "dvchost": "p43-5-20.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_audit",
+          "headend_addr": "192.168.49.7",
+          "message": "create sensor M365 Test",
+          "result": "success",
+          "role": "Admin",
+          "source": {
+            "ip": "192.168.117.194"
+          },
+          "user": {
+            "name": "jdaptddelm"
+          },
+          "vectra_timestamp": "2051-02-14T04:42:07.000Z",
+          "version": "7.4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-02-13T22:00:02.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_audit -: {\"user\": \"admin\", \"role\": \"Super Admin\", \"source_ip\": \"192.168.117.194\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"log in\", \"vectra_timestamp\": \"2559938402\"}",
+        "outcome": "success",
+        "type": [
+          "end"
+        ]
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "p43-5-20.ma.tvec",
+        "ip": [
+          "192.168.49.7"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "hosts": [
+          "p43-5-20.ma.tvec"
+        ],
+        "ip": [
+          "192.168.49.7",
+          "192.168.117.194"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "192.168.117.194"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "admin",
+        "roles": [
+          "Super Admin"
+        ]
+      },
+      "vectra_detect": {
+        "log": {
+          "dvchost": "p43-5-20.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_audit",
+          "headend_addr": "192.168.49.7",
+          "message": "log in",
+          "result": "success",
+          "role": "Super Admin",
+          "source": {
+            "ip": "192.168.117.194"
+          },
+          "user": {
+            "name": "admin"
+          },
+          "vectra_timestamp": "2051-02-13T22:00:02.000Z",
+          "version": "7.4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-04-26T23:48:37.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "session"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_audit -: {\"user\": \"jdaptddelm\", \"role\": \"Admin\", \"source_ip\": \"\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"result\": \"success\", \"message\": \"session timeout with length 14:25:19\", \"version\": \"7.6\", \"vectra_timestamp\": \"2566165717\"}",
+        "outcome": "success",
+        "type": [
+          "end"
+        ]
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "p43-5-20.ma.tvec",
+        "ip": [
+          "192.168.49.7"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.6"
+      },
+      "related": {
+        "hosts": [
+          "p43-5-20.ma.tvec"
+        ],
+        "ip": [
+          "192.168.49.7"
+        ],
+        "user": [
+          "jdaptddelm"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "jdaptddelm",
+        "roles": [
+          "Admin"
+        ]
+      },
+      "vectra_detect": {
+        "log": {
+          "dvchost": "p43-5-20.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_audit",
+          "headend_addr": "192.168.49.7",
+          "message": "session timeout with length 14:25:19",
+          "result": "success",
+          "role": "Admin",
+          "user": {
+            "name": "jdaptddelm"
+          },
+          "vectra_timestamp": "2051-04-26T23:48:37.000Z",
+          "version": "7.6"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-04-26T23:48:37.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "session"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_audit -: {\"user\": \"jdaptddelm\", \"role\": \"Admin\", \"source_ip\": \"\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"result\": \"success\", \"message\": \"session timeout with length 13:14:32\", \"version\": \"7.6\", \"vectra_timestamp\": \"2566165717\"}",
+        "outcome": "success",
+        "type": [
+          "end"
+        ]
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "p43-5-20.ma.tvec",
+        "ip": [
+          "192.168.49.7"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.6"
+      },
+      "related": {
+        "hosts": [
+          "p43-5-20.ma.tvec"
+        ],
+        "ip": [
+          "192.168.49.7"
+        ],
+        "user": [
+          "jdaptddelm"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "jdaptddelm",
+        "roles": [
+          "Admin"
+        ]
+      },
+      "vectra_detect": {
+        "log": {
+          "dvchost": "p43-5-20.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_audit",
+          "headend_addr": "192.168.49.7",
+          "message": "session timeout with length 13:14:32",
+          "result": "success",
+          "role": "Admin",
+          "user": {
+            "name": "jdaptddelm"
+          },
+          "vectra_timestamp": "2051-04-26T23:48:37.000Z",
+          "version": "7.6"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_audit -: {\"user\": \"jdaptddelm\", \"role\": \"Admin\", \"source_ip\": \"203.0.113.248\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"Saved host severity report: ID 1\", \"vectra_timestamp\": \"2559931918\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_audit -: {\"user\": \"\", \"role\": \"\", \"source_ip\": \"192.168.117.194\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"failure\", \"message\": \"invalid authentication token '766a********' used for API request\", \"vectra_timestamp\": \"2559978734\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_audit -: {\"user\": \"admin\", \"role\": \"Super Admin\", \"source_ip\": \"192.168.117.194\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"delete triage filter \\\"Safe Applications\\\" - id 30 Hidden HTTPS Tunnel\", \"vectra_timestamp\": \"2560284004\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_audit -: {\"user\": \"admin\", \"role\": \"Super Admin\", \"source_ip\": \"192.168.117.194\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"[table:host][id:193] with tags ['Emmet', 'tenable scanner'] was changed to []\", \"vectra_timestamp\": \"2560284004\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_audit -: {\"user\": \"jdaptddelm\", \"role\": \"Admin\", \"source_ip\": \"192.168.117.194\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"create sensor M365 Test\", \"vectra_timestamp\": \"2559962527\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_audit -: {\"user\": \"admin\", \"role\": \"Super Admin\", \"source_ip\": \"192.168.117.194\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"log in\", \"vectra_timestamp\": \"2559938402\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_audit -: {\"user\": \"jdaptddelm\", \"role\": \"Admin\", \"source_ip\": \"\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"result\": \"success\", \"message\": \"session timeout with length 14:25:19\", \"version\": \"7.6\", \"vectra_timestamp\": \"2566165717\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_audit -: {\"user\": \"jdaptddelm\", \"role\": \"Admin\", \"source_ip\": \"\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"result\": \"success\", \"message\": \"session timeout with length 13:14:32\", \"version\": \"7.6\", \"vectra_timestamp\": \"2566165717\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-vectra_detect-log-default",
+    "event_count": 8,
+    "numeric_keyword_fields": [
+      "vectra_detect.log.host.groups.id",
+      "vectra_detect.log.host.groups.triage_filters.id"
+    ],
+    "package": "vectra_detect",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

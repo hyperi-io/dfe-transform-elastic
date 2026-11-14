@@ -1,0 +1,176 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-04-01T08:45:44.171Z",
+      "agent": {
+        "ephemeral_id": "e427e571-6890-427f-94c8-3e1424b46775",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "kerberos-service-ticket-requested",
+        "category": [
+          "authentication"
+        ],
+        "code": "4769",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4769.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "ip": [
+          "::1"
+        ],
+        "user": [
+          "ev_aav"
+        ]
+      },
+      "service": {
+        "name": "DC_TEST2K12$"
+      },
+      "source": {
+        "ip": "::1",
+        "port": 0
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TEST.SAAS",
+        "name": "ev_aav"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "LogonGuid": "{38c58651-d61a-93e7-fdf6-89bf508a6b11}",
+          "ServiceName": "DC_TEST2K12$",
+          "ServiceSid": "S-1-5-21-1717121054-434620538-60925301-1110",
+          "Status": "0x0",
+          "StatusDescription": "KDC_ERR_NONE",
+          "TargetDomainName": "TEST.SAAS",
+          "TargetUserName": "ev_aav@XCYX.SAAS",
+          "TicketEncryptionType": "0x12",
+          "TicketEncryptionTypeDescription": "AES256-CTS-HMAC-SHA1-96",
+          "TicketOptions": "0x40810000",
+          "TicketOptionsDescription": [
+            "Forwardable",
+            "Renewable",
+            "Name-canonicalize"
+          ]
+        },
+        "event_id": "4769",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 496,
+          "thread": {
+            "id": 2868
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "5040236",
+        "time_created": "2048-04-01T08:45:44.171Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:04:33.160Z",
+      "agent": {
+        "ephemeral_id": "e427e571-6890-427f-94c8-3e1424b46775",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4769,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4769.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "IpAddress": "::1",
+          "IpPort": "0",
+          "LogonGuid": "{38c58651-d61a-93e7-fdf6-89bf508a6b11}",
+          "ServiceName": "DC_TEST2K12$",
+          "ServiceSid": "S-1-5-21-1717121054-434620538-60925301-1110",
+          "Status": "0x0",
+          "TargetDomainName": "TEST.SAAS",
+          "TargetUserName": "ev_aav@XCYX.SAAS",
+          "TicketEncryptionType": "0x12",
+          "TicketOptions": "0x40810000",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4769,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 496,
+          "thread": {
+            "id": 2868
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 5040236,
+        "time_created": "2048-04-01T08:45:44.171Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

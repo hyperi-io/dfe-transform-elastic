@@ -1,0 +1,303 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2044-12-26T16:17:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.487240315Z",
+        "kind": "event",
+        "original": "[Mon Dec 26 16:17:53 2044] [notice] Apache/2.2.22 (Ubuntu) configured -- resuming normal operations",
+        "type": [
+          "info"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "log": {
+        "level": "notice"
+      },
+      "message": "Apache/2.2.22 (Ubuntu) configured -- resuming normal operations",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2044-12-26T16:22:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.487246085Z",
+        "kind": "event",
+        "original": "[Mon Dec 26 16:22:00 2044] [error] [client 192.168.60.62] File does not exist: /var/www/favicon.ico, referer: http://192.168.128.247/",
+        "type": [
+          "error"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "file": {
+        "path": "/var/www/favicon.ico"
+      },
+      "http": {
+        "request": {
+          "referrer": "http://192.168.128.247/"
+        }
+      },
+      "log": {
+        "level": "error"
+      },
+      "message": "File does not exist: /var/www/favicon.ico, referer: http://192.168.128.247/",
+      "source": {
+        "address": "192.168.60.62",
+        "ip": "192.168.60.62"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2044-12-26T16:22:08.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.487247115Z",
+        "kind": "event",
+        "original": "[Mon Dec 26 16:22:08 2044] [error] [client 192.168.60.62] File does not exist: /var/www/favicon.ico",
+        "type": [
+          "error"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "file": {
+        "path": "/var/www/favicon.ico"
+      },
+      "log": {
+        "level": "error"
+      },
+      "message": "File does not exist: /var/www/favicon.ico",
+      "source": {
+        "address": "192.168.60.62",
+        "ip": "192.168.60.62"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2044-12-26T16:22:08.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.487247745Z",
+        "kind": "event",
+        "original": "[Mon Dec 26 16:22:08 2044] [error] [client 192.168.60.62] File does not exist: /var/www/favicon.ico",
+        "type": [
+          "error"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "file": {
+        "path": "/var/www/favicon.ico"
+      },
+      "log": {
+        "level": "error"
+      },
+      "message": "File does not exist: /var/www/favicon.ico",
+      "source": {
+        "address": "192.168.60.62",
+        "ip": "192.168.60.62"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2044-12-26T16:22:10.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.487248375Z",
+        "kind": "event",
+        "original": "[Mon Dec 26 16:22:10 2044] [error] [client 192.168.60.62] File does not exist: /var/www/test",
+        "type": [
+          "error"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "file": {
+        "path": "/var/www/test"
+      },
+      "log": {
+        "level": "error"
+      },
+      "message": "File does not exist: /var/www/test",
+      "source": {
+        "address": "192.168.60.62",
+        "ip": "192.168.60.62"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2044-12-26T16:22:13.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.487248985Z",
+        "kind": "event",
+        "original": "[Mon Dec 26 16:22:13 2044] [error] [client 192.168.60.62] File does not exist: /var/www/hello",
+        "type": [
+          "error"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "file": {
+        "path": "/var/www/hello"
+      },
+      "log": {
+        "level": "error"
+      },
+      "message": "File does not exist: /var/www/hello",
+      "source": {
+        "address": "192.168.60.62",
+        "ip": "192.168.60.62"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2044-12-26T16:22:17.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.487249585Z",
+        "kind": "event",
+        "original": "[Mon Dec 26 16:22:17 2044] [error] [client 192.168.60.62] File does not exist: /var/www/crap",
+        "type": [
+          "error"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "file": {
+        "path": "/var/www/crap"
+      },
+      "log": {
+        "level": "error"
+      },
+      "message": "File does not exist: /var/www/crap",
+      "source": {
+        "address": "192.168.60.62",
+        "ip": "192.168.60.62"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Mon Dec 26 16:17:53 2044] [notice] Apache/2.2.22 (Ubuntu) configured -- resuming normal operations",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Mon Dec 26 16:22:00 2044] [error] [client 192.168.60.62] File does not exist: /var/www/favicon.ico, referer: http://192.168.128.247/",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Mon Dec 26 16:22:08 2044] [error] [client 192.168.60.62] File does not exist: /var/www/favicon.ico",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Mon Dec 26 16:22:08 2044] [error] [client 192.168.60.62] File does not exist: /var/www/favicon.ico",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Mon Dec 26 16:22:10 2044] [error] [client 192.168.60.62] File does not exist: /var/www/test",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Mon Dec 26 16:22:13 2044] [error] [client 192.168.60.62] File does not exist: /var/www/hello",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Mon Dec 26 16:22:17 2044] [error] [client 192.168.60.62] File does not exist: /var/www/crap",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "error",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache-error-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "apache",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

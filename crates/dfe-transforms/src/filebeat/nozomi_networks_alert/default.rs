@@ -1855,9 +1855,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("nozomi_networks.alert.severity") };
             if _cond {
-                // Painless script
-                // Source: def severity = ctx.nozomi_networks.alert.severity;\n  if (severity >= 0 && severity <= 3) {\n    ctx.nozomi_networks.alert.severity_label = 'low';\n    ctx.event.severity = 21;\n  } else if (severity >= 4 && severity <= 6) {\n    ctx.nozomi_networks.alert.severity_label = 'medium';\n    ctx.event.severity = 47;\n  } else if (severity >= 7 && severity <= 10) {\n    ctx.nozomi_networks.alert.severity_label = 'high';\n    ctx.event.severity = 73;\n  }
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2095,8 +2093,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1,0 +1,1039 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-01-04T04:26:20.000Z",
+      "checkpoint": {
+        "administrator": "testUser",
+        "fieldschanges": "Name: was not modified Source: was not modified Destination: Added 'bm_core_switches' VPN: was not modified Action: was not modified Track: was not modified  Layer Name: 'bnkb01-Bermuda_Prod Security' Policy Names: ''",
+        "logic_changes": "Dsts.dsts: Added '67babde8-70d8-4349-8950-4d74d9df4b8c'",
+        "objecttype": "Access Control Rule",
+        "operation": "Modify Rule",
+        "origin_sic_name": "cn=cp_mgmt,o=auditTest..aw4c8s",
+        "sendtotrackerasadvancedauditlog": "0",
+        "session_description": "CHG0887797",
+        "session_name": "testUser@1/4/2024",
+        "session_uid": "651fe13a-5c8e-43f6-8b07-8b1a9d949c62"
+      },
+      "dns": {
+        "question": {
+          "name": "'auditTest_domain'"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Accept",
+        "category": [
+          "network"
+        ],
+        "id": "{0x6596336e,0x0,0x1f67238a,0x1b3f363d}",
+        "kind": "event",
+        "original": "<134>1 2052-01-04T04:26:20Z NGDKEYCRFNZHBPP CheckPoint 13885 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x6596336e,0x0,0x1f67238a,0x1b3f363d}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"1\"; time:\"2587955180\"; version:\"5\"; administrator:\"testUser\"; advanced_changes:\" \"; client_ip:\"192.168.120.242\"; domain_name:\"'auditTest_domain'\"; fieldschanges:\"Name: was not modified Source: was not modified Destination: Added 'bm_core_switches' VPN: was not modified Action: was not modified Track: was not modified  Layer Name: 'bnkb01-Bermuda_Prod Security' Policy Names: ''\"; logic_changes:\"Dsts.dsts: Added '67babde8-70d8-4349-8950-4d74d9df4b8c' \"; objectname:\"ospf rule\"; objecttype:\"Access Control Rule\"; operation:\"Modify Rule\"; product:\"SmartConsole\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"CHG0887797\"; session_name:\"testUser@1/4/2024\"; session_uid:\"651fe13a-5c8e-43f6-8b07-8b1a9d949c62\"; subject:\"Object Manipulation\"; uid:\"3ea28444-1527-4485-8a22-92cff164d32d\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "message": "Object Manipulation",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "SmartConsole",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "192.168.120.242"
+        ],
+        "user": [
+          "3ea28444-1527-4485-8a22-92cff164d32d",
+          "testuser"
+        ]
+      },
+      "rule": {
+        "name": "ospf rule"
+      },
+      "source": {
+        "ip": "192.168.120.242",
+        "user": {
+          "id": "3ea28444-1527-4485-8a22-92cff164d32d",
+          "name": "testuser"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "3ea28444-1527-4485-8a22-92cff164d32d",
+        "name": "testuser"
+      }
+    },
+    {
+      "@timestamp": "2052-01-04T05:03:52.000Z",
+      "checkpoint": {
+        "administrator": "testUser",
+        "fieldschanges": "Name: name is empty Source: Added 'Alice', 'Bob', 'Cat';  Destination: Added 'Alice.2', 'Alice.3', 'Alice.4', 'Alice.5';  VPN: Any Action: Changed from 'Drop' to 'Accept' Track: Changed from 'None' to 'Log' Comments: 'CHG0887890 TS 040124' Services & Applications: Added 'tcp_5601', 'tcp_3001', 'TCP_1002', 'TCP_5600';  UseLogPerConnection: Changed from 'Disable' to 'Enable'  Layer Name: 'CAMCCCVBNTB009_prod Security' Policy Names: ''",
+        "logic_changes": "ActionSettings.action: Changed from 'rtheyht-8eec-4103-ad21-cd461ac2c473' to 'rtheyht-8eec-4103-ad21-cd461ac2c472' TrackSettings.useLogPerConnection: Changed from 'Disable' to 'Enable'",
+        "objecttype": "Access Control Rule",
+        "operation": "Create Rule",
+        "origin_sic_name": "cn=cp_mgmt,o=CASCC1DMBNTB1002..7f4rte",
+        "sendtotrackerasadvancedauditlog": "0",
+        "session_name": "testUser@1/4/2024",
+        "session_uid": "53315e9b-719d-447d-a2aa-2904994ff442"
+      },
+      "dns": {
+        "question": {
+          "name": "'testUser_domain'"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Accept",
+        "category": [
+          "network"
+        ],
+        "id": "{0x65963c39,0x0,0x1f67238a,0x33ac672c}",
+        "kind": "event",
+        "original": "<134>1 2052-01-04T05:03:52Z NGDKEYCRFNZHBPP CheckPoint 26412 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65963c39,0x0,0x1f67238a,0x33ac672c}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=CASCC1DMBNTB1002..7f4rte\"; sequencenum:\"1\"; time:\"2587957432\"; version:\"5\"; administrator:\"testUser\"; advanced_changes:\" \"; client_ip:\"192.168.120.242\"; domain_name:\"'testUser_domain'\"; fieldschanges:\"Name: name is empty Source: Added 'Alice', 'Bob', 'Cat';  Destination: Added 'Alice.2', 'Alice.3', 'Alice.4', 'Alice.5';  VPN: Any Action: Changed from 'Drop' to 'Accept' Track: Changed from 'None' to 'Log' Comments: 'CHG0887890 TS 040124' Services & Applications: Added 'tcp_5601', 'tcp_3001', 'TCP_1002', 'TCP_5600';  UseLogPerConnection: Changed from 'Disable' to 'Enable'  Layer Name: 'CAMCCCVBNTB009_prod Security' Policy Names: ''\"; logic_changes:\"ActionSettings.action: Changed from 'rtheyht-8eec-4103-ad21-cd461ac2c473' to 'rtheyht-8eec-4103-ad21-cd461ac2c472' TrackSettings.useLogPerConnection: Changed from 'Disable' to 'Enable' \"; objecttype:\"Access Control Rule\"; operation:\"Create Rule\"; product:\"SmartConsole\"; sendtotrackerasadvancedauditlog:\"0\"; session_name:\"testUser@1/4/2024\"; session_uid:\"53315e9b-719d-447d-a2aa-2904994ff442\"; subject:\"Object Manipulation\"; uid:\"6f74c5e0-043e-4057-ba6c-4eff467f051f\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "message": "Object Manipulation",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "SmartConsole",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "192.168.120.242"
+        ],
+        "user": [
+          "6f74c5e0-043e-4057-ba6c-4eff467f051f",
+          "testuser"
+        ]
+      },
+      "source": {
+        "ip": "192.168.120.242",
+        "user": {
+          "id": "6f74c5e0-043e-4057-ba6c-4eff467f051f",
+          "name": "testuser"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "6f74c5e0-043e-4057-ba6c-4eff467f051f",
+        "name": "testuser"
+      }
+    },
+    {
+      "@timestamp": "2052-01-04T04:51:17.000Z",
+      "checkpoint": {
+        "administrator": "testUser",
+        "fieldschanges": "Name: name is empty Source: Added 'Alice.2', 'Alice.3', 'Alice.4', 'Alice.5';  Destination: Added 'BNTB_10.255.109.83', 'BNTB_10.255.109.76', 'HP_155.61.9.27';  VPN: Any Action: Changed from 'Drop' to 'Accept' Track: Changed from 'None' to 'Log' Comments: 'CHG0887889 TS 040124' Services & Applications: Added 'tcp_3001', 'TCP_1002', 'TCP_5600', 'tcp_5601';  UseLogPerConnection: Changed from 'Disable' to 'Enable'  Layer Name: 'CAMCCCVBNTB005_prod_Clone Security' Policy Names: ''",
+        "logic_changes": "ActionSettings.action: Changed from 'rtheyht-8eec-4103-ad21-cd461ac2c473' to 'rtheyht-8eec-4103-ad21-cd461ac2c472' Applications.applications: Added 'e1aca1c0-4de7-4232-9c78-76c5ed94383d', '080758bc-fb45-42bb-828c-c6d753d2863a', '5f3d36f1-c083-48e1-837b-ad57e9aa131a', '83ba59f4-a8e6-45e9-a91b-8fa29da45fc0'; Removed '51abe735-1efc-16a8-ba54-7069486dfe94' Comments: 'CHG0887889 TS 040124' Dsts.dsts: Added '2dc258bb-382a-4d09-9abf-12188c058e0e', 'fc0382d6-a631-4d65-a7b5-200f3aa65d95', '3bc56147-8535-404f-0e13-63ff78c0082b'; Removed '51abe735-1efc-16a8-ba54-7069486dfe94' Srcs.srcs: Added '111d733d-9ee2-46d2-859d-191b2f31dfa6', '44d7ddfd-9d93-402b-bb85-ba473a7d173d', 'a1ae6fe0-478f-419b-bfd2-03a57635444b', '69bb3daa-cc74-4449-a312-9406caa18754'; Removed '51abe735-1efc-16a8-ba54-7069486dfe94' TrackSettings.track: Changed from '59b48b6c-41ba-43de-b0b6-c94da74228a4' to '075bac79-ba13-4318-98bb-e36d9811f41b' TrackSettings.useLogPerConnection: Changed from 'Disable' to 'Enable'",
+        "objecttype": "Access Control Rule",
+        "operation": "Create Rule",
+        "origin_sic_name": "cn=cp_mgmt,o=CASCC1DMBNTB1002..7f4rte",
+        "sendtotrackerasadvancedauditlog": "0",
+        "session_name": "testUser@1/4/2024",
+        "session_uid": "1a4aee30-d7cb-4098-bc9c-3c198f2daf3a"
+      },
+      "dns": {
+        "question": {
+          "name": "'testUser_domain'"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Accept",
+        "category": [
+          "network"
+        ],
+        "id": "{0x65963946,0x5,0x1f67238a,0x33ac672c}",
+        "kind": "event",
+        "original": "<134>1 2052-01-04T04:51:17Z NGDKEYCRFNZHBPP CheckPoint 26412 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65963946,0x5,0x1f67238a,0x33ac672c}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=CASCC1DMBNTB1002..7f4rte\"; sequencenum:\"6\"; time:\"2587956677\"; version:\"5\"; administrator:\"testUser\"; advanced_changes:\" \"; client_ip:\"192.168.120.242\"; domain_name:\"'testUser_domain'\"; fieldschanges:\"Name: name is empty Source: Added 'Alice.2', 'Alice.3', 'Alice.4', 'Alice.5';  Destination: Added 'BNTB_10.255.109.83', 'BNTB_10.255.109.76', 'HP_155.61.9.27';  VPN: Any Action: Changed from 'Drop' to 'Accept' Track: Changed from 'None' to 'Log' Comments: 'CHG0887889 TS 040124' Services & Applications: Added 'tcp_3001', 'TCP_1002', 'TCP_5600', 'tcp_5601';  UseLogPerConnection: Changed from 'Disable' to 'Enable'  Layer Name: 'CAMCCCVBNTB005_prod_Clone Security' Policy Names: ''\"; logic_changes:\"ActionSettings.action: Changed from 'rtheyht-8eec-4103-ad21-cd461ac2c473' to 'rtheyht-8eec-4103-ad21-cd461ac2c472' Applications.applications: Added 'e1aca1c0-4de7-4232-9c78-76c5ed94383d', '080758bc-fb45-42bb-828c-c6d753d2863a', '5f3d36f1-c083-48e1-837b-ad57e9aa131a', '83ba59f4-a8e6-45e9-a91b-8fa29da45fc0'; Removed '51abe735-1efc-16a8-ba54-7069486dfe94' Comments: 'CHG0887889 TS 040124' Dsts.dsts: Added '2dc258bb-382a-4d09-9abf-12188c058e0e', 'fc0382d6-a631-4d65-a7b5-200f3aa65d95', '3bc56147-8535-404f-0e13-63ff78c0082b'; Removed '51abe735-1efc-16a8-ba54-7069486dfe94' Srcs.srcs: Added '111d733d-9ee2-46d2-859d-191b2f31dfa6', '44d7ddfd-9d93-402b-bb85-ba473a7d173d', 'a1ae6fe0-478f-419b-bfd2-03a57635444b', '69bb3daa-cc74-4449-a312-9406caa18754'; Removed '51abe735-1efc-16a8-ba54-7069486dfe94' TrackSettings.track: Changed from '59b48b6c-41ba-43de-b0b6-c94da74228a4' to '075bac79-ba13-4318-98bb-e36d9811f41b' TrackSettings.useLogPerConnection: Changed from 'Disable' to 'Enable' \"; objecttype:\"Access Control Rule\"; operation:\"Create Rule\"; product:\"SmartConsole\"; sendtotrackerasadvancedauditlog:\"0\"; session_name:\"testUser@1/4/2024\"; session_uid:\"1a4aee30-d7cb-4098-bc9c-3c198f2daf3a\"; subject:\"Object Manipulation\"; uid:\"691122c7-69ff-4815-b5e5-f766eaaa8b5b\"]",
+        "outcome": "success",
+        "sequence": 6,
+        "timezone": "UTC",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "message": "Object Manipulation",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "SmartConsole",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "192.168.120.242"
+        ],
+        "user": [
+          "691122c7-69ff-4815-b5e5-f766eaaa8b5b",
+          "testuser"
+        ]
+      },
+      "source": {
+        "ip": "192.168.120.242",
+        "user": {
+          "id": "691122c7-69ff-4815-b5e5-f766eaaa8b5b",
+          "name": "testuser"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "691122c7-69ff-4815-b5e5-f766eaaa8b5b",
+        "name": "testuser"
+      }
+    },
+    {
+      "@timestamp": "2052-01-02T14:18:04.000Z",
+      "checkpoint": {
+        "administrator": "System",
+        "fieldschanges": "Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_734a37d5-fdcd-4479-bc12-87dd4b0c6c49' Profile: 'g_Recommended_Protection' Protection: 'Exponent CMS SQL Injection (CVE-2017-7991)' ProtectionId: '7732550153' StagingMode: 'Enable'",
+        "logic_changes": "Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_734a37d5-fdcd-4479-bc12-87dd4b0c6c49' Profile: '1a51a17b-7a18-46a0-a8c3-289c78f822a9' Protection: '734a37d5-fdcd-4479-bc12-87dd4b0c6c49' ProtectionId: '6854867' StagingMode: 'Enable'",
+        "objecttype": "ThreatIpsProtectionOverride",
+        "operation": "Create Object",
+        "origin_sic_name": "cn=cp_mgmt,o=auditTest..aw4c8s",
+        "sendtotrackerasadvancedauditlog": "0",
+        "session_description": "Global Domain Assignment",
+        "session_name": "Global Domain Assignment",
+        "session_uid": "c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0"
+      },
+      "dns": {
+        "question": {
+          "name": "'auditTest_domain'"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Accept",
+        "category": [
+          "network"
+        ],
+        "id": "{0x65941b1e,0x2,0x1f67238a,0x1b3f363d}",
+        "kind": "event",
+        "original": "<134>1 2052-01-02T14:18:04Z NGDKEYCRFNZHBPP CheckPoint 13885 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65941b1e,0x2,0x1f67238a,0x1b3f363d}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"3\"; time:\"2587817884\"; version:\"5\"; administrator:\"System\"; advanced_changes:\" \"; client_ip:\"172.25.59.120\"; domain_name:\"'auditTest_domain'\"; fieldschanges:\"Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_734a37d5-fdcd-4479-bc12-87dd4b0c6c49' Profile: 'g_Recommended_Protection' Protection: 'Exponent CMS SQL Injection (CVE-2017-7991)' ProtectionId: '7732550153' StagingMode: 'Enable' \"; logic_changes:\"Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_734a37d5-fdcd-4479-bc12-87dd4b0c6c49' Profile: '1a51a17b-7a18-46a0-a8c3-289c78f822a9' Protection: '734a37d5-fdcd-4479-bc12-87dd4b0c6c49' ProtectionId: '6854867' StagingMode: 'Enable' \"; objectname:\"1a51a17b-7a18-46a0-a8c3-289c78f822a9_734a37d5-fdcd-4479-bc12-87dd4b0c6c49\"; objecttype:\"ThreatIpsProtectionOverride\"; operation:\"Create Object\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"Global Domain Assignment\"; session_name:\"Global Domain Assignment\"; session_uid:\"c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0\"; subject:\"Object Manipulation\"; uid:\"ddd40795-2855-4692-80a3-f864c39c43c3\"]",
+        "outcome": "success",
+        "sequence": 3,
+        "timezone": "UTC",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "message": "Object Manipulation",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "172.25.59.120"
+        ],
+        "name": "172.25.59.120",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.25.59.120"
+        ],
+        "user": [
+          "ddd40795-2855-4692-80a3-f864c39c43c3",
+          "system"
+        ]
+      },
+      "rule": {
+        "name": "1a51a17b-7a18-46a0-a8c3-289c78f822a9_734a37d5-fdcd-4479-bc12-87dd4b0c6c49"
+      },
+      "source": {
+        "ip": "172.25.59.120",
+        "user": {
+          "id": "ddd40795-2855-4692-80a3-f864c39c43c3",
+          "name": "system"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "ddd40795-2855-4692-80a3-f864c39c43c3",
+        "name": "system"
+      }
+    },
+    {
+      "@timestamp": "2052-01-02T20:57:52.000Z",
+      "checkpoint": {
+        "administrator": "test_admin",
+        "machine": "qbevyre.eibcwniths.net",
+        "operation": "Log Out",
+        "operation_number": "12",
+        "origin_sic_name": "cn=cp_mgmt,o=auditTest..aw4c8s"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-out",
+        "category": [
+          "authentication"
+        ],
+        "code": "12",
+        "id": "{0x659478d1,0x0,0x1f67238a,0x1cc7b972}",
+        "kind": "event",
+        "original": "<134>1 2052-01-02T20:57:52Z NGDKEYCRFNZHBPP CheckPoint 14706 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x659478d1,0x0,0x1f67238a,0x1cc7b972}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"1\"; time:\"2587841872\"; version:\"5\"; administrator:\"test_admin\"; client_ip:\"192.168.120.242\"; machine:\"qbevyre.eibcwniths.net\"; operation:\"Log Out\"; operation_number:\"12\"; product:\"WEB_API\"; subject:\"Administrator Login\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "end"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "172.25.59.120"
+        ],
+        "name": "172.25.59.120",
+        "product": "WEB_API",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "192.168.120.242",
+          "172.25.59.120"
+        ],
+        "user": [
+          "test_admin"
+        ]
+      },
+      "source": {
+        "domain": "qbevyre.eibcwniths.net",
+        "ip": "192.168.120.242",
+        "user": {
+          "name": "test_admin"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "test_admin"
+      }
+    },
+    {
+      "@timestamp": "2052-01-02T20:57:47.000Z",
+      "checkpoint": {
+        "additional_info": "Authentication method: radius",
+        "administrator": "test_admin",
+        "machine": "qbevyre.eibcwniths.net",
+        "operation": "Log In",
+        "operation_number": "10",
+        "origin_sic_name": "cn=cp_mgmt,o=auditTest..aw4c8s"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "10",
+        "id": "{0x659478cd,0x0,0x1f67238a,0x1cc73972}",
+        "kind": "event",
+        "original": "<134>1 2052-01-02T20:57:47Z NGDKEYCRFNZHBPP CheckPoint 14706 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x659478cd,0x0,0x1f67238a,0x1cc73972}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"1\"; time:\"2587841867\"; version:\"5\"; additional_info:\"Authentication method: radius\"; administrator:\"test_admin\"; client_ip:\"192.168.120.242\"; machine:\"qbevyre.eibcwniths.net\"; operation:\"Log In\"; operation_number:\"10\"; product:\"WEB_API\"; subject:\"Administrator Login\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "172.25.59.120"
+        ],
+        "name": "172.25.59.120",
+        "product": "WEB_API",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "192.168.120.242",
+          "172.25.59.120"
+        ],
+        "user": [
+          "test_admin"
+        ]
+      },
+      "source": {
+        "domain": "qbevyre.eibcwniths.net",
+        "ip": "192.168.120.242",
+        "user": {
+          "name": "test_admin"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "test_admin"
+      }
+    },
+    {
+      "@timestamp": "2052-01-02T14:18:04.000Z",
+      "checkpoint": {
+        "administrator": "System",
+        "fieldschanges": "2 Objects were changed",
+        "operation": "Publish",
+        "origin_sic_name": "cn=cp_mgmt,o=auditTest..aw4c8s",
+        "sendtotrackerasadvancedauditlog": "0",
+        "session_description": "Global Domain Assignment",
+        "session_name": "Global Domain Assignment",
+        "session_uid": "c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Accept",
+        "category": [
+          "network"
+        ],
+        "id": "{0x65941b1e,0x3,0x1f67238a,0x1b3f363d}",
+        "kind": "event",
+        "original": "<134>1 2052-01-02T14:18:04Z NGDKEYCRFNZHBPP CheckPoint 13885 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65941b1e,0x3,0x1f67238a,0x1b3f363d}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"4\"; time:\"2587817884\"; version:\"5\"; administrator:\"System\"; client_ip:\"172.25.59.120\"; fieldschanges:\"2 Objects were changed\"; operation:\"Publish\"; product:\"SmartConsole\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"Global Domain Assignment\"; session_name:\"Global Domain Assignment\"; session_uid:\"c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0\"; subject:\"Revision Control\"]\t",
+        "outcome": "success",
+        "sequence": 4,
+        "timezone": "UTC",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "message": "Revision Control",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "172.25.59.120"
+        ],
+        "name": "172.25.59.120",
+        "product": "SmartConsole",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.25.59.120"
+        ],
+        "user": [
+          "system"
+        ]
+      },
+      "source": {
+        "ip": "172.25.59.120",
+        "user": {
+          "name": "system"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "system"
+      }
+    },
+    {
+      "@timestamp": "2052-01-02T14:18:04.000Z",
+      "checkpoint": {
+        "administrator": "System",
+        "fieldschanges": "Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_7c653206-b322-3141-98de-75f205c75555' Profile: 'g_Recommended_Protection' Protection: 'Microsoft Exchange Server Remote Code Execution (CVE-2022-41082)' ProtectionId: '8589640366' StagingMode: 'Enable'",
+        "logic_changes": "Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_7c653206-b322-3141-98de-75f205c75555' Profile: '1a51a17b-7a18-46a0-a8c3-289c78f822a9' Protection: '7c653206-b322-3141-98de-75f205c75555' ProtectionId: '8589640366' StagingMode: 'Enable'",
+        "objecttype": "ThreatIpsProtectionOverride",
+        "operation": "Create Object",
+        "origin_sic_name": "cn=cp_mgmt,o=auditTest..aw4c8s",
+        "sendtotrackerasadvancedauditlog": "0",
+        "session_description": "Global Domain Assignment",
+        "session_name": "Global Domain Assignment",
+        "session_uid": "c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0"
+      },
+      "dns": {
+        "question": {
+          "name": "'auditTest_domain'"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Accept",
+        "category": [
+          "network"
+        ],
+        "id": "{0x65941b1e,0x1,0x1f67238a,0x1b3f363d}",
+        "kind": "event",
+        "original": "<134>1 2052-01-02T14:18:04Z NGDKEYCRFNZHBPP CheckPoint 13885 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65941b1e,0x1,0x1f67238a,0x1b3f363d}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"2\"; time:\"2587817884\"; version:\"5\"; administrator:\"System\"; advanced_changes:\" \"; client_ip:\"172.25.59.120\"; domain_name:\"'auditTest_domain'\"; fieldschanges:\"Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_7c653206-b322-3141-98de-75f205c75555' Profile: 'g_Recommended_Protection' Protection: 'Microsoft Exchange Server Remote Code Execution (CVE-2022-41082)' ProtectionId: '8589640366' StagingMode: 'Enable' \"; logic_changes:\"Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_7c653206-b322-3141-98de-75f205c75555' Profile: '1a51a17b-7a18-46a0-a8c3-289c78f822a9' Protection: '7c653206-b322-3141-98de-75f205c75555' ProtectionId: '8589640366' StagingMode: 'Enable' \"; objectname:\"1a51a17b-7a18-46a0-a8c3-289c78f822a9_7c653206-b322-3141-98de-75f205c75555\"; objecttype:\"ThreatIpsProtectionOverride\"; operation:\"Create Object\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"Global Domain Assignment\"; session_name:\"Global Domain Assignment\"; session_uid:\"c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0\"; subject:\"Object Manipulation\"; uid:\"17b43a81-9e74-4270-99ea-85f24b01b1fd\"]",
+        "outcome": "success",
+        "sequence": 2,
+        "timezone": "UTC",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "message": "Object Manipulation",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "172.25.59.120"
+        ],
+        "name": "172.25.59.120",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.25.59.120"
+        ],
+        "user": [
+          "17b43a81-9e74-4270-99ea-85f24b01b1fd",
+          "system"
+        ]
+      },
+      "rule": {
+        "name": "1a51a17b-7a18-46a0-a8c3-289c78f822a9_7c653206-b322-3141-98de-75f205c75555"
+      },
+      "source": {
+        "ip": "172.25.59.120",
+        "user": {
+          "id": "17b43a81-9e74-4270-99ea-85f24b01b1fd",
+          "name": "system"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "17b43a81-9e74-4270-99ea-85f24b01b1fd",
+        "name": "system"
+      }
+    },
+    {
+      "@timestamp": "2052-01-02T14:18:04.000Z",
+      "checkpoint": {
+        "administrator": "System",
+        "fieldschanges": "IPS version was updated from 635240010 to 635240034",
+        "operation": "IPS Update",
+        "origin_sic_name": "cn=cp_mgmt,o=auditTest..aw4c8s",
+        "sendtotrackerasadvancedauditlog": "0",
+        "session_description": "IPS",
+        "session_name": "IPS",
+        "session_uid": "c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0"
+      },
+      "dns": {
+        "question": {
+          "name": "auditTest_domain"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Accept",
+        "category": [
+          "network"
+        ],
+        "id": "{0x65941b1d,0x0,0x1f67238a,0x1cc73972}",
+        "kind": "event",
+        "original": "<134>1 2052-01-02T14:18:04Z NGDKEYCRFNZHBPP CheckPoint 14706 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65941b1d,0x0,0x1f67238a,0x1cc73972}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"1\"; time:\"2587817884\"; version:\"5\"; administrator:\"System\"; client_ip:\"172.25.59.120\"; domain_name:\"auditTest_domain\"; fieldschanges:\"IPS version was updated from 635240010 to 635240034\"; operation:\"IPS Update\"; product:\"cpmidu_update_tool\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"IPS\"; session_name:\"IPS\"; session_uid:\"c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0\"; subject:\"IPS Update\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "message": "IPS Update",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "172.25.59.120"
+        ],
+        "name": "172.25.59.120",
+        "product": "cpmidu_update_tool",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.25.59.120"
+        ],
+        "user": [
+          "system"
+        ]
+      },
+      "source": {
+        "ip": "172.25.59.120",
+        "user": {
+          "name": "system"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "system"
+      }
+    },
+    {
+      "@timestamp": "2052-01-02T00:21:21.000Z",
+      "checkpoint": {
+        "administrator": "test_admin",
+        "audit_status": "Success",
+        "machine": "172.25.59.120",
+        "operation": "Run One Time Script",
+        "operation_result_description": "Cluster Mode: Virtual System Load Sharing (Primary Up)",
+        "operation_results": "Cluster Mode:   Virtual System Load Sharing (Primary Up) Down! - ClusterXL Inactive or Virtual System is Down",
+        "origin_sic_name": "cn=cp_mgmt,o=CASCC1DMBNTB1002..7f4rte",
+        "script_value_for_one_time_scripts": "cphaprob stat",
+        "task": "cphaprob stat",
+        "task_percent": "100%",
+        "task_progress": "Completed",
+        "taskid": "cf34c48c-9126-4ac8-a91a-ef2ab4cf565f",
+        "tasktargetid": "d89fb7fc-e0dc-46f1-6cb0-0afbb3187f5d"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Forgot Passcode",
+        "category": [
+          "network"
+        ],
+        "id": "{0xc8fcfded,0xb6eb29b0,0xcca171be,0xdaa091e6}",
+        "kind": "event",
+        "original": "<134>1 2052-01-02T00:21:21Z NGDKEYCRFNZHBPP CheckPoint 25603 - [action:\"Forgot Passcode\"; flags:\"49184\"; ifdir:\"outbound\"; loguid:\"{0xc8fcfded,0xb6eb29b0,0xcca171be,0xdaa091e6}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=CASCC1DMBNTB1002..7f4rte\"; sequencenum:\"1\"; time:\"2587767681\"; version:\"5\"; administrator:\"test_admin\"; audit_status:\"Success\"; client_ip:\"172.25.59.120\"; machine:\"172.25.59.120\"; operation:\"Run One Time Script\"; operation_result_description:\"Cluster Mode: Virtual System Load Sharing (Primary Up)\"; operation_results:\" Cluster Mode:   Virtual System Load Sharing (Primary Up) Down! - ClusterXL Inactive or Virtual System is Down \"; product:\"Management Blade\"; script_value_for_one_time_scripts:\"cphaprob stat\"; subject:\"Management CDM Object Manipulation\"; task:\"cphaprob stat\"; task_percent:\"100%\"; task_progress:\"Completed\"; taskid:\"cf34c48c-9126-4ac8-a91a-ef2ab4cf565f\"; tasktargetid:\"d89fb7fc-e0dc-46f1-6cb0-0afbb3187f5d\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC"
+      },
+      "message": "Management CDM Object Manipulation",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "172.25.59.120"
+        ],
+        "name": "172.25.59.120",
+        "product": "Management Blade",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.25.59.120"
+        ],
+        "user": [
+          "test_admin"
+        ]
+      },
+      "source": {
+        "ip": "172.25.59.120",
+        "user": {
+          "name": "test_admin"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "test_admin"
+      }
+    },
+    {
+      "@timestamp": "2052-01-01T14:18:28.000Z",
+      "checkpoint": {
+        "administrator": "System",
+        "objecttype": "ThreatIpsProtectionOverride",
+        "operation": "Delete Object",
+        "origin_sic_name": "cn=cp_mgmt,o=auditTest..aw4c8s",
+        "sendtotrackerasadvancedauditlog": "0",
+        "session_description": "Global Domain Assignment",
+        "session_name": "Global Domain Assignment",
+        "session_uid": "18d3856a-5eb4-47ad-a315-4d131f4a0399"
+      },
+      "dns": {
+        "question": {
+          "name": "'auditTest_domain'"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Accept",
+        "category": [
+          "network"
+        ],
+        "id": "{0x6592c9b6,0x13,0x1f67238a,0x1cc73972}",
+        "kind": "event",
+        "original": "<134>1 2052-01-01T14:18:28Z NGDKEYCRFNZHBPP CheckPoint 14706 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x6592c9b6,0x13,0x1f67238a,0x1cc73972}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"20\"; time:\"2587731508\"; version:\"5\"; administrator:\"System\"; advanced_changes:\" \"; client_ip:\"172.25.59.120\"; domain_name:\"'auditTest_domain'\"; fieldschanges:\" \"; logic_changes:\" \"; objectname:\"3a717ff7-5998-4d1f-8aa2-92731ae00964_869cd2fa-e83f-be96-a66d-4a3b5fa303fd\"; objecttype:\"ThreatIpsProtectionOverride\"; operation:\"Delete Object\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"Global Domain Assignment\"; session_name:\"Global Domain Assignment\"; session_uid:\"18d3856a-5eb4-47ad-a315-4d131f4a0399\"; subject:\"Object Manipulation\"; uid:\"c6dd1625-4ea7-4039-8856-accf05a1376c\"]",
+        "outcome": "success",
+        "sequence": 20,
+        "timezone": "UTC",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "message": "Object Manipulation",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "172.25.59.120"
+        ],
+        "name": "172.25.59.120",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.25.59.120"
+        ],
+        "user": [
+          "c6dd1625-4ea7-4039-8856-accf05a1376c",
+          "system"
+        ]
+      },
+      "rule": {
+        "name": "3a717ff7-5998-4d1f-8aa2-92731ae00964_869cd2fa-e83f-be96-a66d-4a3b5fa303fd"
+      },
+      "source": {
+        "ip": "172.25.59.120",
+        "user": {
+          "id": "c6dd1625-4ea7-4039-8856-accf05a1376c",
+          "name": "system"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "c6dd1625-4ea7-4039-8856-accf05a1376c",
+        "name": "system"
+      }
+    },
+    {
+      "@timestamp": "2052-01-01T01:01:48.000Z",
+      "checkpoint": {
+        "administrator": "Scheduled system update",
+        "fieldschanges": "Application Control & URL Filtering Update version was updated from 141202312141035 to 141202312261218",
+        "operation": "Application Control & URL Filtering Update",
+        "origin_sic_name": "cn=cp_mgmt,o=auditTest..aw4c8s",
+        "sendtotrackerasadvancedauditlog": "0",
+        "session_description": "APPI Update",
+        "session_name": "APPI Update",
+        "session_uid": "5c96113a-0234-4e6f-9539-b72d4311ebfe"
+      },
+      "dns": {
+        "question": {
+          "name": "auditTest_domain"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Accept",
+        "category": [
+          "network"
+        ],
+        "id": "{0x65920efe,0x0,0x1f67238a,0x1cc7b972}",
+        "kind": "event",
+        "original": "<134>1 2052-01-01T01:01:48Z NGDKEYCRFNZHBPP CheckPoint 14706 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65920efe,0x0,0x1f67238a,0x1cc7b972}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"1\"; time:\"2587683708\"; version:\"5\"; administrator:\"Scheduled system update\"; client_ip:\"172.25.59.120\"; domain_name:\"auditTest_domain\"; fieldschanges:\"Application Control & URL Filtering Update version was updated from 141202312141035 to 141202312261218\"; operation:\"Application Control & URL Filtering Update\"; product:\"Scheduled system update\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"APPI Update\"; session_name:\"APPI Update\"; session_uid:\"5c96113a-0234-4e6f-9539-b72d4311ebfe\"; subject:\"Application Control & URL Filtering Update\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "message": "Application Control & URL Filtering Update",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "172.25.59.120"
+        ],
+        "name": "172.25.59.120",
+        "product": "Scheduled system update",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.25.59.120"
+        ],
+        "user": [
+          "scheduled system update"
+        ]
+      },
+      "source": {
+        "ip": "172.25.59.120",
+        "user": {
+          "name": "scheduled system update"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "scheduled system update"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-04T04:26:20Z NGDKEYCRFNZHBPP CheckPoint 13885 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x6596336e,0x0,0x1f67238a,0x1b3f363d}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"1\"; time:\"2587955180\"; version:\"5\"; administrator:\"testUser\"; advanced_changes:\" \"; client_ip:\"192.168.120.242\"; domain_name:\"'auditTest_domain'\"; fieldschanges:\"Name: was not modified Source: was not modified Destination: Added 'bm_core_switches' VPN: was not modified Action: was not modified Track: was not modified  Layer Name: 'bnkb01-Bermuda_Prod Security' Policy Names: ''\"; logic_changes:\"Dsts.dsts: Added '67babde8-70d8-4349-8950-4d74d9df4b8c' \"; objectname:\"ospf rule\"; objecttype:\"Access Control Rule\"; operation:\"Modify Rule\"; product:\"SmartConsole\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"CHG0887797\"; session_name:\"testUser@1/4/2024\"; session_uid:\"651fe13a-5c8e-43f6-8b07-8b1a9d949c62\"; subject:\"Object Manipulation\"; uid:\"3ea28444-1527-4485-8a22-92cff164d32d\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-04T05:03:52Z NGDKEYCRFNZHBPP CheckPoint 26412 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65963c39,0x0,0x1f67238a,0x33ac672c}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=CASCC1DMBNTB1002..7f4rte\"; sequencenum:\"1\"; time:\"2587957432\"; version:\"5\"; administrator:\"testUser\"; advanced_changes:\" \"; client_ip:\"192.168.120.242\"; domain_name:\"'testUser_domain'\"; fieldschanges:\"Name: name is empty Source: Added 'Alice', 'Bob', 'Cat';  Destination: Added 'Alice.2', 'Alice.3', 'Alice.4', 'Alice.5';  VPN: Any Action: Changed from 'Drop' to 'Accept' Track: Changed from 'None' to 'Log' Comments: 'CHG0887890 TS 040124' Services & Applications: Added 'tcp_5601', 'tcp_3001', 'TCP_1002', 'TCP_5600';  UseLogPerConnection: Changed from 'Disable' to 'Enable'  Layer Name: 'CAMCCCVBNTB009_prod Security' Policy Names: ''\"; logic_changes:\"ActionSettings.action: Changed from 'rtheyht-8eec-4103-ad21-cd461ac2c473' to 'rtheyht-8eec-4103-ad21-cd461ac2c472' TrackSettings.useLogPerConnection: Changed from 'Disable' to 'Enable' \"; objecttype:\"Access Control Rule\"; operation:\"Create Rule\"; product:\"SmartConsole\"; sendtotrackerasadvancedauditlog:\"0\"; session_name:\"testUser@1/4/2024\"; session_uid:\"53315e9b-719d-447d-a2aa-2904994ff442\"; subject:\"Object Manipulation\"; uid:\"6f74c5e0-043e-4057-ba6c-4eff467f051f\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-04T04:51:17Z NGDKEYCRFNZHBPP CheckPoint 26412 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65963946,0x5,0x1f67238a,0x33ac672c}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=CASCC1DMBNTB1002..7f4rte\"; sequencenum:\"6\"; time:\"2587956677\"; version:\"5\"; administrator:\"testUser\"; advanced_changes:\" \"; client_ip:\"192.168.120.242\"; domain_name:\"'testUser_domain'\"; fieldschanges:\"Name: name is empty Source: Added 'Alice.2', 'Alice.3', 'Alice.4', 'Alice.5';  Destination: Added 'BNTB_10.255.109.83', 'BNTB_10.255.109.76', 'HP_155.61.9.27';  VPN: Any Action: Changed from 'Drop' to 'Accept' Track: Changed from 'None' to 'Log' Comments: 'CHG0887889 TS 040124' Services & Applications: Added 'tcp_3001', 'TCP_1002', 'TCP_5600', 'tcp_5601';  UseLogPerConnection: Changed from 'Disable' to 'Enable'  Layer Name: 'CAMCCCVBNTB005_prod_Clone Security' Policy Names: ''\"; logic_changes:\"ActionSettings.action: Changed from 'rtheyht-8eec-4103-ad21-cd461ac2c473' to 'rtheyht-8eec-4103-ad21-cd461ac2c472' Applications.applications: Added 'e1aca1c0-4de7-4232-9c78-76c5ed94383d', '080758bc-fb45-42bb-828c-c6d753d2863a', '5f3d36f1-c083-48e1-837b-ad57e9aa131a', '83ba59f4-a8e6-45e9-a91b-8fa29da45fc0'; Removed '51abe735-1efc-16a8-ba54-7069486dfe94' Comments: 'CHG0887889 TS 040124' Dsts.dsts: Added '2dc258bb-382a-4d09-9abf-12188c058e0e', 'fc0382d6-a631-4d65-a7b5-200f3aa65d95', '3bc56147-8535-404f-0e13-63ff78c0082b'; Removed '51abe735-1efc-16a8-ba54-7069486dfe94' Srcs.srcs: Added '111d733d-9ee2-46d2-859d-191b2f31dfa6', '44d7ddfd-9d93-402b-bb85-ba473a7d173d', 'a1ae6fe0-478f-419b-bfd2-03a57635444b', '69bb3daa-cc74-4449-a312-9406caa18754'; Removed '51abe735-1efc-16a8-ba54-7069486dfe94' TrackSettings.track: Changed from '59b48b6c-41ba-43de-b0b6-c94da74228a4' to '075bac79-ba13-4318-98bb-e36d9811f41b' TrackSettings.useLogPerConnection: Changed from 'Disable' to 'Enable' \"; objecttype:\"Access Control Rule\"; operation:\"Create Rule\"; product:\"SmartConsole\"; sendtotrackerasadvancedauditlog:\"0\"; session_name:\"testUser@1/4/2024\"; session_uid:\"1a4aee30-d7cb-4098-bc9c-3c198f2daf3a\"; subject:\"Object Manipulation\"; uid:\"691122c7-69ff-4815-b5e5-f766eaaa8b5b\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-02T14:18:04Z NGDKEYCRFNZHBPP CheckPoint 13885 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65941b1e,0x2,0x1f67238a,0x1b3f363d}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"3\"; time:\"2587817884\"; version:\"5\"; administrator:\"System\"; advanced_changes:\" \"; client_ip:\"172.25.59.120\"; domain_name:\"'auditTest_domain'\"; fieldschanges:\"Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_734a37d5-fdcd-4479-bc12-87dd4b0c6c49' Profile: 'g_Recommended_Protection' Protection: 'Exponent CMS SQL Injection (CVE-2017-7991)' ProtectionId: '7732550153' StagingMode: 'Enable' \"; logic_changes:\"Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_734a37d5-fdcd-4479-bc12-87dd4b0c6c49' Profile: '1a51a17b-7a18-46a0-a8c3-289c78f822a9' Protection: '734a37d5-fdcd-4479-bc12-87dd4b0c6c49' ProtectionId: '6854867' StagingMode: 'Enable' \"; objectname:\"1a51a17b-7a18-46a0-a8c3-289c78f822a9_734a37d5-fdcd-4479-bc12-87dd4b0c6c49\"; objecttype:\"ThreatIpsProtectionOverride\"; operation:\"Create Object\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"Global Domain Assignment\"; session_name:\"Global Domain Assignment\"; session_uid:\"c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0\"; subject:\"Object Manipulation\"; uid:\"ddd40795-2855-4692-80a3-f864c39c43c3\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-02T20:57:52Z NGDKEYCRFNZHBPP CheckPoint 14706 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x659478d1,0x0,0x1f67238a,0x1cc7b972}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"1\"; time:\"2587841872\"; version:\"5\"; administrator:\"test_admin\"; client_ip:\"192.168.120.242\"; machine:\"qbevyre.eibcwniths.net\"; operation:\"Log Out\"; operation_number:\"12\"; product:\"WEB_API\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-02T20:57:47Z NGDKEYCRFNZHBPP CheckPoint 14706 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x659478cd,0x0,0x1f67238a,0x1cc73972}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"1\"; time:\"2587841867\"; version:\"5\"; additional_info:\"Authentication method: radius\"; administrator:\"test_admin\"; client_ip:\"192.168.120.242\"; machine:\"qbevyre.eibcwniths.net\"; operation:\"Log In\"; operation_number:\"10\"; product:\"WEB_API\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-02T14:18:04Z NGDKEYCRFNZHBPP CheckPoint 13885 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65941b1e,0x3,0x1f67238a,0x1b3f363d}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"4\"; time:\"2587817884\"; version:\"5\"; administrator:\"System\"; client_ip:\"172.25.59.120\"; fieldschanges:\"2 Objects were changed\"; operation:\"Publish\"; product:\"SmartConsole\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"Global Domain Assignment\"; session_name:\"Global Domain Assignment\"; session_uid:\"c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0\"; subject:\"Revision Control\"]\t",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-02T14:18:04Z NGDKEYCRFNZHBPP CheckPoint 13885 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65941b1e,0x1,0x1f67238a,0x1b3f363d}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"2\"; time:\"2587817884\"; version:\"5\"; administrator:\"System\"; advanced_changes:\" \"; client_ip:\"172.25.59.120\"; domain_name:\"'auditTest_domain'\"; fieldschanges:\"Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_7c653206-b322-3141-98de-75f205c75555' Profile: 'g_Recommended_Protection' Protection: 'Microsoft Exchange Server Remote Code Execution (CVE-2022-41082)' ProtectionId: '8589640366' StagingMode: 'Enable' \"; logic_changes:\"Name: '1a51a17b-7a18-46a0-a8c3-289c78f822a9_7c653206-b322-3141-98de-75f205c75555' Profile: '1a51a17b-7a18-46a0-a8c3-289c78f822a9' Protection: '7c653206-b322-3141-98de-75f205c75555' ProtectionId: '8589640366' StagingMode: 'Enable' \"; objectname:\"1a51a17b-7a18-46a0-a8c3-289c78f822a9_7c653206-b322-3141-98de-75f205c75555\"; objecttype:\"ThreatIpsProtectionOverride\"; operation:\"Create Object\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"Global Domain Assignment\"; session_name:\"Global Domain Assignment\"; session_uid:\"c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0\"; subject:\"Object Manipulation\"; uid:\"17b43a81-9e74-4270-99ea-85f24b01b1fd\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-02T14:18:04Z NGDKEYCRFNZHBPP CheckPoint 14706 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65941b1d,0x0,0x1f67238a,0x1cc73972}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"1\"; time:\"2587817884\"; version:\"5\"; administrator:\"System\"; client_ip:\"172.25.59.120\"; domain_name:\"auditTest_domain\"; fieldschanges:\"IPS version was updated from 635240010 to 635240034\"; operation:\"IPS Update\"; product:\"cpmidu_update_tool\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"IPS\"; session_name:\"IPS\"; session_uid:\"c6e6ab6e-70cc-4bf0-8bf4-76ee66e94fd0\"; subject:\"IPS Update\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-02T00:21:21Z NGDKEYCRFNZHBPP CheckPoint 25603 - [action:\"Forgot Passcode\"; flags:\"49184\"; ifdir:\"outbound\"; loguid:\"{0xc8fcfded,0xb6eb29b0,0xcca171be,0xdaa091e6}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=CASCC1DMBNTB1002..7f4rte\"; sequencenum:\"1\"; time:\"2587767681\"; version:\"5\"; administrator:\"test_admin\"; audit_status:\"Success\"; client_ip:\"172.25.59.120\"; machine:\"172.25.59.120\"; operation:\"Run One Time Script\"; operation_result_description:\"Cluster Mode: Virtual System Load Sharing (Primary Up)\"; operation_results:\" Cluster Mode:   Virtual System Load Sharing (Primary Up) Down! - ClusterXL Inactive or Virtual System is Down \"; product:\"Management Blade\"; script_value_for_one_time_scripts:\"cphaprob stat\"; subject:\"Management CDM Object Manipulation\"; task:\"cphaprob stat\"; task_percent:\"100%\"; task_progress:\"Completed\"; taskid:\"cf34c48c-9126-4ac8-a91a-ef2ab4cf565f\"; tasktargetid:\"d89fb7fc-e0dc-46f1-6cb0-0afbb3187f5d\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-01T14:18:28Z NGDKEYCRFNZHBPP CheckPoint 14706 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x6592c9b6,0x13,0x1f67238a,0x1cc73972}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"20\"; time:\"2587731508\"; version:\"5\"; administrator:\"System\"; advanced_changes:\" \"; client_ip:\"172.25.59.120\"; domain_name:\"'auditTest_domain'\"; fieldschanges:\" \"; logic_changes:\" \"; objectname:\"3a717ff7-5998-4d1f-8aa2-92731ae00964_869cd2fa-e83f-be96-a66d-4a3b5fa303fd\"; objecttype:\"ThreatIpsProtectionOverride\"; operation:\"Delete Object\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"Global Domain Assignment\"; session_name:\"Global Domain Assignment\"; session_uid:\"18d3856a-5eb4-47ad-a315-4d131f4a0399\"; subject:\"Object Manipulation\"; uid:\"c6dd1625-4ea7-4039-8856-accf05a1376c\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2052-01-01T01:01:48Z NGDKEYCRFNZHBPP CheckPoint 14706 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65920efe,0x0,0x1f67238a,0x1cc7b972}\"; origin:\"172.25.59.120\"; originsicname:\"cn=cp_mgmt,o=auditTest..aw4c8s\"; sequencenum:\"1\"; time:\"2587683708\"; version:\"5\"; administrator:\"Scheduled system update\"; client_ip:\"172.25.59.120\"; domain_name:\"auditTest_domain\"; fieldschanges:\"Application Control & URL Filtering Update version was updated from 141202312141035 to 141202312261218\"; operation:\"Application Control & URL Filtering Update\"; product:\"Scheduled system update\"; sendtotrackerasadvancedauditlog:\"0\"; session_description:\"APPI Update\"; session_name:\"APPI Update\"; session_uid:\"5c96113a-0234-4e6f-9539-b72d4311ebfe\"; subject:\"Application Control & URL Filtering Update\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "firewall",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-checkpoint-firewall-default",
+    "event_count": 12,
+    "numeric_keyword_fields": [],
+    "package": "checkpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

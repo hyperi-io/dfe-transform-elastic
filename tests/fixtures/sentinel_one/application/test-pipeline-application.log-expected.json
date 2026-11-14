@@ -1,0 +1,248 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "package"
+        ],
+        "id": "2228104980080385459",
+        "kind": "event",
+        "original": "{\"accountName\":\"Bycunpa\",\"applicationInstallationDate\":\"2051-04-28T07:15:57Z\",\"applicationInstallationPath\":null,\"applicationName\":\"7-Zip\",\"coreCount\":4,\"cpe\":\"cpe:2.3:a:7-zip:7-zip:22.1:*:*:*:*:*:*:*\",\"cpuCount\":2,\"detectionDate\":\"2053-06-02T04:46:51.710561Z\",\"endpointId\":\"3045756206517023959\",\"endpointName\":\"DESKTOP-R1E2DQ2\",\"endpointType\":\"desktop\",\"endpointUuid\":\"850c1e8c1af305815016feee4d78a158\",\"fileSize\":5601,\"groupName\":\"Default Group\",\"id\":\"2228104980080385459\",\"osArch\":\"64 bit\",\"osName\":\"Windows 10 Pro\",\"osType\":\"windows\",\"osVersion\":\"Windows 10 Pro 19044\",\"siteName\":\"Default site\",\"version\":\"22.01\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "Default Group"
+      },
+      "host": {
+        "architecture": "64 bit",
+        "id": "3045756206517023959",
+        "name": "DESKTOP-R1E2DQ2",
+        "os": {
+          "full": "Windows 10 Pro 19044",
+          "name": "Windows 10 Pro",
+          "type": "windows"
+        },
+        "type": "desktop"
+      },
+      "package": {
+        "installed": "2051-04-28T07:15:57.000Z",
+        "name": "7-Zip",
+        "size": 5601,
+        "version": "22.01"
+      },
+      "related": {
+        "hosts": [
+          "DESKTOP-R1E2DQ2"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Bycunpa"
+        },
+        "application": {
+          "application_installation_date": "2051-04-28T07:15:57.000Z",
+          "application_name": "7-Zip",
+          "core_count": 4,
+          "cpe": "cpe:2.3:a:7-zip:7-zip:22.1:*:*:*:*:*:*:*",
+          "cpu_count": 2,
+          "detection_date": "2053-06-02T04:46:51.710Z",
+          "endpoint_id": "3045756206517023959",
+          "endpoint_name": "DESKTOP-R1E2DQ2",
+          "endpoint_type": "desktop",
+          "endpoint_uuid": "850c1e8c1af305815016feee4d78a158",
+          "file_size": 5601,
+          "group_name": "Default Group",
+          "id": "2228104980080385459",
+          "os_arch": "64 bit",
+          "os_name": "Windows 10 Pro",
+          "os_type": "windows",
+          "os_version": "Windows 10 Pro 19044",
+          "version": "22.01"
+        },
+        "site": {
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "package"
+        ],
+        "id": "2228104980315266498",
+        "kind": "event",
+        "original": "{\"accountName\":\"Bycunpa\",\"applicationInstallationDate\":\"2051-04-19T18:30:00Z\",\"applicationInstallationPath\":null,\"applicationName\":\"Brave\",\"coreCount\":4,\"cpe\":\"cpe:2.3:a:brave:brave:203.0.113.9:*:*:*:*:*:*:*\",\"cpuCount\":2,\"detectionDate\":\"2053-06-02T04:46:51.710582Z\",\"endpointId\":\"3045756206517023959\",\"endpointName\":\"DESKTOP-R1E2DQ2\",\"endpointType\":\"desktop\",\"endpointUuid\":\"850c1e8c1af305815016feee4d78a158\",\"fileSize\":null,\"groupName\":\"Default Group\",\"id\":\"2228104980315266498\",\"osArch\":\"64 bit\",\"osName\":\"Windows 10 Pro\",\"osType\":\"windows\",\"osVersion\":\"Windows 10 Pro 19044\",\"siteName\":\"Default site\",\"version\":\"203.0.113.9\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "Default Group"
+      },
+      "host": {
+        "architecture": "64 bit",
+        "id": "3045756206517023959",
+        "name": "DESKTOP-R1E2DQ2",
+        "os": {
+          "full": "Windows 10 Pro 19044",
+          "name": "Windows 10 Pro",
+          "type": "windows"
+        },
+        "type": "desktop"
+      },
+      "package": {
+        "installed": "2051-04-19T18:30:00.000Z",
+        "name": "Brave",
+        "version": "203.0.113.9"
+      },
+      "related": {
+        "hosts": [
+          "DESKTOP-R1E2DQ2"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Bycunpa"
+        },
+        "application": {
+          "application_installation_date": "2051-04-19T18:30:00.000Z",
+          "application_name": "Brave",
+          "core_count": 4,
+          "cpe": "cpe:2.3:a:brave:brave:203.0.113.9:*:*:*:*:*:*:*",
+          "cpu_count": 2,
+          "detection_date": "2053-06-02T04:46:51.710Z",
+          "endpoint_id": "3045756206517023959",
+          "endpoint_name": "DESKTOP-R1E2DQ2",
+          "endpoint_type": "desktop",
+          "endpoint_uuid": "850c1e8c1af305815016feee4d78a158",
+          "group_name": "Default Group",
+          "id": "2228104980315266498",
+          "os_arch": "64 bit",
+          "os_name": "Windows 10 Pro",
+          "os_type": "windows",
+          "os_version": "Windows 10 Pro 19044",
+          "version": "203.0.113.9"
+        },
+        "site": {
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "package"
+        ],
+        "id": "2218357748550497214",
+        "kind": "event",
+        "original": "{\"accountName\":\"Bycunpa\",\"applicationInstallationDate\":\"2053-03-13T10:45:01Z\",\"applicationInstallationPath\":null,\"applicationName\":\"Bycunpa Agent\",\"coreCount\":2,\"cpe\":\"cpe:2.3:a:elastic:elastic_agent:8.17.3:*:*:*:*:*:*:*\",\"cpuCount\":1,\"detectionDate\":\"2053-05-19T18:00:51.166610Z\",\"endpointId\":\"3053317824028266268\",\"endpointName\":\"srv-win-defend-03\",\"endpointType\":\"server\",\"endpointUuid\":\"cc569ec1ff839dfa01132fab9f5212ef\",\"fileSize\":517364,\"groupName\":\"Default Group\",\"id\":\"2218357748550497214\",\"osArch\":\"64 bit\",\"osName\":\"Windows Server 2022 Datacenter\",\"osType\":\"windows\",\"osVersion\":\"Windows Server 2022 Datacenter 20348\",\"siteName\":\"Default site\",\"version\":\"8.17.3\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "Default Group"
+      },
+      "host": {
+        "architecture": "64 bit",
+        "id": "3053317824028266268",
+        "name": "srv-win-defend-03",
+        "os": {
+          "full": "Windows Server 2022 Datacenter 20348",
+          "name": "Windows Server 2022 Datacenter",
+          "type": "windows"
+        },
+        "type": "server"
+      },
+      "package": {
+        "installed": "2053-03-13T10:45:01.000Z",
+        "name": "Bycunpa Agent",
+        "size": 517364,
+        "version": "8.17.3"
+      },
+      "related": {
+        "hosts": [
+          "srv-win-defend-03"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Bycunpa"
+        },
+        "application": {
+          "application_installation_date": "2053-03-13T10:45:01.000Z",
+          "application_name": "Bycunpa Agent",
+          "core_count": 2,
+          "cpe": "cpe:2.3:a:elastic:elastic_agent:8.17.3:*:*:*:*:*:*:*",
+          "cpu_count": 1,
+          "detection_date": "2053-05-19T18:00:51.166Z",
+          "endpoint_id": "3053317824028266268",
+          "endpoint_name": "srv-win-defend-03",
+          "endpoint_type": "server",
+          "endpoint_uuid": "cc569ec1ff839dfa01132fab9f5212ef",
+          "file_size": 517364,
+          "group_name": "Default Group",
+          "id": "2218357748550497214",
+          "os_arch": "64 bit",
+          "os_name": "Windows Server 2022 Datacenter",
+          "os_type": "windows",
+          "os_version": "Windows Server 2022 Datacenter 20348",
+          "version": "8.17.3"
+        },
+        "site": {
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"accountName\":\"Bycunpa\",\"applicationInstallationDate\":\"2051-04-28T07:15:57Z\",\"applicationInstallationPath\":null,\"applicationName\":\"7-Zip\",\"coreCount\":4,\"cpe\":\"cpe:2.3:a:7-zip:7-zip:22.1:*:*:*:*:*:*:*\",\"cpuCount\":2,\"detectionDate\":\"2053-06-02T04:46:51.710561Z\",\"endpointId\":\"3045756206517023959\",\"endpointName\":\"DESKTOP-R1E2DQ2\",\"endpointType\":\"desktop\",\"endpointUuid\":\"850c1e8c1af305815016feee4d78a158\",\"fileSize\":5601,\"groupName\":\"Default Group\",\"id\":\"2228104980080385459\",\"osArch\":\"64 bit\",\"osName\":\"Windows 10 Pro\",\"osType\":\"windows\",\"osVersion\":\"Windows 10 Pro 19044\",\"siteName\":\"Default site\",\"version\":\"22.01\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"accountName\":\"Bycunpa\",\"applicationInstallationDate\":\"2051-04-19T18:30:00Z\",\"applicationInstallationPath\":null,\"applicationName\":\"Brave\",\"coreCount\":4,\"cpe\":\"cpe:2.3:a:brave:brave:203.0.113.9:*:*:*:*:*:*:*\",\"cpuCount\":2,\"detectionDate\":\"2053-06-02T04:46:51.710582Z\",\"endpointId\":\"3045756206517023959\",\"endpointName\":\"DESKTOP-R1E2DQ2\",\"endpointType\":\"desktop\",\"endpointUuid\":\"850c1e8c1af305815016feee4d78a158\",\"fileSize\":null,\"groupName\":\"Default Group\",\"id\":\"2228104980315266498\",\"osArch\":\"64 bit\",\"osName\":\"Windows 10 Pro\",\"osType\":\"windows\",\"osVersion\":\"Windows 10 Pro 19044\",\"siteName\":\"Default site\",\"version\":\"203.0.113.9\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"accountName\":\"Bycunpa\",\"applicationInstallationDate\":\"2053-03-13T10:45:01Z\",\"applicationInstallationPath\":null,\"applicationName\":\"Bycunpa Agent\",\"coreCount\":2,\"cpe\":\"cpe:2.3:a:elastic:elastic_agent:8.17.3:*:*:*:*:*:*:*\",\"cpuCount\":1,\"detectionDate\":\"2053-05-19T18:00:51.166610Z\",\"endpointId\":\"3053317824028266268\",\"endpointName\":\"srv-win-defend-03\",\"endpointType\":\"server\",\"endpointUuid\":\"cc569ec1ff839dfa01132fab9f5212ef\",\"fileSize\":517364,\"groupName\":\"Default Group\",\"id\":\"2218357748550497214\",\"osArch\":\"64 bit\",\"osName\":\"Windows Server 2022 Datacenter\",\"osType\":\"windows\",\"osVersion\":\"Windows Server 2022 Datacenter 20348\",\"siteName\":\"Default site\",\"version\":\"8.17.3\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "application",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sentinel_one-application-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "sentinel_one",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

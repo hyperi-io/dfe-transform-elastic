@@ -372,9 +372,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("sysdig.content.ruleTags") };
             if _cond {
-                // Painless script
-                // Source: def mitreRegex = /T\\d{4}/;\nfor (int i = 0; i < ctx.sysdig.content.ruleTags.length; i++) {\n    def tag = ctx.sysdig.content.ruleTags[i];\n    def matcher = mitreRegex.matcher(tag);\n    if (matcher.find()) {\n        ctx['threat.technique.id'] = [matcher.group()];\n        break;\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

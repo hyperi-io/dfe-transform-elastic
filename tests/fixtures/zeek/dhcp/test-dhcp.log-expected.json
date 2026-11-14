@@ -1,0 +1,184 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2044-10-16T08:11:38.771Z",
+      "client": {
+        "address": "192.168.211.164"
+      },
+      "destination": {
+        "address": "192.168.175.160",
+        "ip": "192.168.175.160",
+        "port": 67
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": [
+          "CmWOt6VWaNGqXYcH6",
+          "CLObLo4YHn0u23Tp8a"
+        ],
+        "kind": "event",
+        "original": "{\"ts\":2360218298.771847,\"uids\":[\"CmWOt6VWaNGqXYcH6\",\"CLObLo4YHn0u23Tp8a\"],\"client_addr\":\"192.168.211.164\",\"server_addr\":\"192.168.175.160\",\"mac\":\"83:9c:93:67:bf:ca\",\"host_name\":\"BDLYYXO-0EDDL1H\",\"client_fqdn\":\"BDLYYXO-0EDDL1H\",\"domain\":\"localdomain\",\"requested_addr\":\"192.168.211.164\",\"assigned_addr\":\"192.168.211.164\",\"lease_time\":1800.0,\"msg_types\":[\"REQUEST\",\"ACK\"],\"duration\":0.000161}",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:GWClNhQtLP+57yIg1IUOaixGjcA=",
+        "name": "localdomain",
+        "protocol": "dhcp",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.168.211.164",
+          "192.168.175.160"
+        ]
+      },
+      "server": {
+        "address": "192.168.175.160"
+      },
+      "source": {
+        "address": "192.168.211.164",
+        "ip": "192.168.211.164",
+        "port": 68
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "zeek": {
+        "dhcp": {
+          "address": {
+            "assigned": "192.168.211.164",
+            "client": "192.168.211.164",
+            "mac": "83:9c:93:67:bf:ca",
+            "requested": "192.168.211.164",
+            "server": "192.168.175.160"
+          },
+          "client_fqdn": "BDLYYXO-0EDDL1H",
+          "domain": "localdomain",
+          "duration": 0.000161,
+          "hostname": "BDLYYXO-0EDDL1H",
+          "lease_time": 1800.0,
+          "msg": {
+            "types": [
+              "REQUEST",
+              "ACK"
+            ]
+          }
+        },
+        "session_id": [
+          "CmWOt6VWaNGqXYcH6",
+          "CLObLo4YHn0u23Tp8a"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T07:18:42.072Z",
+      "client": {
+        "address": "10.55.23.134"
+      },
+      "destination": {
+        "address": "169.254.169.254",
+        "ip": "169.254.169.254",
+        "port": 67
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": [
+          "Ck0tsG4wsJxI3lIEZ"
+        ],
+        "kind": "event",
+        "original": "{\"ts\":2500701522.072416,\"uids\":[\"Ck0tsG4wsJxI3lIEZ\"],\"client_addr\":\"10.55.23.134\",\"server_addr\":\"169.254.169.254\",\"mac\":\"44:76:1b:3c:75:39\",\"domain\":\"c.esfxjyd-se.internal\",\"assigned_addr\":\"10.55.23.134\",\"lease_time\":86400.0,\"msg_types\":[\"ACK\"],\"duration\":0.0}",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:n/vM2O87NxmiseIOxgqWp4tajY4=",
+        "name": "c.esfxjyd-se.internal",
+        "protocol": "dhcp",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "169.254.169.254"
+        ]
+      },
+      "server": {
+        "address": "169.254.169.254"
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 68
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "zeek": {
+        "dhcp": {
+          "address": {
+            "assigned": "10.55.23.134",
+            "client": "10.55.23.134",
+            "mac": "44:76:1b:3c:75:39",
+            "server": "169.254.169.254"
+          },
+          "domain": "c.esfxjyd-se.internal",
+          "duration": 0.0,
+          "lease_time": 86400.0,
+          "msg": {
+            "types": [
+              "ACK"
+            ]
+          }
+        },
+        "session_id": [
+          "Ck0tsG4wsJxI3lIEZ"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2360218298.771847,\"uids\":[\"CmWOt6VWaNGqXYcH6\",\"CLObLo4YHn0u23Tp8a\"],\"client_addr\":\"192.168.211.164\",\"server_addr\":\"192.168.175.160\",\"mac\":\"83:9c:93:67:bf:ca\",\"host_name\":\"BDLYYXO-0EDDL1H\",\"client_fqdn\":\"BDLYYXO-0EDDL1H\",\"domain\":\"localdomain\",\"requested_addr\":\"192.168.211.164\",\"assigned_addr\":\"192.168.211.164\",\"lease_time\":1800.0,\"msg_types\":[\"REQUEST\",\"ACK\"],\"duration\":0.000161}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500701522.072416,\"uids\":[\"Ck0tsG4wsJxI3lIEZ\"],\"client_addr\":\"10.55.23.134\",\"server_addr\":\"169.254.169.254\",\"mac\":\"44:76:1b:3c:75:39\",\"domain\":\"c.esfxjyd-se.internal\",\"assigned_addr\":\"10.55.23.134\",\"lease_time\":86400.0,\"msg_types\":[\"ACK\"],\"duration\":0.0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "dhcp",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-dhcp-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:05:38.499Z",
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4729.xml"
+                },
+                "level": "information"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG.jwbfen.local"
+            },
+            "agent": {
+                "ephemeral_id": "8829d58a-c8fe-4982-9888-eeb25e629e6c",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "winlog": {
+                "channel": "Security",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 4665,
+                "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+                "opcode": "Info",
+                "time_created": "2047-10-22T11:33:45.543Z",
+                "outcome": "success",
+                "event_id": 4729,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "level": "information",
+                "event_data": {
+                    "SubjectUserName": "Administrator",
+                    "SubjectDomainName": "WLBEAT",
+                    "SubjectLogonId": "0x4a727",
+                    "PrivilegeList": "-",
+                    "MemberName": "CN=Administrator,CN=Users,DC=wlbeat,DC=local",
+                    "MemberSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "TargetUserName": "jbtq_smhhu3l5",
+                    "TargetDomainName": "WLBEAT",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1112",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500"
+                },
+                "process": {
+                    "thread": {
+                        "id": 1664
+                    },
+                    "pid": 772
+                }
+            },
+            "event": {
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "kind": "event",
+                "code": 4729
+            }
+        }
+    ]
+}

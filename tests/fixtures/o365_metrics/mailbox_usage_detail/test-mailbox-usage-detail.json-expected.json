@@ -1,0 +1,81 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-12-15",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "original": "{\"Created Date\":\"2052-10-22\",\"Deleted Date\":\"\",\"Deleted Item Count\":\"0\",\"Deleted Item Quota (Byte)\":\"32212254720\",\"Deleted Item Size (Byte)\":\"0\",\"Display Name\":\"2839E7BF81CEE8242C3BF0161E7BA113\",\"Has Archive\":\"False\",\"Is Deleted\":\"False\",\"Issue Warning Quota (Byte)\":\"105226698752\",\"Item Count\":\"71\",\"Last Activity Date\":\"\",\"Prohibit Send Quota (Byte)\":\"106300440576\",\"Prohibit Send/Receive Quota (Byte)\":\"107374182400\",\"Report Period\":\"7\",\"Storage Used (Byte)\":\"7571826\",\"User Principal Name\":\"6A5D5023AFB0811B8DF883717FED1BE6\",\"Report Refresh Date\":\"2052-12-15\"}"
+      },
+      "o365": {
+        "metrics": {
+          "mailbox": {
+            "usage": {
+              "detail": {
+                "created_date": "2052-10-22",
+                "deleted_item": {
+                  "count": 0
+                },
+                "deleted_item_quota": {
+                  "byte": 32212254720
+                },
+                "deleted_item_size": {
+                  "byte": 0
+                },
+                "display_name": "2839E7BF81CEE8242C3BF0161E7BA113",
+                "has_archive": false,
+                "is_deleted": false,
+                "issue_warning_quota": {
+                  "byte": 105226698752
+                },
+                "item": {
+                  "count": 71
+                },
+                "prohibit_send_quota": {
+                  "byte": 106300440576
+                },
+                "prohibit_send_receive_quota": {
+                  "byte": 107374182400
+                },
+                "report": {
+                  "period": {
+                    "day": "7"
+                  },
+                  "refresh_date": "2052-12-15"
+                },
+                "storage_used": {
+                  "byte": 7571826
+                },
+                "user_principal_name": "6A5D5023AFB0811B8DF883717FED1BE6"
+              }
+            }
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "mailbox_usage_detail": "{\"Created Date\":\"2052-10-22\",\"Deleted Date\":\"\",\"Deleted Item Count\":\"0\",\"Deleted Item Quota (Byte)\":\"32212254720\",\"Deleted Item Size (Byte)\":\"0\",\"Display Name\":\"2839E7BF81CEE8242C3BF0161E7BA113\",\"Has Archive\":\"False\",\"Is Deleted\":\"False\",\"Issue Warning Quota (Byte)\":\"105226698752\",\"Item Count\":\"71\",\"Last Activity Date\":\"\",\"Prohibit Send Quota (Byte)\":\"106300440576\",\"Prohibit Send/Receive Quota (Byte)\":\"107374182400\",\"Report Period\":\"7\",\"Storage Used (Byte)\":\"7571826\",\"User Principal Name\":\"6A5D5023AFB0811B8DF883717FED1BE6\",\"Report Refresh Date\":\"2052-12-15\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "mailbox_usage_detail",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-mailbox_usage_detail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

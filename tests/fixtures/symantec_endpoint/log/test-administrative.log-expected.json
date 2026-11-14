@@ -1,0 +1,116 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "Site: SEPSite,Server: SEPServer,Domain: _domainOrigin,Admin: _originUser,Administrator log on succeeded",
+        "outcome": "success",
+        "provider": "Administrative Log",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Administrator log on succeeded",
+      "symantec_endpoint": {
+        "log": {
+          "admin": "_originUser",
+          "domain_name": "_domainOrigin",
+          "event_description": "Administrator log on succeeded",
+          "server": "SEPServer",
+          "site": "SEPSite"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "_domainOrigin",
+        "name": "_originUser"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "Site: Site SEPSite,Server: exampleserver,Domain: Default,Admin: admin,Administrator  log on failed",
+        "outcome": "failure",
+        "provider": "Administrative Log",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Administrator  log on failed",
+      "symantec_endpoint": {
+        "log": {
+          "admin": "admin",
+          "domain_name": "Default",
+          "event_description": "Administrator  log on failed",
+          "server": "exampleserver",
+          "site": "Site SEPSite"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "Default",
+        "name": "admin"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Site: SEPSite,Server: SEPServer,Domain: _domainOrigin,Admin: _originUser,Administrator log on succeeded",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Site: Site SEPSite,Server: exampleserver,Domain: Default,Admin: admin,Administrator  log on failed",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

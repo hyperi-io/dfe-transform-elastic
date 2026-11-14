@@ -1,0 +1,113 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:01:55.119997426Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "person_deprovisioned",
+        "category": [
+          "iam"
+        ],
+        "kind": "state",
+        "original": "{\"id\":\"861637\",\"name\":\"Alice Johnson\",\"email\":\"eprde.rgwqnrr@example.com\",\"created_at\":\"2054-06-04T18:29:22.129Z\",\"last_authenticated_at\":\"2052-06-15T12:00:00Z\",\"has_registered_device\":false,\"api_url\":\"https://api.kolide.com/people/861637\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "kolide": {
+        "deprovisioned_person": {
+          "api_url": "https://api.kolide.com/people/861637",
+          "created_at": "2054-06-04T18:29:22.129Z",
+          "has_registered_device": false,
+          "id": "861637",
+          "last_authenticated_at": "2052-06-15T12:00:00.000Z"
+        }
+      },
+      "related": {
+        "user": [
+          "eprde.rgwqnrr@example.com",
+          "861637"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "eprde.rgwqnrr@example.com",
+        "full_name": "Alice Johnson",
+        "id": "861637",
+        "name": "eprde.rgwqnrr@example.com"
+      }
+    },
+    {
+      "@timestamp": "2026-11-13T23:01:55.120008196Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "person_deprovisioned",
+        "category": [
+          "iam"
+        ],
+        "kind": "state",
+        "original": "{\"id\":\"864140\",\"name\":\"Bob Smith\",\"email\":\"drc.zsgwr@example.com\",\"created_at\":\"2054-06-05T12:24:21.995Z\",\"last_authenticated_at\":null,\"has_registered_device\":false,\"api_url\":\"https://api.kolide.com/people/864140\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "kolide": {
+        "deprovisioned_person": {
+          "api_url": "https://api.kolide.com/people/864140",
+          "created_at": "2054-06-05T12:24:21.995Z",
+          "has_registered_device": false,
+          "id": "864140"
+        }
+      },
+      "related": {
+        "user": [
+          "drc.zsgwr@example.com",
+          "864140"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "drc.zsgwr@example.com",
+        "full_name": "Bob Smith",
+        "id": "864140",
+        "name": "drc.zsgwr@example.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"861637\",\"name\":\"Alice Johnson\",\"email\":\"eprde.rgwqnrr@example.com\",\"created_at\":\"2054-06-04T18:29:22.129Z\",\"last_authenticated_at\":\"2052-06-15T12:00:00Z\",\"has_registered_device\":false,\"api_url\":\"https://api.kolide.com/people/861637\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"864140\",\"name\":\"Bob Smith\",\"email\":\"drc.zsgwr@example.com\",\"created_at\":\"2054-06-05T12:24:21.995Z\",\"last_authenticated_at\":null,\"has_registered_device\":false,\"api_url\":\"https://api.kolide.com/people/864140\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "deprovisioned_person",
+    "dynamic_fields": {
+      "@timestamp": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-kolide-deprovisioned_person-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "kolide",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

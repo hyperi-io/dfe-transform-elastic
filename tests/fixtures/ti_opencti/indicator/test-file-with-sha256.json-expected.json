@@ -1,0 +1,337 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-01-17T06:39:24.286Z",
+        "id": "78e07699-8e4c-4397-a15e-7beed8555490",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2046-02-10T21:37:17.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 1,
+          "pattern": "[file:hashes.'SHA-256' = '9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 50,
+          "standard_id": "indicator--f8a24f42-ab3b-5c6f-80f9-53ff9d4a124e",
+          "valid_from": "2045-02-10T21:37:17.000Z",
+          "valid_until": "2046-02-10T21:37:17.000Z"
+        },
+        "observable": {
+          "file": {
+            "entity_type": "StixFile",
+            "hash": {
+              "sha256": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856"
+            },
+            "id": "ca3bf54b-c909-4161-82ce-bb98938c4f3b",
+            "standard_id": "file--e7703038-4939-53f5-887d-845e025468eb",
+            "value": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856"
+          }
+        }
+      },
+      "related": {
+        "hash": [
+          "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856"
+        ]
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "malware",
+        "unit42",
+        "steganography",
+        "stegbaus",
+        "runpe",
+        "loader",
+        "ecs-indicator-detail"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Medium",
+          "file": {
+            "hash": {
+              "sha256": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856"
+            },
+            "type": "file"
+          },
+          "marking": {
+            "tlp": "GREEN"
+          },
+          "modified_at": "2051-01-17T06:53:07.602Z",
+          "name": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856",
+          "provider": "AlienVault",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/78e07699-8e4c-4397-a15e-7beed8555490",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-01-17T06:39:24.286Z",
+        "id": "78e07699-8e4c-4397-a15e-7beed8555490",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2046-02-10T21:37:17.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 0,
+          "pattern": "[file:hashes.'SHA-256' = '9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856' OR file:hashes.SHA1 = '6cfb48c0e54f7372bfdd71a880b13d0b4931bdb7']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 50,
+          "standard_id": "indicator--f8a24f42-ab3b-5c6f-80f9-53ff9d4a124e",
+          "valid_from": "2045-02-10T21:37:17.000Z",
+          "valid_until": "2046-02-10T21:37:17.000Z"
+        }
+      },
+      "related": {
+        "hash": [
+          "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856",
+          "6cfb48c0e54f7372bfdd71a880b13d0b4931bdb7"
+        ]
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "malware",
+        "unit42",
+        "steganography",
+        "stegbaus",
+        "runpe",
+        "loader",
+        "ecs-indicator-detail"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Medium",
+          "file": {
+            "hash": {
+              "sha1": "6cfb48c0e54f7372bfdd71a880b13d0b4931bdb7",
+              "sha256": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856"
+            }
+          },
+          "marking": {
+            "tlp": "GREEN"
+          },
+          "modified_at": "2051-01-17T06:53:07.602Z",
+          "name": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856",
+          "provider": "AlienVault",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/78e07699-8e4c-4397-a15e-7beed8555490",
+          "type": "file"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 30,
+      "created": "2051-01-17T06:39:24.286Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "AlienVault"
+      },
+      "description": "",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "78e07699-8e4c-4397-a15e-7beed8555490",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T06:53:07.602Z",
+      "name": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856",
+      "objectLabel": [
+        {
+          "value": "malware"
+        },
+        {
+          "value": "unit42"
+        },
+        {
+          "value": "steganography"
+        },
+        {
+          "value": "stegbaus"
+        },
+        {
+          "value": "runpe"
+        },
+        {
+          "value": "loader"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:GREEN",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [
+          {
+            "node": {
+              "atime": null,
+              "ctime": null,
+              "entity_type": "StixFile",
+              "hashes": [
+                {
+                  "algorithm": "SHA-256",
+                  "hash": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856"
+                }
+              ],
+              "id": "ca3bf54b-c909-4161-82ce-bb98938c4f3b",
+              "magic_number_hex": null,
+              "mime_type": null,
+              "mtime": null,
+              "name": null,
+              "name_enc": null,
+              "obsContent": null,
+              "observable_value": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856",
+              "size": null,
+              "standard_id": "file--e7703038-4939-53f5-887d-845e025468eb",
+              "x_opencti_additional_names": null
+            }
+          }
+        ],
+        "pageInfo": {
+          "globalCount": 1
+        }
+      },
+      "pattern": "[file:hashes.'SHA-256' = '9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--f8a24f42-ab3b-5c6f-80f9-53ff9d4a124e",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2045-02-10T21:37:17.000Z",
+      "valid_until": "2046-02-10T21:37:17.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "StixFile",
+      "x_opencti_score": 50
+    },
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 30,
+      "created": "2051-01-17T06:39:24.286Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "AlienVault"
+      },
+      "description": "",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "78e07699-8e4c-4397-a15e-7beed8555490",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T06:53:07.602Z",
+      "name": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856",
+      "objectLabel": [
+        {
+          "value": "malware"
+        },
+        {
+          "value": "unit42"
+        },
+        {
+          "value": "steganography"
+        },
+        {
+          "value": "stegbaus"
+        },
+        {
+          "value": "runpe"
+        },
+        {
+          "value": "loader"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:GREEN",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [],
+        "pageInfo": {
+          "globalCount": 0
+        }
+      },
+      "pattern": "[file:hashes.'SHA-256' = '9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856' OR file:hashes.SHA1 = '6cfb48c0e54f7372bfdd71a880b13d0b4931bdb7']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--f8a24f42-ab3b-5c6f-80f9-53ff9d4a124e",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2045-02-10T21:37:17.000Z",
+      "valid_until": "2046-02-10T21:37:17.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "StixFile",
+      "x_opencti_score": 50
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_opencti-indicator-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "ti_opencti",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

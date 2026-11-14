@@ -1,0 +1,4428 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "a host address",
+            "dns_ttl": 70,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 145,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 57379,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 145,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 57379, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 145, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: a host address, DNS_TTL: 70",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 0
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 238,
+        "community_id": "1:Pl72fsliD+/Yni0yyVTuIcSKMrw=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 57379
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security": {
+            "ips_count": "1"
+          },
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "access_control_rule_reason": "Intrusion Monitor",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "IP6 Address",
+            "dns_ttl": 299,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 193,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 51389,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 193,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 51389, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 193, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: IP6 Address, DNS_TTL: 299",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 663
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 286,
+        "community_id": "1:56HTy8i9Uy4oX3oESqAlNl59Dn0=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 51389
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "the canonical name for an alias",
+            "dns_ttl": 899,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 166,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 53033,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 166,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "CNAME"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 53033, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 166, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: the canonical name for an alias, DNS_TTL: 899",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 1381
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 259,
+        "community_id": "1:w1m0ed3W1FlsBM9h6FdIxD9AJN0=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 53033
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security": {
+            "ips_count": "1"
+          },
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "access_control_rule_reason": "Intrusion Monitor",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "www.apejtlc.co",
+            "dns_record_type": "a host address",
+            "dns_ttl": 12,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 97,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 200,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 55371,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 200,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "www.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "www",
+          "top_level_domain": "co",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 55371, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 97, ResponderBytes: 200, NAPPolicy: Balanced Security and Connectivity, DNSQuery: www.apejtlc.co, DNSRecordType: a host address, DNS_TTL: 12",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 2062
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 297,
+        "community_id": "1:thG0aHez+tFgdPg8+vKkDtKAom0=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 97,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 55371
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "IP6 Address",
+            "dns_response_type": "No error",
+            "dns_ttl": 299,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 193,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 60441,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 193,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 60441, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 193, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: IP6 Address, DNS_TTL: 299, DNSResponseType: No error",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 2786
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 286,
+        "community_id": "1:IIcMAXtf+myY7cok5V234ba4eKU=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 60441
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "the canonical name for an alias",
+            "dns_ttl": 658,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 166,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 59714,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 166,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "CNAME"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 59714, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 166, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: the canonical name for an alias, DNS_TTL: 658",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 3474
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 259,
+        "community_id": "1:v6jBAyiTl6MK+qzhOFIBmqNeTcQ=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 59714
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security": {
+            "ips_count": "1"
+          },
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "access_control_rule_reason": "Intrusion Monitor",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "mail exchange",
+            "dns_response_type": "Non-Existent Domain",
+            "dns_ttl": 299,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 199,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 55105,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 199,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "MX"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 55105, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 199, NAPPolicy: Balanced Security and Connectivity, DNSResponseType: Non-Existent Domain, DNSQuery: apejtlc.co, DNSRecordType: mail exchange, DNS_TTL: 299",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 4155
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 292,
+        "community_id": "1:yzdMl7BGBprL2TEdo1PAij2zWUM=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 55105
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "an authoritative name server",
+            "dns_ttl": 21599,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 221,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 57141,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 221,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "NS"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 57141, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 221, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: an authoritative name server, DNS_TTL: 21599",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 4913
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 314,
+        "community_id": "1:1urWC+MGi2zocE4L9V2y22Eifl8=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 57141
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "marks the start of a zone of authority",
+            "dns_response_type": "Server Failure",
+            "dns_ttl": 899,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 166,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 47260,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 166,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "SOA"
+        },
+        "response_code": "SERVFAIL"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 47260, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 166, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSResponseType: Server Failure, DNSRecordType: marks the start of a zone of authority, DNS_TTL: 899",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 5593
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 259,
+        "community_id": "1:DfRdOoLwmgf4+tpKWrV1GVng0i0=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 47260
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security": {
+            "ips_count": "1"
+          },
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "access_control_rule_reason": "Intrusion Monitor",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "text strings",
+            "dns_ttl": 299,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 722,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 58082,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 722,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "TXT"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 58082, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 722, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: text strings, DNS_TTL: 299",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 6314
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 815,
+        "community_id": "1:GS9U+KTDvVdbFZ6iQy88lY2BEB4=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 58082
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "ncdwvdfwxqg.com",
+            "dns_record_type": "a host address",
+            "dns_response_type": "Query Refused",
+            "dst_ip": "192.0.2.142",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 98,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 75,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 33973,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.142",
+        "bytes": 75,
+        "ip": "192.0.2.142",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "ncdwvdfwxqg.com",
+          "registered_domain": "ncdwvdfwxqg.com",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "REFUSED"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.142, SrcPort: 33973, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 98, ResponderBytes: 75, NAPPolicy: Balanced Security and Connectivity, DNSQuery: ncdwvdfwxqg.com, DNSRecordType: a host address, DNSResponseType: Query Refused",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 7033
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 173,
+        "community_id": "1:4SL4jZe5ki3NJa7XHE2lhiEr6BY=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.142"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 98,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 33973
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_response_type": "Server Failure",
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 457,
+            "initiator_packets": 6,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "tcp",
+            "responder_bytes": 313,
+            "responder_packets": 4,
+            "src_ip": "10.129.17.24",
+            "src_port": 39541,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 313,
+        "ip": "192.0.2.87",
+        "packets": 4,
+        "port": 53
+      },
+      "dns": {
+        "response_code": "SERVFAIL"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 39541, DstPort: 53, Protocol: tcp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 6, ResponderPackets: 4, InitiatorBytes: 457, ResponderBytes: 313, NAPPolicy: Balanced Security and Connectivity, DNSResponseType: Server Failure",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 7722
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 770,
+        "community_id": "1:viKN245nHVZs5F+gbYGBjNkPhOw=",
+        "iana_number": "6",
+        "protocol": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 457,
+        "ip": "10.129.17.24",
+        "packets": 6,
+        "port": 39541
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "kanqfdmpakmaf.apejtlc.co",
+            "dns_record_type": "a host address",
+            "dns_response_type": "Non-Existent Domain",
+            "dns_ttl": 900,
+            "dst_ip": "203.0.113.61",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 107,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 180,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 41672,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "203.0.113.61",
+        "bytes": 180,
+        "ip": "203.0.113.61",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "kanqfdmpakmaf.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "kanqfdmpakmaf",
+          "top_level_domain": "co",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 203.0.113.61, SrcPort: 41672, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 107, ResponderBytes: 180, NAPPolicy: Balanced Security and Connectivity, DNSQuery: kanqfdmpakmaf.apejtlc.co, DNSRecordType: a host address, DNSResponseType: Non-Existent Domain, DNS_TTL: 900",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 8353
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 287,
+        "community_id": "1:4v4L0dps60MVIGRP7k88tO98VlU=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "203.0.113.61"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 107,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 41672
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "ll-1138.bmqcjj-58.org",
+            "dns_record_type": "a host address",
+            "dns_ttl": 31694,
+            "dst_ip": "203.0.113.61",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 104,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 108,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 59577,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "203.0.113.61",
+        "bytes": 108,
+        "ip": "203.0.113.61",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "ll-1138.bmqcjj-58.org",
+          "registered_domain": "bmqcjj-58.org",
+          "subdomain": "ll-1138",
+          "top_level_domain": "org",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 203.0.113.61, SrcPort: 59577, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 104, ResponderBytes: 108, NAPPolicy: Balanced Security and Connectivity, DNSQuery: ll-1138.bmqcjj-58.org, DNSRecordType: a host address, DNS_TTL: 31694",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 9067
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 212,
+        "community_id": "1:DmteD8bU65U/4IFALGHq2sacxA0=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "203.0.113.61"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 104,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 59577
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "_http._tcp.security.ubuntu.com",
+            "dns_record_type": "Server Selection",
+            "dns_response_type": "Non-Existent Domain",
+            "dns_ttl": 946,
+            "dst_ip": "203.0.113.61",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 101,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 162,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 35998,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "203.0.113.61",
+        "bytes": 162,
+        "ip": "203.0.113.61",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "_http._tcp.security.ubuntu.com",
+          "registered_domain": "ubuntu.com",
+          "subdomain": "_http._tcp.security",
+          "top_level_domain": "com",
+          "type": "SRV"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 203.0.113.61, SrcPort: 35998, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 101, ResponderBytes: 162, NAPPolicy: Balanced Security and Connectivity, DNSQuery: _http._tcp.security.ubuntu.com, DNSRecordType: Server Selection, DNSResponseType: Non-Existent Domain, DNS_TTL: 946",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 9742
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 263,
+        "community_id": "1:FzNNpPBusFsd10WOTWayTe8rGQg=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "203.0.113.61"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 101,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 35998
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security": {
+            "ips_count": "1"
+          },
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "access_control_rule_reason": "Intrusion Monitor",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "mail exchange",
+            "dns_ttl": 299,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 199,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 55105,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 199,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "MX"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 55105, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 199, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: mail exchange, DNS_TTL: 299",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 10464
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 292,
+        "community_id": "1:yzdMl7BGBprL2TEdo1PAij2zWUM=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 55105
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "marks the start of a zone of authority",
+            "dns_ttl": 899,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 166,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 47260,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 166,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "SOA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 47260, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 166, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: marks the start of a zone of authority, DNS_TTL: 899",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 11184
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 259,
+        "community_id": "1:DfRdOoLwmgf4+tpKWrV1GVng0i0=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 47260
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "the canonical name for an alias",
+            "dns_ttl": 899,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 166,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 53033,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 166,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "CNAME"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 53033, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 166, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: the canonical name for an alias, DNS_TTL: 899",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 11872
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 259,
+        "community_id": "1:w1m0ed3W1FlsBM9h6FdIxD9AJN0=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 53033
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "an authoritative name server",
+            "dns_ttl": 21599,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 221,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 57141,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 221,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "NS"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 57141, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 221, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: an authoritative name server, DNS_TTL: 21599",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 12553
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 314,
+        "community_id": "1:1urWC+MGi2zocE4L9V2y22Eifl8=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 57141
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_record_type": "a domain name pointer",
+            "dns_ttl": 59,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 131,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 46093,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 131,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "type": "PTR"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 46093, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 131, NAPPolicy: Balanced Security and Connectivity, DNSRecordType: a domain name pointer, DNS_TTL: 59",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 13233
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 224,
+        "community_id": "1:cKPbOKwg88ZC/MLRNDbeeqGMf1E=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 46093
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-26T23:11:03.000Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "default",
+            "Intrusion-Rule"
+          ],
+          "security": {
+            "ips_count": "1"
+          },
+          "security_event": {
+            "ac_policy": "default",
+            "access_control_rule_action": "Allow",
+            "access_control_rule_name": "Intrusion-Rule",
+            "access_control_rule_reason": "Intrusion Monitor",
+            "application_protocol": "DNS",
+            "client": "DNS client",
+            "connection_duration": 0,
+            "dns_query": "apejtlc.co",
+            "dns_record_type": "text strings",
+            "dns_ttl": 299,
+            "dst_ip": "192.0.2.87",
+            "dst_port": 53,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "initiator_bytes": 93,
+            "initiator_packets": 1,
+            "nap_policy": "Balanced Security and Connectivity",
+            "prefilter_policy": "Default Prefilter Policy",
+            "protocol": "udp",
+            "responder_bytes": 722,
+            "responder_packets": 1,
+            "src_ip": "10.129.17.24",
+            "src_port": 58082,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 722,
+        "ip": "192.0.2.87",
+        "packets": 1,
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "name": "apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "top_level_domain": "co",
+          "type": "TXT"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "connection-finished",
+        "category": [
+          "network"
+        ],
+        "code": "430003",
+        "dataset": "cisco.ftd",
+        "duration": 0,
+        "end": "2047-08-26T23:11:03.000Z",
+        "kind": "event",
+        "module": "cisco",
+        "original": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 58082, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 722, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: text strings, DNS_TTL: 299",
+        "outcome": "success",
+        "severity": 1,
+        "start": "2047-08-26T23:11:03.000Z",
+        "timezone": "UTC",
+        "type": [
+          "connection",
+          "end",
+          "allowed"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "zpbx-cgc"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "alert",
+        "offset": 13881
+      },
+      "network": {
+        "application": "dns client",
+        "bytes": 815,
+        "community_id": "1:GS9U+KTDvVdbFZ6iQy88lY2BEB4=",
+        "iana_number": "17",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "zpbx-cgc",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "zpbx-cgc"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "name": "Intrusion-Rule",
+        "ruleset": "default"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "bytes": 93,
+        "ip": "10.129.17.24",
+        "packets": 1,
+        "port": 58082
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 57379, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 145, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: a host address, DNS_TTL: 70",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 663
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 51389, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 193, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: IP6 Address, DNS_TTL: 299",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1381
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 53033, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 166, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: the canonical name for an alias, DNS_TTL: 899",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2062
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 55371, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 97, ResponderBytes: 200, NAPPolicy: Balanced Security and Connectivity, DNSQuery: www.apejtlc.co, DNSRecordType: a host address, DNS_TTL: 12",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2786
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 60441, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 193, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: IP6 Address, DNS_TTL: 299, DNSResponseType: No error",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3474
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 59714, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 166, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: the canonical name for an alias, DNS_TTL: 658",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4155
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 55105, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 199, NAPPolicy: Balanced Security and Connectivity, DNSResponseType: Non-Existent Domain, DNSQuery: apejtlc.co, DNSRecordType: mail exchange, DNS_TTL: 299",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4913
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 57141, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 221, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: an authoritative name server, DNS_TTL: 21599",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 5593
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 47260, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 166, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSResponseType: Server Failure, DNSRecordType: marks the start of a zone of authority, DNS_TTL: 899",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 6314
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 58082, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 722, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: text strings, DNS_TTL: 299",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 7033
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.142, SrcPort: 33973, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 98, ResponderBytes: 75, NAPPolicy: Balanced Security and Connectivity, DNSQuery: ncdwvdfwxqg.com, DNSRecordType: a host address, DNSResponseType: Query Refused",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 7722
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 39541, DstPort: 53, Protocol: tcp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 6, ResponderPackets: 4, InitiatorBytes: 457, ResponderBytes: 313, NAPPolicy: Balanced Security and Connectivity, DNSResponseType: Server Failure",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.214Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 8353
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 203.0.113.61, SrcPort: 41672, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 107, ResponderBytes: 180, NAPPolicy: Balanced Security and Connectivity, DNSQuery: kanqfdmpakmaf.apejtlc.co, DNSRecordType: a host address, DNSResponseType: Non-Existent Domain, DNS_TTL: 900",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.215Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 9067
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 203.0.113.61, SrcPort: 59577, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 104, ResponderBytes: 108, NAPPolicy: Balanced Security and Connectivity, DNSQuery: ll-1138.bmqcjj-58.org, DNSRecordType: a host address, DNS_TTL: 31694",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.215Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 9742
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 203.0.113.61, SrcPort: 35998, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 101, ResponderBytes: 162, NAPPolicy: Balanced Security and Connectivity, DNSQuery: _http._tcp.security.ubuntu.com, DNSRecordType: Server Selection, DNSResponseType: Non-Existent Domain, DNS_TTL: 946",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.215Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 10464
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 55105, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 199, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: mail exchange, DNS_TTL: 299",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.215Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 11184
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 47260, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 166, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: marks the start of a zone of authority, DNS_TTL: 899",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.215Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 11872
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 53033, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 166, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: the canonical name for an alias, DNS_TTL: 899",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.215Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 12553
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 57141, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 221, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: an authoritative name server, DNS_TTL: 21599",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.215Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 13233
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 46093, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 131, NAPPolicy: Balanced Security and Connectivity, DNSRecordType: a domain name pointer, DNS_TTL: 59",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:32:03.215Z",
+      "agent": {
+        "ephemeral_id": "8ce32093-44bb-4018-9e20-f8aef8539abc",
+        "id": "488b7271-8c39-4a62-bfa8-3901d5893b6f",
+        "name": "8314a2e418f1",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 13881
+      },
+      "message": "2047-08-26T23:11:03Z zpbx-cgc  %FTD-1-430003: AccessControlRuleAction: Allow, AccessControlRuleReason: Intrusion Monitor, SrcIP: 10.129.17.24, DstIP: 192.0.2.87, SrcPort: 58082, DstPort: 53, Protocol: udp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, ACPolicy: default, AccessControlRuleName: Intrusion-Rule, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, Client: DNS client, ApplicationProtocol: DNS, ConnectionDuration: 0, IPSCount: 1, InitiatorPackets: 1, ResponderPackets: 1, InitiatorBytes: 93, ResponderBytes: 722, NAPPolicy: Balanced Security and Connectivity, DNSQuery: apejtlc.co, DNSRecordType: text strings, DNS_TTL: 299",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_ftd-log-default",
+    "event_count": 21,
+    "numeric_keyword_fields": [],
+    "package": "cisco_ftd",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

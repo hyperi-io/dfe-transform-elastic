@@ -1,0 +1,55 @@
+{
+    "events": [
+        {
+            "@timestamp": "2054-06-22T02:16:31.758Z",
+            "attributes": {
+                "cache_creation_tokens": 16935,
+                "cache_read_tokens": 17241,
+                "cost_usd": 0.1068663,
+                "cost_usd_micros": 106866,
+                "duration_ms": 2493,
+                "effort": "high",
+                "event.name": "api_request",
+                "event.sequence": 17,
+                "event.timestamp": "2054-06-22T02:16:31.758Z",
+                "input_tokens": 3,
+                "model": "claude-sonnet-4-6",
+                "organization.id": "08166994-2766-0080-0901-658708848682",
+                "output_tokens": 5,
+                "prompt.id": "60763458-7366-3513-4028-632370982420",
+                "query_source": "repl_main_thread",
+                "request_id": "hek_66AtaggmeKegsfugSa2145128",
+                "session.id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd",
+                "speed": "normal",
+                "terminal.type": "gnome-terminal",
+                "user.account_id": "user_01ExampleAccountId00000",
+                "user.account_uuid": "93713061-9622-2531-3758-372154648850",
+                "user.email": "fnvfc@example.com",
+                "user.id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+            },
+            "body": {
+                "text": "claude_code.api_request"
+            },
+            "data_stream": {
+                "dataset": "claude_code.otel",
+                "namespace": "default",
+                "type": "logs"
+            },
+            "event_name": "api_request",
+            "observed_timestamp": "2054-06-22T02:16:31.758Z",
+            "resource": {
+                "attributes": {
+                    "host.arch": "amd64",
+                    "os.type": "linux",
+                    "os.version": "6.17.0-14-generic",
+                    "service.name": "claude-code",
+                    "service.version": "2.1.175"
+                }
+            },
+            "scope": {
+                "name": "com.anthropic.claude_code.events",
+                "version": "2.1.175"
+            }
+        }
+    ]
+}

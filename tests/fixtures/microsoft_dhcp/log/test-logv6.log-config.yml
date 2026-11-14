@@ -1,0 +1,5 @@
+# Test inputs for this directory's fixtures.
+fields:
+  log:
+    file:
+      path: DhcpV6SrvLog-Thu.txt

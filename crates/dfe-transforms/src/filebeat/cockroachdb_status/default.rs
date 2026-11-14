@@ -27,9 +27,7 @@ impl Transform for Default {
                     && event.has_value("cockroachdb.status.up.value")
             };
             if _cond {
-                // Painless script
-                // Source: if (ctx.cockroachdb.status.up.value == 1){\n  ctx.cockroachdb.status.up.value_description = \"up\"\n  } else if(ctx.cockroachdb.status.up.value == 0){\n  ctx.cockroachdb.status.up.value_description = \"down\"\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

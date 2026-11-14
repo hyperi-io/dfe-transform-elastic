@@ -1,0 +1,1 @@
+[Wed Oct 20 19:20:59.121211 2049] [rewrite:trace3] [pid 121591:tid 140413273032448] mod_rewrite.c(470): [client 10.146.213.1:38350] 10.146.213.1 - - [adx.apejtlc.co/sid#55a374e851c8][rid#7fb438083ac0/initial] applying pattern '^/import/?(.*)$' to uri '/'

@@ -1,0 +1,1369 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "account_disabled_password_leak",
+        "category": [
+          "iam"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"account_disabled_password_leak\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"}]}}",
+        "provider": "login",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "account_warning"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "affected_email_address": "cnk@apejtlc.co"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk",
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk",
+        "target": {
+          "domain": "apejtlc.co",
+          "name": "cnk"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "suspicious_login",
+        "category": [
+          "authentication"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"suspicious_login\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"},{\"name\":\"login_timestamp\",\"intValue\":1593695305123456}]}}",
+        "provider": "login",
+        "start": "2020-07-02T13:08:25.123Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "account_warning"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "affected_email_address": "cnk@apejtlc.co",
+          "timestamp": 1593695305123456
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk",
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk",
+        "target": {
+          "domain": "apejtlc.co",
+          "name": "cnk"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "suspicious_login_less_secure_app",
+        "category": [
+          "authentication"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"suspicious_login_less_secure_app\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"},{\"name\":\"login_timestamp\",\"intValue\":1593695305123456}]}}",
+        "provider": "login",
+        "start": "2020-07-02T13:08:25.123Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "account_warning"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "affected_email_address": "cnk@apejtlc.co",
+          "timestamp": 1593695305123456
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk",
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk",
+        "target": {
+          "domain": "apejtlc.co",
+          "name": "cnk"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "suspicious_programmatic_login",
+        "category": [
+          "authentication"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"suspicious_programmatic_login\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"},{\"name\":\"login_timestamp\",\"intValue\":1593695305123456}]}}",
+        "provider": "login",
+        "start": "2020-07-02T13:08:25.123Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "account_warning"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "affected_email_address": "cnk@apejtlc.co",
+          "timestamp": 1593695305123456
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk",
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk",
+        "target": {
+          "domain": "apejtlc.co",
+          "name": "cnk"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "account_disabled_generic",
+        "category": [
+          "iam"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"account_disabled_generic\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"}]}}",
+        "provider": "login",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "account_warning"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "affected_email_address": "cnk@apejtlc.co"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk",
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk",
+        "target": {
+          "domain": "apejtlc.co",
+          "name": "cnk"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "account_disabled_spamming_through_relay",
+        "category": [
+          "iam"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"account_disabled_spamming_through_relay\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"}]}}",
+        "provider": "login",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "account_warning"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "affected_email_address": "cnk@apejtlc.co"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk",
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk",
+        "target": {
+          "domain": "apejtlc.co",
+          "name": "cnk"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "account_disabled_spamming",
+        "category": [
+          "iam"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"account_disabled_spamming\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"}]}}",
+        "provider": "login",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "account_warning"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "affected_email_address": "cnk@apejtlc.co"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk",
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk",
+        "target": {
+          "domain": "apejtlc.co",
+          "name": "cnk"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "account_disabled_hijacked",
+        "category": [
+          "iam"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"account_disabled_hijacked\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"},{\"name\":\"login_timestamp\",\"intValue\":1593695305123456}]}}",
+        "provider": "login",
+        "start": "2020-07-02T13:08:25.123Z",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "account_warning"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "affected_email_address": "cnk@apejtlc.co",
+          "timestamp": 1593695305123456
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk",
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk",
+        "target": {
+          "domain": "apejtlc.co",
+          "name": "cnk"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "gov_attack_warning",
+        "category": [
+          "iam"
+        ],
+        "id": "1",
+        "kind": "alert",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"gov_attack_warning\"}}",
+        "provider": "login",
+        "type": [
+          "user"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "account_warning"
+        },
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "login_failure",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_failure\",\"parameters\":[{\"name\":\"login_challenge_method\",\"value\":\"backup_code\"},{\"name\":\"login_failure_type\",\"value\":\"login_failure_access_code_disallowed\"},{\"name\":\"login_type\",\"value\":\"exchange\"}]}}",
+        "outcome": "failure",
+        "provider": "login",
+        "type": [
+          "start"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "login"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "challenge_method": "backup_code",
+          "failure_type": "login_failure_access_code_disallowed",
+          "type": "exchange"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "login_challenge",
+        "category": [
+          "authentication"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_challenge\",\"parameters\":[{\"name\":\"login_challenge_method\",\"value\":\"backup_code\"},{\"name\":\"login_challenge_status\",\"value\":\"Challenge Passed.\"},{\"name\":\"login_type\",\"value\":\"exchange\"}]}}",
+        "outcome": "success",
+        "provider": "login",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "login"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "challenge_method": "backup_code",
+          "challenge_status": "Challenge Passed.",
+          "type": "exchange"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "login_verification",
+        "category": [
+          "authentication"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_verification\",\"parameters\":[{\"name\":\"is_second_factor\",\"boolValue\":false},{\"name\":\"login_challenge_method\",\"value\":\"backup_code\"},{\"name\":\"login_challenge_status\",\"value\":\"Challenge Passed.\"},{\"name\":\"login_type\",\"value\":\"exchange\"}]}}",
+        "outcome": "success",
+        "provider": "login",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "login"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "challenge_method": "backup_code",
+          "challenge_status": "Challenge Passed.",
+          "is_second_factor": false,
+          "type": "exchange"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "logout",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"logout\",\"parameters\":[{\"name\":\"login_type\",\"value\":\"exchange\"}]}}",
+        "provider": "login",
+        "type": [
+          "end"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "login"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "type": "exchange"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "login_success",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_success\",\"parameters\":[{\"name\":\"login_challenge_method\",\"value\":\"backup_code\"},{\"name\":\"is_suspicious\",\"boolValue\":false},{\"name\":\"login_type\",\"value\":\"exchange\"}]}}",
+        "outcome": "success",
+        "provider": "login",
+        "type": [
+          "start"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "login"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "challenge_method": "backup_code",
+          "is_suspicious": false,
+          "type": "exchange"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "login_success",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_success\",\"parameters\":[{\"name\":\"login_challenge_method\",\"value\":\"password\"},{\"name\":\"is_suspicious\",\"boolValue\":true},{\"name\":\"login_type\",\"value\":\"google_password\"}]}}",
+        "outcome": "success",
+        "provider": "login",
+        "type": [
+          "start"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "login"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "challenge_method": "password",
+          "is_suspicious": true,
+          "type": "google_password"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "risky_sensitive_action_allowed",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"risky_sensitive_action_allowed\",\"parameters\":[{\"name\":\"login_challenge_method\",\"value\":\"password\"},{\"name\":\"is_suspicious\",\"boolValue\":true},{\"name\":\"login_type\",\"value\":\"google_password\"},{\"name\":\"login_challenge_status\",\"value\":\"Challenge Passed.\"},{\"name\":\"sensitive_action_name\",\"value\":\"Allowing access to data\"}]}}",
+        "outcome": "success",
+        "provider": "login",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "login"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "challenge_method": "password",
+          "challenge_status": "Challenge Passed.",
+          "is_suspicious": true,
+          "sensitive_action_name": "Allowing access to data",
+          "type": "google_password"
+        },
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    },
+    {
+      "@timestamp": "2053-02-27T05:59:58.481Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "login_verification",
+        "category": [
+          "authentication"
+        ],
+        "id": "123",
+        "kind": "event",
+        "original": "{\"actor\":{\"email\":\"hp.kaipx.caeoozdr@djxlbxr.com\",\"profileId\":\"111111111\"},\"etag\":\"Q2W123123123123\",\"events\":{\"name\":\"login_verification\",\"parameters\":[{\"name\":\"login_type\",\"value\":\"google_password\"},{\"multiValue\":[\"security_key\"],\"name\":\"login_challenge_method\"},{\"name\":\"login_challenge_status\",\"value\":\"passed\"},{\"boolValue\":true,\"name\":\"is_second_factor\"}],\"type\":\"login\"},\"id\":{\"applicationName\":\"login\",\"customerId\":\"123\",\"time\":\"2053-02-27T05:59:58.481Z\",\"uniqueQualifier\":\"123\"},\"ipAddress\":\"198.51.100.211\",\"kind\":\"admin#reports#activity\"}",
+        "outcome": "success",
+        "provider": "login",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "event": {
+          "type": "login"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "challenge_method": [
+            "security_key"
+          ],
+          "challenge_status": "passed",
+          "is_second_factor": true,
+          "type": "google_password"
+        }
+      },
+      "organization": {
+        "id": "123"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "hp.kaipx.caeoozdr"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211",
+        "user": {
+          "domain": "djxlbxr.com",
+          "email": "hp.kaipx.caeoozdr@djxlbxr.com",
+          "id": "111111111",
+          "name": "hp.kaipx.caeoozdr"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "hp.kaipx.caeoozdr@djxlbxr.com",
+        "id": "111111111",
+        "name": "hp.kaipx.caeoozdr"
+      }
+    },
+    {
+      "@timestamp": "2053-10-01T13:33:03.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "suspicious_login",
+        "category": [
+          "authentication"
+        ],
+        "id": "-780557281442037232",
+        "kind": "event",
+        "original": "{\"actor\":{\"callerType\":\"KEY\",\"key\":\"Google\"},\"etag\":\"\\\"Fn96D9A6wOUVq518\\\"\",\"events\":{\"name\":\"suspicious_login\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"},{\"intValue\":\"1759325583000000\",\"name\":\"login_timestamp\"}],\"resourceIds\":[\"1084964178399\"],\"type\":\"account_warning\"},\"id\":{\"applicationName\":\"login\",\"customerId\":\"2\",\"time\":\"2053-10-01T13:33:03.000Z\",\"uniqueQualifier\":\"-780557281442037232\"},\"ipAddress\":\"192.0.2.134\",\"kind\":\"admin#reports#activity\",\"networkInfo\":{\"regionCode\":\"FR\",\"subdivisionCode\":\"FR-NAQ\"},\"resourceDetails\":[{\"id\":\"0000000000000\",\"type\":\"USER\"}]}",
+        "provider": "login",
+        "start": "2025-10-01T13:33:03.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "key": "Google",
+          "type": "KEY"
+        },
+        "event": {
+          "type": "account_warning"
+        },
+        "kind": "admin#reports#activity",
+        "login": {
+          "affected_email_address": "cnk@apejtlc.co",
+          "network_info": {
+            "region_code": "FR",
+            "subdivision_code": "FR-NAQ"
+          },
+          "timestamp": 1759325583000000
+        }
+      },
+      "organization": {
+        "id": "2"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.134"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.134"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "target": {
+          "domain": "apejtlc.co",
+          "name": "cnk"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"account_disabled_password_leak\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"suspicious_login\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"},{\"name\":\"login_timestamp\",\"intValue\":1593695305123456}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"suspicious_login_less_secure_app\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"},{\"name\":\"login_timestamp\",\"intValue\":1593695305123456}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"suspicious_programmatic_login\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"},{\"name\":\"login_timestamp\",\"intValue\":1593695305123456}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"account_disabled_generic\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"account_disabled_spamming_through_relay\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"account_disabled_spamming\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"account_disabled_hijacked\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"},{\"name\":\"login_timestamp\",\"intValue\":1593695305123456}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"account_warning\",\"name\":\"gov_attack_warning\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_failure\",\"parameters\":[{\"name\":\"login_challenge_method\",\"value\":\"backup_code\"},{\"name\":\"login_failure_type\",\"value\":\"login_failure_access_code_disallowed\"},{\"name\":\"login_type\",\"value\":\"exchange\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_challenge\",\"parameters\":[{\"name\":\"login_challenge_method\",\"value\":\"backup_code\"},{\"name\":\"login_challenge_status\",\"value\":\"Challenge Passed.\"},{\"name\":\"login_type\",\"value\":\"exchange\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_verification\",\"parameters\":[{\"name\":\"is_second_factor\",\"boolValue\":false},{\"name\":\"login_challenge_method\",\"value\":\"backup_code\"},{\"name\":\"login_challenge_status\",\"value\":\"Challenge Passed.\"},{\"name\":\"login_type\",\"value\":\"exchange\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"logout\",\"parameters\":[{\"name\":\"login_type\",\"value\":\"exchange\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_success\",\"parameters\":[{\"name\":\"login_challenge_method\",\"value\":\"backup_code\"},{\"name\":\"is_suspicious\",\"boolValue\":false},{\"name\":\"login_type\",\"value\":\"exchange\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_success\",\"parameters\":[{\"name\":\"login_challenge_method\",\"value\":\"password\"},{\"name\":\"is_suspicious\",\"boolValue\":true},{\"name\":\"login_type\",\"value\":\"google_password\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"login\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"risky_sensitive_action_allowed\",\"parameters\":[{\"name\":\"login_challenge_method\",\"value\":\"password\"},{\"name\":\"is_suspicious\",\"boolValue\":true},{\"name\":\"login_type\",\"value\":\"google_password\"},{\"name\":\"login_challenge_status\",\"value\":\"Challenge Passed.\"},{\"name\":\"sensitive_action_name\",\"value\":\"Allowing access to data\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"email\":\"hp.kaipx.caeoozdr@djxlbxr.com\",\"profileId\":\"111111111\"},\"etag\":\"Q2W123123123123\",\"events\":{\"name\":\"login_verification\",\"parameters\":[{\"name\":\"login_type\",\"value\":\"google_password\"},{\"multiValue\":[\"security_key\"],\"name\":\"login_challenge_method\"},{\"name\":\"login_challenge_status\",\"value\":\"passed\"},{\"boolValue\":true,\"name\":\"is_second_factor\"}],\"type\":\"login\"},\"id\":{\"applicationName\":\"login\",\"customerId\":\"123\",\"time\":\"2053-02-27T05:59:58.481Z\",\"uniqueQualifier\":\"123\"},\"ipAddress\":\"198.51.100.211\",\"kind\":\"admin#reports#activity\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"callerType\":\"KEY\",\"key\":\"Google\"},\"etag\":\"\\\"Fn96D9A6wOUVq518\\\"\",\"events\":{\"name\":\"suspicious_login\",\"parameters\":[{\"name\":\"affected_email_address\",\"value\":\"cnk@apejtlc.co\"},{\"intValue\":\"1759325583000000\",\"name\":\"login_timestamp\"}],\"resourceIds\":[\"1084964178399\"],\"type\":\"account_warning\"},\"id\":{\"applicationName\":\"login\",\"customerId\":\"2\",\"time\":\"2053-10-01T13:33:03.000Z\",\"uniqueQualifier\":\"-780557281442037232\"},\"ipAddress\":\"192.0.2.134\",\"kind\":\"admin#reports#activity\",\"networkInfo\":{\"regionCode\":\"FR\",\"subdivisionCode\":\"FR-NAQ\"},\"resourceDetails\":[{\"id\":\"0000000000000\",\"type\":\"USER\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "login",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-google_workspace-login-default",
+    "event_count": 18,
+    "numeric_keyword_fields": [],
+    "package": "google_workspace",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2039-11-04T19:44:35.879Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"ts\":2204048675.879278,\"note\":\"SSH::Password_Guessing\",\"msg\":\"172.30.148.106 appears to be guessing SSH passwords (seen in 30 connections).\",\"sub\":\"Sampled servers:  172.25.97.226, 172.25.97.226, 172.25.97.226, 172.25.97.226, 172.25.97.226\",\"src\":\"172.30.148.106\",\"peer_descr\":\"bro\",\"actions\":[\"Notice::ACTION_LOG\"],\"suppress_for\":3600.0,\"dropped\":false}",
+        "type": [
+          "info",
+          "allowed"
+        ]
+      },
+      "related": {
+        "ip": [
+          "172.30.148.106"
+        ]
+      },
+      "rule": {
+        "description": "172.30.148.106 appears to be guessing SSH passwords (seen in 30 connections).",
+        "name": "SSH::Password_Guessing"
+      },
+      "source": {
+        "address": "172.30.148.106",
+        "ip": "172.30.148.106"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "notice": {
+          "actions": [
+            "Notice::ACTION_LOG"
+          ],
+          "dropped": false,
+          "msg": "172.30.148.106 appears to be guessing SSH passwords (seen in 30 connections).",
+          "note": "SSH::Password_Guessing",
+          "peer_descr": "bro",
+          "sub": "Sampled servers:  172.25.97.226, 172.25.97.226, 172.25.97.226, 172.25.97.226, 172.25.97.226",
+          "suppress_for": 3600.0
+        }
+      }
+    },
+    {
+      "@timestamp": "2047-02-28T22:36:28.426Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"ts\":2435006188.426472,\"note\":\"Scan::Port_Scan\",\"msg\":\"198.51.100.144 scanned at least 15 unique ports of host 198.51.100.144 in 0m0s\",\"sub\":\"remote\",\"src\":\"198.51.100.144\",\"dst\":\"198.51.100.144\",\"peer_descr\":\"bro\",\"actions\":[\"Notice::ACTION_LOG\"],\"suppress_for\":3600.0,\"dropped\":false}",
+        "type": [
+          "info",
+          "allowed"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "rule": {
+        "description": "198.51.100.144 scanned at least 15 unique ports of host 198.51.100.144 in 0m0s",
+        "name": "Scan::Port_Scan"
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "notice": {
+          "actions": [
+            "Notice::ACTION_LOG"
+          ],
+          "dropped": false,
+          "msg": "198.51.100.144 scanned at least 15 unique ports of host 198.51.100.144 in 0m0s",
+          "note": "Scan::Port_Scan",
+          "peer_descr": "bro",
+          "sub": "remote",
+          "suppress_for": 3600.0
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T09:49:00.958Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"ts\":2500710540.958466,\"note\":\"CaptureLoss::Too_Much_Loss\",\"msg\":\"The capture loss script detected an estimated loss rate above 88.306%\",\"actions\":[\"Notice::ACTION_LOG\"],\"suppress_for\":3600.0}",
+        "type": [
+          "info"
+        ]
+      },
+      "rule": {
+        "description": "The capture loss script detected an estimated loss rate above 88.306%",
+        "name": "CaptureLoss::Too_Much_Loss"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "notice": {
+          "actions": [
+            "Notice::ACTION_LOG"
+          ],
+          "msg": "The capture loss script detected an estimated loss rate above 88.306%",
+          "note": "CaptureLoss::Too_Much_Loss",
+          "suppress_for": 3600.0
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T09:52:09.601Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CmvrSS1wIiuOGYCbfi",
+        "kind": "alert",
+        "original": "{\"ts\":2500710729.601155,\"uid\":\"CmvrSS1wIiuOGYCbfi\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":48818,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"fuid\":\"F39b0Bdfm3FW1rNS5\",\"proto\":\"tcp\",\"note\":\"SSL::Invalid_Server_Cert\",\"msg\":\"SSL certificate validation failed with (self signed certificate)\",\"sub\":\"CN=*.badssl.com,O=BadSSL,L=San Francisco,ST=California,C=US\",\"src\":\"10.55.23.134\",\"dst\":\"198.51.100.144\",\"p\":443,\"actions\":[\"Notice::ACTION_LOG\"],\"suppress_for\":3600.0}",
+        "type": [
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:8qHDiDtnEjI0ZkJjyOjRrONyPYs=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "rule": {
+        "description": "SSL certificate validation failed with (self signed certificate)",
+        "name": "SSL::Invalid_Server_Cert"
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 48818
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "notice": {
+          "actions": [
+            "Notice::ACTION_LOG"
+          ],
+          "fuid": "F39b0Bdfm3FW1rNS5",
+          "id": {},
+          "msg": "SSL certificate validation failed with (self signed certificate)",
+          "note": "SSL::Invalid_Server_Cert",
+          "sub": "CN=*.badssl.com,O=BadSSL,L=San Francisco,ST=California,C=US",
+          "suppress_for": 3600.0
+        },
+        "session_id": "CmvrSS1wIiuOGYCbfi"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2204048675.879278,\"note\":\"SSH::Password_Guessing\",\"msg\":\"172.30.148.106 appears to be guessing SSH passwords (seen in 30 connections).\",\"sub\":\"Sampled servers:  172.25.97.226, 172.25.97.226, 172.25.97.226, 172.25.97.226, 172.25.97.226\",\"src\":\"172.30.148.106\",\"peer_descr\":\"bro\",\"actions\":[\"Notice::ACTION_LOG\"],\"suppress_for\":3600.0,\"dropped\":false}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2435006188.426472,\"note\":\"Scan::Port_Scan\",\"msg\":\"198.51.100.144 scanned at least 15 unique ports of host 198.51.100.144 in 0m0s\",\"sub\":\"remote\",\"src\":\"198.51.100.144\",\"dst\":\"198.51.100.144\",\"peer_descr\":\"bro\",\"actions\":[\"Notice::ACTION_LOG\"],\"suppress_for\":3600.0,\"dropped\":false}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500710540.958466,\"note\":\"CaptureLoss::Too_Much_Loss\",\"msg\":\"The capture loss script detected an estimated loss rate above 88.306%\",\"actions\":[\"Notice::ACTION_LOG\"],\"suppress_for\":3600.0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500710729.601155,\"uid\":\"CmvrSS1wIiuOGYCbfi\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":48818,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"fuid\":\"F39b0Bdfm3FW1rNS5\",\"proto\":\"tcp\",\"note\":\"SSL::Invalid_Server_Cert\",\"msg\":\"SSL certificate validation failed with (self signed certificate)\",\"sub\":\"CN=*.badssl.com,O=BadSSL,L=San Francisco,ST=California,C=US\",\"src\":\"10.55.23.134\",\"dst\":\"198.51.100.144\",\"p\":443,\"actions\":[\"Notice::ACTION_LOG\"],\"suppress_for\":3600.0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "notice",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-notice-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

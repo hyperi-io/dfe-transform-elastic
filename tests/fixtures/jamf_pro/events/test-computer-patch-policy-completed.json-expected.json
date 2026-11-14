@@ -1,0 +1,153 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "ComputerPatchPolicyCompleted",
+        "category": [
+          "configuration",
+          "package"
+        ],
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "entity": {
+          "lifecycle": {
+            "last_activity": "2052-09-04T09:57:52.001Z"
+          }
+        },
+        "id": "1039039321",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "name": "3CDTN",
+        "os": {
+          "version": "17.1406"
+        }
+      },
+      "jamf_pro": {
+        "events": {
+          "event": {
+            "computer": {
+              "alternate_mac_address": "ce:bb:a4:55:30:bc",
+              "building": "T3C7SK",
+              "department": "KFY4B2",
+              "device_name": "3CDTN",
+              "email_address": "deckwz@dobjr.com",
+              "ip_address": "198.51.100.144",
+              "jss_id": 908,
+              "mac_address": "ce:bb:a4:55:30:bc",
+              "management_id": "9838103328",
+              "model": "VJG9VJ",
+              "os_build": "37.3734",
+              "os_version": "17.1406",
+              "phone": "0181091",
+              "position": "7F1ZWN",
+              "real_name": "2ENJI",
+              "reported_ip_address": "198.51.100.144",
+              "room": "MPQVYQ",
+              "serial_number": "7034689",
+              "udid": "1039039321",
+              "user_directory_id": "7846263362",
+              "username": "Pnvw Eyd"
+            },
+            "deployed_version": "XDF9CE",
+            "event_actions": {
+              "action": "MCNFPQ"
+            },
+            "patch_policy_id": 239,
+            "patch_policy_name": "XDYZW",
+            "software_title_id": 75,
+            "successful": true
+          },
+          "webhook": {
+            "event_timestamp": "2052-09-04T09:57:52.001Z",
+            "id": 349,
+            "name": "KVG43",
+            "webhook_event": "ComputerPatchPolicyCompleted"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "Pnvw Eyd",
+          "deckwz@dobjr.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "deckwz@dobjr.com",
+        "name": "Pnvw Eyd"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "event": {
+          "computer": {
+            "alternate_mac_address": "ce:bb:a4:55:30:bc",
+            "building": "T3C7SK",
+            "department": "KFY4B2",
+            "device_name": "3CDTN",
+            "email_address": "deckwz@dobjr.com",
+            "ip_address": "198.51.100.144",
+            "jss_id": 908,
+            "mac_address": "ce:bb:a4:55:30:bc",
+            "management_id": "9838103328",
+            "model": "VJG9VJ",
+            "os_build": "37.3734",
+            "os_version": "17.1406",
+            "phone": "0181091",
+            "position": "7F1ZWN",
+            "real_name": "2ENJI",
+            "reported_ip_address": "198.51.100.144",
+            "room": "MPQVYQ",
+            "serial_number": "7034689",
+            "udid": "1039039321",
+            "user_directory_id": "7846263362",
+            "username": "Pnvw Eyd"
+          },
+          "deployed_version": "XDF9CE",
+          "event_actions": {
+            "action": "MCNFPQ"
+          },
+          "patch_policy_id": 239,
+          "patch_policy_name": "XDYZW",
+          "software_title_id": 75,
+          "successful": true
+        },
+        "webhook": {
+          "event_timestamp": 2609056672001,
+          "id": 349,
+          "name": "KVG43",
+          "webhook_event": "ComputerPatchPolicyCompleted"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

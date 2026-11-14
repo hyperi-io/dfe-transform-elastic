@@ -1,0 +1,488 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-08-23T13:36:50.353Z",
+      "azure": {
+        "correlation_id": "12200526-ccc7-489e-8ff7-901acd3f1aca",
+        "provisioning": {
+          "category": "ProvisioningLogs",
+          "identity": "f6bdb0eb-f5ed-6462-bb4d-9852334da005",
+          "level": 4,
+          "operation_name": "Provisioning activity",
+          "operation_version": "1.0",
+          "properties": {
+            "action": "Create",
+            "activity_datetime": "2050-08-23T13:36:50.3538931Z",
+            "change_id": "12200526-ccc7-489e-8ff7-901acd3f1aca",
+            "cycle_id": "fa618374-a63d-4534-a407-34b9212694af",
+            "duration_ms": 828,
+            "id": "f6bdb0eb-f5ed-6462-bb4d-9852334da005",
+            "initiated_by": {
+              "id": "",
+              "name": "Azure AD Provisioning Service",
+              "type": "system"
+            },
+            "job_id": "DropboxSCIMOutDelta.5496838c5103170c2f2bc1d9e818fbd4.d1024626-faa4-4c69-948b-7a020f425f8b",
+            "modified_properties": [],
+            "provisioning_action": "create",
+            "provisioning_status_info": {
+              "status": "skipped"
+            },
+            "provisioning_steps": [
+              {
+                "description": "Received User 'dgslc@mauriziobrancaoutlook.onmicrosoft.com' change of type (Add) from Azure Active Directory",
+                "details": {
+                  "IsSoftDeleted": "False",
+                  "accountEnabled": "True",
+                  "appRoleAssignments": "User",
+                  "displayName": "Dpvtd",
+                  "givenName": "Dpvtd",
+                  "mailNickname": "ellie",
+                  "objectId": "7083d254-59a5-427d-a582-9628bc92ea5f",
+                  "userPrincipalName": "dgslc@mauriziobrancaoutlook.onmicrosoft.com"
+                },
+                "name": "EntryImportAdd",
+                "provisioning_step_type": 0,
+                "status": 0
+              },
+              {
+                "description": "Determine if User in scope by evaluating against each scoping filter",
+                "details": {
+                  "Active in the source system": "True",
+                  "Assigned to the application": "True",
+                  "ScopeEvaluationResult": "{}",
+                  "Scoping filter evaluation passed": "True",
+                  "User has the required role": "True"
+                },
+                "name": "EntrySynchronizationScoping",
+                "provisioning_step_type": 1,
+                "status": 0
+              },
+              {
+                "description": "User 'dgslc@mauriziobrancaoutlook.onmicrosoft.com' will be created in Dropbox (User is active and assigned in Azure Active Directory, but no matching User was found in Dropbox)",
+                "details": {},
+                "name": "EntrySynchronizationAdd",
+                "provisioning_step_type": 2,
+                "status": 0
+              },
+              {
+                "description": "urn:ietf:params:scim:schemas:core:2.0:User 'dgslc@mauriziobrancaoutlook.onmicrosoft.com' will be skipped because the value of the property sbgd.eakpnkIbhc is missing or invalid. Please update the value of the property sbgd.eakpnkIbhc on the object in the source system.",
+                "details": {
+                  "PropertyName": "sbgd.eakpnkIbhc",
+                  "ReportableIdentifier": "dgslc@mauriziobrancaoutlook.onmicrosoft.com",
+                  "SkipReason": "AttributeValidationFailed"
+                },
+                "name": "EntrySynchronizationSkip",
+                "provisioning_step_type": 3,
+                "status": 2
+              }
+            ],
+            "service_principal": {
+              "id": "78384587-9198-49bd-a951-0a30eb86241f",
+              "name": "Dropbox Business"
+            },
+            "source_identity": {
+              "details": {
+                "display_name": "Dpvtd",
+                "id": "7083d254-59a5-427d-a582-9628bc92ea5f",
+                "odatatype": "User",
+                "user_principal_name": "dgslc@mauriziobrancaoutlook.onmicrosoft.com"
+              },
+              "id": "7083d254-59a5-427d-a582-9628bc92ea5f",
+              "identity_type": "User",
+              "name": "Dpvtd"
+            },
+            "source_system": {
+              "details": {},
+              "id": "dcf4258c-6d71-4594-8adc-270d7312dbce",
+              "name": "Azure Active Directory"
+            },
+            "target_identity": {
+              "details": {},
+              "id": "",
+              "identity_type": "urn:ietf:params:scim:schemas:core:2.0:User",
+              "name": ""
+            },
+            "target_system": {
+              "details": {
+                "application_id": "50e8c720-28ff-4bd1-908b-e71e2f9e8c89",
+                "dervice_principal_display_name": "Dropbox Business",
+                "service_principal_id": "78384587-9198-49bd-a951-0a30eb86241f"
+              },
+              "id": "380f556c-7761-4516-8e01-b5e1feb7f079",
+              "name": "Dropbox"
+            },
+            "tenant_id": "3159351e-2045-445a-9e6f-b8e7f366bfa9"
+          },
+          "result_type": "Skipped"
+        },
+        "resource": {
+          "id": "/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/Microsoft.aadiam",
+          "provider": "Microsoft.aadiam"
+        },
+        "tenant_id": "3159351e-2045-445a-9e6f-b8e7f366bfa9"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Provisioning activity",
+        "duration": 828000000,
+        "kind": "event",
+        "original": "{\"time\":\"2050-08-23T13:36:50.3538931Z\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/Microsoft.aadiam\",\"operationName\":\"Provisioning activity\",\"operationVersion\":\"1.0\",\"category\":\"ProvisioningLogs\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultType\":\"Skipped\",\"durationMs\":828,\"correlationId\":\"12200526-ccc7-489e-8ff7-901acd3f1aca\",\"identity\":\"f6bdb0eb-f5ed-6462-bb4d-9852334da005\",\"Level\":4,\"properties\":{\"id\":\"f6bdb0eb-f5ed-6462-bb4d-9852334da005\",\"activityDateTime\":\"2050-08-23T13:36:50.3538931Z\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"jobId\":\"DropboxSCIMOutDelta.5496838c5103170c2f2bc1d9e818fbd4.d1024626-faa4-4c69-948b-7a020f425f8b\",\"cycleId\":\"fa618374-a63d-4534-a407-34b9212694af\",\"changeId\":\"12200526-ccc7-489e-8ff7-901acd3f1aca\",\"action\":\"Create\",\"provisioningAction\":\"create\",\"servicePrincipal\":{\"Id\":\"78384587-9198-49bd-a951-0a30eb86241f\",\"Name\":\"Dropbox Business\"},\"sourceSystem\":{\"details\":{},\"Id\":\"dcf4258c-6d71-4594-8adc-270d7312dbce\",\"Name\":\"Azure Active Directory\"},\"targetSystem\":{\"details\":{\"ApplicationId\":\"50e8c720-28ff-4bd1-908b-e71e2f9e8c89\",\"ServicePrincipalId\":\"78384587-9198-49bd-a951-0a30eb86241f\",\"ServicePrincipalDisplayName\":\"Dropbox Business\"},\"Id\":\"380f556c-7761-4516-8e01-b5e1feb7f079\",\"Name\":\"Dropbox\"},\"initiatedBy\":{\"Type\":\"system\",\"Id\":\"\",\"Name\":\"Azure AD Provisioning Service\"},\"sourceIdentity\":{\"identityType\":\"User\",\"details\":{\"id\":\"7083d254-59a5-427d-a582-9628bc92ea5f\",\"odatatype\":\"User\",\"DisplayName\":\"Dpvtd\",\"UserPrincipalName\":\"dgslc@mauriziobrancaoutlook.onmicrosoft.com\"},\"Id\":\"7083d254-59a5-427d-a582-9628bc92ea5f\",\"Name\":\"Dpvtd\"},\"targetIdentity\":{\"identityType\":\"urn:ietf:params:scim:schemas:core:2.0:User\",\"details\":{},\"Id\":\"\",\"Name\":\"\"},\"provisioningStatusInfo\":{\"Status\":\"skipped\",\"errorInformation\":null},\"statusInfo\":{\"Status\":2},\"provisioningSteps\":[{\"name\":\"EntryImportAdd\",\"provisioningStepType\":0,\"status\":0,\"description\":\"Received User 'dgslc@mauriziobrancaoutlook.onmicrosoft.com' change of type (Add) from Azure Active Directory\",\"details\":{\"objectId\":\"7083d254-59a5-427d-a582-9628bc92ea5f\",\"accountEnabled\":\"True\",\"displayName\":\"Dpvtd\",\"givenName\":\"Dpvtd\",\"mailNickname\":\"ellie\",\"userPrincipalName\":\"dgslc@mauriziobrancaoutlook.onmicrosoft.com\",\"IsSoftDeleted\":\"False\",\"appRoleAssignments\":\"User\"}},{\"name\":\"EntrySynchronizationScoping\",\"provisioningStepType\":1,\"status\":0,\"description\":\"Determine if User in scope by evaluating against each scoping filter\",\"details\":{\"Active in the source system\":\"True\",\"Assigned to the application\":\"True\",\"User has the required role\":\"True\",\"Scoping filter evaluation passed\":\"True\",\"ScopeEvaluationResult\":\"{}\"}},{\"name\":\"EntrySynchronizationAdd\",\"provisioningStepType\":2,\"status\":0,\"description\":\"User 'dgslc@mauriziobrancaoutlook.onmicrosoft.com' will be created in Dropbox (User is active and assigned in Azure Active Directory, but no matching User was found in Dropbox)\",\"details\":{}},{\"name\":\"EntrySynchronizationSkip\",\"provisioningStepType\":3,\"status\":2,\"description\":\"urn:ietf:params:scim:schemas:core:2.0:User 'dgslc@mauriziobrancaoutlook.onmicrosoft.com' will be skipped because the value of the property sbgd.eakpnkIbhc is missing or invalid. Please update the value of the property sbgd.eakpnkIbhc on the object in the source system.\",\"details\":{\"PropertyName\":\"sbgd.eakpnkIbhc\",\"SkipReason\":\"AttributeValidationFailed\",\"ReportableIdentifier\":\"dgslc@mauriziobrancaoutlook.onmicrosoft.com\"}}],\"modifiedProperties\":[],\"durationInMilliseconds\":828}}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-08-23T13:36:52.869Z",
+      "azure": {
+        "correlation_id": "c9c4f274-d543-452c-9848-c95b93abef3a",
+        "provisioning": {
+          "category": "ProvisioningLogs",
+          "identity": "abf6f040-6551-2efd-237f-30254beb013c",
+          "level": 4,
+          "operation_name": "Provisioning activity",
+          "operation_version": "1.0",
+          "properties": {
+            "action": "Create",
+            "activity_datetime": "2050-08-23T13:36:52.869547Z",
+            "change_id": "c9c4f274-d543-452c-9848-c95b93abef3a",
+            "cycle_id": "fa618374-a63d-4534-a407-34b9212694af",
+            "duration_ms": 3343,
+            "id": "abf6f040-6551-2efd-237f-30254beb013c",
+            "initiated_by": {
+              "id": "",
+              "name": "Azure AD Provisioning Service",
+              "type": "system"
+            },
+            "job_id": "DropboxSCIMOutDelta.5496838c5103170c2f2bc1d9e818fbd4.d1024626-faa4-4c69-948b-7a020f425f8b",
+            "modified_properties": [
+              {
+                "displayName": "externalId",
+                "newValue": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+                "oldValue": null
+              },
+              {
+                "displayName": "userName",
+                "newValue": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com",
+                "oldValue": null
+              },
+              {
+                "displayName": "sbgd.wwleiZdwe",
+                "newValue": "Zieu",
+                "oldValue": null
+              },
+              {
+                "displayName": "sbgd.eakpnkIbhc",
+                "newValue": "Gtjlax",
+                "oldValue": null
+              },
+              {
+                "displayName": "active",
+                "newValue": "True",
+                "oldValue": null
+              }
+            ],
+            "provisioning_action": "create",
+            "provisioning_status_info": {
+              "status": "success"
+            },
+            "provisioning_steps": [
+              {
+                "description": "Received User 'nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com' change of type (Add) from Azure Active Directory",
+                "details": {
+                  "IsSoftDeleted": "False",
+                  "accountEnabled": "True",
+                  "appRoleAssignments": "User",
+                  "displayName": "Zieu Gtjlax",
+                  "givenName": "Zieu",
+                  "mailNickname": "joel.miller",
+                  "objectId": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+                  "surname": "Gtjlax",
+                  "userPrincipalName": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com"
+                },
+                "name": "EntryImportAdd",
+                "provisioning_step_type": 0,
+                "status": 0
+              },
+              {
+                "description": "Determine if User in scope by evaluating against each scoping filter",
+                "details": {
+                  "Active in the source system": "True",
+                  "Assigned to the application": "True",
+                  "ScopeEvaluationResult": "{}",
+                  "Scoping filter evaluation passed": "True",
+                  "User has the required role": "True"
+                },
+                "name": "EntrySynchronizationScoping",
+                "provisioning_step_type": 1,
+                "status": 0
+              },
+              {
+                "description": "User 'nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com' will be created in Dropbox (User is active and assigned in Azure Active Directory, but no matching User was found in Dropbox)",
+                "details": {},
+                "name": "EntrySynchronizationAdd",
+                "provisioning_step_type": 2,
+                "status": 0
+              },
+              {
+                "description": "User 'nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com' was created in Dropbox",
+                "details": {
+                  "ReportableIdentifier": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com",
+                  "active": "True",
+                  "externalId": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+                  "namefamilyName": "Gtjlax",
+                  "namegivenName": "Zieu",
+                  "userName": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com"
+                },
+                "name": "EntryExportAdd",
+                "provisioning_step_type": 5,
+                "status": 0
+              }
+            ],
+            "service_principal": {
+              "id": "78384587-9198-49bd-a951-0a30eb86241f",
+              "name": "Dropbox Business"
+            },
+            "source_identity": {
+              "details": {
+                "display_name": "Zieu Gtjlax",
+                "id": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+                "odatatype": "User",
+                "user_principal_name": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com"
+              },
+              "id": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+              "identity_type": "User",
+              "name": "Zieu Gtjlax"
+            },
+            "source_system": {
+              "details": {},
+              "id": "fb2ccc5c-038c-44c7-b727-76028b842d3e",
+              "name": "Azure Active Directory"
+            },
+            "target_identity": {
+              "details": {},
+              "id": "dbmid:AAAyj2SkvwD4D6hbiVdfVymbfwENG-roFu4",
+              "identity_type": "urn:ietf:params:scim:schemas:core:2.0:User",
+              "name": ""
+            },
+            "target_system": {
+              "details": {
+                "application_id": "50e8c720-28ff-4bd1-908b-e71e2f9e8c89",
+                "dervice_principal_display_name": "Dropbox Business",
+                "service_principal_id": "78384587-9198-49bd-a951-0a30eb86241f"
+              },
+              "id": "f2d00370-ca27-4063-a831-a53d01ff716d",
+              "name": "Dropbox"
+            },
+            "tenant_id": "3159351e-2045-445a-9e6f-b8e7f366bfa9"
+          },
+          "result_type": "Success"
+        },
+        "resource": {
+          "id": "/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/Microsoft.aadiam",
+          "provider": "Microsoft.aadiam"
+        },
+        "tenant_id": "3159351e-2045-445a-9e6f-b8e7f366bfa9"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Provisioning activity",
+        "duration": -951967296,
+        "kind": "event",
+        "original": "{\"time\":\"2050-08-23T13:36:52.8695470Z\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/Microsoft.aadiam\",\"operationName\":\"Provisioning activity\",\"operationVersion\":\"1.0\",\"category\":\"ProvisioningLogs\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultType\":\"Success\",\"durationMs\":3343,\"correlationId\":\"c9c4f274-d543-452c-9848-c95b93abef3a\",\"identity\":\"abf6f040-6551-2efd-237f-30254beb013c\",\"Level\":4,\"properties\":{\"id\":\"abf6f040-6551-2efd-237f-30254beb013c\",\"activityDateTime\":\"2050-08-23T13:36:52.869547Z\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"jobId\":\"DropboxSCIMOutDelta.5496838c5103170c2f2bc1d9e818fbd4.d1024626-faa4-4c69-948b-7a020f425f8b\",\"cycleId\":\"fa618374-a63d-4534-a407-34b9212694af\",\"changeId\":\"c9c4f274-d543-452c-9848-c95b93abef3a\",\"action\":\"Create\",\"provisioningAction\":\"create\",\"servicePrincipal\":{\"Id\":\"78384587-9198-49bd-a951-0a30eb86241f\",\"Name\":\"Dropbox Business\"},\"sourceSystem\":{\"details\":{},\"Id\":\"fb2ccc5c-038c-44c7-b727-76028b842d3e\",\"Name\":\"Azure Active Directory\"},\"targetSystem\":{\"details\":{\"ApplicationId\":\"50e8c720-28ff-4bd1-908b-e71e2f9e8c89\",\"ServicePrincipalId\":\"78384587-9198-49bd-a951-0a30eb86241f\",\"ServicePrincipalDisplayName\":\"Dropbox Business\"},\"Id\":\"f2d00370-ca27-4063-a831-a53d01ff716d\",\"Name\":\"Dropbox\"},\"initiatedBy\":{\"Type\":\"system\",\"Id\":\"\",\"Name\":\"Azure AD Provisioning Service\"},\"sourceIdentity\":{\"identityType\":\"User\",\"details\":{\"id\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"odatatype\":\"User\",\"DisplayName\":\"Zieu Gtjlax\",\"UserPrincipalName\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\"},\"Id\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"Name\":\"Zieu Gtjlax\"},\"targetIdentity\":{\"identityType\":\"urn:ietf:params:scim:schemas:core:2.0:User\",\"details\":{},\"Id\":\"dbmid:AAAyj2SkvwD4D6hbiVdfVymbfwENG-roFu4\",\"Name\":\"\"},\"provisioningStatusInfo\":{\"Status\":\"success\",\"errorInformation\":null},\"statusInfo\":{\"Status\":0},\"provisioningSteps\":[{\"name\":\"EntryImportAdd\",\"provisioningStepType\":0,\"status\":0,\"description\":\"Received User 'nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com' change of type (Add) from Azure Active Directory\",\"details\":{\"objectId\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"accountEnabled\":\"True\",\"displayName\":\"Zieu Gtjlax\",\"givenName\":\"Zieu\",\"mailNickname\":\"joel.miller\",\"surname\":\"Gtjlax\",\"userPrincipalName\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\",\"IsSoftDeleted\":\"False\",\"appRoleAssignments\":\"User\"}},{\"name\":\"EntrySynchronizationScoping\",\"provisioningStepType\":1,\"status\":0,\"description\":\"Determine if User in scope by evaluating against each scoping filter\",\"details\":{\"Active in the source system\":\"True\",\"Assigned to the application\":\"True\",\"User has the required role\":\"True\",\"Scoping filter evaluation passed\":\"True\",\"ScopeEvaluationResult\":\"{}\"}},{\"name\":\"EntrySynchronizationAdd\",\"provisioningStepType\":2,\"status\":0,\"description\":\"User 'nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com' will be created in Dropbox (User is active and assigned in Azure Active Directory, but no matching User was found in Dropbox)\",\"details\":{}},{\"name\":\"EntryExportAdd\",\"provisioningStepType\":5,\"status\":0,\"description\":\"User 'nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com' was created in Dropbox\",\"details\":{\"externalId\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"userName\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\",\"namegivenName\":\"Zieu\",\"namefamilyName\":\"Gtjlax\",\"active\":\"True\",\"ReportableIdentifier\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\"}}],\"modifiedProperties\":[{\"displayName\":\"externalId\",\"oldValue\":null,\"newValue\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\"},{\"displayName\":\"userName\",\"oldValue\":null,\"newValue\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\"},{\"displayName\":\"sbgd.wwleiZdwe\",\"oldValue\":null,\"newValue\":\"Zieu\"},{\"displayName\":\"sbgd.eakpnkIbhc\",\"oldValue\":null,\"newValue\":\"Gtjlax\"},{\"displayName\":\"active\",\"oldValue\":null,\"newValue\":\"True\"}],\"durationInMilliseconds\":3343}}",
+        "outcome": "success"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-08-23T13:36:52.869Z",
+      "azure": {
+        "correlation_id": "c9c4f274-d543-452c-9848-c95b93abef3a",
+        "provisioning": {
+          "category": "ProvisioningLogs",
+          "identity": "abf6f040-6551-2efd-237f-30254beb013c",
+          "level": 4,
+          "operation_name": "Provisioning activity",
+          "operation_version": "1.0",
+          "properties": {
+            "action": "Create",
+            "activity_datetime": "2050-08-23T13:36:52.869547Z",
+            "change_id": "c9c4f274-d543-452c-9848-c95b93abef3a",
+            "cycle_id": "fa618374-a63d-4534-a407-34b9212694af",
+            "duration_ms": 3343,
+            "id": "abf6f040-6551-2efd-237f-30254beb013c",
+            "initiated_by": {
+              "id": "",
+              "name": "Azure AD Provisioning Service",
+              "type": "system"
+            },
+            "job_id": "ContosoOutDelta.7928d5b574424a97ne2d66f9j9972ecn",
+            "modified_properties": [
+              {
+                "displayName": "objectId",
+                "newValue": "7d4b0dea-ea3f-4618-5fc8-489645b136ce",
+                "oldValue": null
+              },
+              {
+                "displayName": "displayName",
+                "newValue": "Self-service Pilot",
+                "oldValue": null
+              },
+              {
+                "displayName": "lbkjClebicd",
+                "newValue": "False",
+                "oldValue": null
+              },
+              {
+                "displayName": "mailNickname",
+                "newValue": "5ce25n9a-4c5f-45c9-8362-ef3da29c66c5",
+                "oldValue": null
+              },
+              {
+                "displayName": "jcanlmstDoebnaa",
+                "newValue": "True",
+                "oldValue": null
+              },
+              {
+                "displayName": "Name",
+                "newValue": "Self-service Pilot",
+                "oldValue": null
+              }
+            ],
+            "provisioning_action": "create",
+            "provisioning_status_info": {
+              "error_information": {
+                "additional_details": "details (test value)",
+                "error_category": "nonServiceFailure",
+                "error_code": "ContosoEntryConflict",
+                "reason": "Message: Contoso returned an error response with the HTTP status code 409.  This response indicates that a user or a group already exisits with the same name. This can be avoided by identifying and removing the conflicting user from Contoso via the Contoso administrative user interface, or removing the current user from the scope of provisioning either by removing their assignment to the Contoso application in Azure Active Directory or adding a scoping filter to exclude the user.",
+                "recommended_action": "Try again later (test value)"
+              },
+              "status": "failure"
+            },
+            "provisioning_steps": [
+              {
+                "description": "Received Group 'Self-service Pilot' change of type (Add) from Azure Active Directory",
+                "details": {},
+                "name": "EntryImportAdd",
+                "provisioning_step_type": 0,
+                "status": 0
+              },
+              {
+                "description": "Group 'Self-service Pilot' will be created in Contoso (Group is active and assigned in Azure Active Directory, but no matching Group was found in Contoso)",
+                "details": {},
+                "name": "EntrySynchronizationAdd",
+                "provisioning_step_type": 1,
+                "status": 0
+              },
+              {
+                "description": "Failed to create Group 'Self-service Pilot' in Contoso",
+                "details": {
+                  "ReportableIdentifier": "Self-service Pilot"
+                },
+                "name": "EntryExportAdd",
+                "provisioning_step_type": 2,
+                "status": 1
+              }
+            ],
+            "service_principal": {
+              "id": "78384587-9198-49bd-a951-0a30eb86241f",
+              "name": "Contoso"
+            },
+            "source_identity": {
+              "details": {
+                "display_name": "PWTH",
+                "id": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+                "odatatype": "Group",
+                "user_principal_name": "kguh@mauriziobrancaoutlook.onmicrosoft.com"
+              },
+              "id": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+              "identity_type": "User",
+              "name": "Zieu Gtjlax"
+            },
+            "source_system": {
+              "details": {},
+              "id": "4071845d-d3c5-4dc8-bbbe-06141278b0f3",
+              "name": "Azure Active Directory"
+            },
+            "target_identity": {
+              "details": {},
+              "id": "dbmid:AAAyj2SkvwD4D6hbiVdfVymbfwENG-roFu4",
+              "identity_type": "urn:ietf:params:scim:schemas:core:2.0:Group",
+              "name": ""
+            },
+            "target_system": {
+              "details": {
+                "application_id": "d8469312-b8af-5645-744e-ba0ba9c7dd21",
+                "dervice_principal_display_name": "Contoso",
+                "service_principal_id": "chc46a42-966b-47d7-9774-576b1c8bd0b8"
+              },
+              "id": "cd22f60b-5f2d-1adg-adb4-76ef31db996b",
+              "name": "Contoso"
+            },
+            "tenant_id": "3159351e-2045-445a-9e6f-b8e7f366bfa9"
+          },
+          "result_type": "Success"
+        },
+        "resource": {
+          "id": "/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/Microsoft.aadiam",
+          "provider": "Microsoft.aadiam"
+        },
+        "tenant_id": "3159351e-2045-445a-9e6f-b8e7f366bfa9"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Provisioning activity",
+        "duration": -951967296,
+        "kind": "event",
+        "original": "{\"time\":\"2050-08-23T13:36:52.8695470Z\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/Microsoft.aadiam\",\"operationName\":\"Provisioning activity\",\"operationVersion\":\"1.0\",\"category\":\"ProvisioningLogs\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultType\":\"Success\",\"durationMs\":3343,\"correlationId\":\"c9c4f274-d543-452c-9848-c95b93abef3a\",\"identity\":\"abf6f040-6551-2efd-237f-30254beb013c\",\"Level\":4,\"properties\":{\"id\":\"abf6f040-6551-2efd-237f-30254beb013c\",\"activityDateTime\":\"2050-08-23T13:36:52.869547Z\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"jobId\":\"ContosoOutDelta.7928d5b574424a97ne2d66f9j9972ecn\",\"cycleId\":\"fa618374-a63d-4534-a407-34b9212694af\",\"changeId\":\"c9c4f274-d543-452c-9848-c95b93abef3a\",\"action\":\"Create\",\"provisioningAction\":\"create\",\"servicePrincipal\":{\"Id\":\"78384587-9198-49bd-a951-0a30eb86241f\",\"Name\":\"Contoso\"},\"sourceSystem\":{\"Id\":\"4071845d-d3c5-4dc8-bbbe-06141278b0f3\",\"Name\":\"Azure Active Directory\",\"details\":{}},\"targetSystem\":{\"Id\":\"cd22f60b-5f2d-1adg-adb4-76ef31db996b\",\"Name\":\"Contoso\",\"details\":{\"ApplicationId\":\"d8469312-b8af-5645-744e-ba0ba9c7dd21\",\"ServicePrincipalId\":\"chc46a42-966b-47d7-9774-576b1c8bd0b8\",\"ServicePrincipalDisplayName\":\"Contoso\"}},\"initiatedBy\":{\"Type\":\"system\",\"Id\":\"\",\"Name\":\"Azure AD Provisioning Service\"},\"sourceIdentity\":{\"identityType\":\"User\",\"details\":{\"id\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"odatatype\":\"Group\",\"DisplayName\":\"PWTH\",\"UserPrincipalName\":\"kguh@mauriziobrancaoutlook.onmicrosoft.com\"},\"Id\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"Name\":\"Zieu Gtjlax\"},\"targetIdentity\":{\"identityType\":\"urn:ietf:params:scim:schemas:core:2.0:Group\",\"details\":{},\"Id\":\"dbmid:AAAyj2SkvwD4D6hbiVdfVymbfwENG-roFu4\",\"Name\":\"\"},\"provisioningStatusInfo\":{\"Status\":\"failure\",\"errorInformation\":{\"errorCode\":\"ContosoEntryConflict\",\"reason\":\"Message: Contoso returned an error response with the HTTP status code 409.  This response indicates that a user or a group already exisits with the same name. This can be avoided by identifying and removing the conflicting user from Contoso via the Contoso administrative user interface, or removing the current user from the scope of provisioning either by removing their assignment to the Contoso application in Azure Active Directory or adding a scoping filter to exclude the user.\",\"additionalDetails\":\"details (test value)\",\"errorCategory\":\"nonServiceFailure\",\"recommendedAction\":\"Try again later (test value)\"}},\"statusInfo\":{\"Status\":0},\"provisioningSteps\":[{\"name\":\"EntryImportAdd\",\"provisioningStepType\":0,\"status\":0,\"description\":\"Received Group 'Self-service Pilot' change of type (Add) from Azure Active Directory\",\"details\":{}},{\"name\":\"EntrySynchronizationAdd\",\"provisioningStepType\":1,\"status\":0,\"description\":\"Group 'Self-service Pilot' will be created in Contoso (Group is active and assigned in Azure Active Directory, but no matching Group was found in Contoso)\",\"details\":{}},{\"name\":\"EntryExportAdd\",\"provisioningStepType\":2,\"status\":1,\"description\":\"Failed to create Group 'Self-service Pilot' in Contoso\",\"details\":{\"ReportableIdentifier\":\"Self-service Pilot\"}}],\"modifiedProperties\":[{\"displayName\":\"objectId\",\"oldValue\":null,\"newValue\":\"7d4b0dea-ea3f-4618-5fc8-489645b136ce\"},{\"displayName\":\"displayName\",\"oldValue\":null,\"newValue\":\"Self-service Pilot\"},{\"displayName\":\"lbkjClebicd\",\"oldValue\":null,\"newValue\":\"False\"},{\"displayName\":\"mailNickname\",\"oldValue\":null,\"newValue\":\"5ce25n9a-4c5f-45c9-8362-ef3da29c66c5\"},{\"displayName\":\"jcanlmstDoebnaa\",\"oldValue\":null,\"newValue\":\"True\"},{\"displayName\":\"Name\",\"oldValue\":null,\"newValue\":\"Self-service Pilot\"}],\"durationInMilliseconds\":3343}}",
+        "outcome": "success"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\":\"2050-08-23T13:36:50.3538931Z\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/Microsoft.aadiam\",\"operationName\":\"Provisioning activity\",\"operationVersion\":\"1.0\",\"category\":\"ProvisioningLogs\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultType\":\"Skipped\",\"durationMs\":828,\"correlationId\":\"12200526-ccc7-489e-8ff7-901acd3f1aca\",\"identity\":\"f6bdb0eb-f5ed-6462-bb4d-9852334da005\",\"Level\":4,\"properties\":{\"id\":\"f6bdb0eb-f5ed-6462-bb4d-9852334da005\",\"activityDateTime\":\"2050-08-23T13:36:50.3538931Z\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"jobId\":\"DropboxSCIMOutDelta.5496838c5103170c2f2bc1d9e818fbd4.d1024626-faa4-4c69-948b-7a020f425f8b\",\"cycleId\":\"fa618374-a63d-4534-a407-34b9212694af\",\"changeId\":\"12200526-ccc7-489e-8ff7-901acd3f1aca\",\"action\":\"Create\",\"provisioningAction\":\"create\",\"servicePrincipal\":{\"Id\":\"78384587-9198-49bd-a951-0a30eb86241f\",\"Name\":\"Dropbox Business\"},\"sourceSystem\":{\"details\":{},\"Id\":\"dcf4258c-6d71-4594-8adc-270d7312dbce\",\"Name\":\"Azure Active Directory\"},\"targetSystem\":{\"details\":{\"ApplicationId\":\"50e8c720-28ff-4bd1-908b-e71e2f9e8c89\",\"ServicePrincipalId\":\"78384587-9198-49bd-a951-0a30eb86241f\",\"ServicePrincipalDisplayName\":\"Dropbox Business\"},\"Id\":\"380f556c-7761-4516-8e01-b5e1feb7f079\",\"Name\":\"Dropbox\"},\"initiatedBy\":{\"Type\":\"system\",\"Id\":\"\",\"Name\":\"Azure AD Provisioning Service\"},\"sourceIdentity\":{\"identityType\":\"User\",\"details\":{\"id\":\"7083d254-59a5-427d-a582-9628bc92ea5f\",\"odatatype\":\"User\",\"DisplayName\":\"Dpvtd\",\"UserPrincipalName\":\"dgslc@mauriziobrancaoutlook.onmicrosoft.com\"},\"Id\":\"7083d254-59a5-427d-a582-9628bc92ea5f\",\"Name\":\"Dpvtd\"},\"targetIdentity\":{\"identityType\":\"urn:ietf:params:scim:schemas:core:2.0:User\",\"details\":{},\"Id\":\"\",\"Name\":\"\"},\"provisioningStatusInfo\":{\"Status\":\"skipped\",\"errorInformation\":null},\"statusInfo\":{\"Status\":2},\"provisioningSteps\":[{\"name\":\"EntryImportAdd\",\"provisioningStepType\":0,\"status\":0,\"description\":\"Received User 'dgslc@mauriziobrancaoutlook.onmicrosoft.com' change of type (Add) from Azure Active Directory\",\"details\":{\"objectId\":\"7083d254-59a5-427d-a582-9628bc92ea5f\",\"accountEnabled\":\"True\",\"displayName\":\"Dpvtd\",\"givenName\":\"Dpvtd\",\"mailNickname\":\"ellie\",\"userPrincipalName\":\"dgslc@mauriziobrancaoutlook.onmicrosoft.com\",\"IsSoftDeleted\":\"False\",\"appRoleAssignments\":\"User\"}},{\"name\":\"EntrySynchronizationScoping\",\"provisioningStepType\":1,\"status\":0,\"description\":\"Determine if User in scope by evaluating against each scoping filter\",\"details\":{\"Active in the source system\":\"True\",\"Assigned to the application\":\"True\",\"User has the required role\":\"True\",\"Scoping filter evaluation passed\":\"True\",\"ScopeEvaluationResult\":\"{}\"}},{\"name\":\"EntrySynchronizationAdd\",\"provisioningStepType\":2,\"status\":0,\"description\":\"User 'dgslc@mauriziobrancaoutlook.onmicrosoft.com' will be created in Dropbox (User is active and assigned in Azure Active Directory, but no matching User was found in Dropbox)\",\"details\":{}},{\"name\":\"EntrySynchronizationSkip\",\"provisioningStepType\":3,\"status\":2,\"description\":\"urn:ietf:params:scim:schemas:core:2.0:User 'dgslc@mauriziobrancaoutlook.onmicrosoft.com' will be skipped because the value of the property sbgd.eakpnkIbhc is missing or invalid. Please update the value of the property sbgd.eakpnkIbhc on the object in the source system.\",\"details\":{\"PropertyName\":\"sbgd.eakpnkIbhc\",\"SkipReason\":\"AttributeValidationFailed\",\"ReportableIdentifier\":\"dgslc@mauriziobrancaoutlook.onmicrosoft.com\"}}],\"modifiedProperties\":[],\"durationInMilliseconds\":828}}"
+    },
+    {
+      "message": "{\"time\":\"2050-08-23T13:36:52.8695470Z\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/Microsoft.aadiam\",\"operationName\":\"Provisioning activity\",\"operationVersion\":\"1.0\",\"category\":\"ProvisioningLogs\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultType\":\"Success\",\"durationMs\":3343,\"correlationId\":\"c9c4f274-d543-452c-9848-c95b93abef3a\",\"identity\":\"abf6f040-6551-2efd-237f-30254beb013c\",\"Level\":4,\"properties\":{\"id\":\"abf6f040-6551-2efd-237f-30254beb013c\",\"activityDateTime\":\"2050-08-23T13:36:52.869547Z\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"jobId\":\"DropboxSCIMOutDelta.5496838c5103170c2f2bc1d9e818fbd4.d1024626-faa4-4c69-948b-7a020f425f8b\",\"cycleId\":\"fa618374-a63d-4534-a407-34b9212694af\",\"changeId\":\"c9c4f274-d543-452c-9848-c95b93abef3a\",\"action\":\"Create\",\"provisioningAction\":\"create\",\"servicePrincipal\":{\"Id\":\"78384587-9198-49bd-a951-0a30eb86241f\",\"Name\":\"Dropbox Business\"},\"sourceSystem\":{\"details\":{},\"Id\":\"fb2ccc5c-038c-44c7-b727-76028b842d3e\",\"Name\":\"Azure Active Directory\"},\"targetSystem\":{\"details\":{\"ApplicationId\":\"50e8c720-28ff-4bd1-908b-e71e2f9e8c89\",\"ServicePrincipalId\":\"78384587-9198-49bd-a951-0a30eb86241f\",\"ServicePrincipalDisplayName\":\"Dropbox Business\"},\"Id\":\"f2d00370-ca27-4063-a831-a53d01ff716d\",\"Name\":\"Dropbox\"},\"initiatedBy\":{\"Type\":\"system\",\"Id\":\"\",\"Name\":\"Azure AD Provisioning Service\"},\"sourceIdentity\":{\"identityType\":\"User\",\"details\":{\"id\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"odatatype\":\"User\",\"DisplayName\":\"Zieu Gtjlax\",\"UserPrincipalName\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\"},\"Id\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"Name\":\"Zieu Gtjlax\"},\"targetIdentity\":{\"identityType\":\"urn:ietf:params:scim:schemas:core:2.0:User\",\"details\":{},\"Id\":\"dbmid:AAAyj2SkvwD4D6hbiVdfVymbfwENG-roFu4\",\"Name\":\"\"},\"provisioningStatusInfo\":{\"Status\":\"success\",\"errorInformation\":null},\"statusInfo\":{\"Status\":0},\"provisioningSteps\":[{\"name\":\"EntryImportAdd\",\"provisioningStepType\":0,\"status\":0,\"description\":\"Received User 'nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com' change of type (Add) from Azure Active Directory\",\"details\":{\"objectId\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"accountEnabled\":\"True\",\"displayName\":\"Zieu Gtjlax\",\"givenName\":\"Zieu\",\"mailNickname\":\"joel.miller\",\"surname\":\"Gtjlax\",\"userPrincipalName\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\",\"IsSoftDeleted\":\"False\",\"appRoleAssignments\":\"User\"}},{\"name\":\"EntrySynchronizationScoping\",\"provisioningStepType\":1,\"status\":0,\"description\":\"Determine if User in scope by evaluating against each scoping filter\",\"details\":{\"Active in the source system\":\"True\",\"Assigned to the application\":\"True\",\"User has the required role\":\"True\",\"Scoping filter evaluation passed\":\"True\",\"ScopeEvaluationResult\":\"{}\"}},{\"name\":\"EntrySynchronizationAdd\",\"provisioningStepType\":2,\"status\":0,\"description\":\"User 'nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com' will be created in Dropbox (User is active and assigned in Azure Active Directory, but no matching User was found in Dropbox)\",\"details\":{}},{\"name\":\"EntryExportAdd\",\"provisioningStepType\":5,\"status\":0,\"description\":\"User 'nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com' was created in Dropbox\",\"details\":{\"externalId\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"userName\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\",\"namegivenName\":\"Zieu\",\"namefamilyName\":\"Gtjlax\",\"active\":\"True\",\"ReportableIdentifier\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\"}}],\"modifiedProperties\":[{\"displayName\":\"externalId\",\"oldValue\":null,\"newValue\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\"},{\"displayName\":\"userName\",\"oldValue\":null,\"newValue\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\"},{\"displayName\":\"sbgd.wwleiZdwe\",\"oldValue\":null,\"newValue\":\"Zieu\"},{\"displayName\":\"sbgd.eakpnkIbhc\",\"oldValue\":null,\"newValue\":\"Gtjlax\"},{\"displayName\":\"active\",\"oldValue\":null,\"newValue\":\"True\"}],\"durationInMilliseconds\":3343}}"
+    },
+    {
+      "message": "{\"time\":\"2050-08-23T13:36:52.8695470Z\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/Microsoft.aadiam\",\"operationName\":\"Provisioning activity\",\"operationVersion\":\"1.0\",\"category\":\"ProvisioningLogs\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultType\":\"Success\",\"durationMs\":3343,\"correlationId\":\"c9c4f274-d543-452c-9848-c95b93abef3a\",\"identity\":\"abf6f040-6551-2efd-237f-30254beb013c\",\"Level\":4,\"properties\":{\"id\":\"abf6f040-6551-2efd-237f-30254beb013c\",\"activityDateTime\":\"2050-08-23T13:36:52.869547Z\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"jobId\":\"ContosoOutDelta.7928d5b574424a97ne2d66f9j9972ecn\",\"cycleId\":\"fa618374-a63d-4534-a407-34b9212694af\",\"changeId\":\"c9c4f274-d543-452c-9848-c95b93abef3a\",\"action\":\"Create\",\"provisioningAction\":\"create\",\"servicePrincipal\":{\"Id\":\"78384587-9198-49bd-a951-0a30eb86241f\",\"Name\":\"Contoso\"},\"sourceSystem\":{\"Id\":\"4071845d-d3c5-4dc8-bbbe-06141278b0f3\",\"Name\":\"Azure Active Directory\",\"details\":{}},\"targetSystem\":{\"Id\":\"cd22f60b-5f2d-1adg-adb4-76ef31db996b\",\"Name\":\"Contoso\",\"details\":{\"ApplicationId\":\"d8469312-b8af-5645-744e-ba0ba9c7dd21\",\"ServicePrincipalId\":\"chc46a42-966b-47d7-9774-576b1c8bd0b8\",\"ServicePrincipalDisplayName\":\"Contoso\"}},\"initiatedBy\":{\"Type\":\"system\",\"Id\":\"\",\"Name\":\"Azure AD Provisioning Service\"},\"sourceIdentity\":{\"identityType\":\"User\",\"details\":{\"id\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"odatatype\":\"Group\",\"DisplayName\":\"PWTH\",\"UserPrincipalName\":\"kguh@mauriziobrancaoutlook.onmicrosoft.com\"},\"Id\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"Name\":\"Zieu Gtjlax\"},\"targetIdentity\":{\"identityType\":\"urn:ietf:params:scim:schemas:core:2.0:Group\",\"details\":{},\"Id\":\"dbmid:AAAyj2SkvwD4D6hbiVdfVymbfwENG-roFu4\",\"Name\":\"\"},\"provisioningStatusInfo\":{\"Status\":\"failure\",\"errorInformation\":{\"errorCode\":\"ContosoEntryConflict\",\"reason\":\"Message: Contoso returned an error response with the HTTP status code 409.  This response indicates that a user or a group already exisits with the same name. This can be avoided by identifying and removing the conflicting user from Contoso via the Contoso administrative user interface, or removing the current user from the scope of provisioning either by removing their assignment to the Contoso application in Azure Active Directory or adding a scoping filter to exclude the user.\",\"additionalDetails\":\"details (test value)\",\"errorCategory\":\"nonServiceFailure\",\"recommendedAction\":\"Try again later (test value)\"}},\"statusInfo\":{\"Status\":0},\"provisioningSteps\":[{\"name\":\"EntryImportAdd\",\"provisioningStepType\":0,\"status\":0,\"description\":\"Received Group 'Self-service Pilot' change of type (Add) from Azure Active Directory\",\"details\":{}},{\"name\":\"EntrySynchronizationAdd\",\"provisioningStepType\":1,\"status\":0,\"description\":\"Group 'Self-service Pilot' will be created in Contoso (Group is active and assigned in Azure Active Directory, but no matching Group was found in Contoso)\",\"details\":{}},{\"name\":\"EntryExportAdd\",\"provisioningStepType\":2,\"status\":1,\"description\":\"Failed to create Group 'Self-service Pilot' in Contoso\",\"details\":{\"ReportableIdentifier\":\"Self-service Pilot\"}}],\"modifiedProperties\":[{\"displayName\":\"objectId\",\"oldValue\":null,\"newValue\":\"7d4b0dea-ea3f-4618-5fc8-489645b136ce\"},{\"displayName\":\"displayName\",\"oldValue\":null,\"newValue\":\"Self-service Pilot\"},{\"displayName\":\"lbkjClebicd\",\"oldValue\":null,\"newValue\":\"False\"},{\"displayName\":\"mailNickname\",\"oldValue\":null,\"newValue\":\"5ce25n9a-4c5f-45c9-8362-ef3da29c66c5\"},{\"displayName\":\"jcanlmstDoebnaa\",\"oldValue\":null,\"newValue\":\"True\"},{\"displayName\":\"Name\",\"oldValue\":null,\"newValue\":\"Self-service Pilot\"}],\"durationInMilliseconds\":3343}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "provisioning",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-provisioning-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

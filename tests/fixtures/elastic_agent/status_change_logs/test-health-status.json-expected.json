@@ -1,0 +1,247 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "health_status": "healthy",
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "online"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "health_status": "offline",
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "offline"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "health_status": "unhealthy",
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "error"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "health_status": "unhealthy",
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "degraded"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "health_status": "updating",
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "updating"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "health_status": "updating",
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "enrolling"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "health_status": "updating",
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "unenrolling"
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "online"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "offline"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "error"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "degraded"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "updating"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "enrolling"
+    },
+    {
+      "@timestamp": "2052-01-15T10:30:00.000Z",
+      "agent": {
+        "id": "f2b3c4d5-e6f7-8a9b-b0c1-d2e3f4g5h6i7"
+      },
+      "agentless": false,
+      "data_stream": {
+        "dataset": "elastic_agent.status_change",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "hostname": "xfnz-wwuz",
+      "policy_id": "test-policy",
+      "space_id": "default",
+      "status": "unenrolling"
+    }
+  ],
+  "meta": {
+    "data_stream": "status_change_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-elastic_agent-status_change_logs-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "elastic_agent",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

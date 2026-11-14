@@ -743,9 +743,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: if (ctx.google_workspace.admin == null) {\n  ctx.google_workspace.admin = new HashMap();\n} for (int i = 0; i < ctx.json.events.parameters.length; ++i) {\n  if (ctx.json.events.parameters[i].value != null) {\n    ctx.google_workspace.admin[ctx.json.events.parameters[i].name] = ctx.json.events.parameters[i].value;\n  }\n  if (ctx.json.events.parameters[i].intValue != null) {\n    ctx.google_workspace.admin[ctx.json.events.parameters[i].name] = ctx.json.events.parameters[i].intValue;\n  }\n  if (ctx.json.events.parameters[i].multiValue != null) {\n    ctx.google_workspace.admin[ctx.json.events.parameters[i].name] = ctx.json.events.parameters[i].multiValue;\n  }\n  if (ctx.json.events.parameters[i].messageValue != null) {\n    ctx.google_workspace.admin[ctx.json.events.parameters[i].name] = ctx.json.events.parameters[i].messageValue;\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -762,9 +760,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: for (int i = 0; i < ctx.google_workspace.admin.SETTING_METADATA.parameter.length; ++i) {\n  def value = ctx.google_workspace.admin.SETTING_METADATA.parameter[i].value;\n  if (value != null) {\n    ctx.google_workspace.admin.SETTING_METADATA[ctx.google_workspace.admin.SETTING_METADATA.parameter[i].name] = value;\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1946,9 +1942,7 @@ impl Transform for Default {
                     })
             };
             if _cond {
-                // Painless script
-                // Source: String[] splitmail = ctx.source.user.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} ctx.user.name = splitmail[0]; ctx.source.user.name = splitmail[0]; ctx.user.domain = splitmail[1]; ctx.source.user.domain = splitmail[1];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1970,9 +1964,7 @@ impl Transform for Default {
                         })
             };
             if _cond {
-                // Painless script
-                // Source: String[] splitmail = ctx.google_workspace.admin.group.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.group == null) {\n  ctx.group = new HashMap();\n} ctx.group.name = splitmail[0]; ctx.group.domain = splitmail[1];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1994,9 +1986,7 @@ impl Transform for Default {
                         })
             };
             if _cond {
-                // Painless script
-                // Source: String[] splitmail = ctx.google_workspace.admin.user.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} if (ctx.user.target == null) {\n  ctx.user.target = new HashMap();\n} ctx.user.target.name = splitmail[0]; ctx.user.target.domain = splitmail[1]; ctx.user.target.email = ctx.google_workspace.admin.user.email;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2021,9 +2011,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.start") && event.has_value("event.end") };
             if _cond {
-                // Painless script
-                // Source: ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ZonedDateTime end = ZonedDateTime.parse(ctx.event.end); ctx.event.duration = ChronoUnit.NANOS.between(start, end);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2227,8 +2215,7 @@ impl Transform for Default {
             event.remove("google_workspace.admin.RELATED_ALERT_ID");
             event.remove("google_workspace.admin.SETTING_METADATA");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1,0 +1,258 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-06-06T12:13:03.753Z",
+      "agent": {
+        "ephemeral_id": "69eb0501-d894-4f1f-acf2-a6b8f8d07c41",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "create",
+        "code": "BloxOne-Audit-Log",
+        "created": "2053-06-06T12:13:03.753Z",
+        "id": "763094ecc5bb1f451bf981b0f900e7f0",
+        "kind": "event",
+        "original": "<134>1 2053-06-06T12:12:54Z TDXHLB_GMOP dataconnector - AUDIT-LOG - CEF:0|Infoblox|Data Connector|2.1.3|BloxOne-Audit-Log|BloxOne Audit Log|1|act=Create app=identity src=203.0.113.248 cat=\"BloxOne Audit Log\" InfobloxEventVersion= InfobloxHTTPReqBody={\"expires_at\":\"2054-07-05T12:11:00.000Z\",\"name\":\"John\",\"user_id\":\"e94d0b51-94b7-4e50-857f-0e059e23584f\"} InfobloxHTTPRespBody={\"result\":{\"account_id\":\"identity/accounts/77662f5e-7a86-4929-bff3-994fa5120513\",\"compartment_id\":\"\",\"created_at\":\"2053-06-06T12:12:54.686856167Z\",\"created_by\":\"rvny@gmail.com\",\"expires_at\":\"2054-07-05T12:11:00Z\",\"id\":\"identity/apikeys/763094ecc5bb1f451bf981b0f900e7f0\",\"key\":\"***\",\"name\":\"John\",\"state\":\"enabled\",\"type\":\"service\",\"updated_at\":\"2053-06-06T12:12:54.686856167Z\",\"user_id\":\"identity/users/e94d0b51-94b7-4e50-857f-0e059e23584f\"},\"success\":{\"message\":\"Created\"}} msg=\"Service API Key created\" InfobloxResourceDesc= InfobloxResourceId=763094ecc5bb1f451bf981b0f900e7f0 InfobloxResourceType=apikeys outcome=Success InfobloxSubjectGroups=[user,act_admin,ib-access-control-admin,ib-interactive-user,ib-soc-insight-admin,ib-td-admin,ib-bloxone-nios-user,ib-trusted-partner,ib-soc-insight-user,ib-ddi-user,ib-td-user,ib-ddi-admin] InfobloxSubjectType=User suser=rvny@gmail.com",
+        "outcome": "success",
+        "severity": 21
+      },
+      "host": {
+        "name": "co7-50-9-149"
+      },
+      "http": {
+        "request": {
+          "body": {
+            "content": "{\"expires_at\":\"2054-07-05T12:11:00.000Z\",\"name\":\"John\",\"user_id\":\"e94d0b51-94b7-4e50-857f-0e059e23584f\"}"
+          }
+        },
+        "response": {
+          "body": {
+            "content": "{\"result\":{\"account_id\":\"identity/accounts/77662f5e-7a86-4929-bff3-994fa5120513\",\"compartment_id\":\"\",\"created_at\":\"2053-06-06T12:12:54.686856167Z\",\"created_by\":\"rvny@gmail.com\",\"expires_at\":\"2054-07-05T12:11:00Z\",\"id\":\"identity/apikeys/763094ecc5bb1f451bf981b0f900e7f0\",\"key\":\"***\",\"name\":\"John\",\"state\":\"enabled\",\"type\":\"service\",\"updated_at\":\"2053-06-06T12:12:54.686856167Z\",\"user_id\":\"identity/users/e94d0b51-94b7-4e50-857f-0e059e23584f\"},\"success\":{\"message\":\"Created\"}}"
+          }
+        }
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "identity",
+          "created": "2053-06-06T12:13:03.753Z",
+          "device": {
+            "action": "Create",
+            "event_category": "\"BloxOne Audit Log\"",
+            "event_class_id": "BloxOne-Audit-Log",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "http": {
+              "req_body": {
+                "expires_at": "2054-07-05T12:11:00.000Z",
+                "name": "John",
+                "user_id": "e94d0b51-94b7-4e50-857f-0e059e23584f"
+              },
+              "resp_body": {
+                "result": {
+                  "account_id": "identity/accounts/77662f5e-7a86-4929-bff3-994fa5120513",
+                  "created_at": "2053-06-06T12:12:54.686856167Z",
+                  "created_by": "rvny@gmail.com",
+                  "expires_at": "2054-07-05T12:11:00Z",
+                  "id": "identity/apikeys/763094ecc5bb1f451bf981b0f900e7f0",
+                  "key": "***",
+                  "name": "John",
+                  "state": "enabled",
+                  "type": "service",
+                  "updated_at": "2053-06-06T12:12:54.686856167Z",
+                  "user_id": "identity/users/e94d0b51-94b7-4e50-857f-0e059e23584f"
+                },
+                "success": {
+                  "message": "Created"
+                }
+              }
+            },
+            "resource": {
+              "id": "763094ecc5bb1f451bf981b0f900e7f0",
+              "type": "apikeys"
+            },
+            "subject": {
+              "groups": "[user,act_admin,ib-access-control-admin,ib-interactive-user,ib-soc-insight-admin,ib-td-admin,ib-bloxone-nios-user,ib-trusted-partner,ib-soc-insight-user,ib-ddi-user,ib-td-user,ib-ddi-admin]",
+              "type": "User"
+            }
+          },
+          "message": "Service API Key created",
+          "name": "BloxOne Audit Log",
+          "outcome": "Success",
+          "severity": 1,
+          "source": {
+            "address": "203.0.113.248",
+            "user_name": "rvny@gmail.com"
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "hostname": "TDXHLB_GMOP",
+            "msgid": "AUDIT-LOG",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "198.51.100.211:39126"
+        }
+      },
+      "message": "Service API Key created",
+      "network": {
+        "application": "identity"
+      },
+      "observer": {
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co7-50-9-149"
+        ],
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "rvny@gmail.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "user": {
+          "name": "rvny@gmail.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-06-06T12:13:03.753Z",
+      "agent": {
+        "ephemeral_id": "69eb0501-d894-4f1f-acf2-a6b8f8d07c41",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "BloxOne-Audit-Log",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxEventVersion": "",
+          "InfobloxHTTPReqBody": "{\"expires_at\":\"2054-07-05T12:11:00.000Z\",\"name\":\"John\",\"user_id\":\"e94d0b51-94b7-4e50-857f-0e059e23584f\"}",
+          "InfobloxHTTPRespBody": "{\"result\":{\"account_id\":\"identity/accounts/77662f5e-7a86-4929-bff3-994fa5120513\",\"compartment_id\":\"\",\"created_at\":\"2053-06-06T12:12:54.686856167Z\",\"created_by\":\"rvny@gmail.com\",\"expires_at\":\"2054-07-05T12:11:00Z\",\"id\":\"identity/apikeys/763094ecc5bb1f451bf981b0f900e7f0\",\"key\":\"***\",\"name\":\"John\",\"state\":\"enabled\",\"type\":\"service\",\"updated_at\":\"2053-06-06T12:12:54.686856167Z\",\"user_id\":\"identity/users/e94d0b51-94b7-4e50-857f-0e059e23584f\"},\"success\":{\"message\":\"Created\"}}",
+          "InfobloxResourceDesc": "",
+          "InfobloxResourceId": "763094ecc5bb1f451bf981b0f900e7f0",
+          "InfobloxResourceType": "apikeys",
+          "InfobloxSubjectGroups": "[user,act_admin,ib-access-control-admin,ib-interactive-user,ib-soc-insight-admin,ib-td-admin,ib-bloxone-nios-user,ib-trusted-partner,ib-soc-insight-user,ib-ddi-user,ib-td-user,ib-ddi-admin]",
+          "InfobloxSubjectType": "User",
+          "applicationProtocol": "identity",
+          "deviceAction": "Create",
+          "deviceEventCategory": "\"BloxOne Audit Log\"",
+          "eventOutcome": "Success",
+          "message": "\"Service API Key created\"",
+          "sourceAddress": "203.0.113.248",
+          "sourceUserName": "rvny@gmail.com"
+        },
+        "name": "BloxOne Audit Log",
+        "severity": "1",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "action": "Create",
+        "code": "BloxOne-Audit-Log",
+        "original": "<134>1 2053-06-06T12:12:54Z TDXHLB_GMOP dataconnector - AUDIT-LOG - CEF:0|Infoblox|Data Connector|2.1.3|BloxOne-Audit-Log|BloxOne Audit Log|1|act=Create app=identity src=203.0.113.248 cat=\"BloxOne Audit Log\" InfobloxEventVersion= InfobloxHTTPReqBody={\"expires_at\":\"2054-07-05T12:11:00.000Z\",\"name\":\"John\",\"user_id\":\"e94d0b51-94b7-4e50-857f-0e059e23584f\"} InfobloxHTTPRespBody={\"result\":{\"account_id\":\"identity/accounts/77662f5e-7a86-4929-bff3-994fa5120513\",\"compartment_id\":\"\",\"created_at\":\"2053-06-06T12:12:54.686856167Z\",\"created_by\":\"rvny@gmail.com\",\"expires_at\":\"2054-07-05T12:11:00Z\",\"id\":\"identity/apikeys/763094ecc5bb1f451bf981b0f900e7f0\",\"key\":\"***\",\"name\":\"John\",\"state\":\"enabled\",\"type\":\"service\",\"updated_at\":\"2053-06-06T12:12:54.686856167Z\",\"user_id\":\"identity/users/e94d0b51-94b7-4e50-857f-0e059e23584f\"},\"success\":{\"message\":\"Created\"}} msg=\"Service API Key created\" InfobloxResourceDesc= InfobloxResourceId=763094ecc5bb1f451bf981b0f900e7f0 InfobloxResourceType=apikeys outcome=Success InfobloxSubjectGroups=[user,act_admin,ib-access-control-admin,ib-interactive-user,ib-soc-insight-admin,ib-td-admin,ib-bloxone-nios-user,ib-trusted-partner,ib-soc-insight-user,ib-ddi-user,ib-td-user,ib-ddi-admin] InfobloxSubjectType=User suser=rvny@gmail.com",
+        "outcome": "Success",
+        "severity": 1
+      },
+      "host": {
+        "name": "co7-50-9-149"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "198.51.100.211:39126"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "hostname": "TDXHLB_GMOP",
+          "msgid": "AUDIT-LOG",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "\"Service API Key created\"",
+      "network": {
+        "application": "identity"
+      },
+      "observer": {
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "user": {
+          "name": "rvny@gmail.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-infoblox_threat_defense-event-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "infoblox_threat_defense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

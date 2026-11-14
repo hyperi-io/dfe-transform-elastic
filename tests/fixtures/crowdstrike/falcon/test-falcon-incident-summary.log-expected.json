@@ -1,0 +1,78 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-06-15T16:06:52.400Z",
+      "crowdstrike": {
+        "event": {
+          "FineScore": 0.5,
+          "IncidentType": "1",
+          "LMHostIDs": [
+            "TESTHOSTID1",
+            "TESTHOSTID2"
+          ],
+          "State": "open"
+        },
+        "metadata": {
+          "customerIDString": "123123abcd",
+          "eventType": "IncidentSummaryEvent",
+          "offset": 2,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "incident"
+        ],
+        "category": [
+          "malware"
+        ],
+        "created": "2051-06-15T16:06:52.400Z",
+        "end": "2051-06-04T02:14:52.000Z",
+        "id": "inc:123:abc",
+        "kind": "alert",
+        "original": "{\"metadata\":{\"customerIDString\":\"123123abcd\",\"offset\":2,\"eventType\":\"IncidentSummaryEvent\",\"eventCreationTime\":2570458012400,\"version\":\"1.0\"},\"event\":{\"IncidentStartTime\":2569457691,\"IncidentEndTime\":2569457692,\"FalconHostLink\":\"https://falcon.crowdstrike.com/crowdscore/incidents/details/inc:123:abc?_cid=CID\",\"State\":\"open\",\"FineScore\":0.5,\"LateralMovement\":0,\"IncidentType\":1,\"IncidentID\":\"inc:123:abc\",\"HostID\":\"TESTHOSTID\",\"LMHostIDs\":[\"TESTHOSTID1\",\"TESTHOSTID2\"]}}",
+        "reference": "https://falcon.crowdstrike.com/crowdscore/incidents/details/inc:123:abc?_cid=CID",
+        "start": "2051-06-04T02:14:51.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "TESTHOSTID"
+      },
+      "message": "Incident score 0.5",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"metadata\":{\"customerIDString\":\"123123abcd\",\"offset\":2,\"eventType\":\"IncidentSummaryEvent\",\"eventCreationTime\":2570458012400,\"version\":\"1.0\"},\"event\":{\"IncidentStartTime\":2569457691,\"IncidentEndTime\":2569457692,\"FalconHostLink\":\"https://falcon.crowdstrike.com/crowdscore/incidents/details/inc:123:abc?_cid=CID\",\"State\":\"open\",\"FineScore\":0.5,\"LateralMovement\":0,\"IncidentType\":1,\"IncidentID\":\"inc:123:abc\",\"HostID\":\"TESTHOSTID\",\"LMHostIDs\":[\"TESTHOSTID1\",\"TESTHOSTID2\"]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "falcon",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-falcon-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

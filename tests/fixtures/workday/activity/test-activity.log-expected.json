@@ -1,0 +1,334 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-04-02T12:46:18.012Z",
+      "device": {
+        "type": "desktop"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"activityAction\":\"READ\",\"taskId\":\"a98b519968cb942721ae467a249a748b\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\",\"requestTime\":\"2054-04-02T12:46:18.012Z\",\"taskDisplayName\":\"privacy/activityLogging/userActivity (GET) (v1 -  )\",\"systemAccount\":\"wd-implementer\",\"deviceType\":\"Desktop\",\"ipAddress\":\"127.0.0.1\",\"sessionId\":\"e6e0fd\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1"
+        ],
+        "user": [
+          "wd-implementer"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "wd-implementer"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "146.0.0.0"
+      },
+      "workday": {
+        "activity": {
+          "activity_action": "READ",
+          "session_id": "e6e0fd",
+          "task_display_name": "privacy/activityLogging/userActivity (GET) (v1 -  )",
+          "task_id": "a98b519968cb942721ae467a249a748b"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-07T08:02:58.655Z",
+      "device": {
+        "type": "desktop"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"activityAction\":\"READ\",\"systemAccount\":\"wd-implementer\",\"requestTime\":\"2054-04-07T08:02:58.655Z\",\"taskDisplayName\":\"Get OMS Session Data (Web Service)\",\"sessionId\":\"d54237\",\"target\":{\"descriptor\":\"wd-implementer / Workday Implementer\",\"id\":\"23092c25c09156b3ea54042c568887a2\"},\"taskId\":\"aa8dbb4f616e93bb34724569d4a2bbb5\",\"ipAddress\":\"127.0.0.1\",\"deviceType\":\"Desktop\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1"
+        ],
+        "user": [
+          "wd-implementer"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "wd-implementer"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "146.0.0.0"
+      },
+      "workday": {
+        "activity": {
+          "activity_action": "READ",
+          "session_id": "d54237",
+          "target": {
+            "descriptor": "wd-implementer / Workday Implementer",
+            "id": "23092c25c09156b3ea54042c568887a2"
+          },
+          "task_display_name": "Get OMS Session Data (Web Service)",
+          "task_id": "aa8dbb4f616e93bb34724569d4a2bbb5"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-07T10:29:14.163Z",
+      "device": {
+        "type": "desktop"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "other",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"activityAction\":\"OTHER\",\"systemAccount\":\"wd-implementer\",\"requestTime\":\"2054-04-07T10:29:14.163Z\",\"taskDisplayName\":\"absenceManagement/balances/view (GET) (v1 -  )\",\"sessionId\":\"2a4618\",\"taskId\":\"815530f4bb8525032b54a108421d823f\",\"ipAddress\":\"127.0.0.1\",\"deviceType\":\"Desktop\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1"
+        ],
+        "user": [
+          "wd-implementer"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "wd-implementer"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Edge",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "146.0.0.0"
+      },
+      "workday": {
+        "activity": {
+          "activity_action": "OTHER",
+          "session_id": "2a4618",
+          "task_display_name": "absenceManagement/balances/view (GET) (v1 -  )",
+          "task_id": "815530f4bb8525032b54a108421d823f"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-07T18:34:42.548Z",
+      "device": {
+        "type": "desktop"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"activityAction\":\"READ\",\"systemAccount\":\"wd-implementer\",\"requestTime\":\"2054-04-07T18:34:42.548Z\",\"taskDisplayName\":\"Submit OAuth 2.0 Consent (Web Service)\",\"sessionId\":\"b8543a\",\"taskId\":\"3a791680f0fe39e17e5f90ab20b583cd\",\"ipAddress\":\"127.0.0.1\",\"deviceType\":\"Desktop\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1"
+        ],
+        "user": [
+          "wd-implementer"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "wd-implementer"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "147.0.0.0"
+      },
+      "workday": {
+        "activity": {
+          "activity_action": "READ",
+          "session_id": "b8543a",
+          "task_display_name": "Submit OAuth 2.0 Consent (Web Service)",
+          "task_id": "3a791680f0fe39e17e5f90ab20b583cd"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-07T19:03:29.024Z",
+      "device": {
+        "type": "desktop"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"activityAction\":\"READ\",\"systemAccount\":\"wd-implementer\",\"requestTime\":\"2054-04-07T19:03:29.024Z\",\"taskDisplayName\":\"Get OMS Session Data (Web Service)\",\"sessionId\":\"8ef12b\",\"target\":{\"descriptor\":\"wd-implementer / Workday Implementer\",\"id\":\"23092c25c09156b3ea54042c568887a2\"},\"taskId\":\"aa8dbb4f616e93bb34724569d4a2bbb5\",\"ipAddress\":\"127.0.0.1\",\"deviceType\":\"Desktop\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1"
+        ],
+        "user": [
+          "wd-implementer"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "wd-implementer"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "146.0.0.0"
+      },
+      "workday": {
+        "activity": {
+          "activity_action": "READ",
+          "session_id": "8ef12b",
+          "target": {
+            "descriptor": "wd-implementer / Workday Implementer",
+            "id": "23092c25c09156b3ea54042c568887a2"
+          },
+          "task_display_name": "Get OMS Session Data (Web Service)",
+          "task_id": "aa8dbb4f616e93bb34724569d4a2bbb5"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"activityAction\":\"READ\",\"taskId\":\"a98b519968cb942721ae467a249a748b\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\",\"requestTime\":\"2054-04-02T12:46:18.012Z\",\"taskDisplayName\":\"privacy/activityLogging/userActivity (GET) (v1 -  )\",\"systemAccount\":\"wd-implementer\",\"deviceType\":\"Desktop\",\"ipAddress\":\"127.0.0.1\",\"sessionId\":\"e6e0fd\"}"
+    },
+    {
+      "message": "{\"activityAction\":\"READ\",\"systemAccount\":\"wd-implementer\",\"requestTime\":\"2054-04-07T08:02:58.655Z\",\"taskDisplayName\":\"Get OMS Session Data (Web Service)\",\"sessionId\":\"d54237\",\"target\":{\"descriptor\":\"wd-implementer / Workday Implementer\",\"id\":\"23092c25c09156b3ea54042c568887a2\"},\"taskId\":\"aa8dbb4f616e93bb34724569d4a2bbb5\",\"ipAddress\":\"127.0.0.1\",\"deviceType\":\"Desktop\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\"}"
+    },
+    {
+      "message": "{\"activityAction\":\"OTHER\",\"systemAccount\":\"wd-implementer\",\"requestTime\":\"2054-04-07T10:29:14.163Z\",\"taskDisplayName\":\"absenceManagement/balances/view (GET) (v1 -  )\",\"sessionId\":\"2a4618\",\"taskId\":\"815530f4bb8525032b54a108421d823f\",\"ipAddress\":\"127.0.0.1\",\"deviceType\":\"Desktop\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0\"}"
+    },
+    {
+      "message": "{\"activityAction\":\"READ\",\"systemAccount\":\"wd-implementer\",\"requestTime\":\"2054-04-07T18:34:42.548Z\",\"taskDisplayName\":\"Submit OAuth 2.0 Consent (Web Service)\",\"sessionId\":\"b8543a\",\"taskId\":\"3a791680f0fe39e17e5f90ab20b583cd\",\"ipAddress\":\"127.0.0.1\",\"deviceType\":\"Desktop\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"}"
+    },
+    {
+      "message": "{\"activityAction\":\"READ\",\"systemAccount\":\"wd-implementer\",\"requestTime\":\"2054-04-07T19:03:29.024Z\",\"taskDisplayName\":\"Get OMS Session Data (Web Service)\",\"sessionId\":\"8ef12b\",\"target\":{\"descriptor\":\"wd-implementer / Workday Implementer\",\"id\":\"23092c25c09156b3ea54042c568887a2\"},\"taskId\":\"aa8dbb4f616e93bb34724569d4a2bbb5\",\"ipAddress\":\"127.0.0.1\",\"deviceType\":\"Desktop\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "activity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-workday-activity-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "workday",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

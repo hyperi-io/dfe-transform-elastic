@@ -38,9 +38,7 @@ impl Transform for Default {
                 }
                 dot_expand(event, "", "group.id")?;
                 dot_expand(event, "", "user.id")?;
-                // Painless script
-                // Source: if (ctx['host.hostname'] == null) {\n  return;\n}\nif (ctx.network_traffic == null) {\n  ctx.network_traffic = new HashMap();\n}\nif (ctx.network_traffic.nfs == null) {\n  ctx.network_traffic.nfs = new HashMap();\n}\nif (ctx.network_traffic.nfs.host == null) {\n  ctx.network_traffic.nfs.host = new HashMap();\n}\nctx.network_traffic.nfs.host['hostname'] = ctx['host.hostname'];\nctx.remove('host.hostname');\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

@@ -1,0 +1,248 @@
+{
+  "expected": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:30 php-fpm[99932]: /index.php: Successful login for user 'admin' from: 10.72.134.126 (RADIUS/PFsense Radius)",
+        "outcome": "success",
+        "provider": "php-fpm"
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "/index.php: Successful login for user 'admin' from: 10.72.134.126 (RADIUS/PFsense Radius)",
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "php-fpm",
+        "pid": 99932
+      },
+      "related": {
+        "ip": [
+          "10.72.134.126"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "address": "10.72.134.126",
+        "ip": "10.72.134.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin"
+      }
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:30 php-fpm[99932]: /index.php: Successful login for user 'admin' from: 10.72.134.126 (Local Database Fallback)",
+        "outcome": "success",
+        "provider": "php-fpm"
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "/index.php: Successful login for user 'admin' from: 10.72.134.126 (Local Database Fallback)",
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "php-fpm",
+        "pid": 99932
+      },
+      "related": {
+        "ip": [
+          "10.72.134.126"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "address": "10.72.134.126",
+        "ip": "10.72.134.126"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin"
+      }
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:30 php-fpm[99932]: /index.php: webConfigurator authentication error for user 'asdf' from: 192.0.2.87",
+        "outcome": "failure",
+        "provider": "php-fpm"
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "/index.php: webConfigurator authentication error for user 'asdf' from: 192.0.2.87",
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "php-fpm",
+        "pid": 99932
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "asdf"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "asdf"
+      }
+    },
+    {
+      "@timestamp": "2054-05-12T11:57:53.381Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "<27>1 2054-05-12T19:57:53.381917+08:00 ovts-7.areggve.local php-fpm 18801 - - /firewall_rules.php: Configuration Change: alice.johnson@198.51.100.10 (Local Database): Firewall: Rules - disabled a firewall rule.",
+        "provider": "php-fpm",
+        "timezone": "+08:00"
+      },
+      "host": {
+        "name": "ovts-7.areggve.local"
+      },
+      "log": {
+        "syslog": {
+          "priority": 27
+        }
+      },
+      "message": "/firewall_rules.php: Configuration Change: alice.johnson@198.51.100.10 (Local Database): Firewall: Rules - disabled a firewall rule.",
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "php-fpm",
+        "pid": 18801
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:30 php-fpm[99932]: /index.php: Successful login for user 'admin' from: 10.72.134.126 (RADIUS/PFsense Radius)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:30 php-fpm[99932]: /index.php: Successful login for user 'admin' from: 10.72.134.126 (Local Database Fallback)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:30 php-fpm[99932]: /index.php: webConfigurator authentication error for user 'asdf' from: 192.0.2.87",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<27>1 2054-05-12T19:57:53.381917+08:00 ovts-7.areggve.local php-fpm 18801 - - /firewall_rules.php: Configuration Change: alice.johnson@198.51.100.10 (Local Database): Firewall: Rules - disabled a firewall rule.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-pfsense-log-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "pfsense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -97,9 +97,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def eventType = new ArrayList(); if (ctx.event.type != null) {\n  eventType = ctx.event.type;\n} def val = ctx.json.action.type; if (val.toLowerCase().contains('remove') || val.toLowerCase().contains('delete')) {\n  eventType.add('deletion');\n} else if (val.toLowerCase().contains('update') || val.toLowerCase().contains('change')) {\n  eventType.add('change');\n} else if (val.toLowerCase().contains('create') || val.toLowerCase().contains('add')) {\n  eventType.add('creation');\n} else if (val.toLowerCase().contains('user')) {\n  eventType.add('user');\n} else if (val.toLowerCase().contains('group')) {\n  eventType.add('group');\n} else {\n  eventType.add('info');\n} ctx.event.put('type', eventType);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -175,9 +173,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def convertKeysToBoolean(Map versionMap, String[] keysToConvert) {\n    def convertedMap = [: ];\n    versionMap.entrySet().forEach(entry -> {\n        def key = entry.getKey().toString();\n        def value = entry.getValue();\n        if (Arrays.asList(keysToConvert).contains(key)) {\n            if (value instanceof String) {\n                convertedMap[key] = Boolean.parseBoolean(value);\n            } else if (value instanceof Boolean) {\n                convertedMap[key] = (Boolean) value;\n            } else {\n                throw new Exception('Unsupported type');\n            }\n        } else {\n            convertedMap[key] = value;\n        }\n    });\n    return convertedMap;\n}\ndef valuesToConvert = new String[] {\n    'read',\n    'write',\n    'owning_team_only'\n};\nArrayList keysToConvert = new ArrayList([\n    'access',\n    'new_access',\n    'new_link_role',\n    'old_access',\n    'old_link_role'\n]);\ndef changeArray = ctx.json.action.changes;\nif (changeArray instanceof List) {\n    for (int i = 0; i < changeArray.size(); i++) {\n        for (def j = 0; j < keysToConvert.length; j++) {\n            if (changeArray[i][keysToConvert[j]] != null) {\n                changeArray[i][keysToConvert[j]] = convertKeysToBoolean(changeArray[i][keysToConvert[j]], valuesToConvert);\n            }\n        }\n        if (changeArray[i]['new_link_role'] != null && changeArray[i]['new_link_role']['access'] != null) {\n            changeArray[i]['new_link_role']['access'] = convertKeysToBoolean(changeArray[i]['new_link_role']['access'], valuesToConvert);\n        }\n        if (changeArray[i]['old_link_role'] != null && changeArray[i]['old_link_role']['access'] != null) {\n            changeArray[i]['old_link_role']['access'] = convertKeysToBoolean(changeArray[i]['old_link_role']['access'], valuesToConvert);\n        }\n        changeArray[i] = convertKeysToBoolean(changeArray[i], valuesToConvert);\n    }\n}\nctx.json.action.put('changes', changeArray);\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -225,9 +221,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def relatedUser = new HashSet();\ndef relatedList = new ArrayList();\nif (ctx.related == null) {\n    ctx.related = new HashMap();\n}\nif (ctx.related.user != null) {\n    relatedUser.add(ctx.related.user);\n}\ndef changeArray = ctx.json.action.changes;\nif (changeArray instanceof List) {\n    for (int i = 0; i < changeArray.size(); i++) {\n        if (changeArray[i]['user'] != null) {\n            if (changeArray[i]['user']['display_name'] != null) {\n                relatedUser.add(changeArray[i]['user']['display_name']);\n            }\n            if (changeArray[i]['user']['email'] != null) {\n                relatedUser.add(changeArray[i]['user']['email']);\n            }\n            if (changeArray[i]['user']['id'] != null) {\n                relatedUser.add(changeArray[i]['user']['id']);\n            }\n        }\n        if (changeArray[i]['new_owner'] != null && changeArray[i]['new_owner']['email'] != null) {\n            relatedUser.add(changeArray[i]['new_owner']['email']);\n        }\n        if (changeArray[i]['recipient'] != null) {\n            relatedUser.add(changeArray[i]['recipient']);\n        }\n    }\n}\n for (def res : relatedUser) {\n    relatedList.add(res);\n }\nctx.related.put('user', relatedList);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -393,8 +387,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.event.duration = (ctx.json.action.end_timestamp - ctx.json.action.start_timestamp) * 1000000;
+                    // The pipeline's script, emitted as the runtime's equivalent
                     scale_field(
                         event,
                         &ScaleField::between(
@@ -1784,8 +1777,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

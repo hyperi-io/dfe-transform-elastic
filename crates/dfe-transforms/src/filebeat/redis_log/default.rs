@@ -61,9 +61,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("log.level") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.log.level == params.dot) {\n  ctx.log.level = params.debug;\n} else if (ctx.log.level == params.dash) {\n  ctx.log.level = params.verbose;\n} else if (ctx.log.level == params.asterisk) {\n  ctx.log.level = params.notice;\n} else if (ctx.log.level == params.hash) {\n  ctx.log.level = params.warning;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -77,9 +75,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("redis.log.role") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.redis.log.role == params.master_abbrev) {\n  ctx.redis.log.role = params.master;\n} else if (ctx.redis.log.role == params.slave_abbrev) {\n  ctx.redis.log.role = params.slave;\n} else if (ctx.redis.log.role == params.child_abbrev) {\n  ctx.redis.log.role = params.child;\n} else if (ctx.redis.log.role == params.sentinel_abbrev) {\n  ctx.redis.log.role = params.sentinel;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

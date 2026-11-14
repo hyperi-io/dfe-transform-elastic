@@ -1,0 +1,293 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-12-07T09:22:41.485Z",
+      "cybersixgill": {
+        "actor": "layna61524",
+        "deleted_at": "2049-12-12T09:22:41.485Z",
+        "expiration_duration": "5d",
+        "feedname": "darkweb_vt_links",
+        "mitre": {
+          "description": "Mitre attack tactics and technique reference"
+        },
+        "title": "[GET] LAYNA'S LAGNIAPPE - DECEMBER 6, 2021",
+        "virustotal": {
+          "pr": "none",
+          "url": "https://virustotal.com/#/file/3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"confidence\":80,\"created\":\"2049-12-07T09:22:41.485Z\",\"description\":\"Virustotal link that appeared on a dark web site, generally to show malware that is undetected\",\"extensions\":{\"extension-definition--4582f9eb-bad5-46ac-bd26-1b4201d52537\":{\"extension_type\":\"toplevel-property-extension\"}},\"external_references\":[{\"positive_rate\":\"none\",\"source_name\":\"VirusTotal\",\"url\":\"https://virustotal.com/#/file/3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c\"},{\"description\":\"Mitre attack tactics and technique reference\",\"mitre_attack_tactic\":\"Test capabilities\",\"mitre_attack_tactic_id\":\"TA0025\",\"mitre_attack_tactic_url\":\"https://attack.mitre.org/tactics/TA0025/\",\"mitre_attack_technique\":\"Test signature detection for file upload/email filters\",\"mitre_attack_technique_id\":\"T1361\",\"mitre_attack_technique_url\":\"https://attack.mitre.org/techniques/T1361/\",\"source_name\":\"mitre-attack\"}],\"id\":\"indicator--b34d3caa-e4e2-49bd-9b57-f585728320e8\",\"indicator_types\":[\"malicious-activity\"],\"lang\":\"en\",\"modified\":\"2049-12-07T09:22:41.485Z\",\"name\":\"55cee9affecea0b848aca4f0fff3b6ec;c92cb31d82960ff1a57725cf87369cde92bc66f4;3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c\",\"pattern\":\"[file:hashes.MD5 = '55cee9affecea0b848aca4f0fff3b6ec' OR file:hashes.'SHA-1' = 'c92cb31d82960ff1a57725cf87369cde92bc66f4' OR file:hashes.'SHA-256' = '3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c']\",\"pattern_type\":\"stix\",\"sixgill_actor\":\"layna61524\",\"sixgill_confidence\":80,\"sixgill_feedid\":\"darkfeed_002\",\"sixgill_feedname\":\"darkweb_vt_links\",\"sixgill_post_virustotallink\":\"https://virustotal.com/#/file/3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c\",\"sixgill_postid\":\"f293791ff2e8465f1e0f8a75d6086294f40516f8\",\"sixgill_posttitle\":\"[GET] LAYNA'S LAGNIAPPE - DECEMBER 6, 2021\",\"sixgill_severity\":70,\"sixgill_source\":\"forum_bestblackhat\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"valid_from\":\"2049-12-07T00:03:00Z\"}",
+        "severity": 70,
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "description": "Virustotal link that appeared on a dark web site, generally to show malware that is undetected",
+          "file": {
+            "hash": {
+              "md5": "55cee9affecea0b848aca4f0fff3b6ec",
+              "sha1": "c92cb31d82960ff1a57725cf87369cde92bc66f4",
+              "sha256": "3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c"
+            }
+          },
+          "first_seen": "2049-12-07T00:03:00.000Z",
+          "last_seen": "2049-12-07T09:22:41.485Z",
+          "name": "3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c",
+          "provider": "forum_bestblackhat",
+          "reference": "https://portal.cybersixgill.com/#/search?q=_id:f293791ff2e8465f1e0f8a75d6086294f40516f8",
+          "type": "file"
+        },
+        "tactic": {
+          "id": [
+            "TA0025"
+          ],
+          "name": [
+            "Test capabilities"
+          ],
+          "reference": [
+            "https://attack.mitre.org/tactics/TA0025/"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-12-07T18:04:26.451Z",
+      "cybersixgill": {
+        "actor": "CoinProject.info",
+        "deleted_at": "2049-12-12T18:04:26.451Z",
+        "expiration_duration": "5d",
+        "feedname": "malware_download_urls",
+        "mitre": {
+          "description": "Mitre attack tactics and technique reference"
+        },
+        "title": "Банковский регулятор США напомнил о рисках внедрения криптовалют",
+        "virustotal": {}
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"confidence\":80,\"created\":\"2049-12-07T18:04:26.451Z\",\"description\":\"Malware available for download from file-sharing sites\",\"extensions\":{\"extension-definition--4582f9eb-bad5-46ac-bd26-1b4201d52537\":{\"extension_type\":\"toplevel-property-extension\"}},\"external_references\":[{\"description\":\"Mitre attack tactics and technique reference\",\"mitre_attack_tactic\":\"Build Capabilities\",\"mitre_attack_tactic_id\":\"TA0024\",\"mitre_attack_tactic_url\":\"https://attack.mitre.org/tactics/TA0024/\",\"mitre_attack_technique\":\"Obtain/re-use payloads\",\"mitre_attack_technique_id\":\"T1346\",\"mitre_attack_technique_url\":\"https://attack.mitre.org/techniques/T1346/\",\"source_name\":\"mitre-attack\"}],\"id\":\"indicator--ade54b36-752d-4107-a2ed-dd666fa1cb85\",\"indicator_types\":[\"malicious-activity\"],\"lang\":\"ru\",\"modified\":\"2049-12-07T18:04:26.451Z\",\"name\":\"https://ru.scribd.com/user/456422024/ForkLog#from_embed\",\"pattern\":\"[url:value = 'https://ru.scribd.com/user/456422024/ForkLog#from_embed']\",\"pattern_type\":\"stix\",\"sixgill_actor\":\"CoinProject.info\",\"sixgill_confidence\":80,\"sixgill_feedid\":\"darkfeed_010\",\"sixgill_feedname\":\"malware_download_urls\",\"sixgill_postid\":\"9a5d93c4bf1098ca9817d5c237440cf8a0daadd5\",\"sixgill_posttitle\":\"Банковский регулятор США напомнил о рисках внедрения криптовалют\",\"sixgill_severity\":70,\"sixgill_source\":\"forum_hyipinvest\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"valid_from\":\"2049-12-07T14:52:00Z\"}",
+        "severity": 70,
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "description": "Malware available for download from file-sharing sites",
+          "first_seen": "2049-12-07T14:52:00.000Z",
+          "last_seen": "2049-12-07T18:04:26.451Z",
+          "name": "https://ru.scribd.com/user/456422024/ForkLog#from_embed",
+          "provider": "forum_hyipinvest",
+          "reference": "https://portal.cybersixgill.com/#/search?q=_id:9a5d93c4bf1098ca9817d5c237440cf8a0daadd5",
+          "type": "url",
+          "url": {
+            "domain": "ru.scribd.com",
+            "fragment": "from_embed",
+            "original": "https://ru.scribd.com/user/456422024/ForkLog#from_embed",
+            "path": "/user/456422024/ForkLog",
+            "scheme": "https"
+          }
+        },
+        "tactic": {
+          "id": [
+            "TA0024"
+          ],
+          "name": [
+            "Build Capabilities"
+          ],
+          "reference": [
+            "https://attack.mitre.org/tactics/TA0024/"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-12-07T21:24:50.350Z",
+      "cybersixgill": {
+        "actor": "Admin",
+        "deleted_at": "2049-12-12T21:24:50.350Z",
+        "expiration_duration": "5d",
+        "feedname": "dark_web_hashes",
+        "mitre": {
+          "description": "Mitre attack tactics and technique reference"
+        },
+        "title": "海康威视因自身漏洞被黑客利用而遭受攻击",
+        "virustotal": {}
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"confidence\":70,\"created\":\"2049-12-07T21:24:50.350Z\",\"description\":\"Hash attributed to malware that was discovered in the dark and deep web\",\"extensions\":{\"extension-definition--4582f9eb-bad5-46ac-bd26-1b4201d52537\":{\"extension_type\":\"toplevel-property-extension\"}},\"external_references\":[{\"description\":\"Mitre attack tactics and technique reference\",\"mitre_attack_tactic\":\"Build Capabilities\",\"mitre_attack_tactic_id\":\"TA0024\",\"mitre_attack_tactic_url\":\"https://attack.mitre.org/tactics/TA0024/\",\"source_name\":\"mitre-attack\"}],\"id\":\"indicator--18f0351d-b61f-4961-ab41-0b10566ee602\",\"indicator_types\":[\"malicious-activity\"],\"lang\":\"zh\",\"modified\":\"2049-12-07T21:24:50.350Z\",\"name\":\"4bce9c7ac5c1a442fe40d61416d571471ca1b92e68ca4620ad2b8a038b38949e\",\"pattern\":\"[file:hashes.'SHA-256' = '4bce9c7ac5c1a442fe40d61416d571471ca1b92e68ca4620ad2b8a038b38949e']\",\"pattern_type\":\"stix\",\"sixgill_actor\":\"Admin\",\"sixgill_confidence\":70,\"sixgill_feedid\":\"darkfeed_012\",\"sixgill_feedname\":\"dark_web_hashes\",\"sixgill_post_virustotallink\":\"https://virustotal.com/#/file/4bce9c7ac5c1a442fe40d61416d571471ca1b92e68ca4620ad2b8a038b38949e\",\"sixgill_postid\":\"c169e48cb80f0e2c2d90e9365d222df5dd317534\",\"sixgill_posttitle\":\"海康威视因自身漏洞被黑客利用而遭受攻击\",\"sixgill_severity\":70,\"sixgill_source\":\"blog_hackdig\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"valid_from\":\"2049-12-07T21:23:33Z\"}",
+        "severity": 70,
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "description": "Hash attributed to malware that was discovered in the dark and deep web",
+          "file": {
+            "hash": {
+              "sha256": "4bce9c7ac5c1a442fe40d61416d571471ca1b92e68ca4620ad2b8a038b38949e"
+            }
+          },
+          "first_seen": "2049-12-07T21:23:33.000Z",
+          "last_seen": "2049-12-07T21:24:50.350Z",
+          "name": "4bce9c7ac5c1a442fe40d61416d571471ca1b92e68ca4620ad2b8a038b38949e",
+          "provider": "blog_hackdig",
+          "reference": "https://portal.cybersixgill.com/#/search?q=_id:c169e48cb80f0e2c2d90e9365d222df5dd317534",
+          "type": "file"
+        },
+        "tactic": {
+          "id": [
+            "TA0024"
+          ],
+          "name": [
+            "Build Capabilities"
+          ],
+          "reference": [
+            "https://attack.mitre.org/tactics/TA0024/"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-12-07T22:48:59.141Z",
+      "cybersixgill": {
+        "actor": "enginewo",
+        "deleted_at": "2049-12-12T22:48:59.141Z",
+        "expiration_duration": "5d",
+        "feedname": "compromised_sites",
+        "mitre": {
+          "description": "Mitre attack tactics and technique reference"
+        },
+        "title": "Beranda       http://sdbpibandung.sch.id",
+        "virustotal": {}
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"confidence\":90,\"created\":\"2049-12-07T22:48:59.141Z\",\"description\":\"Shell access to this domain is being sold on dark web markets\",\"extensions\":{\"extension-definition--4582f9eb-bad5-46ac-bd26-1b4201d52537\":{\"extension_type\":\"toplevel-property-extension\"}},\"external_references\":[{\"description\":\"Mitre attack tactics and technique reference\",\"mitre_attack_tactic\":\"Establish & Maintain Infrastructure\",\"mitre_attack_tactic_id\":\"TA0022\",\"mitre_attack_tactic_url\":\"https://attack.mitre.org/tactics/TA0022/\",\"mitre_attack_technique\":\"Compromise 3rd party infrastructure to support delivery\",\"mitre_attack_technique_id\":\"T1334\",\"mitre_attack_technique_url\":\"https://attack.mitre.org/techniques/T1334/\",\"source_name\":\"mitre-attack\"}],\"id\":\"indicator--557a6021-b0c0-441a-8fba-e8a734f19ada\",\"indicator_types\":[\"compromised\"],\"lang\":\"en\",\"modified\":\"2049-12-07T22:48:59.141Z\",\"name\":\"sdbpibandung.sch.id\",\"pattern\":\"[domain-name:value = 'sdbpibandung.sch.id']\",\"pattern_type\":\"stix\",\"sixgill_actor\":\"enginewo\",\"sixgill_confidence\":90,\"sixgill_feedid\":\"darkfeed_001\",\"sixgill_feedname\":\"compromised_sites\",\"sixgill_postid\":\"445b0161d0499aa734d06e600f524e5e05a4cd55\",\"sixgill_posttitle\":\"Beranda       http://sdbpibandung.sch.id\",\"sixgill_severity\":70,\"sixgill_source\":\"market_magbo\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"valid_from\":\"2049-12-07T22:43:29Z\"}",
+        "severity": 70,
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "description": "Shell access to this domain is being sold on dark web markets",
+          "first_seen": "2049-12-07T22:43:29.000Z",
+          "last_seen": "2049-12-07T22:48:59.141Z",
+          "name": "sdbpibandung.sch.id",
+          "provider": "market_magbo",
+          "reference": "https://portal.cybersixgill.com/#/search?q=_id:445b0161d0499aa734d06e600f524e5e05a4cd55",
+          "type": "domain-name",
+          "url": {
+            "domain": "sdbpibandung.sch.id"
+          }
+        },
+        "tactic": {
+          "id": [
+            "TA0022"
+          ],
+          "name": [
+            "Establish & Maintain Infrastructure"
+          ],
+          "reference": [
+            "https://attack.mitre.org/tactics/TA0022/"
+          ]
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_expiration_duration": "5d"
+      },
+      "message": "{\"confidence\":80,\"created\":\"2049-12-07T09:22:41.485Z\",\"description\":\"Virustotal link that appeared on a dark web site, generally to show malware that is undetected\",\"extensions\":{\"extension-definition--4582f9eb-bad5-46ac-bd26-1b4201d52537\":{\"extension_type\":\"toplevel-property-extension\"}},\"external_references\":[{\"positive_rate\":\"none\",\"source_name\":\"VirusTotal\",\"url\":\"https://virustotal.com/#/file/3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c\"},{\"description\":\"Mitre attack tactics and technique reference\",\"mitre_attack_tactic\":\"Test capabilities\",\"mitre_attack_tactic_id\":\"TA0025\",\"mitre_attack_tactic_url\":\"https://attack.mitre.org/tactics/TA0025/\",\"mitre_attack_technique\":\"Test signature detection for file upload/email filters\",\"mitre_attack_technique_id\":\"T1361\",\"mitre_attack_technique_url\":\"https://attack.mitre.org/techniques/T1361/\",\"source_name\":\"mitre-attack\"}],\"id\":\"indicator--b34d3caa-e4e2-49bd-9b57-f585728320e8\",\"indicator_types\":[\"malicious-activity\"],\"lang\":\"en\",\"modified\":\"2049-12-07T09:22:41.485Z\",\"name\":\"55cee9affecea0b848aca4f0fff3b6ec;c92cb31d82960ff1a57725cf87369cde92bc66f4;3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c\",\"pattern\":\"[file:hashes.MD5 = '55cee9affecea0b848aca4f0fff3b6ec' OR file:hashes.'SHA-1' = 'c92cb31d82960ff1a57725cf87369cde92bc66f4' OR file:hashes.'SHA-256' = '3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c']\",\"pattern_type\":\"stix\",\"sixgill_actor\":\"layna61524\",\"sixgill_confidence\":80,\"sixgill_feedid\":\"darkfeed_002\",\"sixgill_feedname\":\"darkweb_vt_links\",\"sixgill_post_virustotallink\":\"https://virustotal.com/#/file/3e5e22fd7af2bfaedf6a430ad29fdb50042f7b75d949993da7399c595488777c\",\"sixgill_postid\":\"f293791ff2e8465f1e0f8a75d6086294f40516f8\",\"sixgill_posttitle\":\"[GET] LAYNA'S LAGNIAPPE - DECEMBER 6, 2021\",\"sixgill_severity\":70,\"sixgill_source\":\"forum_bestblackhat\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"valid_from\":\"2049-12-07T00:03:00Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "ioc_expiration_duration": "5d"
+      },
+      "message": "{\"confidence\":80,\"created\":\"2049-12-07T18:04:26.451Z\",\"description\":\"Malware available for download from file-sharing sites\",\"extensions\":{\"extension-definition--4582f9eb-bad5-46ac-bd26-1b4201d52537\":{\"extension_type\":\"toplevel-property-extension\"}},\"external_references\":[{\"description\":\"Mitre attack tactics and technique reference\",\"mitre_attack_tactic\":\"Build Capabilities\",\"mitre_attack_tactic_id\":\"TA0024\",\"mitre_attack_tactic_url\":\"https://attack.mitre.org/tactics/TA0024/\",\"mitre_attack_technique\":\"Obtain/re-use payloads\",\"mitre_attack_technique_id\":\"T1346\",\"mitre_attack_technique_url\":\"https://attack.mitre.org/techniques/T1346/\",\"source_name\":\"mitre-attack\"}],\"id\":\"indicator--ade54b36-752d-4107-a2ed-dd666fa1cb85\",\"indicator_types\":[\"malicious-activity\"],\"lang\":\"ru\",\"modified\":\"2049-12-07T18:04:26.451Z\",\"name\":\"https://ru.scribd.com/user/456422024/ForkLog#from_embed\",\"pattern\":\"[url:value = 'https://ru.scribd.com/user/456422024/ForkLog#from_embed']\",\"pattern_type\":\"stix\",\"sixgill_actor\":\"CoinProject.info\",\"sixgill_confidence\":80,\"sixgill_feedid\":\"darkfeed_010\",\"sixgill_feedname\":\"malware_download_urls\",\"sixgill_postid\":\"9a5d93c4bf1098ca9817d5c237440cf8a0daadd5\",\"sixgill_posttitle\":\"Банковский регулятор США напомнил о рисках внедрения криптовалют\",\"sixgill_severity\":70,\"sixgill_source\":\"forum_hyipinvest\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"valid_from\":\"2049-12-07T14:52:00Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "ioc_expiration_duration": "5d"
+      },
+      "message": "{\"confidence\":70,\"created\":\"2049-12-07T21:24:50.350Z\",\"description\":\"Hash attributed to malware that was discovered in the dark and deep web\",\"extensions\":{\"extension-definition--4582f9eb-bad5-46ac-bd26-1b4201d52537\":{\"extension_type\":\"toplevel-property-extension\"}},\"external_references\":[{\"description\":\"Mitre attack tactics and technique reference\",\"mitre_attack_tactic\":\"Build Capabilities\",\"mitre_attack_tactic_id\":\"TA0024\",\"mitre_attack_tactic_url\":\"https://attack.mitre.org/tactics/TA0024/\",\"source_name\":\"mitre-attack\"}],\"id\":\"indicator--18f0351d-b61f-4961-ab41-0b10566ee602\",\"indicator_types\":[\"malicious-activity\"],\"lang\":\"zh\",\"modified\":\"2049-12-07T21:24:50.350Z\",\"name\":\"4bce9c7ac5c1a442fe40d61416d571471ca1b92e68ca4620ad2b8a038b38949e\",\"pattern\":\"[file:hashes.'SHA-256' = '4bce9c7ac5c1a442fe40d61416d571471ca1b92e68ca4620ad2b8a038b38949e']\",\"pattern_type\":\"stix\",\"sixgill_actor\":\"Admin\",\"sixgill_confidence\":70,\"sixgill_feedid\":\"darkfeed_012\",\"sixgill_feedname\":\"dark_web_hashes\",\"sixgill_post_virustotallink\":\"https://virustotal.com/#/file/4bce9c7ac5c1a442fe40d61416d571471ca1b92e68ca4620ad2b8a038b38949e\",\"sixgill_postid\":\"c169e48cb80f0e2c2d90e9365d222df5dd317534\",\"sixgill_posttitle\":\"海康威视因自身漏洞被黑客利用而遭受攻击\",\"sixgill_severity\":70,\"sixgill_source\":\"blog_hackdig\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"valid_from\":\"2049-12-07T21:23:33Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "ioc_expiration_duration": "5d"
+      },
+      "message": "{\"confidence\":90,\"created\":\"2049-12-07T22:48:59.141Z\",\"description\":\"Shell access to this domain is being sold on dark web markets\",\"extensions\":{\"extension-definition--4582f9eb-bad5-46ac-bd26-1b4201d52537\":{\"extension_type\":\"toplevel-property-extension\"}},\"external_references\":[{\"description\":\"Mitre attack tactics and technique reference\",\"mitre_attack_tactic\":\"Establish & Maintain Infrastructure\",\"mitre_attack_tactic_id\":\"TA0022\",\"mitre_attack_tactic_url\":\"https://attack.mitre.org/tactics/TA0022/\",\"mitre_attack_technique\":\"Compromise 3rd party infrastructure to support delivery\",\"mitre_attack_technique_id\":\"T1334\",\"mitre_attack_technique_url\":\"https://attack.mitre.org/techniques/T1334/\",\"source_name\":\"mitre-attack\"}],\"id\":\"indicator--557a6021-b0c0-441a-8fba-e8a734f19ada\",\"indicator_types\":[\"compromised\"],\"lang\":\"en\",\"modified\":\"2049-12-07T22:48:59.141Z\",\"name\":\"sdbpibandung.sch.id\",\"pattern\":\"[domain-name:value = 'sdbpibandung.sch.id']\",\"pattern_type\":\"stix\",\"sixgill_actor\":\"enginewo\",\"sixgill_confidence\":90,\"sixgill_feedid\":\"darkfeed_001\",\"sixgill_feedname\":\"compromised_sites\",\"sixgill_postid\":\"445b0161d0499aa734d06e600f524e5e05a4cd55\",\"sixgill_posttitle\":\"Beranda       http://sdbpibandung.sch.id\",\"sixgill_severity\":70,\"sixgill_source\":\"market_magbo\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"valid_from\":\"2049-12-07T22:43:29Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "threat",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_cybersixgill-threat-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "ti_cybersixgill",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

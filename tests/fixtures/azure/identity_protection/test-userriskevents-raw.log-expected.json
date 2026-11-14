@@ -1,0 +1,196 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2022-08-22T18:07:16.000Z",
+      "azure": {
+        "correlation_id": "fb4fa91c5ede8ac76f8d69c7841ba0074a8e42cf72fed6c31d1dd245bc961a72",
+        "identityprotection": {
+          "category": "UserRiskEvents",
+          "operation_name": "User Risk Detection",
+          "operation_version": "1.0",
+          "properties": {
+            "activity": "signin",
+            "activity_datetime": "2050-08-22T18:05:06.133Z",
+            "additional_info": [
+              {
+                "Key": "userAgent",
+                "Value": "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"
+              }
+            ],
+            "correlation_id": "523869a7-caea-465c-9acd-bfc87170e890",
+            "detected_datetime": "2050-08-22T18:05:06.133Z",
+            "detection_timing_type": "realtime",
+            "id": "fb4fa91c5ede8ac76f8d69c7841ba0074a8e42cf72fed6c31d1dd245bc961a72",
+            "ip_address": "192.0.2.91",
+            "last_updated_datetime": "2050-08-22T18:07:16.894Z",
+            "location": {
+              "city": "Dresden",
+              "countryOrRegion": "DE",
+              "geoCoordinates": {
+                "altitude": 0,
+                "latitude": 51.0714,
+                "longitude": 13.7399
+              },
+              "state": "Sachsen"
+            },
+            "request_id": "b2e9a2b9-0cb4-4779-ae7c-a2fbdcc60182",
+            "risk_detail": "none",
+            "risk_event_type": "anonymizedIPAddress",
+            "risk_level": "high",
+            "risk_state": "atRisk",
+            "risk_type": "anonymizedIPAddress",
+            "source": "IdentityProtection",
+            "token_issuer_type": "AzureAD",
+            "user_display_name": "Joe Danger",
+            "user_id": "74b05fdc-b79f-48f4-be7a-532b61324b4c",
+            "user_principal_name": "uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com",
+            "user_type": "member"
+          },
+          "result_signature": "None"
+        },
+        "resource": {
+          "id": "/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam",
+          "provider": "microsoft.aadiam"
+        },
+        "tenant_id": "3159351e-2045-445a-9e6f-b8e7f366bfa9"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User Risk Detection",
+        "duration": 0,
+        "kind": "event",
+        "original": "{\"time\":\"8/22/2022 6:07:16 PM\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam\",\"operationName\":\"User Risk Detection\",\"operationVersion\":\"1.0\",\"category\":\"UserRiskEvents\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultSignature\":\"None\",\"durationMs\":0,\"callerIpAddress\":\"192.0.2.91\",\"correlationId\":\"fb4fa91c5ede8ac76f8d69c7841ba0074a8e42cf72fed6c31d1dd245bc961a72\",\"identity\":\"joe danger\",\"Level\":4,\"location\":\"de\",\"properties\":{\"id\":\"fb4fa91c5ede8ac76f8d69c7841ba0074a8e42cf72fed6c31d1dd245bc961a72\",\"requestId\":\"b2e9a2b9-0cb4-4779-ae7c-a2fbdcc60182\",\"correlationId\":\"523869a7-caea-465c-9acd-bfc87170e890\",\"riskType\":\"anonymizedIPAddress\",\"riskEventType\":\"anonymizedIPAddress\",\"riskState\":\"atRisk\",\"riskLevel\":\"high\",\"riskDetail\":\"none\",\"source\":\"IdentityProtection\",\"detectionTimingType\":\"realtime\",\"activity\":\"signin\",\"ipAddress\":\"192.0.2.91\",\"location\":{\"city\":\"Dresden\",\"state\":\"Sachsen\",\"countryOrRegion\":\"DE\",\"geoCoordinates\":{\"altitude\":0,\"latitude\":51.0714,\"longitude\":13.7399}},\"activityDateTime\":\"2050-08-22T18:05:06.133Z\",\"detectedDateTime\":\"2050-08-22T18:05:06.133Z\",\"lastUpdatedDateTime\":\"2050-08-22T18:07:16.894Z\",\"userId\":\"74b05fdc-b79f-48f4-be7a-532b61324b4c\",\"userDisplayName\":\"Joe Danger\",\"userPrincipalName\":\"uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com\",\"additionalInfo\":\"[{\\\"Key\\\":\\\"userAgent\\\",\\\"Value\\\":\\\"Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0\\\"}]\",\"tokenIssuerType\":\"AzureAD\",\"resourceTenantId\":null,\"homeTenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"userType\":\"member\",\"crossTenantAccessType\":\"none\"}}"
+      },
+      "related": {
+        "user": [
+          "74b05fdc-b79f-48f4-be7a-532b61324b4c",
+          "uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com",
+          "Joe Danger"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.91"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com",
+        "full_name": "Joe Danger",
+        "id": "74b05fdc-b79f-48f4-be7a-532b61324b4c",
+        "name": "uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com"
+      }
+    },
+    {
+      "@timestamp": "2022-09-09T09:54:27.000Z",
+      "azure": {
+        "correlation_id": "f59fcf2ee035f9e1bf59fd6b197a0268ebfd45094ef9744afd43072f5fa1a1a2",
+        "identityprotection": {
+          "category": "UserRiskEvents",
+          "operation_name": "User Risk Detection",
+          "operation_version": "1.0",
+          "properties": {
+            "activity": "signin",
+            "activity_datetime": "2050-09-08T12:53:53.895Z",
+            "additional_info": [
+              {
+                "Key": "userAgent",
+                "Value": "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"
+              }
+            ],
+            "correlation_id": "bfad14d5-4053-48d2-bc34-46401c91710c",
+            "detected_datetime": "2050-09-09T08:48:50.361Z",
+            "detection_timing_type": "offline",
+            "id": "f59fcf2ee035f9e1bf59fd6b197a0268ebfd45094ef9744afd43072f5fa1a1a2",
+            "ip_address": "192.0.2.91",
+            "last_updated_datetime": "2050-09-09T09:54:27.739Z",
+            "location": {
+              "city": "Staten Island",
+              "countryOrRegion": "US",
+              "geoCoordinates": {
+                "altitude": 0,
+                "latitude": 40.59615,
+                "longitude": -74.16161
+              },
+              "state": "New York"
+            },
+            "request_id": "82d0a040-470e-49c4-b030-e58440b87d68",
+            "risk_detail": "none",
+            "risk_event_type": "passwordSpray",
+            "risk_level": "high",
+            "risk_state": "atRisk",
+            "risk_type": "generic",
+            "source": "IdentityProtection",
+            "token_issuer_type": "AzureAD",
+            "user_display_name": "Joel Miller",
+            "user_id": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+            "user_principal_name": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com",
+            "user_type": "member"
+          },
+          "result_signature": "None"
+        },
+        "resource": {
+          "id": "/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam",
+          "provider": "microsoft.aadiam"
+        },
+        "tenant_id": "3159351e-2045-445a-9e6f-b8e7f366bfa9"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User Risk Detection",
+        "duration": 0,
+        "kind": "event",
+        "original": "{\"time\":\"9/9/2022 9:54:27 AM\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam\",\"operationName\":\"User Risk Detection\",\"operationVersion\":\"1.0\",\"category\":\"UserRiskEvents\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultSignature\":\"None\",\"durationMs\":0,\"callerIpAddress\":\"192.0.2.91\",\"correlationId\":\"f59fcf2ee035f9e1bf59fd6b197a0268ebfd45094ef9744afd43072f5fa1a1a2\",\"identity\":\"joel miller\",\"Level\":4,\"location\":\"us\",\"properties\":{\"id\":\"f59fcf2ee035f9e1bf59fd6b197a0268ebfd45094ef9744afd43072f5fa1a1a2\",\"requestId\":\"82d0a040-470e-49c4-b030-e58440b87d68\",\"correlationId\":\"bfad14d5-4053-48d2-bc34-46401c91710c\",\"riskType\":\"generic\",\"riskEventType\":\"passwordSpray\",\"riskState\":\"atRisk\",\"riskLevel\":\"high\",\"riskDetail\":\"none\",\"source\":\"IdentityProtection\",\"detectionTimingType\":\"offline\",\"activity\":\"signin\",\"ipAddress\":\"192.0.2.91\",\"location\":{\"city\":\"Staten Island\",\"state\":\"New York\",\"countryOrRegion\":\"US\",\"geoCoordinates\":{\"altitude\":0,\"latitude\":40.59615,\"longitude\":-74.16161}},\"activityDateTime\":\"2050-09-08T12:53:53.895Z\",\"detectedDateTime\":\"2050-09-09T8:48:50.361Z\",\"lastUpdatedDateTime\":\"2050-09-09T9:54:27.739Z\",\"userId\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"userDisplayName\":\"Joel Miller\",\"userPrincipalName\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\",\"additionalInfo\":\"[{\\\"Key\\\":\\\"userAgent\\\",\\\"Value\\\":\\\"Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0\\\"}]\",\"tokenIssuerType\":\"AzureAD\",\"resourceTenantId\":null,\"homeTenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"userType\":\"member\",\"crossTenantAccessType\":\"none\"}}"
+      },
+      "related": {
+        "user": [
+          "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+          "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com",
+          "Joel Miller"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.91"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com",
+        "full_name": "Joel Miller",
+        "id": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+        "name": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\":\"8/22/2022 6:07:16 PM\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam\",\"operationName\":\"User Risk Detection\",\"operationVersion\":\"1.0\",\"category\":\"UserRiskEvents\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultSignature\":\"None\",\"durationMs\":0,\"callerIpAddress\":\"192.0.2.91\",\"correlationId\":\"fb4fa91c5ede8ac76f8d69c7841ba0074a8e42cf72fed6c31d1dd245bc961a72\",\"identity\":\"joe danger\",\"Level\":4,\"location\":\"de\",\"properties\":{\"id\":\"fb4fa91c5ede8ac76f8d69c7841ba0074a8e42cf72fed6c31d1dd245bc961a72\",\"requestId\":\"b2e9a2b9-0cb4-4779-ae7c-a2fbdcc60182\",\"correlationId\":\"523869a7-caea-465c-9acd-bfc87170e890\",\"riskType\":\"anonymizedIPAddress\",\"riskEventType\":\"anonymizedIPAddress\",\"riskState\":\"atRisk\",\"riskLevel\":\"high\",\"riskDetail\":\"none\",\"source\":\"IdentityProtection\",\"detectionTimingType\":\"realtime\",\"activity\":\"signin\",\"ipAddress\":\"192.0.2.91\",\"location\":{\"city\":\"Dresden\",\"state\":\"Sachsen\",\"countryOrRegion\":\"DE\",\"geoCoordinates\":{\"altitude\":0,\"latitude\":51.0714,\"longitude\":13.7399}},\"activityDateTime\":\"2050-08-22T18:05:06.133Z\",\"detectedDateTime\":\"2050-08-22T18:05:06.133Z\",\"lastUpdatedDateTime\":\"2050-08-22T18:07:16.894Z\",\"userId\":\"74b05fdc-b79f-48f4-be7a-532b61324b4c\",\"userDisplayName\":\"Joe Danger\",\"userPrincipalName\":\"uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com\",\"additionalInfo\":\"[{\\\"Key\\\":\\\"userAgent\\\",\\\"Value\\\":\\\"Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0\\\"}]\",\"tokenIssuerType\":\"AzureAD\",\"resourceTenantId\":null,\"homeTenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"userType\":\"member\",\"crossTenantAccessType\":\"none\"}}"
+    },
+    {
+      "message": "{\"time\":\"9/9/2022 9:54:27 AM\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam\",\"operationName\":\"User Risk Detection\",\"operationVersion\":\"1.0\",\"category\":\"UserRiskEvents\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultSignature\":\"None\",\"durationMs\":0,\"callerIpAddress\":\"192.0.2.91\",\"correlationId\":\"f59fcf2ee035f9e1bf59fd6b197a0268ebfd45094ef9744afd43072f5fa1a1a2\",\"identity\":\"joel miller\",\"Level\":4,\"location\":\"us\",\"properties\":{\"id\":\"f59fcf2ee035f9e1bf59fd6b197a0268ebfd45094ef9744afd43072f5fa1a1a2\",\"requestId\":\"82d0a040-470e-49c4-b030-e58440b87d68\",\"correlationId\":\"bfad14d5-4053-48d2-bc34-46401c91710c\",\"riskType\":\"generic\",\"riskEventType\":\"passwordSpray\",\"riskState\":\"atRisk\",\"riskLevel\":\"high\",\"riskDetail\":\"none\",\"source\":\"IdentityProtection\",\"detectionTimingType\":\"offline\",\"activity\":\"signin\",\"ipAddress\":\"192.0.2.91\",\"location\":{\"city\":\"Staten Island\",\"state\":\"New York\",\"countryOrRegion\":\"US\",\"geoCoordinates\":{\"altitude\":0,\"latitude\":40.59615,\"longitude\":-74.16161}},\"activityDateTime\":\"2050-09-08T12:53:53.895Z\",\"detectedDateTime\":\"2050-09-09T8:48:50.361Z\",\"lastUpdatedDateTime\":\"2050-09-09T9:54:27.739Z\",\"userId\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"userDisplayName\":\"Joel Miller\",\"userPrincipalName\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\",\"additionalInfo\":\"[{\\\"Key\\\":\\\"userAgent\\\",\\\"Value\\\":\\\"Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0\\\"}]\",\"tokenIssuerType\":\"AzureAD\",\"resourceTenantId\":null,\"homeTenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"userType\":\"member\",\"crossTenantAccessType\":\"none\"}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "identity_protection",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-identity_protection-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

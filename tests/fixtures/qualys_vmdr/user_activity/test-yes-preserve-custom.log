@@ -1,0 +1,11 @@
+{"Action":"login","Date":"2052-02-03T04:35:38Z","Details":"user_logged in","Module":"auth","User IP":"10.190.140.226","User Name":"saand_rn","User Role":"Manager"}
+{"Action":"login","Date":"2052-02-02T13:58:16Z","Details":"user_logged in","Module":"auth","User IP":"10.190.140.226","User Name":"saand_rn","User Role":"Manager"}
+{"Action":"request","Date":"2052-02-02T13:48:07Z","Details":"API: /api/2.0/fo/activity_log/index.php","Module":"auth","User IP":"10.190.140.226","User Name":"saand_rn","User Role":"Manager"}
+{"Action":"request","Date":"2052-02-02T13:31:19Z","Details":"API: /api/2.0/fo/activity_log/index.php","Module":"auth","User IP":"10.190.140.226","User Name":"saand_rn","User Role":"Manager"}
+{"Action":"request","Date":"2052-02-02T13:28:38Z","Details":"API: /api/2.0/fo/activity_log/index.php","Module":"auth","User IP":"10.190.140.226","User Name":"saand_rn","User Role":"Manager"}
+{"Action":"request","Date":"2052-02-02T13:28:17Z","Details":"API: /api/2.0/fo/activity_log/index.php","Module":"auth","User IP":"10.190.140.226","User Name":"saand_rn","User Role":"Manager"}
+{"Action":"request","Date":"2052-02-02T13:27:27Z","Details":"API: /api/2.0/fo/activity_log/index.php","Module":"auth","User IP":"10.190.140.226","User Name":"saand_rn","User Role":"Manager"}
+{"Action":"request","Date":"2052-02-02T13:26:41Z","Details":"API: /api/2.0/fo/activity_log/index.php","Module":"auth","User IP":"10.190.140.226","User Name":"saand_rn","User Role":"Manager"}
+{"Action":"set","Date":"2052-02-02T12:52:43Z","Details":"comment=[vvv] for 192.0.2.192","Module":"host_attribute","User IP":"10.225.54.248","User Name":"saand_rn","User Role":"Manager"}
+{"Action":"add","Date":"2052-02-02T12:52:43Z","Details":"192.0.2.192 added to both VM-PC license","Module":"option","User IP":"10.225.54.248","User Name":"saand_rn","User Role":"Manager"}
+{"Action":"create","Date":"2052-02-02T12:50:32Z","Details":"New Network: 'abc'","Module":"network","User IP":"10.225.54.248","User Name":"saand_rn","User Role":"Manager"}

@@ -1,0 +1,178 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:03:31.012031298Z",
+      "anthropic": {
+        "rate_limit": {
+          "group_type": "model_group",
+          "input_tokens_per_minute_cache_aware": 10000000,
+          "limits": [
+            {
+              "type": "requests_per_minute",
+              "value": 4000
+            },
+            {
+              "type": "input_tokens_per_minute_cache_aware",
+              "value": 10000000
+            },
+            {
+              "type": "output_tokens_per_minute",
+              "value": 800000
+            }
+          ],
+          "models": [
+            "claude-opus-4-5",
+            "claude-opus-4-5-20251101",
+            "claude-opus-4-6",
+            "claude-opus-4-7"
+          ],
+          "output_tokens_per_minute": 800000,
+          "requests_per_minute": 4000,
+          "type": "rate_limit"
+        }
+      },
+      "data_stream": {
+        "dataset": "anthropic_metrics.rate_limit",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"type\":\"rate_limit\",\"group_type\":\"model_group\",\"models\":[\"claude-opus-4-5\",\"claude-opus-4-5-20251101\",\"claude-opus-4-6\",\"claude-opus-4-7\"],\"limits\":[{\"type\":\"requests_per_minute\",\"value\":4000},{\"type\":\"input_tokens_per_minute_cache_aware\",\"value\":10000000},{\"type\":\"output_tokens_per_minute\",\"value\":800000}]}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-13T23:03:31.012040248Z",
+      "anthropic": {
+        "rate_limit": {
+          "enqueued_batch_requests": 500000,
+          "group_type": "batch",
+          "limits": [
+            {
+              "type": "enqueued_batch_requests",
+              "value": 500000
+            }
+          ],
+          "type": "rate_limit"
+        }
+      },
+      "data_stream": {
+        "dataset": "anthropic_metrics.rate_limit",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"type\":\"rate_limit\",\"group_type\":\"batch\",\"models\":null,\"limits\":[{\"type\":\"enqueued_batch_requests\",\"value\":500000}]}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-13T23:03:31.012041168Z",
+      "anthropic": {
+        "rate_limit": {
+          "group_type": "token_count",
+          "input_tokens_per_minute": 5000000,
+          "limits": [
+            {
+              "type": "input_tokens_per_minute",
+              "value": 5000000
+            }
+          ],
+          "type": "rate_limit"
+        }
+      },
+      "data_stream": {
+        "dataset": "anthropic_metrics.rate_limit",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"type\":\"rate_limit\",\"group_type\":\"token_count\",\"models\":null,\"limits\":[{\"type\":\"input_tokens_per_minute\",\"value\":5000000}]}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "data_stream": {
+        "dataset": "anthropic_metrics.rate_limit",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "message": "{\"type\":\"rate_limit\",\"group_type\":\"model_group\",\"models\":[\"claude-opus-4-5\",\"claude-opus-4-5-20251101\",\"claude-opus-4-6\",\"claude-opus-4-7\"],\"limits\":[{\"type\":\"requests_per_minute\",\"value\":4000},{\"type\":\"input_tokens_per_minute_cache_aware\",\"value\":10000000},{\"type\":\"output_tokens_per_minute\",\"value\":800000}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "data_stream": {
+        "dataset": "anthropic_metrics.rate_limit",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "message": "{\"type\":\"rate_limit\",\"group_type\":\"batch\",\"models\":null,\"limits\":[{\"type\":\"enqueued_batch_requests\",\"value\":500000}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "data_stream": {
+        "dataset": "anthropic_metrics.rate_limit",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "message": "{\"type\":\"rate_limit\",\"group_type\":\"token_count\",\"models\":null,\"limits\":[{\"type\":\"input_tokens_per_minute\",\"value\":5000000}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "rate_limit",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-anthropic_metrics-rate_limit-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "anthropic_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

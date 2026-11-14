@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:09:04.095Z",
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "927fd233-9bee-47c2-bfd7-a17c3189427b"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "winlog": {
+                "record_id": 3707667,
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "channel": "Security",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "time_created": "2047-12-19T08:20:29.088Z",
+                "outcome": "success",
+                "level": "information",
+                "event_id": 4751,
+                "process": {
+                    "pid": 492,
+                    "thread": {
+                        "id": 1076
+                    }
+                },
+                "event_data": {
+                    "PrivilegeList": "-",
+                    "MemberSid": "S-1-5-21-1717121054-434620538-60925301-500",
+                    "TargetUserName": "ibsisxmcco9",
+                    "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x2e67800",
+                    "MemberName": "CN=Administrator,CN=Users,DC=TEST,DC=SAAS",
+                    "TargetDomainName": "TEST",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2904",
+                    "SubjectUserName": "ev_aav"
+                }
+            },
+            "event": {
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "kind": "event",
+                "code": 4751
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4751.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

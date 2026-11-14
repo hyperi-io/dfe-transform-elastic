@@ -1,0 +1,124 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-01-04T00:22:01.903Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "duration": 658000,
+        "ingested": "2026-11-13T23:03:08.123702362Z",
+        "kind": "event",
+        "original": "2049-01-04 00:22:01.903 UTC,\"postgres\",\"postgres\",59,\"172.18.116.197:42642\",5ff25f96.3b,3,\"SELECT\",2049-01-04 00:21:42 UTC,3/0,0,LOG,00000,\"duration: 0.658 ms  statement: SELECT 'multi',\n'line';\",,,,,,,,,\"psql\"",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "SELECT 'multi',\n'line';",
+      "postgresql": {
+        "log": {
+          "application_name": "psql",
+          "client_addr": "172.18.116.197",
+          "client_port": 42642,
+          "command_tag": "SELECT",
+          "database": "postgres",
+          "query_step": "statement",
+          "session_id": "5ff25f96.3b",
+          "session_start_time": "2049-01-04T00:21:42.000Z",
+          "sql_state_code": "00000",
+          "timestamp": "2049-01-04 00:22:01.903 UTC",
+          "transaction_id": 0,
+          "virtual_transaction_id": "3/0"
+        }
+      },
+      "process": {
+        "pid": 59
+      },
+      "related": {
+        "ip": [
+          "172.18.116.197"
+        ],
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2049-01-04 00:22:01.903 UTC,\"postgres\",\"postgres\",59,\"172.18.116.197:42642\",5ff25f96.3b,3,\"SELECT\",2049-01-04 00:21:42 UTC,3/0,0,LOG,00000,\"duration: 0.658 ms  statement: SELECT 'multi',\n'line';\",,,,,,,,,\"psql\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-postgresql-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "postgresql",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

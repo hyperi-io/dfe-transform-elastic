@@ -1,0 +1,629 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-09-04T21:42:42.860-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "[**] [1:1000006:0] TCP connection [**]\n[Priority: 0] \n09/04-21:42:42.860730 10.68.25.100:57263 -> 10.221.181.49:22\nTCP TTL:127 TOS:0x0 ID:53730 IpLen:20 DgmLen:108 DF\n***AP*** Seq: 0x688E00E4  Ack: 0xBC730BB6  Win: 0x80B  TcpLen: 20",
+        "severity": 0,
+        "timezone": "-05:00"
+      },
+      "network": {
+        "community_id": "1:Z8yBW4uPpqTkU0oEJuNHtLO4Nvs=",
+        "direction": "internal",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.68.25.100",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "description": "TCP connection",
+        "id": "1000006",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 108
+        },
+        "gid": 1,
+        "ip": {
+          "flags": "DF",
+          "id": 53730,
+          "length": 20,
+          "tos": 0,
+          "ttl": 127
+        },
+        "tcp": {
+          "ack": 3161656246,
+          "flags": "AP",
+          "length": 20,
+          "seq": 1754136804,
+          "window": 2059
+        }
+      },
+      "source": {
+        "address": "10.68.25.100",
+        "ip": "10.68.25.100",
+        "port": 57263
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:42:42.903-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "[**] [1:1000006:0] TCP connection [**]\n[Priority: 0] \n09/04-21:42:42.903092 10.68.25.100:57263 -> 10.221.181.49:22\nTCP TTL:127 TOS:0x0 ID:53731 IpLen:20 DgmLen:40 DF\n***A**** Seq: 0x688E0128  Ack: 0xBC730C02  Win: 0x80B  TcpLen: 20",
+        "severity": 0,
+        "timezone": "-05:00"
+      },
+      "network": {
+        "community_id": "1:Z8yBW4uPpqTkU0oEJuNHtLO4Nvs=",
+        "direction": "internal",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.68.25.100",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "description": "TCP connection",
+        "id": "1000006",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 40
+        },
+        "gid": 1,
+        "ip": {
+          "flags": "DF",
+          "id": 53731,
+          "length": 20,
+          "tos": 0,
+          "ttl": 127
+        },
+        "tcp": {
+          "ack": 3161656322,
+          "flags": "A",
+          "length": 20,
+          "seq": 1754136872,
+          "window": 2059
+        }
+      },
+      "source": {
+        "address": "10.68.25.100",
+        "ip": "10.68.25.100",
+        "port": 57263
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:53:15.299-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "port": 36635
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "[**] [1:1000005:0] UDP Connection [**]\n[Classification: A Network Trojan was Detected] [Priority: 1] \n09/04-21:53:15.299702 10.105.0.235:53 -> 10.221.181.49:36635\nUDP TTL:64 TOS:0x0 ID:58363 IpLen:20 DgmLen:83\nLen: 55",
+        "severity": 1,
+        "timezone": "-05:00"
+      },
+      "network": {
+        "community_id": "1:G3j+AuZJfnwrtCmOcF4gVe7vCPw=",
+        "direction": "internal",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.105.0.235",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "category": "A Network Trojan was Detected",
+        "description": "UDP Connection",
+        "id": "1000005",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 83
+        },
+        "gid": 1,
+        "ip": {
+          "id": 58363,
+          "length": 20,
+          "tos": 0,
+          "ttl": 64
+        },
+        "udp": {
+          "length": 55
+        }
+      },
+      "source": {
+        "address": "10.105.0.235",
+        "ip": "10.105.0.235",
+        "port": 53
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:53:15.299-05:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "[**] [1:1000004:0] Pinging... [**]\n[Classification: Attempted Information Leak] [Priority: 2] \n09/04-21:53:15.299988 10.221.181.49 -> 192.0.2.87\nICMP TTL:64 TOS:0x0 ID:6922 IpLen:20 DgmLen:84 DF\nType:8  Code:0  ID:101   Seq:1  ECHO",
+        "severity": 2,
+        "timezone": "-05:00"
+      },
+      "network": {
+        "community_id": "1:2z0Ts1CGSxprKGaH/VeP6mmht8o=",
+        "direction": "outbound",
+        "iana_number": "1",
+        "transport": "icmp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.221.181.49",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "category": "Attempted Information Leak",
+        "description": "Pinging...",
+        "id": "1000004",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 84
+        },
+        "gid": 1,
+        "icmp": {
+          "code": 0,
+          "id": 101,
+          "seq": 1,
+          "type": 8
+        },
+        "ip": {
+          "flags": "DF",
+          "id": 6922,
+          "length": 20,
+          "tos": 0,
+          "ttl": 64
+        }
+      },
+      "source": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:53:15.301-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "[**] [1:1000006:0] TCP connection [**]\n[Classification: Potentially Bad Traffic] [Priority: 2] \n09/04-21:53:15.301504 10.68.25.100:57263 -> 10.221.181.49:22\nTCP TTL:127 TOS:0x0 ID:61472 IpLen:20 DgmLen:40 DF\n***A**** Seq: 0x68940D74  Ack: 0xBC811F16  Win: 0x80E  TcpLen: 20",
+        "severity": 2,
+        "timezone": "-05:00"
+      },
+      "network": {
+        "community_id": "1:Z8yBW4uPpqTkU0oEJuNHtLO4Nvs=",
+        "direction": "internal",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.68.25.100",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "category": "Potentially Bad Traffic",
+        "description": "TCP connection",
+        "id": "1000006",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 40
+        },
+        "gid": 1,
+        "ip": {
+          "flags": "DF",
+          "id": 61472,
+          "length": 20,
+          "tos": 0,
+          "ttl": 127
+        },
+        "tcp": {
+          "ack": 3162578710,
+          "flags": "A",
+          "length": 20,
+          "seq": 1754533236,
+          "window": 2062
+        }
+      },
+      "source": {
+        "address": "10.68.25.100",
+        "ip": "10.68.25.100",
+        "port": 57263
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:53:15.309-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "[**] [1:1000004:0] Pinging... [**]\n[Classification: Attempted Information Leak] [Priority: 2] \n09/04-21:53:15.309468 192.0.2.87 -> 10.221.181.49\nICMP TTL:114 TOS:0x0 ID:0 IpLen:20 DgmLen:84\nType:0  Code:0  ID:101  Seq:1  ECHO REPLY",
+        "severity": 2,
+        "timezone": "-05:00"
+      },
+      "network": {
+        "community_id": "1:tnmpPnGbZzD9dAST6YOF+nalglA=",
+        "direction": "inbound",
+        "iana_number": "1",
+        "transport": "icmp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "category": "Attempted Information Leak",
+        "description": "Pinging...",
+        "id": "1000004",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 84
+        },
+        "gid": 1,
+        "icmp": {
+          "code": 0,
+          "id": 101,
+          "seq": 1,
+          "type": 0
+        },
+        "ip": {
+          "id": 0,
+          "length": 20,
+          "tos": 0,
+          "ttl": 114
+        }
+      },
+      "source": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:53:15.358-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "port": 56012
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "[**] [1:1000005:0] UDP Connection [**]\n[Classification: A Network Trojan was Detected] [Priority: 1] \n09/04-21:53:15.358155 10.105.0.235:53 -> 10.221.181.49:56012\nUDP TTL:64 TOS:0x0 ID:33955 IpLen:20 DgmLen:153\nLen: 125",
+        "severity": 1,
+        "timezone": "-05:00"
+      },
+      "network": {
+        "community_id": "1:hDVko1I6emG/vRpwETAqlB5ZDBk=",
+        "direction": "internal",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.105.0.235",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "category": "A Network Trojan was Detected",
+        "description": "UDP Connection",
+        "id": "1000005",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 153
+        },
+        "gid": 1,
+        "ip": {
+          "id": 33955,
+          "length": 20,
+          "tos": 0,
+          "ttl": 64
+        },
+        "udp": {
+          "length": 125
+        }
+      },
+      "source": {
+        "address": "10.105.0.235",
+        "ip": "10.105.0.235",
+        "port": 53
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "-05:00"
+      },
+      "message": "[**] [1:1000006:0] TCP connection [**]\n[Priority: 0] \n09/04-21:42:42.860730 10.68.25.100:57263 -> 10.221.181.49:22\nTCP TTL:127 TOS:0x0 ID:53730 IpLen:20 DgmLen:108 DF\n***AP*** Seq: 0x688E00E4  Ack: 0xBC730BB6  Win: 0x80B  TcpLen: 20",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "-05:00"
+      },
+      "message": "[**] [1:1000006:0] TCP connection [**]\n[Priority: 0] \n09/04-21:42:42.903092 10.68.25.100:57263 -> 10.221.181.49:22\nTCP TTL:127 TOS:0x0 ID:53731 IpLen:20 DgmLen:40 DF\n***A**** Seq: 0x688E0128  Ack: 0xBC730C02  Win: 0x80B  TcpLen: 20",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "-05:00"
+      },
+      "message": "[**] [1:1000005:0] UDP Connection [**]\n[Classification: A Network Trojan was Detected] [Priority: 1] \n09/04-21:53:15.299702 10.105.0.235:53 -> 10.221.181.49:36635\nUDP TTL:64 TOS:0x0 ID:58363 IpLen:20 DgmLen:83\nLen: 55",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "-05:00"
+      },
+      "message": "[**] [1:1000004:0] Pinging... [**]\n[Classification: Attempted Information Leak] [Priority: 2] \n09/04-21:53:15.299988 10.221.181.49 -> 192.0.2.87\nICMP TTL:64 TOS:0x0 ID:6922 IpLen:20 DgmLen:84 DF\nType:8  Code:0  ID:101   Seq:1  ECHO",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "-05:00"
+      },
+      "message": "[**] [1:1000006:0] TCP connection [**]\n[Classification: Potentially Bad Traffic] [Priority: 2] \n09/04-21:53:15.301504 10.68.25.100:57263 -> 10.221.181.49:22\nTCP TTL:127 TOS:0x0 ID:61472 IpLen:20 DgmLen:40 DF\n***A**** Seq: 0x68940D74  Ack: 0xBC811F16  Win: 0x80E  TcpLen: 20",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "-05:00"
+      },
+      "message": "[**] [1:1000004:0] Pinging... [**]\n[Classification: Attempted Information Leak] [Priority: 2] \n09/04-21:53:15.309468 192.0.2.87 -> 10.221.181.49\nICMP TTL:114 TOS:0x0 ID:0 IpLen:20 DgmLen:84\nType:0  Code:0  ID:101  Seq:1  ECHO REPLY",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "-05:00"
+      },
+      "message": "[**] [1:1000005:0] UDP Connection [**]\n[Classification: A Network Trojan was Detected] [Priority: 1] \n09/04-21:53:15.358155 10.105.0.235:53 -> 10.221.181.49:56012\nUDP TTL:64 TOS:0x0 ID:33955 IpLen:20 DgmLen:153\nLen: 125",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}-[0-9]{2}:[0-9]{2}$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-snort-log-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "snort",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

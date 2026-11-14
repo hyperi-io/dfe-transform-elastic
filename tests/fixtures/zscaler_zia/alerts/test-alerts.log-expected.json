@@ -1,0 +1,164 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-12-31T12:01:04.000Z",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "<114>Dec 31 12:01:04 [192.0.2.87] ZscalerNSS: Zscaler cloud configuration connection to  192.0.2.87:443 lost and unavailable for the past 2325.00 minutes"
+      },
+      "log": {
+        "syslog": {
+          "priority": 114
+        }
+      },
+      "message": "ZscalerNSS: Zscaler cloud configuration connection to  192.0.2.87:443 lost and unavailable for the past 2325.00 minutes",
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "zscaler_zia": {
+        "alerts": {
+          "connection_lost_minutes": 2325.0,
+          "destination": {
+            "address": "192.0.2.87",
+            "ip": "192.0.2.87",
+            "port": 443
+          },
+          "log_syslog_priority": 114,
+          "message": "ZscalerNSS: Zscaler cloud configuration connection to  192.0.2.87:443 lost and unavailable for the past 2325.00 minutes",
+          "timestamp": "2026-12-31T12:01:04.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-12-31T13:02:05.000Z",
+      "destination": {
+        "address": "198.51.100.74",
+        "ip": "198.51.100.74",
+        "port": 9012
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "<114>Dec 31 13:02:05 [198.51.100.74] ZscalerNSS: SIEM Feed connection \"DNS Logs Feed\" to 198.51.100.74:9012 lost and unavailable for the past 2440.00 minutes"
+      },
+      "log": {
+        "syslog": {
+          "priority": 114
+        }
+      },
+      "message": "ZscalerNSS: SIEM Feed connection \"DNS Logs Feed\" to 198.51.100.74:9012 lost and unavailable for the past 2440.00 minutes",
+      "related": {
+        "ip": [
+          "198.51.100.74"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "zscaler_zia": {
+        "alerts": {
+          "connection_lost_minutes": 2440.0,
+          "destination": {
+            "address": "198.51.100.74",
+            "ip": "198.51.100.74",
+            "port": 9012
+          },
+          "log_feed_name": "DNS Logs Feed",
+          "log_syslog_priority": 114,
+          "message": "ZscalerNSS: SIEM Feed connection \"DNS Logs Feed\" to 198.51.100.74:9012 lost and unavailable for the past 2440.00 minutes",
+          "timestamp": "2026-12-31T13:02:05.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-12-31T14:03:06.000Z",
+      "destination": {
+        "address": "198.51.100.74",
+        "ip": "198.51.100.74"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "<114>Dec 31 14:03:06 [198.51.100.74] Hey, that's a new type of alert. Isn't it?"
+      },
+      "log": {
+        "syslog": {
+          "priority": 114
+        }
+      },
+      "message": "Hey, that's a new type of alert. Isn't it?",
+      "related": {
+        "ip": [
+          "198.51.100.74"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "zscaler_zia": {
+        "alerts": {
+          "destination": {
+            "address": "198.51.100.74",
+            "ip": "198.51.100.74"
+          },
+          "log_syslog_priority": 114,
+          "message": "Hey, that's a new type of alert. Isn't it?",
+          "timestamp": "2026-12-31T14:03:06.000Z"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "<114>Dec 31 12:01:04 [192.0.2.87] ZscalerNSS: Zscaler cloud configuration connection to  192.0.2.87:443 lost and unavailable for the past 2325.00 minutes",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<114>Dec 31 13:02:05 [198.51.100.74] ZscalerNSS: SIEM Feed connection \"DNS Logs Feed\" to 198.51.100.74:9012 lost and unavailable for the past 2440.00 minutes",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<114>Dec 31 14:03:06 [198.51.100.74] Hey, that's a new type of alert. Isn't it?",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "alerts",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}",
+      "zscaler_zia.alerts.timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zscaler_zia-alerts-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "zscaler_zia",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

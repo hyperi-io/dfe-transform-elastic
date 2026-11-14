@@ -1,0 +1,103 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-09-14T09:36:53.767Z",
+      "event": {
+        "created": "2050-09-14T09:36:53.767Z",
+        "duration": 10477,
+        "ingested": "2026-11-13T23:04:03.573473831Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "WARN"
+      },
+      "logstash": {
+        "slowlog": {
+          "event": "\"{\\\"hostname\\\":\\\"6d7374edacfc\\\",\\\"thread_number\\\":0,\\\"message\\\":\\\"Hello world!\\\",\\\"sequence\\\":16207,\\\"@timestamp\\\":\\\"2050-09-14T09:36:44.849789316Z\\\",\\\"@version\\\":\\\"1\\\"}\"",
+          "module": "slowlog.logstash.filters.sleep",
+          "plugin_name": "sleep",
+          "plugin_params": "{\"every\"=>10, \"time\"=>1, \"id\"=>\"b35e65cd1b8be6062593331480021de8b74633decb5cd0f22d3bce92392d2785\"}",
+          "plugin_type": "filters",
+          "took_in_millis": 0
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-09-14T09:36:53.767Z",
+      "event": {
+        "created": "2050-09-14T09:36:53.767Z",
+        "duration": 9171,
+        "ingested": "2026-11-13T23:04:03.573484591Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "WARN"
+      },
+      "logstash": {
+        "slowlog": {
+          "event": "\"{\\\"hostname\\\":\\\"6d7374edacfc\\\",\\\"thread_number\\\":0,\\\"message\\\":\\\"Hello world!\\\",\\\"sequence\\\":16208,\\\"@timestamp\\\":\\\"2050-09-14T09:36:44.870011465Z\\\",\\\"@version\\\":\\\"1\\\"}\"",
+          "module": "slowlog.logstash.filters.sleep",
+          "plugin_name": "sleep",
+          "plugin_params": "{\"every\"=>10, \"time\"=>1, \"id\"=>\"b35e65cd1b8be6062593331480021de8b74633decb5cd0f22d3bce92392d2785\"}",
+          "plugin_type": "filters",
+          "took_in_millis": 0
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-09-14T09:36:53.790Z",
+      "event": {
+        "created": "2050-09-14T09:36:53.790Z",
+        "duration": 1000166192,
+        "ingested": "2026-11-13T23:04:03.573485361Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "WARN"
+      },
+      "logstash": {
+        "slowlog": {
+          "event": "\"{\\\"hostname\\\":\\\"6d7374edacfc\\\",\\\"thread_number\\\":0,\\\"message\\\":\\\"Hello world!\\\",\\\"sequence\\\":15999,\\\"@timestamp\\\":\\\"2050-09-14T09:36:40.690458954Z\\\",\\\"@version\\\":\\\"1\\\"}\"",
+          "module": "slowlog.logstash.filters.sleep",
+          "plugin_name": "sleep",
+          "plugin_params": "{\"every\"=>10, \"time\"=>1, \"id\"=>\"b35e65cd1b8be6062593331480021de8b74633decb5cd0f22d3bce92392d2785\"}",
+          "plugin_type": "filters",
+          "took_in_millis": 1000
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "[2050-09-14T09:36:53,767][WARN ][slowlog.logstash.filters.sleep] event processing time {:plugin_params=>{\"every\"=>10, \"time\"=>1, \"id\"=>\"b35e65cd1b8be6062593331480021de8b74633decb5cd0f22d3bce92392d2785\"}, :took_in_nanos=>10477, :took_in_millis=>0, :event=>\"{\\\"hostname\\\":\\\"6d7374edacfc\\\",\\\"thread_number\\\":0,\\\"message\\\":\\\"Hello world!\\\",\\\"sequence\\\":16207,\\\"@timestamp\\\":\\\"2050-09-14T09:36:44.849789316Z\\\",\\\"@version\\\":\\\"1\\\"}\"}"
+    },
+    {
+      "message": "[2050-09-14T09:36:53,767][WARN ][slowlog.logstash.filters.sleep] event processing time {:plugin_params=>{\"every\"=>10, \"time\"=>1, \"id\"=>\"b35e65cd1b8be6062593331480021de8b74633decb5cd0f22d3bce92392d2785\"}, :took_in_nanos=>9171, :took_in_millis=>0, :event=>\"{\\\"hostname\\\":\\\"6d7374edacfc\\\",\\\"thread_number\\\":0,\\\"message\\\":\\\"Hello world!\\\",\\\"sequence\\\":16208,\\\"@timestamp\\\":\\\"2050-09-14T09:36:44.870011465Z\\\",\\\"@version\\\":\\\"1\\\"}\"}"
+    },
+    {
+      "message": "[2050-09-14T09:36:53,790][WARN ][slowlog.logstash.filters.sleep] event processing time {:plugin_params=>{\"every\"=>10, \"time\"=>1, \"id\"=>\"b35e65cd1b8be6062593331480021de8b74633decb5cd0f22d3bce92392d2785\"}, :took_in_nanos=>1000166192, :took_in_millis=>1000, :event=>\"{\\\"hostname\\\":\\\"6d7374edacfc\\\",\\\"thread_number\\\":0,\\\"message\\\":\\\"Hello world!\\\",\\\"sequence\\\":15999,\\\"@timestamp\\\":\\\"2050-09-14T09:36:40.690458954Z\\\",\\\"@version\\\":\\\"1\\\"}\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "slowlog",
+    "dynamic_fields": {
+      "event.created": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-logstash-slowlog-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "logstash",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

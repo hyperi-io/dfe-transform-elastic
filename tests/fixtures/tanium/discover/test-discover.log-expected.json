@@ -1,0 +1,94 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-11-18T10:10:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "1",
+        "kind": [
+          "event"
+        ],
+        "original": "{\"id\":1,\"MacAddress\":\"89-41-1A-44-33-88\",\"MacOrganization\":\"VMware, Inc.\",\"IpAddress\":\"192.0.2.218\",\"NatIpAddress\":\"192.0.2.218\",\"HostName\":\"pkepfx9_44.xcyx.local\",\"Labels\":\"\",\"Locations\":\"\",\"TaniumComputerId\":1558993994,\"Ports\":\"22,41000\",\"Os\":\"Linux\",\"OsGeneration\":null,\"Managed\":1,\"Unmanageable\":0,\"Arp\":0,\"Nmap\":0,\"Ping\":0,\"Connected\":0,\"AwsApi\":0,\"CentralizedNmap\":0,\"SatelliteNmap\":0,\"CreatedAt\":\"2050-11-18 09:30:26 +00:00\",\"UpdatedAt\":\"2050-11-18 10:10:57 +00:00\",\"FirstManagedAt\":null,\"LastManagedAt\":\"2050-11-18 10:10:57 +00:00\",\"LastDiscoveredAt\":null,\"Profile\":null,\"SatelliteDecId\":null,\"SatelliteName\":null}",
+        "start": "2050-11-18T09:30:26.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "pkepfx9_44.xcyx.local"
+      },
+      "os": {
+        "type": "linux"
+      },
+      "related": {
+        "hosts": [
+          "pkepfx9_44.xcyx.local"
+        ],
+        "ip": [
+          "192.0.2.218"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.218",
+        "mac": "89-41-1A-44-33-88",
+        "nat": {
+          "ip": "192.0.2.218"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tanium": {
+        "discover": {
+          "arp": 0.0,
+          "aws_api": 0.0,
+          "centralized_nmap": 0.0,
+          "computer_id": 1558993994,
+          "connected": 0,
+          "created_at": "2050-11-18T09:30:26.000Z",
+          "host_name": "pkepfx9_44.xcyx.local",
+          "id": "1",
+          "ip_address": "192.0.2.218",
+          "last": {
+            "managed_at": "2050-11-18T10:10:57.000Z"
+          },
+          "mac_address": "89-41-1A-44-33-88",
+          "mac_organization": "VMware, Inc.",
+          "managed": 1,
+          "nat_ip_address": "192.0.2.218",
+          "nmap": 0.0,
+          "os": "linux",
+          "ping": 0,
+          "ports": "22,41000",
+          "satellite": {
+            "nmap": 0
+          },
+          "unmanageable": 0,
+          "updated_at": "2050-11-18T10:10:57.000Z"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":1,\"MacAddress\":\"89-41-1A-44-33-88\",\"MacOrganization\":\"VMware, Inc.\",\"IpAddress\":\"192.0.2.218\",\"NatIpAddress\":\"192.0.2.218\",\"HostName\":\"pkepfx9_44.xcyx.local\",\"Labels\":\"\",\"Locations\":\"\",\"TaniumComputerId\":1558993994,\"Ports\":\"22,41000\",\"Os\":\"Linux\",\"OsGeneration\":null,\"Managed\":1,\"Unmanageable\":0,\"Arp\":0,\"Nmap\":0,\"Ping\":0,\"Connected\":0,\"AwsApi\":0,\"CentralizedNmap\":0,\"SatelliteNmap\":0,\"CreatedAt\":\"2050-11-18 09:30:26 +00:00\",\"UpdatedAt\":\"2050-11-18 10:10:57 +00:00\",\"FirstManagedAt\":null,\"LastManagedAt\":\"2050-11-18 10:10:57 +00:00\",\"LastDiscoveredAt\":null,\"Profile\":null,\"SatelliteDecId\":null,\"SatelliteName\":null}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "discover",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tanium-discover-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "tanium",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

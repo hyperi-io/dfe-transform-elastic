@@ -1,0 +1,70 @@
+{
+    "events": [
+        {
+            "@timestamp": "2053-04-10T08:14:21.278Z",
+            "log": {
+              "level": "information"
+            },
+            "message": "Key file operation.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-21-1909377054-3469629671-4104191496-8991\n\tAccount Name:\t\tJohn.doe\n\tAccount Domain:\t\tTEMPYS\n\tLogon ID:\t\t0x124237\n\nProcess Information:\n\tProcess ID:\t\t9916\n\tProcess Creation Time:\t2053-04-10 08:14:20.7079392 +0000 UTC\n\nCryptographic Parameters:\n\tProvider Name:\tMicrosoft Software Key Storage Provider\n\tAlgorithm Name:\tUNKNOWN\n\tKey Name:\tMicrosoft Connected Devices Platform device certificate\n\tKey Type:\tUser key.\n\nKey File Operation Information:\n\tFile Path:\tC:\\Users\\Pqop.bwa\\AppData\\Roaming\\Microsoft\\Crypto\\Keys\\ac3aa5d4577f2da77b7c02b12c9e5469_9c1478ea-8890-4d24-97ac-d2a9abaa587a\n\tOperation:\tRead persisted key from file.\n\tReturn Code:\t0x0",
+            "host": {
+              "name": "Ltnq-PD"
+            },
+            "input": {
+              "type": "winlog"
+            },
+            "ecs": {
+              "version": "8.0.0"
+            },
+            "agent": {
+              "ephemeral_id": "37fb69c0-5334-4bbf-a3e0-793a81cce71f",
+              "id": "f88452dc-867d-4d43-9bde-285b7553711e",
+              "name": "Ltnq-PD",
+              "type": "filebeat",
+              "version": "9.1.0"
+            },
+            "winlog": {
+              "version": 1,
+              "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+              "provider_name": "Microsoft-Windows-Security-Auditing",
+              "event_data": {
+                "KeyFilePath": "C:\\Users\\Pqop.bwa\\AppData\\Roaming\\Microsoft\\Crypto\\Keys\\ac3aa5d4577f2da77b7c02b12c9e5469_9c1478ea-8890-4d24-97ac-d2a9abaa587a",
+                "SubjectUserSid": "S-1-5-21-1909377054-3469629671-4104191496-8991",
+                "SubjectUserName": "Pqop.bwa",
+                "Operation": "Read persisted key from file.",
+                "SubjectDomainName": "TEMPYS",
+                "SubjectLogonId": "0x124237",
+                "ProviderName": "Microsoft Software Key Storage Provider",
+                "ClientCreationTime": "2053-08-01T08:04:06.7702905Z",
+                "AlgorithmName": "UNKNOWN",
+                "KeyType": "User key.",
+                "ReturnCode": "0x0",
+                "ClientProcessId": "9916",
+                "KeyName": "Microsoft Connected Devices Platform device certificate"
+              },
+              "process": {
+                "pid": 1344,
+                "thread": {
+                  "id": 1468
+                }
+              },
+              "channel": "Security",
+              "computer_name": "Ltnq-PD",
+              "keywords": [
+                "Audit Success"
+              ],
+              "opcode": "Info",
+              "record_id": 367486,
+              "event_id": "5058",
+              "task": "Other System Events"
+            },
+            "event": {
+              "kind": "event",
+              "provider": "Microsoft-Windows-Security-Auditing",
+              "outcome": "success",
+              "action": "Other System Events",
+              "created": "2053-04-25T07:28:21.319Z",
+              "code": "5058"
+            }
+          }
+    ]
+}

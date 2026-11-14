@@ -110,8 +110,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("juniper.srx") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.juniper.srx = ctx?.juniper?.srx.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace('-', '_'), e -> e.getValue()));
+                // The pipeline's script, emitted as the runtime's equivalent
                 rename_map_keys(event, &RenameMapKeys::new("juniper.srx".into(), '-', '_'));
             }
 
@@ -174,8 +173,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("juniper.srx.duration") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event.duration = Integer.parseInt(ctx.juniper.srx.duration) * 1000000000L; ctx.event.start = ctx['@timestamp']; ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ctx.event.end = start.plus(ctx.event.duration, ChronoUnit.NANOS);
+                // The pipeline's script, emitted as the runtime's equivalent
                 duration_window(
                     event,
                     &DurationWindow::new(
@@ -188,9 +186,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("juniper.srx") };
             if _cond {
-                // Painless script
-                // Source: ctx?.juniper?.srx.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1169,8 +1165,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
+                        // The pipeline's script, emitted as the runtime's equivalent
                         sum_directions_into_existing(event, &["bytes"]);
                         Ok(())
                     })();
@@ -1180,9 +1175,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script
-                        // Source: ctx.network.packets = ctx.client.packets + ctx.server.packets
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -6176,8 +6169,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("juniper.srx.system") };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.juniper.srx.system = ctx.juniper.srx.system.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace(' ', '_').replace('-', '_').toLowerCase(), e -> e.getValue().trim()));
+                    // The pipeline's script, emitted as the runtime's equivalent
                     rename_map_keys(
                         event,
                         &RenameMapKeys::new("juniper.srx.system".into(), ' ', '_'),
@@ -6380,9 +6372,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("juniper.srx.system") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx?.juniper?.srx?.system.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -7679,9 +7669,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def iana_number = ctx.network.iana_number;\nif (iana_number == '0') {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number == '2') {\n    ctx.network.transport = 'igmp';\n} else if (iana_number == '6') {\n    ctx.network.transport = 'tcp';\n} else if (iana_number == '8') {\n    ctx.network.transport = 'egp';\n} else if (iana_number == '17') {\n    ctx.network.transport = 'udp';\n} else if (iana_number == '47') {\n    ctx.network.transport = 'gre';\n} else if (iana_number == '50') {\n    ctx.network.transport = 'esp';\n} else if (iana_number == '58') {\n    ctx.network.transport = 'ipv6-icmp';\n} else if (iana_number == '112') {\n    ctx.network.transport = 'vrrp';\n} else if (iana_number == '132') {\n    ctx.network.transport = 'sctp';\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

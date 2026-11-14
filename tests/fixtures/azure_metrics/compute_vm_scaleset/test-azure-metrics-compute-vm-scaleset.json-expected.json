@@ -1,0 +1,173 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-07-26T09:52:00.000Z",
+      "azure": {
+        "compute_vm_scaleset": {
+          "cpu_credits_consumed": {
+            "avg": 0
+          },
+          "cpu_credits_remaining": {
+            "avg": 72
+          }
+        },
+        "namespace": "Microsoft.Compute/virtualMachineScaleSets",
+        "resource": {
+          "group": "obs-infrastructure",
+          "id": "/subscriptions/69fd8b08-6b7d-4897-8555-fb37d8acd234/resourceGroups/obs-infrastructure/providers/Microsoft.Compute/virtualMachineScaleSets/obswinvmss",
+          "name": "obswinvmss",
+          "type": "Microsoft.Compute/virtualMachineScaleSets"
+        },
+        "subscription_id": "69fd8b08-6b7d-4897-8555-fb37d8acd234",
+        "timegrain": "PT5M"
+      },
+      "cloud": {
+        "account": {
+          "id": "69fd8b08-6b7d-4897-8555-fb37d8acd234"
+        },
+        "instance": {
+          "name": "obswinvmss"
+        },
+        "machine": {
+          "type": "Standard_B1ls"
+        },
+        "provider": "azure",
+        "region": "westeurope"
+      },
+      "data_stream": {
+        "dataset": "azure.compute_vm_scaleset",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "azure.compute_vm_scaleset",
+        "duration": 1939176000,
+        "ingested": "2049-07-26T10:02:20.418602Z",
+        "module": "azure"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "containerized": true,
+        "hostname": "ezdhdr-bldfh-dvenz",
+        "id": "f7512aff323cc3de64d5c928b009c7bd",
+        "ip": [
+          "172.26.228.241"
+        ],
+        "mac": [
+          "93:53:ca:27:11:68"
+        ],
+        "name": "obswinvmss",
+        "os": {
+          "codename": "Core",
+          "family": "redhat",
+          "kernel": "4.19.128-microsoft-standard",
+          "name": "CentOS Linux",
+          "platform": "centos",
+          "type": "linux",
+          "version": "7 (Core)"
+        }
+      },
+      "metricset": {
+        "name": "compute_vm_scaleset",
+        "period": 300000
+      },
+      "service": {
+        "type": "azure"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-07-26T09:52:00.000Z",
+      "azure": {
+        "monitor": {
+          "cpu_credits_consumed": {
+            "avg": 0
+          },
+          "cpu_credits_remaining": {
+            "avg": 72
+          }
+        },
+        "namespace": "Microsoft.Compute/virtualMachineScaleSets",
+        "resource": {
+          "group": "obs-infrastructure",
+          "id": "/subscriptions/69fd8b08-6b7d-4897-8555-fb37d8acd234/resourceGroups/obs-infrastructure/providers/Microsoft.Compute/virtualMachineScaleSets/obswinvmss",
+          "name": "obswinvmss",
+          "type": "Microsoft.Compute/virtualMachineScaleSets"
+        },
+        "subscription_id": "69fd8b08-6b7d-4897-8555-fb37d8acd234",
+        "timegrain": "PT5M"
+      },
+      "cloud": {
+        "account": {
+          "id": "69fd8b08-6b7d-4897-8555-fb37d8acd234"
+        },
+        "instance": {
+          "name": "obswinvmss"
+        },
+        "machine": {
+          "type": "Standard_B1ls"
+        },
+        "provider": "azure",
+        "region": "westeurope"
+      },
+      "data_stream": {
+        "dataset": "azure.compute_vm_scaleset",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "azure.compute_vm_scaleset",
+        "duration": 1939176000,
+        "ingested": "2049-07-26T10:02:20.418602Z",
+        "module": "azure"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "containerized": true,
+        "hostname": "ezdhdr-bldfh-dvenz",
+        "id": "f7512aff323cc3de64d5c928b009c7bd",
+        "ip": [
+          "172.26.228.241"
+        ],
+        "mac": [
+          "93:53:ca:27:11:68"
+        ],
+        "name": "obswinvmss",
+        "os": {
+          "codename": "Core",
+          "family": "redhat",
+          "kernel": "4.19.128-microsoft-standard",
+          "name": "CentOS Linux",
+          "platform": "centos",
+          "type": "linux",
+          "version": "7 (Core)"
+        }
+      },
+      "metricset": {
+        "name": "compute_vm_scaleset",
+        "period": 300000
+      },
+      "service": {
+        "type": "azure"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "compute_vm_scaleset",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_metrics-compute_vm_scaleset-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

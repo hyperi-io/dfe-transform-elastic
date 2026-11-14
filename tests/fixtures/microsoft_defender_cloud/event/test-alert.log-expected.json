@@ -1,0 +1,837 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "{\"securityEventDataEnrichment\":{\"action\":\"Write\",\"apiVersion\":\"2019-01-01-preview\",\"isSnapshot\":false,\"interval\":\"00:00:00\"},\"id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/providers/Microsoft.Security/regulatoryComplianceStandards/Microsoft-cloud-security-benchmark/regulatoryComplianceControls/LT.5/regulatoryComplianceAssessments/51ddd468-ced6-a02e-9268-05430cd20b84\",\"name\":\"51ddd468-ced6-a02e-9268-05430cd20b84\",\"type\":\"Microsoft.Security/regulatoryComplianceStandards/regulatoryComplianceControls/regulatoryComplianceAssessments\",\"properties\":{\"description\":\"Log Analytics agent should be installed on virtual machine scale sets\",\"state\":\"Skipped\",\"passedResources\":0,\"failedResources\":0,\"skippedResources\":1,\"assessmentType\":\"AssessmentResult\",\"assessmentDetailsLink\":\"https://portal.azure.com/#blade/Microsoft_Azure_Security/RecommendationsBlade/assessmentKey/51ddd468-ced6-a02e-9268-05430cd20b84/initiativeId/Microsoft-cloud-security-benchmark\"}}",
+        "type": [
+          "info"
+        ]
+      },
+      "microsoft_defender_cloud": {
+        "event": {
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/providers/Microsoft.Security/regulatoryComplianceStandards/Microsoft-cloud-security-benchmark/regulatoryComplianceControls/LT.5/regulatoryComplianceAssessments/51ddd468-ced6-a02e-9268-05430cd20b84",
+          "name": "51ddd468-ced6-a02e-9268-05430cd20b84",
+          "properties": {
+            "assessment": {
+              "details_link": "https://portal.azure.com/#blade/Microsoft_Azure_Security/RecommendationsBlade/assessmentKey/51ddd468-ced6-a02e-9268-05430cd20b84/initiativeId/Microsoft-cloud-security-benchmark",
+              "type": "AssessmentResult"
+            },
+            "description": "Log Analytics agent should be installed on virtual machine scale sets",
+            "failed_resources": 0,
+            "passed_resources": 0,
+            "skipped_resources": 1,
+            "state": "Skipped"
+          },
+          "security_event_data_enrichment": {
+            "action": "Write",
+            "api_version": "2019-01-01-preview",
+            "interval": "00:00:00",
+            "is_snapshot": false
+          },
+          "type": "Microsoft.Security/regulatoryComplianceStandards/regulatoryComplianceControls/regulatoryComplianceAssessments"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "{\"assessmentEventDataEnrichment\":{\"action\":\"Delete\",\"apiVersion\":\"2019-01-01\",\"isSnapshot\":false},\"securityEventDataEnrichment\":{\"action\":\"Delete\",\"apiVersion\":\"2019-01-01\",\"isSnapshot\":false},\"tenantId\":\"be46953f-744f-4015-b3be-6b5445651edb\",\"type\":\"Microsoft.Security/assessments\",\"kind\":null,\"location\":null,\"id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-esf/providers/microsoft.web/sites/mbranca-esf/providers/Microsoft.Security/assessments/9a8b0792-8113-2208-629d-6e2cac5b2c2e\",\"name\":\"9a8b0792-8113-2208-629d-6e2cac5b2c2e\",\"tags\":null,\"properties\":{\"resourceDetails\":{\"source\":\"Azure\",\"id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-esf/providers/microsoft.web/sites/mbranca-esf\"},\"displayName\":\"FZUH lnishc tyj dwhpt bsbjp ibsvllba ju addezh Czibthgj Buro\",\"status\":{\"code\":\"Healthy\",\"statusChangeDate\":\"2051-05-09T13:19:49.3381028Z\",\"firstEvaluationDate\":\"2051-05-09T13:19:49.3381028Z\"},\"additionalData\":{\"kind\":\"Functionapp\"},\"metadata\":{\"displayName\":\"FZUH lnishc tyj dwhpt bsbjp ibsvllba ju addezh Czibthgj Buro\",\"assessmentType\":\"BuiltIn\",\"policyDefinitionId\":\"/providers/microsoft.authorization/policydefinitions/6796f4b5-67ad-4593-a2af-bd8887d313c9\",\"description\":\"Cross-Origin Resource Sharing (CORS) should not allow all domains to access your Function app. Allow only required domains to interact with your Function app.\",\"remediationDescription\":\"To allow only required domains to interact with your web app, we recommend the following steps:<br>1. Go to the app service CORS page<br>2. Remove the \\\"*\\\" defined and instead specify explicit origins that should be allowed to make cross-origin calls<br>3. Click Save\",\"categories\":[\"AppServices\"],\"severity\":\"Low\",\"userImpact\":\"Low\",\"implementationEffort\":\"Low\",\"threats\":[\"MaliciousInsider\",\"AccountBreach\"]},\"links\":{\"azurePortal\":\"portal.azure.com/#blade/Microsoft_Azure_Security/RecommendationsBlade/assessmentKey/9a8b0792-8113-2208-629d-6e2cac5b2c2e/resourceId/%2fsubscriptions%2f12cabcb4-86e8-404f-a3d2-1dc9982f45ca%2fresourcegroups%2fmbranca-esf%2fproviders%2fmicrosoft.web%2fsites%2fmbranca-esf\"}}}",
+        "type": [
+          "info"
+        ]
+      },
+      "microsoft_defender_cloud": {
+        "event": {
+          "assessment_event_data_enrichment": {
+            "action": "Delete",
+            "api_version": "2019-01-01",
+            "is_snapshot": false
+          },
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-esf/providers/microsoft.web/sites/mbranca-esf/providers/Microsoft.Security/assessments/9a8b0792-8113-2208-629d-6e2cac5b2c2e",
+          "name": "9a8b0792-8113-2208-629d-6e2cac5b2c2e",
+          "properties": {
+            "additional_data": {
+              "kind": "Functionapp"
+            },
+            "display_name": "FZUH lnishc tyj dwhpt bsbjp ibsvllba ju addezh Czibthgj Buro",
+            "links": {
+              "azure_portal": "portal.azure.com/#blade/Microsoft_Azure_Security/RecommendationsBlade/assessmentKey/9a8b0792-8113-2208-629d-6e2cac5b2c2e/resourceId/%2fsubscriptions%2f12cabcb4-86e8-404f-a3d2-1dc9982f45ca%2fresourcegroups%2fmbranca-esf%2fproviders%2fmicrosoft.web%2fsites%2fmbranca-esf"
+            },
+            "metadata": {
+              "assessment_type": "BuiltIn",
+              "categories": [
+                "AppServices"
+              ],
+              "description": "Cross-Origin Resource Sharing (CORS) should not allow all domains to access your Function app. Allow only required domains to interact with your Function app.",
+              "display_name": "FZUH lnishc tyj dwhpt bsbjp ibsvllba ju addezh Czibthgj Buro",
+              "implementation_effort": "Low",
+              "policy_definition_id": "/providers/microsoft.authorization/policydefinitions/6796f4b5-67ad-4593-a2af-bd8887d313c9",
+              "remediation_description": "To allow only required domains to interact with your web app, we recommend the following steps:<br>1. Go to the app service CORS page<br>2. Remove the \"*\" defined and instead specify explicit origins that should be allowed to make cross-origin calls<br>3. Click Save",
+              "severity": "Low",
+              "threats": [
+                "MaliciousInsider",
+                "AccountBreach"
+              ],
+              "user_impact": "Low"
+            },
+            "resource_details": {
+              "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-esf/providers/microsoft.web/sites/mbranca-esf",
+              "source": "Azure"
+            },
+            "status": {
+              "code": "Healthy",
+              "first_evaluation_date": "2051-05-09T13:19:49.338Z",
+              "status_change_date": "2051-05-09T13:19:49.338Z"
+            }
+          },
+          "security_event_data_enrichment": {
+            "action": "Delete",
+            "api_version": "2019-01-01",
+            "is_snapshot": false
+          },
+          "tenant_id": "be46953f-744f-4015-b3be-6b5445651edb",
+          "type": "Microsoft.Security/assessments"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "{\"securityEventDataEnrichment\":{\"action\":\"Insert\",\"apiVersion\":\"2020-01-01\",\"isSnapshot\":false},\"id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/providers/Microsoft.Security/secureScores/ascScore/secureScoreControls/55989a95-6cac-48f7-bebd-08c7425bac10\",\"name\":\"55989a95-6cac-48f7-bebd-08c7425bac10\",\"type\":\"Microsoft.Security/secureScores/secureScoreControls\",\"properties\":{\"displayName\":\"Fsukn kkytcr lkecybt\",\"healthyResourceCount\":0,\"unhealthyResourceCount\":3,\"notApplicableResourceCount\":1,\"score\":{\"max\":6,\"current\":0,\"percentage\":0},\"definition\":{\"id\":\"/providers/Microsoft.Security/secureScoreControlDefinitions/55989a95-6cac-48f7-bebd-08c7425bac10\",\"name\":\"55989a95-6cac-48f7-bebd-08c7425bac10\",\"type\":\"Microsoft.Security/secureScoreControlDefinitions\",\"properties\":{\"source\":{\"sourceType\":\"BuiltIn\"},\"displayName\":\"Fsukn kkytcr lkecybt\",\"maxScore\":6,\"assessmentDefinitions\":[{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/d7eb3285-17df-11ad-25ad-73b708644283\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/21fc84e2-19a3-43a5-acb0-931a9dc00c50\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/963e7b50-3a8c-4ba4-94c0-abb8cb9b72a3\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/1cd9f0a2-32cf-8f57-9ed8-d10c27156b20\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/a9631cb0-cd1a-48c9-928c-51dab891b69f\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/45055112-35bf-4507-a61d-172f6018622a\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/51ddd468-ced6-a02e-9268-05430cd20b84\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/de93ac87-dec7-7e33-b3d0-171ad2b60896\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/be48e8bd-1e25-40ff-8612-9adaee0035b6\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/20b2e8e4-7f55-49ce-9de4-45e8002e1243\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/525f13fd-8eb6-44ee-b832-73d4b4875b50\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/b537cacd-cdce-4b50-b179-0fd190ae2f75\"}]}},\"weight\":3}}",
+        "type": [
+          "info"
+        ]
+      },
+      "microsoft_defender_cloud": {
+        "event": {
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/providers/Microsoft.Security/secureScores/ascScore/secureScoreControls/55989a95-6cac-48f7-bebd-08c7425bac10",
+          "name": "55989a95-6cac-48f7-bebd-08c7425bac10",
+          "properties": {
+            "assessment": {
+              "definitions": [
+                "{id=/providers/Microsoft.Security/assessmentMetadata/d7eb3285-17df-11ad-25ad-73b708644283}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/21fc84e2-19a3-43a5-acb0-931a9dc00c50}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/963e7b50-3a8c-4ba4-94c0-abb8cb9b72a3}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/1cd9f0a2-32cf-8f57-9ed8-d10c27156b20}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/a9631cb0-cd1a-48c9-928c-51dab891b69f}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/45055112-35bf-4507-a61d-172f6018622a}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/51ddd468-ced6-a02e-9268-05430cd20b84}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/de93ac87-dec7-7e33-b3d0-171ad2b60896}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/be48e8bd-1e25-40ff-8612-9adaee0035b6}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/20b2e8e4-7f55-49ce-9de4-45e8002e1243}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/525f13fd-8eb6-44ee-b832-73d4b4875b50}",
+                "{id=/providers/Microsoft.Security/assessmentMetadata/b537cacd-cdce-4b50-b179-0fd190ae2f75}"
+              ]
+            },
+            "definition": {
+              "display_name": "Fsukn kkytcr lkecybt",
+              "id": "/providers/Microsoft.Security/secureScoreControlDefinitions/55989a95-6cac-48f7-bebd-08c7425bac10",
+              "max_score": 6,
+              "name": "55989a95-6cac-48f7-bebd-08c7425bac10",
+              "source_type": "BuiltIn",
+              "type": "Microsoft.Security/secureScoreControlDefinitions"
+            },
+            "display_name": "Fsukn kkytcr lkecybt",
+            "healthy_resource_count": 0,
+            "not_applicable_resource_count": 1,
+            "score": {
+              "current": 0.0,
+              "max": 6,
+              "percentage": 0.0
+            },
+            "unhealthy_resource_count": 3,
+            "weight": 3
+          },
+          "security_event_data_enrichment": {
+            "action": "Insert",
+            "api_version": "2020-01-01",
+            "is_snapshot": false
+          },
+          "type": "Microsoft.Security/secureScores/secureScoreControls"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "{\"$type\":\"subAssessmentEvent\",\"SubAssessmentEventDataEnrichment\":{\"$type\":\"subAssessmentEventDataEnrichment\",\"Action\":\"Delete\",\"ApiVersion\":\"2020-01-01\",\"IsSnapshot\":false},\"SecurityEventDataEnrichment\":{\"$type\":\"subAssessmentEventDataEnrichment\",\"Action\":\"Delete\",\"ApiVersion\":\"2020-01-01\",\"IsSnapshot\":false},\"TenantId\":\"be46953f-744f-4015-b3be-6b5445651edb\",\"Type\":\"Microsoft.Security/assessments/subAssessments\",\"Id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-sdh-3372/providers/microsoft.compute/virtualmachines/sdh-3372/providers/Microsoft.Security/assessments/e442da70-8829-4675-96ec-a9e372649a64/subassessments/42c9251b-8361-8866-3fe7-a17cd4402c16\",\"Name\":\"42c9251b-8361-8866-3fe7-a17cd4402c16\",\"Properties\":{\"$type\":\"response/subAssessmentProperties\",\"Id\":\"42c9251b-8361-8866-3fe7-a17cd4402c16\",\"DisplayName\":\"Ckzmsf EEEW lx cjqdcuaa\",\"Status\":{\"$type\":\"status\",\"Code\":\"Unhealthy\",\"Severity\":\"Low\"},\"Remediation\":\"Edit or create a file in the `/etc/modprobe.d/` directory ending in .conf and add `install dccp /bin/true` then unload the dccp module or run '/opt/microsoft/omsagent/plugin/omsremediate -r disable-unnecessary-kernel-mods'\",\"Impact\":\"If the protocol is not required, it is recommended that the drivers not be installed to reduce the potential attack surface.\",\"Category\":\"N/A\",\"Description\":\"Ckzmsf EEEW lx cjqdcuaa\",\"TimeGenerated\":\"2051-05-12T09:58:32.2607101Z\",\"ResourceDetails\":{\"$type\":\"resourceDetails/azure\",\"Source\":\"Azure\",\"Id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-sdh-3372/providers/microsoft.compute/virtualmachines/sdh-3372\"},\"AdditionalData\":{\"$type\":\"additionalData/general\",\"AssessedResourceType\":\"GeneralVulnerability\",\"Data\":{\"OsName\":\"Linux\",\"RuleType\":\"Command\",\"Vulnerability\":\"\",\"AZID\":\"MSID 54\",\"DataSourceType\":\"Not Applicable\",\"DataSourceKey\":\"Not Applicable\"}}}}",
+        "type": [
+          "info"
+        ]
+      },
+      "microsoft_defender_cloud": {
+        "event": {
+          "event_type": "subAssessmentEvent",
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-sdh-3372/providers/microsoft.compute/virtualmachines/sdh-3372/providers/Microsoft.Security/assessments/e442da70-8829-4675-96ec-a9e372649a64/subassessments/42c9251b-8361-8866-3fe7-a17cd4402c16",
+          "name": "42c9251b-8361-8866-3fe7-a17cd4402c16",
+          "properties": {
+            "additional_data": {
+              "$type": "additionalData/general",
+              "assessedresourcetype": "GeneralVulnerability",
+              "data": {
+                "azid": "MSID 54",
+                "datasourcekey": "Not Applicable",
+                "datasourcetype": "Not Applicable",
+                "osname": "Linux",
+                "ruletype": "Command"
+              }
+            },
+            "category": "N/A",
+            "description": "Ckzmsf EEEW lx cjqdcuaa",
+            "display_name": "Ckzmsf EEEW lx cjqdcuaa",
+            "id": "42c9251b-8361-8866-3fe7-a17cd4402c16",
+            "impact": "If the protocol is not required, it is recommended that the drivers not be installed to reduce the potential attack surface.",
+            "remediation": "Edit or create a file in the `/etc/modprobe.d/` directory ending in .conf and add `install dccp /bin/true` then unload the dccp module or run '/opt/microsoft/omsagent/plugin/omsremediate -r disable-unnecessary-kernel-mods'",
+            "resource_details": {
+              "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-sdh-3372/providers/microsoft.compute/virtualmachines/sdh-3372",
+              "source": "Azure",
+              "type": "resourceDetails/azure"
+            },
+            "status": {
+              "code": "Unhealthy",
+              "severity": "Low",
+              "type": "status"
+            },
+            "time_generated": "2051-05-12T09:58:32.260Z",
+            "type": "response/subAssessmentProperties"
+          },
+          "security_event_data_enrichment": {
+            "action": "Delete",
+            "api_version": "2020-01-01",
+            "is_snapshot": false,
+            "type": "subAssessmentEventDataEnrichment"
+          },
+          "sub_assessment_event": {
+            "data_enrichment": {
+              "action": "Delete",
+              "api_version": "2020-01-01",
+              "is_snapshot": false,
+              "type": "subAssessmentEventDataEnrichment"
+            }
+          },
+          "tenant_id": "be46953f-744f-4015-b3be-6b5445651edb",
+          "type": "Microsoft.Security/assessments/subAssessments"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-11T13:17:09.017Z",
+      "cloud": {
+        "provider": [
+          "Azure"
+        ]
+      },
+      "container": {
+        "id": [
+          "cc8ec8580f4c"
+        ]
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "end": "2051-05-11T13:15:45.017Z",
+        "kind": "alert",
+        "original": "{\"VendorName\":\"Microsoft\",\"AlertType\":\"ARM_AnomalousServiceOperation.CredentialAccess\",\"ProductName\":\"Microsoft Defender for Cloud\",\"StartTimeUtc\":\"2051-05-11T13:15:45.0170422Z\",\"EndTimeUtc\":\"2051-05-11T13:15:45.0170422Z\",\"TimeGenerated\":\"2051-05-11T13:17:09.0170422Z\",\"ProcessingEndTime\":\"2051-05-11T13:17:09.0170422Z\",\"Severity\":\"Medium\",\"Status\":\"New\",\"ProviderAlertStatus\":null,\"ConfidenceLevel\":null,\"ConfidenceScore\":null,\"ConfidenceReasons\":null,\"IsIncident\":false,\"SystemAlertId\":\"2517184898549829577_dbcb9d94-ad51-45d4-aa87-17838e88525c\",\"CorrelationKey\":null,\"Intent\":\"PreAttack\",\"AzureResourceId\":\"/SUBSCRIPTIONS/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/RESOURCEGROUPS/Sample-RG/providers/Microsoft.Compute/virtualMachines/Jbsjgc-HU\",\"WorkspaceId\":\"08166994-2766-0080-0901-658708848682\",\"WorkspaceSubscriptionId\":\"08166994-2766-0080-0901-658708848682\",\"WorkspaceResourceGroup\":\"Sample-RG\",\"AgentId\":null,\"CompromisedEntity\":\"Jbsjgc-HU\",\"AlertDisplayName\":\"[SAMPLE ALERT] Login from a suspicious IP\",\"Description\":\"THIS IS A SAMPLE ALERT: Your resource has been accessed successfully from an IP address that Microsoft Threat Intelligence has associated with suspicious activity.\",\"Entities\":[{\"$id\":\"5\",\"Address\":\"203.0.113.138\",\"Location\":{\"CountryCode\":\"US\",\"CountryName\":\"United States\",\"State\":\"Virginia\",\"City\":\"Washington\",\"Longitude\":-78.17197,\"Latitude\":38.73078,\"Asn\":8075},\"ThreatIntelligence\":[{\"ProviderName\":\"AlertSimulator\",\"ThreatType\":\"Sample-Type\",\"ThreatName\":\"Sample-Threat\",\"Confidence\":1,\"ThreatDescription\":\"\"}],\"Asset\":false,\"Type\":\"ip\"},{\"$id\":\"6\",\"ImageId\":\"sample-image:v1\",\"Asset\":false,\"Type\":\"container-image\"},{\"$ref\":\"6\"},{\"$id\":\"5\",\"DnsDomain\":\"\",\"NTDomain\":\"\",\"HostName\":\"Jbsjgc-HU\",\"NetBiosName\":\"Jbsjgc-HU\",\"AzureID\":\"/SUBSCRIPTIONS/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/RESOURCEGROUPS/Sample-RG/providers/Microsoft.Compute/virtualMachines/Jbsjgc-HU\",\"OMSAgentID\":\"08166994-2766-0080-0901-658708848682\",\"OSFamily\":\"Linux\",\"OSVersion\":\"Linux\",\"Asset\":false,\"Type\":\"host\"},{\"$id\":\"6\",\"ProcessId\":\"0x1e49a\",\"CommandLine\":\"\",\"Host\":{\"$ref\":\"5\"},\"Asset\":false,\"Type\":\"process\"},{\"$id\":\"7\",\"Name\":\"Sample-account\",\"Host\":{\"$ref\":\"5\"},\"Sid\":\"\",\"Asset\":false,\"Type\":\"account\",\"LogonId\":\"0xbd6e\"},{\"$id\":\"9\",\"ProcessId\":\"0x1e99b\",\"CommandLine\":\"php\",\"CreationTimeUtc\":\"2051-05-11T13:17:49.1333596Z\",\"ImageFile\":{\"$ref\":\"8\"},\"Account\":{\"$ref\":\"7\"},\"ParentProcess\":{\"$ref\":\"6\"},\"Host\":{\"$ref\":\"5\"},\"Asset\":false,\"Type\":\"process\"},{\"$id\":\"5\",\"DomainName\":\"sample.domain\",\"IpAddresses\":[{\"$id\":\"6\",\"Address\":\"203.0.113.138\",\"Location\":{\"CountryCode\":\"US\",\"CountryName\":\"United States\",\"State\":\"California\",\"City\":\"San Francisco\",\"Longitude\":0,\"Latitude\":0,\"Asn\":0},\"Asset\":false,\"Type\":\"ip\"}],\"HostIpAddress\":{\"$ref\":\"6\"},\"Asset\":false,\"Type\":\"dns\"},{\"$id\":\"6\",\"Address\":\"203.0.113.138\",\"Location\":{\"CountryCode\":\"sample\",\"CountryName\":\"united states\",\"State\":\"texas\",\"City\":\"san antonio\",\"Longitude\":0,\"Latitude\":0,\"Asn\":0,\"Carrier\":\"sample\",\"Organization\":\"sample-organization\",\"OrganizationType\":\"sample-organization\",\"CloudProvider\":\"Azure\",\"SystemService\":\"sample\"},\"ThreatIntelligence\":[{\"ProviderName\":\"Sample-Provider\",\"ThreatType\":\"Sample-Threat\",\"ThreatName\":\"Sample-Threat\",\"Confidence\":0.8,\"ThreatDescription\":\"Sample-Threat\"}],\"Asset\":false,\"Type\":\"ip\"},{\"$id\":\"5\",\"HostName\":\"Jbsjgc-HU\",\"AzureID\":\"/SUBSCRIPTIONS/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/RESOURCEGROUPS/Sample-RG/providers/Microsoft.Compute/virtualMachines/Jbsjgc-HU\",\"OMSAgentID\":\"00000000-0000-0000-0000-000000000000\",\"Asset\":false,\"Type\":\"host\"},{\"$id\":\"7\",\"Directory\":\"Sample-fileShare/dummy/path/to\",\"Name\":\"Sample-Name\",\"FileHashes\":[{\"$id\":\"8\",\"Algorithm\":\"MD5\",\"Value\":\"Sample-SHA\",\"Asset\":false,\"Type\":\"filehash\"}],\"Asset\":false,\"Type\":\"file\"},{\"$id\":\"9\",\"Name\":\"Sample-Name\",\"Category\":\"Virus\",\"Files\":[{\"$ref\":\"8\"}],\"Asset\":false,\"Type\":\"malware\"},{\"$id\":\"5\",\"DomainName\":\"sample.domain\",\"IpAddresses\":[{\"$id\":\"6\",\"Address\":\"203.0.113.138\",\"Location\":{\"CountryCode\":\"US\",\"CountryName\":\"United States\",\"State\":\"California\",\"City\":\"San Francisco\",\"Longitude\":0,\"Latitude\":0,\"Asn\":0},\"Asset\":false,\"Type\":\"ip\"}],\"HostIpAddress\":{\"$ref\":\"6\"},\"Asset\":false,\"Type\":\"dns\"},{\"$id\":\"7\",\"Name\":\"Sample-account\",\"NTDomain\":\"Jbsjgc-HU\",\"Host\":{\"$ref\":\"5\"},\"Sid\":\"S-1-5-21-3061399664-1673012318-3185014992-20022\",\"IsDomainJoined\":false,\"Asset\":false,\"Type\":\"account\",\"LogonId\":\"0x427d8dd9\"},{\"$id\":\"7\",\"Name\":\"Sample-namespace\",\"Cluster\":{\"$ref\":\"5\"},\"Asset\":false,\"Type\":\"K8s-namespace\"},{\"$id\":\"8\",\"Name\":\"sample-pod\",\"Namespace\":{\"$ref\":\"7\"},\"Asset\":false,\"Type\":\"K8s-pod\"},{\"$id\":\"9\",\"Name\":\"sample-container\",\"Image\":{\"$ref\":\"4\"},\"Pod\":{\"$ref\":\"8\"},\"Asset\":false,\"Type\":\"container\"},{\"$id\":\"10\",\"ProjectId\":\"012345678901\",\"ResourceType\":\"GCP Resource\",\"ResourceName\":\"Sample-Cluster\",\"Location\":\"us-central1-c\",\"LocationType\":\"Zonal\",\"Asset\":true,\"Type\":\"gcp-resource\",\"RelatedAzureResourceIds\":[\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroups/Sample-RG/providers/Microsoft.Security/securityConnectors/gcp-connector/securityentitydata/gcp-clusters-sample-cluster-us-central1-c\"]},{\"$id\":\"7\",\"Name\":\"Sample-Name\",\"BlobContainer\":{\"$ref\":\"5\"},\"Url\":\"https://Sample-Storage.blob.core.windows.net/Sample/Sample.txt\",\"Etag\":\"Sample-Tag\",\"Asset\":false,\"Type\":\"blob\"},{\"$id\":\"5\",\"Name\":\"sample\",\"UPNSuffix\":\"egmukjj.com\",\"AadTenantId\":\"00000000-0000-0000-0000-000000000000\",\"AadUserId\":\"00000000-0000-0000-0000-000000000000\",\"Asset\":false,\"Type\":\"account\"},{\"$id\":\"5\",\"CloudResource\":{\"$ref\":\"4\"},\"Asset\":false,\"Type\":\"K8s-cluster\"},{\"$id\":\"8\",\"Directory\":\"https://Sample-Storage.blob.core.windows.net/Sample\",\"Name\":\"Sample-Name\",\"FileHashes\":[{\"$ref\":\"6\"}],\"Asset\":false,\"Type\":\"file\"},{\"$id\":\"10\",\"ProjectId\":\"012345678901\",\"ResourceType\":\"GCP Resource\",\"ResourceName\":\"Sample-Cluster\",\"Location\":\"us-central1-c\",\"LocationType\":\"Zonal\",\"Asset\":true,\"Type\":\"gcp-resource\",\"RelatedAzureResourceIds\":[\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroups/Sample-RG/providers/Microsoft.Security/securityConnectors/gcp-connector/securityentitydata/gcp-clusters-sample-cluster-us-central1-c\"]},{\"$id\":\"6\",\"SourceAddress\":{\"$ref\":\"5\"},\"Protocol\":\"Tcp\",\"Asset\":false,\"Type\":\"network-connection\"},{\"$id\":\"7\",\"Name\":\"Sample-Name\",\"StorageResource\":{\"$ref\":\"4\"},\"Asset\":false,\"Type\":\"blob-container\"},{\"$id\":\"7\",\"ContainerId\":\"cc8ec8580f4c\",\"Image\":{\"$ref\":\"6\"},\"Asset\":false,\"Type\":\"container\"},{\"$id\":\"5\",\"Address\":\"203.0.113.138\",\"Location\":{\"CountryCode\":\"IN\",\"CountryName\":\"United States\",\"State\":\"Virginia\",\"City\":\"Washington\",\"Longitude\":-78.17197,\"Latitude\":38.73078,\"Asn\":8075},\"ThreatIntelligence\":[{\"ProviderName\":\"AlertSimulator\",\"ThreatType\":\"Sample-Type\",\"ThreatName\":\"Sample-Threat\",\"Confidence\":1,\"ThreatDescription\":\"\"}],\"Asset\":false,\"Type\":\"ip\"}],\"ExtendedLinks\":[{\"Href\":\"https://blog.netspi.com/gathering-bearer-tokens-azure/\",\"Category\":null,\"Label\":\"NetSPI blogpost\",\"Type\":\"webLink\"},{\"Href\":\"https://github.com/VauNXY/MicroBurst/blob/master/REST/Get-AZStorageKeysREST.ps1\",\"Category\":null,\"Label\":\"MicroBurst source code\",\"Type\":\"webLink\"}],\"ResourceIdentifiers\":[{\"$id\":\"2\",\"AzureResourceId\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb\",\"Type\":\"AzureResource\",\"AzureResourceTenantId\":\"be46953f-744f-4015-b3be-6b5445651edb\"},{\"$id\":\"3\",\"AadTenantId\":\"be46953f-744f-4015-b3be-6b5445651edb\",\"Type\":\"AAD\"},{\"$id\":\"3\",\"WorkspaceId\":\"08166994-2766-0080-0901-658708848682\",\"WorkspaceSubscriptionId\":\"08166994-2766-0080-0901-658708848682\",\"WorkspaceResourceGroup\":\"Sample-RG\",\"AgentId\":\"00000000-0000-0000-0000-00000000000\",\"Type\":\"LogAnalytics\"}],\"RemediationSteps\":[\"Go to the firewall settings in order to lock down the firewall as tightly as possible.\"],\"ExtendedProperties\":{\"resourceType\":\"Virtual Machine\",\"Investigation steps\":\"{\\\"displayValue\\\":\\\"How to investigate this alert using logs at your Log Analytics workspace.\\\",\\\"kind\\\":\\\"Link\\\",\\\"value\\\":\\\"https:\\\\/\\\\/go.microsoft.com\\\\/fwlink\\\\/?linkid=2091064\\\"}\",\"Potential causes\":\"An attacker has accessed your database from a potentially suspicious IP; a legitimate user has accessed your database from a potentially suspicious IP.\",\"Client principal name\":\"Sample-user\",\"Alert Id\":\"00000000-0000-0000-0000-000000000000\",\"Client IP address\":\"203.0.113.138\",\"Client IP location\":\"Sample\",\"Client application\":\"Sample-app\",\"OMS workspace ID\":\"08166994-2766-0080-0901-658708848682\",\"OMS agent ID\":\"08166994-2766-0080-0901-658708848682\"},\"AlertUri\":\"https://portal.azure.com/#blade/Microsoft_Azure_Security_AzureDefenderForData/AlertBlade/alertId/2517184898549829577_dbcb9d94-ad51-45d4-aa87-17838e88525c/subscriptionId/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroup/Sample-RG/referencedFrom/alertDeepLink/location/centralus\"}",
+        "provider": "Microsoft Defender for Cloud",
+        "reference": "https://portal.azure.com/#blade/Microsoft_Azure_Security_AzureDefenderForData/AlertBlade/alertId/2517184898549829577_dbcb9d94-ad51-45d4-aa87-17838e88525c/subscriptionId/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroup/Sample-RG/referencedFrom/alertDeepLink/location/centralus",
+        "severity": 47,
+        "start": "2051-05-11T13:15:45.017Z",
+        "type": [
+          "indicator"
+        ]
+      },
+      "host": {
+        "domain": [
+          "sample.domain"
+        ],
+        "geo": {
+          "city_name": [
+            "Washington",
+            "san antonio"
+          ],
+          "country_iso_code": [
+            "US",
+            "sample",
+            "IN"
+          ],
+          "country_name": [
+            "United States",
+            "united states"
+          ]
+        },
+        "hostname": [
+          "Jbsjgc-HU"
+        ],
+        "os": {
+          "family": [
+            "Linux"
+          ]
+        }
+      },
+      "microsoft_defender_cloud": {
+        "event": {
+          "alert_type": "ARM_AnomalousServiceOperation.CredentialAccess",
+          "azure_resource_id": "/SUBSCRIPTIONS/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/RESOURCEGROUPS/Sample-RG/providers/Microsoft.Compute/virtualMachines/Jbsjgc-HU",
+          "compromised_entity": "Jbsjgc-HU",
+          "description": "THIS IS A SAMPLE ALERT: Your resource has been accessed successfully from an IP address that Microsoft Threat Intelligence has associated with suspicious activity.",
+          "display_name": "[SAMPLE ALERT] Login from a suspicious IP",
+          "end_time_utc": "2051-05-11T13:15:45.017Z",
+          "entities": [
+            {
+              "address": "203.0.113.138",
+              "asset": false,
+              "id": "5",
+              "location": {
+                "asn": 8075,
+                "city": "Washington",
+                "country_code": "US",
+                "country_name": "United States",
+                "latitude": 38.73078,
+                "longitude": -78.17197,
+                "state": "Virginia"
+              },
+              "threat_intelligence": [
+                {
+                  "confidence": 1.0,
+                  "name": "Sample-Threat",
+                  "provider_name": "AlertSimulator",
+                  "type": "Sample-Type"
+                }
+              ],
+              "type": "ip"
+            },
+            {
+              "asset": false,
+              "id": "6",
+              "image_id": "sample-image:v1",
+              "type": "container-image"
+            },
+            {
+              "ref": "6"
+            },
+            {
+              "asset": false,
+              "azure_id": "/SUBSCRIPTIONS/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/RESOURCEGROUPS/Sample-RG/providers/Microsoft.Compute/virtualMachines/Jbsjgc-HU",
+              "host_name": "Jbsjgc-HU",
+              "id": "5",
+              "net_bios_name": "Jbsjgc-HU",
+              "oms_agent_id": "08166994-2766-0080-0901-658708848682",
+              "os_family": "Linux",
+              "os_version": "Linux",
+              "type": "host"
+            },
+            {
+              "asset": false,
+              "host": {
+                "ref": "5"
+              },
+              "id": "6",
+              "process_id": "0x1e49a",
+              "type": "process"
+            },
+            {
+              "asset": false,
+              "host": {
+                "ref": "5"
+              },
+              "id": "7",
+              "logon_id": "0xbd6e",
+              "name": "Sample-account",
+              "type": "account"
+            },
+            {
+              "account": {
+                "ref": "7"
+              },
+              "asset": false,
+              "command_line": "php",
+              "creation_time_utc": "2051-05-11T13:17:49.133Z",
+              "host": {
+                "ref": "5"
+              },
+              "id": "9",
+              "image_file": {
+                "ref": "8"
+              },
+              "parent_process": {
+                "ref": "6"
+              },
+              "process_id": "0x1e99b",
+              "type": "process"
+            },
+            {
+              "asset": false,
+              "domain_name": "sample.domain",
+              "host_ip_address": {
+                "ref": "6"
+              },
+              "id": "5",
+              "ip_addresses": [
+                {
+                  "address": "203.0.113.138",
+                  "asset": false,
+                  "id": "6",
+                  "location": {
+                    "asn": 0,
+                    "city": "San Francisco",
+                    "country_code": "US",
+                    "country_name": "United States",
+                    "latitude": 0,
+                    "longitude": 0,
+                    "state": "California"
+                  },
+                  "type": "ip"
+                }
+              ],
+              "type": "dns"
+            },
+            {
+              "address": "203.0.113.138",
+              "asset": false,
+              "id": "6",
+              "location": {
+                "asn": 0,
+                "carrier": "sample",
+                "city": "san antonio",
+                "cloud_provider": "Azure",
+                "country_code": "sample",
+                "country_name": "united states",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "organization": "sample-organization",
+                "organization_type": "sample-organization",
+                "state": "texas",
+                "system_service": "sample"
+              },
+              "threat_intelligence": [
+                {
+                  "confidence": 0.8,
+                  "description": "Sample-Threat",
+                  "name": "Sample-Threat",
+                  "provider_name": "Sample-Provider",
+                  "type": "Sample-Threat"
+                }
+              ],
+              "type": "ip"
+            },
+            {
+              "asset": false,
+              "azure_id": "/SUBSCRIPTIONS/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/RESOURCEGROUPS/Sample-RG/providers/Microsoft.Compute/virtualMachines/Jbsjgc-HU",
+              "host_name": "Jbsjgc-HU",
+              "id": "5",
+              "oms_agent_id": "00000000-0000-0000-0000-000000000000",
+              "type": "host"
+            },
+            {
+              "asset": false,
+              "directory": "Sample-fileShare/dummy/path/to",
+              "file_hashes": [
+                {
+                  "algorithm": "MD5",
+                  "asset": false,
+                  "id": "8",
+                  "type": "filehash",
+                  "value": "Sample-SHA"
+                }
+              ],
+              "id": "7",
+              "name": "Sample-Name",
+              "type": "file"
+            },
+            {
+              "asset": false,
+              "category": "Virus",
+              "files": [
+                {
+                  "ref": "8"
+                }
+              ],
+              "id": "9",
+              "name": "Sample-Name",
+              "type": "malware"
+            },
+            {
+              "asset": false,
+              "domain_name": "sample.domain",
+              "host_ip_address": {
+                "ref": "6"
+              },
+              "id": "5",
+              "ip_addresses": [
+                {
+                  "address": "203.0.113.138",
+                  "asset": false,
+                  "id": "6",
+                  "location": {
+                    "asn": 0,
+                    "city": "San Francisco",
+                    "country_code": "US",
+                    "country_name": "United States",
+                    "latitude": 0,
+                    "longitude": 0,
+                    "state": "California"
+                  },
+                  "type": "ip"
+                }
+              ],
+              "type": "dns"
+            },
+            {
+              "asset": false,
+              "host": {
+                "ref": "5"
+              },
+              "id": "7",
+              "is_domain_joined": false,
+              "logon_id": "0x427d8dd9",
+              "name": "Sample-account",
+              "nt_domain": "Jbsjgc-HU",
+              "sid": "S-1-5-21-3061399664-1673012318-3185014992-20022",
+              "type": "account"
+            },
+            {
+              "asset": false,
+              "cluster": {
+                "ref": "5"
+              },
+              "id": "7",
+              "name": "Sample-namespace",
+              "type": "K8s-namespace"
+            },
+            {
+              "asset": false,
+              "id": "8",
+              "name": "sample-pod",
+              "namespace": {
+                "ref": "7"
+              },
+              "type": "K8s-pod"
+            },
+            {
+              "asset": false,
+              "id": "9",
+              "image": {
+                "ref": "4"
+              },
+              "name": "sample-container",
+              "pod": {
+                "ref": "8"
+              },
+              "type": "container"
+            },
+            {
+              "asset": true,
+              "id": "10",
+              "location_type": "Zonal",
+              "location_value": "us-central1-c",
+              "project_id": "012345678901",
+              "related_azure_resource_ids": [
+                "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroups/Sample-RG/providers/Microsoft.Security/securityConnectors/gcp-connector/securityentitydata/gcp-clusters-sample-cluster-us-central1-c"
+              ],
+              "resource_name": "Sample-Cluster",
+              "resource_type": "GCP Resource",
+              "type": "gcp-resource"
+            },
+            {
+              "asset": false,
+              "blob_container": {
+                "ref": "5"
+              },
+              "etag": "Sample-Tag",
+              "id": "7",
+              "name": "Sample-Name",
+              "type": "blob",
+              "url": "https://Sample-Storage.blob.core.windows.net/Sample/Sample.txt"
+            },
+            {
+              "aad_tenant_id": "00000000-0000-0000-0000-000000000000",
+              "aad_user_id": "00000000-0000-0000-0000-000000000000",
+              "asset": false,
+              "id": "5",
+              "name": "sample",
+              "type": "account",
+              "upn_suffix": "egmukjj.com"
+            },
+            {
+              "asset": false,
+              "cloud_resource": {
+                "ref": "4"
+              },
+              "id": "5",
+              "type": "K8s-cluster"
+            },
+            {
+              "asset": false,
+              "directory": "https://Sample-Storage.blob.core.windows.net/Sample",
+              "file_hashes": [
+                {
+                  "ref": "6"
+                }
+              ],
+              "id": "8",
+              "name": "Sample-Name",
+              "type": "file"
+            },
+            {
+              "asset": true,
+              "id": "10",
+              "location_type": "Zonal",
+              "location_value": "us-central1-c",
+              "project_id": "012345678901",
+              "related_azure_resource_ids": [
+                "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroups/Sample-RG/providers/Microsoft.Security/securityConnectors/gcp-connector/securityentitydata/gcp-clusters-sample-cluster-us-central1-c"
+              ],
+              "resource_name": "Sample-Cluster",
+              "resource_type": "GCP Resource",
+              "type": "gcp-resource"
+            },
+            {
+              "asset": false,
+              "id": "6",
+              "protocol": "tcp",
+              "source_address": {
+                "ref": "5"
+              },
+              "type": "network-connection"
+            },
+            {
+              "asset": false,
+              "id": "7",
+              "name": "Sample-Name",
+              "storage_resource": {
+                "ref": "4"
+              },
+              "type": "blob-container"
+            },
+            {
+              "asset": false,
+              "container_id": "cc8ec8580f4c",
+              "id": "7",
+              "image": {
+                "ref": "6"
+              },
+              "type": "container"
+            },
+            {
+              "address": "203.0.113.138",
+              "asset": false,
+              "id": "5",
+              "location": {
+                "asn": 8075,
+                "city": "Washington",
+                "country_code": "IN",
+                "country_name": "United States",
+                "latitude": 38.73078,
+                "longitude": -78.17197,
+                "state": "Virginia"
+              },
+              "threat_intelligence": [
+                {
+                  "confidence": 1.0,
+                  "name": "Sample-Threat",
+                  "provider_name": "AlertSimulator",
+                  "type": "Sample-Type"
+                }
+              ],
+              "type": "ip"
+            }
+          ],
+          "extended_links": [
+            {
+              "href": "https://blog.netspi.com/gathering-bearer-tokens-azure/",
+              "label": "NetSPI blogpost",
+              "type": "webLink"
+            },
+            {
+              "href": "https://github.com/VauNXY/MicroBurst/blob/master/REST/Get-AZStorageKeysREST.ps1",
+              "label": "MicroBurst source code",
+              "type": "webLink"
+            }
+          ],
+          "extended_properties": {
+            "alert id": "00000000-0000-0000-0000-000000000000",
+            "client application": "Sample-app",
+            "client ip address": "203.0.113.138",
+            "client ip location": "Sample",
+            "client principal name": "Sample-user",
+            "investigation steps": "{\"displayValue\":\"How to investigate this alert using logs at your Log Analytics workspace.\",\"kind\":\"Link\",\"value\":\"https:\\/\\/go.microsoft.com\\/fwlink\\/?linkid=2091064\"}",
+            "oms agent id": "08166994-2766-0080-0901-658708848682",
+            "oms workspace id": "08166994-2766-0080-0901-658708848682",
+            "potential causes": "An attacker has accessed your database from a potentially suspicious IP; a legitimate user has accessed your database from a potentially suspicious IP.",
+            "resourcetype": "Virtual Machine"
+          },
+          "intent": "PreAttack",
+          "is_incident": false,
+          "processing_end_time": "2051-05-11T13:17:09.017Z",
+          "product": {
+            "name": "Microsoft Defender for Cloud"
+          },
+          "remediation_steps": [
+            "Go to the firewall settings in order to lock down the firewall as tightly as possible."
+          ],
+          "resource_identifiers": [
+            {
+              "azure_id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb",
+              "azure_tenant_id": "be46953f-744f-4015-b3be-6b5445651edb",
+              "id": "2",
+              "type": "AzureResource"
+            },
+            {
+              "aad_tenant_id": "be46953f-744f-4015-b3be-6b5445651edb",
+              "id": "3",
+              "type": "AAD"
+            },
+            {
+              "agent_id": "00000000-0000-0000-0000-00000000000",
+              "id": "3",
+              "type": "LogAnalytics",
+              "workspace_id": "08166994-2766-0080-0901-658708848682",
+              "workspace_resource_group": "Sample-RG",
+              "workspace_subscription_id": "08166994-2766-0080-0901-658708848682"
+            }
+          ],
+          "severity": "Medium",
+          "start_time_utc": "2051-05-11T13:15:45.017Z",
+          "status": "New",
+          "system": {
+            "alert_id": "2517184898549829577_dbcb9d94-ad51-45d4-aa87-17838e88525c"
+          },
+          "time_generated": "2051-05-11T13:17:09.017Z",
+          "uri": "https://portal.azure.com/#blade/Microsoft_Azure_Security_AzureDefenderForData/AlertBlade/alertId/2517184898549829577_dbcb9d94-ad51-45d4-aa87-17838e88525c/subscriptionId/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroup/Sample-RG/referencedFrom/alertDeepLink/location/centralus",
+          "vendor_name": "Microsoft",
+          "workspace": {
+            "id": "08166994-2766-0080-0901-658708848682",
+            "resource_group": "Sample-RG",
+            "subscription_id": "08166994-2766-0080-0901-658708848682"
+          }
+        }
+      },
+      "network": {
+        "transport": [
+          "tcp"
+        ]
+      },
+      "observer": {
+        "vendor": "Microsoft"
+      },
+      "process": {
+        "entity_id": [
+          "0x1e49a",
+          "0x1e99b"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "sample.domain",
+          "Jbsjgc-HU"
+        ],
+        "ip": [
+          "203.0.113.138"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "domain": "Sample-Storage.blob.core.windows.net",
+        "extension": "txt",
+        "original": "https://Sample-Storage.blob.core.windows.net/Sample/Sample.txt",
+        "path": "/Sample/Sample.txt",
+        "scheme": "https"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"securityEventDataEnrichment\":{\"action\":\"Write\",\"apiVersion\":\"2019-01-01-preview\",\"isSnapshot\":false,\"interval\":\"00:00:00\"},\"id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/providers/Microsoft.Security/regulatoryComplianceStandards/Microsoft-cloud-security-benchmark/regulatoryComplianceControls/LT.5/regulatoryComplianceAssessments/51ddd468-ced6-a02e-9268-05430cd20b84\",\"name\":\"51ddd468-ced6-a02e-9268-05430cd20b84\",\"type\":\"Microsoft.Security/regulatoryComplianceStandards/regulatoryComplianceControls/regulatoryComplianceAssessments\",\"properties\":{\"description\":\"Log Analytics agent should be installed on virtual machine scale sets\",\"state\":\"Skipped\",\"passedResources\":0,\"failedResources\":0,\"skippedResources\":1,\"assessmentType\":\"AssessmentResult\",\"assessmentDetailsLink\":\"https://portal.azure.com/#blade/Microsoft_Azure_Security/RecommendationsBlade/assessmentKey/51ddd468-ced6-a02e-9268-05430cd20b84/initiativeId/Microsoft-cloud-security-benchmark\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"assessmentEventDataEnrichment\":{\"action\":\"Delete\",\"apiVersion\":\"2019-01-01\",\"isSnapshot\":false},\"securityEventDataEnrichment\":{\"action\":\"Delete\",\"apiVersion\":\"2019-01-01\",\"isSnapshot\":false},\"tenantId\":\"be46953f-744f-4015-b3be-6b5445651edb\",\"type\":\"Microsoft.Security/assessments\",\"kind\":null,\"location\":null,\"id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-esf/providers/microsoft.web/sites/mbranca-esf/providers/Microsoft.Security/assessments/9a8b0792-8113-2208-629d-6e2cac5b2c2e\",\"name\":\"9a8b0792-8113-2208-629d-6e2cac5b2c2e\",\"tags\":null,\"properties\":{\"resourceDetails\":{\"source\":\"Azure\",\"id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-esf/providers/microsoft.web/sites/mbranca-esf\"},\"displayName\":\"FZUH lnishc tyj dwhpt bsbjp ibsvllba ju addezh Czibthgj Buro\",\"status\":{\"code\":\"Healthy\",\"statusChangeDate\":\"2051-05-09T13:19:49.3381028Z\",\"firstEvaluationDate\":\"2051-05-09T13:19:49.3381028Z\"},\"additionalData\":{\"kind\":\"Functionapp\"},\"metadata\":{\"displayName\":\"FZUH lnishc tyj dwhpt bsbjp ibsvllba ju addezh Czibthgj Buro\",\"assessmentType\":\"BuiltIn\",\"policyDefinitionId\":\"/providers/microsoft.authorization/policydefinitions/6796f4b5-67ad-4593-a2af-bd8887d313c9\",\"description\":\"Cross-Origin Resource Sharing (CORS) should not allow all domains to access your Function app. Allow only required domains to interact with your Function app.\",\"remediationDescription\":\"To allow only required domains to interact with your web app, we recommend the following steps:<br>1. Go to the app service CORS page<br>2. Remove the \\\"*\\\" defined and instead specify explicit origins that should be allowed to make cross-origin calls<br>3. Click Save\",\"categories\":[\"AppServices\"],\"severity\":\"Low\",\"userImpact\":\"Low\",\"implementationEffort\":\"Low\",\"threats\":[\"MaliciousInsider\",\"AccountBreach\"]},\"links\":{\"azurePortal\":\"portal.azure.com/#blade/Microsoft_Azure_Security/RecommendationsBlade/assessmentKey/9a8b0792-8113-2208-629d-6e2cac5b2c2e/resourceId/%2fsubscriptions%2f12cabcb4-86e8-404f-a3d2-1dc9982f45ca%2fresourcegroups%2fmbranca-esf%2fproviders%2fmicrosoft.web%2fsites%2fmbranca-esf\"}}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"securityEventDataEnrichment\":{\"action\":\"Insert\",\"apiVersion\":\"2020-01-01\",\"isSnapshot\":false},\"id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/providers/Microsoft.Security/secureScores/ascScore/secureScoreControls/55989a95-6cac-48f7-bebd-08c7425bac10\",\"name\":\"55989a95-6cac-48f7-bebd-08c7425bac10\",\"type\":\"Microsoft.Security/secureScores/secureScoreControls\",\"properties\":{\"displayName\":\"Fsukn kkytcr lkecybt\",\"healthyResourceCount\":0,\"unhealthyResourceCount\":3,\"notApplicableResourceCount\":1,\"score\":{\"max\":6,\"current\":0,\"percentage\":0},\"definition\":{\"id\":\"/providers/Microsoft.Security/secureScoreControlDefinitions/55989a95-6cac-48f7-bebd-08c7425bac10\",\"name\":\"55989a95-6cac-48f7-bebd-08c7425bac10\",\"type\":\"Microsoft.Security/secureScoreControlDefinitions\",\"properties\":{\"source\":{\"sourceType\":\"BuiltIn\"},\"displayName\":\"Fsukn kkytcr lkecybt\",\"maxScore\":6,\"assessmentDefinitions\":[{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/d7eb3285-17df-11ad-25ad-73b708644283\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/21fc84e2-19a3-43a5-acb0-931a9dc00c50\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/963e7b50-3a8c-4ba4-94c0-abb8cb9b72a3\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/1cd9f0a2-32cf-8f57-9ed8-d10c27156b20\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/a9631cb0-cd1a-48c9-928c-51dab891b69f\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/45055112-35bf-4507-a61d-172f6018622a\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/51ddd468-ced6-a02e-9268-05430cd20b84\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/de93ac87-dec7-7e33-b3d0-171ad2b60896\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/be48e8bd-1e25-40ff-8612-9adaee0035b6\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/20b2e8e4-7f55-49ce-9de4-45e8002e1243\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/525f13fd-8eb6-44ee-b832-73d4b4875b50\"},{\"id\":\"/providers/Microsoft.Security/assessmentMetadata/b537cacd-cdce-4b50-b179-0fd190ae2f75\"}]}},\"weight\":3}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"$type\":\"subAssessmentEvent\",\"SubAssessmentEventDataEnrichment\":{\"$type\":\"subAssessmentEventDataEnrichment\",\"Action\":\"Delete\",\"ApiVersion\":\"2020-01-01\",\"IsSnapshot\":false},\"SecurityEventDataEnrichment\":{\"$type\":\"subAssessmentEventDataEnrichment\",\"Action\":\"Delete\",\"ApiVersion\":\"2020-01-01\",\"IsSnapshot\":false},\"TenantId\":\"be46953f-744f-4015-b3be-6b5445651edb\",\"Type\":\"Microsoft.Security/assessments/subAssessments\",\"Id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-sdh-3372/providers/microsoft.compute/virtualmachines/sdh-3372/providers/Microsoft.Security/assessments/e442da70-8829-4675-96ec-a9e372649a64/subassessments/42c9251b-8361-8866-3fe7-a17cd4402c16\",\"Name\":\"42c9251b-8361-8866-3fe7-a17cd4402c16\",\"Properties\":{\"$type\":\"response/subAssessmentProperties\",\"Id\":\"42c9251b-8361-8866-3fe7-a17cd4402c16\",\"DisplayName\":\"Ckzmsf EEEW lx cjqdcuaa\",\"Status\":{\"$type\":\"status\",\"Code\":\"Unhealthy\",\"Severity\":\"Low\"},\"Remediation\":\"Edit or create a file in the `/etc/modprobe.d/` directory ending in .conf and add `install dccp /bin/true` then unload the dccp module or run '/opt/microsoft/omsagent/plugin/omsremediate -r disable-unnecessary-kernel-mods'\",\"Impact\":\"If the protocol is not required, it is recommended that the drivers not be installed to reduce the potential attack surface.\",\"Category\":\"N/A\",\"Description\":\"Ckzmsf EEEW lx cjqdcuaa\",\"TimeGenerated\":\"2051-05-12T09:58:32.2607101Z\",\"ResourceDetails\":{\"$type\":\"resourceDetails/azure\",\"Source\":\"Azure\",\"Id\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/mbranca-sdh-3372/providers/microsoft.compute/virtualmachines/sdh-3372\"},\"AdditionalData\":{\"$type\":\"additionalData/general\",\"AssessedResourceType\":\"GeneralVulnerability\",\"Data\":{\"OsName\":\"Linux\",\"RuleType\":\"Command\",\"Vulnerability\":\"\",\"AZID\":\"MSID 54\",\"DataSourceType\":\"Not Applicable\",\"DataSourceKey\":\"Not Applicable\"}}}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"VendorName\":\"Microsoft\",\"AlertType\":\"ARM_AnomalousServiceOperation.CredentialAccess\",\"ProductName\":\"Microsoft Defender for Cloud\",\"StartTimeUtc\":\"2051-05-11T13:15:45.0170422Z\",\"EndTimeUtc\":\"2051-05-11T13:15:45.0170422Z\",\"TimeGenerated\":\"2051-05-11T13:17:09.0170422Z\",\"ProcessingEndTime\":\"2051-05-11T13:17:09.0170422Z\",\"Severity\":\"Medium\",\"Status\":\"New\",\"ProviderAlertStatus\":null,\"ConfidenceLevel\":null,\"ConfidenceScore\":null,\"ConfidenceReasons\":null,\"IsIncident\":false,\"SystemAlertId\":\"2517184898549829577_dbcb9d94-ad51-45d4-aa87-17838e88525c\",\"CorrelationKey\":null,\"Intent\":\"PreAttack\",\"AzureResourceId\":\"/SUBSCRIPTIONS/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/RESOURCEGROUPS/Sample-RG/providers/Microsoft.Compute/virtualMachines/Jbsjgc-HU\",\"WorkspaceId\":\"08166994-2766-0080-0901-658708848682\",\"WorkspaceSubscriptionId\":\"08166994-2766-0080-0901-658708848682\",\"WorkspaceResourceGroup\":\"Sample-RG\",\"AgentId\":null,\"CompromisedEntity\":\"Jbsjgc-HU\",\"AlertDisplayName\":\"[SAMPLE ALERT] Login from a suspicious IP\",\"Description\":\"THIS IS A SAMPLE ALERT: Your resource has been accessed successfully from an IP address that Microsoft Threat Intelligence has associated with suspicious activity.\",\"Entities\":[{\"$id\":\"5\",\"Address\":\"203.0.113.138\",\"Location\":{\"CountryCode\":\"US\",\"CountryName\":\"United States\",\"State\":\"Virginia\",\"City\":\"Washington\",\"Longitude\":-78.17197,\"Latitude\":38.73078,\"Asn\":8075},\"ThreatIntelligence\":[{\"ProviderName\":\"AlertSimulator\",\"ThreatType\":\"Sample-Type\",\"ThreatName\":\"Sample-Threat\",\"Confidence\":1,\"ThreatDescription\":\"\"}],\"Asset\":false,\"Type\":\"ip\"},{\"$id\":\"6\",\"ImageId\":\"sample-image:v1\",\"Asset\":false,\"Type\":\"container-image\"},{\"$ref\":\"6\"},{\"$id\":\"5\",\"DnsDomain\":\"\",\"NTDomain\":\"\",\"HostName\":\"Jbsjgc-HU\",\"NetBiosName\":\"Jbsjgc-HU\",\"AzureID\":\"/SUBSCRIPTIONS/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/RESOURCEGROUPS/Sample-RG/providers/Microsoft.Compute/virtualMachines/Jbsjgc-HU\",\"OMSAgentID\":\"08166994-2766-0080-0901-658708848682\",\"OSFamily\":\"Linux\",\"OSVersion\":\"Linux\",\"Asset\":false,\"Type\":\"host\"},{\"$id\":\"6\",\"ProcessId\":\"0x1e49a\",\"CommandLine\":\"\",\"Host\":{\"$ref\":\"5\"},\"Asset\":false,\"Type\":\"process\"},{\"$id\":\"7\",\"Name\":\"Sample-account\",\"Host\":{\"$ref\":\"5\"},\"Sid\":\"\",\"Asset\":false,\"Type\":\"account\",\"LogonId\":\"0xbd6e\"},{\"$id\":\"9\",\"ProcessId\":\"0x1e99b\",\"CommandLine\":\"php\",\"CreationTimeUtc\":\"2051-05-11T13:17:49.1333596Z\",\"ImageFile\":{\"$ref\":\"8\"},\"Account\":{\"$ref\":\"7\"},\"ParentProcess\":{\"$ref\":\"6\"},\"Host\":{\"$ref\":\"5\"},\"Asset\":false,\"Type\":\"process\"},{\"$id\":\"5\",\"DomainName\":\"sample.domain\",\"IpAddresses\":[{\"$id\":\"6\",\"Address\":\"203.0.113.138\",\"Location\":{\"CountryCode\":\"US\",\"CountryName\":\"United States\",\"State\":\"California\",\"City\":\"San Francisco\",\"Longitude\":0,\"Latitude\":0,\"Asn\":0},\"Asset\":false,\"Type\":\"ip\"}],\"HostIpAddress\":{\"$ref\":\"6\"},\"Asset\":false,\"Type\":\"dns\"},{\"$id\":\"6\",\"Address\":\"203.0.113.138\",\"Location\":{\"CountryCode\":\"sample\",\"CountryName\":\"united states\",\"State\":\"texas\",\"City\":\"san antonio\",\"Longitude\":0,\"Latitude\":0,\"Asn\":0,\"Carrier\":\"sample\",\"Organization\":\"sample-organization\",\"OrganizationType\":\"sample-organization\",\"CloudProvider\":\"Azure\",\"SystemService\":\"sample\"},\"ThreatIntelligence\":[{\"ProviderName\":\"Sample-Provider\",\"ThreatType\":\"Sample-Threat\",\"ThreatName\":\"Sample-Threat\",\"Confidence\":0.8,\"ThreatDescription\":\"Sample-Threat\"}],\"Asset\":false,\"Type\":\"ip\"},{\"$id\":\"5\",\"HostName\":\"Jbsjgc-HU\",\"AzureID\":\"/SUBSCRIPTIONS/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/RESOURCEGROUPS/Sample-RG/providers/Microsoft.Compute/virtualMachines/Jbsjgc-HU\",\"OMSAgentID\":\"00000000-0000-0000-0000-000000000000\",\"Asset\":false,\"Type\":\"host\"},{\"$id\":\"7\",\"Directory\":\"Sample-fileShare/dummy/path/to\",\"Name\":\"Sample-Name\",\"FileHashes\":[{\"$id\":\"8\",\"Algorithm\":\"MD5\",\"Value\":\"Sample-SHA\",\"Asset\":false,\"Type\":\"filehash\"}],\"Asset\":false,\"Type\":\"file\"},{\"$id\":\"9\",\"Name\":\"Sample-Name\",\"Category\":\"Virus\",\"Files\":[{\"$ref\":\"8\"}],\"Asset\":false,\"Type\":\"malware\"},{\"$id\":\"5\",\"DomainName\":\"sample.domain\",\"IpAddresses\":[{\"$id\":\"6\",\"Address\":\"203.0.113.138\",\"Location\":{\"CountryCode\":\"US\",\"CountryName\":\"United States\",\"State\":\"California\",\"City\":\"San Francisco\",\"Longitude\":0,\"Latitude\":0,\"Asn\":0},\"Asset\":false,\"Type\":\"ip\"}],\"HostIpAddress\":{\"$ref\":\"6\"},\"Asset\":false,\"Type\":\"dns\"},{\"$id\":\"7\",\"Name\":\"Sample-account\",\"NTDomain\":\"Jbsjgc-HU\",\"Host\":{\"$ref\":\"5\"},\"Sid\":\"S-1-5-21-3061399664-1673012318-3185014992-20022\",\"IsDomainJoined\":false,\"Asset\":false,\"Type\":\"account\",\"LogonId\":\"0x427d8dd9\"},{\"$id\":\"7\",\"Name\":\"Sample-namespace\",\"Cluster\":{\"$ref\":\"5\"},\"Asset\":false,\"Type\":\"K8s-namespace\"},{\"$id\":\"8\",\"Name\":\"sample-pod\",\"Namespace\":{\"$ref\":\"7\"},\"Asset\":false,\"Type\":\"K8s-pod\"},{\"$id\":\"9\",\"Name\":\"sample-container\",\"Image\":{\"$ref\":\"4\"},\"Pod\":{\"$ref\":\"8\"},\"Asset\":false,\"Type\":\"container\"},{\"$id\":\"10\",\"ProjectId\":\"012345678901\",\"ResourceType\":\"GCP Resource\",\"ResourceName\":\"Sample-Cluster\",\"Location\":\"us-central1-c\",\"LocationType\":\"Zonal\",\"Asset\":true,\"Type\":\"gcp-resource\",\"RelatedAzureResourceIds\":[\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroups/Sample-RG/providers/Microsoft.Security/securityConnectors/gcp-connector/securityentitydata/gcp-clusters-sample-cluster-us-central1-c\"]},{\"$id\":\"7\",\"Name\":\"Sample-Name\",\"BlobContainer\":{\"$ref\":\"5\"},\"Url\":\"https://Sample-Storage.blob.core.windows.net/Sample/Sample.txt\",\"Etag\":\"Sample-Tag\",\"Asset\":false,\"Type\":\"blob\"},{\"$id\":\"5\",\"Name\":\"sample\",\"UPNSuffix\":\"egmukjj.com\",\"AadTenantId\":\"00000000-0000-0000-0000-000000000000\",\"AadUserId\":\"00000000-0000-0000-0000-000000000000\",\"Asset\":false,\"Type\":\"account\"},{\"$id\":\"5\",\"CloudResource\":{\"$ref\":\"4\"},\"Asset\":false,\"Type\":\"K8s-cluster\"},{\"$id\":\"8\",\"Directory\":\"https://Sample-Storage.blob.core.windows.net/Sample\",\"Name\":\"Sample-Name\",\"FileHashes\":[{\"$ref\":\"6\"}],\"Asset\":false,\"Type\":\"file\"},{\"$id\":\"10\",\"ProjectId\":\"012345678901\",\"ResourceType\":\"GCP Resource\",\"ResourceName\":\"Sample-Cluster\",\"Location\":\"us-central1-c\",\"LocationType\":\"Zonal\",\"Asset\":true,\"Type\":\"gcp-resource\",\"RelatedAzureResourceIds\":[\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroups/Sample-RG/providers/Microsoft.Security/securityConnectors/gcp-connector/securityentitydata/gcp-clusters-sample-cluster-us-central1-c\"]},{\"$id\":\"6\",\"SourceAddress\":{\"$ref\":\"5\"},\"Protocol\":\"Tcp\",\"Asset\":false,\"Type\":\"network-connection\"},{\"$id\":\"7\",\"Name\":\"Sample-Name\",\"StorageResource\":{\"$ref\":\"4\"},\"Asset\":false,\"Type\":\"blob-container\"},{\"$id\":\"7\",\"ContainerId\":\"cc8ec8580f4c\",\"Image\":{\"$ref\":\"6\"},\"Asset\":false,\"Type\":\"container\"},{\"$id\":\"5\",\"Address\":\"203.0.113.138\",\"Location\":{\"CountryCode\":\"IN\",\"CountryName\":\"United States\",\"State\":\"Virginia\",\"City\":\"Washington\",\"Longitude\":-78.17197,\"Latitude\":38.73078,\"Asn\":8075},\"ThreatIntelligence\":[{\"ProviderName\":\"AlertSimulator\",\"ThreatType\":\"Sample-Type\",\"ThreatName\":\"Sample-Threat\",\"Confidence\":1,\"ThreatDescription\":\"\"}],\"Asset\":false,\"Type\":\"ip\"}],\"ExtendedLinks\":[{\"Href\":\"https://blog.netspi.com/gathering-bearer-tokens-azure/\",\"Category\":null,\"Label\":\"NetSPI blogpost\",\"Type\":\"webLink\"},{\"Href\":\"https://github.com/VauNXY/MicroBurst/blob/master/REST/Get-AZStorageKeysREST.ps1\",\"Category\":null,\"Label\":\"MicroBurst source code\",\"Type\":\"webLink\"}],\"ResourceIdentifiers\":[{\"$id\":\"2\",\"AzureResourceId\":\"/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb\",\"Type\":\"AzureResource\",\"AzureResourceTenantId\":\"be46953f-744f-4015-b3be-6b5445651edb\"},{\"$id\":\"3\",\"AadTenantId\":\"be46953f-744f-4015-b3be-6b5445651edb\",\"Type\":\"AAD\"},{\"$id\":\"3\",\"WorkspaceId\":\"08166994-2766-0080-0901-658708848682\",\"WorkspaceSubscriptionId\":\"08166994-2766-0080-0901-658708848682\",\"WorkspaceResourceGroup\":\"Sample-RG\",\"AgentId\":\"00000000-0000-0000-0000-00000000000\",\"Type\":\"LogAnalytics\"}],\"RemediationSteps\":[\"Go to the firewall settings in order to lock down the firewall as tightly as possible.\"],\"ExtendedProperties\":{\"resourceType\":\"Virtual Machine\",\"Investigation steps\":\"{\\\"displayValue\\\":\\\"How to investigate this alert using logs at your Log Analytics workspace.\\\",\\\"kind\\\":\\\"Link\\\",\\\"value\\\":\\\"https:\\\\/\\\\/go.microsoft.com\\\\/fwlink\\\\/?linkid=2091064\\\"}\",\"Potential causes\":\"An attacker has accessed your database from a potentially suspicious IP; a legitimate user has accessed your database from a potentially suspicious IP.\",\"Client principal name\":\"Sample-user\",\"Alert Id\":\"00000000-0000-0000-0000-000000000000\",\"Client IP address\":\"203.0.113.138\",\"Client IP location\":\"Sample\",\"Client application\":\"Sample-app\",\"OMS workspace ID\":\"08166994-2766-0080-0901-658708848682\",\"OMS agent ID\":\"08166994-2766-0080-0901-658708848682\"},\"AlertUri\":\"https://portal.azure.com/#blade/Microsoft_Azure_Security_AzureDefenderForData/AlertBlade/alertId/2517184898549829577_dbcb9d94-ad51-45d4-aa87-17838e88525c/subscriptionId/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourceGroup/Sample-RG/referencedFrom/alertDeepLink/location/centralus\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-microsoft_defender_cloud-event-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "microsoft_defender_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

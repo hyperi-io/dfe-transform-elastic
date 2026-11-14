@@ -1,0 +1,366 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-08-28T15:32:35.000Z",
+      "cloudflare_logpush": {
+        "email_security_alerts": {
+          "alert_id": "4WtWkr6nlBz9sNH-2052-08-28T15:32:35",
+          "alert_reasons": [
+            "because",
+            "said-so"
+          ],
+          "attachments": [
+            {
+              "ContentTypeComputed": "application/x-msi",
+              "ContentTypeProvided": "image/gif",
+              "Decrypted": true,
+              "Encrypted": true,
+              "Md5": "68e998fa119285cadd805e1217ccdb50",
+              "Name": "attachment.gif",
+              "Sha1": "31c76b43a9d39604d83a0497059b51f8b8583333",
+              "Sha256": "2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12",
+              "Ssdeep": "McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3"
+            }
+          ],
+          "cc": [
+            "cxusiudhu+ee@cloudflare.com"
+          ],
+          "cc_name": [
+            "First Last (cc)"
+          ],
+          "final_disposition": "unset",
+          "from": "avyroidts+euwz@cloudflare.com",
+          "from_name": "First Last (from)",
+          "links": [
+            "https://example.com"
+          ],
+          "message_delivery_mode": "unset",
+          "message_id": "<Message-ID>",
+          "origin": "unset",
+          "original_sender": "fntxrnbmw+sppqvu@cloudflare.com",
+          "reply_to": "bygsqieyq+haghy@cloudflare.com",
+          "reply_to_name": "First Last (reply)",
+          "smtp_envelope_from": "fzzryrfwz+auk_bjsn@cloudflare.com",
+          "smtp_envelope_to": [
+            "crptgxaqo+dzx_ig@cloudflare.com"
+          ],
+          "smtp_helo_server_ip": "198.51.100.211",
+          "smtp_helo_server_ip_as_name": "asn",
+          "smtp_helo_server_ip_as_number": "42",
+          "smtp_helo_server_ip_geo": "US/NV/Las Vegas",
+          "smtp_helo_server_name": "servername",
+          "subject": "innocuous message: please read",
+          "threat_categories": [
+            "CredentialHarvester",
+            "Dropper"
+          ],
+          "timestamp": "2052-08-28T15:32:35.000Z",
+          "to": [
+            "cpwtgwfqp+qj@cloudflare.com"
+          ],
+          "to_name": [
+            "First Last (to)"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "68e998fa119285cadd805e1217ccdb50",
+                "sha1": "31c76b43a9d39604d83a0497059b51f8b8583333",
+                "sha256": "2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12",
+                "ssdeep": "McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3"
+              },
+              "mime_type": "application/x-msi",
+              "name": "attachment.gif"
+            }
+          }
+        ],
+        "cc": {
+          "address": [
+            "cxusiudhu+ee@cloudflare.com"
+          ]
+        },
+        "from": {
+          "address": [
+            "avyroidts+euwz@cloudflare.com"
+          ]
+        },
+        "message_id": "<Message-ID>",
+        "reply_to": {
+          "address": [
+            "bygsqieyq+haghy@cloudflare.com"
+          ]
+        },
+        "subject": "innocuous message: please read",
+        "to": {
+          "address": [
+            "cpwtgwfqp+qj@cloudflare.com"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email",
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"AlertID\":\"4WtWkr6nlBz9sNH-2052-08-28T15:32:35\",\"AlertReasons\":[\"because\",\"said-so\"],\"Attachments\":[{\"Md5\":\"68e998fa119285cadd805e1217ccdb50\",\"Sha1\":\"31c76b43a9d39604d83a0497059b51f8b8583333\",\"Sha256\":\"2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12\",\"Ssdeep\":\"McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3\",\"Name\":\"attachment.gif\",\"ContentTypeProvided\":\"image/gif\",\"ContentTypeComputed\":\"application/x-msi\",\"Encrypted\":true,\"Decrypted\":true}],\"CC\":[\"cxusiudhu+ee@cloudflare.com\"],\"CCName\":[\"First Last (cc)\"],\"FinalDisposition\":\"unset\",\"From\":\"avyroidts+euwz@cloudflare.com\",\"FromName\":\"First Last (from)\",\"Links\":[\"https://example.com\"],\"MessageDeliveryMode\":\"unset\",\"MessageID\":\"<Message-ID>\",\"Origin\":\"unset\",\"OriginalSender\":\"fntxrnbmw+sppqvu@cloudflare.com\",\"ReplyTo\":\"bygsqieyq+haghy@cloudflare.com\",\"ReplyToName\":\"First Last (reply)\",\"SMTPEnvelopeFrom\":\"fzzryrfwz+auk_bjsn@cloudflare.com\",\"SMTPEnvelopeTo\":[\"crptgxaqo+dzx_ig@cloudflare.com\"],\"SMTPHeloServerIP\":\"198.51.100.211\",\"SMTPHeloServerIPAsName\":\"asn\",\"SMTPHeloServerIPAsNumber\":\"42\",\"SMTPHeloServerIPGeo\":\"US/NV/Las Vegas\",\"SMTPHeloServerName\":\"servername\",\"Subject\":\"innocuous message: please read\",\"ThreatCategories\":[\"CredentialHarvester\",\"Dropper\"],\"Timestamp\":\"2052-08-28T15:32:35Z\",\"To\":[\"cpwtgwfqp+qj@cloudflare.com\"],\"ToName\":[\"First Last (to)\"]}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": [
+        {
+          "hash": {
+            "md5": "68e998fa119285cadd805e1217ccdb50",
+            "sha1": "31c76b43a9d39604d83a0497059b51f8b8583333",
+            "sha256": "2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12",
+            "ssdeep": "McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3"
+          },
+          "mime_type": "application/x-msi",
+          "name": "attachment.gif"
+        }
+      ],
+      "related": {
+        "hash": [
+          "31c76b43a9d39604d83a0497059b51f8b8583333",
+          "2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12",
+          "68e998fa119285cadd805e1217ccdb50",
+          "McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3"
+        ],
+        "hosts": [
+          "servername",
+          "cloudflare.com",
+          "example.com"
+        ],
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "avyroidts+euwz@cloudflare.com",
+          "First Last (from)",
+          "fzzryrfwz+auk_bjsn@cloudflare.com",
+          "fntxrnbmw+sppqvu@cloudflare.com",
+          "First Last (reply)",
+          "bygsqieyq+haghy@cloudflare.com",
+          "cpwtgwfqp+qj@cloudflare.com",
+          "crptgxaqo+dzx_ig@cloudflare.com",
+          "First Last (to)",
+          "cxusiudhu+ee@cloudflare.com",
+          "First Last (cc)"
+        ]
+      },
+      "server": {
+        "address": "servername",
+        "domain": "servername",
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-08-28T15:32:35.000Z",
+      "cloudflare_logpush": {
+        "email_security_alerts": {
+          "alert_id": "4WtWkr6nlBz9sNH-2052-08-28T15:32:35",
+          "alert_reasons": [
+            "because",
+            "said-so"
+          ],
+          "attachments": [
+            {
+              "ContentTypeComputed": "application/x-msi",
+              "ContentTypeProvided": "image/gif",
+              "Decrypted": true,
+              "Encrypted": true,
+              "Md5": "68e998fa119285cadd805e1217ccdb50",
+              "Name": "attachment.gif",
+              "Sha1": "31c76b43a9d39604d83a0497059b51f8b8583333",
+              "Sha256": "2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12",
+              "Ssdeep": "McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3"
+            }
+          ],
+          "cc": [
+            "cxusiudhu+ee@cloudflare.com"
+          ],
+          "cc_name": [
+            "First Last (cc)"
+          ],
+          "final_disposition": "malicious",
+          "from": "avyroidts+euwz@cloudflare.com",
+          "from_name": "First Last (from)",
+          "links": [
+            "https://example.com"
+          ],
+          "message_delivery_mode": "unset",
+          "message_id": "<Message-ID>",
+          "origin": "unset",
+          "original_sender": "fntxrnbmw+sppqvu@cloudflare.com",
+          "reply_to": "bygsqieyq+haghy@cloudflare.com",
+          "reply_to_name": "First Last (reply)",
+          "smtp_envelope_from": "fzzryrfwz+auk_bjsn@cloudflare.com",
+          "smtp_envelope_to": [
+            "crptgxaqo+dzx_ig@cloudflare.com"
+          ],
+          "smtp_helo_server_ip": "198.51.100.211",
+          "smtp_helo_server_ip_as_name": "asn",
+          "smtp_helo_server_ip_as_number": "42",
+          "smtp_helo_server_ip_geo": "US/NV/Las Vegas",
+          "smtp_helo_server_name": "servername",
+          "subject": "innocuous message: please read",
+          "threat_categories": [
+            "CredentialHarvester",
+            "Dropper"
+          ],
+          "timestamp": "2052-08-28T15:32:35.000Z",
+          "to": [
+            "cpwtgwfqp+qj@cloudflare.com"
+          ],
+          "to_name": [
+            "First Last (to)"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "68e998fa119285cadd805e1217ccdb50",
+                "sha1": "31c76b43a9d39604d83a0497059b51f8b8583333",
+                "sha256": "2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12",
+                "ssdeep": "McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3"
+              },
+              "mime_type": "application/x-msi",
+              "name": "attachment.gif"
+            }
+          }
+        ],
+        "cc": {
+          "address": [
+            "cxusiudhu+ee@cloudflare.com"
+          ]
+        },
+        "from": {
+          "address": [
+            "avyroidts+euwz@cloudflare.com"
+          ]
+        },
+        "message_id": "<Message-ID>",
+        "reply_to": {
+          "address": [
+            "bygsqieyq+haghy@cloudflare.com"
+          ]
+        },
+        "subject": "innocuous message: please read",
+        "to": {
+          "address": [
+            "cpwtgwfqp+qj@cloudflare.com"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email",
+          "network"
+        ],
+        "kind": "alert",
+        "original": "{\"AlertID\":\"4WtWkr6nlBz9sNH-2052-08-28T15:32:35\",\"AlertReasons\":[\"because\",\"said-so\"],\"Attachments\":[{\"Md5\":\"68e998fa119285cadd805e1217ccdb50\",\"Sha1\":\"31c76b43a9d39604d83a0497059b51f8b8583333\",\"Sha256\":\"2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12\",\"Ssdeep\":\"McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3\",\"Name\":\"attachment.gif\",\"ContentTypeProvided\":\"image/gif\",\"ContentTypeComputed\":\"application/x-msi\",\"Encrypted\":true,\"Decrypted\":true}],\"CC\":[\"cxusiudhu+ee@cloudflare.com\"],\"CCName\":[\"First Last (cc)\"],\"FinalDisposition\":\"malicious\",\"From\":\"avyroidts+euwz@cloudflare.com\",\"FromName\":\"First Last (from)\",\"Links\":[\"https://example.com\"],\"MessageDeliveryMode\":\"unset\",\"MessageID\":\"<Message-ID>\",\"Origin\":\"unset\",\"OriginalSender\":\"fntxrnbmw+sppqvu@cloudflare.com\",\"ReplyTo\":\"bygsqieyq+haghy@cloudflare.com\",\"ReplyToName\":\"First Last (reply)\",\"SMTPEnvelopeFrom\":\"fzzryrfwz+auk_bjsn@cloudflare.com\",\"SMTPEnvelopeTo\":[\"crptgxaqo+dzx_ig@cloudflare.com\"],\"SMTPHeloServerIP\":\"198.51.100.211\",\"SMTPHeloServerIPAsName\":\"asn\",\"SMTPHeloServerIPAsNumber\":\"42\",\"SMTPHeloServerIPGeo\":\"US/NV/Las Vegas\",\"SMTPHeloServerName\":\"servername\",\"Subject\":\"innocuous message: please read\",\"ThreatCategories\":[\"CredentialHarvester\",\"Dropper\"],\"Timestamp\":\"2052-08-28T15:32:35Z\",\"To\":[\"cpwtgwfqp+qj@cloudflare.com\"],\"ToName\":[\"First Last (to)\"]}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": [
+        {
+          "hash": {
+            "md5": "68e998fa119285cadd805e1217ccdb50",
+            "sha1": "31c76b43a9d39604d83a0497059b51f8b8583333",
+            "sha256": "2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12",
+            "ssdeep": "McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3"
+          },
+          "mime_type": "application/x-msi",
+          "name": "attachment.gif"
+        }
+      ],
+      "related": {
+        "hash": [
+          "31c76b43a9d39604d83a0497059b51f8b8583333",
+          "2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12",
+          "68e998fa119285cadd805e1217ccdb50",
+          "McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3"
+        ],
+        "hosts": [
+          "servername",
+          "cloudflare.com",
+          "example.com"
+        ],
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "avyroidts+euwz@cloudflare.com",
+          "First Last (from)",
+          "fzzryrfwz+auk_bjsn@cloudflare.com",
+          "fntxrnbmw+sppqvu@cloudflare.com",
+          "First Last (reply)",
+          "bygsqieyq+haghy@cloudflare.com",
+          "cpwtgwfqp+qj@cloudflare.com",
+          "crptgxaqo+dzx_ig@cloudflare.com",
+          "First Last (to)",
+          "cxusiudhu+ee@cloudflare.com",
+          "First Last (cc)"
+        ]
+      },
+      "server": {
+        "address": "servername",
+        "domain": "servername",
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"AlertID\":\"4WtWkr6nlBz9sNH-2052-08-28T15:32:35\",\"AlertReasons\":[\"because\",\"said-so\"],\"Attachments\":[{\"Md5\":\"68e998fa119285cadd805e1217ccdb50\",\"Sha1\":\"31c76b43a9d39604d83a0497059b51f8b8583333\",\"Sha256\":\"2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12\",\"Ssdeep\":\"McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3\",\"Name\":\"attachment.gif\",\"ContentTypeProvided\":\"image/gif\",\"ContentTypeComputed\":\"application/x-msi\",\"Encrypted\":true,\"Decrypted\":true}],\"CC\":[\"cxusiudhu+ee@cloudflare.com\"],\"CCName\":[\"First Last (cc)\"],\"FinalDisposition\":\"unset\",\"From\":\"avyroidts+euwz@cloudflare.com\",\"FromName\":\"First Last (from)\",\"Links\":[\"https://example.com\"],\"MessageDeliveryMode\":\"unset\",\"MessageID\":\"<Message-ID>\",\"Origin\":\"unset\",\"OriginalSender\":\"fntxrnbmw+sppqvu@cloudflare.com\",\"ReplyTo\":\"bygsqieyq+haghy@cloudflare.com\",\"ReplyToName\":\"First Last (reply)\",\"SMTPEnvelopeFrom\":\"fzzryrfwz+auk_bjsn@cloudflare.com\",\"SMTPEnvelopeTo\":[\"crptgxaqo+dzx_ig@cloudflare.com\"],\"SMTPHeloServerIP\":\"198.51.100.211\",\"SMTPHeloServerIPAsName\":\"asn\",\"SMTPHeloServerIPAsNumber\":\"42\",\"SMTPHeloServerIPGeo\":\"US/NV/Las Vegas\",\"SMTPHeloServerName\":\"servername\",\"Subject\":\"innocuous message: please read\",\"ThreatCategories\":[\"CredentialHarvester\",\"Dropper\"],\"Timestamp\":\"2052-08-28T15:32:35Z\",\"To\":[\"cpwtgwfqp+qj@cloudflare.com\"],\"ToName\":[\"First Last (to)\"]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AlertID\":\"4WtWkr6nlBz9sNH-2052-08-28T15:32:35\",\"AlertReasons\":[\"because\",\"said-so\"],\"Attachments\":[{\"Md5\":\"68e998fa119285cadd805e1217ccdb50\",\"Sha1\":\"31c76b43a9d39604d83a0497059b51f8b8583333\",\"Sha256\":\"2d15651857d1923769cf671db77e48b49af97812e8283733652a59a0909c1c12\",\"Ssdeep\":\"McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3\",\"Name\":\"attachment.gif\",\"ContentTypeProvided\":\"image/gif\",\"ContentTypeComputed\":\"application/x-msi\",\"Encrypted\":true,\"Decrypted\":true}],\"CC\":[\"cxusiudhu+ee@cloudflare.com\"],\"CCName\":[\"First Last (cc)\"],\"FinalDisposition\":\"malicious\",\"From\":\"avyroidts+euwz@cloudflare.com\",\"FromName\":\"First Last (from)\",\"Links\":[\"https://example.com\"],\"MessageDeliveryMode\":\"unset\",\"MessageID\":\"<Message-ID>\",\"Origin\":\"unset\",\"OriginalSender\":\"fntxrnbmw+sppqvu@cloudflare.com\",\"ReplyTo\":\"bygsqieyq+haghy@cloudflare.com\",\"ReplyToName\":\"First Last (reply)\",\"SMTPEnvelopeFrom\":\"fzzryrfwz+auk_bjsn@cloudflare.com\",\"SMTPEnvelopeTo\":[\"crptgxaqo+dzx_ig@cloudflare.com\"],\"SMTPHeloServerIP\":\"198.51.100.211\",\"SMTPHeloServerIPAsName\":\"asn\",\"SMTPHeloServerIPAsNumber\":\"42\",\"SMTPHeloServerIPGeo\":\"US/NV/Las Vegas\",\"SMTPHeloServerName\":\"servername\",\"Subject\":\"innocuous message: please read\",\"ThreatCategories\":[\"CredentialHarvester\",\"Dropper\"],\"Timestamp\":\"2052-08-28T15:32:35Z\",\"To\":[\"cpwtgwfqp+qj@cloudflare.com\"],\"ToName\":[\"First Last (to)\"]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "email_security_alerts",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-email_security_alerts-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

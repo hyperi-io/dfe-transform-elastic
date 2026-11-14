@@ -1,0 +1,151 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-05-27T23:15:28.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "vulnerability"
+        ],
+        "dataset": "entro.audit",
+        "id": "ab9f4c63-ff0d-4735-b0de-a754092f57e1",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2053-05-27T20:12:44.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "vulnerability"
+        ],
+        "dataset": "entro.audit",
+        "id": "527b8f4c-5459-4dbe-951a-d750678a59ba",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "origin": {
+          "file": {
+            "line": 129
+          }
+        }
+      },
+      "vulnerability": {
+        "category": [
+          "Secret"
+        ],
+        "description": "GENERIC_CREDS",
+        "value": "password = something123"
+      }
+    },
+    {
+      "@timestamp": "2053-05-27T19:24:58.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "vulnerability"
+        ],
+        "dataset": "entro.audit",
+        "id": "2071cb98-2aac-4b12-90ab-84dd3f6e0741",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "origin": {
+          "file": {
+            "line": 150
+          }
+        }
+      },
+      "vulnerability": {
+        "category": [
+          "Secret"
+        ],
+        "description": "AWS_ACCESS_KEY_ID",
+        "value": "ABCDEF12345789"
+      }
+    },
+    {
+      "@timestamp": "2053-05-28T19:13:58.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "vulnerability"
+        ],
+        "dataset": "entro.audit",
+        "id": "9362ce36-3dec-4d83-90cf-14dc2e4c3927",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "origin": {
+          "file": {
+            "line": 138
+          }
+        }
+      },
+      "vulnerability": {
+        "category": [
+          "Secret"
+        ],
+        "description": "GENERIC_CREDS",
+        "value": ".ses_smtp_password_v4\": \"ABCDEF12345789"
+      }
+    }
+  ],
+  "input": [
+    {
+      "date": "2053-05-27T23:15:28.000Z",
+      "request_id": "ab9f4c63-ff0d-4735-b0de-a754092f57e1"
+    },
+    {
+      "date": "2053-05-27T20:12:44.000Z",
+      "exposed_value": "password = something123",
+      "line_number": 129,
+      "request_id": "527b8f4c-5459-4dbe-951a-d750678a59ba",
+      "secret_type": "GENERIC_CREDS"
+    },
+    {
+      "date": "2053-05-27T19:24:58.000Z",
+      "exposed_value": "ABCDEF12345789",
+      "line_number": 150,
+      "request_id": "2071cb98-2aac-4b12-90ab-84dd3f6e0741",
+      "secret_type": "AWS_ACCESS_KEY_ID"
+    },
+    {
+      "date": "2053-05-28T19:13:58.000Z",
+      "exposed_value": ".ses_smtp_password_v4\": \"ABCDEF12345789",
+      "line_number": 138,
+      "request_id": "9362ce36-3dec-4d83-90cf-14dc2e4c3927",
+      "secret_type": "GENERIC_CREDS"
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-entro-audit-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "entro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

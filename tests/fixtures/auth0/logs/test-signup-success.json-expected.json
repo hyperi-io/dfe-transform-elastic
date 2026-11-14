@@ -1,0 +1,549 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-03T03:21:19.503Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Other",
+            "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+            "client_name": "All Applications",
+            "connection": "Username-Password-Authentication",
+            "connection_id": "con_1a5wCUmAs6VOU17n",
+            "date": "2049-11-03T03:21:19.503Z",
+            "details": {
+              "body": {
+                "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+                "connection": "Username-Password-Authentication",
+                "email": "jfx@xcyx.com",
+                "password": "*****",
+                "tenant": "dev-yoj8axza"
+              }
+            },
+            "strategy": "auth0",
+            "strategy_type": "database",
+            "type": "Success Signup",
+            "type_id": "ss"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-signup",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211103032120540334468831529038137311930506436149346",
+        "kind": "event",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|6182002f34f4dd006b05b5c7",
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "id": "auth0|6182002f34f4dd006b05b5c7",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "unknown"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T05:52:36.705Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Other",
+            "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+            "client_name": "All Applications",
+            "connection": "Username-Password-Authentication",
+            "connection_id": "con_1a5wCUmAs6VOU17n",
+            "date": "2049-11-03T05:52:36.705Z",
+            "details": {
+              "body": {
+                "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+                "connection": "Username-Password-Authentication",
+                "email": "ceh@xcyx.com",
+                "password": "*****",
+                "tenant": "dev-yoj8axza"
+              }
+            },
+            "strategy": "auth0",
+            "strategy_type": "database",
+            "type": "Success Signup",
+            "type_id": "ss"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-signup",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211103055237748223355541577974202326273882155122754",
+        "kind": "event",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618223a4e3f49e006948565c",
+          "ceh",
+          "ceh@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "ceh@xcyx.com",
+        "id": "auth0|618223a4e3f49e006948565c",
+        "name": "ceh"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "unknown"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T06:55:51.962Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Other",
+            "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+            "client_name": "All Applications",
+            "connection": "Username-Password-Authentication",
+            "connection_id": "con_1a5wCUmAs6VOU17n",
+            "date": "2049-11-03T06:55:51.962Z",
+            "details": {
+              "body": {
+                "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+                "connection": "Username-Password-Authentication",
+                "email": "kcj@xcyx.com",
+                "password": "*****",
+                "tenant": "dev-yoj8axza"
+              }
+            },
+            "strategy": "auth0",
+            "strategy_type": "database",
+            "type": "Success Signup",
+            "type_id": "ss"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-signup",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211103065553011334483867488309006560902529568211042",
+        "kind": "event",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|61823277a44a21007221a59a",
+          "kcj",
+          "kcj@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.170"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "kcj@xcyx.com",
+        "id": "auth0|61823277a44a21007221a59a",
+        "name": "kcj"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "unknown"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T06:57:09.282Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Other",
+            "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+            "client_name": "All Applications",
+            "connection": "Username-Password-Authentication",
+            "connection_id": "con_1a5wCUmAs6VOU17n",
+            "date": "2049-11-03T06:57:09.282Z",
+            "details": {
+              "body": {
+                "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+                "connection": "Username-Password-Authentication",
+                "email": "jfx@xcyx.com",
+                "password": "*****",
+                "tenant": "dev-yoj8axza"
+              }
+            },
+            "strategy": "auth0",
+            "strategy_type": "database",
+            "type": "Success Signup",
+            "type_id": "ss"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-signup",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211103065710326106766380077151802848491224701075538",
+        "kind": "event",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|618232c562bac1006935a7af",
+          "jfx",
+          "jfx@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.170"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "jfx@xcyx.com",
+        "id": "auth0|618232c562bac1006935a7af",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "unknown"
+      }
+    },
+    {
+      "@timestamp": "2049-11-04T00:25:01.385Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Other",
+            "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+            "client_name": "All Applications",
+            "connection": "Username-Password-Authentication",
+            "connection_id": "con_1a5wCUmAs6VOU17n",
+            "date": "2049-11-04T00:25:01.385Z",
+            "details": {
+              "body": {
+                "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+                "connection": "Username-Password-Authentication",
+                "email": "hel.gifkuc@gmail.com",
+                "password": "*****",
+                "tenant": "dev-yoj8axza"
+              }
+            },
+            "strategy": "auth0",
+            "strategy_type": "database",
+            "type": "Success Signup",
+            "type_id": "ss"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "success-signup",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211104002502463115418621740818569342603360399786034",
+        "kind": "event",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|6183285d6e5071006a61f319",
+          "hel.gifkuc",
+          "hel.gifkuc@gmail.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "gmail.com",
+        "email": "hel.gifkuc@gmail.com",
+        "id": "auth0|6183285d6e5071006a61f319",
+        "name": "hel.gifkuc"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "unknown"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "data": {
+          "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+          "client_name": "All Applications",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_1a5wCUmAs6VOU17n",
+          "date": "2049-11-03T03:21:19.503Z",
+          "description": "",
+          "details": {
+            "body": {
+              "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+              "connection": "Username-Password-Authentication",
+              "email": "jfx@xcyx.com",
+              "password": "*****",
+              "tenant": "dev-yoj8axza"
+            }
+          },
+          "ip": "198.51.100.211",
+          "log_id": "90020211103032120540334468831529038137311930506436149346",
+          "strategy": "auth0",
+          "strategy_type": "database",
+          "type": "ss",
+          "user_agent": "unknown",
+          "user_id": "auth0|6182002f34f4dd006b05b5c7",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103032120540334468831529038137311930506436149346"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+          "client_name": "All Applications",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_1a5wCUmAs6VOU17n",
+          "date": "2049-11-03T05:52:36.705Z",
+          "description": "",
+          "details": {
+            "body": {
+              "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+              "connection": "Username-Password-Authentication",
+              "email": "ceh@xcyx.com",
+              "password": "*****",
+              "tenant": "dev-yoj8axza"
+            }
+          },
+          "ip": "203.0.113.248",
+          "log_id": "90020211103055237748223355541577974202326273882155122754",
+          "strategy": "auth0",
+          "strategy_type": "database",
+          "type": "ss",
+          "user_agent": "unknown",
+          "user_id": "auth0|618223a4e3f49e006948565c",
+          "user_name": "ceh@xcyx.com"
+        },
+        "log_id": "90020211103055237748223355541577974202326273882155122754"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+          "client_name": "All Applications",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_1a5wCUmAs6VOU17n",
+          "date": "2049-11-03T06:55:51.962Z",
+          "description": "",
+          "details": {
+            "body": {
+              "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+              "connection": "Username-Password-Authentication",
+              "email": "kcj@xcyx.com",
+              "password": "*****",
+              "tenant": "dev-yoj8axza"
+            }
+          },
+          "ip": "192.0.2.170",
+          "log_id": "90020211103065553011334483867488309006560902529568211042",
+          "strategy": "auth0",
+          "strategy_type": "database",
+          "type": "ss",
+          "user_agent": "unknown",
+          "user_id": "auth0|61823277a44a21007221a59a",
+          "user_name": "kcj@xcyx.com"
+        },
+        "log_id": "90020211103065553011334483867488309006560902529568211042"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+          "client_name": "All Applications",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_1a5wCUmAs6VOU17n",
+          "date": "2049-11-03T06:57:09.282Z",
+          "description": "",
+          "details": {
+            "body": {
+              "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+              "connection": "Username-Password-Authentication",
+              "email": "jfx@xcyx.com",
+              "password": "*****",
+              "tenant": "dev-yoj8axza"
+            }
+          },
+          "ip": "192.0.2.170",
+          "log_id": "90020211103065710326106766380077151802848491224701075538",
+          "strategy": "auth0",
+          "strategy_type": "database",
+          "type": "ss",
+          "user_agent": "unknown",
+          "user_id": "auth0|618232c562bac1006935a7af",
+          "user_name": "jfx@xcyx.com"
+        },
+        "log_id": "90020211103065710326106766380077151802848491224701075538"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+          "client_name": "All Applications",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_1a5wCUmAs6VOU17n",
+          "date": "2049-11-04T00:25:01.385Z",
+          "description": "",
+          "details": {
+            "body": {
+              "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+              "connection": "Username-Password-Authentication",
+              "email": "hel.gifkuc@gmail.com",
+              "password": "*****",
+              "tenant": "dev-yoj8axza"
+            }
+          },
+          "ip": "198.51.100.211",
+          "log_id": "90020211104002502463115418621740818569342603360399786034",
+          "strategy": "auth0",
+          "strategy_type": "database",
+          "type": "ss",
+          "user_agent": "unknown",
+          "user_id": "auth0|6183285d6e5071006a61f319",
+          "user_name": "hel.gifkuc@gmail.com"
+        },
+        "log_id": "90020211104002502463115418621740818569342603360399786034"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {
+      "event.ingested": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-auth0-logs-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "auth0",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

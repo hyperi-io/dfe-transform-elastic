@@ -62,7 +62,7 @@ fn render_sorted(event: &mut Event, from: &str, to: &str) {
     let _ = event.set(to, out);
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "ae1155fe531af748cca124130451468b0a65a69474ab78198678c2b4190dcdb6",

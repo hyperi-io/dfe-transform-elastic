@@ -1,0 +1,116 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-01-01T13:15:30.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2047-01-01T13:15:30.000Z",
+        "id": "/subscriptions/e9def5d2-9ab1-4874-9725-fcdcfb6f26c4/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/incidents/aaaaaa-5cd7-4139-a149-9f2736ff2ab5",
+        "kind": "alert",
+        "original": "{\"id\":\"/subscriptions/e9def5d2-9ab1-4874-9725-fcdcfb6f26c4/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/incidents/aaaaaa-5cd7-4139-a149-9f2736ff2ab5\",\"name\":\"aaaaaaa-5cd7-4139-a149-9f2736ff2ab5\",\"type\":\"Microsoft.SecurityInsights/incidents\",\"etag\":\"\\\"ccaeabdd-9488-0459-0984-7e19658d5106\\\"\",\"properties\":{\"lastModifiedTimeUtc\":\"2047-01-01T13:15:30Z\",\"createdTimeUtc\":\"2047-01-01T13:15:30Z\",\"lastActivityTimeUtc\":\"2047-01-01T13:05:30Z\",\"firstActivityTimeUtc\":\"2047-01-01T13:00:30Z\",\"description\":\"Thisisademoincident\",\"title\":\"Myincident\",\"owner\":{\"objectId\":\"abcdefghij-040d-4a46-9e2b-91c2941bfa70\",\"email\":\"hshg.fqb@example.com\",\"userPrincipalName\":\"rvny@example.com\",\"assignedTo\":\"johndoe\"},\"severity\":\"High\",\"classification\":\"FalsePositive\",\"classificationComment\":\"Notamaliciousactivity\",\"classificationReason\":\"InaccurateData\",\"status\":\"Closed\",\"incidentUrl\":\"https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/e9def5d2-9ab1-4874-9725-fcdcfb6f26c4/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/incidents/11f46d91-1ea2-4475-a802-9c7472dd1ba7\",\"incidentNumber\":3177,\"labels\":[],\"providerName\":\"AzureSentinel\",\"providerIncidentId\":\"3177\",\"relatedAnalyticRuleIds\":[\"/subscriptions/abc12345678-9ac0-4464-9919-dccaee2e48c0/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/fff6f5e9-353a-43c7-8ea7-1a6de9470ae0\"],\"additionalData\":{\"alertsCount\":0,\"bookmarksCount\":0,\"commentsCount\":3,\"alertProductNames\":[],\"tactics\":[\"InitialAccess\",\"Persistence\"]}}}",
+        "severity": 3,
+        "url": "https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/e9def5d2-9ab1-4874-9725-fcdcfb6f26c4/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/incidents/11f46d91-1ea2-4475-a802-9c7472dd1ba7"
+      },
+      "message": "Thisisademoincident",
+      "microsoft_sentinel": {
+        "incident": {
+          "etag": "\"ccaeabdd-9488-0459-0984-7e19658d5106\"",
+          "id": "/subscriptions/e9def5d2-9ab1-4874-9725-fcdcfb6f26c4/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/incidents/aaaaaa-5cd7-4139-a149-9f2736ff2ab5",
+          "name": "aaaaaaa-5cd7-4139-a149-9f2736ff2ab5",
+          "properties": {
+            "additional_data": {
+              "alerts": {
+                "count": 0
+              },
+              "bookmarks_count": 0,
+              "comments_count": 3,
+              "tactics": [
+                "InitialAccess",
+                "Persistence"
+              ]
+            },
+            "classification": "FalsePositive",
+            "classification_comment": "Notamaliciousactivity",
+            "classification_reason": "InaccurateData",
+            "created_time_utc": "2047-01-01T13:15:30.000Z",
+            "description": "Thisisademoincident",
+            "first_activity_time_utc": "2047-01-01T13:00:30.000Z",
+            "incident": {
+              "number": 3177,
+              "url": "https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/e9def5d2-9ab1-4874-9725-fcdcfb6f26c4/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/incidents/11f46d91-1ea2-4475-a802-9c7472dd1ba7"
+            },
+            "last_activity_time_utc": "2047-01-01T13:05:30.000Z",
+            "last_modified_time_utc": "2047-01-01T13:15:30.000Z",
+            "owner": {
+              "assigned_to": "johndoe",
+              "email": "hshg.fqb@example.com",
+              "object_id": "abcdefghij-040d-4a46-9e2b-91c2941bfa70",
+              "user_principal_name": "rvny@example.com"
+            },
+            "provider": {
+              "incident_id": "3177",
+              "name": "AzureSentinel"
+            },
+            "related_analytic_rule_ids": [
+              "/subscriptions/abc12345678-9ac0-4464-9919-dccaee2e48c0/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/fff6f5e9-353a-43c7-8ea7-1a6de9470ae0"
+            ],
+            "severity": "High",
+            "status": "Closed",
+            "title": "Myincident"
+          },
+          "type": "Microsoft.SecurityInsights/incidents"
+        }
+      },
+      "related": {
+        "user": [
+          "johndoe",
+          "hshg.fqb@example.com",
+          "rvny@example.com"
+        ]
+      },
+      "rule": {
+        "id": [
+          "/subscriptions/abc12345678-9ac0-4464-9919-dccaee2e48c0/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/fff6f5e9-353a-43c7-8ea7-1a6de9470ae0"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "tactic": {
+          "name": [
+            "InitialAccess",
+            "Persistence"
+          ]
+        }
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "hshg.fqb@example.com",
+        "name": "johndoe"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"/subscriptions/e9def5d2-9ab1-4874-9725-fcdcfb6f26c4/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/incidents/aaaaaa-5cd7-4139-a149-9f2736ff2ab5\",\"name\":\"aaaaaaa-5cd7-4139-a149-9f2736ff2ab5\",\"type\":\"Microsoft.SecurityInsights/incidents\",\"etag\":\"\\\"ccaeabdd-9488-0459-0984-7e19658d5106\\\"\",\"properties\":{\"lastModifiedTimeUtc\":\"2047-01-01T13:15:30Z\",\"createdTimeUtc\":\"2047-01-01T13:15:30Z\",\"lastActivityTimeUtc\":\"2047-01-01T13:05:30Z\",\"firstActivityTimeUtc\":\"2047-01-01T13:00:30Z\",\"description\":\"Thisisademoincident\",\"title\":\"Myincident\",\"owner\":{\"objectId\":\"abcdefghij-040d-4a46-9e2b-91c2941bfa70\",\"email\":\"hshg.fqb@example.com\",\"userPrincipalName\":\"rvny@example.com\",\"assignedTo\":\"johndoe\"},\"severity\":\"High\",\"classification\":\"FalsePositive\",\"classificationComment\":\"Notamaliciousactivity\",\"classificationReason\":\"InaccurateData\",\"status\":\"Closed\",\"incidentUrl\":\"https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/e9def5d2-9ab1-4874-9725-fcdcfb6f26c4/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/incidents/11f46d91-1ea2-4475-a802-9c7472dd1ba7\",\"incidentNumber\":3177,\"labels\":[],\"providerName\":\"AzureSentinel\",\"providerIncidentId\":\"3177\",\"relatedAnalyticRuleIds\":[\"/subscriptions/abc12345678-9ac0-4464-9919-dccaee2e48c0/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/alertRules/fff6f5e9-353a-43c7-8ea7-1a6de9470ae0\"],\"additionalData\":{\"alertsCount\":0,\"bookmarksCount\":0,\"commentsCount\":3,\"alertProductNames\":[],\"tactics\":[\"InitialAccess\",\"Persistence\"]}}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "incident",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-microsoft_sentinel-incident-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "microsoft_sentinel",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

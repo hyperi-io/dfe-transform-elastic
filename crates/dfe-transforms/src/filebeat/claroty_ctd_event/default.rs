@@ -16,8 +16,7 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == \"N/A\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -45,9 +44,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cef.device.event_class_id") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.cef.device.event_class_id.contains('Insight') || ctx.cef.device.event_class_id.contains('Event')) {\n    ctx.event.category = ['network'];\n    ctx.event.type = ['info'];\n    ctx.event.kind = 'event'\n} else if (ctx.cef.device.event_class_id.contains('ActivityLog') || ctx.cef.device.event_class_id.contains('HealthCheck')) {\n    ctx.event.kind = 'event'\n} else if (ctx.cef.device.event_class_id.contains('Alert')) {\n    ctx.event.category = ['threat'];\n    ctx.event.type = ['indicator'];\n    ctx.event.kind = 'alert'\n} else if (ctx.cef.device.event_class_id.contains('Event')) {\n    ctx.event.category = ['network'];\n    ctx.event.type = ['info'];\n    ctx.event.kind = 'event';\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -7321,9 +7318,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("claroty_ctd.event.worker") };
             if _cond {
-                // Painless script
-                // Source: void objectify(Map m) {\n  def regex = /'/;\n  for (entry in m.entrySet()) {\n    def v = entry.getValue();\n    if (!(v instanceof String)) {\n      continue\n    }\n    if (!v.startsWith('{')) {\n      continue\n    }\n    def k = entry.getKey();\n    String msg = regex.matcher(v).replaceAll('\"');\n    try {\n      m[k] = Processors.json(msg);\n    }\n    catch (Exception e) {\n      m[k] = msg;\n    }\n  }\n}\nobjectify(ctx.claroty_ctd.event.worker);\nfor (w in ctx.claroty_ctd.event.worker.entrySet()) {\n  def v = w.getValue();\n  if (v instanceof Map) {\n    objectify(w.getValue());\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -7534,8 +7529,7 @@ impl Transform for Default {
 
             event.remove("cef");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

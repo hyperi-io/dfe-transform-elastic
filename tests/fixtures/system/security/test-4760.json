@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:04:28.122Z",
+            "event": {
+                "kind": "event",
+                "code": 4760,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4760.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "ephemeral_id": "2dec3ad4-463d-431f-b621-24089bebacb0",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "winlog": {
+                "process": {
+                    "pid": 492,
+                    "thread": {
+                        "id": 664
+                    }
+                },
+                "channel": "Security",
+                "record_id": 3707745,
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "opcode": "Info",
+                "event_data": {
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2905",
+                    "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x2e67800",
+                    "PrivilegeList": "-",
+                    "SamAccountName": "gbujtqv8",
+                    "SidHistory": "-",
+                    "TargetUserName": "gbujtqv8",
+                    "TargetDomainName": "TEST",
+                    "SubjectUserName": "ev_aav"
+                },
+                "outcome": "success",
+                "level": "information",
+                "event_id": 4760,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-12-19T08:28:21.030Z"
+            }
+        }
+    ]
+}

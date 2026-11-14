@@ -92,7 +92,7 @@ fn gather_user_claims(event: &mut Event, params: &Value, root: &str) {
     );
 }
 
-/// Every `azure_frontdoor` script transcribed here.
+/// Every `azure_frontdoor` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "d7a036120ea438e3e1e880b7ea8b78213cee967af6cf3d82541fd3f416307d7b",

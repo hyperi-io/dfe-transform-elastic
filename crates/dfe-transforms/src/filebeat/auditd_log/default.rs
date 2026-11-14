@@ -280,9 +280,7 @@ impl Transform for Default {
                 // End nested pipeline: "raw"
             }
 
-            // Painless script
-            // Source: String trimQuotes(def singleQuote, def doubleQuote, def v) {\n    if (v.startsWith(singleQuote) || v.startsWith(doubleQuote)) {\n        v = v.substring(1, v.length());\n    }\n    if (v.endsWith(singleQuote) || v.endsWith(doubleQuote)) {\n        v = v.substring(0, v.length()-1);\n    }\n    return v;\n}\n\nboolean isHexAscii(String v) {\n    def len = v.length();\n\n    if (len == 0 || len % 2 != 0) {\n        return false;\n    }\n\n    for (int i = 0 ; i < len ; i++) {\n        if (Character.digit(v.charAt(i), 16) == -1) {\n            return false;\n        }\n    }\n    return true;\n}\n\nString convertHexToString(String hex) {\n    StringBuilder sb = new StringBuilder();\n    boolean needed_encoding = false;\n\n    for (int i=0; i < hex.length() - 1; i+=2) {\n        int cp = Integer.parseInt(hex.substring(i, (i +2)), 16);\n        if (cp < 33 || cp == 34 || cp == 127) {\n            needed_encoding = true;\n        }\n        if (cp < 32 || cp == 127) {\n            sb.append('^');\n            cp ^= 64;\n        }\n        sb.append((char)cp);\n    }\n    if (needed_encoding) {\n        return sb.toString();\n    }\n    return hex;\n}\n\nBoolean convertStringToBoolean(String value) {\n    value = value.toLowerCase();\n    return value == \"yes\" || value == \"true\" || value == \"1\";\n}\n\n// processFieldValue processes the value for the field, and returns\n// the processed value if it is valid, otherwise null.\ndef processFieldValue(String k, def v, def possibleHexKeys, def possibleBooleanKeys) {\n    // Remove entries whose value is ?\n    if (v == \"?\" || v == \"(null)\" || v == \"\") {\n        return null;\n    }\n\n    // Convert hex values to ASCII.\n    if (possibleHexKeys.contains(k) && isHexAscii(v)) {\n        v = convertHexToString(v);\n    }\n\n    // Convert string values to boolean.\n    if (possibleBooleanKeys.contains(k) && v instanceof String) {\n        v = convertStringToBoolean(v);\n    }\n\n    // Trim quotes.\n    if (v instanceof String) {\n        v = trimQuotes(\"'\", \"\\\"\", v);\n    }\n\n    // Convert arch.\n    if (k == \"arch\" && v == \"c000003e\") {\n        v = \"x86_64\";\n    }\n\n    return v;\n}\n\ndef audit = ctx.auditd.get(\"log\");\nIterator entries = audit.entrySet().iterator();\n\nwhile (entries.hasNext()) {\n    def e = entries.next();\n    def k = e.getKey();\n    def v = e.getValue();\n\n    if (v instanceof List) {\n        int j = 0;\n        for (int i = 0; i < v.length; i++) {\n            v[j] = processFieldValue(k, v[i], params.possibleHexKeys, params.possibleBooleanKeys);\n            if (v[j] != null) {\n                j++;\n            }\n        }\n        if (j < v.length) {\n            if (j == 0) {\n                entries.remove();\n                continue;\n            }\n            audit.put(k, v.subList(0, j));\n        }\n        continue;\n    }\n\n    v = processFieldValue(k, v, params.possibleHexKeys, params.possibleBooleanKeys);\n    if (v == null) {\n        entries.remove();\n    } else {\n        audit.put(k, v);\n    }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -393,9 +391,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: boolean hasFields(HashMap base, def list) {\n  if (list == null) return true;\n  for (int i=0; i<list.length; i++)\n    if (base[list[i]] == null) return false;\n  return true;\n} if (ctx?.auditd?.log?.record_type == null) {\n  return;\n} HashMap base = ctx.auditd.log; def acts = params.types.get(base.record_type); if (acts == null && base.syscall != null) {\n  acts = params.syscalls.get(base?.syscall);\n  if (acts == null) acts = params.syscalls.get('*');\n} if (acts == null) return; def act = null; for (int i=0; act == null && i<acts.length; i++) {\n  if (hasFields(base, acts[i][\"has_fields\"])) act = acts[i];\n}\nif (act?.event != null) {\n  def hm = new HashMap(act.event);\n  hm.forEach((k, v) -> ctx.event[k] = v);\n} if (act?.copy != null) {\n  List lst = new ArrayList();\n  for(int i=0; i<act.copy.length; i++) {\n    def value;\n    def srcList = act.copy[i][\"from\"];\n    for (int j=0; value == null && j<srcList.length; j++) {\n      value = base[srcList[j]];\n    }\n    if (value != null && value instanceof String && value != 'unset' && value != '?') {\n      String suffix = value ==~ /[0-9]+/? \".id\" : \".name\";\n      lst.add([\n        \"target\": act.copy[i][\"to\"] + suffix,\n        \"value\": value\n      ]);\n    }\n  }\n  if (lst.size() > 0) {\n    ctx.auditd.log[\"copy\"] = lst;\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -915,9 +911,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("process.args") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.process.args instanceof List) {\n  ctx.process.args_count = ctx.process.args.length;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1069,9 +1063,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: /* Want to capture all aNN fields, including aN_len and aN[x] */ Pattern argRegex = /^a([0-9]+)(.*)$/;\nList keys = ctx.auditd.log.keySet().stream()\n            /* From List of keys to list of matchers */\n            .map(x -> argRegex.matcher(x))\n            /* Drop elements that didn't match the regex */\n            .filter(x -> x.matches())\n            /* Must save to a list because it needs to remove keys in auditd.log,\n               which cannot be done while streaming from this source */\n            .collect(Collectors.toList());\n\nList args = keys.stream()\n            /* List<Matcher> to List<[Matcher, Value for given key]>\n               with side effect of removing the key */\n            .map(x -> [x, ctx.auditd.log.remove(x.group(0))])\n            /* Drop elements that end in _len, just wanted to remove them */\n            .filter(x -> x[0].group(2) != \"_len\")\n            /* List<Matcher, Value> to List<[Int, Value]>\n               where the Int is the argument index */\n            .map(x -> [Integer.parseInt(x[0].group(1)), x[1]])\n            /* Sort by numeric argument index */\n            .sorted((lhs, rhs) -> lhs[0].compareTo(rhs[0]))\n            /* Save as List<[Index, Value]> */\n            .collect(Collectors.toList());\n\nif (args.isEmpty()) return; if (ctx.process == null) ctx.process = new HashMap(); ctx.process.args = args.stream().map(x -> x[1]).collect(Collectors.toList()); def firstIndex = args[0][0]; if (firstIndex == 0) {\n  ctx.process.executable = ctx.process.args[0];\n} else {\n  ctx.process.args.add(0, \"[... \" + firstIndex + \" truncated arguments ...]\");\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

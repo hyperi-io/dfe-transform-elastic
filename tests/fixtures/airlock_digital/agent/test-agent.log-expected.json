@@ -1,0 +1,395 @@
+{
+  "expected": [
+    {
+      "airlock_digital": {
+        "agent": {
+          "agentid": "320e4442-f166-45d0-9404-e5a20468015d",
+          "clientversion": "198.51.100.71",
+          "domain": "EARGULK-WEAAESF",
+          "freespace": 54,
+          "groupid": "b0ffb9d0-8f24-454d-b20c-8668096d4bb6",
+          "hostname": "EARGULK-WEAAESF",
+          "ip": "192.0.2.248",
+          "lastcheckin": "2052-04-29T16:03:39.507Z",
+          "localip": "203.0.113.150",
+          "os": "Windows 10 x64 (Release: 21H2)",
+          "poilcy_details": {
+            "applications": [
+              {
+                "applicationid": "1570641682",
+                "name": "Airlock Enforcement Agents"
+              }
+            ],
+            "auditmode": "0",
+            "autoupdate": "0",
+            "baselines": [
+              {
+                "baselineid": "1567253648",
+                "name": "Windows 10 1903 x64 May 2019 (Reference)"
+              },
+              {
+                "baselineid": "1569941628",
+                "name": "Windows 10 1803 x64 May 2019 (Reference)"
+              },
+              {
+                "baselineid": "1597574944",
+                "name": "Windows 10 2004 x86 RTM (Reference)"
+              }
+            ],
+            "batch": "1",
+            "check_ea": "0",
+            "command": "1",
+            "commlist": [
+              {
+                "ip": "198.51.100.135",
+                "name": "xcyx.sfzjfz.com"
+              }
+            ],
+            "commlistid": "airlock-default-communication-list",
+            "compiledhtml": "1",
+            "dylib": "0",
+            "enable_notifications": "1",
+            "extensions_enabled": "0",
+            "generalisation": "0",
+            "hashdb_ver": "215",
+            "htmlapplication": "1",
+            "javaapplication": "1",
+            "javascript": "1",
+            "modreload": "0",
+            "name": "ADL Workstations",
+            "notification_message": "%filename% has been prevented from executing as a result of Application Whitelisting. If this event caused unexpected system behaviour please contact your Administrator",
+            "parent": "Airlock Groups",
+            "paths": [
+              {
+                "name": "C:\\\\Windows\\\\assembly\\\\GAC*\\\\*\\\\*.*.*_*\\\\*.dll"
+              },
+              {
+                "name": "C:\\\\Windows\\\\Temp\\\\__PSScriptPolicyTest_????????.???.ps1"
+              },
+              {
+                "name": "C:\\\\Users\\\\*\\\\AppData\\\\Local\\\\Temp\\\\__PSScriptPolicyTest_????????.???.ps1"
+              }
+            ],
+            "policyver": "316",
+            "poll_time": "600",
+            "powershell": "1",
+            "pprocesses": [
+              {
+                "comment": "comment on inherited proc",
+                "name": "testprocInherited.exe"
+              }
+            ],
+            "proxyauth": "0",
+            "proxyenabled": "0",
+            "pslockdown": "0",
+            "publishers": [
+              {
+                "name": "Microsoft Corporation"
+              },
+              {
+                "name": "Microsoft Dynamic Code Publisher"
+              },
+              {
+                "name": "Microsoft Windows"
+              }
+            ],
+            "python": "1",
+            "reflection": "0",
+            "script_custom": "0",
+            "script_enabled": "2",
+            "selfservice": "0",
+            "selfupgrade": "0",
+            "shellscript": "0",
+            "trusted_config": false,
+            "trusted_upload": "0",
+            "vbscript": "1",
+            "windowsinstaller": "1",
+            "windowsscriptcomponent": "1"
+          },
+          "policyversion": "9.1",
+          "status": "3",
+          "status_value": "Safemode",
+          "username": "lenhgfi"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "event",
+        "original": "{\"agentid\":\"320e4442-f166-45d0-9404-e5a20468015d\",\"clientversion\":\"198.51.100.71\",\"domain\":\"EARGULK-WEAAESF\",\"freespace\":\"54\",\"groupid\":\"b0ffb9d0-8f24-454d-b20c-8668096d4bb6\",\"hostname\":\"EARGULK-WEAAESF\",\"ip\":\"192.0.2.248\",\"localip\":\"203.0.113.150\",\"lastcheckin\":\"2052-04-29T16:03:39.507Z\",\"os\":\"Windows 10 x64 (Release: 21H2)\",\"policyversion\":\"9.1\",\"status\":3,\"username\":\"lenhgfi\",\"policy_details\":{\"hidden\":\"true\",\"agentstopcode\":\"\",\"applications\":[{\"applicationid\":\"1570641682\",\"name\":\"Airlock Enforcement Agents\",\"version\":\"\"}],\"auditmode\":0,\"autoupdate\":0,\"baselines\":[{\"baselineid\":\"1567253648\",\"name\":\"Windows 10 1903 x64 May 2019 (Reference)\"},{\"baselineid\":\"1569941628\",\"name\":\"Windows 10 1803 x64 May 2019 (Reference)\"},{\"baselineid\":\"1597574944\",\"name\":\"Windows 10 2004 x86 RTM (Reference)\"}],\"batch\":1,\"blocklists\":null,\"check_ea\":0,\"command\":1,\"commlist\":[{\"ip\":\"198.51.100.135\",\"name\":\"xcyx.sfzjfz.com\"}],\"commlistid\":\"airlock-default-communication-list\",\"compiledhtml\":1,\"dylib\":0,\"enable_notifications\":1,\"extensions_enabled\":0,\"generalisation\":0,\"gprocesses\":null,\"groupid\":\"b0ffb9d0-8f24-454d-b20c-8668096d4bb6\",\"hashdb_ver\":\"215\",\"htmlapplication\":1,\"javaapplication\":1,\"javascript\":1,\"modreload\":0,\"name\":\"ADL Workstations\",\"notification_message\":\"%filename% has been prevented from executing as a result of Application Whitelisting. If this event caused unexpected system behaviour please contact your Administrator\",\"parent\":\"Airlock Groups\",\"paths\":[{\"comment\":\"\",\"name\":\"C:\\\\\\\\Windows\\\\\\\\assembly\\\\\\\\GAC*\\\\\\\\*\\\\\\\\*.*.*_*\\\\\\\\*.dll\"},{\"comment\":\"\",\"name\":\"C:\\\\\\\\Windows\\\\\\\\Temp\\\\\\\\__PSScriptPolicyTest_????????.???.ps1\"},{\"comment\":\"\",\"name\":\"C:\\\\\\\\Users\\\\\\\\*\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\__PSScriptPolicyTest_????????.???.ps1\"}],\"policyver\":\"316\",\"poll_time\":600,\"powershell\":1,\"pprocesses\":[{\"comment\":\"comment on inherited proc\",\"name\":\"testprocInherited.exe\"}],\"proxyauth\":0,\"proxyenabled\":0,\"proxypass\":\"\",\"proxyport\":\"\",\"proxyserver\":\"\",\"proxyuser\":\"\",\"pslockdown\":0,\"publishers\":[{\"comment\":\"\",\"name\":\"Microsoft Corporation\"},{\"comment\":\"\",\"name\":\"Microsoft Dynamic Code Publisher\"},{\"comment\":\"\",\"name\":\"Microsoft Windows\"}],\"python\":1,\"reflection\":0,\"script_custom\":0,\"script_enabled\":2,\"selfservice\":0,\"selfupgrade\":0,\"shellscript\":0,\"targetvers\":null,\"trusted_config\":false,\"trusted_upload\":0,\"vbscript\":1,\"windowsinstaller\":1,\"windowsscriptcomponent\":1}}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "path": [
+          "C:\\\\Windows\\\\assembly\\\\GAC*\\\\*\\\\*.*.*_*\\\\*.dll",
+          "C:\\\\Windows\\\\Temp\\\\__PSScriptPolicyTest_????????.???.ps1",
+          "C:\\\\Users\\\\*\\\\AppData\\\\Local\\\\Temp\\\\__PSScriptPolicyTest_????????.???.ps1"
+        ]
+      },
+      "host": {
+        "domain": "EARGULK-WEAAESF",
+        "hostname": "EARGULK-WEAAESF",
+        "id": "320e4442-f166-45d0-9404-e5a20468015d",
+        "ip": [
+          "192.0.2.248"
+        ],
+        "os": {
+          "full": "Windows 10 x64 (Release: 21H2)",
+          "name": "Windows",
+          "type": "windows"
+        }
+      },
+      "message": "%filename% has been prevented from executing as a result of Application Whitelisting. If this event caused unexpected system behaviour please contact your Administrator",
+      "observer": {
+        "vendor": "Airlock Digital"
+      },
+      "process": {
+        "parent": {
+          "name": [
+            "testprocInherited.exe"
+          ]
+        }
+      },
+      "related": {
+        "hosts": [
+          "EARGULK-WEAAESF"
+        ],
+        "ip": [
+          "192.0.2.248",
+          "203.0.113.150",
+          "198.51.100.135"
+        ],
+        "user": [
+          "lenhgfi"
+        ]
+      },
+      "rule": {
+        "id": "b0ffb9d0-8f24-454d-b20c-8668096d4bb6",
+        "name": "ADL Workstations",
+        "version": "9.1"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "lenhgfi"
+      }
+    },
+    {
+      "airlock_digital": {
+        "agent": {
+          "agentid": "c64f8f9c-c1bc-4785-8eb0-7f3349c301b5",
+          "clientversion": "198.51.100.71",
+          "domain": "EMJU-TOLZGTBRRIZ",
+          "freespace": 61,
+          "groupid": "c520a44e-d276-490f-9433-ba131455eaf4",
+          "hostname": "EMJU-TOLZGTBRRIZ",
+          "ip": "192.0.2.248",
+          "lastcheckin": "2052-04-29T15:12:17.001Z",
+          "localip": "192.0.2.27",
+          "os": "Windows 11 x64 (Release: 23H2)",
+          "poilcy_details": {
+            "applications": [
+              {
+                "applicationid": "1570641682",
+                "name": "Airlock Enforcement Agents"
+              }
+            ],
+            "auditmode": "0",
+            "autoupdate": "0",
+            "baselines": [
+              {
+                "baselineid": "1567253648",
+                "name": "Windows 10 1903 x64 May 2019 (Reference)"
+              },
+              {
+                "baselineid": "1569941628",
+                "name": "Windows 10 1803 x64 May 2019 (Reference)"
+              },
+              {
+                "baselineid": "1597574944",
+                "name": "Windows 10 2004 x86 RTM (Reference)"
+              }
+            ],
+            "batch": "1",
+            "check_ea": "0",
+            "command": "1",
+            "commlist": [
+              {
+                "ip": "192.0.2.156",
+                "name": "xcyx.sfzjfz.com"
+              }
+            ],
+            "commlistid": "airlock-default-communication-list",
+            "compiledhtml": "1",
+            "dylib": "0",
+            "enable_notifications": "1",
+            "extensions_enabled": "0",
+            "generalisation": "0",
+            "hashdb_ver": "215",
+            "htmlapplication": "1",
+            "javaapplication": "1",
+            "javascript": "1",
+            "modreload": "0",
+            "name": "ADL Workstations",
+            "notification_message": "%filename% has been prevented from executing as a result of Application Whitelisting. If this event caused unexpected system behaviour please contact your Administrator",
+            "parent": "Airlock Groups",
+            "paths": [
+              {
+                "name": "C:\\\\Windows\\\\assembly\\\\GAC*\\\\*\\\\*.*.*_*\\\\*.dll"
+              },
+              {
+                "name": "C:\\\\Windows\\\\Temp\\\\__PSScriptPolicyTest_????????.???.ps1"
+              },
+              {
+                "name": "C:\\\\Users\\\\*\\\\AppData\\\\Local\\\\Temp\\\\__PSScriptPolicyTest_????????.???.ps1"
+              }
+            ],
+            "policyver": "316",
+            "poll_time": "600",
+            "powershell": "1",
+            "pprocesses": [
+              {
+                "comment": "comment on inherited proc",
+                "name": "testprocInherited.exe"
+              }
+            ],
+            "proxyauth": "0",
+            "proxyenabled": "0",
+            "pslockdown": "0",
+            "publishers": [
+              {
+                "name": "Microsoft Corporation"
+              },
+              {
+                "name": "Microsoft Dynamic Code Publisher"
+              },
+              {
+                "name": "Microsoft Windows"
+              }
+            ],
+            "python": "1",
+            "reflection": "0",
+            "script_custom": "0",
+            "script_enabled": "2",
+            "selfservice": "0",
+            "selfupgrade": "0",
+            "shellscript": "0",
+            "targetvers": [
+              {
+                "macos": "6.1.0.8047"
+              }
+            ],
+            "trusted_config": false,
+            "trusted_upload": "0",
+            "vbscript": "1",
+            "windowsinstaller": "1",
+            "windowsscriptcomponent": "1"
+          },
+          "policyversion": "9.1",
+          "status": "3",
+          "status_value": "Safemode",
+          "username": "sbjd.dke"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "event",
+        "original": "{\"agentid\":\"c64f8f9c-c1bc-4785-8eb0-7f3349c301b5\",\"clientversion\":\"198.51.100.71\",\"domain\":\"EMJU-TOLZGTBRRIZ\",\"freespace\":\"61\",\"groupid\":\"c520a44e-d276-490f-9433-ba131455eaf4\",\"hostname\":\"EMJU-TOLZGTBRRIZ\",\"ip\":\"192.0.2.248\",\"localip\":\"192.0.2.27\",\"lastcheckin\":\"2052-04-29T15:12:17.001Z\",\"os\":\"Windows 11 x64 (Release: 23H2)\",\"policyversion\":\"9.1\",\"status\":3,\"username\":\"sbjd.dke\",\"policy_details\":{\"agentstopcode\":\"\",\"applications\":[{\"applicationid\":\"1570641682\",\"name\":\"Airlock Enforcement Agents\",\"version\":\"\"}],\"auditmode\":0,\"autoupdate\":0,\"baselines\":[{\"baselineid\":\"1567253648\",\"name\":\"Windows 10 1903 x64 May 2019 (Reference)\"},{\"baselineid\":\"1569941628\",\"name\":\"Windows 10 1803 x64 May 2019 (Reference)\"},{\"baselineid\":\"1597574944\",\"name\":\"Windows 10 2004 x86 RTM (Reference)\"}],\"batch\":1,\"blocklists\":null,\"check_ea\":0,\"command\":1,\"commlist\":[{\"ip\":\"192.0.2.156\",\"name\":\"xcyx.sfzjfz.com\"}],\"commlistid\":\"airlock-default-communication-list\",\"compiledhtml\":1,\"dylib\":0,\"enable_notifications\":1,\"extensions_enabled\":0,\"generalisation\":0,\"gprocesses\":null,\"groupid\":\"c520a44e-d276-490f-9433-ba131455eaf4\",\"hashdb_ver\":\"215\",\"htmlapplication\":1,\"javaapplication\":1,\"javascript\":1,\"modreload\":0,\"name\":\"ADL Workstations\",\"notification_message\":\"%filename% has been prevented from executing as a result of Application Whitelisting. If this event caused unexpected system behaviour please contact your Administrator\",\"parent\":\"Airlock Groups\",\"paths\":[{\"comment\":\"\",\"name\":\"C:\\\\\\\\Windows\\\\\\\\assembly\\\\\\\\GAC*\\\\\\\\*\\\\\\\\*.*.*_*\\\\\\\\*.dll\"},{\"comment\":\"\",\"name\":\"C:\\\\\\\\Windows\\\\\\\\Temp\\\\\\\\__PSScriptPolicyTest_????????.???.ps1\"},{\"comment\":\"\",\"name\":\"C:\\\\\\\\Users\\\\\\\\*\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\__PSScriptPolicyTest_????????.???.ps1\"}],\"policyver\":\"316\",\"poll_time\":600,\"powershell\":1,\"pprocesses\":[{\"comment\":\"comment on inherited proc\",\"name\":\"testprocInherited.exe\"}],\"proxyauth\":0,\"proxyenabled\":0,\"proxypass\":\"\",\"proxyport\":\"\",\"proxyserver\":\"\",\"proxyuser\":\"\",\"pslockdown\":0,\"publishers\":[{\"comment\":\"\",\"name\":\"Microsoft Corporation\"},{\"comment\":\"\",\"name\":\"Microsoft Dynamic Code Publisher\"},{\"comment\":\"\",\"name\":\"Microsoft Windows\"}],\"python\":1,\"reflection\":0,\"script_custom\":0,\"script_enabled\":2,\"selfservice\":0,\"selfupgrade\":0,\"shellscript\":0,\"targetvers\":[{\"linux\":\"\",\"macos\":\"6.1.0.8047\",\"windows\":\"\"}],\"trusted_config\":false,\"trusted_upload\":0,\"vbscript\":1,\"windowsinstaller\":1,\"windowsscriptcomponent\":1}}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "path": [
+          "C:\\\\Windows\\\\assembly\\\\GAC*\\\\*\\\\*.*.*_*\\\\*.dll",
+          "C:\\\\Windows\\\\Temp\\\\__PSScriptPolicyTest_????????.???.ps1",
+          "C:\\\\Users\\\\*\\\\AppData\\\\Local\\\\Temp\\\\__PSScriptPolicyTest_????????.???.ps1"
+        ]
+      },
+      "host": {
+        "domain": "EMJU-TOLZGTBRRIZ",
+        "hostname": "EMJU-TOLZGTBRRIZ",
+        "id": "c64f8f9c-c1bc-4785-8eb0-7f3349c301b5",
+        "ip": [
+          "192.0.2.248"
+        ],
+        "os": {
+          "full": "Windows 11 x64 (Release: 23H2)",
+          "name": "Windows",
+          "type": "windows"
+        }
+      },
+      "message": "%filename% has been prevented from executing as a result of Application Whitelisting. If this event caused unexpected system behaviour please contact your Administrator",
+      "observer": {
+        "vendor": "Airlock Digital"
+      },
+      "process": {
+        "parent": {
+          "name": [
+            "testprocInherited.exe"
+          ]
+        }
+      },
+      "related": {
+        "hosts": [
+          "EMJU-TOLZGTBRRIZ"
+        ],
+        "ip": [
+          "192.0.2.248",
+          "192.0.2.27",
+          "192.0.2.156"
+        ],
+        "user": [
+          "sbjd.dke"
+        ]
+      },
+      "rule": {
+        "id": "c520a44e-d276-490f-9433-ba131455eaf4",
+        "name": "ADL Workstations",
+        "version": "9.1"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "sbjd.dke"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"agentid\":\"320e4442-f166-45d0-9404-e5a20468015d\",\"clientversion\":\"198.51.100.71\",\"domain\":\"EARGULK-WEAAESF\",\"freespace\":\"54\",\"groupid\":\"b0ffb9d0-8f24-454d-b20c-8668096d4bb6\",\"hostname\":\"EARGULK-WEAAESF\",\"ip\":\"192.0.2.248\",\"localip\":\"203.0.113.150\",\"lastcheckin\":\"2052-04-29T16:03:39.507Z\",\"os\":\"Windows 10 x64 (Release: 21H2)\",\"policyversion\":\"9.1\",\"status\":3,\"username\":\"lenhgfi\",\"policy_details\":{\"hidden\":\"true\",\"agentstopcode\":\"\",\"applications\":[{\"applicationid\":\"1570641682\",\"name\":\"Airlock Enforcement Agents\",\"version\":\"\"}],\"auditmode\":0,\"autoupdate\":0,\"baselines\":[{\"baselineid\":\"1567253648\",\"name\":\"Windows 10 1903 x64 May 2019 (Reference)\"},{\"baselineid\":\"1569941628\",\"name\":\"Windows 10 1803 x64 May 2019 (Reference)\"},{\"baselineid\":\"1597574944\",\"name\":\"Windows 10 2004 x86 RTM (Reference)\"}],\"batch\":1,\"blocklists\":null,\"check_ea\":0,\"command\":1,\"commlist\":[{\"ip\":\"198.51.100.135\",\"name\":\"xcyx.sfzjfz.com\"}],\"commlistid\":\"airlock-default-communication-list\",\"compiledhtml\":1,\"dylib\":0,\"enable_notifications\":1,\"extensions_enabled\":0,\"generalisation\":0,\"gprocesses\":null,\"groupid\":\"b0ffb9d0-8f24-454d-b20c-8668096d4bb6\",\"hashdb_ver\":\"215\",\"htmlapplication\":1,\"javaapplication\":1,\"javascript\":1,\"modreload\":0,\"name\":\"ADL Workstations\",\"notification_message\":\"%filename% has been prevented from executing as a result of Application Whitelisting. If this event caused unexpected system behaviour please contact your Administrator\",\"parent\":\"Airlock Groups\",\"paths\":[{\"comment\":\"\",\"name\":\"C:\\\\\\\\Windows\\\\\\\\assembly\\\\\\\\GAC*\\\\\\\\*\\\\\\\\*.*.*_*\\\\\\\\*.dll\"},{\"comment\":\"\",\"name\":\"C:\\\\\\\\Windows\\\\\\\\Temp\\\\\\\\__PSScriptPolicyTest_????????.???.ps1\"},{\"comment\":\"\",\"name\":\"C:\\\\\\\\Users\\\\\\\\*\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\__PSScriptPolicyTest_????????.???.ps1\"}],\"policyver\":\"316\",\"poll_time\":600,\"powershell\":1,\"pprocesses\":[{\"comment\":\"comment on inherited proc\",\"name\":\"testprocInherited.exe\"}],\"proxyauth\":0,\"proxyenabled\":0,\"proxypass\":\"\",\"proxyport\":\"\",\"proxyserver\":\"\",\"proxyuser\":\"\",\"pslockdown\":0,\"publishers\":[{\"comment\":\"\",\"name\":\"Microsoft Corporation\"},{\"comment\":\"\",\"name\":\"Microsoft Dynamic Code Publisher\"},{\"comment\":\"\",\"name\":\"Microsoft Windows\"}],\"python\":1,\"reflection\":0,\"script_custom\":0,\"script_enabled\":2,\"selfservice\":0,\"selfupgrade\":0,\"shellscript\":0,\"targetvers\":null,\"trusted_config\":false,\"trusted_upload\":0,\"vbscript\":1,\"windowsinstaller\":1,\"windowsscriptcomponent\":1}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"agentid\":\"c64f8f9c-c1bc-4785-8eb0-7f3349c301b5\",\"clientversion\":\"198.51.100.71\",\"domain\":\"EMJU-TOLZGTBRRIZ\",\"freespace\":\"61\",\"groupid\":\"c520a44e-d276-490f-9433-ba131455eaf4\",\"hostname\":\"EMJU-TOLZGTBRRIZ\",\"ip\":\"192.0.2.248\",\"localip\":\"192.0.2.27\",\"lastcheckin\":\"2052-04-29T15:12:17.001Z\",\"os\":\"Windows 11 x64 (Release: 23H2)\",\"policyversion\":\"9.1\",\"status\":3,\"username\":\"sbjd.dke\",\"policy_details\":{\"agentstopcode\":\"\",\"applications\":[{\"applicationid\":\"1570641682\",\"name\":\"Airlock Enforcement Agents\",\"version\":\"\"}],\"auditmode\":0,\"autoupdate\":0,\"baselines\":[{\"baselineid\":\"1567253648\",\"name\":\"Windows 10 1903 x64 May 2019 (Reference)\"},{\"baselineid\":\"1569941628\",\"name\":\"Windows 10 1803 x64 May 2019 (Reference)\"},{\"baselineid\":\"1597574944\",\"name\":\"Windows 10 2004 x86 RTM (Reference)\"}],\"batch\":1,\"blocklists\":null,\"check_ea\":0,\"command\":1,\"commlist\":[{\"ip\":\"192.0.2.156\",\"name\":\"xcyx.sfzjfz.com\"}],\"commlistid\":\"airlock-default-communication-list\",\"compiledhtml\":1,\"dylib\":0,\"enable_notifications\":1,\"extensions_enabled\":0,\"generalisation\":0,\"gprocesses\":null,\"groupid\":\"c520a44e-d276-490f-9433-ba131455eaf4\",\"hashdb_ver\":\"215\",\"htmlapplication\":1,\"javaapplication\":1,\"javascript\":1,\"modreload\":0,\"name\":\"ADL Workstations\",\"notification_message\":\"%filename% has been prevented from executing as a result of Application Whitelisting. If this event caused unexpected system behaviour please contact your Administrator\",\"parent\":\"Airlock Groups\",\"paths\":[{\"comment\":\"\",\"name\":\"C:\\\\\\\\Windows\\\\\\\\assembly\\\\\\\\GAC*\\\\\\\\*\\\\\\\\*.*.*_*\\\\\\\\*.dll\"},{\"comment\":\"\",\"name\":\"C:\\\\\\\\Windows\\\\\\\\Temp\\\\\\\\__PSScriptPolicyTest_????????.???.ps1\"},{\"comment\":\"\",\"name\":\"C:\\\\\\\\Users\\\\\\\\*\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\__PSScriptPolicyTest_????????.???.ps1\"}],\"policyver\":\"316\",\"poll_time\":600,\"powershell\":1,\"pprocesses\":[{\"comment\":\"comment on inherited proc\",\"name\":\"testprocInherited.exe\"}],\"proxyauth\":0,\"proxyenabled\":0,\"proxypass\":\"\",\"proxyport\":\"\",\"proxyserver\":\"\",\"proxyuser\":\"\",\"pslockdown\":0,\"publishers\":[{\"comment\":\"\",\"name\":\"Microsoft Corporation\"},{\"comment\":\"\",\"name\":\"Microsoft Dynamic Code Publisher\"},{\"comment\":\"\",\"name\":\"Microsoft Windows\"}],\"python\":1,\"reflection\":0,\"script_custom\":0,\"script_enabled\":2,\"selfservice\":0,\"selfupgrade\":0,\"shellscript\":0,\"targetvers\":[{\"linux\":\"\",\"macos\":\"6.1.0.8047\",\"windows\":\"\"}],\"trusted_config\":false,\"trusted_upload\":0,\"vbscript\":1,\"windowsinstaller\":1,\"windowsscriptcomponent\":1}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "agent",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-airlock_digital-agent-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "airlock_digital",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

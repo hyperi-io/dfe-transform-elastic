@@ -1,0 +1,89 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-04-01T07:18:46.216Z",
+      "agent": {
+        "ephemeral_id": "9c3b02b3-2b3d-4847-99a4-925fc11937ce",
+        "id": "6f3e0bfc-b70c-44bf-a3bb-9379d0acd1d9",
+        "name": "Ilficj-UebCtlx-Ktl.local",
+        "type": "filebeat",
+        "version": "9.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "metric"
+      },
+      "host": {
+        "name": "Ilficj-UebCtlx-Ktl.local"
+      },
+      "o365": {
+        "metrics": {
+          "app_registrations": {
+            "app_id": "8bb-4cbf-4dc9-b05c-1efb",
+            "display_name": "test-app-ms365",
+            "key_credentials": [],
+            "object_id": "a32-fa88-4e5b-94cc-356bd",
+            "password_credentials": [
+              {
+                "display_name": "vggaarei",
+                "end_date_time": "2053-09-22T09:50:16.955Z",
+                "key_id": "ca4-0918-441-8f40-674b"
+              }
+            ]
+          }
+        }
+      },
+      "tags": null
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-04-01T07:18:46.216Z",
+      "agent": {
+        "ephemeral_id": "9c3b02b3-2b3d-4847-99a4-925fc11937ce",
+        "id": "6f3e0bfc-b70c-44bf-a3bb-9379d0acd1d9",
+        "name": "Ilficj-UebCtlx-Ktl.local",
+        "type": "filebeat",
+        "version": "9.0.0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "host": {
+        "name": "Ilficj-UebCtlx-Ktl.local"
+      },
+      "o365": {
+        "metrics": {
+          "app_registrations": {
+            "app_id": "8bb-4cbf-4dc9-b05c-1efb",
+            "display_name": "test-app-ms365",
+            "key_credentials": [],
+            "object_id": "a32-fa88-4e5b-94cc-356bd",
+            "password_credentials": [
+              {
+                "display_name": "vggaarei",
+                "end_date_time": "2053-09-22T09:50:16.955Z",
+                "key_id": "ca4-0918-441-8f40-674b"
+              }
+            ]
+          }
+        }
+      },
+      "tags": null
+    }
+  ],
+  "meta": {
+    "data_stream": "app_registrations",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-app_registrations-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

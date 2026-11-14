@@ -1,0 +1,167 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-12-19T08:01:45.982Z",
+      "agent": {
+        "ephemeral_id": "48ce33aa-4e65-42eb-a860-868d143e4a31",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "deleted-distribution-group-account",
+        "category": [
+          "iam"
+        ],
+        "code": "4748",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "group",
+          "deletion"
+        ]
+      },
+      "group": {
+        "domain": "TEST",
+        "id": "S-1-5-21-1717121054-434620538-60925301-2903",
+        "name": "uaqibnrhjtabt9"
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4748.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "ev_aav"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TEST",
+        "id": "S-1-5-21-1717121054-434620538-60925301-2794",
+        "name": "ev_aav"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x2e67800",
+          "SubjectUserName": "ev_aav",
+          "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+          "TargetDomainName": "TEST",
+          "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2903",
+          "TargetUserName": "uaqibnrhjtabt9"
+        },
+        "event_id": "4748",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x2e67800"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 492,
+          "thread": {
+            "id": 1076
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "3707490",
+        "time_created": "2047-12-19T08:01:45.982Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:04:23.086Z",
+      "agent": {
+        "ephemeral_id": "48ce33aa-4e65-42eb-a860-868d143e4a31",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4748,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4748.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "PrivilegeList": "-",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x2e67800",
+          "SubjectUserName": "ev_aav",
+          "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+          "TargetDomainName": "TEST",
+          "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2903",
+          "TargetUserName": "uaqibnrhjtabt9"
+        },
+        "event_id": 4748,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 492,
+          "thread": {
+            "id": 1076
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 3707490,
+        "time_created": "2047-12-19T08:01:45.982Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

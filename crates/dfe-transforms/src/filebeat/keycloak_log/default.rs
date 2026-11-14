@@ -136,9 +136,7 @@ impl Transform for Default {
 
             let _cond = { event.get("json").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script
-                // Source: \ndef mergeMaps(Map map1, Map map2) {\n  for (def key : map2.keySet()) {\n    if (!map1.containsKey(key)\n        || map1[key] == null\n        || map1[key] == \"\"\n        || (map1[key] instanceof Map && map1[key].isEmpty())) {\n      // If map1's value is absent or empty, use map2's.\n      map1[key] = map2[key];\n    } else if (map1[key] != map2[key]) {\n      if (map1[key] instanceof Map && map2[key] instanceof Map) {\n        // If values in map1 and map2 for key are both maps, merge them.\n        map1[key] = mergeMaps(map1[key], map2[key]);\n      } else if (map1[key] instanceof List) {\n        // If map1's value is a list, merge map2's value, remove any duplicates.\n        def combined = new LinkedHashSet(map1[key]);\n        if (map2[key] instanceof List) {\n          combined.addAll(map2[key]);\n        } else if (map2[key] != null) {\n          combined.add(map2[key]);\n        }\n        map1[key] = new ArrayList(combined);\n      }\n    }\n  }\n  return map1;\n}\nmergeMaps(ctx, ctx.json);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -511,8 +509,7 @@ impl Transform for Default {
             event.remove("_tmp");
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

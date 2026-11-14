@@ -1,0 +1,267 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2044-10-25T14:13:17.000Z",
+        "id": "f961e221-d8f7-4918-9570-cbc0d8ed5583",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2045-10-25T14:13:17.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 1,
+          "pattern": "[windows-registry-key:key = '{78028E50-3F74-41C3-82D9-5439CF9B72AC}']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 40,
+          "standard_id": "indicator--6cec4cfd-299f-5cd2-ad1a-9259d44331e5",
+          "valid_from": "2044-10-25T14:13:17.000Z",
+          "valid_until": "2045-10-25T14:13:17.000Z"
+        },
+        "observable": {
+          "windows_registry_key": {
+            "attribute_key": "{78028E50-3F74-41C3-82D9-5439CF9B72AC}",
+            "entity_type": "Windows-Registry-Key",
+            "id": "88dbdc94-0cee-45f8-8b80-651387ca6b11",
+            "standard_id": "windows-registry-key--e4bb86e8-5280-5059-924a-6e8431fc2b78",
+            "value": "{78028E50-3F74-41C3-82D9-5439CF9B72AC}"
+          }
+        }
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "technical-report",
+        "ecs-indicator-detail"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "description": "Sedreco",
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "modified_at": "2051-01-17T06:30:13.710Z",
+          "name": "{78028E50-3F74-41C3-82D9-5439CF9B72AC}",
+          "provider": "CIRCL",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/f961e221-d8f7-4918-9570-cbc0d8ed5583",
+          "registry": {
+            "key": "{78028E50-3F74-41C3-82D9-5439CF9B72AC}"
+          },
+          "type": "windows-registry-key"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2044-10-25T14:13:17.000Z",
+        "id": "f961e221-d8f7-4918-9570-cbc0d8ed5583",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2045-10-25T14:13:17.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 0,
+          "pattern": "[windows-registry-key:key = '{78028E50-3F74-41C3-82D9-5439CF9B72AC}']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 40,
+          "standard_id": "indicator--6cec4cfd-299f-5cd2-ad1a-9259d44331e5",
+          "valid_from": "2044-10-25T14:13:17.000Z",
+          "valid_until": "2045-10-25T14:13:17.000Z"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "technical-report",
+        "ecs-indicator-detail"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "description": "Sedreco",
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "modified_at": "2051-01-17T06:30:13.710Z",
+          "name": "{78028E50-3F74-41C3-82D9-5439CF9B72AC}",
+          "provider": "CIRCL",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/f961e221-d8f7-4918-9570-cbc0d8ed5583",
+          "registry": {
+            "key": "{78028E50-3F74-41C3-82D9-5439CF9B72AC}"
+          },
+          "type": "windows-registry-key"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 15,
+      "created": "2044-10-25T14:13:17.000Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "CIRCL"
+      },
+      "description": "Sedreco",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "f961e221-d8f7-4918-9570-cbc0d8ed5583",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T06:30:13.710Z",
+      "name": "{78028E50-3F74-41C3-82D9-5439CF9B72AC}",
+      "objectLabel": [
+        {
+          "value": "technical-report"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:CLEAR",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [
+          {
+            "node": {
+              "attribute_key": "{78028E50-3F74-41C3-82D9-5439CF9B72AC}",
+              "entity_type": "Windows-Registry-Key",
+              "id": "88dbdc94-0cee-45f8-8b80-651387ca6b11",
+              "modified_time": null,
+              "number_of_subkeys": null,
+              "observable_value": "{78028E50-3F74-41C3-82D9-5439CF9B72AC}",
+              "standard_id": "windows-registry-key--e4bb86e8-5280-5059-924a-6e8431fc2b78"
+            }
+          }
+        ],
+        "pageInfo": {
+          "globalCount": 1
+        }
+      },
+      "pattern": "[windows-registry-key:key = '{78028E50-3F74-41C3-82D9-5439CF9B72AC}']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--6cec4cfd-299f-5cd2-ad1a-9259d44331e5",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2044-10-25T14:13:17.000Z",
+      "valid_until": "2045-10-25T14:13:17.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "Windows-Registry-Key",
+      "x_opencti_score": 40
+    },
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 15,
+      "created": "2044-10-25T14:13:17.000Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "CIRCL"
+      },
+      "description": "Sedreco",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "f961e221-d8f7-4918-9570-cbc0d8ed5583",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T06:30:13.710Z",
+      "name": "{78028E50-3F74-41C3-82D9-5439CF9B72AC}",
+      "objectLabel": [
+        {
+          "value": "technical-report"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:CLEAR",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [],
+        "pageInfo": {
+          "globalCount": 0
+        }
+      },
+      "pattern": "[windows-registry-key:key = '{78028E50-3F74-41C3-82D9-5439CF9B72AC}']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--6cec4cfd-299f-5cd2-ad1a-9259d44331e5",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2044-10-25T14:13:17.000Z",
+      "valid_until": "2045-10-25T14:13:17.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "Windows-Registry-Key",
+      "x_opencti_score": 40
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_opencti-indicator-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "ti_opencti",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

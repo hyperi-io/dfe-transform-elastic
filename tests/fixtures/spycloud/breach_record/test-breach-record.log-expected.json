@@ -1,0 +1,236 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-20T08:00:00.000Z",
+      "destination": {
+        "domain": "example.com",
+        "subdomain": "login.example.com"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "6285e6ea-bf41-4731-b0aa-44449a1cea52",
+        "kind": "alert",
+        "original": "{ \"infected_time\": \"2051-01-15T12:30:45Z\", \"spycloud_publish_date\": \"2051-01-20T08:00:00Z\", \"severity\": 3, \"infected_path\": \"/documents/confidential\", \"target_url\": \"https://example.com/login\", \"document_id\": \"6285e6ea-bf41-4731-b0aa-44449a1cea52\", \"user_sys_domain\": \"8ad8.default\", \"country_code\": \"US\", \"country\": \"United States\", \"user_hostname\": \"workstation-1\", \"user_os\": \"Windows 10\", \"homepage\": \"https://www.chess.com/member/sarahjoh\", \"target_domain\": \"example.com\", \"email\": \"hshg.fqb@example.com\", \"full_name\": \"Kmjo Cse\", \"email_domain\": \"example.com\", \"email_username\": \"john.doe\", \"username\": \"snnm_ana\", \"password\": \"P@ssw0rd123\", \"password_plaintext\": \"******\", \"password_type\": \"alphanumeric\", \"user_browser\": \"Chrome\", \"ip_addresses\": [\"203.0.113.177\", \"203.0.113.248\"], \"infected_machine_id\": \"ABC123\", \"av_softwares\": [\"McAfee\", \"Windows Defender\"], \"log_id\": \"59eef74013da91c39c9afd4d678734f6f30b4524c8a51fb5fde282a5f34c0222\", \"user_sys_registered_owner\": \"Kmjo Milk\", \"source_id\": 50436, \"target_subdomain\": \"login.example.com\", \"domain\": \"ekazvrc9.com\", \"sighting\": 17, \"keyboard_languages\": [\"English\", \"Spanish\"], \"display_resolution\": \"1920x1080\", \"account_image_url\": \"https://www.chess.com/bundles/web/images/noavatar_l.84a92436.gif\", \"salt\": \"fbbdhd\", \"cc_bin\": \"489486\", \"cc_expiration\": \"06/2025\", \"account_signup_time\": \"2044-07-29T18:47:11Z\", \"cc_last_four\": \"1237\", \"cc_number\": \"7bff4df534eccc455adda2015d7df19f7d85b826\", \"company_name\": \"ABC Corporation\", \"first_name\": \"Kmjo\", \"industry\": \"Technology\", \"job_title\": \"Software Engineer\", \"last_name\": \"Cse\", \"account_login_time\": \"2046-06-29T23:51:46Z\", \"record_cracked_date\": \"2051-11-29T00:00:00Z\", \"account_modification_time\": \"2046-06-29T23:51:10Z\", \"record_addition_date\": \"2051-12-06T00:00:00Z\", \"social_linkedin\": [\"ildar-bazanov-961b14160\"] }",
+        "severity": 3
+      },
+      "host": {
+        "geo": {
+          "country_iso_code": "US",
+          "country_name": "United States"
+        },
+        "hostname": "workstation-1",
+        "ip": [
+          "203.0.113.177",
+          "203.0.113.248"
+        ],
+        "os": {
+          "full": "Windows 10",
+          "type": "windows"
+        }
+      },
+      "organization": {
+        "name": "ABC Corporation"
+      },
+      "related": {
+        "hosts": [
+          "workstation-1",
+          "Windows 10",
+          "8ad8.default"
+        ],
+        "ip": [
+          "203.0.113.177",
+          "203.0.113.248"
+        ],
+        "user": [
+          "ekazvrc9.com",
+          "example.com",
+          "john.doe",
+          "Kmjo Cse",
+          "snnm_ana",
+          "Kmjo Milk"
+        ]
+      },
+      "spycloud": {
+        "breach_record": {
+          "account": {
+            "image_url": "https://www.chess.com/bundles/web/images/noavatar_l.84a92436.gif",
+            "login_time": "2046-06-29T23:51:46.000Z",
+            "modification_time": "2046-06-29T23:51:10.000Z",
+            "signup_time": "2044-07-29T18:47:11.000Z"
+          },
+          "av_softwares": [
+            "McAfee",
+            "Windows Defender"
+          ],
+          "cc": {
+            "bin": "489486",
+            "expiration": "06/2025",
+            "last_four": "1237",
+            "number": "7bff4df534eccc455adda2015d7df19f7d85b826"
+          },
+          "company_name": "ABC Corporation",
+          "country": {
+            "code": "US",
+            "name": "United States"
+          },
+          "display_resolution": "1920x1080",
+          "document_id": "6285e6ea-bf41-4731-b0aa-44449a1cea52",
+          "domain": "ekazvrc9.com",
+          "email": {
+            "domain": "example.com",
+            "username": "john.doe",
+            "value": "hshg.fqb@example.com"
+          },
+          "first_name": "Kmjo",
+          "full_name": "Kmjo Cse",
+          "homepage": "https://www.chess.com/member/sarahjoh",
+          "industry": "Technology",
+          "infected": {
+            "machine_id": "ABC123",
+            "path": "/documents/confidential",
+            "time": "2051-01-15T12:30:45.000Z"
+          },
+          "ip_addresses": [
+            "203.0.113.177",
+            "203.0.113.248"
+          ],
+          "job_title": "Software Engineer",
+          "keyboard_languages": [
+            "English",
+            "Spanish"
+          ],
+          "last_name": "Cse",
+          "log_id": "59eef74013da91c39c9afd4d678734f6f30b4524c8a51fb5fde282a5f34c0222",
+          "password": {
+            "plaintext": "******",
+            "type": "alphanumeric",
+            "value": "P@ssw0rd123"
+          },
+          "record": {
+            "addition_date": "2051-12-06T00:00:00.000Z",
+            "cracked_date": "2051-11-29T00:00:00.000Z"
+          },
+          "salt": "fbbdhd",
+          "severity": 3,
+          "sighting": 17,
+          "social_linkedin": [
+            "ildar-bazanov-961b14160"
+          ],
+          "source_id": "50436",
+          "spycloud_publish_date": "2051-01-20T08:00:00.000Z",
+          "target": {
+            "domain": "example.com",
+            "subdomain": "login.example.com",
+            "url": "https://example.com/login"
+          },
+          "user": {
+            "browser": "Chrome",
+            "hostname": "workstation-1",
+            "name": "snnm_ana",
+            "os": "Windows 10",
+            "sys": {
+              "domain": "8ad8.default",
+              "registered_owner": "Kmjo Milk"
+            }
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com/login",
+        "path": "/login",
+        "scheme": "https"
+      },
+      "user": {
+        "domain": "ekazvrc9.com",
+        "email": "hshg.fqb@example.com",
+        "full_name": "Kmjo Cse",
+        "name": "snnm_ana"
+      }
+    },
+    {
+      "@timestamp": "2052-03-29T00:00:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "9c219f0f-91ec-4eb6-aa90-6f17af2f2408",
+        "kind": "alert",
+        "original": "{\"email\": \"sbgfu_mqh_rftjpma@example.com\",\"password\": \"4bcc8b9b92f3a662cbd7d06226b0d616\",\"source_id\": 35862,\"spycloud_publish_date\": \"2048-12-17T00:00:00Z\",\"email_domain\": \"example.com\",\"email_username\": \"zaman_oto_kaporta\",\"domain\": \"example.com\",\"password_type\": \"md5\",\"severity\": 20,\"password_plaintext\": \"4863\",\"record_cracked_date\": \"2052-03-29T00:00:00Z\",\"record_modification_date\": \"2052-03-29T00:00:00Z\",\"document_id\": \"9c219f0f-91ec-4eb6-aa90-6f17af2f2408\",\"sighting\": 1}",
+        "severity": 20
+      },
+      "related": {
+        "user": [
+          "example.com",
+          "zaman_oto_kaporta"
+        ]
+      },
+      "spycloud": {
+        "breach_record": {
+          "document_id": "9c219f0f-91ec-4eb6-aa90-6f17af2f2408",
+          "domain": "example.com",
+          "email": {
+            "domain": "example.com",
+            "username": "zaman_oto_kaporta",
+            "value": "sbgfu_mqh_rftjpma@example.com"
+          },
+          "password": {
+            "plaintext": "4863",
+            "type": "md5",
+            "value": "4bcc8b9b92f3a662cbd7d06226b0d616"
+          },
+          "record": {
+            "cracked_date": "2052-03-29T00:00:00.000Z",
+            "modification_date": "2052-03-29T00:00:00.000Z"
+          },
+          "severity": 20,
+          "sighting": 1,
+          "source_id": "35862",
+          "spycloud_publish_date": "2048-12-17T00:00:00.000Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "sbgfu_mqh_rftjpma@example.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{ \"infected_time\": \"2051-01-15T12:30:45Z\", \"spycloud_publish_date\": \"2051-01-20T08:00:00Z\", \"severity\": 3, \"infected_path\": \"/documents/confidential\", \"target_url\": \"https://example.com/login\", \"document_id\": \"6285e6ea-bf41-4731-b0aa-44449a1cea52\", \"user_sys_domain\": \"8ad8.default\", \"country_code\": \"US\", \"country\": \"United States\", \"user_hostname\": \"workstation-1\", \"user_os\": \"Windows 10\", \"homepage\": \"https://www.chess.com/member/sarahjoh\", \"target_domain\": \"example.com\", \"email\": \"hshg.fqb@example.com\", \"full_name\": \"Kmjo Cse\", \"email_domain\": \"example.com\", \"email_username\": \"john.doe\", \"username\": \"snnm_ana\", \"password\": \"P@ssw0rd123\", \"password_plaintext\": \"******\", \"password_type\": \"alphanumeric\", \"user_browser\": \"Chrome\", \"ip_addresses\": [\"203.0.113.177\", \"203.0.113.248\"], \"infected_machine_id\": \"ABC123\", \"av_softwares\": [\"McAfee\", \"Windows Defender\"], \"log_id\": \"59eef74013da91c39c9afd4d678734f6f30b4524c8a51fb5fde282a5f34c0222\", \"user_sys_registered_owner\": \"Kmjo Milk\", \"source_id\": 50436, \"target_subdomain\": \"login.example.com\", \"domain\": \"ekazvrc9.com\", \"sighting\": 17, \"keyboard_languages\": [\"English\", \"Spanish\"], \"display_resolution\": \"1920x1080\", \"account_image_url\": \"https://www.chess.com/bundles/web/images/noavatar_l.84a92436.gif\", \"salt\": \"fbbdhd\", \"cc_bin\": \"489486\", \"cc_expiration\": \"06/2025\", \"account_signup_time\": \"2044-07-29T18:47:11Z\", \"cc_last_four\": \"1237\", \"cc_number\": \"7bff4df534eccc455adda2015d7df19f7d85b826\", \"company_name\": \"ABC Corporation\", \"first_name\": \"Kmjo\", \"industry\": \"Technology\", \"job_title\": \"Software Engineer\", \"last_name\": \"Cse\", \"account_login_time\": \"2046-06-29T23:51:46Z\", \"record_cracked_date\": \"2051-11-29T00:00:00Z\", \"account_modification_time\": \"2046-06-29T23:51:10Z\", \"record_addition_date\": \"2051-12-06T00:00:00Z\", \"social_linkedin\": [\"ildar-bazanov-961b14160\"] }",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"email\": \"sbgfu_mqh_rftjpma@example.com\",\"password\": \"4bcc8b9b92f3a662cbd7d06226b0d616\",\"source_id\": 35862,\"spycloud_publish_date\": \"2048-12-17T00:00:00Z\",\"email_domain\": \"example.com\",\"email_username\": \"zaman_oto_kaporta\",\"domain\": \"example.com\",\"password_type\": \"md5\",\"severity\": 20,\"password_plaintext\": \"4863\",\"record_cracked_date\": \"2052-03-29T00:00:00Z\",\"record_modification_date\": \"2052-03-29T00:00:00Z\",\"document_id\": \"9c219f0f-91ec-4eb6-aa90-6f17af2f2408\",\"sighting\": 1}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "breach_record",
+    "dynamic_fields": {
+      "url.extension": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-spycloud-breach_record-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "spycloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

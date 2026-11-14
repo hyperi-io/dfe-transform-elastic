@@ -1,0 +1,137 @@
+{
+  "expected": [
+    {
+      "apache_tomcat": {
+        "thread_pool": {
+          "connection": {
+            "count": 1,
+            "linger": -1,
+            "max": 8192,
+            "timeout": 20000
+          },
+          "executor_termination": {
+            "timeout": {
+              "ms": 5000
+            }
+          },
+          "initiated_connector": {
+            "state": true
+          },
+          "keep_alive": {
+            "count": 0,
+            "max_requests": 100,
+            "timeout": 20000
+          },
+          "nio_connector": "http-nio-8080",
+          "ssl_enabled": false,
+          "tcp_no_delay": true,
+          "thread": {
+            "accept": {
+              "count": 100
+            },
+            "current": {
+              "busy": 0,
+              "count": 10
+            },
+            "daemon": {
+              "status": true
+            },
+            "paused": false,
+            "port": {
+              "default": 8080,
+              "offset": 0,
+              "value": 8080,
+              "with_offset": 8080
+            },
+            "priority": {
+              "acceptor": 5,
+              "count": 5,
+              "poller": 5
+            },
+            "requests": {
+              "max": 200
+            },
+            "running": {
+              "min": 10,
+              "value": true
+            },
+            "selector": {
+              "timeout": 1000
+            },
+            "sni_parse_limit": 65536
+          },
+          "use_inherited_channel": false,
+          "use_send_file": true
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "metric",
+        "module": "apache_tomcat",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "127.0.0.1:9090",
+          "job": "prometheus",
+          "name": "\"http-nio-8080\""
+        },
+        "metrics": {
+          "Catalina_ThreadPool_acceptCount": 100,
+          "Catalina_ThreadPool_acceptorThreadPriority": 5,
+          "Catalina_ThreadPool_bindOnInit": 1,
+          "Catalina_ThreadPool_connectionCount": 1,
+          "Catalina_ThreadPool_connectionLinger": -1,
+          "Catalina_ThreadPool_connectionTimeout": 20000,
+          "Catalina_ThreadPool_currentThreadCount": 10,
+          "Catalina_ThreadPool_currentThreadsBusy": 0,
+          "Catalina_ThreadPool_daemon": 1,
+          "Catalina_ThreadPool_executorTerminationTimeoutMillis": 5000,
+          "Catalina_ThreadPool_keepAliveCount": 0,
+          "Catalina_ThreadPool_keepAliveTimeout": 20000,
+          "Catalina_ThreadPool_localPort": 8080,
+          "Catalina_ThreadPool_maxConnections": 8192,
+          "Catalina_ThreadPool_maxKeepAliveRequests": 100,
+          "Catalina_ThreadPool_maxThreads": 200,
+          "Catalina_ThreadPool_minSpareThreads": 10,
+          "Catalina_ThreadPool_paused": 0,
+          "Catalina_ThreadPool_pollerThreadPriority": 5,
+          "Catalina_ThreadPool_port": 8080,
+          "Catalina_ThreadPool_portOffset": 0,
+          "Catalina_ThreadPool_portWithOffset": 8080,
+          "Catalina_ThreadPool_running": 1,
+          "Catalina_ThreadPool_sSLEnabled": 0,
+          "Catalina_ThreadPool_selectorTimeout": 1000,
+          "Catalina_ThreadPool_sniParseLimit": 65536,
+          "Catalina_ThreadPool_tcpNoDelay": 1,
+          "Catalina_ThreadPool_threadPriority": 5,
+          "Catalina_ThreadPool_useInheritedChannel": 0,
+          "Catalina_ThreadPool_useSendfile": 1
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "thread_pool",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache_tomcat-thread_pool-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "apache_tomcat",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

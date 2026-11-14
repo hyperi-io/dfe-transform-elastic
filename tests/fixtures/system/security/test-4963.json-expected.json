@@ -1,0 +1,145 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-04-22T10:53:25.282Z",
+      "agent": {
+        "ephemeral_id": "92d27392-ba41-4974-b3e0-32179dbd8276",
+        "id": "f3c72740-4ca9-44df-838f-7f6dadddd113",
+        "name": "WIN2K19-0-0-00",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ipsec-dropped-inbound-clear-text-packet-that-should-have-been-secured",
+        "category": [
+          "network"
+        ],
+        "code": "4963",
+        "created": "2053-04-29T05:18:09.559Z",
+        "kind": "event",
+        "outcome": "failure",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "name": "KRK7G22-5-1-23.admin.local"
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "Windows Firewall ignored a rule because it could not be parsed.\n\t\nProfile:\tAll\n\nReason for Rejection:\tAn error occurred.\n\nRule:\n\tID:\tWMPNetworkSvc-2\n\tName:\t-",
+      "related": {
+        "ip": [
+          "192.0.2.134"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.134",
+        "ip": "192.0.2.134"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "KRK7G22-5-1-23.admin.local",
+        "event_data": {
+          "RemoteAddress_ip": "192.0.2.134",
+          "SPI": "12345678"
+        },
+        "event_id": "4963",
+        "keywords": [
+          "Audit Failure"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 808,
+          "thread": {
+            "id": 2416
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "141730",
+        "task": "12291"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-04-22T10:53:25.282Z",
+      "agent": {
+        "ephemeral_id": "92d27392-ba41-4974-b3e0-32179dbd8276",
+        "id": "f3c72740-4ca9-44df-838f-7f6dadddd113",
+        "name": "WIN2K19-0-0-00",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "action": "MPSSVC Rule-Level Policy Change",
+        "code": "4963",
+        "created": "2053-04-29T05:18:09.559Z",
+        "kind": "event",
+        "outcome": "failure",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "KRK7G22-5-1-23.admin.local"
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "Windows Firewall ignored a rule because it could not be parsed.\n\t\nProfile:\tAll\n\nReason for Rejection:\tAn error occurred.\n\nRule:\n\tID:\tWMPNetworkSvc-2\n\tName:\t-",
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "KRK7G22-5-1-23.admin.local",
+        "event_data": {
+          "RemoteAddress": "192.0.2.134",
+          "SPI": "12345678"
+        },
+        "event_id": "4963",
+        "keywords": [
+          "Audit Failure"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 808,
+          "thread": {
+            "id": 2416
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 141730,
+        "task": "12291"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

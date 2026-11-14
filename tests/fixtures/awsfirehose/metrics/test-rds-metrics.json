@@ -1,0 +1,30 @@
+{
+    "events": [
+        {
+            "@timestamp": "2052-06-12T22:00:00.000Z",
+            "start_timestamp": "2052-06-12T21:59:00.000Z",
+            "agent.type": "firehose",
+            "cloud.provider": "aws",
+            "cloud.account.id": "12345678901",
+            "cloud.region": "us-east-1",
+            "aws.exporter.arn": "arn:aws:cloudwatch:us-east-1:12345678901:metric-stream/test-all-metrics-ks-1",
+            "aws.firehose.arn": "arn:aws:firehose:us-east-1:12345678901:deliverystream/KS-PUT-ELI-2",
+            "aws.firehose.request_id": "acefba8a-12c4-4181-a056-4eaf31e28097",
+            "aws.cloudwatch.namespace": "AWS/RDS",
+            "aws.dimensions": {
+                "DBInstanceIdentifier": "metricbeat-test-019e245b"
+            },
+            "aws.rds.metrics.FreeStorageSpace": {
+                "count": 1,
+                "sum": 18430775296,
+                "avg": 18430775296,
+                "min": 18430775296,
+                "max": 18430775296
+            },
+            "aws.firehose.parameters.X-Found-Cluster": "c594534be0270897d081a36344e21d77",
+            "data_stream.type": "metrics",
+            "data_stream.dataset": "aws.cloudwatch",
+            "data_stream.namespace": "default"
+        }
+    ]
+}

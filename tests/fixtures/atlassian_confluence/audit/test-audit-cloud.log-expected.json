@@ -1,0 +1,2647 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-01-25T07:51:51.962Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Service Catalogue",
+              "type": "Space"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Space logo uploaded",
+            "category": "Spaces"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Space logo uploaded",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Pcczer\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"cc557e82c25ded590d44bedff9bf5735\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"cc557e82c25ded590d44bedff9bf5735\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526709911962,\"summary\":\"Space logo uploaded\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Service Catalogue\",\"objectType\":\"Space\"},\"changedValues\":[],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "Kmjo Pcczer",
+        "id": "cc557e82c25ded590d44bedff9bf5735"
+      }
+    },
+    {
+      "@timestamp": "2050-01-25T07:51:34.621Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Service Catalogue",
+              "type": "Space"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Space logo uploaded",
+            "category": "Spaces"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Space logo uploaded",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Pcczer\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"cc557e82c25ded590d44bedff9bf5735\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"cc557e82c25ded590d44bedff9bf5735\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526709894621,\"summary\":\"Space logo uploaded\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Service Catalogue\",\"objectType\":\"Space\"},\"changedValues\":[],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "Kmjo Pcczer",
+        "id": "cc557e82c25ded590d44bedff9bf5735"
+      }
+    },
+    {
+      "@timestamp": "2050-01-25T07:49:51.153Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Service Catalogue",
+              "type": "Space"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Space logo uploaded",
+            "category": "Spaces"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Space logo uploaded",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Pcczer\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"cc557e82c25ded590d44bedff9bf5735\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"cc557e82c25ded590d44bedff9bf5735\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526709791153,\"summary\":\"Space logo uploaded\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Service Catalogue\",\"objectType\":\"Space\"},\"changedValues\":[],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "Kmjo Pcczer",
+        "id": "cc557e82c25ded590d44bedff9bf5735"
+      }
+    },
+    {
+      "@timestamp": "2050-01-25T07:44:39.172Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Service Catalogue",
+              "type": "Space"
+            }
+          ],
+          "changed_values": [
+            {
+              "i18nKey": "Space type",
+              "key": "Space type",
+              "to": "global"
+            },
+            {
+              "i18nKey": "Space status",
+              "key": "Space status",
+              "to": "CURRENT"
+            },
+            {
+              "i18nKey": "Name",
+              "key": "Name",
+              "to": "Service Catalogue"
+            },
+            {
+              "i18nKey": "Space key",
+              "key": "Space key",
+              "to": "SC"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Space configuration updated",
+            "category": "Spaces"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Space configuration updated",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Pcczer\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"cc557e82c25ded590d44bedff9bf5735\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"cc557e82c25ded590d44bedff9bf5735\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526709479172,\"summary\":\"Space configuration updated\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Service Catalogue\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Service Catalogue\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"SC\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "Kmjo Pcczer",
+        "id": "cc557e82c25ded590d44bedff9bf5735"
+      }
+    },
+    {
+      "@timestamp": "2050-01-25T07:44:39.092Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Service Catalogue",
+              "type": "Space"
+            }
+          ],
+          "changed_values": [
+            {
+              "i18nKey": "Space type",
+              "key": "Space type",
+              "to": "global"
+            },
+            {
+              "i18nKey": "Space status",
+              "key": "Space status",
+              "to": "CURRENT"
+            },
+            {
+              "i18nKey": "Name",
+              "key": "Name",
+              "to": "Service Catalogue"
+            },
+            {
+              "i18nKey": "Space key",
+              "key": "Space key",
+              "to": "SC"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Space created",
+            "category": "Spaces"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Space created",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Pcczer\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"cc557e82c25ded590d44bedff9bf5735\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"cc557e82c25ded590d44bedff9bf5735\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526709479092,\"summary\":\"Space created\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Service Catalogue\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Service Catalogue\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"SC\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "Kmjo Pcczer",
+        "id": "cc557e82c25ded590d44bedff9bf5735"
+      }
+    },
+    {
+      "@timestamp": "2050-01-24T14:49:22.329Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Pre-test-scanner",
+              "type": "Space"
+            }
+          ],
+          "changed_values": [
+            {
+              "i18nKey": "Space type",
+              "key": "Space type",
+              "to": "global"
+            },
+            {
+              "i18nKey": "Space status",
+              "key": "Space status",
+              "to": "CURRENT"
+            },
+            {
+              "i18nKey": "Name",
+              "key": "Name",
+              "to": "Pre-test-scanner"
+            },
+            {
+              "i18nKey": "Space key",
+              "key": "Space key",
+              "to": "PTS"
+            },
+            {
+              "i18nKey": "Home page",
+              "key": "Home page",
+              "to": "page: 484737204 v.1"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Space configuration updated",
+            "category": "Spaces"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Space configuration updated",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"Ejlll Cgb\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"3e91081a2363312f0ca78d2e\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"3e91081a2363312f0ca78d2e\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526648562329,\"summary\":\"Space configuration updated\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Pre-test-scanner\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Pre-test-scanner\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"PTS\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Home page\",\"oldValue\":\"\",\"newValue\":\"page: 484737204 v.1\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "Ejlll Cgb",
+        "id": "3e91081a2363312f0ca78d2e"
+      }
+    },
+    {
+      "@timestamp": "2050-01-24T14:49:22.311Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Pre-test-scanner",
+              "type": "Space"
+            }
+          ],
+          "changed_values": [
+            {
+              "i18nKey": "Space type",
+              "key": "Space type",
+              "to": "global"
+            },
+            {
+              "i18nKey": "Space status",
+              "key": "Space status",
+              "to": "CURRENT"
+            },
+            {
+              "i18nKey": "Name",
+              "key": "Name",
+              "to": "Pre-test-scanner"
+            },
+            {
+              "i18nKey": "Space key",
+              "key": "Space key",
+              "to": "PTS"
+            },
+            {
+              "i18nKey": "Home page",
+              "key": "Home page",
+              "to": "page: 484737204 v.1"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Space created",
+            "category": "Spaces"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Space created",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"Ejlll Cgb\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"3e91081a2363312f0ca78d2e\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"3e91081a2363312f0ca78d2e\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526648562311,\"summary\":\"Space created\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Pre-test-scanner\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Pre-test-scanner\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"PTS\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Home page\",\"oldValue\":\"\",\"newValue\":\"page: 484737204 v.1\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "Ejlll Cgb",
+        "id": "3e91081a2363312f0ca78d2e"
+      }
+    },
+    {
+      "@timestamp": "2050-01-18T08:43:03.045Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "ASP",
+              "type": "User"
+            },
+            {
+              "name": "jira-software-users:f3c14778-a901-4fd9-91ce-709ed5c8328e",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526108183045,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"jira-software-users:f3c14778-a901-4fd9-91ce-709ed5c8328e\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"ASP\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "ASP"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "f3c14778-a901-4fd9-91ce-709ed5c8328e",
+            "name": "jira-software-users"
+          },
+          "name": "ASP"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-18T08:43:03.014Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "ASP",
+              "type": "User"
+            },
+            {
+              "name": "confluence-users:1321f2e8-edaa-4d97-a90e-834bfd9927d4",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526108183014,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"confluence-users:1321f2e8-edaa-4d97-a90e-834bfd9927d4\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"ASP\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "ASP"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "1321f2e8-edaa-4d97-a90e-834bfd9927d4",
+            "name": "confluence-users"
+          },
+          "name": "ASP"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-18T08:43:02.767Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "ASP",
+              "type": "User"
+            }
+          ],
+          "changed_values": [
+            {
+              "i18nKey": "Display name",
+              "key": "Display name",
+              "to": "ASP"
+            },
+            {
+              "i18nKey": "Email",
+              "key": "Email",
+              "to": "sbgq@example.com"
+            },
+            {
+              "i18nKey": "Active",
+              "key": "Active",
+              "to": "Yes"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User created",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User created",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526108182767,\"summary\":\"User created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"ASP\",\"objectType\":\"User\"},\"changedValues\":[{\"name\":\"Display name\",\"oldValue\":\"\",\"newValue\":\"ASP\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Email\",\"oldValue\":\"\",\"newValue\":\"sbgq@example.com\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Active\",\"oldValue\":\"\",\"newValue\":\"Yes\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "user",
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "changes": {
+          "email": "sbgq@example.com",
+          "full_name": "ASP"
+        },
+        "full_name": "System",
+        "target": {
+          "email": "sbgq@example.com",
+          "full_name": "ASP"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-14T16:37:07.237Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Simon Brownhill",
+              "type": "User"
+            },
+            {
+              "name": "confluence-users:1321f2e8-edaa-4d97-a90e-834bfd9927d4",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2525791027237,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"confluence-users:1321f2e8-edaa-4d97-a90e-834bfd9927d4\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Simon Brownhill\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Simon Brownhill"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "1321f2e8-edaa-4d97-a90e-834bfd9927d4",
+            "name": "confluence-users"
+          },
+          "name": "Simon Brownhill"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-14T16:37:07.017Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Simon Brownhill",
+              "type": "User"
+            }
+          ],
+          "changed_values": [
+            {
+              "i18nKey": "Display name",
+              "key": "Display name",
+              "to": "Simon Brownhill"
+            },
+            {
+              "i18nKey": "Email",
+              "key": "Email"
+            },
+            {
+              "i18nKey": "Active",
+              "key": "Active",
+              "to": "Yes"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User created",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User created",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2525791027017,\"summary\":\"User created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Simon Brownhill\",\"objectType\":\"User\"},\"changedValues\":[{\"name\":\"Display name\",\"oldValue\":\"\",\"newValue\":\"Simon Brownhill\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Email\",\"oldValue\":\"\",\"newValue\":\"\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Active\",\"oldValue\":\"\",\"newValue\":\"Yes\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "user",
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "changes": {
+          "full_name": "Simon Brownhill"
+        },
+        "full_name": "System",
+        "target": {
+          "full_name": "Simon Brownhill"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-04T12:04:36.903Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "George West",
+              "type": "User"
+            },
+            {
+              "name": "Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524910676903,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"George West\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "George West"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "43f88c92-61eb-49ae-a830-60e8a7b0262d",
+            "name": "Detect & Response - Change Approvals"
+          },
+          "name": "George West"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-04T11:57:52.951Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "SAM H",
+              "type": "User"
+            },
+            {
+              "name": "Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524910272951,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"SAM H\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "SAM H"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "43f88c92-61eb-49ae-a830-60e8a7b0262d",
+            "name": "Detect & Response - Change Approvals"
+          },
+          "name": "SAM H"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-04T10:27:23.437Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Ryrzy Ijznh",
+              "type": "User"
+            },
+            {
+              "name": "Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904843437,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Ryrzy Ijznh\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Ryrzy Ijznh"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "43f88c92-61eb-49ae-a830-60e8a7b0262d",
+            "name": "Detect & Response - Change Approvals"
+          },
+          "name": "Ryrzy Ijznh"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-04T10:27:23.424Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Joseph Smith",
+              "type": "User"
+            },
+            {
+              "name": "Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904843424,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Joseph Smith\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Joseph Smith"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "43f88c92-61eb-49ae-a830-60e8a7b0262d",
+            "name": "Detect & Response - Change Approvals"
+          },
+          "name": "Joseph Smith"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-04T10:27:01.947Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Group created",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Group created",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904821947,\"summary\":\"Group created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[]}",
+        "type": [
+          "group",
+          "creation"
+        ]
+      },
+      "group": {
+        "id": "43f88c92-61eb-49ae-a830-60e8a7b0262d",
+        "name": "Detect & Response - Change Approvals"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System"
+      }
+    },
+    {
+      "@timestamp": "2050-01-04T10:25:55.867Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Joseph Smith",
+              "type": "User"
+            },
+            {
+              "name": "Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904755867,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Joseph Smith\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Joseph Smith"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "a37c5d0a-8332-4f1b-80cb-4c90983e88a8",
+            "name": "Detect & Response - Cost Approvals"
+          },
+          "name": "Joseph Smith"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-04T10:25:55.857Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Ryrzy Ijznh",
+              "type": "User"
+            },
+            {
+              "name": "Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904755857,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Ryrzy Ijznh\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Ryrzy Ijznh"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "a37c5d0a-8332-4f1b-80cb-4c90983e88a8",
+            "name": "Detect & Response - Cost Approvals"
+          },
+          "name": "Ryrzy Ijznh"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-04T10:25:55.839Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "SAM H",
+              "type": "User"
+            },
+            {
+              "name": "Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904755839,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"SAM H\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "SAM H"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "a37c5d0a-8332-4f1b-80cb-4c90983e88a8",
+            "name": "Detect & Response - Cost Approvals"
+          },
+          "name": "SAM H"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-01-04T10:25:34.681Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Group created",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Group created",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904734681,\"summary\":\"Group created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[]}",
+        "type": [
+          "group",
+          "creation"
+        ]
+      },
+      "group": {
+        "id": "a37c5d0a-8332-4f1b-80cb-4c90983e88a8",
+        "name": "Detect & Response - Cost Approvals"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System"
+      }
+    },
+    {
+      "@timestamp": "2049-12-07T16:46:02.860Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Ryrzy Ijznh",
+              "type": "User"
+            },
+            {
+              "name": "Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522508362860,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Ryrzy Ijznh\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Ryrzy Ijznh"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "79a7693d-aa17-424e-8a32-086509c025a8",
+            "name": "Engineering / Sysadmins"
+          },
+          "name": "Ryrzy Ijznh"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-12-07T16:46:02.848Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Joe Test",
+              "type": "User"
+            },
+            {
+              "name": "Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522508362848,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Joe Test\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Joe Test"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "79a7693d-aa17-424e-8a32-086509c025a8",
+            "name": "Engineering / Sysadmins"
+          },
+          "name": "Joe Test"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-12-07T16:46:02.837Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Joseph Smith",
+              "type": "User"
+            },
+            {
+              "name": "Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522508362837,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Joseph Smith\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Joseph Smith"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "79a7693d-aa17-424e-8a32-086509c025a8",
+            "name": "Engineering / Sysadmins"
+          },
+          "name": "Joseph Smith"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-12-07T16:46:02.824Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Simon Johnson",
+              "type": "User"
+            },
+            {
+              "name": "Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522508362824,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Simon Johnson\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Simon Johnson"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "79a7693d-aa17-424e-8a32-086509c025a8",
+            "name": "Engineering / Sysadmins"
+          },
+          "name": "Simon Johnson"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-12-07T16:45:23.912Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Group created",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Group created",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522508323912,\"summary\":\"Group created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[]}",
+        "type": [
+          "group",
+          "creation"
+        ]
+      },
+      "group": {
+        "id": "79a7693d-aa17-424e-8a32-086509c025a8",
+        "name": "Engineering / Sysadmins"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System"
+      }
+    },
+    {
+      "@timestamp": "2049-12-07T16:29:39.293Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Change Control",
+              "type": "Space"
+            }
+          ],
+          "changed_values": [
+            {
+              "i18nKey": "Space type",
+              "key": "Space type",
+              "to": "global"
+            },
+            {
+              "i18nKey": "Space status",
+              "key": "Space status",
+              "to": "CURRENT"
+            },
+            {
+              "i18nKey": "Name",
+              "key": "Name",
+              "to": "Change Control"
+            },
+            {
+              "i18nKey": "Space key",
+              "key": "Space key",
+              "to": "ACC"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Space configuration updated",
+            "category": "Spaces"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Space configuration updated",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"Ryrzy Ijznh\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"43617fee0635edf5d6acb26ff4400826\",\"userKey\":\"1137812a66a4f2dd966408c68469d17b\",\"accountId\":\"43617fee0635edf5d6acb26ff4400826\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522507379293,\"summary\":\"Space configuration updated\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Change Control\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Change Control\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"ACC\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "Ryrzy Ijznh",
+        "id": "43617fee0635edf5d6acb26ff4400826"
+      }
+    },
+    {
+      "@timestamp": "2049-12-07T16:29:38.800Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Change Control",
+              "type": "Space"
+            }
+          ],
+          "changed_values": [
+            {
+              "i18nKey": "Space type",
+              "key": "Space type",
+              "to": "global"
+            },
+            {
+              "i18nKey": "Space status",
+              "key": "Space status",
+              "to": "CURRENT"
+            },
+            {
+              "i18nKey": "Name",
+              "key": "Name",
+              "to": "Change Control"
+            },
+            {
+              "i18nKey": "Space key",
+              "key": "Space key",
+              "to": "ACC"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Space created",
+            "category": "Spaces"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Space created",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"Ryrzy Ijznh\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"43617fee0635edf5d6acb26ff4400826\",\"userKey\":\"1137812a66a4f2dd966408c68469d17b\",\"accountId\":\"43617fee0635edf5d6acb26ff4400826\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522507378800,\"summary\":\"Space created\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Change Control\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Change Control\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"ACC\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "Ryrzy Ijznh",
+        "id": "43617fee0635edf5d6acb26ff4400826"
+      }
+    },
+    {
+      "@timestamp": "2049-11-29T17:10:34.800Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Another User",
+              "type": "User"
+            },
+            {
+              "name": "jira-software-users:f3c14778-a901-4fd9-91ce-709ed5c8328e",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2521818634800,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"jira-software-users:f3c14778-a901-4fd9-91ce-709ed5c8328e\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Another User\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Another User"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "f3c14778-a901-4fd9-91ce-709ed5c8328e",
+            "name": "jira-software-users"
+          },
+          "name": "Another User"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-11-29T17:10:34.747Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Another User",
+              "type": "User"
+            },
+            {
+              "name": "confluence-users:1321f2e8-edaa-4d97-a90e-834bfd9927d4",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2521818634747,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"confluence-users:1321f2e8-edaa-4d97-a90e-834bfd9927d4\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Another User\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Another User"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "1321f2e8-edaa-4d97-a90e-834bfd9927d4",
+            "name": "confluence-users"
+          },
+          "name": "Another User"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-11-29T17:10:34.455Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Another User",
+              "type": "User"
+            }
+          ],
+          "changed_values": [
+            {
+              "i18nKey": "Display name",
+              "key": "Display name",
+              "to": "Another User"
+            },
+            {
+              "i18nKey": "Email",
+              "key": "Email",
+              "to": "sbgq@example.com"
+            },
+            {
+              "i18nKey": "Active",
+              "key": "Active",
+              "to": "Yes"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User created",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User created",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2521818634455,\"summary\":\"User created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Another User\",\"objectType\":\"User\"},\"changedValues\":[{\"name\":\"Display name\",\"oldValue\":\"\",\"newValue\":\"Another User\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Email\",\"oldValue\":\"\",\"newValue\":\"sbgq@example.com\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Active\",\"oldValue\":\"\",\"newValue\":\"Yes\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "user",
+          "creation"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "changes": {
+          "email": "sbgq@example.com",
+          "full_name": "Another User"
+        },
+        "full_name": "System",
+        "target": {
+          "email": "sbgq@example.com",
+          "full_name": "Another User"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-11-18T16:04:18.807Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Username",
+              "type": "User"
+            },
+            {
+              "name": "jira-software-users:f3c14778-a901-4fd9-91ce-709ed5c8328e",
+              "type": "Group"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User added to group",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User added to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520864258807,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"jira-software-users:f3c14778-a901-4fd9-91ce-709ed5c8328e\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Username\",\"objectType\":\"User\"}]}",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "Username"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "group": {
+            "id": "f3c14778-a901-4fd9-91ce-709ed5c8328e",
+            "name": "jira-software-users"
+          },
+          "name": "Username"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-11-17T16:00:37.285Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Kmjo Cse (Unlicensed)",
+              "type": "User"
+            }
+          ],
+          "changed_values": [
+            {
+              "from": "Yes",
+              "i18nKey": "Active",
+              "key": "Active",
+              "to": "No"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User details updated",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User details updated",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520777637285,\"summary\":\"User details updated\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Kmjo Cse (Unlicensed)\",\"objectType\":\"User\"},\"changedValues\":[{\"name\":\"Active\",\"oldValue\":\"Yes\",\"newValue\":\"No\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "full_name": "Kmjo Cse (Unlicensed)"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-11-17T16:00:37.274Z",
+      "confluence": {
+        "audit": {
+          "external_collaborator": false,
+          "type": {
+            "action": "User deactivated",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User deactivated",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520777637274,\"summary\":\"User deactivated\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"\",\"objectType\":\"\"},\"changedValues\":[],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System"
+      }
+    },
+    {
+      "@timestamp": "2049-11-16T14:35:22.812Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "KB Articles to be Approved",
+              "type": "Page"
+            },
+            {
+              "name": "Topics",
+              "type": "Space"
+            }
+          ],
+          "changed_values": [
+            {
+              "from": "current",
+              "i18nKey": "Content status",
+              "key": "Content status",
+              "to": "archived"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "Page archived",
+            "category": "Page"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Page archived",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Cse\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"c9fa9624d11b500f884ad9096a4e0a21\",\"userKey\":\"2f3d8d4e81aa04fcfb026a5d8c1c8aa1\",\"accountId\":\"c9fa9624d11b500f884ad9096a4e0a21\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520686122812,\"summary\":\"Page archived\",\"description\":\"\",\"category\":\"Page\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"KB Articles to be Approved\",\"objectType\":\"Page\"},\"changedValues\":[{\"name\":\"Content status\",\"oldValue\":\"current\",\"newValue\":\"archived\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[{\"name\":\"KB Articles to be Approved\",\"objectType\":\"Page\"},{\"name\":\"Topics\",\"objectType\":\"Space\"}]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "Kmjo Cse",
+        "id": "c9fa9624d11b500f884ad9096a4e0a21"
+      }
+    },
+    {
+      "@timestamp": "2049-11-16T09:25:56.738Z",
+      "confluence": {
+        "audit": {
+          "affected_objects": [
+            {
+              "name": "Kmjo Cse (Deactivated)",
+              "type": "User"
+            }
+          ],
+          "changed_values": [
+            {
+              "from": "Yes",
+              "i18nKey": "Active",
+              "key": "Active",
+              "to": "No"
+            }
+          ],
+          "external_collaborator": false,
+          "type": {
+            "action": "User details updated",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User details updated",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520667556738,\"summary\":\"User details updated\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Kmjo Cse (Deactivated)\",\"objectType\":\"User\"},\"changedValues\":[{\"name\":\"Active\",\"oldValue\":\"Yes\",\"newValue\":\"No\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System",
+        "target": {
+          "full_name": "Kmjo Cse (Deactivated)"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-11-16T09:25:56.666Z",
+      "confluence": {
+        "audit": {
+          "external_collaborator": false,
+          "type": {
+            "action": "User deactivated",
+            "category": "Users and groups"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "User deactivated",
+        "kind": "event",
+        "original": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520667556666,\"summary\":\"User deactivated\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"\",\"objectType\":\"\"},\"changedValues\":[],\"associatedObjects\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "System"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Pcczer\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"cc557e82c25ded590d44bedff9bf5735\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"cc557e82c25ded590d44bedff9bf5735\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526709911962,\"summary\":\"Space logo uploaded\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Service Catalogue\",\"objectType\":\"Space\"},\"changedValues\":[],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Pcczer\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"cc557e82c25ded590d44bedff9bf5735\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"cc557e82c25ded590d44bedff9bf5735\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526709894621,\"summary\":\"Space logo uploaded\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Service Catalogue\",\"objectType\":\"Space\"},\"changedValues\":[],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Pcczer\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"cc557e82c25ded590d44bedff9bf5735\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"cc557e82c25ded590d44bedff9bf5735\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526709791153,\"summary\":\"Space logo uploaded\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Service Catalogue\",\"objectType\":\"Space\"},\"changedValues\":[],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Pcczer\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"cc557e82c25ded590d44bedff9bf5735\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"cc557e82c25ded590d44bedff9bf5735\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526709479172,\"summary\":\"Space configuration updated\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Service Catalogue\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Service Catalogue\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"SC\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Pcczer\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"cc557e82c25ded590d44bedff9bf5735\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"cc557e82c25ded590d44bedff9bf5735\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526709479092,\"summary\":\"Space created\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Service Catalogue\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Service Catalogue\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"SC\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"Ejlll Cgb\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"3e91081a2363312f0ca78d2e\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"3e91081a2363312f0ca78d2e\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526648562329,\"summary\":\"Space configuration updated\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Pre-test-scanner\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Pre-test-scanner\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"PTS\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Home page\",\"oldValue\":\"\",\"newValue\":\"page: 484737204 v.1\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"Ejlll Cgb\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"3e91081a2363312f0ca78d2e\",\"userKey\":\"54326b089019c0d9d3bd2f23827f2b1f\",\"accountId\":\"3e91081a2363312f0ca78d2e\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526648562311,\"summary\":\"Space created\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Pre-test-scanner\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Pre-test-scanner\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"PTS\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Home page\",\"oldValue\":\"\",\"newValue\":\"page: 484737204 v.1\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526108183045,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"jira-software-users:f3c14778-a901-4fd9-91ce-709ed5c8328e\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"ASP\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526108183014,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"confluence-users:1321f2e8-edaa-4d97-a90e-834bfd9927d4\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"ASP\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2526108182767,\"summary\":\"User created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"ASP\",\"objectType\":\"User\"},\"changedValues\":[{\"name\":\"Display name\",\"oldValue\":\"\",\"newValue\":\"ASP\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Email\",\"oldValue\":\"\",\"newValue\":\"sbgq@example.com\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Active\",\"oldValue\":\"\",\"newValue\":\"Yes\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2525791027237,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"confluence-users:1321f2e8-edaa-4d97-a90e-834bfd9927d4\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Simon Brownhill\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2525791027017,\"summary\":\"User created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Simon Brownhill\",\"objectType\":\"User\"},\"changedValues\":[{\"name\":\"Display name\",\"oldValue\":\"\",\"newValue\":\"Simon Brownhill\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Email\",\"oldValue\":\"\",\"newValue\":\"\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Active\",\"oldValue\":\"\",\"newValue\":\"Yes\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524910676903,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"George West\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524910272951,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"SAM H\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904843437,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Ryrzy Ijznh\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904843424,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Joseph Smith\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904821947,\"summary\":\"Group created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Change Approvals:43f88c92-61eb-49ae-a830-60e8a7b0262d\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904755867,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Joseph Smith\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904755857,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Ryrzy Ijznh\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904755839,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"SAM H\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2524904734681,\"summary\":\"Group created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Detect & Response - Cost Approvals:a37c5d0a-8332-4f1b-80cb-4c90983e88a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522508362860,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Ryrzy Ijznh\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522508362848,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Joe Test\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522508362837,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Joseph Smith\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522508362824,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Simon Johnson\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522508323912,\"summary\":\"Group created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Engineering / Sysadmins:79a7693d-aa17-424e-8a32-086509c025a8\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"Ryrzy Ijznh\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"43617fee0635edf5d6acb26ff4400826\",\"userKey\":\"1137812a66a4f2dd966408c68469d17b\",\"accountId\":\"43617fee0635edf5d6acb26ff4400826\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522507379293,\"summary\":\"Space configuration updated\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Change Control\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Change Control\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"ACC\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"Ryrzy Ijznh\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"43617fee0635edf5d6acb26ff4400826\",\"userKey\":\"1137812a66a4f2dd966408c68469d17b\",\"accountId\":\"43617fee0635edf5d6acb26ff4400826\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2522507378800,\"summary\":\"Space created\",\"description\":\"\",\"category\":\"Spaces\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Change Control\",\"objectType\":\"Space\"},\"changedValues\":[{\"name\":\"Space type\",\"oldValue\":\"\",\"newValue\":\"global\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space status\",\"oldValue\":\"\",\"newValue\":\"CURRENT\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Name\",\"oldValue\":\"\",\"newValue\":\"Change Control\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Space key\",\"oldValue\":\"\",\"newValue\":\"ACC\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2521818634800,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"jira-software-users:f3c14778-a901-4fd9-91ce-709ed5c8328e\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Another User\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2521818634747,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"confluence-users:1321f2e8-edaa-4d97-a90e-834bfd9927d4\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Another User\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2521818634455,\"summary\":\"User created\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Another User\",\"objectType\":\"User\"},\"changedValues\":[{\"name\":\"Display name\",\"oldValue\":\"\",\"newValue\":\"Another User\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Email\",\"oldValue\":\"\",\"newValue\":\"sbgq@example.com\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"},{\"name\":\"Active\",\"oldValue\":\"\",\"newValue\":\"Yes\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520864258807,\"summary\":\"User added to group\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"jira-software-users:f3c14778-a901-4fd9-91ce-709ed5c8328e\",\"objectType\":\"Group\"},\"changedValues\":[],\"associatedObjects\":[{\"name\":\"Username\",\"objectType\":\"User\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520777637285,\"summary\":\"User details updated\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Kmjo Cse (Unlicensed)\",\"objectType\":\"User\"},\"changedValues\":[{\"name\":\"Active\",\"oldValue\":\"Yes\",\"newValue\":\"No\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520777637274,\"summary\":\"User deactivated\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"\",\"objectType\":\"\"},\"changedValues\":[],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"Kmjo Cse\",\"operations\":null,\"isExternalCollaborator\":false,\"username\":\"c9fa9624d11b500f884ad9096a4e0a21\",\"userKey\":\"2f3d8d4e81aa04fcfb026a5d8c1c8aa1\",\"accountId\":\"c9fa9624d11b500f884ad9096a4e0a21\",\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520686122812,\"summary\":\"Page archived\",\"description\":\"\",\"category\":\"Page\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"KB Articles to be Approved\",\"objectType\":\"Page\"},\"changedValues\":[{\"name\":\"Content status\",\"oldValue\":\"current\",\"newValue\":\"archived\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[{\"name\":\"KB Articles to be Approved\",\"objectType\":\"Page\"},{\"name\":\"Topics\",\"objectType\":\"Space\"}]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520667556738,\"summary\":\"User details updated\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"Kmjo Cse (Deactivated)\",\"objectType\":\"User\"},\"changedValues\":[{\"name\":\"Active\",\"oldValue\":\"Yes\",\"newValue\":\"No\",\"hiddenOldValue\":\"\",\"hiddenNewValue\":\"\"}],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"author\":{\"type\":\"user\",\"displayName\":\"System\",\"operations\":null,\"isExternalCollaborator\":false,\"accountType\":\"\",\"publicName\":\"Unknown user\",\"externalCollaborator\":false},\"remoteAddress\":\"198.51.100.111\",\"creationDate\":2520667556666,\"summary\":\"User deactivated\",\"description\":\"\",\"category\":\"Users and groups\",\"sysAdmin\":false,\"superAdmin\":false,\"affectedObject\":{\"name\":\"\",\"objectType\":\"\"},\"changedValues\":[],\"associatedObjects\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_confluence-audit-default",
+    "event_count": 37,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_confluence",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

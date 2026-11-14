@@ -1,0 +1,172 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-10-02T15:00:00.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "login_failure",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"saml\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_failure\",\"parameters\":[{\"name\":\"application_name\",\"value\":\"app\"},{\"name\":\"failure_type\",\"value\":\"failure_app_not_configured_for_user\"},{\"name\":\"initiated_by\",\"value\":\"idp\"},{\"name\":\"orgunit_path\",\"value\":\"ounit\"},{\"name\":\"saml_second_level_status_code\",\"value\":\"SUCCESS_URI\"},{\"name\":\"saml_status_code\",\"value\":\"SUCCESS_URI\"}]}}",
+        "outcome": "failure",
+        "provider": "saml",
+        "type": [
+          "start"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "login"
+        },
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        },
+        "saml": {
+          "application_name": "app",
+          "failure_type": "failure_app_not_configured_for_user",
+          "initiated_by": "idp",
+          "orgunit_path": "ounit",
+          "second_level_status_code": "SUCCESS_URI",
+          "status_code": "SUCCESS_URI"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    },
+    {
+      "@timestamp": "2048-10-02T15:00:01.000Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "login_success",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:01Z\",\"uniqueQualifier\":1,\"applicationName\":\"saml\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_success\",\"parameters\":[{\"name\":\"application_name\",\"value\":\"app\"},{\"name\":\"initiated_by\",\"value\":\"idp\"},{\"name\":\"orgunit_path\",\"value\":\"ounit\"},{\"name\":\"saml_status_code\",\"value\":\"SUCCESS_URI\"}]}}",
+        "outcome": "success",
+        "provider": "saml",
+        "type": [
+          "start"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "type": "USER"
+        },
+        "event": {
+          "type": "login"
+        },
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        },
+        "saml": {
+          "application_name": "app",
+          "initiated_by": "idp",
+          "orgunit_path": "ounit",
+          "status_code": "SUCCESS_URI"
+        }
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:00Z\",\"uniqueQualifier\":1,\"applicationName\":\"saml\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_failure\",\"parameters\":[{\"name\":\"application_name\",\"value\":\"app\"},{\"name\":\"failure_type\",\"value\":\"failure_app_not_configured_for_user\"},{\"name\":\"initiated_by\",\"value\":\"idp\"},{\"name\":\"orgunit_path\",\"value\":\"ounit\"},{\"name\":\"saml_second_level_status_code\",\"value\":\"SUCCESS_URI\"},{\"name\":\"saml_status_code\",\"value\":\"SUCCESS_URI\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"kind\":\"admin#reports#activity\",\"id\":{\"time\":\"2048-10-02T15:00:01Z\",\"uniqueQualifier\":1,\"applicationName\":\"saml\",\"customerId\":\"1\"},\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"ownerDomain\":\"apejtlc.com\",\"ipAddress\":\"192.0.2.97\",\"events\":{\"type\":\"login\",\"name\":\"login_success\",\"parameters\":[{\"name\":\"application_name\",\"value\":\"app\"},{\"name\":\"initiated_by\",\"value\":\"idp\"},{\"name\":\"orgunit_path\",\"value\":\"ounit\"},{\"name\":\"saml_status_code\",\"value\":\"SUCCESS_URI\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "saml",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-google_workspace-saml-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "google_workspace",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

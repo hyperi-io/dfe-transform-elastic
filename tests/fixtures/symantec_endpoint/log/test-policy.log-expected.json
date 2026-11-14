@@ -1,0 +1,61 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "Site: SEPSite,Server: exampleHostname,Domain: exampleDomain,Admin: exampleAdmin,Event Description: Policy has been edited: Edited shared Intrusion Prevention policy: SEPPolicyName,SEPPolicyName",
+        "provider": "Policy Log"
+      },
+      "message": "Policy has been edited: Edited shared Intrusion Prevention policy: SEPPolicyName",
+      "symantec_endpoint": {
+        "log": {
+          "admin": "exampleAdmin",
+          "domain_name": "exampleDomain",
+          "event_description": "Policy has been edited: Edited shared Intrusion Prevention policy: SEPPolicyName",
+          "policy_name": "SEPPolicyName",
+          "server": "exampleHostname",
+          "site": "SEPSite"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "exampleDomain",
+        "name": "exampleAdmin"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Site: SEPSite,Server: exampleHostname,Domain: exampleDomain,Admin: exampleAdmin,Event Description: Policy has been edited: Edited shared Intrusion Prevention policy: SEPPolicyName,SEPPolicyName",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

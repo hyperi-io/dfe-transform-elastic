@@ -1,0 +1,1646 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-02-06T19:10:00.391Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "code": "0700001767",
+        "kind": "event",
+        "original": "<190>date=2051-02-06,time=19:10:00.391,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(10.24.211.203),module=unknown,submodule=unknown,msg=\"Added 'Test_copy' to 'profile url-filter' : category[child-abuse drug-abuse adult-materials nudity-risque pornograph..] (user: admin, from: http(10.24.211.203))\"",
+        "outcome": "unknown",
+        "type": [
+          "change"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-06",
+          "device_id": "FEVM02TM23000064",
+          "id": "0700001767",
+          "message": "Added 'Test_copy' to 'profile url-filter' : category[child-abuse drug-abuse adult-materials nudity-risque pornograph..] (user: admin, from: http(10.24.211.203))",
+          "module": "unknown",
+          "network": "http",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_module": "unknown",
+          "sub_type": "config",
+          "time": "19:10:00.391",
+          "type": "kevent",
+          "ui": "http(10.24.211.203)",
+          "ui_ip": "10.24.211.203",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Added 'Test_copy' to 'profile url-filter' : category[child-abuse drug-abuse adult-materials nudity-risque pornograph..] (user: admin, from: http(10.24.211.203))",
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "10.24.211.203"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "10.24.211.203"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-07T09:01:43.129Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "code": "0700001767",
+        "kind": "event",
+        "original": "<190>date=2051-02-07,time=09:01:43.129,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(10.105.116.229),module=unknown,submodule=unknown,msg=\"Deleted 'Test_copy' from 'profile url-filter' : category[child-abuse drug-abuse adult-materials nudity-risque pornograph..] (user: admin, from: http(10.105.116.229))\"",
+        "outcome": "unknown",
+        "type": [
+          "deletion"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-07",
+          "device_id": "FEVM02TM23000064",
+          "id": "0700001767",
+          "message": "Deleted 'Test_copy' from 'profile url-filter' : category[child-abuse drug-abuse adult-materials nudity-risque pornograph..] (user: admin, from: http(10.105.116.229))",
+          "module": "unknown",
+          "network": "http",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_module": "unknown",
+          "sub_type": "config",
+          "time": "09:01:43.129",
+          "type": "kevent",
+          "ui": "http(10.105.116.229)",
+          "ui_ip": "10.105.116.229",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Deleted 'Test_copy' from 'profile url-filter' : category[child-abuse drug-abuse adult-materials nudity-risque pornograph..] (user: admin, from: http(10.105.116.229))",
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "10.105.116.229"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "10.105.116.229"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-07T09:05:02.414Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "code": "0700001767",
+        "kind": "event",
+        "original": "<190>date=2051-02-07,time=09:05:02.414,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(10.105.116.229),module=unknown,submodule=unknown,msg=\"Modified 'Test' on 'log setting remote' : port[9026->9589] (user: admin, from: http(10.105.116.229))\"",
+        "outcome": "unknown",
+        "type": [
+          "change"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-07",
+          "device_id": "FEVM02TM23000064",
+          "id": "0700001767",
+          "message": "Modified 'Test' on 'log setting remote' : port[9026->9589] (user: admin, from: http(10.105.116.229))",
+          "module": "unknown",
+          "network": "http",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_module": "unknown",
+          "sub_type": "config",
+          "time": "09:05:02.414",
+          "type": "kevent",
+          "ui": "http(10.105.116.229)",
+          "ui_ip": "10.105.116.229",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Modified 'Test' on 'log setting remote' : port[9026->9589] (user: admin, from: http(10.105.116.229))",
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "10.105.116.229"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "10.105.116.229"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-07T09:08:21.402Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "code": "0700001767",
+        "kind": "event",
+        "original": "<190>date=2051-02-07,time=09:08:21.402,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(10.105.116.229),module=unknown,submodule=unknown,msg=\"Modified 'Test' on 'log setting remote' : comma-separated-value[enable->disable] (user: admin, from: http(10.105.116.229))\"",
+        "outcome": "unknown",
+        "type": [
+          "change"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-07",
+          "device_id": "FEVM02TM23000064",
+          "id": "0700001767",
+          "message": "Modified 'Test' on 'log setting remote' : comma-separated-value[enable->disable] (user: admin, from: http(10.105.116.229))",
+          "module": "unknown",
+          "network": "http",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_module": "unknown",
+          "sub_type": "config",
+          "time": "09:08:21.402",
+          "type": "kevent",
+          "ui": "http(10.105.116.229)",
+          "ui_ip": "10.105.116.229",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Modified 'Test' on 'log setting remote' : comma-separated-value[enable->disable] (user: admin, from: http(10.105.116.229))",
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "10.105.116.229"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "10.105.116.229"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-07T09:09:17.129Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "code": "0700001767",
+        "kind": "event",
+        "original": "<190>date=2051-02-07,time=09:09:17.129,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(10.105.116.229),module=unknown,submodule=unknown,msg=\"Modified 'Test' on 'log setting remote' : syslog-mode[tcp->udp]port[9589->9590] (user: admin, from: http(10.105.116.229))\"",
+        "outcome": "unknown",
+        "type": [
+          "change"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-07",
+          "device_id": "FEVM02TM23000064",
+          "id": "0700001767",
+          "message": "Modified 'Test' on 'log setting remote' : syslog-mode[tcp->udp]port[9589->9590] (user: admin, from: http(10.105.116.229))",
+          "module": "unknown",
+          "network": "http",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_module": "unknown",
+          "sub_type": "config",
+          "time": "09:09:17.129",
+          "type": "kevent",
+          "ui": "http(10.105.116.229)",
+          "ui_ip": "10.105.116.229",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Modified 'Test' on 'log setting remote' : syslog-mode[tcp->udp]port[9589->9590] (user: admin, from: http(10.105.116.229))",
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "10.105.116.229"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "10.105.116.229"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-14T10:54:07.089Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "code": "0700001766",
+        "kind": "event",
+        "original": "<190>date=2051-02-14,time=10:54:07.089,device_id=FEVM02TM23000064,log_id=0700001766,type=kevent,subtype=config,pri=information, user=admin,ui=http(203.0.113.177),module=unknown,submodule=unknown,msg=\"Modified '2' on 'policy recipient' : status[disable->enable] (user: admin, from: http(203.0.113.177))\"",
+        "outcome": "unknown",
+        "type": [
+          "change"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-14",
+          "device_id": "FEVM02TM23000064",
+          "id": "0700001766",
+          "message": "Modified '2' on 'policy recipient' : status[disable->enable] (user: admin, from: http(203.0.113.177))",
+          "module": "unknown",
+          "network": "http",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_module": "unknown",
+          "sub_type": "config",
+          "time": "10:54:07.089",
+          "type": "kevent",
+          "ui": "http(203.0.113.177)",
+          "ui_ip": "203.0.113.177",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Modified '2' on 'policy recipient' : status[disable->enable] (user: admin, from: http(203.0.113.177))",
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.177"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.177"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-14T10:55:31.392Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "code": "0700001766",
+        "kind": "event",
+        "original": "<190>date=2051-02-14,time=10:55:31.392,device_id=FEVM02TM23000064,log_id=0700001766,type=kevent,subtype=config,pri=information, user=admin,ui=http(203.0.113.177),module=unknown,submodule=unknown,msg=\"Modified 'AV_OutBound' on 'profile antivirus-action' : subject-tagging-status[enable->disable]subject-tagging-text[Virus->]action[none ->discard ]replace-infected-status[enable->disable] (user: admin, from: http(203.0.113.177))\"",
+        "outcome": "unknown",
+        "type": [
+          "change"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-14",
+          "device_id": "FEVM02TM23000064",
+          "id": "0700001766",
+          "message": "Modified 'AV_OutBound' on 'profile antivirus-action' : subject-tagging-status[enable->disable]subject-tagging-text[Virus->]action[none ->discard ]replace-infected-status[enable->disable] (user: admin, from: http(203.0.113.177))",
+          "module": "unknown",
+          "network": "http",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_module": "unknown",
+          "sub_type": "config",
+          "time": "10:55:31.392",
+          "type": "kevent",
+          "ui": "http(203.0.113.177)",
+          "ui_ip": "203.0.113.177",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Modified 'AV_OutBound' on 'profile antivirus-action' : subject-tagging-status[enable->disable]subject-tagging-text[Virus->]action[none ->discard ]replace-infected-status[enable->disable] (user: admin, from: http(203.0.113.177))",
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.177"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.177"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-08T15:20:16.506Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "code": "0700001767",
+        "kind": "event",
+        "original": "<190>date=2051-02-08,time=15:20:16.506,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(203.0.113.177),module=unknown,submodule=unknown,msg=\"Modified 'port1' on 'system interface' : ip[10.104.14.126/20->10.6.19.186/20] (user: admin, from: http(203.0.113.177))\"",
+        "outcome": "unknown",
+        "type": [
+          "change"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-08",
+          "device_id": "FEVM02TM23000064",
+          "id": "0700001767",
+          "message": "Modified 'port1' on 'system interface' : ip[10.104.14.126/20->10.6.19.186/20] (user: admin, from: http(203.0.113.177))",
+          "module": "unknown",
+          "network": "http",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_module": "unknown",
+          "sub_type": "config",
+          "time": "15:20:16.506",
+          "type": "kevent",
+          "ui": "http(203.0.113.177)",
+          "ui_ip": "203.0.113.177",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Modified 'port1' on 'system interface' : ip[10.104.14.126/20->10.6.19.186/20] (user: admin, from: http(203.0.113.177))",
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.177"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.177"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-07T12:34:55.214Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "none",
+        "code": "0701002231",
+        "kind": "event",
+        "original": "<190>date=2051-02-07,time=12:34:55.214,device_id=FEVM02TM23000064,log_id=0701002231,type=kevent,subtype=admin,pri=information, user=admin,ui=http(198.51.100.18),action=none,status=none,reason=unknown,msg=\"History logs accessed (user: admin, from: http(198.51.100.18))\"",
+        "outcome": "unknown"
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "action": "none",
+          "date": "2051-02-07",
+          "device_id": "FEVM02TM23000064",
+          "id": "0701002231",
+          "message": "History logs accessed (user: admin, from: http(198.51.100.18))",
+          "network": "http",
+          "priority": "information",
+          "priority_number": 190,
+          "reason": "unknown",
+          "status": "none",
+          "sub_type": "admin",
+          "time": "12:34:55.214",
+          "type": "kevent",
+          "ui": "http(198.51.100.18)",
+          "ui_ip": "198.51.100.18",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "History logs accessed (user: admin, from: http(198.51.100.18))",
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.18"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.18"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-06T18:05:49.266Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logout",
+        "code": "0701002124",
+        "kind": "event",
+        "original": "<190>date=2051-02-06,time=18:05:49.266,device_id=FEVM02TM23000064,log_id=0701002124,type=kevent,subtype=admin,pri=information, user=admin,ui=ssh(203.0.113.177),action=logout,status=success,reason=unknown,msg=\"User admin time out on ssh(203.0.113.177).\"",
+        "outcome": "success"
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "action": "logout",
+          "date": "2051-02-06",
+          "device_id": "FEVM02TM23000064",
+          "id": "0701002124",
+          "ip": "203.0.113.177",
+          "message": "User admin time out on ssh(203.0.113.177).",
+          "network": "ssh",
+          "priority": "information",
+          "priority_number": 190,
+          "reason": "unknown",
+          "status": "success",
+          "sub_type": "admin",
+          "time": "18:05:49.266",
+          "type": "kevent",
+          "ui": "ssh(203.0.113.177)",
+          "ui_ip": "203.0.113.177",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "User admin time out on ssh(203.0.113.177).",
+      "network": {
+        "protocol": "ssh"
+      },
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.177"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.177"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-06T18:49:59.807Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "code": "0701002231",
+        "kind": "event",
+        "original": "<190>date=2051-02-06,time=18:49:59.807,device_id=FEVM02TM23000064,log_id=0701002231,type=kevent,subtype=admin,pri=information, user=admin,ui=GUI(10.24.211.203),action=login,status=success,reason=none,msg=\"User admin login successfully from GUI(10.24.211.203)\"",
+        "outcome": "success",
+        "type": [
+          "end",
+          "info"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "action": "login",
+          "date": "2051-02-06",
+          "device_id": "FEVM02TM23000064",
+          "id": "0701002231",
+          "ip": "10.24.211.203",
+          "message": "User admin login successfully from GUI(10.24.211.203)",
+          "priority": "information",
+          "priority_number": 190,
+          "reason": "none",
+          "status": "success",
+          "sub_type": "admin",
+          "time": "18:49:59.807",
+          "type": "kevent",
+          "ui": "GUI(10.24.211.203)",
+          "ui_ip": "10.24.211.203",
+          "user": [
+            "admin"
+          ]
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "User admin login successfully from GUI(10.24.211.203)",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "10.24.211.203"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "source": {
+        "ip": "10.24.211.203"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-06T19:00:25.566Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "none",
+        "code": "0702001987",
+        "kind": "event",
+        "original": "<187>date=2051-02-06,time=19:00:25.566,device_id=FEVM02TM23000064,log_id=0702001987,type=kevent,subtype=system,pri=error, user=,ui=,action=none,status=none,msg=\"FortiSandbox server is not available at the moment. Connection block time: 300 seconds\"",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "action": "none",
+          "date": "2051-02-06",
+          "device_id": "FEVM02TM23000064",
+          "id": "0702001987",
+          "message": "FortiSandbox server is not available at the moment. Connection block time: 300 seconds",
+          "priority": "error",
+          "priority_number": 187,
+          "status": "none",
+          "sub_type": "system",
+          "time": "19:00:25.566",
+          "type": "kevent"
+        }
+      },
+      "log": {
+        "level": "error",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 187,
+          "severity": {
+            "code": 3
+          }
+        }
+      },
+      "message": "FortiSandbox server is not available at the moment. Connection block time: 300 seconds",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-02-08T23:28:33.214Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "none",
+        "category": [
+          "host"
+        ],
+        "code": "0702001905",
+        "kind": "event",
+        "original": "<191>date=2051-02-08,time=23:28:33.214,device_id=FEVM02TM23000064,log_id=0702001905,type=kevent,subtype=system,pri=debug, user=ljid,ui=ljid,action=none,status=none,msg=\"ljid: system clock updated\"",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "action": "none",
+          "date": "2051-02-08",
+          "device_id": "FEVM02TM23000064",
+          "id": "0702001905",
+          "message": "ljid: system clock updated",
+          "priority": "debug",
+          "priority_number": 191,
+          "status": "none",
+          "sub_type": "system",
+          "time": "23:28:33.214",
+          "type": "kevent",
+          "ui": "ljid",
+          "user": [
+            "ljid"
+          ]
+        }
+      },
+      "log": {
+        "level": "debug",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 191,
+          "severity": {
+            "code": 7
+          }
+        }
+      },
+      "message": "ljid: system clock updated",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "user": [
+          "ljid"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": [
+          "ljid"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-07T09:27:19.984Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "none",
+        "category": [
+          "host"
+        ],
+        "code": "0702002220",
+        "kind": "event",
+        "original": "<187>date=2051-02-07,time=09:27:19.984,device_id=FEVM02TM23000064,log_id=0702002220,type=kevent,subtype=system,pri=error, user=ljid,ui=ljid,action=none,status=none,msg=\"ljid: system clock updated with errors: Error resolving xa.uihlz.uit.org: No address associated with hostname (-5)  7 Feb 09:27:11 ntpdate[4584]: Can't find host xa.uihlz.uit.org: No address associated with hostname (-5)  7 Feb 09:27:19 ntpdate[4584]: adjust time server 192.0.2.165 offset +0.0\"",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "action": "none",
+          "date": "2051-02-07",
+          "device_id": "FEVM02TM23000064",
+          "id": "0702002220",
+          "message": "ljid: system clock updated with errors: Error resolving xa.uihlz.uit.org: No address associated with hostname (-5)  7 Feb 09:27:11 ntpdate[4584]: Can't find host xa.uihlz.uit.org: No address associated with hostname (-5)  7 Feb 09:27:19 ntpdate[4584]: adjust time server 192.0.2.165 offset +0.0",
+          "priority": "error",
+          "priority_number": 187,
+          "status": "none",
+          "sub_type": "system",
+          "time": "09:27:19.984",
+          "type": "kevent",
+          "ui": "ljid",
+          "user": [
+            "ljid"
+          ]
+        }
+      },
+      "log": {
+        "level": "error",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 187,
+          "severity": {
+            "code": 3
+          }
+        }
+      },
+      "message": "ljid: system clock updated with errors: Error resolving xa.uihlz.uit.org: No address associated with hostname (-5)  7 Feb 09:27:11 ntpdate[4584]: Can't find host xa.uihlz.uit.org: No address associated with hostname (-5)  7 Feb 09:27:19 ntpdate[4584]: adjust time server 192.0.2.165 offset +0.0",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "user": [
+          "ljid"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": [
+          "ljid"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-02-07T15:24:50.526Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "none",
+        "code": "0702001888",
+        "kind": "event",
+        "original": "<191>date=2051-02-07,time=15:24:50.526,device_id=FEVM02TM23000064,log_id=0702001888,type=kevent,subtype=system,pri=debug, user=,ui=,action=none,status=none,msg=\"FTGD connection [198.51.100.79:53] last 136 seconds; req sent: 2, resp rcvd: 1, 200: 1, 400: 0, 404: 0, xxx: 0, last error: failed to recv response: Connection timed out\"",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "action": "none",
+          "date": "2051-02-07",
+          "device_id": "FEVM02TM23000064",
+          "id": "0702001888",
+          "message": "FTGD connection [198.51.100.79:53] last 136 seconds; req sent: 2, resp rcvd: 1, 200: 1, 400: 0, 404: 0, xxx: 0, last error: failed to recv response: Connection timed out",
+          "priority": "debug",
+          "priority_number": 191,
+          "status": "none",
+          "sub_type": "system",
+          "time": "15:24:50.526",
+          "type": "kevent"
+        }
+      },
+      "log": {
+        "level": "debug",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 191,
+          "severity": {
+            "code": 7
+          }
+        }
+      },
+      "message": "FTGD connection [198.51.100.79:53] last 136 seconds; req sent: 2, resp rcvd: 1, 200: 1, 400: 0, 404: 0, xxx: 0, last error: failed to recv response: Connection timed out",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-02-08T15:20:16.509Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "none",
+        "code": "0702001936",
+        "kind": "event",
+        "original": "<191>date=2051-02-08,time=15:20:16.509,device_id=FEVM02TM23000064,log_id=0702001936,type=kevent,subtype=system,pri=debug, user=,ui=,action=none,status=none,msg=\"ldapcached: clear connections\"",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "action": "none",
+          "date": "2051-02-08",
+          "device_id": "FEVM02TM23000064",
+          "id": "0702001936",
+          "message": "ldapcached: clear connections",
+          "priority": "debug",
+          "priority_number": 191,
+          "status": "none",
+          "sub_type": "system",
+          "time": "15:20:16.509",
+          "type": "kevent"
+        }
+      },
+      "log": {
+        "level": "debug",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 191,
+          "severity": {
+            "code": 7
+          }
+        }
+      },
+      "message": "ldapcached: clear connections",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-02-06T19:35:20.062Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "0704003868",
+        "kind": "event",
+        "original": "<190>date=2051-02-06,time=19:35:20.062,device_id=FEVM02TM23000064,log_id=0704003868,type=kevent,subtype=update,pri=information,,msg=\"Loaded avdb 91.00325(02/06/0023 05:39) using av engine 6.283\"",
+        "outcome": "unknown"
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-06",
+          "device_id": "FEVM02TM23000064",
+          "id": "0704003868",
+          "message": "Loaded avdb 91.00325(02/06/0023 05:39) using av engine 6.283",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_type": "update",
+          "time": "19:35:20.062",
+          "type": "kevent"
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Loaded avdb 91.00325(02/06/0023 05:39) using av engine 6.283",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-02-06T19:35:20.068Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "code": "0704001887",
+        "kind": "event",
+        "original": "<190>date=2051-02-06,time=19:35:20.068,device_id=FEVM02TM23000064,log_id=0704001887,type=kevent,subtype=update,pri=information,,msg=\"Update result: virus db:yes, virus engine:no, spam db:no, spam engine:no\"",
+        "outcome": "unknown",
+        "type": [
+          "change"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-06",
+          "device_id": "FEVM02TM23000064",
+          "id": "0704001887",
+          "message": "Update result: virus db:yes, virus engine:no, spam db:no, spam engine:no",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_type": "update",
+          "time": "19:35:20.068",
+          "type": "kevent"
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Update result: virus db:yes, virus engine:no, spam db:no, spam engine:no",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-02-07T14:38:16.642Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "code": "0704001887",
+        "kind": "event",
+        "original": "<190>date=2051-02-07,time=14:38:16.642,device_id=FEVM02TM23000064,log_id=0704001887,type=kevent,subtype=update,pri=information,,msg=\"Internet service DB update succeeded\"",
+        "outcome": "unknown",
+        "type": [
+          "change"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "date": "2051-02-07",
+          "device_id": "FEVM02TM23000064",
+          "id": "0704001887",
+          "message": "Internet service DB update succeeded",
+          "priority": "information",
+          "priority_number": 190,
+          "sub_type": "update",
+          "time": "14:38:16.642",
+          "type": "kevent"
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Internet service DB update succeeded",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-07-28T04:48:36.567Z",
+      "client": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "removed_block_rule",
+        "code": "0702001939",
+        "kind": "event",
+        "original": "<191>date=2051-07-28,time=04:48:36.567,device_id=FEVM02xxnnnnnn,log_id=0702001939,type=kevent,subtype=system,pri=debug, user=,ui=,action=none,status=none,msg=\"authserver: removed block rule for 198.51.100.211\"",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "action": "none",
+          "date": "2051-07-28",
+          "device_id": "FEVM02xxnnnnnn",
+          "id": "0702001939",
+          "message": "authserver: removed block rule for 198.51.100.211",
+          "priority": "debug",
+          "priority_number": 191,
+          "status": "none",
+          "sub_type": "system",
+          "time": "04:48:36.567",
+          "type": "kevent"
+        }
+      },
+      "log": {
+        "level": "debug",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 191,
+          "severity": {
+            "code": 7
+          }
+        }
+      },
+      "message": "authserver: removed block rule for 198.51.100.211",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02xxnnnnnn",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-07-28T03:58:41.726Z",
+      "client": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "added_block_rule",
+        "code": "0702001941",
+        "kind": "event",
+        "original": "<191>date=2051-07-28,time=03:58:41.726,device_id=FEVM02xxnnnnnn,log_id=0702001941,type=kevent,subtype=system,pri=debug, user=,ui=,action=none,status=none,msg=\"authserver: added block rule for 198.51.100.211 until 2051-07-28 04:48 -0400\"",
+        "outcome": "unknown",
+        "type": [
+          "info"
+        ]
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "action": "none",
+          "date": "2051-07-28",
+          "device_id": "FEVM02xxnnnnnn",
+          "id": "0702001941",
+          "message": "authserver: added block rule for 198.51.100.211 until 2051-07-28 04:48 -0400",
+          "priority": "debug",
+          "priority_number": 191,
+          "status": "none",
+          "sub_type": "system",
+          "time": "03:58:41.726",
+          "type": "kevent"
+        }
+      },
+      "log": {
+        "level": "debug",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 191,
+          "severity": {
+            "code": 7
+          }
+        }
+      },
+      "message": "authserver: added block rule for 198.51.100.211 until 2051-07-28 04:48 -0400",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02xxnnnnnn",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<190>date=2051-02-06,time=19:10:00.391,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(10.24.211.203),module=unknown,submodule=unknown,msg=\"Added 'Test_copy' to 'profile url-filter' : category[child-abuse drug-abuse adult-materials nudity-risque pornograph..] (user: admin, from: http(10.24.211.203))\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-07,time=09:01:43.129,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(10.105.116.229),module=unknown,submodule=unknown,msg=\"Deleted 'Test_copy' from 'profile url-filter' : category[child-abuse drug-abuse adult-materials nudity-risque pornograph..] (user: admin, from: http(10.105.116.229))\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-07,time=09:05:02.414,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(10.105.116.229),module=unknown,submodule=unknown,msg=\"Modified 'Test' on 'log setting remote' : port[9026->9589] (user: admin, from: http(10.105.116.229))\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-07,time=09:08:21.402,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(10.105.116.229),module=unknown,submodule=unknown,msg=\"Modified 'Test' on 'log setting remote' : comma-separated-value[enable->disable] (user: admin, from: http(10.105.116.229))\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-07,time=09:09:17.129,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(10.105.116.229),module=unknown,submodule=unknown,msg=\"Modified 'Test' on 'log setting remote' : syslog-mode[tcp->udp]port[9589->9590] (user: admin, from: http(10.105.116.229))\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-14,time=10:54:07.089,device_id=FEVM02TM23000064,log_id=0700001766,type=kevent,subtype=config,pri=information, user=admin,ui=http(203.0.113.177),module=unknown,submodule=unknown,msg=\"Modified '2' on 'policy recipient' : status[disable->enable] (user: admin, from: http(203.0.113.177))\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-14,time=10:55:31.392,device_id=FEVM02TM23000064,log_id=0700001766,type=kevent,subtype=config,pri=information, user=admin,ui=http(203.0.113.177),module=unknown,submodule=unknown,msg=\"Modified 'AV_OutBound' on 'profile antivirus-action' : subject-tagging-status[enable->disable]subject-tagging-text[Virus->]action[none ->discard ]replace-infected-status[enable->disable] (user: admin, from: http(203.0.113.177))\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-08,time=15:20:16.506,device_id=FEVM02TM23000064,log_id=0700001767,type=kevent,subtype=config,pri=information, user=admin,ui=http(203.0.113.177),module=unknown,submodule=unknown,msg=\"Modified 'port1' on 'system interface' : ip[10.104.14.126/20->10.6.19.186/20] (user: admin, from: http(203.0.113.177))\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-07,time=12:34:55.214,device_id=FEVM02TM23000064,log_id=0701002231,type=kevent,subtype=admin,pri=information, user=admin,ui=http(198.51.100.18),action=none,status=none,reason=unknown,msg=\"History logs accessed (user: admin, from: http(198.51.100.18))\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-06,time=18:05:49.266,device_id=FEVM02TM23000064,log_id=0701002124,type=kevent,subtype=admin,pri=information, user=admin,ui=ssh(203.0.113.177),action=logout,status=success,reason=unknown,msg=\"User admin time out on ssh(203.0.113.177).\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-06,time=18:49:59.807,device_id=FEVM02TM23000064,log_id=0701002231,type=kevent,subtype=admin,pri=information, user=admin,ui=GUI(10.24.211.203),action=login,status=success,reason=none,msg=\"User admin login successfully from GUI(10.24.211.203)\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<187>date=2051-02-06,time=19:00:25.566,device_id=FEVM02TM23000064,log_id=0702001987,type=kevent,subtype=system,pri=error, user=,ui=,action=none,status=none,msg=\"FortiSandbox server is not available at the moment. Connection block time: 300 seconds\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<191>date=2051-02-08,time=23:28:33.214,device_id=FEVM02TM23000064,log_id=0702001905,type=kevent,subtype=system,pri=debug, user=ljid,ui=ljid,action=none,status=none,msg=\"ljid: system clock updated\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<187>date=2051-02-07,time=09:27:19.984,device_id=FEVM02TM23000064,log_id=0702002220,type=kevent,subtype=system,pri=error, user=ljid,ui=ljid,action=none,status=none,msg=\"ljid: system clock updated with errors: Error resolving xa.uihlz.uit.org: No address associated with hostname (-5)  7 Feb 09:27:11 ntpdate[4584]: Can't find host xa.uihlz.uit.org: No address associated with hostname (-5)  7 Feb 09:27:19 ntpdate[4584]: adjust time server 192.0.2.165 offset +0.0\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<191>date=2051-02-07,time=15:24:50.526,device_id=FEVM02TM23000064,log_id=0702001888,type=kevent,subtype=system,pri=debug, user=,ui=,action=none,status=none,msg=\"FTGD connection [198.51.100.79:53] last 136 seconds; req sent: 2, resp rcvd: 1, 200: 1, 400: 0, 404: 0, xxx: 0, last error: failed to recv response: Connection timed out\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<191>date=2051-02-08,time=15:20:16.509,device_id=FEVM02TM23000064,log_id=0702001936,type=kevent,subtype=system,pri=debug, user=,ui=,action=none,status=none,msg=\"ldapcached: clear connections\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-06,time=19:35:20.062,device_id=FEVM02TM23000064,log_id=0704003868,type=kevent,subtype=update,pri=information,,msg=\"Loaded avdb 91.00325(02/06/0023 05:39) using av engine 6.283\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-06,time=19:35:20.068,device_id=FEVM02TM23000064,log_id=0704001887,type=kevent,subtype=update,pri=information,,msg=\"Update result: virus db:yes, virus engine:no, spam db:no, spam engine:no\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>date=2051-02-07,time=14:38:16.642,device_id=FEVM02TM23000064,log_id=0704001887,type=kevent,subtype=update,pri=information,,msg=\"Internet service DB update succeeded\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<191>date=2051-07-28,time=04:48:36.567,device_id=FEVM02xxnnnnnn,log_id=0702001939,type=kevent,subtype=system,pri=debug, user=,ui=,action=none,status=none,msg=\"authserver: removed block rule for 198.51.100.211\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<191>date=2051-07-28,time=03:58:41.726,device_id=FEVM02xxnnnnnn,log_id=0702001941,type=kevent,subtype=system,pri=debug, user=,ui=,action=none,status=none,msg=\"authserver: added block rule for 198.51.100.211 until 2051-07-28 04:48 -0400\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-fortinet_fortimail-log-default",
+    "event_count": 21,
+    "numeric_keyword_fields": [],
+    "package": "fortinet_fortimail",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

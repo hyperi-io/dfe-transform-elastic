@@ -485,9 +485,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.json?.threatsInfoMap instanceof List) {\n    for (artifact in ctx.json.threatsInfoMap) {\n        def flag = true;\n        def str = artifact.threat.toLowerCase();\n        if (str?.length() == 64) {\n            for (int i = 0; i < str.length(); i++) {\n                def ch = str.charAt(i);\n                if ((ch < (char)'0' || ch > (char)'9') && (ch < (char)'a' || ch > (char)'f')) {\n                    flag = false;\n                    break;\n                }\n            }\n            if (flag && !ctx['related']['hash'].contains(str)) {\n                ctx['related']['hash'].add(str);\n            }\n        }\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1144,9 +1142,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def ts = Instant.parse(ctx['@timestamp']);\nfor (item in ctx.proofpoint_tap.message_delivered.threat_info_map) {\n  if (item?.threat?.time instanceof String && Instant.parse(item.threat.time).isAfter(ts)) {\n    ctx['@timestamp'] = item.threat.time;\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1159,8 +1155,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

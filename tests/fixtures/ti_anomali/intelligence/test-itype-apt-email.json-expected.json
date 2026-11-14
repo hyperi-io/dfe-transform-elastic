@@ -1,0 +1,133 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:46.962604903Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": 12,
+          "deletion_scheduled_at": "2027-02-06T23:07:46.962604903Z",
+          "expiration_ts": "9999-12-31T00:00:00.000Z",
+          "feed_id": 0,
+          "id": "235548914",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": true,
+          "itype": "apt_email",
+          "meta": {
+            "severity": "medium"
+          },
+          "owner_organization_id": 70,
+          "retina_confidence": -1,
+          "source_reported_confidence": 12,
+          "status": "active",
+          "threat_type": "apt",
+          "type": "email",
+          "update_id": "467407026",
+          "uuid": "ad3a027e-e3a3-4fac-b25c-f97293b14780",
+          "value": "dfc1@kmg.com"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2049-04-29T16:00:35.529Z",
+        "kind": "enrichment",
+        "severity": 47,
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "user": [
+          "dfc1@kmg.com"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "confidence": "Low",
+          "email": {
+            "address": "dfc1@kmg.com"
+          },
+          "marking": {
+            "tlp": "WHITE"
+          },
+          "modified_at": "2049-04-29T16:00:35.529Z",
+          "name": "dfc1@kmg.com",
+          "provider": "Analyst",
+          "type": "email-addr"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": 12,
+        "created_by": null,
+        "created_ts": "2049-04-29T16:00:35.529Z",
+        "description": null,
+        "expiration_ts": "9999-12-31T00:00:00.000Z",
+        "feed_id": 0,
+        "id": 235548914,
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": true,
+        "itype": "apt_email",
+        "locations": [],
+        "meta": {
+          "detail2": "imported by user 142",
+          "severity": "medium"
+        },
+        "modified_ts": "2049-04-29T16:00:35.529Z",
+        "org": "",
+        "owner_organization_id": 70,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/235548914/",
+        "retina_confidence": -1,
+        "sort": [
+          467407026
+        ],
+        "source": "Analyst",
+        "source_locations": [],
+        "source_reported_confidence": 12,
+        "status": "active",
+        "subtype": null,
+        "tags": null,
+        "target_industry": [],
+        "threat_type": "apt",
+        "threatscore": 9,
+        "tlp": null,
+        "trusted_circle_ids": null,
+        "type": "email",
+        "update_id": 467407026,
+        "uuid": "ad3a027e-e3a3-4fac-b25c-f97293b14780",
+        "value": "dfc1@kmg.com",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Scripts the auditd package ships, transcribed by hand.
+//! The auditd package's scripts, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -78,7 +78,7 @@ fn process_args_count(event: &mut Event, _params: &Value) {
     let _ = event.set("process.args_count", count);
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "c8255593b2075af7a5825fda5385cf422cc336f190ae8b38e2b4163e9be38581",

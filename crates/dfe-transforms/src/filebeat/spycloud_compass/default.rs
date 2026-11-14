@@ -998,9 +998,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("spycloud.compass.user.os") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.spycloud.compass.user.os.toLowerCase().contains('windows')) {\n    ctx.host.os.type = 'windows';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('linux')) {\n    ctx.host.os.type = 'linux';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('mac')) {\n    ctx.host.os.type = 'macos';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('unix')) {\n    ctx.host.os.type = 'unix';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('ios')) {\n    ctx.host.os.type = 'ios';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('android')) {\n    ctx.host.os.type = 'android';\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1077,8 +1075,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

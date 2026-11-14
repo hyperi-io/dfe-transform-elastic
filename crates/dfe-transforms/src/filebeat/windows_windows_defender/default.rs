@@ -188,9 +188,7 @@ impl Transform for Default {
                 event.set("event.reference", v)?;
             }
 
-            // Painless script
-            // Source: if (ctx?.event?.category instanceof List) {\n  for (category in ctx.event.category) {\n    if (category == 'configuration' && ctx?.event?.code == '5007') {\n      ctx.event.type = ['change'];\n      break;\n    }\n  }\n}\nif (ctx?.event?.type == null && ctx?.event?.category instanceof List) {\n  for (category in ctx.event.category) {\n    if (category == 'malware' || category == 'file' || category == 'process') {\n      ctx.event.type = ['info'];\n      break;\n    }\n  }\n}\nif (ctx?.event?.type == null && ctx?.event?.category instanceof List) {\n  for (category in ctx.event.category) {\n    if (category == 'process') {\n      ctx.event.type = ['start'];\n      break;\n    }\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

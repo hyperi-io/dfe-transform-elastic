@@ -1,0 +1,61 @@
+{
+    "events": [
+        {
+            "@timestamp": "2054-06-30T02:43:31.836681529Z",
+            "attributes": {
+                "claude.deployment_mode": "1p",
+                "event.name": "hook_execution_complete",
+                "event.sequence": 3,
+                "event.timestamp": "2054-06-30T02:43:31.836Z",
+                "hook_event": "UserPromptSubmit",
+                "hook_name": "UserPromptSubmit",
+                "hook_source": "merged",
+                "host.arch": "arm64",
+                "managed_only": "false",
+                "num_blocking": "0",
+                "num_cancelled": "0",
+                "num_hooks": "1",
+                "num_non_blocking_error": "0",
+                "num_success": "1",
+                "organization.id": "60763458-7366-3513-4028-632370982420",
+                "os.type": "darwin",
+                "os.version": "26.5.1",
+                "prompt.id": "60763458-7366-3513-4028-632370982420",
+                "safe_mode": "false",
+                "service.name": "cowork",
+                "service.version": "1.15962.1",
+                "session.id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd",
+                "terminal.type": "non-interactive",
+                "total_duration_ms": "5",
+                "user.account_id": "user_01ExampleAccountId",
+                "user.account_uuid": "93713061-9622-2531-3758-372154648850",
+                "user.email": "user@example.com",
+                "user.id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+            },
+            "body": {
+                "text": "claude_code.hook_execution_complete"
+            },
+            "data_stream": {
+                "type": "logs",
+                "dataset": "claude_cowork.events.otel",
+                "namespace": "default"
+            },
+            "event_name": "hook_execution_complete",
+            "observed_timestamp": "2054-06-30T02:43:31.836690337Z",
+            "resource": {
+                "attributes": {
+                    "claude.deployment_mode": "1p",
+                    "host.arch": "arm64",
+                    "os.type": "darwin",
+                    "os.version": "26.5.1",
+                    "service.name": "cowork",
+                    "service.version": "1.15962.1"
+                }
+            },
+            "scope": {
+                "name": "com.anthropic.claude_code.events",
+                "version": "2.1.187"
+            }
+        }
+    ]
+}

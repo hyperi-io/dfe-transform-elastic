@@ -1,0 +1,452 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-03-02T10:06:31.000Z",
+      "agent": {
+        "ephemeral_id": "bc8a2bc3-b8a7-4ec0-8b61-4fe241273db5",
+        "id": "1bf625f9-b3b3-427d-8035-15b754fea12d",
+        "name": "15ca9dddb542",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.48.30.233"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049/03/02 10:06:31",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2049/03/02 10:06:31,12345678999,HIPMATCH,0,2305,2049/03/02 10:06:25,dwofop\\klykcmwdgw,vsys1,MD96790,,10.48.30.233,GlobalProtect 5.1.1,1,object,0,0,6894571641485024543,0x8000000000000000,267,24,19,0,,ac-cnqcxfxl,1,0.0.0.0,d042ffeb-5e51-4a17-86c4-8bb6481f425b,F0S48Y2,,1970-01-01T01:00:00.000+01:00",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "host": {
+        "id": "d042ffeb-5e51-4a17-86c4-8bb6481f425b",
+        "name": "md96790"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "ac-cnqcxfxl",
+        "product": "PAN-OS",
+        "serial_number": "12345678999",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x8000000000000000",
+          "actionflags": "0x8000000000000000",
+          "device_group_hierarchy": {
+            "level_1": "267",
+            "level_2": "24",
+            "level_3": "19",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "267",
+          "device_group_hierarchy2": "24",
+          "device_group_hierarchy3": "19",
+          "device_group_hierarchy4": "0",
+          "generated_time": "2049-03-02T10:06:25.000Z",
+          "matchname": "GlobalProtect 5.1.1",
+          "matchtype": "object",
+          "received_time": "2049-03-02T10:06:31.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "6894571641485024543",
+          "serial_number": "F0S48Y2",
+          "sub_type": "0",
+          "type": "HIPMATCH",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "ac-cnqcxfxl",
+          "md96790"
+        ],
+        "ip": [
+          "10.48.30.233"
+        ],
+        "user": [
+          "klykcmwdgw"
+        ]
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.48.30.233",
+        "ip": "10.48.30.233",
+        "user": {
+          "domain": "dwofop",
+          "name": "klykcmwdgw"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dwofop",
+        "name": "klykcmwdgw"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-10-09T10:20:15.000Z",
+      "agent": {
+        "ephemeral_id": "bc8a2bc3-b8a7-4ec0-8b61-4fe241273db5",
+        "id": "1bf625f9-b3b3-427d-8035-15b754fea12d",
+        "name": "15ca9dddb542",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2047/10/09 10:20:15",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2047/10/09 10:20:15,001234567890002,HIPMATCH,0,2304,2047/10/09 10:20:15,nxc,vsys1,ih-B63DFCABBTT2,Mac,203.0.113.248,GP-HIP-PROFILE,1,profile,0,0,0123456789,0x0,0,0,0,0,,IsgnRdael57f,1,0.0.0.0,gh:85:90:99:5a:40,C02ABCDEFGH",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "host": {
+        "id": "gh:85:90:99:5a:40",
+        "name": "ih-b63dfcabbtt2",
+        "os": {
+          "full": "Mac"
+        }
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 298
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "IsgnRdael57f",
+        "product": "PAN-OS",
+        "serial_number": "001234567890002",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "0",
+          "device_group_hierarchy2": "0",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "generated_time": "2047-10-09T10:20:15.000Z",
+          "matchname": "GP-HIP-PROFILE",
+          "matchtype": "profile",
+          "received_time": "2047-10-09T10:20:15.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "0123456789",
+          "serial_number": "C02ABCDEFGH",
+          "sub_type": "0",
+          "type": "HIPMATCH",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "IsgnRdael57f",
+          "ih-b63dfcabbtt2"
+        ],
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "nxc"
+        ]
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "203.0.113.248",
+        "ip": "203.0.113.248",
+        "user": {
+          "name": "nxc"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "nxc"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-28T07:36:33.250Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049/03/02 10:06:25",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "source_ipv6": "0.0.0.0",
+        "srcuser": "dwofop\\klykcmwdgw"
+      },
+      "agent": {
+        "ephemeral_id": "bc8a2bc3-b8a7-4ec0-8b61-4fe241273db5",
+        "id": "1bf625f9-b3b3-427d-8035-15b754fea12d",
+        "name": "15ca9dddb542",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.48.30.233"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "created": "2049/03/02 10:06:31",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "host": {
+        "id": "d042ffeb-5e51-4a17-86c4-8bb6481f425b",
+        "name": "MD96790"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "1,2049/03/02 10:06:31,12345678999,HIPMATCH,0,2305,2049/03/02 10:06:25,dwofop\\klykcmwdgw,vsys1,MD96790,,10.48.30.233,GlobalProtect 5.1.1,1,object,0,0,6894571641485024543,0x8000000000000000,267,24,19,0,,ac-cnqcxfxl,1,0.0.0.0,d042ffeb-5e51-4a17-86c4-8bb6481f425b,F0S48Y2,,1970-01-01T01:00:00.000+01:00",
+      "observer": {
+        "hostname": "ac-cnqcxfxl",
+        "product": "PAN-OS",
+        "serial_number": "12345678999",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x8000000000000000",
+          "device_group_hierarchy": {
+            "level_1": "267",
+            "level_2": "24",
+            "level_3": "19",
+            "level_4": "0"
+          },
+          "matchname": "GlobalProtect 5.1.1",
+          "matchtype": "object",
+          "repeatcnt": "1",
+          "sequence_number": "6894571641485024543",
+          "serial_number": "F0S48Y2",
+          "sub_type": "0",
+          "type": "HIPMATCH",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.48.30.233",
+        "ip": "10.48.30.233"
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-28T07:36:33.250Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2047/10/09 10:20:15",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "source_ipv6": "0.0.0.0",
+        "srcuser": "nxc"
+      },
+      "agent": {
+        "ephemeral_id": "bc8a2bc3-b8a7-4ec0-8b61-4fe241273db5",
+        "id": "1bf625f9-b3b3-427d-8035-15b754fea12d",
+        "name": "15ca9dddb542",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "created": "2047/10/09 10:20:15",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "host": {
+        "id": "gh:85:90:99:5a:40",
+        "name": "ih-B63DFCABBTT2",
+        "os": {
+          "full": "Mac"
+        }
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 298
+      },
+      "message": "1,2047/10/09 10:20:15,001234567890002,HIPMATCH,0,2304,2047/10/09 10:20:15,nxc,vsys1,ih-B63DFCABBTT2,Mac,203.0.113.248,GP-HIP-PROFILE,1,profile,0,0,0123456789,0x0,0,0,0,0,,IsgnRdael57f,1,0.0.0.0,gh:85:90:99:5a:40,C02ABCDEFGH",
+      "observer": {
+        "hostname": "IsgnRdael57f",
+        "product": "PAN-OS",
+        "serial_number": "001234567890002",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "matchname": "GP-HIP-PROFILE",
+          "matchtype": "profile",
+          "repeatcnt": "1",
+          "sequence_number": "0123456789",
+          "serial_number": "C02ABCDEFGH",
+          "sub_type": "0",
+          "type": "HIPMATCH",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "203.0.113.248",
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "panos",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-panw-panos-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "panw",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

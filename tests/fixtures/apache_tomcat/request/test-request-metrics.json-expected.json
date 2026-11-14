@@ -1,0 +1,69 @@
+{
+  "expected": [
+    {
+      "apache_tomcat": {
+        "request": {
+          "count": 20,
+          "error": {
+            "count": 2
+          },
+          "nio_connector": "http-nio-8080",
+          "received": {
+            "bytes": 10
+          },
+          "sent": {
+            "bytes": 10
+          },
+          "time": {
+            "max": 76,
+            "total": 153
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "metric",
+        "module": "apache_tomcat",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "127.0.0.1:8080",
+          "job": "prometheus",
+          "name": "\"http-nio-8080\""
+        },
+        "metrics": {
+          "Catalina_GlobalRequestProcessor_bytesReceived": 10,
+          "Catalina_GlobalRequestProcessor_bytesSent": 10,
+          "Catalina_GlobalRequestProcessor_errorCount": 2,
+          "Catalina_GlobalRequestProcessor_maxTime": 76,
+          "Catalina_GlobalRequestProcessor_processingTime": 153,
+          "Catalina_GlobalRequestProcessor_requestCount": 20
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "request",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache_tomcat-request-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "apache_tomcat",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

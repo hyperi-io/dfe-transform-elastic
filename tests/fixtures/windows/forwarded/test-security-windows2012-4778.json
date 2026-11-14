@@ -1,0 +1,61 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:03:02.655Z",
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "c374c4d5-58a0-4f83-a327-014a0c5dc21a"
+            },
+            "winlog": {
+                "event_id": 4778,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 5101675,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "time_created": "2048-04-05T16:33:32.388Z",
+                "outcome": "success",
+                "channel": "Security",
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "level": "information",
+                "event_data": {
+                    "SessionName": "RDP-Tcp#127",
+                    "ClientName": "EQP01777",
+                    "ClientAddress": "10.175.91.247",
+                    "AccountName": "ev_aav",
+                    "AccountDomain": "TEST",
+                    "LogonID": "0x76fea87"
+                },
+                "process": {
+                    "pid": 496,
+                    "thread": {
+                        "id": 4184
+                    }
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4778,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4778.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            }
+        }
+    ]
+}

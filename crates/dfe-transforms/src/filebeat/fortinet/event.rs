@@ -465,9 +465,7 @@ impl Transform for Event {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx.fortinet?.firewall?.advpnsc != null) {\n  ctx.fortinet.firewall.advpnsc = ctx.fortinet.firewall.advpnsc != '0';\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -486,9 +484,7 @@ impl Transform for Event {
 
             let _cond = { event.get_str("fortinet.firewall.subtype") == Some("vpn") };
             if _cond {
-                // Painless script
-                // Source: def tmp = ctx.source;\nctx.source = ctx.destination;\nif (ctx.source == null) { ctx.source = [:]; }\nif ( tmp?.user != null ) {\n    ctx.source.user = tmp.user;\n    tmp.remove(\"user\");\n}\nctx.destination = tmp;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

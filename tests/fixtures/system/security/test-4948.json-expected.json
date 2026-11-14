@@ -1,0 +1,158 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-12-01T08:47:57.585Z",
+      "agent": {
+        "ephemeral_id": "7d2caeef-f2bc-439c-96ed-84601bb37a76",
+        "hostname": "Wfmmax1",
+        "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+        "type": "winlogbeat",
+        "version": "7.3.1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "deleted-rule-from-windows-firewall-exception-list",
+        "category": [
+          "configuration"
+        ],
+        "code": "4948",
+        "created": "2050-12-01T08:48:19.715Z",
+        "kind": "event",
+        "type": [
+          "deletion"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "hostname": "Wfmmax1",
+        "id": "9ff0eeec-e913-4a05-990e-50d99b6ea290",
+        "name": "Wfmmax1",
+        "os": {
+          "build": "14393.693",
+          "family": "windows",
+          "kernel": "1Kernel",
+          "name": "Windows Server 2016 Standard Evaluation",
+          "platform": "windows",
+          "version": "10.0"
+        }
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "A change was made to the Windows Firewall exception list. A rule was deleted.\n\t\nProfile Changed:\tAll\n\nDeleted Rule:\n\tRule ID:\t{3F10XXX1-200X-4FB5-0000-121XX2X1473X}\n\tRule Name:\tUsermode Font Driver Host",
+      "rule": {
+        "id": "{3F10XXX1-200X-4FB5-0000-121XX2X1473X}",
+        "name": "Usermode Font Driver Host"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "activity_id": "{C9E4DACB-89AF-0763-04EB-C7D8AA75C537}",
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "Wfmmax1.xcyu5.local",
+        "event_data": {
+          "ProfileChanged": "All",
+          "RuleId": "{3F10XXX1-200X-4FB5-0000-121XX2X1473X}",
+          "RuleName": "Usermode Font Driver Host"
+        },
+        "event_id": "4948",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 648,
+          "thread": {
+            "id": 3276
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "59603806",
+        "task": "MPSSVC Rule-Level Policy Change"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2050-12-01T08:47:57.585Z",
+      "agent": {
+        "ephemeral_id": "7d2caeef-f2bc-439c-96ed-84601bb37a76",
+        "hostname": "Wfmmax1",
+        "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+        "type": "winlogbeat",
+        "version": "7.3.1"
+      },
+      "ecs": {
+        "version": "1.0.1"
+      },
+      "event": {
+        "action": "MPSSVC Rule-Level Policy Change",
+        "code": 4948,
+        "created": "2050-12-01T08:48:19.715Z",
+        "kind": "event"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "hostname": "Wfmmax1",
+        "id": "9ff0eeec-e913-4a05-990e-50d99b6ea290",
+        "name": "Wfmmax1",
+        "os": {
+          "build": "14393.693",
+          "family": "windows",
+          "kernel": "1Kernel",
+          "name": "Windows Server 2016 Standard Evaluation",
+          "platform": "windows",
+          "version": "10.0"
+        }
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "A change was made to the Windows Firewall exception list. A rule was deleted.\n\t\nProfile Changed:\tAll\n\nDeleted Rule:\n\tRule ID:\t{3F10XXX1-200X-4FB5-0000-121XX2X1473X}\n\tRule Name:\tUsermode Font Driver Host",
+      "winlog": {
+        "activity_id": "{C9E4DACB-89AF-0763-04EB-C7D8AA75C537}",
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "Wfmmax1.xcyu5.local",
+        "event_data": {
+          "ProfileChanged": "All",
+          "RuleId": "{3F10XXX1-200X-4FB5-0000-121XX2X1473X}",
+          "RuleName": "Usermode Font Driver Host"
+        },
+        "event_id": 4948,
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 648,
+          "thread": {
+            "id": 3276
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 59603806,
+        "task": "MPSSVC Rule-Level Policy Change"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

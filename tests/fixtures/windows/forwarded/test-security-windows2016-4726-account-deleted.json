@@ -1,0 +1,124 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:04:53.251Z",
+            "event": {
+                "kind": "event",
+                "code": 4726,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4726_Account_Deleted.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "agent": {
+                "ephemeral_id": "2395fb82-8ba5-409b-bd4d-bf4bbd0a1a88",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "winlog": {
+                "event_id": 4726,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "SOV-86VA2XP94FG",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+                "record_id": 2851,
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "level": "information",
+                "channel": "Security",
+                "opcode": "Info",
+                "time_created": "2047-09-06T13:35:25.515Z",
+                "outcome": "success",
+                "event_data": {
+                    "TargetUserName": "btfpvsaxh13",
+                    "TargetDomainName": "SOV-86VA2XP94FG",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1001",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "SubjectDomainName": "SOV-86VA2XP94FG",
+                    "SubjectLogonId": "0x264b2",
+                    "PrivilegeList": "-"
+                },
+                "process": {
+                    "pid": 780,
+                    "thread": {
+                        "id": 1980
+                    }
+                }
+            }
+        },
+        {
+            "@timestamp": "2049-04-15T19:04:53.252Z",
+            "event": {
+                "kind": "event",
+                "code": 4726,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4726_Account_Deleted.xml"
+                },
+                "level": "information"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "agent": {
+                "ephemeral_id": "2395fb82-8ba5-409b-bd4d-bf4bbd0a1a88",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "winlog": {
+                "level": "information",
+                "channel": "Security",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "event_id": 4726,
+                "computer_name": "SOV-86VA2XP94FG",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-09-06T13:35:29.690Z",
+                "outcome": "success",
+                "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "opcode": "Info",
+                "event_data": {
+                    "SubjectLogonId": "0x264b2",
+                    "PrivilegeList": "-",
+                    "TargetUserName": "dverugdhn",
+                    "TargetDomainName": "SOV-86VA2XP94FG",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1000",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "SubjectDomainName": "SOV-86VA2XP94FG"
+                },
+                "process": {
+                    "pid": 780,
+                    "thread": {
+                        "id": 820
+                    }
+                },
+                "record_id": 2857
+            }
+        }
+    ]
+}

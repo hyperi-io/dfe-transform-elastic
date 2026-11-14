@@ -117,9 +117,7 @@ impl Transform for Default {
 
             let _cond = { event.get("observer.ip").is_some_and(|v| v.is_string()) };
             if _cond {
-                // Painless script
-                // Source: ctx.observer.ip = Collections.singletonList(ctx.observer.ip);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

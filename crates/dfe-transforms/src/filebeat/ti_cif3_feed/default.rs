@@ -512,9 +512,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cif3.confidence") };
             if _cond {
-                // Painless script
-                // Source: def value = ctx.cif3.confidence; if (value < 0.0 || value > 10.0) {\n  ctx.threat.indicator.confidence = \"None\";\n  return;\n} if (value >= 0.0 && value < 3.0) {\n  ctx.threat.indicator.confidence = \"Low\";\n  return;\n} if (value >= 3.0 && value < 7.0) {\n  ctx.threat.indicator.confidence = \"Med\";\n  return;\n} if (value >= 7.0 && value <= 10.0) {\n  ctx.threat.indicator.confidence = \"High\";\n  return;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -572,9 +570,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_lasttime_at; if (ctx.threat.indicator.last_seen != null) {\n    _tmp_lasttime_at = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n} else {\n    _tmp_lasttime_at = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n} if (ctx.threat.indicator.type == 'ipv4-addr' || ctx.threat.indicator.type == 'ipv6-addr') {\n    _tmp_deleted_at = _tmp_lasttime_at.plusDays(45L);\n    ctx.cif3.expiration_duration = \"45d\";\n} else if (ctx.threat.indicator.type == 'domain-name') {\n    _tmp_deleted_at = _tmp_lasttime_at.plusDays(90L);\n    ctx.cif3.expiration_duration = \"90d\";\n} else if (ctx.threat.indicator.type == 'url' || ctx.threat.indicator.type == 'file') {\n    _tmp_deleted_at = _tmp_lasttime_at.plusDays(365L);\n    ctx.cif3.expiration_duration = \"365d\";\n} else {\n    def dur = ctx._conf.ioc_expiration_duration;\n    ctx.cif3.expiration_duration = ctx._conf.ioc_expiration_duration;\n    if (dur instanceof String){\n        String time_unit = dur.substring(dur.length() -  1, dur.length());\n        String time_value = dur.substring(0, dur.length() - 1);\n        if (time_unit == 'd') {\n            _tmp_deleted_at = _tmp_lasttime_at.plusDays(Long.parseLong(time_value));\n        } else if (time_unit == 'h') {\n            _tmp_deleted_at = _tmp_lasttime_at.plusHours(Long.parseLong(time_value));\n        } else if (time_unit == 'm') {\n            _tmp_deleted_at = _tmp_lasttime_at.plusMinutes(Long.parseLong(time_value));\n        } else {\n            _tmp_deleted_at = _tmp_lasttime_at.plusDays(90L);\n            if (ctx.error == null) {\n            ctx.error = new HashMap();\n            }\n            if (ctx.error.message == null) {\n            ctx.error.message = new ArrayList();\n            }\n            ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n        }\n    }\n} ctx.cif3.deleted_at = _tmp_deleted_at;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -667,8 +663,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cif3") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\nmap.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

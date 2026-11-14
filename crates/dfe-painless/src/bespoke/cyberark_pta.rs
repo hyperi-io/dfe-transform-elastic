@@ -21,7 +21,7 @@ fn observer_ip_as_list(event: &mut Event, _params: &Value) {
     let _ = event.update("observer.ip", Value::Array(vec![held]));
 }
 
-/// Every `cyberark_pta` script transcribed here.
+/// Every `cyberark_pta` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "df53f3fdec838ed3b00105132a0d6f48bc6b03fe19e47460cf57b4824df0e6fd",
     source: "cyberark_pta",

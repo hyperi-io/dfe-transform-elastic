@@ -1,0 +1,44 @@
+{
+  "expected": [
+    {
+      "event": {
+        "original": "2046-08-14T14:30:02.203151+02:00 uqisp-kxqr systemd[4179]: Stopped target Basic System.",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log"
+    },
+    {
+      "event": {
+        "original": "2046-08-14T14:30:02.203251+02:00 uqisp-kxqr systemd[4179]: Stopped target Paths.",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log"
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log",
+      "message": "2046-08-14T14:30:02.203151+02:00 uqisp-kxqr systemd[4179]: Stopped target Basic System."
+    },
+    {
+      "event": {
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log",
+      "message": "2046-08-14T14:30:02.203251+02:00 uqisp-kxqr systemd[4179]: Stopped target Paths."
+    }
+  ],
+  "meta": {
+    "data_stream": "syslog",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-syslog-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

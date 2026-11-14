@@ -1,0 +1,368 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-25T12:59:37.553Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Unisolate",
+        "category": [
+          "network"
+        ],
+        "created": "2052-11-25T12:59:35.891Z",
+        "id": "188a6b4e-4408-5797-addc-eeeebc4c2739",
+        "kind": "event",
+        "original": "{\"id\":\"188a6b4e-4408-5797-addc-eeeebc4c2739\",\"type\":\"Unisolate\",\"title\":null,\"requestor\":\"zqay7@example.com\",\"requestorComment\":\"Isolation release\",\"status\":\"Succeeded\",\"machineId\":\"ab336a7dabadffbeeafadbcfc79e02a4fc4bc6d9\",\"computerDnsName\":\"c-lab-24\",\"creationDateTimeUtc\":\"2052-11-25T12:59:35.8912364Z\",\"lastUpdateDateTimeUtc\":\"2052-11-25T12:59:37.5532423Z\",\"cancellationRequestor\":null,\"cancellationComment\":null,\"cancellationDateTimeUtc\":null,\"errorHResult\":0,\"scope\":null,\"externalId\":null,\"requestSource\":\"Portal\",\"relatedFileInfo\":null,\"commands\":[],\"troubleshootInfo\":null}",
+        "outcome": "success",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "hostname": "c-lab-24",
+        "id": "ab336a7dabadffbeeafadbcfc79e02a4fc4bc6d9",
+        "name": "c-lab-24"
+      },
+      "microsoft_defender_endpoint": {
+        "machine_action": {
+          "computer_dns_name": "c-lab-24",
+          "creation_date_time_utc": "2052-11-25T12:59:35.891Z",
+          "error_h_result": 0,
+          "id": "188a6b4e-4408-5797-addc-eeeebc4c2739",
+          "last_update_date_time_utc": "2052-11-25T12:59:37.553Z",
+          "machine_id": "ab336a7dabadffbeeafadbcfc79e02a4fc4bc6d9",
+          "request_source": "Portal",
+          "requestor": "zqay7@example.com",
+          "requestor_comment": "Isolation release",
+          "status": "Succeeded",
+          "type": "Unisolate"
+        }
+      },
+      "observer": {
+        "product": "Defender for Endpoint",
+        "vendor": "Microsoft"
+      },
+      "related": {
+        "hosts": [
+          "c-lab-24",
+          "ab336a7dabadffbeeafadbcfc79e02a4fc4bc6d9"
+        ],
+        "user": [
+          "zqay7",
+          "zqay7@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "zqay7@example.com",
+        "name": "zqay7"
+      }
+    },
+    {
+      "@timestamp": "2052-11-22T12:48:56.768Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "RunAntiVirusScan",
+        "created": "2052-11-22T12:48:33.993Z",
+        "id": "b36516ca-3156-5399-afbd-cfadfc18efaa",
+        "kind": "event",
+        "original": "{\"id\":\"b36516ca-3156-5399-afbd-cfadfc18efaa\",\"type\":\"RunAntiVirusScan\",\"title\":null,\"requestor\":\"gazwwvdl@example.com\",\"requestorComment\":\"Quick Scan\",\"status\":\"Succeeded\",\"machineId\":\"bc617a3cfdbcdecaefddccbba0bf16d8af1db2f3\",\"computerDnsName\":\"c-lab-24\",\"creationDateTimeUtc\":\"2052-11-22T12:48:33.9936591Z\",\"lastUpdateDateTimeUtc\":\"2052-11-22T12:48:56.7684808Z\",\"cancellationRequestor\":null,\"cancellationComment\":null,\"cancellationDateTimeUtc\":null,\"errorHResult\":0,\"scope\":\"Quick\",\"externalId\":null,\"requestSource\":\"Portal\",\"relatedFileInfo\":null,\"commands\":[],\"troubleshootInfo\":null}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "c-lab-24",
+        "id": "bc617a3cfdbcdecaefddccbba0bf16d8af1db2f3",
+        "name": "c-lab-24"
+      },
+      "microsoft_defender_endpoint": {
+        "machine_action": {
+          "computer_dns_name": "c-lab-24",
+          "creation_date_time_utc": "2052-11-22T12:48:33.993Z",
+          "error_h_result": 0,
+          "id": "b36516ca-3156-5399-afbd-cfadfc18efaa",
+          "last_update_date_time_utc": "2052-11-22T12:48:56.768Z",
+          "machine_id": "bc617a3cfdbcdecaefddccbba0bf16d8af1db2f3",
+          "request_source": "Portal",
+          "requestor": "gazwwvdl@example.com",
+          "requestor_comment": "Quick Scan",
+          "scope": "Quick",
+          "status": "Succeeded",
+          "type": "RunAntiVirusScan"
+        }
+      },
+      "observer": {
+        "product": "Defender for Endpoint",
+        "vendor": "Microsoft"
+      },
+      "related": {
+        "hosts": [
+          "c-lab-24",
+          "bc617a3cfdbcdecaefddccbba0bf16d8af1db2f3"
+        ],
+        "user": [
+          "gazwwvdl",
+          "gazwwvdl@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "gazwwvdl@example.com",
+        "name": "gazwwvdl"
+      }
+    },
+    {
+      "@timestamp": "2053-03-27T08:25:59.909Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "RestrictCodeExecution",
+        "category": [
+          "package"
+        ],
+        "created": "2053-03-24T08:11:54.039Z",
+        "id": "49b0f954-2425-5243-acdf-ddeccfb4bcc3",
+        "kind": "event",
+        "original": "{\"id\":\"49b0f954-2425-5243-acdf-ddeccfb4bcc3\",\"type\":\"RestrictCodeExecution\",\"title\":null,\"requestor\":\"fnvfc@example.com\",\"requestorComment\":\"Found suspicious process are running on the machine hence restricting app execution\",\"status\":\"TimeOut\",\"machineId\":\"da182d8f67b9cdbeefcffcdf9cfaa4e4fa1a3417\",\"computerDnsName\":\"assettag-eid\",\"creationDateTimeUtc\":\"2053-03-24T08:11:54.0392813Z\",\"lastUpdateDateTimeUtc\":\"2053-03-27T08:25:59.9095244Z\",\"cancellationRequestor\":null,\"cancellationComment\":null,\"cancellationDateTimeUtc\":null,\"errorHResult\":-2145844840,\"scope\":null,\"externalId\":null,\"requestSource\":\"PublicApi\",\"relatedFileInfo\":null,\"commands\":[],\"troubleshootInfo\":null}",
+        "type": [
+          "access"
+        ]
+      },
+      "host": {
+        "hostname": "assettag-eid",
+        "id": "da182d8f67b9cdbeefcffcdf9cfaa4e4fa1a3417",
+        "name": "assettag-eid"
+      },
+      "microsoft_defender_endpoint": {
+        "machine_action": {
+          "computer_dns_name": "assettag-eid",
+          "creation_date_time_utc": "2053-03-24T08:11:54.039Z",
+          "error_h_result": -2145844840,
+          "id": "49b0f954-2425-5243-acdf-ddeccfb4bcc3",
+          "last_update_date_time_utc": "2053-03-27T08:25:59.909Z",
+          "machine_id": "da182d8f67b9cdbeefcffcdf9cfaa4e4fa1a3417",
+          "request_source": "PublicApi",
+          "requestor": "fnvfc@example.com",
+          "requestor_comment": "Found suspicious process are running on the machine hence restricting app execution",
+          "status": "TimeOut",
+          "type": "RestrictCodeExecution"
+        }
+      },
+      "observer": {
+        "product": "Defender for Endpoint",
+        "vendor": "Microsoft"
+      },
+      "related": {
+        "hosts": [
+          "assettag-eid",
+          "da182d8f67b9cdbeefcffcdf9cfaa4e4fa1a3417"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "fnvfc@example.com",
+        "name": "fnvfc"
+      }
+    },
+    {
+      "@timestamp": "2053-04-06T10:34:03.689Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "StopAndQuarantineFile",
+        "category": [
+          "file"
+        ],
+        "created": "2053-04-03T10:20:00.154Z",
+        "id": "0733f4da-b6f9-46c6-1503-b32729dbbcfa",
+        "kind": "event",
+        "original": "{\"id\":\"0733f4da-b6f9-46c6-1503-b32729dbbcfa\",\"type\":\"StopAndQuarantineFile\",\"title\":null,\"requestor\":\"admin@example.com\",\"requestorComment\":\"Quarantine Malicious File\",\"status\":\"TimeOut\",\"machineId\":\"cc038b0d52c3aedaaadaaebadbaff4a0ea1b5289\",\"computerDnsName\":\"assettag-eid\",\"creationDateTimeUtc\":\"2053-04-03T10:20:00.154974Z\",\"lastUpdateDateTimeUtc\":\"2053-04-06T10:34:03.6898318Z\",\"cancellationRequestor\":null,\"cancellationComment\":null,\"cancellationDateTimeUtc\":null,\"errorHResult\":-2145844840,\"scope\":null,\"externalId\":null,\"requestSource\":\"PublicApi\",\"relatedFileInfo\":{\"fileIdentifier\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fileIdentifierType\":\"Sha1\"},\"commands\":[],\"troubleshootInfo\":null}",
+        "type": [
+          "deletion"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        }
+      },
+      "host": {
+        "hostname": "assettag-eid",
+        "id": "cc038b0d52c3aedaaadaaebadbaff4a0ea1b5289",
+        "name": "assettag-eid"
+      },
+      "microsoft_defender_endpoint": {
+        "machine_action": {
+          "computer_dns_name": "assettag-eid",
+          "creation_date_time_utc": "2053-04-03T10:20:00.154Z",
+          "error_h_result": -2145844840,
+          "id": "0733f4da-b6f9-46c6-1503-b32729dbbcfa",
+          "last_update_date_time_utc": "2053-04-06T10:34:03.689Z",
+          "machine_id": "cc038b0d52c3aedaaadaaebadbaff4a0ea1b5289",
+          "related_file_info": {
+            "file_identifier": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a",
+            "file_identifier_type": "Sha1"
+          },
+          "request_source": "PublicApi",
+          "requestor": "admin@example.com",
+          "requestor_comment": "Quarantine Malicious File",
+          "status": "TimeOut",
+          "type": "StopAndQuarantineFile"
+        }
+      },
+      "observer": {
+        "product": "Defender for Endpoint",
+        "vendor": "Microsoft"
+      },
+      "related": {
+        "hash": [
+          "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        ],
+        "hosts": [
+          "assettag-eid",
+          "cc038b0d52c3aedaaadaaebadbaff4a0ea1b5289"
+        ],
+        "user": [
+          "admin",
+          "admin@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "admin@example.com",
+        "name": "admin"
+      }
+    },
+    {
+      "@timestamp": "2053-03-26T07:25:33.933Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Isolate",
+        "category": [
+          "network"
+        ],
+        "created": "2053-03-25T10:36:47.296Z",
+        "id": "2f796d54-9367-5988-afd8-feefed56e547",
+        "kind": "event",
+        "original": "{\"id\":\"2f796d54-9367-5988-afd8-feefed56e547\",\"type\":\"Isolate\",\"title\":null,\"requestor\":\"admin@example.com\",\"requestorComment\":\"Isolating a device to prevent access to the external network\",\"status\":\"Cancelled\",\"machineId\":\"ac455b9d24a5dbe6fbeebcebfecae3a2db9c1572\",\"computerDnsName\":\"labtest-eid\",\"creationDateTimeUtc\":\"2053-03-25T10:36:47.2968211Z\",\"lastUpdateDateTimeUtc\":\"2053-03-26T07:25:33.9337697Z\",\"cancellationRequestor\":\"a682c1c2-4334-1652-a875-30597084d47a\",\"cancellationComment\":\"Machine action was canceled by automation\",\"cancellationDateTimeUtc\":\"2053-03-26T07:25:33.9337696Z\",\"errorHResult\":-2147467260,\"scope\":\"Full\",\"externalId\":null,\"requestSource\":\"PublicApi\",\"relatedFileInfo\":null,\"commands\":[],\"troubleshootInfo\":null}",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "hostname": "labtest-eid",
+        "id": "ac455b9d24a5dbe6fbeebcebfecae3a2db9c1572",
+        "name": "labtest-eid"
+      },
+      "microsoft_defender_endpoint": {
+        "machine_action": {
+          "cancellation_comment": "Machine action was canceled by automation",
+          "cancellation_date_time_utc": "2053-03-26T07:25:33.933Z",
+          "cancellation_requestor": "a682c1c2-4334-1652-a875-30597084d47a",
+          "computer_dns_name": "labtest-eid",
+          "creation_date_time_utc": "2053-03-25T10:36:47.296Z",
+          "error_h_result": -2147467260,
+          "id": "2f796d54-9367-5988-afd8-feefed56e547",
+          "last_update_date_time_utc": "2053-03-26T07:25:33.933Z",
+          "machine_id": "ac455b9d24a5dbe6fbeebcebfecae3a2db9c1572",
+          "request_source": "PublicApi",
+          "requestor": "admin@example.com",
+          "requestor_comment": "Isolating a device to prevent access to the external network",
+          "scope": "Full",
+          "status": "Cancelled",
+          "type": "Isolate"
+        }
+      },
+      "observer": {
+        "product": "Defender for Endpoint",
+        "vendor": "Microsoft"
+      },
+      "related": {
+        "hosts": [
+          "labtest-eid",
+          "ac455b9d24a5dbe6fbeebcebfecae3a2db9c1572"
+        ],
+        "user": [
+          "a682c1c2-4334-1652-a875-30597084d47a",
+          "admin",
+          "admin@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "admin@example.com",
+        "name": "admin"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"188a6b4e-4408-5797-addc-eeeebc4c2739\",\"type\":\"Unisolate\",\"title\":null,\"requestor\":\"zqay7@example.com\",\"requestorComment\":\"Isolation release\",\"status\":\"Succeeded\",\"machineId\":\"ab336a7dabadffbeeafadbcfc79e02a4fc4bc6d9\",\"computerDnsName\":\"c-lab-24\",\"creationDateTimeUtc\":\"2052-11-25T12:59:35.8912364Z\",\"lastUpdateDateTimeUtc\":\"2052-11-25T12:59:37.5532423Z\",\"cancellationRequestor\":null,\"cancellationComment\":null,\"cancellationDateTimeUtc\":null,\"errorHResult\":0,\"scope\":null,\"externalId\":null,\"requestSource\":\"Portal\",\"relatedFileInfo\":null,\"commands\":[],\"troubleshootInfo\":null}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"b36516ca-3156-5399-afbd-cfadfc18efaa\",\"type\":\"RunAntiVirusScan\",\"title\":null,\"requestor\":\"gazwwvdl@example.com\",\"requestorComment\":\"Quick Scan\",\"status\":\"Succeeded\",\"machineId\":\"bc617a3cfdbcdecaefddccbba0bf16d8af1db2f3\",\"computerDnsName\":\"c-lab-24\",\"creationDateTimeUtc\":\"2052-11-22T12:48:33.9936591Z\",\"lastUpdateDateTimeUtc\":\"2052-11-22T12:48:56.7684808Z\",\"cancellationRequestor\":null,\"cancellationComment\":null,\"cancellationDateTimeUtc\":null,\"errorHResult\":0,\"scope\":\"Quick\",\"externalId\":null,\"requestSource\":\"Portal\",\"relatedFileInfo\":null,\"commands\":[],\"troubleshootInfo\":null}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"49b0f954-2425-5243-acdf-ddeccfb4bcc3\",\"type\":\"RestrictCodeExecution\",\"title\":null,\"requestor\":\"fnvfc@example.com\",\"requestorComment\":\"Found suspicious process are running on the machine hence restricting app execution\",\"status\":\"TimeOut\",\"machineId\":\"da182d8f67b9cdbeefcffcdf9cfaa4e4fa1a3417\",\"computerDnsName\":\"assettag-eid\",\"creationDateTimeUtc\":\"2053-03-24T08:11:54.0392813Z\",\"lastUpdateDateTimeUtc\":\"2053-03-27T08:25:59.9095244Z\",\"cancellationRequestor\":null,\"cancellationComment\":null,\"cancellationDateTimeUtc\":null,\"errorHResult\":-2145844840,\"scope\":null,\"externalId\":null,\"requestSource\":\"PublicApi\",\"relatedFileInfo\":null,\"commands\":[],\"troubleshootInfo\":null}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"0733f4da-b6f9-46c6-1503-b32729dbbcfa\",\"type\":\"StopAndQuarantineFile\",\"title\":null,\"requestor\":\"admin@example.com\",\"requestorComment\":\"Quarantine Malicious File\",\"status\":\"TimeOut\",\"machineId\":\"cc038b0d52c3aedaaadaaebadbaff4a0ea1b5289\",\"computerDnsName\":\"assettag-eid\",\"creationDateTimeUtc\":\"2053-04-03T10:20:00.154974Z\",\"lastUpdateDateTimeUtc\":\"2053-04-06T10:34:03.6898318Z\",\"cancellationRequestor\":null,\"cancellationComment\":null,\"cancellationDateTimeUtc\":null,\"errorHResult\":-2145844840,\"scope\":null,\"externalId\":null,\"requestSource\":\"PublicApi\",\"relatedFileInfo\":{\"fileIdentifier\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fileIdentifierType\":\"Sha1\"},\"commands\":[],\"troubleshootInfo\":null}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"2f796d54-9367-5988-afd8-feefed56e547\",\"type\":\"Isolate\",\"title\":null,\"requestor\":\"admin@example.com\",\"requestorComment\":\"Isolating a device to prevent access to the external network\",\"status\":\"Cancelled\",\"machineId\":\"ac455b9d24a5dbe6fbeebcebfecae3a2db9c1572\",\"computerDnsName\":\"labtest-eid\",\"creationDateTimeUtc\":\"2053-03-25T10:36:47.2968211Z\",\"lastUpdateDateTimeUtc\":\"2053-03-26T07:25:33.9337697Z\",\"cancellationRequestor\":\"a682c1c2-4334-1652-a875-30597084d47a\",\"cancellationComment\":\"Machine action was canceled by automation\",\"cancellationDateTimeUtc\":\"2053-03-26T07:25:33.9337696Z\",\"errorHResult\":-2147467260,\"scope\":\"Full\",\"externalId\":null,\"requestSource\":\"PublicApi\",\"relatedFileInfo\":null,\"commands\":[],\"troubleshootInfo\":null}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "machine_action",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-microsoft_defender_endpoint-machine_action-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "microsoft_defender_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

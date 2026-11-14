@@ -1,0 +1,5 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags: null
+dynamic_fields:
+  event.ingested: .*

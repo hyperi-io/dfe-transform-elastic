@@ -1,0 +1,985 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "6ac5236d-57c7-48a0-9b00-6b9d34918ec1",
+        "id": "20ba14e7-dc14-4705-8ce3-30ef81f9eebd",
+        "name": "fb18a017695d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "PageViewed",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "SharePoint",
+        "dataset": "o365.audit",
+        "id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "198.51.100.111",
+          "CorrelationId": "384a929c-4393-a183-f02e-53f1610a1b91",
+          "CreationTime": "2048-02-07T16:43:53",
+          "CustomUniqueId": true,
+          "EventSource": "SharePoint",
+          "Id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+          "ItemType": "Page",
+          "ListItemUniqueId": "58f4465d-7ca3-cdab-6bfa-7f3fc5f63155",
+          "ObjectId": "https://testsiem-my.sharepoint.com/personal/asr_testsiem_onmicrosoft_com/_layouts/15/onedrive.aspx",
+          "Operation": "PageViewed",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 4,
+          "Site": "d3547abf-6405-47c0-b545-0b974ca993a9",
+          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+          "UserId": "apq@testsiem.onmicrosoft.com",
+          "UserKey": "i:0h.f|membership|3037315367713c41@live.com",
+          "UserType": 0,
+          "Version": 1,
+          "WebId": "7a4e89bb-3620-459d-87e3-4996c508ec40",
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "testsiem.onmicrosoft.com"
+        ],
+        "ip": "198.51.100.111",
+        "user": [
+          "apq",
+          "apq@testsiem.onmicrosoft.com"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "testsiem.onmicrosoft.com",
+        "email": "apq@testsiem.onmicrosoft.com",
+        "id": "apq@testsiem.onmicrosoft.com",
+        "name": "apq"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+        "os": {
+          "full": "Mac OS X 10.14",
+          "name": "Mac OS X",
+          "version": "10.14"
+        },
+        "version": "72.0"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "6ac5236d-57c7-48a0-9b00-6b9d34918ec1",
+        "id": "20ba14e7-dc14-4705-8ce3-30ef81f9eebd",
+        "name": "fb18a017695d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "PageViewed",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "SharePoint",
+        "dataset": "o365.audit",
+        "id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 868
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "198.51.100.111",
+          "CorrelationId": "384a929c-4393-a183-f02e-53f1610a1b91",
+          "CreationTime": "2048-02-07T16:43:53",
+          "CustomUniqueId": true,
+          "EventSource": "SharePoint",
+          "Id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+          "ItemType": "Page",
+          "ListItemUniqueId": "58f4465d-7ca3-cdab-6bfa-7f3fc5f63155",
+          "ObjectId": "https://testsiem-my.sharepoint.com/personal/asr_testsiem_onmicrosoft_com/_layouts/15/onedrive.aspx",
+          "Operation": "PageViewed",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 4,
+          "Site": "d3547abf-6405-47c0-b545-0b974ca993a9",
+          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+          "UserId": "apq@testsiem.onmicrosoft.com",
+          "UserKey": "i:0h.f|membership|3037315367713c41@live.com",
+          "UserType": 0,
+          "Version": 1,
+          "WebId": "7a4e89bb-3620-459d-87e3-4996c508ec40",
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "testsiem.onmicrosoft.com"
+        ],
+        "ip": "198.51.100.111",
+        "user": [
+          "apq",
+          "apq@testsiem.onmicrosoft.com"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "testsiem.onmicrosoft.com",
+        "email": "apq@testsiem.onmicrosoft.com",
+        "id": "apq@testsiem.onmicrosoft.com",
+        "name": "apq"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+        "os": {
+          "full": "Mac OS X 10.14",
+          "name": "Mac OS X",
+          "version": "10.14"
+        },
+        "version": "72.0"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "6ac5236d-57c7-48a0-9b00-6b9d34918ec1",
+        "id": "20ba14e7-dc14-4705-8ce3-30ef81f9eebd",
+        "name": "fb18a017695d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "PageViewed",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "SharePoint",
+        "dataset": "o365.audit",
+        "id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1736
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "198.51.100.111",
+          "CorrelationId": "384a929c-4393-a183-f02e-53f1610a1b91",
+          "CreationTime": "2048-02-07T16:43:53",
+          "CustomUniqueId": true,
+          "EventSource": "SharePoint",
+          "Id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+          "ItemType": "Page",
+          "ListItemUniqueId": "58f4465d-7ca3-cdab-6bfa-7f3fc5f63155",
+          "ObjectId": "https://testsiem-my.sharepoint.com/personal/asr_testsiem_onmicrosoft_com/_layouts/15/onedrive.aspx",
+          "Operation": "PageViewed",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 4,
+          "Site": "d3547abf-6405-47c0-b545-0b974ca993a9",
+          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+          "UserId": "apq@testsiem.onmicrosoft.com",
+          "UserKey": "i:0h.f|membership|3037315367713c41@live.com",
+          "UserType": 0,
+          "Version": 1,
+          "WebId": "7a4e89bb-3620-459d-87e3-4996c508ec40",
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "testsiem.onmicrosoft.com"
+        ],
+        "ip": "198.51.100.111",
+        "user": [
+          "apq",
+          "apq@testsiem.onmicrosoft.com"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "testsiem.onmicrosoft.com",
+        "email": "apq@testsiem.onmicrosoft.com",
+        "id": "apq@testsiem.onmicrosoft.com",
+        "name": "apq"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+        "os": {
+          "full": "Mac OS X 10.14",
+          "name": "Mac OS X",
+          "version": "10.14"
+        },
+        "version": "72.0"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "6ac5236d-57c7-48a0-9b00-6b9d34918ec1",
+        "id": "20ba14e7-dc14-4705-8ce3-30ef81f9eebd",
+        "name": "fb18a017695d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "PageViewed",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "SharePoint",
+        "dataset": "o365.audit",
+        "id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2604
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "198.51.100.111",
+          "CorrelationId": "384a929c-4393-a183-f02e-53f1610a1b91",
+          "CreationTime": "2048-02-07T16:43:53",
+          "CustomUniqueId": true,
+          "EventSource": "SharePoint",
+          "Id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+          "ItemType": "Page",
+          "ListItemUniqueId": "58f4465d-7ca3-cdab-6bfa-7f3fc5f63155",
+          "ObjectId": "https://testsiem-my.sharepoint.com/personal/asr_testsiem_onmicrosoft_com/_layouts/15/onedrive.aspx",
+          "Operation": "PageViewed",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 4,
+          "Site": "d3547abf-6405-47c0-b545-0b974ca993a9",
+          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+          "UserId": "apq@testsiem.onmicrosoft.com",
+          "UserKey": "i:0h.f|membership|3037315367713c41@live.com",
+          "UserType": 0,
+          "Version": 1,
+          "WebId": "7a4e89bb-3620-459d-87e3-4996c508ec40",
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "testsiem.onmicrosoft.com"
+        ],
+        "ip": "198.51.100.111",
+        "user": [
+          "apq",
+          "apq@testsiem.onmicrosoft.com"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "testsiem.onmicrosoft.com",
+        "email": "apq@testsiem.onmicrosoft.com",
+        "id": "apq@testsiem.onmicrosoft.com",
+        "name": "apq"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+        "os": {
+          "full": "Mac OS X 10.14",
+          "name": "Mac OS X",
+          "version": "10.14"
+        },
+        "version": "72.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "6ac5236d-57c7-48a0-9b00-6b9d34918ec1",
+        "id": "20ba14e7-dc14-4705-8ce3-30ef81f9eebd",
+        "name": "fb18a017695d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "PageViewed",
+        "category": "web",
+        "code": "SharePoint",
+        "dataset": "o365.audit",
+        "id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "198.51.100.111",
+          "CorrelationId": "384a929c-4393-a183-f02e-53f1610a1b91",
+          "CreationTime": "2048-02-07T16:43:53",
+          "CustomUniqueId": true,
+          "EventSource": "SharePoint",
+          "Id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+          "ItemType": "Page",
+          "ListItemUniqueId": "58f4465d-7ca3-cdab-6bfa-7f3fc5f63155",
+          "ObjectId": "https://testsiem-my.sharepoint.com/personal/asr_testsiem_onmicrosoft_com/_layouts/15/onedrive.aspx",
+          "Operation": "PageViewed",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 4,
+          "Site": "d3547abf-6405-47c0-b545-0b974ca993a9",
+          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+          "UserId": "apq@testsiem.onmicrosoft.com",
+          "UserKey": "i:0h.f|membership|3037315367713c41@live.com",
+          "UserType": 0,
+          "Version": 1,
+          "WebId": "7a4e89bb-3620-459d-87e3-4996c508ec40",
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "related": {
+        "ip": "198.51.100.111",
+        "user": "apq"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "testsiem.onmicrosoft.com",
+        "email": "apq@testsiem.onmicrosoft.com",
+        "id": "apq@testsiem.onmicrosoft.com",
+        "name": "apq"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "6ac5236d-57c7-48a0-9b00-6b9d34918ec1",
+        "id": "20ba14e7-dc14-4705-8ce3-30ef81f9eebd",
+        "name": "fb18a017695d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "PageViewed",
+        "category": "web",
+        "code": "SharePoint",
+        "dataset": "o365.audit",
+        "id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 868
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "198.51.100.111",
+          "CorrelationId": "384a929c-4393-a183-f02e-53f1610a1b91",
+          "CreationTime": "2048-02-07T16:43:53",
+          "CustomUniqueId": true,
+          "EventSource": "SharePoint",
+          "Id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+          "ItemType": "Page",
+          "ListItemUniqueId": "58f4465d-7ca3-cdab-6bfa-7f3fc5f63155",
+          "ObjectId": "https://testsiem-my.sharepoint.com/personal/asr_testsiem_onmicrosoft_com/_layouts/15/onedrive.aspx",
+          "Operation": "PageViewed",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 4,
+          "Site": "d3547abf-6405-47c0-b545-0b974ca993a9",
+          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+          "UserId": "apq@testsiem.onmicrosoft.com",
+          "UserKey": "i:0h.f|membership|3037315367713c41@live.com",
+          "UserType": 0,
+          "Version": 1,
+          "WebId": "7a4e89bb-3620-459d-87e3-4996c508ec40",
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "related": {
+        "ip": "198.51.100.111",
+        "user": "apq"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "testsiem.onmicrosoft.com",
+        "email": "apq@testsiem.onmicrosoft.com",
+        "id": "apq@testsiem.onmicrosoft.com",
+        "name": "apq"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "6ac5236d-57c7-48a0-9b00-6b9d34918ec1",
+        "id": "20ba14e7-dc14-4705-8ce3-30ef81f9eebd",
+        "name": "fb18a017695d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "PageViewed",
+        "category": "web",
+        "code": "SharePoint",
+        "dataset": "o365.audit",
+        "id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1736
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "198.51.100.111",
+          "CorrelationId": "384a929c-4393-a183-f02e-53f1610a1b91",
+          "CreationTime": "2048-02-07T16:43:53",
+          "CustomUniqueId": true,
+          "EventSource": "SharePoint",
+          "Id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+          "ItemType": "Page",
+          "ListItemUniqueId": "58f4465d-7ca3-cdab-6bfa-7f3fc5f63155",
+          "ObjectId": "https://testsiem-my.sharepoint.com/personal/asr_testsiem_onmicrosoft_com/_layouts/15/onedrive.aspx",
+          "Operation": "PageViewed",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 4,
+          "Site": "d3547abf-6405-47c0-b545-0b974ca993a9",
+          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+          "UserId": "apq@testsiem.onmicrosoft.com",
+          "UserKey": "i:0h.f|membership|3037315367713c41@live.com",
+          "UserType": 0,
+          "Version": 1,
+          "WebId": "7a4e89bb-3620-459d-87e3-4996c508ec40",
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "related": {
+        "ip": "198.51.100.111",
+        "user": "apq"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "testsiem.onmicrosoft.com",
+        "email": "apq@testsiem.onmicrosoft.com",
+        "id": "apq@testsiem.onmicrosoft.com",
+        "name": "apq"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "6ac5236d-57c7-48a0-9b00-6b9d34918ec1",
+        "id": "20ba14e7-dc14-4705-8ce3-30ef81f9eebd",
+        "name": "fb18a017695d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "PageViewed",
+        "category": "web",
+        "code": "SharePoint",
+        "dataset": "o365.audit",
+        "id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2604
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "198.51.100.111",
+          "CorrelationId": "384a929c-4393-a183-f02e-53f1610a1b91",
+          "CreationTime": "2048-02-07T16:43:53",
+          "CustomUniqueId": true,
+          "EventSource": "SharePoint",
+          "Id": "38d458c6-c0b1-45ca-161e-54c3acbafcc6",
+          "ItemType": "Page",
+          "ListItemUniqueId": "58f4465d-7ca3-cdab-6bfa-7f3fc5f63155",
+          "ObjectId": "https://testsiem-my.sharepoint.com/personal/asr_testsiem_onmicrosoft_com/_layouts/15/onedrive.aspx",
+          "Operation": "PageViewed",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 4,
+          "Site": "d3547abf-6405-47c0-b545-0b974ca993a9",
+          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0",
+          "UserId": "apq@testsiem.onmicrosoft.com",
+          "UserKey": "i:0h.f|membership|3037315367713c41@live.com",
+          "UserType": 0,
+          "Version": 1,
+          "WebId": "7a4e89bb-3620-459d-87e3-4996c508ec40",
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "related": {
+        "ip": "198.51.100.111",
+        "user": "apq"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "testsiem.onmicrosoft.com",
+        "email": "apq@testsiem.onmicrosoft.com",
+        "id": "apq@testsiem.onmicrosoft.com",
+        "name": "apq"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365-audit-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [
+      "event.id",
+      "host.id",
+      "o365.audit.ExceptionInfo.FalsePositive",
+      "o365.audit.ExchangeMetaData.CC",
+      "o365.audit.ExchangeMetaData.MessageID",
+      "o365.audit.ExchangeMetaData.Sent",
+      "o365.audit.ExchangeMetaData.To",
+      "o365.audit.ExchangeMetaData.UniqueID",
+      "o365.audit.FileSize",
+      "o365.audit.Item.IsRecord",
+      "o365.audit.Item.SizeInBytes",
+      "o365.audit.OperationId",
+      "o365.audit.RequestId",
+      "o365.audit.SharePointMetaData.FileSize",
+      "o365.audit.SharePointMetaData.IsViewableByExternalUsers",
+      "o365.audit.UserId",
+      "o365.audit.WorkspaceId",
+      "organization.id"
+    ],
+    "package": "o365",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "state",
+        "original": "{\"username\":\"zqay7@ofglidmx.com\",\"fullname\":\"Ocf Bxfqebku\",\"mpstrength\":\"100\",\"created\":\"2042-03-12 10:02:56\",\"last_pw_change\":\"2043-05-19 10:58:33\",\"last_login\":\"2043-05-29 11:45:05\",\"neverloggedin\":false,\"disabled\":false,\"admin\":false,\"linked\":\"ocoqzkfk.afcojul@uretoegr.com\",\"sites\":72,\"notes\":19,\"formfills\":2,\"applications\":0,\"attachments\":1,\"password_reset_required\":false,\"groups\":[\"Domain Admins\",\"Dev Team\",\"Support Team\"]}",
+        "type": [
+          "user"
+        ]
+      },
+      "lastpass": {
+        "user": {
+          "application": 0,
+          "attachment": 1,
+          "created": "2042-03-12T10:02:56.000Z",
+          "disabled": false,
+          "form_fill": 2,
+          "full_name": "Ocf Bxfqebku",
+          "group": [
+            "Domain Admins",
+            "Dev Team",
+            "Support Team"
+          ],
+          "last_login": "2043-05-29T11:45:05.000Z",
+          "last_password_change": "2043-05-19T10:58:33.000Z",
+          "linked": "ocoqzkfk.afcojul@uretoegr.com",
+          "master_password_strength": 100,
+          "never_logged_in": false,
+          "note": 19,
+          "password_reset_required": false,
+          "sites": 72,
+          "user_name": "zqay7@ofglidmx.com"
+        }
+      },
+      "related": {
+        "user": [
+          "zqay7@ofglidmx.com",
+          "Ocf Bxfqebku"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "zqay7@ofglidmx.com",
+        "full_name": "Ocf Bxfqebku",
+        "group": {
+          "name": [
+            "Domain Admins",
+            "Dev Team",
+            "Support Team"
+          ]
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"username\":\"zqay7@ofglidmx.com\",\"fullname\":\"Ocf Bxfqebku\",\"mpstrength\":\"100\",\"created\":\"2042-03-12 10:02:56\",\"last_pw_change\":\"2043-05-19 10:58:33\",\"last_login\":\"2043-05-29 11:45:05\",\"neverloggedin\":false,\"disabled\":false,\"admin\":false,\"linked\":\"ocoqzkfk.afcojul@uretoegr.com\",\"sites\":72,\"notes\":19,\"formfills\":2,\"applications\":0,\"attachments\":1,\"password_reset_required\":false,\"groups\":[\"Domain Admins\",\"Dev Team\",\"Support Team\"]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "user",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-lastpass-user-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "lastpass",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

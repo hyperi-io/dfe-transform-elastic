@@ -102,9 +102,7 @@ impl Transform for Default {
                 event.has_value("apache.access.remote_addresses") && event.get("apache.access.remote_addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
-                // Painless script
-                // Source: boolean isPrivateCIDR(def ip) {\n  CIDR class_a_network = new CIDR('10.0.0.0/8');\n  CIDR class_b_network = new CIDR('172.16.0.0/12');\n  CIDR class_c_network = new CIDR('192.168.0.0/16');\n\n  try {\n    return class_a_network.contains(ip) || class_b_network.contains(ip) || class_c_network.contains(ip);\n  } catch (IllegalArgumentException e) {\n    return false;\n  }\n}\ntry {\n  if (ctx.client == null) {\n    Map map = new HashMap();\n    ctx.put(\"client\", map);\n  }\n\n  def found = false;\n  for (def item : ctx.apache.access.remote_addresses) {\n    if (!isPrivateCIDR(item)) {\n      ctx.client.ip = item;\n      found = true;\n      break;\n    }\n  }\n  if (!found) {\n    ctx.client.ip = ctx.apache.access.remote_addresses[0];\n  }\n} catch (Exception e) {\n  ctx.client.ip = null;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -316,9 +314,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("apache.access.ssl.protocol") };
             if _cond {
-                // Painless script
-                // Source: def parts = ctx.apache.access.ssl.protocol.toLowerCase().splitOnToken(\"v\"); if (parts.length != 2) {\n  return;\n} if (parts[1].contains(\".\")) {\n  ctx.tls.version = parts[1];\n} else {\n  ctx.tls.version = parts[1] + \".0\";\n} ctx.tls.version_protocol = parts[0];
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -510,8 +506,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '' || o == '-') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).size() == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1,0 +1,5 @@
+Mar 15 10:30:01 peegdwvcj sshd[12345]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=10.194.10.249  user=admin
+Mar 15 10:30:02 peegdwvcj sshd[12346]: PAM 2 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=10.194.10.249  user=catyhm
+Mar 15 10:30:03 peegdwvcj passwd[12347]: pam_unix(passwd:chauthtok): password changed for pozslr
+Mar 15 10:30:04 peegdwvcj sudo: pam_unix(sudo:auth): authentication failure; logname=pozslr uid=1001 euid=0 tty=/dev/pts/0 ruser=pozslr rhost=  user=pozslr
+Mar 15 10:30:05 peegdwvcj sshd[12348]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.125.99

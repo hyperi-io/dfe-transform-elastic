@@ -1,0 +1,10 @@
+{
+    "events": [
+        {
+            "message": "{\"id\":\"861637\",\"name\":\"Alice Johnson\",\"email\":\"eprde.rgwqnrr@example.com\",\"created_at\":\"2052-01-10T08:00:00Z\",\"last_authenticated_at\":\"2052-06-15T12:00:00Z\",\"has_registered_device\":true,\"usernames\":[\"eprde.rgwqnrr@example.com\"]}"
+        },
+        {
+            "message": "{\"id\":\"864140\",\"name\":\"Bob Smith\",\"email\":\"drc.zsgwr@example.com\",\"created_at\":\"2052-02-05T09:30:00Z\",\"last_authenticated_at\":null,\"has_registered_device\":false,\"usernames\":[]}"
+        }
+    ]
+}

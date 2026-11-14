@@ -1,0 +1,173 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-03-31T07:50:27.168Z",
+      "agent": {
+        "ephemeral_id": "ad692b7c-3b66-4c65-8421-a7a4d5f08bbd",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "kerberos-preauth-failed",
+        "category": [
+          "authentication"
+        ],
+        "code": "4771",
+        "kind": "event",
+        "outcome": "failure",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4771.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "ip": [
+          "192.168.120.216"
+        ],
+        "user": [
+          "RJKHT"
+        ]
+      },
+      "service": {
+        "name": "krbtgt/test.saas"
+      },
+      "source": {
+        "ip": "192.168.120.216",
+        "port": 53366
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "S-1-5-21-1717121054-434620538-60925301-3057",
+        "name": "RJKHT"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "PreAuthType": "0",
+          "ServiceName": "krbtgt/test.saas",
+          "Status": "0x12",
+          "StatusDescription": "KDC_ERR_CLIENT_REVOKED",
+          "TargetSid": "S-1-5-21-1717121054-434620538-60925301-3057",
+          "TargetUserName": "RJKHT",
+          "TicketOptions": "0x40810010",
+          "TicketOptionsDescription": [
+            "Forwardable",
+            "Renewable",
+            "Name-canonicalize",
+            "Renewable-ok"
+          ]
+        },
+        "event_id": "4771",
+        "keywords": [
+          "Audit Failure"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "failure",
+        "process": {
+          "pid": 496,
+          "thread": {
+            "id": 4552
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "5027836",
+        "time_created": "2048-03-31T07:50:27.168Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:08:03.991Z",
+      "agent": {
+        "ephemeral_id": "ad692b7c-3b66-4c65-8421-a7a4d5f08bbd",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4771,
+        "kind": "event",
+        "outcome": "failure",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4771.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "IpAddress": "::ffff:192.168.120.216",
+          "IpPort": "53366",
+          "PreAuthType": "0",
+          "ServiceName": "krbtgt/test.saas",
+          "Status": "0x12",
+          "TargetSid": "S-1-5-21-1717121054-434620538-60925301-3057",
+          "TargetUserName": "RJKHT",
+          "TicketOptions": "0x40810010"
+        },
+        "event_id": 4771,
+        "keywords": [
+          "Audit Failure"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "failure",
+        "process": {
+          "pid": 496,
+          "thread": {
+            "id": 4552
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 5027836,
+        "time_created": "2048-03-31T07:50:27.168Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

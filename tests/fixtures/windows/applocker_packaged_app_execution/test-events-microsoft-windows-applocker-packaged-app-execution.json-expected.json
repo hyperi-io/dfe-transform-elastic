@@ -1,0 +1,160 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-08-13T13:53:33.706Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "process"
+        ],
+        "code": "8020",
+        "kind": "event",
+        "provider": "Microsoft-Windows-AppLocker",
+        "type": [
+          "start"
+        ]
+      },
+      "file": {
+        "pe": {
+          "file_version": "2.100.61791.00",
+          "original_file_name": "APPX",
+          "product": "MICROSOFT.TODOS"
+        },
+        "x509": {
+          "subject": {
+            "common_name": [
+              "MICROSOFT CORPORATION"
+            ],
+            "country": [
+              "US"
+            ],
+            "locality": [
+              "REDMOND"
+            ],
+            "organization": [
+              "MICROSOFT CORPORATION"
+            ],
+            "state_or_province": [
+              "WASHINGTON"
+            ]
+          }
+        }
+      },
+      "host": {
+        "name": "eg18s-c22k-5"
+      },
+      "log": {
+        "level": "Information"
+      },
+      "message": "MICROSOFT.TODOS was allowed to run.",
+      "user": {
+        "id": "S-1-5-21-2707992022-4034939591-3454028951-1001",
+        "name": "Topsy"
+      },
+      "winlog": {
+        "activity_id": "",
+        "channel": "Microsoft-Windows-AppLocker/Packaged app-Execution",
+        "computer_name": "eg18s-c22k-5",
+        "event_id": "8020",
+        "level": "Information",
+        "opcode": "Info",
+        "process": {
+          "pid": 1672,
+          "thread": {
+            "id": 8384
+          }
+        },
+        "provider_guid": "bdab3bfe-2c0e-4a41-9880-fc98bb628a72",
+        "provider_name": "Microsoft-Windows-AppLocker",
+        "record_id": "2986",
+        "time_created": "2051-08-13T13:53:33.7067781Z",
+        "user": {
+          "identifier": "S-1-5-21-2707992022-4034939591-3454028951-1001"
+        },
+        "user_data": {
+          "Fqbn": "CN=MICROSOFT CORPORATION, O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US\\MICROSOFT.TODOS\\APPX\\2.100.61791.00",
+          "FqbnLength": 116,
+          "Package": "MICROSOFT.TODOS",
+          "PackageLength": "15",
+          "PolicyName": "APPX",
+          "PolicyNameLength": 4,
+          "RuleId": "{e4d99c78-ec2e-42ad-b8ab-fe30ead444fa}",
+          "RuleName": "(Default Rule) All signed packaged apps",
+          "RuleNameLength": 39,
+          "RuleSddl": "D:(XA;;FX;;;S-1-1-0;((Exists APPID://FQBN) && ((APPID://FQBN) >= ({\"*\\*\\*\",0}))))",
+          "RuleSddlLength": 81,
+          "TargetProcessId": 41864,
+          "TargetUser": "S-1-5-21-2707992022-4034939591-3454028951-1001"
+        },
+        "version": 0
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2051-08-13T13:53:33.7067781Z",
+      "event": {
+        "code": "8020",
+        "kind": "event",
+        "provider": "Microsoft-Windows-AppLocker"
+      },
+      "host": {
+        "name": "eg18s-c22k-5"
+      },
+      "log": {
+        "level": "Information"
+      },
+      "message": "MICROSOFT.TODOS was allowed to run.",
+      "winlog": {
+        "activity_id": "",
+        "channel": "Microsoft-Windows-AppLocker/Packaged app-Execution",
+        "computer_name": "eg18s-c22k-5",
+        "event_id": "8020",
+        "level": "Information",
+        "opcode": "Info",
+        "process": {
+          "pid": 1672,
+          "thread": {
+            "id": 8384
+          }
+        },
+        "provider_guid": "bdab3bfe-2c0e-4a41-9880-fc98bb628a72",
+        "provider_name": "Microsoft-Windows-AppLocker",
+        "record_id": "2986",
+        "time_created": "2051-08-13T13:53:33.7067781Z",
+        "user": {
+          "identifier": "S-1-5-21-2707992022-4034939591-3454028951-1001",
+          "name": "Topsy"
+        },
+        "user_data": {
+          "Fqbn": "CN=MICROSOFT CORPORATION, O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US\\MICROSOFT.TODOS\\APPX\\2.100.61791.00",
+          "FqbnLength": "116",
+          "Package": "MICROSOFT.TODOS",
+          "PackageLength": "15",
+          "PolicyName": "APPX",
+          "PolicyNameLength": "4",
+          "RuleId": "{e4d99c78-ec2e-42ad-b8ab-fe30ead444fa}",
+          "RuleName": "(Default Rule) All signed packaged apps",
+          "RuleNameLength": "39",
+          "RuleSddl": "D:(XA;;FX;;;S-1-1-0;((Exists APPID://FQBN) && ((APPID://FQBN) >= ({\"*\\*\\*\",0}))))",
+          "RuleSddlLength": "81",
+          "TargetProcessId": "41864",
+          "TargetUser": "S-1-5-21-2707992022-4034939591-3454028951-1001"
+        },
+        "version": 0
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "applocker_packaged_app_execution",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-applocker_packaged_app_execution-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

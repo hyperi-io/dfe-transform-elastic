@@ -1,0 +1,848 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-04-16T11:45:11.844+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.157518233Z",
+        "kind": "event",
+        "original": "2048-04-16 11:45:11.844 CEST [26953] LOG:  starting PostgreSQL 12.2 on x86_64-pc-linux-gnu, compiled by gcc (Arch Linux 9.3.0-1) 9.3.0, 64-bit",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "starting PostgreSQL 12.2 on x86_64-pc-linux-gnu, compiled by gcc (Arch Linux 9.3.0-1) 9.3.0, 64-bit",
+      "postgresql": {
+        "log": {
+          "timestamp": "2048-04-16 11:45:11.844 CEST"
+        }
+      },
+      "process": {
+        "pid": 26953
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-16T11:45:11.844+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.157531393Z",
+        "kind": "event",
+        "original": "2048-04-16 11:45:11.844 CEST [26953] LOG:  listening on IPv6 address \"::1\", port 5432",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "listening on IPv6 address \"::1\", port 5432",
+      "postgresql": {
+        "log": {
+          "timestamp": "2048-04-16 11:45:11.844 CEST"
+        }
+      },
+      "process": {
+        "pid": 26953
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-16T11:45:11.844+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.157532363Z",
+        "kind": "event",
+        "original": "2048-04-16 11:45:11.844 CEST [26953] LOG:  listening on IPv4 address \"127.0.0.1\", port 5432",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "listening on IPv4 address \"127.0.0.1\", port 5432",
+      "postgresql": {
+        "log": {
+          "timestamp": "2048-04-16 11:45:11.844 CEST"
+        }
+      },
+      "process": {
+        "pid": 26953
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-16T11:45:11.846+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.157532983Z",
+        "kind": "event",
+        "original": "2048-04-16 11:45:11.846 CEST [26953] LOG:  listening on Unix socket \"/tmp/.s.PGSQL.5432\"",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "listening on Unix socket \"/tmp/.s.PGSQL.5432\"",
+      "postgresql": {
+        "log": {
+          "timestamp": "2048-04-16 11:45:11.846 CEST"
+        }
+      },
+      "process": {
+        "pid": 26953
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-16T11:45:11.861+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.157533593Z",
+        "kind": "event",
+        "original": "2048-04-16 11:45:11.861 CEST [26954] LOG:  database system was shut down at 2048-04-16 11:45:01 CEST",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "database system was shut down at 2048-04-16 11:45:01 CEST",
+      "postgresql": {
+        "log": {
+          "timestamp": "2048-04-16 11:45:11.861 CEST"
+        }
+      },
+      "process": {
+        "pid": 26954
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-16T11:45:11.864+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.157534193Z",
+        "kind": "event",
+        "original": "2048-04-16 11:45:11.864 CEST [26953] LOG:  database system is ready to accept connections",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "database system is ready to accept connections",
+      "postgresql": {
+        "log": {
+          "timestamp": "2048-04-16 11:45:11.864 CEST"
+        }
+      },
+      "process": {
+        "pid": 26953
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-16T12:22:22.579+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.157534793Z",
+        "kind": "event",
+        "original": "2048-04-16 12:22:22.579 CEST [26953] LOG:  received smart shutdown request",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "received smart shutdown request",
+      "postgresql": {
+        "log": {
+          "timestamp": "2048-04-16 12:22:22.579 CEST"
+        }
+      },
+      "process": {
+        "pid": 26953
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-16T12:22:22.582+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.157535793Z",
+        "kind": "event",
+        "original": "2048-04-16 12:22:22.582 CEST [26953] LOG:  background worker \"logical replication launcher\" (PID 26960) exited with exit code 1",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "background worker \"logical replication launcher\" (PID 26960) exited with exit code 1",
+      "postgresql": {
+        "log": {
+          "timestamp": "2048-04-16 12:22:22.582 CEST"
+        }
+      },
+      "process": {
+        "pid": 26953
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-16T12:22:22.582+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.157536403Z",
+        "kind": "event",
+        "original": "2048-04-16 12:22:22.582 CEST [26955] LOG:  shutting down",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "shutting down",
+      "postgresql": {
+        "log": {
+          "timestamp": "2048-04-16 12:22:22.582 CEST"
+        }
+      },
+      "process": {
+        "pid": 26955
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-16T12:22:22.596+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.157537013Z",
+        "kind": "event",
+        "original": "2048-04-16 12:22:22.596 CEST [26953] LOG:  database system is shut down",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "database system is shut down",
+      "postgresql": {
+        "log": {
+          "timestamp": "2048-04-16 12:22:22.596 CEST"
+        }
+      },
+      "process": {
+        "pid": 26953
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2048-04-16 11:45:11.844 CEST [26953] LOG:  starting PostgreSQL 12.2 on x86_64-pc-linux-gnu, compiled by gcc (Arch Linux 9.3.0-1) 9.3.0, 64-bit",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2048-04-16 11:45:11.844 CEST [26953] LOG:  listening on IPv6 address \"::1\", port 5432",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2048-04-16 11:45:11.844 CEST [26953] LOG:  listening on IPv4 address \"127.0.0.1\", port 5432",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2048-04-16 11:45:11.846 CEST [26953] LOG:  listening on Unix socket \"/tmp/.s.PGSQL.5432\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2048-04-16 11:45:11.861 CEST [26954] LOG:  database system was shut down at 2048-04-16 11:45:01 CEST",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2048-04-16 11:45:11.864 CEST [26953] LOG:  database system is ready to accept connections",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2048-04-16 12:22:22.579 CEST [26953] LOG:  received smart shutdown request",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2048-04-16 12:22:22.582 CEST [26953] LOG:  background worker \"logical replication launcher\" (PID 26960) exited with exit code 1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2048-04-16 12:22:22.582 CEST [26955] LOG:  shutting down",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2048-04-16 12:22:22.596 CEST [26953] LOG:  database system is shut down",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-postgresql-log-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "postgresql",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

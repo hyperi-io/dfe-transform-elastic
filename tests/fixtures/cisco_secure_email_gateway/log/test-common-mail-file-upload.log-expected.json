@@ -1,0 +1,563 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-08T10:27:41.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "3ebphetsy.arsenal.bar",
+          "message": "MID 96521668 SHA 53dfe8a4a1a0314341dba5b93e7b5d8424b081cd465e8aecf34c5dad1073a4b2 filename CHG0187610- XXXXXXX(RHEL 7.9 Nov 2024) on MSP IVR  Prod server (cwyppw-81) as on 15th Nov'24.docx queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "96521668"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov  8 10:27:41 3ebphetsy.arsenal.bar mail_logs: Info: MID 96521668 SHA 53dfe8a4a1a0314341dba5b93e7b5d8424b081cd465e8aecf34c5dad1073a4b2 filename CHG0187610- XXXXXXX(RHEL 7.9 Nov 2024) on MSP IVR  Prod server (cwyppw-81) as on 15th Nov'24.docx queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "extension": "docx",
+        "hash": {
+          "sha256": "53dfe8a4a1a0314341dba5b93e7b5d8424b081cd465e8aecf34c5dad1073a4b2"
+        },
+        "name": "CHG0187610- XXXXXXX(RHEL 7.9 Nov 2024) on MSP IVR  Prod server (cwyppw-81) as on 15th Nov'24"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-08T10:18:57.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "fci006yro5.emczthf.tube",
+          "message": "MID 118210542 SHA 90e8e99294b304a9999cd02c387891d1ce97daedcc3a09066042ec5dafeb7183 filename GCNS3 Security Bob Requirements .pptx queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "118210542"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov  8 10:18:57 fci006yro5.emczthf.tube mail_logs: Info: MID 118210542 SHA 90e8e99294b304a9999cd02c387891d1ce97daedcc3a09066042ec5dafeb7183 filename GCNS3 Security Bob Requirements .pptx queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "extension": "pptx",
+        "hash": {
+          "sha256": "90e8e99294b304a9999cd02c387891d1ce97daedcc3a09066042ec5dafeb7183"
+        },
+        "name": "GCNS3 Security Bob Requirements "
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-08T09:58:35.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "fci006yro5.emczthf.tube",
+          "message": "MID 118204993 SHA de1781525366005c717c7b53b51714ca7c218a8d4e8fe924c7cc79aa739a455d filename CHG0186108 - Linux OS Security Patching (RHEL 7.9 Q4-2024) on 11th Nov'24.docx queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "118204993"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov  8 09:58:35 fci006yro5.emczthf.tube mail_logs: Info: MID 118204993 SHA de1781525366005c717c7b53b51714ca7c218a8d4e8fe924c7cc79aa739a455d filename CHG0186108 - Linux OS Security Patching (RHEL 7.9 Q4-2024) on 11th Nov'24.docx queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "extension": "docx",
+        "hash": {
+          "sha256": "de1781525366005c717c7b53b51714ca7c218a8d4e8fe924c7cc79aa739a455d"
+        },
+        "name": "CHG0186108 - Linux OS Security Patching (RHEL 7.9 Q4-2024) on 11th Nov'24"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-08T09:44:54.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "x5lqjcpvpcg.kwgirc.kg",
+          "message": "MID 114536988 SHA ada0829984768564455b586e3cc9dd32adb5f2e8bf5e741e66688f25b02fa188 filename CHG0186826-Linux OS Security Patching (RHEL 8.10 2024 - Q4) on IOP Servers (CPCPLAA-4088 CPCPLAA-4089 CPCPLAA-4090) as on 12th Nov'24 (005).docx queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "114536988"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov  8 09:44:54 x5lqjcpvpcg.kwgirc.kg mail_logs: Info: MID 114536988 SHA ada0829984768564455b586e3cc9dd32adb5f2e8bf5e741e66688f25b02fa188 filename CHG0186826-Linux OS Security Patching (RHEL 8.10 2024 - Q4) on IOP Servers (CPCPLAA-4088 CPCPLAA-4089 CPCPLAA-4090) as on 12th Nov'24 (005).docx queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "extension": "docx",
+        "hash": {
+          "sha256": "ada0829984768564455b586e3cc9dd32adb5f2e8bf5e741e66688f25b02fa188"
+        },
+        "name": "CHG0186826-Linux OS Security Patching (RHEL 8.10 2024 - Q4) on IOP Servers (CPCPLAA-4088 CPCPLAA-4089 CPCPLAA-4090) as on 12th Nov'24 (005)"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-08T08:59:37.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "1nftl7.random.healthcare",
+          "message": "MID 115066977 SHA 27352a499a1a894da3173d31bdb83da12a1abb875690e6dbadc39ac28a6385d9 filename CHG0185579 - Linux OS Patching Full-OS edition (RHEL 7.9 2024-Q4) on BTS on 13th Nov'24.docx queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "115066977"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov  8 08:59:37 1nftl7.random.healthcare mail_logs: Info: MID 115066977 SHA 27352a499a1a894da3173d31bdb83da12a1abb875690e6dbadc39ac28a6385d9 filename CHG0185579 - Linux OS Patching Full-OS edition (RHEL 7.9 2024-Q4) on BTS on 13th Nov'24.docx queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "extension": "docx",
+        "hash": {
+          "sha256": "27352a499a1a894da3173d31bdb83da12a1abb875690e6dbadc39ac28a6385d9"
+        },
+        "name": "CHG0185579 - Linux OS Patching Full-OS edition (RHEL 7.9 2024-Q4) on BTS on 13th Nov'24"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-15T00:13:29.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "fci006yro5.emczthf.tube",
+          "message": "MID 119039446 SHA 65554b11415e962a695c57ca0edbfadb4fc5723d74c41d001ae299781f5763b2 filename signature queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "119039446"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov 15 00:13:29 fci006yro5.emczthf.tube mail_logs: Info: MID 119039446 SHA 65554b11415e962a695c57ca0edbfadb4fc5723d74c41d001ae299781f5763b2 filename signature queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "hash": {
+          "sha256": "65554b11415e962a695c57ca0edbfadb4fc5723d74c41d001ae299781f5763b2"
+        },
+        "name": "signature"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-14T22:05:23.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "uwrv6auiljp654b0p.txehp.st",
+          "message": "MID 108550225 SHA ee6ff49053356676954c2f1d1105f229da9e271ec1741e886e0bb45b47dc558c filename Youtube queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "108550225"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov 14 22:05:23 uwrv6auiljp654b0p.txehp.st mail_logs: Info: MID 108550225 SHA ee6ff49053356676954c2f1d1105f229da9e271ec1741e886e0bb45b47dc558c filename Youtube queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "hash": {
+          "sha256": "ee6ff49053356676954c2f1d1105f229da9e271ec1741e886e0bb45b47dc558c"
+        },
+        "name": "Youtube"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-14T22:00:21.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "9d5danza8fcrw4k60qhbr7k.prefix.insure",
+          "message": "MID 101104085 SHA 77a076df27ec9459ed4d900f4b0fa58a6d139d5483f1e9cbdd84a3f77707b2fe filename Youtube queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "101104085"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov 14 22:00:21 9d5danza8fcrw4k60qhbr7k.prefix.insure mail_logs: Info: MID 101104085 SHA 77a076df27ec9459ed4d900f4b0fa58a6d139d5483f1e9cbdd84a3f77707b2fe filename Youtube queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "hash": {
+          "sha256": "77a076df27ec9459ed4d900f4b0fa58a6d139d5483f1e9cbdd84a3f77707b2fe"
+        },
+        "name": "Youtube"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-14T20:55:33.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "1nftl7.random.healthcare",
+          "message": "MID 115872223 SHA 76fa60dd90c92fa78572e58b190fb318386ed957d190d3be32b1e3eb299c5e5e filename Youtube queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "115872223"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov 14 20:55:33 1nftl7.random.healthcare mail_logs: Info: MID 115872223 SHA 76fa60dd90c92fa78572e58b190fb318386ed957d190d3be32b1e3eb299c5e5e filename Youtube queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "hash": {
+          "sha256": "76fa60dd90c92fa78572e58b190fb318386ed957d190d3be32b1e3eb299c5e5e"
+        },
+        "name": "Youtube"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-14T20:54:46.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "1nftl7.random.healthcare",
+          "message": "MID 115872174 SHA 3471bc77edb8764814ab1cd6d99af6c0feef06011c045fbd3df960af240175dc filename Youtube queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "115872174"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov 14 20:54:46 1nftl7.random.healthcare mail_logs: Info: MID 115872174 SHA 3471bc77edb8764814ab1cd6d99af6c0feef06011c045fbd3df960af240175dc filename Youtube queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "hash": {
+          "sha256": "3471bc77edb8764814ab1cd6d99af6c0feef06011c045fbd3df960af240175dc"
+        },
+        "name": "Youtube"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-14T20:24:32.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "x5lqjcpvpcg.kwgirc.kg",
+          "message": "MID 115330889 SHA c610157dbe7d370034bb2c816976198ab8102835b91719c62ccfdc44464ffda2 filename Facebook queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "115330889"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov 14 20:24:32 x5lqjcpvpcg.kwgirc.kg mail_logs: Info: MID 115330889 SHA c610157dbe7d370034bb2c816976198ab8102835b91719c62ccfdc44464ffda2 filename Facebook queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "hash": {
+          "sha256": "c610157dbe7d370034bb2c816976198ab8102835b91719c62ccfdc44464ffda2"
+        },
+        "name": "Facebook"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-14T20:23:22.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "mail_logs"
+          },
+          "details": "queued for possible file analysis upload",
+          "host": "9d5danza8fcrw4k60qhbr7k.prefix.insure",
+          "message": "MID 101100063 SHA 8730fb9cf0face312f06ef654e884d8c0964ad98cfb7b82638637fc767ef7785 filename Youtube queued for possible file analysis upload"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "message_id": "101100063"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<38>Nov 14 20:23:22 9d5danza8fcrw4k60qhbr7k.prefix.insure mail_logs: Info: MID 101100063 SHA 8730fb9cf0face312f06ef654e884d8c0964ad98cfb7b82638637fc767ef7785 filename Youtube queued for possible file analysis upload",
+        "timezone": "UTC"
+      },
+      "file": {
+        "hash": {
+          "sha256": "8730fb9cf0face312f06ef654e884d8c0964ad98cfb7b82638637fc767ef7785"
+        },
+        "name": "Youtube"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 38
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<38>Nov  8 10:27:41 3ebphetsy.arsenal.bar mail_logs: Info: MID 96521668 SHA 53dfe8a4a1a0314341dba5b93e7b5d8424b081cd465e8aecf34c5dad1073a4b2 filename CHG0187610- XXXXXXX(RHEL 7.9 Nov 2024) on MSP IVR  Prod server (cwyppw-81) as on 15th Nov'24.docx queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov  8 10:18:57 fci006yro5.emczthf.tube mail_logs: Info: MID 118210542 SHA 90e8e99294b304a9999cd02c387891d1ce97daedcc3a09066042ec5dafeb7183 filename GCNS3 Security Bob Requirements .pptx queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov  8 09:58:35 fci006yro5.emczthf.tube mail_logs: Info: MID 118204993 SHA de1781525366005c717c7b53b51714ca7c218a8d4e8fe924c7cc79aa739a455d filename CHG0186108 - Linux OS Security Patching (RHEL 7.9 Q4-2024) on 11th Nov'24.docx queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov  8 09:44:54 x5lqjcpvpcg.kwgirc.kg mail_logs: Info: MID 114536988 SHA ada0829984768564455b586e3cc9dd32adb5f2e8bf5e741e66688f25b02fa188 filename CHG0186826-Linux OS Security Patching (RHEL 8.10 2024 - Q4) on IOP Servers (CPCPLAA-4088 CPCPLAA-4089 CPCPLAA-4090) as on 12th Nov'24 (005).docx queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov  8 08:59:37 1nftl7.random.healthcare mail_logs: Info: MID 115066977 SHA 27352a499a1a894da3173d31bdb83da12a1abb875690e6dbadc39ac28a6385d9 filename CHG0185579 - Linux OS Patching Full-OS edition (RHEL 7.9 2024-Q4) on BTS on 13th Nov'24.docx queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov 15 00:13:29 fci006yro5.emczthf.tube mail_logs: Info: MID 119039446 SHA 65554b11415e962a695c57ca0edbfadb4fc5723d74c41d001ae299781f5763b2 filename signature queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov 14 22:05:23 uwrv6auiljp654b0p.txehp.st mail_logs: Info: MID 108550225 SHA ee6ff49053356676954c2f1d1105f229da9e271ec1741e886e0bb45b47dc558c filename Youtube queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov 14 22:00:21 9d5danza8fcrw4k60qhbr7k.prefix.insure mail_logs: Info: MID 101104085 SHA 77a076df27ec9459ed4d900f4b0fa58a6d139d5483f1e9cbdd84a3f77707b2fe filename Youtube queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov 14 20:55:33 1nftl7.random.healthcare mail_logs: Info: MID 115872223 SHA 76fa60dd90c92fa78572e58b190fb318386ed957d190d3be32b1e3eb299c5e5e filename Youtube queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov 14 20:54:46 1nftl7.random.healthcare mail_logs: Info: MID 115872174 SHA 3471bc77edb8764814ab1cd6d99af6c0feef06011c045fbd3df960af240175dc filename Youtube queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov 14 20:24:32 x5lqjcpvpcg.kwgirc.kg mail_logs: Info: MID 115330889 SHA c610157dbe7d370034bb2c816976198ab8102835b91719c62ccfdc44464ffda2 filename Facebook queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<38>Nov 14 20:23:22 9d5danza8fcrw4k60qhbr7k.prefix.insure mail_logs: Info: MID 101100063 SHA 8730fb9cf0face312f06ef654e884d8c0964ad98cfb7b82638637fc767ef7785 filename Youtube queued for possible file analysis upload",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_secure_email_gateway-log-default",
+    "event_count": 12,
+    "numeric_keyword_fields": [],
+    "package": "cisco_secure_email_gateway",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-09-11T03:02:57.000Z",
+      "cloudflare_logpush": {
+        "magic_ids": {
+          "action": "pass",
+          "colo": {
+            "city": "Tokyo",
+            "code": "NRT"
+          },
+          "destination": {
+            "ip": "203.0.113.88",
+            "port": 80
+          },
+          "signature": {
+            "id": "2031296",
+            "message": "ET CURRENT_EVENTS [Fireeye] POSSIBLE HackTool.TCP.Rubeus.[User32LogonProcesss]",
+            "revision": 1
+          },
+          "source": {
+            "ip": "192.0.2.127",
+            "port": 44667
+          },
+          "timestamp": "2051-09-11T03:02:57.000Z",
+          "transport": "tcp"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.88",
+        "port": 80
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "{\"Action\":\"pass\",\"ColoCode\":\"NRT\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":80,\"Protocol\":\"tcp\",\"SignatureID\":2031296,\"SignatureMessage\":\"ET CURRENT_EVENTS [Fireeye] POSSIBLE HackTool.TCP.Rubeus.[User32LogonProcesss]\",\"SignatureRevision\":1,\"SourceIP\":\"192.0.2.127\",\"SourcePort\":44667,\"Timestamp\":\"2051-09-11T03:02:57Z\",\"ColoCity\":\"Tokyo\"}",
+        "type": [
+          "info",
+          "allowed"
+        ]
+      },
+      "network": {
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.88",
+          "192.0.2.127"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "port": 44667
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-09-11T03:03:59.000Z",
+      "cloudflare_logpush": {
+        "magic_ids": {
+          "action": "block",
+          "colo": {
+            "city": "Tokyo",
+            "code": "NRT"
+          },
+          "destination": {
+            "ip": "203.0.113.88",
+            "port": 39889
+          },
+          "signature": {
+            "id": "2022699",
+            "message": "ET EXPLOIT Quanta LTE Router UDP Backdoor Activation Attempt",
+            "revision": 1
+          },
+          "source": {
+            "ip": "192.0.2.127",
+            "port": 40957
+          },
+          "timestamp": "2051-09-11T03:03:59.000Z",
+          "transport": "udp"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.88",
+        "port": 39889
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "{\"Action\":\"block\",\"ColoCode\":\"NRT\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":39889,\"Protocol\":\"udp\",\"SignatureID\":2022699,\"SignatureMessage\":\"ET EXPLOIT Quanta LTE Router UDP Backdoor Activation Attempt\",\"SignatureRevision\":1,\"SourceIP\":\"192.0.2.127\",\"SourcePort\":40957,\"Timestamp\":\"2051-09-11T03:03:59Z\",\"ColoCity\":\"Tokyo\"}",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "network": {
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.88",
+          "192.0.2.127"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "port": 40957
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Action\":\"pass\",\"ColoCode\":\"NRT\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":80,\"Protocol\":\"tcp\",\"SignatureID\":2031296,\"SignatureMessage\":\"ET CURRENT_EVENTS [Fireeye] POSSIBLE HackTool.TCP.Rubeus.[User32LogonProcesss]\",\"SignatureRevision\":1,\"SourceIP\":\"192.0.2.127\",\"SourcePort\":44667,\"Timestamp\":\"2051-09-11T03:02:57Z\",\"ColoCity\":\"Tokyo\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Action\":\"block\",\"ColoCode\":\"NRT\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":39889,\"Protocol\":\"udp\",\"SignatureID\":2022699,\"SignatureMessage\":\"ET EXPLOIT Quanta LTE Router UDP Backdoor Activation Attempt\",\"SignatureRevision\":1,\"SourceIP\":\"192.0.2.127\",\"SourcePort\":40957,\"Timestamp\":\"2051-09-11T03:03:59Z\",\"ColoCity\":\"Tokyo\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "magic_ids",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-magic_ids-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

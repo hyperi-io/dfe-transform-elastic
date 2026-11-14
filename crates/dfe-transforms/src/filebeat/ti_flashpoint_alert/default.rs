@@ -69,8 +69,7 @@ impl Transform for Default {
 
             event.set("event.kind", json!("alert"))?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: // Replace '-' with '_' in field names\nString normalize(String str) {\n  return str.replace('-', '_');\n}\n\n// Recursive function to process objects\ndef normalizeFields(def obj) {\n  if (obj instanceof Map) {\n    def newObj = new HashMap();\n    for (entry in obj.entrySet()) {\n      String newKey = normalize(entry.getKey());\n      newObj.put(newKey, normalizeFields(entry.getValue()));\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = new ArrayList();\n    for (item in obj) {\n      newList.add(normalizeFields(item));\n    }\n    return newList;\n  }\n  return obj;\n}\n\n// NOTE:\n// - Normalizes all field names (hyphen -> underscore)\n// - Populates ctx.ti_flashpoint.alert with normalized data\n// - Removes ctx.json after processing\nif (ctx.json != null) {\n  ctx.ti_flashpoint = ctx.ti_flashpoint ?: [:];\n  ctx.ti_flashpoint.alert = normalizeFields(ctx.json);\n  ctx.remove('json');\n}
+            // The pipeline's script, emitted as the runtime's equivalent
             rewrite_keys(
                 event,
                 &RewriteKeys::new(
@@ -1186,8 +1185,7 @@ impl Transform for Default {
                 event.remove("ti_flashpoint.alert.resource.link");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\nmap.values().removeIf(v -> {\n\tif (v instanceof Map) {\n\thandleMap(v);\n\t} else if (v instanceof List) {\n\thandleList(v);\n\t}\n\treturn v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n});\n}\nvoid handleList(List list) {\nlist.removeIf(v -> {\n\tif (v instanceof Map) {\n\thandleMap(v);\n\t} else if (v instanceof List) {\n\thandleList(v);\n\t}\n\treturn v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n});\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

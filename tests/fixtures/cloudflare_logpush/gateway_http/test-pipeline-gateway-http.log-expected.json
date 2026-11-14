@@ -1,0 +1,840 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-05-03T20:55:05.000Z",
+      "cloudflare_logpush": {
+        "gateway_http": {
+          "account_id": "a2509937199f62aaca900ea3db09a567",
+          "action": "block",
+          "blocked_file": {
+            "hash": "91dc1db739a705105e1c763bfdbdaa84c0de8",
+            "name": "downloaded_test",
+            "reason": "malware",
+            "size": 43,
+            "type": "bin"
+          },
+          "destination": {
+            "ip": "203.0.113.88",
+            "port": 443
+          },
+          "downloaded_files": [
+            "downloaded_file",
+            "downloaded_test"
+          ],
+          "file_info": {
+            "files": [
+              {
+                "name": "downloaded_file",
+                "size": 43
+              },
+              {
+                "name": "downloaded_test",
+                "size": 341
+              }
+            ]
+          },
+          "host": {
+            "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+            "name": "tp-yfgp-zu4"
+          },
+          "isolated": false,
+          "policy": {
+            "id": "04623cbb-18af-4446-85f4-d4aae0edfaa1",
+            "name": "Block Yahoo"
+          },
+          "request": {
+            "host": "gpae.nakus.com",
+            "method": "GET",
+            "referrer": "https://www.example.com/",
+            "version": "HTTP/2"
+          },
+          "request_id": "1798bfb6b705423bc65f422748449316",
+          "response": {
+            "status_code": 302
+          },
+          "source": {
+            "internal_ip": "192.168.35.82",
+            "ip": "192.0.2.127",
+            "port": 47924
+          },
+          "timestamp": "2051-05-03T20:55:05.000Z",
+          "untrusted_certificate_action": "none",
+          "uploaded_files": [
+            "uploaded_file",
+            "uploaded_test"
+          ],
+          "url": "https://test.com",
+          "user": {
+            "email": "user@example.com",
+            "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+          },
+          "user_agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.88",
+        "port": 443
+      },
+      "device": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"AccountID\":\"a2509937199f62aaca900ea3db09a567\",\"Action\":\"block\",\"BlockedFileHash\":\"91dc1db739a705105e1c763bfdbdaa84c0de8\",\"BlockedFileName\":\"downloaded_test\",\"BlockedFileReason\":\"malware\",\"BlockedFileSize\":43,\"BlockedFileType\":\"bin\",\"Datetime\":\"2051-05-03T20:55:05Z\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"DownloadedFileNames\":[\"downloaded_file\",\"downloaded_test\"],\"Email\":\"user@example.com\",\"FileInfo\":{\"files\":[{\"name\":\"downloaded_file\",\"size\":43},{\"name\":\"downloaded_test\",\"size\":341}]},\"HTTPHost\":\"gpae.nakus.com\",\"HTTPMethod\":\"GET\",\"HTTPStatusCode\":302,\"HTTPVersion\":\"HTTP/2\",\"IsIsolated\":false,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"Block Yahoo\",\"Referer\":\"https://www.example.com/\",\"RequestID\":\"1798bfb6b705423bc65f422748449316\",\"SourceInternalIP\":\"192.168.35.82\",\"SourceIP\":\"192.0.2.127\",\"SourcePort\":47924,\"UntrustedCertificateAction\":\"none\",\"UploadedFileNames\":[\"uploaded_file\",\"uploaded_test\"],\"URL\":\"https://test.com\",\"UserAgent\":\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "file": {
+        "extension": "bin",
+        "hash": {
+          "sha256": "91dc1db739a705105e1c763bfdbdaa84c0de8"
+        },
+        "name": "downloaded_test",
+        "size": 43
+      },
+      "host": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+        "name": "tp-yfgp-zu4"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "https://www.example.com/"
+        },
+        "response": {
+          "status_code": 302
+        },
+        "version": "HTTP/2"
+      },
+      "related": {
+        "hash": [
+          "91dc1db739a705105e1c763bfdbdaa84c0de8"
+        ],
+        "hosts": [
+          "528d7697-f63a-11eb-9960-4c837e977cfa",
+          "tp-yfgp-zu4",
+          "gpae.nakus.com"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88",
+          "192.168.35.82"
+        ],
+        "user": [
+          "098ecbea-84f6-5e16-bd8f-36946486388a",
+          "user@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "port": 47924
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "test.com",
+        "original": "https://test.com",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "user@example.com",
+        "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0"
+      }
+    },
+    {
+      "@timestamp": "2051-05-03T20:55:05.000Z",
+      "cloudflare_logpush": {
+        "gateway_http": {
+          "account_id": "a2509937199f62aaca900ea3db09a567",
+          "action": "block",
+          "blocked_file": {
+            "hash": "91dc1db739a705105e1c763bfdbdaa84c0de8",
+            "name": "downloaded_test",
+            "reason": "malware",
+            "size": 43,
+            "type": "bin"
+          },
+          "destination": {
+            "ip": "203.0.113.88",
+            "port": 443
+          },
+          "downloaded_files": [
+            "downloaded_file",
+            "downloaded_test"
+          ],
+          "file_info": {
+            "files": [
+              {
+                "name": "downloaded_file",
+                "size": 43
+              },
+              {
+                "name": "downloaded_test",
+                "size": 341
+              }
+            ]
+          },
+          "host": {
+            "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+            "name": "tp-yfgp-zu4"
+          },
+          "isolated": false,
+          "policy": {
+            "id": "04623cbb-18af-4446-85f4-d4aae0edfaa1",
+            "name": "Block Yahoo"
+          },
+          "request": {
+            "host": "gpae.nakus.com",
+            "method": "GET",
+            "referrer": "https://www.example.com/",
+            "version": "HTTP/2"
+          },
+          "request_id": "1798bfb6b705423bc65f422748449316",
+          "response": {
+            "status_code": 302
+          },
+          "source": {
+            "internal_ip": "192.168.35.82",
+            "ip": "192.0.2.127",
+            "port": 47924
+          },
+          "timestamp": "2051-05-03T20:55:05.000Z",
+          "untrusted_certificate_action": "none",
+          "uploaded_files": [
+            "uploaded_file",
+            "uploaded_test"
+          ],
+          "url": "https://test.com",
+          "user": {
+            "email": "user@example.com",
+            "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+          },
+          "user_agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.88",
+        "port": 443
+      },
+      "device": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"AccountID\":\"a2509937199f62aaca900ea3db09a567\",\"Action\":\"block\",\"BlockedFileHash\":\"91dc1db739a705105e1c763bfdbdaa84c0de8\",\"BlockedFileName\":\"downloaded_test\",\"BlockedFileReason\":\"malware\",\"BlockedFileSize\":43,\"BlockedFileType\":\"bin\",\"Datetime\":\"2566760105\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"DownloadedFileNames\":[\"downloaded_file\",\"downloaded_test\"],\"Email\":\"user@example.com\",\"FileInfo\":{\"files\":[{\"name\":\"downloaded_file\",\"size\":43},{\"name\":\"downloaded_test\",\"size\":341}]},\"HTTPHost\":\"gpae.nakus.com\",\"HTTPMethod\":\"GET\",\"HTTPStatusCode\":302,\"HTTPVersion\":\"HTTP/2\",\"IsIsolated\":false,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"Block Yahoo\",\"Referer\":\"https://www.example.com/\",\"RequestID\":\"1798bfb6b705423bc65f422748449316\",\"SourceInternalIP\":\"192.168.35.82\",\"SourceIP\":\"192.0.2.127\",\"SourcePort\":47924,\"UntrustedCertificateAction\":\"none\",\"UploadedFileNames\":[\"uploaded_file\",\"uploaded_test\"],\"URL\":\"https://test.com\",\"UserAgent\":\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "file": {
+        "extension": "bin",
+        "hash": {
+          "sha256": "91dc1db739a705105e1c763bfdbdaa84c0de8"
+        },
+        "name": "downloaded_test",
+        "size": 43
+      },
+      "host": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+        "name": "tp-yfgp-zu4"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "https://www.example.com/"
+        },
+        "response": {
+          "status_code": 302
+        },
+        "version": "HTTP/2"
+      },
+      "related": {
+        "hash": [
+          "91dc1db739a705105e1c763bfdbdaa84c0de8"
+        ],
+        "hosts": [
+          "528d7697-f63a-11eb-9960-4c837e977cfa",
+          "tp-yfgp-zu4",
+          "gpae.nakus.com"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88",
+          "192.168.35.82"
+        ],
+        "user": [
+          "098ecbea-84f6-5e16-bd8f-36946486388a",
+          "user@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "port": 47924
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "test.com",
+        "original": "https://test.com",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "user@example.com",
+        "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0"
+      }
+    },
+    {
+      "@timestamp": "2051-05-03T20:55:05.000Z",
+      "cloudflare_logpush": {
+        "gateway_http": {
+          "account_id": "a2509937199f62aaca900ea3db09a567",
+          "action": "block",
+          "blocked_file": {
+            "hash": "91dc1db739a705105e1c763bfdbdaa84c0de8",
+            "name": "downloaded_test",
+            "reason": "malware",
+            "size": 43,
+            "type": "bin"
+          },
+          "destination": {
+            "ip": "203.0.113.88",
+            "port": 443
+          },
+          "downloaded_files": [
+            "downloaded_file",
+            "downloaded_test"
+          ],
+          "file_info": {
+            "files": [
+              {
+                "name": "downloaded_file",
+                "size": 43
+              },
+              {
+                "name": "downloaded_test",
+                "size": 341
+              }
+            ]
+          },
+          "host": {
+            "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+            "name": "tp-yfgp-zu4"
+          },
+          "isolated": false,
+          "policy": {
+            "id": "04623cbb-18af-4446-85f4-d4aae0edfaa1",
+            "name": "Block Yahoo"
+          },
+          "request": {
+            "host": "gpae.nakus.com",
+            "method": "GET",
+            "referrer": "https://www.example.com/",
+            "version": "HTTP/2"
+          },
+          "request_id": "1798bfb6b705423bc65f422748449316",
+          "response": {
+            "status_code": 302
+          },
+          "source": {
+            "internal_ip": "192.168.35.82",
+            "ip": "192.0.2.127",
+            "port": 47924
+          },
+          "timestamp": "2051-05-03T20:55:05.000Z",
+          "untrusted_certificate_action": "none",
+          "uploaded_files": [
+            "uploaded_file",
+            "uploaded_test"
+          ],
+          "url": "https://test.com",
+          "user": {
+            "email": "user@example.com",
+            "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+          },
+          "user_agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.88",
+        "port": 443
+      },
+      "device": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"AccountID\":\"a2509937199f62aaca900ea3db09a567\",\"Action\":\"block\",\"BlockedFileHash\":\"91dc1db739a705105e1c763bfdbdaa84c0de8\",\"BlockedFileName\":\"downloaded_test\",\"BlockedFileReason\":\"malware\",\"BlockedFileSize\":43,\"BlockedFileType\":\"bin\",\"Datetime\":\"2566760105000000000\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"DownloadedFileNames\":[\"downloaded_file\",\"downloaded_test\"],\"Email\":\"user@example.com\",\"FileInfo\":{\"files\":[{\"name\":\"downloaded_file\",\"size\":43},{\"name\":\"downloaded_test\",\"size\":341}]},\"HTTPHost\":\"gpae.nakus.com\",\"HTTPMethod\":\"GET\",\"HTTPStatusCode\":302,\"HTTPVersion\":\"HTTP/2\",\"IsIsolated\":false,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"Block Yahoo\",\"Referer\":\"https://www.example.com/\",\"RequestID\":\"1798bfb6b705423bc65f422748449316\",\"SourceInternalIP\":\"192.168.35.82\",\"SourceIP\":\"192.0.2.127\",\"SourcePort\":47924,\"UntrustedCertificateAction\":\"none\",\"UploadedFileNames\":[\"uploaded_file\",\"uploaded_test\"],\"URL\":\"https://test.com\",\"UserAgent\":\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "file": {
+        "extension": "bin",
+        "hash": {
+          "sha256": "91dc1db739a705105e1c763bfdbdaa84c0de8"
+        },
+        "name": "downloaded_test",
+        "size": 43
+      },
+      "host": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+        "name": "tp-yfgp-zu4"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "https://www.example.com/"
+        },
+        "response": {
+          "status_code": 302
+        },
+        "version": "HTTP/2"
+      },
+      "related": {
+        "hash": [
+          "91dc1db739a705105e1c763bfdbdaa84c0de8"
+        ],
+        "hosts": [
+          "528d7697-f63a-11eb-9960-4c837e977cfa",
+          "tp-yfgp-zu4",
+          "gpae.nakus.com"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88",
+          "192.168.35.82"
+        ],
+        "user": [
+          "098ecbea-84f6-5e16-bd8f-36946486388a",
+          "user@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "port": 47924
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "test.com",
+        "original": "https://test.com",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "user@example.com",
+        "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0"
+      }
+    },
+    {
+      "@timestamp": "2053-03-31T23:56:50.000Z",
+      "cloudflare_logpush": {
+        "gateway_http": {
+          "account_id": "a2509937199f62aaca900ea3db09a567",
+          "action": "allow",
+          "blocked_file": {
+            "reason": "unknown",
+            "size": 0
+          },
+          "category": {
+            "ids": [
+              "26",
+              "81"
+            ],
+            "names": [
+              "Technology",
+              "Content Servers"
+            ]
+          },
+          "destination": {
+            "ip": "198.51.100.211",
+            "port": 443
+          },
+          "destination_ip": {
+            "continent_code": "NA",
+            "country_code": "US"
+          },
+          "downloaded_files": [
+            "<unknown file name>"
+          ],
+          "file_info": {
+            "files": [
+              {
+                "action": "none",
+                "content_type": "text/plain; charset=utf-8",
+                "direction": "upload",
+                "file_hash": "<file hash>",
+                "file_name": "<file name>",
+                "file_size": 2101
+              }
+            ]
+          },
+          "forensic_copy_status": "none",
+          "host": {
+            "id": "6a3c221a038948cdeb134949cbf7709a",
+            "name": "aclqed_vage"
+          },
+          "isolated": false,
+          "quarantined": false,
+          "request": {
+            "host": "example.com",
+            "method": "POST",
+            "referrer": "https://example.com/",
+            "version": "HTTP/2"
+          },
+          "request_id": "34e4a3dd0ca5969540671fc3b52ba9c0",
+          "response": {
+            "status_code": 200
+          },
+          "session_id": "2d396829a0ce8e986ebaaaa0d8c89d9c",
+          "source": {
+            "port": 56509
+          },
+          "source_ip": {
+            "continent_code": "NA",
+            "country_code": "US"
+          },
+          "timestamp": "2053-03-31T23:56:50.000Z",
+          "untrusted_certificate_action": "none",
+          "uploaded_files": [
+            "<unknown file name>"
+          ],
+          "url": "https://example.com",
+          "user": {
+            "email": "kc@example.com",
+            "id": "63d3dce8639fb2e8f20cbb0e6d2a2949"
+          },
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+        }
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "device": {
+        "id": "6a3c221a038948cdeb134949cbf7709a"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "allow",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"AccountID\":\"a2509937199f62aaca900ea3db09a567\",\"Action\":\"allow\",\"BlockedFileHash\":\"\",\"BlockedFileName\":\"\",\"BlockedFileReason\":\"unknown\",\"BlockedFileSize\":0,\"Datetime\":\"2053-03-31T23:56:50Z\",\"DestinationIP\":\"198.51.100.211\",\"DestinationPort\":443,\"DeviceName\":\"aclqed_vage\",\"DownloadedFileNames\":[\"<unknown file name>\"],\"Email\":\"kc@example.com\",\"FileInfo\":{\"files\":[{\"direction\":\"upload\",\"file_name\":\"<file name>\",\"file_hash\":\"<file hash>\",\"file_size\":2101,\"content_type\":\"text/plain; charset=utf-8\",\"action\":\"none\"}]},\"HTTPHost\":\"example.com\",\"HTTPMethod\":\"POST\",\"HTTPStatusCode\":200,\"HTTPVersion\":\"HTTP/2\",\"PolicyID\":\"\",\"PolicyName\":\"\",\"Referer\":\"https://example.com/\",\"RequestID\":\"34e4a3dd0ca5969540671fc3b52ba9c0\",\"SessionID\":\"2d396829a0ce8e986ebaaaa0d8c89d9c\",\"SourceInternalIP\":\"\",\"SourceIP\":\"\",\"SourcePort\":56509,\"UntrustedCertificateAction\":\"none\",\"UploadedFileNames\":[\"<unknown file name>\"],\"URL\":\"https://example.com\",\"UserAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36\",\"UserID\":\"63d3dce8639fb2e8f20cbb0e6d2a2949\",\"BlockedFileType\":\"\",\"DownloadMatchedDlpProfileEntries\":[],\"DownloadMatchedDlpProfiles\":[],\"IsIsolated\":false,\"UploadMatchedDlpProfileEntries\":[],\"UploadMatchedDlpProfiles\":[],\"DeviceID\":\"6a3c221a038948cdeb134949cbf7709a\",\"CategoryIDs\":[26,81],\"CategoryNames\":[\"Technology\",\"Content Servers\"],\"Quarantined\":false,\"SourceIPContinentCode\":\"NA\",\"SourceIPCountryCode\":\"US\",\"ApplicationNames\":[],\"DestinationIPContinentCode\":\"NA\",\"DestinationIPCountryCode\":\"US\",\"ForensicCopyStatus\":\"none\"}",
+        "type": [
+          "info",
+          "allowed"
+        ]
+      },
+      "file": {
+        "size": 0
+      },
+      "host": {
+        "id": "6a3c221a038948cdeb134949cbf7709a",
+        "name": "aclqed_vage"
+      },
+      "http": {
+        "request": {
+          "method": "POST",
+          "referrer": "https://example.com/"
+        },
+        "response": {
+          "status_code": 200
+        },
+        "version": "HTTP/2"
+      },
+      "related": {
+        "hosts": [
+          "6a3c221a038948cdeb134949cbf7709a",
+          "aclqed_vage",
+          "example.com"
+        ],
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "63d3dce8639fb2e8f20cbb0e6d2a2949",
+          "kc@example.com"
+        ]
+      },
+      "source": {
+        "port": 56509
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "kc@example.com",
+        "id": "63d3dce8639fb2e8f20cbb0e6d2a2949"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "@timestamp": "2054-04-29T08:03:00.000Z",
+      "cloudflare_logpush": {
+        "gateway_http": {
+          "account_id": "a2509937199f62aaca900ea3db09a567",
+          "action": "block",
+          "app_control_info": {
+            "matched_apis": [
+              "api.salesforce.com"
+            ],
+            "matched_groups": [
+              "sanctioned-saas"
+            ],
+            "matched_operations": [
+              "create"
+            ]
+          },
+          "application": {
+            "ids": [
+              "1218"
+            ],
+            "names": [
+              "Salesforce"
+            ],
+            "statuses": [
+              "sanctioned"
+            ]
+          },
+          "blocked_file": {
+            "reason": "unknown",
+            "size": 0
+          },
+          "destination": {
+            "ip": "203.0.113.88",
+            "port": 443
+          },
+          "host": {
+            "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+            "name": "tp-yfgp-zu4"
+          },
+          "isolated": false,
+          "policy": {
+            "id": "04623cbb-18af-4446-85f4-d4aae0edfaa1",
+            "name": "Block unsanctioned SaaS write"
+          },
+          "redirect_target_uri": "https://block.example.com/blocked-app",
+          "registration_id": "8d7a1f3f-25ba-4d7a-8f4e-5a9c2a4b5a4c",
+          "request": {
+            "host": "api.salesforce.com",
+            "method": "POST",
+            "referrer": "https://internal.example.com/",
+            "version": "HTTP/2"
+          },
+          "request_id": "7929daf9b994215ec86c485944454667",
+          "response": {
+            "status_code": 307
+          },
+          "source": {
+            "internal_ip": "192.168.35.82",
+            "ip": "192.0.2.127",
+            "port": 47925
+          },
+          "timestamp": "2054-04-29T08:03:00.000Z",
+          "untrusted_certificate_action": "none",
+          "url": "https://api.salesforce.com/services/data/v59.0/sobjects/Account",
+          "user": {
+            "email": "user@example.com",
+            "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+          },
+          "user_agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/127.0"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.88",
+        "port": 443
+      },
+      "device": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"AccountID\":\"a2509937199f62aaca900ea3db09a567\",\"Action\":\"block\",\"AppControlInfo\":{\"matched_operations\":[\"create\"],\"matched_apis\":[\"api.salesforce.com\"],\"matched_groups\":[\"sanctioned-saas\"]},\"ApplicationIDs\":[\"1218\"],\"ApplicationNames\":[\"Salesforce\"],\"ApplicationStatuses\":[\"sanctioned\"],\"BlockedFileHash\":\"\",\"BlockedFileName\":\"\",\"BlockedFileReason\":\"unknown\",\"BlockedFileSize\":0,\"BlockedFileType\":\"\",\"Datetime\":\"2054-04-29T08:03:00Z\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"DownloadedFileNames\":[],\"Email\":\"user@example.com\",\"FileInfo\":{\"files\":[]},\"HTTPHost\":\"api.salesforce.com\",\"HTTPMethod\":\"POST\",\"HTTPStatusCode\":307,\"HTTPVersion\":\"HTTP/2\",\"IsIsolated\":false,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"Block unsanctioned SaaS write\",\"RedirectTargetURI\":\"https://block.example.com/blocked-app\",\"Referer\":\"https://internal.example.com/\",\"RegistrationID\":\"8d7a1f3f-25ba-4d7a-8f4e-5a9c2a4b5a4c\",\"RequestID\":\"7929daf9b994215ec86c485944454667\",\"SourceInternalIP\":\"192.168.35.82\",\"SourceIP\":\"192.0.2.127\",\"SourcePort\":47925,\"UntrustedCertificateAction\":\"none\",\"UploadedFileNames\":[],\"URL\":\"https://api.salesforce.com/services/data/v59.0/sobjects/Account\",\"UserAgent\":\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/127.0\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "file": {
+        "size": 0
+      },
+      "host": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+        "name": "tp-yfgp-zu4"
+      },
+      "http": {
+        "request": {
+          "method": "POST",
+          "referrer": "https://internal.example.com/"
+        },
+        "response": {
+          "status_code": 307
+        },
+        "version": "HTTP/2"
+      },
+      "related": {
+        "hosts": [
+          "528d7697-f63a-11eb-9960-4c837e977cfa",
+          "tp-yfgp-zu4",
+          "api.salesforce.com"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88",
+          "192.168.35.82"
+        ],
+        "user": [
+          "098ecbea-84f6-5e16-bd8f-36946486388a",
+          "user@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "port": 47925
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "api.salesforce.com",
+        "original": "https://api.salesforce.com/services/data/v59.0/sobjects/Account",
+        "path": "/services/data/v59.0/sobjects/Account",
+        "scheme": "https"
+      },
+      "user": {
+        "email": "user@example.com",
+        "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/127.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"AccountID\":\"a2509937199f62aaca900ea3db09a567\",\"Action\":\"block\",\"BlockedFileHash\":\"91dc1db739a705105e1c763bfdbdaa84c0de8\",\"BlockedFileName\":\"downloaded_test\",\"BlockedFileReason\":\"malware\",\"BlockedFileSize\":43,\"BlockedFileType\":\"bin\",\"Datetime\":\"2051-05-03T20:55:05Z\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"DownloadedFileNames\":[\"downloaded_file\",\"downloaded_test\"],\"Email\":\"user@example.com\",\"FileInfo\":{\"files\":[{\"name\":\"downloaded_file\",\"size\":43},{\"name\":\"downloaded_test\",\"size\":341}]},\"HTTPHost\":\"gpae.nakus.com\",\"HTTPMethod\":\"GET\",\"HTTPStatusCode\":302,\"HTTPVersion\":\"HTTP/2\",\"IsIsolated\":false,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"Block Yahoo\",\"Referer\":\"https://www.example.com/\",\"RequestID\":\"1798bfb6b705423bc65f422748449316\",\"SourceInternalIP\":\"192.168.35.82\",\"SourceIP\":\"192.0.2.127\",\"SourcePort\":47924,\"UntrustedCertificateAction\":\"none\",\"UploadedFileNames\":[\"uploaded_file\",\"uploaded_test\"],\"URL\":\"https://test.com\",\"UserAgent\":\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AccountID\":\"a2509937199f62aaca900ea3db09a567\",\"Action\":\"block\",\"BlockedFileHash\":\"91dc1db739a705105e1c763bfdbdaa84c0de8\",\"BlockedFileName\":\"downloaded_test\",\"BlockedFileReason\":\"malware\",\"BlockedFileSize\":43,\"BlockedFileType\":\"bin\",\"Datetime\":\"2566760105\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"DownloadedFileNames\":[\"downloaded_file\",\"downloaded_test\"],\"Email\":\"user@example.com\",\"FileInfo\":{\"files\":[{\"name\":\"downloaded_file\",\"size\":43},{\"name\":\"downloaded_test\",\"size\":341}]},\"HTTPHost\":\"gpae.nakus.com\",\"HTTPMethod\":\"GET\",\"HTTPStatusCode\":302,\"HTTPVersion\":\"HTTP/2\",\"IsIsolated\":false,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"Block Yahoo\",\"Referer\":\"https://www.example.com/\",\"RequestID\":\"1798bfb6b705423bc65f422748449316\",\"SourceInternalIP\":\"192.168.35.82\",\"SourceIP\":\"192.0.2.127\",\"SourcePort\":47924,\"UntrustedCertificateAction\":\"none\",\"UploadedFileNames\":[\"uploaded_file\",\"uploaded_test\"],\"URL\":\"https://test.com\",\"UserAgent\":\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AccountID\":\"a2509937199f62aaca900ea3db09a567\",\"Action\":\"block\",\"BlockedFileHash\":\"91dc1db739a705105e1c763bfdbdaa84c0de8\",\"BlockedFileName\":\"downloaded_test\",\"BlockedFileReason\":\"malware\",\"BlockedFileSize\":43,\"BlockedFileType\":\"bin\",\"Datetime\":\"2566760105000000000\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"DownloadedFileNames\":[\"downloaded_file\",\"downloaded_test\"],\"Email\":\"user@example.com\",\"FileInfo\":{\"files\":[{\"name\":\"downloaded_file\",\"size\":43},{\"name\":\"downloaded_test\",\"size\":341}]},\"HTTPHost\":\"gpae.nakus.com\",\"HTTPMethod\":\"GET\",\"HTTPStatusCode\":302,\"HTTPVersion\":\"HTTP/2\",\"IsIsolated\":false,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"Block Yahoo\",\"Referer\":\"https://www.example.com/\",\"RequestID\":\"1798bfb6b705423bc65f422748449316\",\"SourceInternalIP\":\"192.168.35.82\",\"SourceIP\":\"192.0.2.127\",\"SourcePort\":47924,\"UntrustedCertificateAction\":\"none\",\"UploadedFileNames\":[\"uploaded_file\",\"uploaded_test\"],\"URL\":\"https://test.com\",\"UserAgent\":\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/112.0\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AccountID\":\"a2509937199f62aaca900ea3db09a567\",\"Action\":\"allow\",\"BlockedFileHash\":\"\",\"BlockedFileName\":\"\",\"BlockedFileReason\":\"unknown\",\"BlockedFileSize\":0,\"Datetime\":\"2053-03-31T23:56:50Z\",\"DestinationIP\":\"198.51.100.211\",\"DestinationPort\":443,\"DeviceName\":\"aclqed_vage\",\"DownloadedFileNames\":[\"<unknown file name>\"],\"Email\":\"kc@example.com\",\"FileInfo\":{\"files\":[{\"direction\":\"upload\",\"file_name\":\"<file name>\",\"file_hash\":\"<file hash>\",\"file_size\":2101,\"content_type\":\"text/plain; charset=utf-8\",\"action\":\"none\"}]},\"HTTPHost\":\"example.com\",\"HTTPMethod\":\"POST\",\"HTTPStatusCode\":200,\"HTTPVersion\":\"HTTP/2\",\"PolicyID\":\"\",\"PolicyName\":\"\",\"Referer\":\"https://example.com/\",\"RequestID\":\"34e4a3dd0ca5969540671fc3b52ba9c0\",\"SessionID\":\"2d396829a0ce8e986ebaaaa0d8c89d9c\",\"SourceInternalIP\":\"\",\"SourceIP\":\"\",\"SourcePort\":56509,\"UntrustedCertificateAction\":\"none\",\"UploadedFileNames\":[\"<unknown file name>\"],\"URL\":\"https://example.com\",\"UserAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36\",\"UserID\":\"63d3dce8639fb2e8f20cbb0e6d2a2949\",\"BlockedFileType\":\"\",\"DownloadMatchedDlpProfileEntries\":[],\"DownloadMatchedDlpProfiles\":[],\"IsIsolated\":false,\"UploadMatchedDlpProfileEntries\":[],\"UploadMatchedDlpProfiles\":[],\"DeviceID\":\"6a3c221a038948cdeb134949cbf7709a\",\"CategoryIDs\":[26,81],\"CategoryNames\":[\"Technology\",\"Content Servers\"],\"Quarantined\":false,\"SourceIPContinentCode\":\"NA\",\"SourceIPCountryCode\":\"US\",\"ApplicationNames\":[],\"DestinationIPContinentCode\":\"NA\",\"DestinationIPCountryCode\":\"US\",\"ForensicCopyStatus\":\"none\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AccountID\":\"a2509937199f62aaca900ea3db09a567\",\"Action\":\"block\",\"AppControlInfo\":{\"matched_operations\":[\"create\"],\"matched_apis\":[\"api.salesforce.com\"],\"matched_groups\":[\"sanctioned-saas\"]},\"ApplicationIDs\":[\"1218\"],\"ApplicationNames\":[\"Salesforce\"],\"ApplicationStatuses\":[\"sanctioned\"],\"BlockedFileHash\":\"\",\"BlockedFileName\":\"\",\"BlockedFileReason\":\"unknown\",\"BlockedFileSize\":0,\"BlockedFileType\":\"\",\"Datetime\":\"2054-04-29T08:03:00Z\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"DownloadedFileNames\":[],\"Email\":\"user@example.com\",\"FileInfo\":{\"files\":[]},\"HTTPHost\":\"api.salesforce.com\",\"HTTPMethod\":\"POST\",\"HTTPStatusCode\":307,\"HTTPVersion\":\"HTTP/2\",\"IsIsolated\":false,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"Block unsanctioned SaaS write\",\"RedirectTargetURI\":\"https://block.example.com/blocked-app\",\"Referer\":\"https://internal.example.com/\",\"RegistrationID\":\"8d7a1f3f-25ba-4d7a-8f4e-5a9c2a4b5a4c\",\"RequestID\":\"7929daf9b994215ec86c485944454667\",\"SourceInternalIP\":\"192.168.35.82\",\"SourceIP\":\"192.0.2.127\",\"SourcePort\":47925,\"UntrustedCertificateAction\":\"none\",\"UploadedFileNames\":[],\"URL\":\"https://api.salesforce.com/services/data/v59.0/sobjects/Account\",\"UserAgent\":\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Firefox/127.0\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "gateway_http",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-gateway_http-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [
+      "cloudflare_logpush.gateway_http.category.ids",
+      "cloudflare_logpush.gateway_http.quarantined"
+    ],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

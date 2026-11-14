@@ -1,0 +1,438 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-01-21T18:52:15.838Z",
+      "agent": {
+        "ephemeral_id": "08c147b6-2cd3-4415-850c-1571f855e9b7",
+        "id": "d049edb1-7dd2-4538-866b-376e13cc6b63",
+        "name": "localhost.localdomain",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cloud": {
+        "provider": "AWS"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "created",
+        "category": [
+          "threat"
+        ],
+        "id": "8d62ee2d-5c95-5dc0-a3cd-d56af353718c",
+        "kind": "alert",
+        "original": "{\"threatId\":\"899fceb9-bc13-5a46-ad87-da48e9857c18\",\"severity\":\"MEDIUM\",\"detectionUrl\":\"https://test.wiz.io/detection\",\"description\":\"Process executed the touch binary with the relevant command line flag used to modify files date information such as creation time, and last modification time. This could indicate the presence of a threat actor achieving defense evasion using the Timestomping technique.\",\"trigger\":{\"ruleName\":\"Detections Webhook Test Rule\",\"source\":\"DETECTIONS\",\"type\":\"Created\",\"ruleId\":\"d45dc752-8d36-41ab-aaab-e30656253e3d\"},\"source\":\"DETECTIONS\",\"title\":\"Timestomping technique was detected\",\"tdrId\":\"43fb0aba-584a-5a35-bd6f-78c8987d0bd4\",\"triggeringEventsCount\":1,\"tdrSource\":\"WIZ_SENSOR\",\"mitreTechniques\":[\"T1070.006\"],\"primaryResource\":{\"externalId\":\"test-container\",\"kubernetesNamespaceId\":\"ns-abc\",\"type\":\"CONTAINER\",\"cloudProviderUrl\":\"https://console.aws.amazon.com/ecs/home?region=us-east-1#/clusters/prod-cluster/tasks\",\"providerUniqueId\":\"provider-resource-uid-456\",\"kubernetesClusterName\":\"prod-cluster\",\"cloudAccount\":{\"cloudPlatform\":\"AWS\",\"externalId\":\"134653897021\",\"id\":\"8a34ab88-850e-5265-b391-b62359ae5027\"},\"kubernetesNamespaceName\":\"production\",\"nativeType\":\"ecs#containerinstance\",\"name\":\"test-container\",\"kubernetesNodeName\":\"eks-node-1\",\"id\":\"fa181f60-db64-5ace-8011-7a9600478515\",\"region\":\"us-east-1\",\"kubernetesClusterId\":\"cluster-5678\",\"status\":\"Running\",\"kubernetesNodeId\":\"node-1234\"},\"createdAt\":\"2053-01-21T18:52:16.819883668Z\",\"timeframe\":{\"start\":\"2053-01-21T18:52:15.838Z\",\"end\":\"2053-01-21T18:52:15.838Z\"},\"mitreTactics\":[\"TA0005\"],\"id\":\"8f756b6c-d8d3-5203-a6b9-ff321790dada\",\"primaryActor\":{\"nativeType\":\"Microsoft Entra ID Application Service Principal\",\"name\":\"test-actor\",\"externalId\":\"test-actor\",\"id\":\"9e4df09f-63a6-48a1-a0a7-9c17bf0b238e\",\"type\":\"SERVICE_ACCOUNT\",\"email\":\"rfkh-feqho@hto.io\"},\"threatURL\":\"https://test.wiz.io/issues#~(issue~'899fceb9-bc13-5a46-ad87-da48e9857c18)\",\"triggeringEvent\":{\"cloudPlatform\":\"AWS\",\"origin\":\"WIZ_SENSOR\",\"externalId\":\"Ptrace##test-container-SensorRuleEngine##sen-id-142-bd820642-34f2-4d3c-90b6-c384df0fd528\",\"description\":\"The program /usr/bin/bash executed the program /usr/bin/touch on container test-container\",\"resources\":[{\"externalId\":\"test-container\",\"kubernetesNamespaceId\":\"ns-abc\",\"type\":\"CONTAINER\",\"cloudProviderUrl\":\"https://console.aws.amazon.com/ecs/home?region=us-east-1#/clusters/prod-cluster/tasks\",\"providerUniqueId\":\"provider-resource-uid-456\",\"kubernetesClusterName\":\"prod-cluster\",\"cloudAccount\":{\"cloudPlatform\":\"AWS\",\"externalId\":\"134653897021\",\"id\":\"8a34ab88-850e-5265-b391-b62359ae5027\"},\"kubernetesNamespaceName\":\"production\",\"nativeType\":\"ecs#containerinstance\",\"name\":\"test-container\",\"kubernetesNodeName\":\"eks-node-1\",\"id\":\"fa181f60-db64-5ace-8011-7a9600478515\",\"region\":\"us-east-1\",\"kubernetesClusterId\":\"cluster-5678\",\"status\":\"Running\",\"kubernetesNodeId\":\"node-1234\"}],\"source\":\"WizSensorAlert##RuleEngine\",\"runtimeDetails\":{\"processTree\":[{\"container\":{\"imageId\":\"d17515bc-e4b0-5095-8a2b-7bd26f6d4424\",\"name\":\"test-container\",\"externalId\":\"test-container\",\"imageExternalId\":\"sha256:fccc22321566d4dfae6704a809b6c38c350505dc69aaef8ce0122d7e21bd33cd\",\"id\":\"fa181f60-db64-5ace-8011-7a9600478515\"},\"executionTime\":\"2053-01-21T18:52:15.838Z\",\"path\":\"/usr/bin/touch\",\"size\":109616,\"id\":\"1560\",\"userId\":\"0\",\"command\":\"touch -r /usr/bin /tmp/uga\",\"hash\":\"f5d0e8530d63e4be1e7e0b72f887ff5b2e342ab3\",\"username\":\"root\"}]},\"cloudProviderUrl\":\"https://console.aws.amazon.com/cloudtrail/home?region=us-east-1#/events/Ptrace##test-container-SensorRuleEngine##sen-id-142-bd820642-34f2-4d3c-90b6-c384df0fd528\",\"actor\":{\"providerUniqueId\":\"provider-actor-id\",\"nativeType\":\"ecs#task\",\"name\":\"Test Actor\",\"externalId\":\"actor-external-id\",\"actingAs\":{\"nativeType\":\"aws#iamrole\",\"name\":\"AssumedRole\",\"id\":\"assumed-role-id\",\"type\":\"IAMRole\"},\"id\":\"9e4df09f-63a6-48a1-a0a7-9c17bf0b238e\",\"type\":\"Process\"},\"actorIPMeta\":{\"reputationDescription\":\"No malicious activity detected\",\"reputationSource\":\"Recorded Future\",\"country\":\"United States\",\"relatedAttackGroupNames\":\"None\",\"isForeign\":true,\"reputation\":\"Benign\",\"autonomousSystemNumber\":8075,\"autonomousSystemOrganization\":\"MICROSOFT-CORP-MSN-AS-BLOCK\"},\"name\":\"Timestomping technique was detected\",\"eventTime\":\"2053-01-21T18:52:15.838Z\",\"id\":\"8d62ee2d-5c95-5dc0-a3cd-d56af353718c\",\"category\":\"Detection\",\"status\":\"Success\",\"actorIP\":\"192.0.2.218\"},\"cloudOrganizations\":[{\"cloudProvider\":\"AWS\",\"name\":\"AcmeCloudOrg\",\"externalId\":\"o-1234567890\"}]}",
+        "outcome": "success",
+        "provider": "WizSensorAlert##RuleEngine",
+        "reference": "https://test.wiz.io/detection",
+        "severity": 47,
+        "type": [
+          "indicator"
+        ]
+      },
+      "host": {
+        "name": "localhost.localdomain"
+      },
+      "input": {
+        "type": "http_endpoint"
+      },
+      "message": "The program /usr/bin/bash executed the program /usr/bin/touch on container test-container",
+      "observer": {
+        "product": "Defend",
+        "vendor": "Wiz"
+      },
+      "related": {
+        "hash": [
+          "f5d0e8530d63e4be1e7e0b72f887ff5b2e342ab3"
+        ],
+        "ip": [
+          "192.0.2.218"
+        ],
+        "user": [
+          "rfkh-feqho@hto.io",
+          "9e4df09f-63a6-48a1-a0a7-9c17bf0b238e",
+          "test-actor",
+          "Test Actor",
+          "0",
+          "root"
+        ]
+      },
+      "rule": {
+        "id": "d45dc752-8d36-41ab-aaab-e30656253e3d",
+        "name": "Detections Webhook Test Rule"
+      },
+      "source": {
+        "as": {
+          "number": 8075,
+          "organization": {
+            "name": "MICROSOFT-CORP-MSN-AS-BLOCK"
+          }
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "id": [
+            "899fceb9-bc13-5a46-ad87-da48e9857c18"
+          ],
+          "reference": "https://test.wiz.io/issues#~(issue~'899fceb9-bc13-5a46-ad87-da48e9857c18)"
+        },
+        "tactic": {
+          "id": [
+            "TA0005"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1070.006"
+          ]
+        }
+      },
+      "user": {
+        "id": "9e4df09f-63a6-48a1-a0a7-9c17bf0b238e",
+        "name": "Test Actor"
+      },
+      "wiz": {
+        "defend": {
+          "cloudOrganizations": [
+            {
+              "cloudProvider": "AWS",
+              "externalId": "o-1234567890",
+              "name": "AcmeCloudOrg"
+            }
+          ],
+          "created_at": "2053-01-21T18:52:16.819Z",
+          "description": "Process executed the touch binary with the relevant command line flag used to modify files date information such as creation time, and last modification time. This could indicate the presence of a threat actor achieving defense evasion using the Timestomping technique.",
+          "detection_url": "https://test.wiz.io/detection",
+          "friendly_name": "Detections Webhook Test Rule",
+          "id": "8f756b6c-d8d3-5203-a6b9-ff321790dada",
+          "mitreTactics": [
+            "TA0005"
+          ],
+          "mitreTechniques": [
+            "T1070.006"
+          ],
+          "primary_actor": {
+            "email": "rfkh-feqho@hto.io",
+            "external_id": "test-actor",
+            "id": "9e4df09f-63a6-48a1-a0a7-9c17bf0b238e",
+            "name": "test-actor",
+            "native_type": "Microsoft Entra ID Application Service Principal",
+            "type": "SERVICE_ACCOUNT"
+          },
+          "primary_resource": {
+            "cloud_account": {
+              "cloud_platform": "AWS",
+              "external_id": "134653897021",
+              "id": "8a34ab88-850e-5265-b391-b62359ae5027"
+            },
+            "cloud_provider_url": "https://console.aws.amazon.com/ecs/home?region=us-east-1#/clusters/prod-cluster/tasks",
+            "external_id": "test-container",
+            "id": "fa181f60-db64-5ace-8011-7a9600478515",
+            "kubernetes_cluster_id": "cluster-5678",
+            "kubernetes_cluster_name": "prod-cluster",
+            "kubernetes_namespace_id": "ns-abc",
+            "kubernetes_namespace_name": "production",
+            "kubernetes_node_id": "node-1234",
+            "kubernetes_node_name": "eks-node-1",
+            "name": "test-container",
+            "native_type": "ecs#containerinstance",
+            "provider_unique_id": "provider-resource-uid-456",
+            "region": "us-east-1",
+            "status": "Running",
+            "type": "CONTAINER"
+          },
+          "severity": "MEDIUM",
+          "source": "DETECTIONS",
+          "tdr_id": "43fb0aba-584a-5a35-bd6f-78c8987d0bd4",
+          "tdr_source": "WIZ_SENSOR",
+          "threat_id": "899fceb9-bc13-5a46-ad87-da48e9857c18",
+          "threat_url": "https://test.wiz.io/issues#~(issue~'899fceb9-bc13-5a46-ad87-da48e9857c18)",
+          "timeframe": {
+            "end": "2053-01-21T18:52:15.838Z",
+            "start": "2053-01-21T18:52:15.838Z"
+          },
+          "title": "Timestomping technique was detected",
+          "trigger": {
+            "rule_id": "d45dc752-8d36-41ab-aaab-e30656253e3d",
+            "rule_name": "Detections Webhook Test Rule",
+            "source": "DETECTIONS",
+            "type": "Created"
+          },
+          "triggering_event": {
+            "actor": {
+              "acting_as": {
+                "id": "assumed-role-id",
+                "name": "AssumedRole",
+                "native_type": "aws#iamrole",
+                "type": "IAMRole"
+              },
+              "external_id": "actor-external-id",
+              "id": "9e4df09f-63a6-48a1-a0a7-9c17bf0b238e",
+              "name": "Test Actor",
+              "native_type": "ecs#task",
+              "provider_unique_id": "provider-actor-id",
+              "type": "Process"
+            },
+            "actor_ip": "192.0.2.218",
+            "actor_ip_meta": {
+              "autonomous_system_number": 8075,
+              "autonomous_system_organization": "MICROSOFT-CORP-MSN-AS-BLOCK",
+              "country": "United States",
+              "is_foreign": true,
+              "related_attack_group_names": "None",
+              "reputation": "Benign",
+              "reputation_description": "No malicious activity detected",
+              "reputation_source": "Recorded Future"
+            },
+            "category": "Detection",
+            "cloud_platform": "AWS",
+            "cloud_provider_url": "https://console.aws.amazon.com/cloudtrail/home?region=us-east-1#/events/Ptrace##test-container-SensorRuleEngine##sen-id-142-bd820642-34f2-4d3c-90b6-c384df0fd528",
+            "description": "The program /usr/bin/bash executed the program /usr/bin/touch on container test-container",
+            "event_time": "2053-01-21T18:52:15.838Z",
+            "external_id": "Ptrace##test-container-SensorRuleEngine##sen-id-142-bd820642-34f2-4d3c-90b6-c384df0fd528",
+            "id": "8d62ee2d-5c95-5dc0-a3cd-d56af353718c",
+            "name": "Timestomping technique was detected",
+            "origin": "WIZ_SENSOR",
+            "resources": [
+              {
+                "cloud_account": {
+                  "cloud_platform": "AWS",
+                  "external_id": "134653897021",
+                  "id": "8a34ab88-850e-5265-b391-b62359ae5027"
+                },
+                "cloud_provider_url": "https://console.aws.amazon.com/ecs/home?region=us-east-1#/clusters/prod-cluster/tasks",
+                "external_id": "test-container",
+                "id": "fa181f60-db64-5ace-8011-7a9600478515",
+                "kubernetes_cluster_id": "cluster-5678",
+                "kubernetes_cluster_name": "prod-cluster",
+                "kubernetes_namespace_id": "ns-abc",
+                "kubernetes_namespace_name": "production",
+                "kubernetes_node_id": "node-1234",
+                "kubernetes_node_name": "eks-node-1",
+                "name": "test-container",
+                "native_type": "ecs#containerinstance",
+                "provider_unique_id": "provider-resource-uid-456",
+                "region": "us-east-1",
+                "status": "Running",
+                "type": "CONTAINER"
+              }
+            ],
+            "runtime_details": {
+              "process_tree": [
+                {
+                  "command": "touch -r /usr/bin /tmp/uga",
+                  "container": {
+                    "external_id": "test-container",
+                    "id": "fa181f60-db64-5ace-8011-7a9600478515",
+                    "image_external_id": "sha256:fccc22321566d4dfae6704a809b6c38c350505dc69aaef8ce0122d7e21bd33cd",
+                    "image_id": "d17515bc-e4b0-5095-8a2b-7bd26f6d4424",
+                    "name": "test-container"
+                  },
+                  "execution_time": "2053-01-21T18:52:15.838Z",
+                  "hash": "f5d0e8530d63e4be1e7e0b72f887ff5b2e342ab3",
+                  "id": "1560",
+                  "path": "/usr/bin/touch",
+                  "size": 109616,
+                  "user_id": "0",
+                  "username": "root"
+                }
+              ]
+            },
+            "source": "WizSensorAlert##RuleEngine",
+            "status": "Success"
+          },
+          "triggering_events_count": 1
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-04-15T11:33:57.974Z",
+      "agent": {
+        "ephemeral_id": "08c147b6-2cd3-4415-850c-1571f855e9b7",
+        "id": "d049edb1-7dd2-4538-866b-376e13cc6b63",
+        "name": "localhost.localdomain",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "host": {
+        "name": "localhost.localdomain"
+      },
+      "input": {
+        "type": "http_endpoint"
+      },
+      "json": {
+        "cloudOrganizations": [
+          {
+            "cloudProvider": "AWS",
+            "externalId": "o-1234567890",
+            "name": "AcmeCloudOrg"
+          }
+        ],
+        "createdAt": "2053-01-21T18:52:16.819883668Z",
+        "description": "Process executed the touch binary with the relevant command line flag used to modify files date information such as creation time, and last modification time. This could indicate the presence of a threat actor achieving defense evasion using the Timestomping technique.",
+        "detectionUrl": "https://test.wiz.io/detection",
+        "id": "8f756b6c-d8d3-5203-a6b9-ff321790dada",
+        "mitreTactics": [
+          "TA0005"
+        ],
+        "mitreTechniques": [
+          "T1070.006"
+        ],
+        "primaryActor": {
+          "email": "rfkh-feqho@hto.io",
+          "externalId": "test-actor",
+          "id": "9e4df09f-63a6-48a1-a0a7-9c17bf0b238e",
+          "name": "test-actor",
+          "nativeType": "Microsoft Entra ID Application Service Principal",
+          "type": "SERVICE_ACCOUNT"
+        },
+        "primaryResource": {
+          "cloudAccount": {
+            "cloudPlatform": "AWS",
+            "externalId": "134653897021",
+            "id": "8a34ab88-850e-5265-b391-b62359ae5027"
+          },
+          "cloudProviderUrl": "https://console.aws.amazon.com/ecs/home?region=us-east-1#/clusters/prod-cluster/tasks",
+          "externalId": "test-container",
+          "id": "fa181f60-db64-5ace-8011-7a9600478515",
+          "kubernetesClusterId": "cluster-5678",
+          "kubernetesClusterName": "prod-cluster",
+          "kubernetesNamespaceId": "ns-abc",
+          "kubernetesNamespaceName": "production",
+          "kubernetesNodeId": "node-1234",
+          "kubernetesNodeName": "eks-node-1",
+          "name": "test-container",
+          "nativeType": "ecs#containerinstance",
+          "providerUniqueId": "provider-resource-uid-456",
+          "region": "us-east-1",
+          "status": "Running",
+          "type": "CONTAINER"
+        },
+        "severity": "MEDIUM",
+        "source": "DETECTIONS",
+        "tdrId": "43fb0aba-584a-5a35-bd6f-78c8987d0bd4",
+        "tdrSource": "WIZ_SENSOR",
+        "threatId": "899fceb9-bc13-5a46-ad87-da48e9857c18",
+        "threatURL": "https://test.wiz.io/issues#~(issue~'899fceb9-bc13-5a46-ad87-da48e9857c18)",
+        "timeframe": {
+          "end": "2053-01-21T18:52:15.838Z",
+          "start": "2053-01-21T18:52:15.838Z"
+        },
+        "title": "Timestomping technique was detected",
+        "trigger": {
+          "ruleId": "d45dc752-8d36-41ab-aaab-e30656253e3d",
+          "ruleName": "Detections Webhook Test Rule",
+          "source": "DETECTIONS",
+          "type": "Created"
+        },
+        "triggeringEvent": {
+          "actor": {
+            "actingAs": {
+              "id": "assumed-role-id",
+              "name": "AssumedRole",
+              "nativeType": "aws#iamrole",
+              "type": "IAMRole"
+            },
+            "externalId": "actor-external-id",
+            "id": "9e4df09f-63a6-48a1-a0a7-9c17bf0b238e",
+            "name": "Test Actor",
+            "nativeType": "ecs#task",
+            "providerUniqueId": "provider-actor-id",
+            "type": "Process"
+          },
+          "actorIP": "192.0.2.218",
+          "actorIPMeta": {
+            "autonomousSystemNumber": 8075,
+            "autonomousSystemOrganization": "MICROSOFT-CORP-MSN-AS-BLOCK",
+            "country": "United States",
+            "isForeign": true,
+            "relatedAttackGroupNames": "None",
+            "reputation": "Benign",
+            "reputationDescription": "No malicious activity detected",
+            "reputationSource": "Recorded Future"
+          },
+          "category": "Detection",
+          "cloudPlatform": "AWS",
+          "cloudProviderUrl": "https://console.aws.amazon.com/cloudtrail/home?region=us-east-1#/events/Ptrace##test-container-SensorRuleEngine##sen-id-142-bd820642-34f2-4d3c-90b6-c384df0fd528",
+          "description": "The program /usr/bin/bash executed the program /usr/bin/touch on container test-container",
+          "eventTime": "2053-01-21T18:52:15.838Z",
+          "externalId": "Ptrace##test-container-SensorRuleEngine##sen-id-142-bd820642-34f2-4d3c-90b6-c384df0fd528",
+          "id": "8d62ee2d-5c95-5dc0-a3cd-d56af353718c",
+          "name": "Timestomping technique was detected",
+          "origin": "WIZ_SENSOR",
+          "resources": [
+            {
+              "cloudAccount": {
+                "cloudPlatform": "AWS",
+                "externalId": "134653897021",
+                "id": "8a34ab88-850e-5265-b391-b62359ae5027"
+              },
+              "cloudProviderUrl": "https://console.aws.amazon.com/ecs/home?region=us-east-1#/clusters/prod-cluster/tasks",
+              "externalId": "test-container",
+              "id": "fa181f60-db64-5ace-8011-7a9600478515",
+              "kubernetesClusterId": "cluster-5678",
+              "kubernetesClusterName": "prod-cluster",
+              "kubernetesNamespaceId": "ns-abc",
+              "kubernetesNamespaceName": "production",
+              "kubernetesNodeId": "node-1234",
+              "kubernetesNodeName": "eks-node-1",
+              "name": "test-container",
+              "nativeType": "ecs#containerinstance",
+              "providerUniqueId": "provider-resource-uid-456",
+              "region": "us-east-1",
+              "status": "Running",
+              "type": "CONTAINER"
+            }
+          ],
+          "runtimeDetails": {
+            "processTree": [
+              {
+                "command": "touch -r /usr/bin /tmp/uga",
+                "container": {
+                  "externalId": "test-container",
+                  "id": "fa181f60-db64-5ace-8011-7a9600478515",
+                  "imageExternalId": "sha256:fccc22321566d4dfae6704a809b6c38c350505dc69aaef8ce0122d7e21bd33cd",
+                  "imageId": "d17515bc-e4b0-5095-8a2b-7bd26f6d4424",
+                  "name": "test-container"
+                },
+                "executionTime": "2053-01-21T18:52:15.838Z",
+                "hash": "f5d0e8530d63e4be1e7e0b72f887ff5b2e342ab3",
+                "id": "1560",
+                "path": "/usr/bin/touch",
+                "size": 109616,
+                "userId": "0",
+                "username": "root"
+              }
+            ]
+          },
+          "source": "WizSensorAlert##RuleEngine",
+          "status": "Success"
+        },
+        "triggeringEventsCount": 1
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "defend",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-wiz-defend-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "wiz",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,288 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2045-11-07T09:45:15.000Z",
+        "id": "50c8c02f-c214-47f8-bab8-b26aaa762fb8",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2045-12-07T09:45:15.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 1,
+          "pattern": "[ipv6-addr:value = '2001:db8:9baf:db79:6ef1:14d4:686d:44c9']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 30,
+          "standard_id": "indicator--f7d0b69d-d246-543d-a733-5146bbfb5e2e",
+          "valid_from": "2045-11-07T09:45:15.000Z",
+          "valid_until": "2045-12-07T09:45:15.000Z"
+        },
+        "observable": {
+          "ipv6_addr": {
+            "entity_type": "IPv6-Addr",
+            "id": "e1cebe6e-cc0f-4a3b-813c-3ce8be0a5b05",
+            "standard_id": "ipv6-addr--3c786221-3bbd-5ff6-8785-e21e2df6aa1c",
+            "value": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9"
+          }
+        }
+      },
+      "related": {
+        "ip": [
+          "2001:db8:9baf:db79:6ef1:14d4:686d:44c9"
+        ]
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "osint",
+        "blog-post",
+        "testing",
+        "ecs-indicator-detail"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "ip": [
+            "2001:db8:9baf:db79:6ef1:14d4:686d:44c9"
+          ],
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "modified_at": "2051-01-17T22:00:34.722Z",
+          "name": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9",
+          "provider": "CIRCL",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/50c8c02f-c214-47f8-bab8-b26aaa762fb8",
+          "type": "ipv6-addr"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2045-11-07T09:45:15.000Z",
+        "id": "50c8c02f-c214-47f8-bab8-b26aaa762fb8",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2045-12-07T09:45:15.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 0,
+          "pattern": "[ipv6-addr:value = '2001:db8:9baf:db79:6ef1:14d4:686d:44c9']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 30,
+          "standard_id": "indicator--f7d0b69d-d246-543d-a733-5146bbfb5e2e",
+          "valid_from": "2045-11-07T09:45:15.000Z",
+          "valid_until": "2045-12-07T09:45:15.000Z"
+        }
+      },
+      "related": {
+        "ip": [
+          "2001:db8:9baf:db79:6ef1:14d4:686d:44c9"
+        ]
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "osint",
+        "blog-post",
+        "testing",
+        "ecs-indicator-detail"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "ip": [
+            "2001:db8:9baf:db79:6ef1:14d4:686d:44c9"
+          ],
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "modified_at": "2051-01-17T22:00:34.722Z",
+          "name": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9",
+          "provider": "CIRCL",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/50c8c02f-c214-47f8-bab8-b26aaa762fb8",
+          "type": "ipv6-addr"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 15,
+      "created": "2045-11-07T09:45:15.000Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "CIRCL"
+      },
+      "description": "",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "50c8c02f-c214-47f8-bab8-b26aaa762fb8",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T22:00:34.722Z",
+      "name": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9",
+      "objectLabel": [
+        {
+          "value": "osint"
+        },
+        {
+          "value": "blog-post"
+        },
+        {
+          "value": "testing"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:CLEAR",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [
+          {
+            "node": {
+              "entity_type": "IPv6-Addr",
+              "id": "e1cebe6e-cc0f-4a3b-813c-3ce8be0a5b05",
+              "observable_value": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9",
+              "standard_id": "ipv6-addr--3c786221-3bbd-5ff6-8785-e21e2df6aa1c",
+              "value": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9"
+            }
+          }
+        ],
+        "pageInfo": {
+          "globalCount": 1
+        }
+      },
+      "pattern": "[ipv6-addr:value = '2001:db8:9baf:db79:6ef1:14d4:686d:44c9']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--f7d0b69d-d246-543d-a733-5146bbfb5e2e",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2045-11-07T09:45:15.000Z",
+      "valid_until": "2045-12-07T09:45:15.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "IPv6-Addr",
+      "x_opencti_score": 30
+    },
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 15,
+      "created": "2045-11-07T09:45:15.000Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "CIRCL"
+      },
+      "description": "",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "50c8c02f-c214-47f8-bab8-b26aaa762fb8",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T22:00:34.722Z",
+      "name": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9",
+      "objectLabel": [
+        {
+          "value": "osint"
+        },
+        {
+          "value": "blog-post"
+        },
+        {
+          "value": "testing"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:CLEAR",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [],
+        "pageInfo": {
+          "globalCount": 0
+        }
+      },
+      "pattern": "[ipv6-addr:value = '2001:db8:9baf:db79:6ef1:14d4:686d:44c9']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--f7d0b69d-d246-543d-a733-5146bbfb5e2e",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2045-11-07T09:45:15.000Z",
+      "valid_until": "2045-12-07T09:45:15.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "IPv6-Addr",
+      "x_opencti_score": 30
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_opencti-indicator-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "ti_opencti",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

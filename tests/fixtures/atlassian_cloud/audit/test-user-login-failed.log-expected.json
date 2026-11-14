@@ -1,0 +1,87 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-05-19T10:15:00.000Z",
+      "atlassian_cloud": {
+        "audit": {
+          "location": {
+            "geo": "NA"
+          },
+          "message": {
+            "format": "simple"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "user_login_failed",
+        "category": [
+          "authentication"
+        ],
+        "created": "2054-05-19T10:15:01.000Z",
+        "id": "a7315951-4786-4412-8161-591492394420",
+        "kind": "event",
+        "original": "{\"type\":\"events\",\"id\":\"a7315951-4786-4412-8161-591492394420\",\"attributes\":{\"time\":\"2054-05-19T10:15:00.000Z\",\"processedAt\":\"2054-05-19T10:15:01.000Z\",\"action\":\"user_login_failed\",\"actor\":{\"id\":\"712020:46772685-7794-9639-9171-747437653728\",\"name\":\"Unknown User\",\"email\":\"unknown@example.com\"},\"location\":{\"ip\":\"198.51.100.99\",\"geo\":\"NA\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Unknown User failed to log in\",\"format\":\"simple\"}}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Unknown User failed to log in",
+      "observer": {
+        "product": "Atlassian Cloud",
+        "type": "saas",
+        "vendor": "Atlassian"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.99"
+        ],
+        "user": [
+          "Unknown User",
+          "unknown@example.com"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "Example City",
+          "country_name": "Example Country"
+        },
+        "ip": "198.51.100.99"
+      },
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "unknown@example.com",
+        "id": "712020:46772685-7794-9639-9171-747437653728",
+        "name": "Unknown User"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"type\":\"events\",\"id\":\"a7315951-4786-4412-8161-591492394420\",\"attributes\":{\"time\":\"2054-05-19T10:15:00.000Z\",\"processedAt\":\"2054-05-19T10:15:01.000Z\",\"action\":\"user_login_failed\",\"actor\":{\"id\":\"712020:46772685-7794-9639-9171-747437653728\",\"name\":\"Unknown User\",\"email\":\"unknown@example.com\"},\"location\":{\"ip\":\"198.51.100.99\",\"geo\":\"NA\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Unknown User failed to log in\",\"format\":\"simple\"}}",
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_cloud-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

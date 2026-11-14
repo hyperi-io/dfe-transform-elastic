@@ -218,9 +218,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def convertToLong(def value) {\n  if (value instanceof String) {\n    return Long.parseLong(value);\n  } else if (value instanceof Number) {\n    return ((long) value).longValue();\n  } else {\n    throw new Exception('Unsupported type');\n  }\n}\ndef convertToBoolean(def value) {\n  if (value instanceof String) {\n    return Boolean.parseBoolean(value);\n  } else if (value instanceof Boolean) {\n    return (Boolean) value;\n  } else {\n    throw new Exception('Unsupported type');\n  }\n}\ndef renameKeys(Map json, Map keyMap, List longFields, List stringFields, List boolFields) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap, longFields, stringFields, boolFields);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap, longFields, stringFields, boolFields);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap, longFields, stringFields, boolFields));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        if (longFields.contains(keyMap[key])) {\n          updatedJson[keyMap[key]] = convertToLong(value);\n        } else if (stringFields.contains(keyMap[key]) && value != null) {\n          updatedJson[keyMap[key]] = value.toString();\n        } else if (boolFields.contains(keyMap[key])) {\n          updatedJson[keyMap[key]] = convertToBoolean(value);\n        } else {\n          updatedJson[keyMap[key]] = value;\n        }\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\nctx.claroty_ctd.asset.put('children', new ArrayList());\nfor (child in ctx.json.children) {\n  def children = renameKeys(child, params.renamefield, params.longfield, params.stringfield, params.boolfield);\n  ctx.claroty_ctd.asset.children.add(children);\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -3410,8 +3408,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1,0 +1,100 @@
+{
+  "expected": [
+    {
+      "domaintools": {
+        "domain": "ebqqmojkukivx.com",
+        "timestamp": "2053-01-11T08:42:46Z"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"timestamp\":\"2053-01-11T08:42:46Z\",\"domain\":\"ebqqmojkukivx.com\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "name": "ebqqmojkukivx.com",
+          "type": "domain-name"
+        }
+      }
+    },
+    {
+      "domaintools": {
+        "domain": "abhnnzxsrzthm5.com",
+        "timestamp": "2053-01-11T08:42:46Z"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"timestamp\":\"2053-01-11T08:42:46Z\",\"domain\":\"abhnnzxsrzthm5.com\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "name": "abhnnzxsrzthm5.com",
+          "type": "domain-name"
+        }
+      }
+    },
+    {
+      "domaintools": {
+        "domain": "bfwmiqwyklvkn1.com",
+        "timestamp": "2053-01-11T08:42:46Z"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"timestamp\":\"2053-01-11T08:42:46Z\",\"domain\":\"bfwmiqwyklvkn1.com\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "name": "bfwmiqwyklvkn1.com",
+          "type": "domain-name"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"timestamp\":\"2053-01-11T08:42:46Z\",\"domain\":\"ebqqmojkukivx.com\"}"
+    },
+    {
+      "message": "{\"timestamp\":\"2053-01-11T08:42:46Z\",\"domain\":\"abhnnzxsrzthm5.com\"}"
+    },
+    {
+      "message": "{\"timestamp\":\"2053-01-11T08:42:46Z\",\"domain\":\"bfwmiqwyklvkn1.com\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "nod_feed",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_domaintools-nod_feed-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "ti_domaintools",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

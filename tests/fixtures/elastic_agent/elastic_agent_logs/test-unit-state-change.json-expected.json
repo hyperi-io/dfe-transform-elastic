@@ -1,0 +1,200 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-10-27T16:09:33.495Z",
+      "agent": {
+        "ephemeral_id": "da804904-befe-4bb5-a668-d66270af5d85",
+        "id": "c2153047-ca8d-4668-898c-43716f524b04",
+        "name": "mdym-wyzm-11512",
+        "type": "filebeat",
+        "version": "9.2.0"
+      },
+      "cloud": {
+        "account": {
+          "id": "111111111111"
+        },
+        "availability_zone": "us-east-2b",
+        "image": {
+          "id": "ami-021158f59b67638f2"
+        },
+        "instance": {
+          "id": "i-1111111111111111a"
+        },
+        "machine": {
+          "type": "t2.micro"
+        },
+        "provider": "aws",
+        "region": "us-east-2",
+        "service": {
+          "name": "EC2"
+        }
+      },
+      "component": {
+        "id": "endpoint-default",
+        "state": "HEALTHY"
+      },
+      "data_stream": {
+        "dataset": "elastic_agent",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "elastic_agent": {
+        "id": "c2153047-ca8d-4668-898c-43716f524b04",
+        "snapshot": false,
+        "version": "9.2.0"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "elastic_agent",
+        "ingested": "2053-10-27T16:09:45Z"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "hostname": "mdym-wyzm-11512",
+        "id": "af4216b9-dd2b-46e1-b7de-d594813378dc",
+        "ip": [
+          "fe80::9d46:c45c:a144:b134",
+          "172.23.175.20"
+        ],
+        "mac": [
+          "95-D8-D4-DC-48-B9"
+        ],
+        "name": "mdym-wyzm-11512",
+        "os": {
+          "build": "20348.4294",
+          "family": "windows",
+          "kernel": "10.0.20348.4294 (WinBuild.160101.0800)",
+          "name": "Windows Server 2022 Datacenter",
+          "platform": "windows",
+          "type": "windows",
+          "version": "10.0"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "C:\\Program Files\\Elastic\\Agent\\data\\elastic-agent-9.2.0-e7bf31\\logs\\elastic-agent-20251027-1.ndjson"
+        },
+        "level": "info"
+      },
+      "log.origin": {
+        "file.line": 1024,
+        "file.name": "coordinator/coordinator.go",
+        "function": "github.com/cibhtwe/elastic-agent/internal/pkg/agent/application/coordinator.logComponentStateChange"
+      },
+      "message": "Unit state changed endpoint-default (STARTING->CONFIGURING): ",
+      "unit": {
+        "id": "endpoint-default",
+        "old_state": "STARTING",
+        "state": "CONFIGURING",
+        "type": "output"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-10-27T16:09:33.495Z",
+      "agent": {
+        "ephemeral_id": "da804904-befe-4bb5-a668-d66270af5d85",
+        "id": "c2153047-ca8d-4668-898c-43716f524b04",
+        "name": "mdym-wyzm-11512",
+        "type": "filebeat",
+        "version": "9.2.0"
+      },
+      "cloud": {
+        "account": {
+          "id": "111111111111"
+        },
+        "availability_zone": "us-east-2b",
+        "image": {
+          "id": "ami-021158f59b67638f2"
+        },
+        "instance": {
+          "id": "i-1111111111111111a"
+        },
+        "machine": {
+          "type": "t2.micro"
+        },
+        "provider": "aws",
+        "region": "us-east-2",
+        "service": {
+          "name": "EC2"
+        }
+      },
+      "component": {
+        "id": "endpoint-default",
+        "state": "HEALTHY"
+      },
+      "data_stream": {
+        "dataset": "elastic_agent",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "elastic_agent": {
+        "id": "c2153047-ca8d-4668-898c-43716f524b04",
+        "snapshot": false,
+        "version": "9.2.0"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "elastic_agent",
+        "ingested": "2053-10-27T16:09:45Z"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "hostname": "mdym-wyzm-11512",
+        "id": "af4216b9-dd2b-46e1-b7de-d594813378dc",
+        "ip": [
+          "fe80::9d46:c45c:a144:b134",
+          "172.23.175.20"
+        ],
+        "mac": [
+          "95-D8-D4-DC-48-B9"
+        ],
+        "name": "mdym-wyzm-11512",
+        "os": {
+          "build": "20348.4294",
+          "family": "windows",
+          "kernel": "10.0.20348.4294 (WinBuild.160101.0800)",
+          "name": "Windows Server 2022 Datacenter",
+          "platform": "windows",
+          "type": "windows",
+          "version": "10.0"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "C:\\Program Files\\Elastic\\Agent\\data\\elastic-agent-9.2.0-e7bf31\\logs\\elastic-agent-20251027-1.ndjson"
+        }
+      },
+      "log.level": "info",
+      "log.origin": {
+        "file.line": 1024,
+        "file.name": "coordinator/coordinator.go",
+        "function": "github.com/cibhtwe/elastic-agent/internal/pkg/agent/application/coordinator.logComponentStateChange"
+      },
+      "message": "Unit state changed endpoint-default (STARTING->CONFIGURING): ",
+      "unit": {
+        "id": "endpoint-default",
+        "old_state": "STARTING",
+        "state": "CONFIGURING",
+        "type": "output"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "elastic_agent_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-elastic_agent-elastic_agent_logs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "elastic_agent",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

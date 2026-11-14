@@ -1,0 +1,144 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-09-03T08:12:25.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "All actions failed",
+        "count": 1,
+        "end": "2047-09-03T08:12:25.000Z",
+        "kind": "event",
+        "original": "Security risk found,IP Address: 203.0.113.61,Computer name: exampleComputer,Source: Auto-Protect scan,Risk name: WS.Reputation.1,Occurrences: 1,e:\\removablemediaaccessutility.exe,,Actual action: All actions failed,Requested action: Process terminate pending restart,Secondary action: Left alone,Event time: 2047-09-03 08:12:25,Inserted: 2047-09-03 08:14:03,End: 2047-09-03 08:12:25,Last update time: 2047-09-03 08:14:03,Domain: SEPMServerDoman,Group: My Company\\GroupName,Server: SEPMServerName,User: exampleUser,Source computer: ,Source IP: ,Disposition: Bad,Download site: ,Web domain: ,Downloaded by: e:/removablemediaaccessutility.exe,Prevalence: This file has been seen by fewer than 5 Symantec users.,Confidence: There is some evidence that this file is untrustworthy.,URL Tracking Status: On,First Seen: Symantec has known about this file approximately 2 days.,Sensitivity: ,Permitted application reason: Not on the permitted application list,Application hash: SHA#1234567890,Hash type: SHA2,Company name: Company Name,Application name: Client for Symantec Endpoint Encryption,Application version: 11.1.2 (Build 1248),Application type: 127,File size (bytes): 4193981,Category set: Malware,Category type: Insight Network Threat,Location: GD-OTS Unmanaged Client - Online,Intensive Protection Level: 0,Certificate issuer: Symantec Corporation,Certificate signer: VeriSign Class 3 Code Signing 2010 CA,Certificate thumbprint: EB0CF4233A3D0E0EED62D04A900C5788CC88AB66,Signing timestamp: 2366104355,Certificate serial number: EA1C99C16D524C931CFF7197BF3D8941",
+        "provider": "Agent Risk Log"
+      },
+      "file": {
+        "hash": {
+          "sha1": "eb0cf4233a3d0e0eed62d04a900c5788cc88ab66"
+        },
+        "path": "e:\\removablemediaaccessutility.exe",
+        "pe": {
+          "company": "Company Name",
+          "file_version": "11.1.2 (Build 1248)",
+          "product": "Client for Symantec Endpoint Encryption"
+        },
+        "size": 4193981,
+        "x509": {
+          "issuer": {
+            "common_name": [
+              "Symantec Corporation",
+              "VeriSign Class 3 Code Signing 2010 CA"
+            ]
+          },
+          "not_before": "2044-12-23T11:12:35.000Z",
+          "serial_number": "EA1C99C16D524C931CFF7197BF3D8941"
+        }
+      },
+      "host": {
+        "hostname": "exampleComputer",
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "exampleComputer"
+      },
+      "message": "Security risk found",
+      "process": {
+        "executable": "e:/removablemediaaccessutility.exe"
+      },
+      "related": {
+        "hash": [
+          "eb0cf4233a3d0e0eed62d04a900c5788cc88ab66"
+        ],
+        "ip": [
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "geo": {
+          "name": "GD-OTS Unmanaged Client - Online"
+        }
+      },
+      "symantec_endpoint": {
+        "log": {
+          "actual_action": "All actions failed",
+          "application_hash": "SHA#1234567890",
+          "application_name": "Client for Symantec Endpoint Encryption",
+          "application_type": "127",
+          "application_version": "11.1.2 (Build 1248)",
+          "category_set": "Malware",
+          "category_type": "Insight Network Threat",
+          "certificate_issuer": "Symantec Corporation",
+          "certificate_serial_number": "EA1C99C16D524C931CFF7197BF3D8941",
+          "certificate_signer": "VeriSign Class 3 Code Signing 2010 CA",
+          "certificate_thumbprint": "EB0CF4233A3D0E0EED62D04A900C5788CC88AB66",
+          "company_name": "Company Name",
+          "computer_name": "exampleComputer",
+          "confidence": "There is some evidence that this file is untrustworthy.",
+          "disposition": "Bad",
+          "domain_name": "SEPMServerDoman",
+          "downloaded_by": "e:/removablemediaaccessutility.exe",
+          "end": "2047-09-03 08:12:25",
+          "event_description": "Security risk found",
+          "event_time": "2047-09-03T08:12:25.000Z",
+          "file_path": "e:\\removablemediaaccessutility.exe",
+          "file_size_bytes": "4193981",
+          "first_seen": "Symantec has known about this file approximately 2 days.",
+          "group": "My Company\\GroupName",
+          "hash_type": "SHA2",
+          "inserted": "2047-09-03T08:14:03.000Z",
+          "intensive_protection_level": "0",
+          "ip_address": "203.0.113.61",
+          "last_update_time": "2047-09-03T08:14:03.000Z",
+          "location": "GD-OTS Unmanaged Client - Online",
+          "occurrences": "1",
+          "permitted_application_reason": "Not on the permitted application list",
+          "prevalence": "This file has been seen by fewer than 5 Symantec users.",
+          "requested_action": "Process terminate pending restart",
+          "risk_name": "WS.Reputation.1",
+          "secondary_action": "Left alone",
+          "server": "SEPMServerName",
+          "signing_timestamp": "2044-12-23T11:12:35.000Z",
+          "source": "Auto-Protect scan",
+          "url_tracking_status": "On",
+          "user_name": "exampleUser"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "SEPMServerDoman",
+        "name": "exampleUser"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Security risk found,IP Address: 203.0.113.61,Computer name: exampleComputer,Source: Auto-Protect scan,Risk name: WS.Reputation.1,Occurrences: 1,e:\\removablemediaaccessutility.exe,,Actual action: All actions failed,Requested action: Process terminate pending restart,Secondary action: Left alone,Event time: 2047-09-03 08:12:25,Inserted: 2047-09-03 08:14:03,End: 2047-09-03 08:12:25,Last update time: 2047-09-03 08:14:03,Domain: SEPMServerDoman,Group: My Company\\GroupName,Server: SEPMServerName,User: exampleUser,Source computer: ,Source IP: ,Disposition: Bad,Download site: ,Web domain: ,Downloaded by: e:/removablemediaaccessutility.exe,Prevalence: This file has been seen by fewer than 5 Symantec users.,Confidence: There is some evidence that this file is untrustworthy.,URL Tracking Status: On,First Seen: Symantec has known about this file approximately 2 days.,Sensitivity: ,Permitted application reason: Not on the permitted application list,Application hash: SHA#1234567890,Hash type: SHA2,Company name: Company Name,Application name: Client for Symantec Endpoint Encryption,Application version: 11.1.2 (Build 1248),Application type: 127,File size (bytes): 4193981,Category set: Malware,Category type: Insight Network Threat,Location: GD-OTS Unmanaged Client - Online,Intensive Protection Level: 0,Certificate issuer: Symantec Corporation,Certificate signer: VeriSign Class 3 Code Signing 2010 CA,Certificate thumbprint: EB0CF4233A3D0E0EED62D04A900C5788CC88AB66,Signing timestamp: 2366104355,Certificate serial number: EA1C99C16D524C931CFF7197BF3D8941",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

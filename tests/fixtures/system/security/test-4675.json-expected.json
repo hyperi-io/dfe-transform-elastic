@@ -1,0 +1,184 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-04-22T10:53:25.674Z",
+      "agent": {
+        "ephemeral_id": "7d2caeef-f2bc-439c-96ed-84601bb37a76",
+        "hostname": "Wfmmax1",
+        "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+        "type": "winlogbeat",
+        "version": "7.3.1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "sids-filtered",
+        "category": [
+          "authentication"
+        ],
+        "code": "4675",
+        "kind": "event",
+        "outcome": "failure",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "CF43.egmukjj.local"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/file/path/4675.xml"
+        },
+        "level": "information"
+      },
+      "message": "<Event xmlns=\"http://schemas.microsoft.com/win/2004/08/events/event\"><System><Provider Name=\"Microsoft-Windows-Security-Auditing\" Guid=\"{35176868-7249-4208-A5CE-5E4A0085B00A}\" /><EventID>4675</EventID><Version>0</Version><Level>0</Level><Task>13056</Task><Opcode>0</Opcode><Keywords>0x8010000000000000</Keywords><TimeCreated SystemTime=\"2043-10-09T00:22:36.237816000Z\" /><EventRecordID>1099680</EventRecordID><Correlation /><Execution ProcessID=\"496\" ThreadID=\"504\" /><Channel>Security</Channel><Computer>DC01.contoso.local</Computer><Security /></System><EventData><Data Name=\"TargetUserSid\">S-1-5-19</Data><Data Name=\"TargetUserName\">LOCAL SERVICE</Data><Data Name=\"TargetDomainName\">NT AUTHORITY</Data><Data Name=\"TdoDirection\">0x3e5</Data><Data Name=\"TdoAttributes\">LSA</Data><Data Name=\"TdoType\">-</Data><Data Name=\"TdoSid\">-</Data><Data Name=\"SidList\">0x0</Data><",
+      "related": {
+        "user": [
+          "Administrator"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CORP",
+        "effective": {
+          "domain": "CORP",
+          "id": "S-1-5-21-3623811015-3361044348-30300820-1013",
+          "name": "Administrator"
+        },
+        "id": "S-1-5-21-3623811015-3361044348-30300820-1013",
+        "name": "Administrator",
+        "target": {
+          "domain": "CORP",
+          "name": "Administrator"
+        }
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CF43.egmukjj.local",
+        "event_data": {
+          "SidList": [
+            "S-1-5-32-544",
+            "S-1-5-32-545"
+          ],
+          "SidListDesc": [
+            "Administrators",
+            "Users"
+          ],
+          "TargetDomainName": "CORP",
+          "TargetUserName": "Administrator",
+          "TargetUserSid": "S-1-5-21-3623811015-3361044348-30300820-1013",
+          "TdoAttributes": "1",
+          "TdoDirection": "1",
+          "TdoSid": "S-1-5-21-3623811015-3361044348-30300820-519",
+          "TdoType": "1"
+        },
+        "event_id": "4675",
+        "keywords": [
+          "Audit Failure"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "failure",
+        "process": {
+          "pid": 496,
+          "thread": {
+            "id": 504
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1099680",
+        "time_created": "2053-04-22T10:53:25.674Z",
+        "trustAttribute": "TRUST_ATTRIBUTE_NON_TRANSITIVE",
+        "trustDirection": "TRUST_DIRECTION_INBOUND",
+        "trustType": "TRUST_TYPE_DOWNLEVEL"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-04-22T10:53:25.674Z",
+      "agent": {
+        "ephemeral_id": "7d2caeef-f2bc-439c-96ed-84601bb37a76",
+        "hostname": "Wfmmax1",
+        "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+        "type": "winlogbeat",
+        "version": "7.3.1"
+      },
+      "ecs": {
+        "version": "1.11.0"
+      },
+      "event": {
+        "code": "4675",
+        "kind": "event",
+        "outcome": "failure",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CF43.egmukjj.local"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/file/path/4675.xml"
+        },
+        "level": "information"
+      },
+      "message": "<Event xmlns=\"http://schemas.microsoft.com/win/2004/08/events/event\"><System><Provider Name=\"Microsoft-Windows-Security-Auditing\" Guid=\"{35176868-7249-4208-A5CE-5E4A0085B00A}\" /><EventID>4675</EventID><Version>0</Version><Level>0</Level><Task>13056</Task><Opcode>0</Opcode><Keywords>0x8010000000000000</Keywords><TimeCreated SystemTime=\"2043-10-09T00:22:36.237816000Z\" /><EventRecordID>1099680</EventRecordID><Correlation /><Execution ProcessID=\"496\" ThreadID=\"504\" /><Channel>Security</Channel><Computer>DC01.contoso.local</Computer><Security /></System><EventData><Data Name=\"TargetUserSid\">S-1-5-19</Data><Data Name=\"TargetUserName\">LOCAL SERVICE</Data><Data Name=\"TargetDomainName\">NT AUTHORITY</Data><Data Name=\"TdoDirection\">0x3e5</Data><Data Name=\"TdoAttributes\">LSA</Data><Data Name=\"TdoType\">-</Data><Data Name=\"TdoSid\">-</Data><Data Name=\"SidList\">0x0</Data><",
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CF43.egmukjj.local",
+        "event_data": {
+          "SidList": "S-1-5-32-544 S-1-5-32-545",
+          "TargetDomainName": "CORP",
+          "TargetUserName": "Administrator",
+          "TargetUserSid": "S-1-5-21-3623811015-3361044348-30300820-1013",
+          "TdoAttributes": "1",
+          "TdoDirection": "1",
+          "TdoSid": "S-1-5-21-3623811015-3361044348-30300820-519",
+          "TdoType": "1"
+        },
+        "event_id": "4675",
+        "keywords": [
+          "Audit Failure"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "failure",
+        "process": {
+          "pid": 496,
+          "thread": {
+            "id": 504
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1099680,
+        "time_created": "2053-04-22T10:53:25.674Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

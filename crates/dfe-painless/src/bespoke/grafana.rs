@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `grafana`'s suffixed duration string, transcribed.
+//! `grafana`'s suffixed duration string, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -55,7 +55,7 @@ fn scale(head: &str, factor: f64) -> Option<i64> {
         .map(|value| (value * factor) as i64)
 }
 
-/// Every grafana script transcribed here.
+/// Every grafana script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "7aacaa534b10b69ff2fce1bdbc0af3da054e5a46192e7a46bd4aa8569d312eb7",
     source: "grafana",

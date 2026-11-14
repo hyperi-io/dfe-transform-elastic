@@ -1,0 +1,276 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-08-23T09:35:56.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"id\":\"indicator--8b713678-3ebf-57c0-9ab5-d250d5d0518d\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"extensions\":{\"extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba\":{\"extension_type\":\"property-extension\",\"id\":\"918b5638-9869-46c8-b9bb-ebeca12e971c\",\"type\":\"Indicator\",\"created_at\":\"2051-10-18T07:48:28.940Z\",\"updated_at\":\"2051-10-18T07:48:29.042Z\",\"is_inferred\":false,\"creator_ids\":[\"c218f51d-b916-4068-9923-61a1747c2148\"],\"labels_ids\":[\"3c56e79f-070f-4df6-898a-2ba38a739146\",\"87bc07e1-94ed-4645-99fd-e34112c80585\",\"aecd7958-ea97-45c7-8713-ca62e2d79137\"],\"created_by_ref_id\":\"dd98bf5d-5e90-4220-a277-b5de66343dfe\",\"detection\":true,\"score\":50,\"main_observable_type\":\"Domain-Name\"},\"extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b\":{\"extension_type\":\"property-extension\"}},\"created\":\"2049-08-23T09:35:56.000Z\",\"modified\":\"2051-10-18T07:48:29.042Z\",\"revoked\":true,\"confidence\":20,\"lang\":\"en\",\"labels\":[\"clear\",\"non-classifiees\",\"bonne\"],\"object_marking_refs\":[\"marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9\"],\"created_by_ref\":\"identity--d10c6f1c-e3ee-588c-a846-31612bc780ec\",\"name\":\"amazai-technologies.website\",\"description\":\"Serveur C2 Cobalt Strike\",\"pattern\":\"[domain-name:value = 'amazai-technologies.website']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"valid_from\":\"2049-08-23T09:35:56.000Z\",\"valid_until\":\"2050-08-23T09:35:56.000Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "stix": {
+        "confidence": 20,
+        "created": "2049-08-23T09:35:56.000Z",
+        "created_by_ref": "identity--d10c6f1c-e3ee-588c-a846-31612bc780ec",
+        "extensions": {
+          "extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b": {
+            "extension_type": "property-extension"
+          },
+          "extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba": {
+            "created_at": "2051-10-18T07:48:28.940Z",
+            "created_by_ref_id": "dd98bf5d-5e90-4220-a277-b5de66343dfe",
+            "creator_ids": [
+              "c218f51d-b916-4068-9923-61a1747c2148"
+            ],
+            "detection": true,
+            "extension_type": "property-extension",
+            "id": "918b5638-9869-46c8-b9bb-ebeca12e971c",
+            "is_inferred": false,
+            "labels_ids": [
+              "3c56e79f-070f-4df6-898a-2ba38a739146",
+              "87bc07e1-94ed-4645-99fd-e34112c80585",
+              "aecd7958-ea97-45c7-8713-ca62e2d79137"
+            ],
+            "main_observable_type": "Domain-Name",
+            "score": 50,
+            "type": "Indicator",
+            "updated_at": "2051-10-18T07:48:29.042Z"
+          }
+        },
+        "id": "indicator--8b713678-3ebf-57c0-9ab5-d250d5d0518d",
+        "ioc_expiration_date": "2050-08-23T09:35:56.000Z",
+        "ioc_expiration_duration": "5d",
+        "ioc_expiration_reason": "Expiration set from valid_until field",
+        "lang": "en",
+        "modified": "2051-10-18T07:48:29.042Z",
+        "object_marking_refs": [
+          "marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9"
+        ],
+        "pattern": "[domain-name:value = 'amazai-technologies.website']",
+        "pattern_type": "stix",
+        "pattern_version": "2.1",
+        "revoked": true,
+        "spec_version": "2.1",
+        "type": "indicator",
+        "valid_from": "2049-08-23T09:35:56.000Z",
+        "valid_until": "2050-08-23T09:35:56.000Z"
+      },
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator",
+        "clear",
+        "non-classifiees",
+        "bonne"
+      ],
+      "threat": {
+        "feed": {
+          "name": "Test STIX feed"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "description": "Serveur C2 Cobalt Strike",
+          "first_seen": "2049-08-23T09:35:56.000Z",
+          "last_seen": "2051-10-18T07:48:29.042Z",
+          "modified_at": "2051-10-18T07:48:29.042Z",
+          "name": "amazai-technologies.website",
+          "type": "domain-name",
+          "url": {
+            "original": [
+              "amazai-technologies.website"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2043-05-15T09:12:16.432Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"type\":\"indicator\",\"spec_version\":\"2.1\",\"pattern_type\":\"stix\",\"id\":\"indicator--329ae6e9-25bd-49e8-89d1-aae4ca52e4a7\",\"created\":\"2043-05-15T09:12:16.432Z\",\"modified\":\"2043-05-15T09:12:16.432Z\",\"name\":\"www.peegdwvcj.bnprnp.com\",\"description\":\"www.peegdwvcj.bnprnp.com resolved to 203.0.113.88, 192.0.2.209, and 198.51.100.211, which overlap with the gwx@123 IP addresses.\",\"pattern\":\"[domain-name:value = 'www.peegdwvcj.bnprnp.com' OR ipv4-addr:value = '203.0.113.88' OR ipv4-addr:value = '192.0.2.209' OR ipv4-addr:value = '198.51.100.211']\",\"indicator_types\":[\"malicious-activity\",\"attribution\"],\"valid_from\":\"2043-05-15T09:12:16.432678Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "ip": [
+          "203.0.113.88",
+          "192.0.2.209",
+          "198.51.100.211"
+        ]
+      },
+      "stix": {
+        "created": "2043-05-15T09:12:16.432Z",
+        "id": "indicator--329ae6e9-25bd-49e8-89d1-aae4ca52e4a7",
+        "indicator_types": [
+          "malicious-activity",
+          "attribution"
+        ],
+        "ioc_expiration_date": "2043-05-20T09:12:16.432Z",
+        "ioc_expiration_duration": "5d",
+        "ioc_expiration_reason": "Expiration set by Elastic from the integration's parameter `IOC Expiration Duration`",
+        "modified": "2043-05-15T09:12:16.432Z",
+        "pattern": "[domain-name:value = 'www.peegdwvcj.bnprnp.com' OR ipv4-addr:value = '203.0.113.88' OR ipv4-addr:value = '192.0.2.209' OR ipv4-addr:value = '198.51.100.211']",
+        "pattern_type": "stix",
+        "spec_version": "2.1",
+        "type": "indicator",
+        "valid_from": "2043-05-15T09:12:16.432678Z"
+      },
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ],
+      "threat": {
+        "feed": {
+          "name": "Test STIX feed"
+        },
+        "indicator": {
+          "description": "www.peegdwvcj.bnprnp.com resolved to 203.0.113.88, 192.0.2.209, and 198.51.100.211, which overlap with the gwx@123 IP addresses.",
+          "first_seen": "2043-05-15T09:12:16.432Z",
+          "ip": [
+            "203.0.113.88",
+            "192.0.2.209",
+            "198.51.100.211"
+          ],
+          "last_seen": "2043-05-15T09:12:16.432Z",
+          "modified_at": "2043-05-15T09:12:16.432Z",
+          "name": "www.peegdwvcj.bnprnp.com",
+          "type": "domain-name",
+          "url": {
+            "original": [
+              "www.peegdwvcj.bnprnp.com"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2043-05-15T09:12:16.432Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"type\":\"indicator\",\"spec_version\":\"2.1\",\"pattern_type\":\"stix\",\"id\":\"indicator--8da68996-f175-4ae0-bd74-aad4913873b8\",\"created\":\"2043-05-15T09:12:16.432Z\",\"modified\":\"2043-05-15T09:12:16.432Z\",\"name\":\"syclzxjap.ciqhjai.net\",\"description\":\"The gwx@123 sample 5226ec325ef85dd4192819c3b00569e8 connects to the CnC domain names otbthgperc.ciqhjai.net, tlamnkgesb.ciqhjai.net, hiduwpndsd.ciqhjai.net, and kufhnvncpd.ciqhjai.net. These domain names resolved to 203.0.113.88, 192.0.2.209.\",\"pattern\":\"[domain-name:value = 'otbthgperc.ciqhjai.net' OR domain-name:value = 'tlamnkgesb.ciqhjai.net' OR domain-name:value = 'hiduwpndsd.ciqhjai.net' OR domain-name:value = 'kufhnvncpd.ciqhjai.net' OR ipv4-addr:value = '203.0.113.88' OR ipv4-addr:value = '192.0.2.209']\",\"indicator_types\":[\"malicious-activity\",\"attribution\"],\"valid_from\":\"2043-05-15T09:12:16.432678Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "ip": [
+          "203.0.113.88",
+          "192.0.2.209"
+        ]
+      },
+      "stix": {
+        "created": "2043-05-15T09:12:16.432Z",
+        "id": "indicator--8da68996-f175-4ae0-bd74-aad4913873b8",
+        "indicator_types": [
+          "malicious-activity",
+          "attribution"
+        ],
+        "ioc_expiration_date": "2043-05-20T09:12:16.432Z",
+        "ioc_expiration_duration": "5d",
+        "ioc_expiration_reason": "Expiration set by Elastic from the integration's parameter `IOC Expiration Duration`",
+        "modified": "2043-05-15T09:12:16.432Z",
+        "pattern": "[domain-name:value = 'otbthgperc.ciqhjai.net' OR domain-name:value = 'tlamnkgesb.ciqhjai.net' OR domain-name:value = 'hiduwpndsd.ciqhjai.net' OR domain-name:value = 'kufhnvncpd.ciqhjai.net' OR ipv4-addr:value = '203.0.113.88' OR ipv4-addr:value = '192.0.2.209']",
+        "pattern_type": "stix",
+        "spec_version": "2.1",
+        "type": "indicator",
+        "valid_from": "2043-05-15T09:12:16.432678Z"
+      },
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ],
+      "threat": {
+        "feed": {
+          "name": "Test STIX feed"
+        },
+        "indicator": {
+          "description": "The gwx@123 sample 5226ec325ef85dd4192819c3b00569e8 connects to the CnC domain names otbthgperc.ciqhjai.net, tlamnkgesb.ciqhjai.net, hiduwpndsd.ciqhjai.net, and kufhnvncpd.ciqhjai.net. These domain names resolved to 203.0.113.88, 192.0.2.209.",
+          "first_seen": "2043-05-15T09:12:16.432Z",
+          "ip": [
+            "203.0.113.88",
+            "192.0.2.209"
+          ],
+          "last_seen": "2043-05-15T09:12:16.432Z",
+          "modified_at": "2043-05-15T09:12:16.432Z",
+          "name": "syclzxjap.ciqhjai.net",
+          "type": "domain-name",
+          "url": {
+            "original": [
+              "otbthgperc.ciqhjai.net",
+              "tlamnkgesb.ciqhjai.net",
+              "hiduwpndsd.ciqhjai.net",
+              "kufhnvncpd.ciqhjai.net"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "feed_name": "Test STIX feed",
+        "ioc_expiration_duration": "5d",
+        "restrict_stix": false
+      },
+      "message": "{\"id\":\"indicator--8b713678-3ebf-57c0-9ab5-d250d5d0518d\",\"spec_version\":\"2.1\",\"type\":\"indicator\",\"extensions\":{\"extension-definition--ea279b3e-5c71-4632-ac08-831c66a786ba\":{\"extension_type\":\"property-extension\",\"id\":\"918b5638-9869-46c8-b9bb-ebeca12e971c\",\"type\":\"Indicator\",\"created_at\":\"2051-10-18T07:48:28.940Z\",\"updated_at\":\"2051-10-18T07:48:29.042Z\",\"is_inferred\":false,\"creator_ids\":[\"c218f51d-b916-4068-9923-61a1747c2148\"],\"labels_ids\":[\"3c56e79f-070f-4df6-898a-2ba38a739146\",\"87bc07e1-94ed-4645-99fd-e34112c80585\",\"aecd7958-ea97-45c7-8713-ca62e2d79137\"],\"created_by_ref_id\":\"dd98bf5d-5e90-4220-a277-b5de66343dfe\",\"detection\":true,\"score\":50,\"main_observable_type\":\"Domain-Name\"},\"extension-definition--322b8f77-262a-4cb8-a915-1e441e00329b\":{\"extension_type\":\"property-extension\"}},\"created\":\"2049-08-23T09:35:56.000Z\",\"modified\":\"2051-10-18T07:48:29.042Z\",\"revoked\":true,\"confidence\":20,\"lang\":\"en\",\"labels\":[\"clear\",\"non-classifiees\",\"bonne\"],\"object_marking_refs\":[\"marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9\"],\"created_by_ref\":\"identity--d10c6f1c-e3ee-588c-a846-31612bc780ec\",\"name\":\"amazai-technologies.website\",\"description\":\"Serveur C2 Cobalt Strike\",\"pattern\":\"[domain-name:value = 'amazai-technologies.website']\",\"pattern_type\":\"stix\",\"pattern_version\":\"2.1\",\"valid_from\":\"2049-08-23T09:35:56.000Z\",\"valid_until\":\"2050-08-23T09:35:56.000Z\"}",
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ]
+    },
+    {
+      "_conf": {
+        "feed_name": "Test STIX feed",
+        "ioc_expiration_duration": "5d",
+        "restrict_stix": false
+      },
+      "message": "{\"type\":\"indicator\",\"spec_version\":\"2.1\",\"pattern_type\":\"stix\",\"id\":\"indicator--329ae6e9-25bd-49e8-89d1-aae4ca52e4a7\",\"created\":\"2043-05-15T09:12:16.432Z\",\"modified\":\"2043-05-15T09:12:16.432Z\",\"name\":\"www.peegdwvcj.bnprnp.com\",\"description\":\"www.peegdwvcj.bnprnp.com resolved to 203.0.113.88, 192.0.2.209, and 198.51.100.211, which overlap with the gwx@123 IP addresses.\",\"pattern\":\"[domain-name:value = 'www.peegdwvcj.bnprnp.com' OR ipv4-addr:value = '203.0.113.88' OR ipv4-addr:value = '192.0.2.209' OR ipv4-addr:value = '198.51.100.211']\",\"indicator_types\":[\"malicious-activity\",\"attribution\"],\"valid_from\":\"2043-05-15T09:12:16.432678Z\"}",
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ]
+    },
+    {
+      "_conf": {
+        "feed_name": "Test STIX feed",
+        "ioc_expiration_duration": "5d",
+        "restrict_stix": false
+      },
+      "message": "{\"type\":\"indicator\",\"spec_version\":\"2.1\",\"pattern_type\":\"stix\",\"id\":\"indicator--8da68996-f175-4ae0-bd74-aad4913873b8\",\"created\":\"2043-05-15T09:12:16.432Z\",\"modified\":\"2043-05-15T09:12:16.432Z\",\"name\":\"syclzxjap.ciqhjai.net\",\"description\":\"The gwx@123 sample 5226ec325ef85dd4192819c3b00569e8 connects to the CnC domain names otbthgperc.ciqhjai.net, tlamnkgesb.ciqhjai.net, hiduwpndsd.ciqhjai.net, and kufhnvncpd.ciqhjai.net. These domain names resolved to 203.0.113.88, 192.0.2.209.\",\"pattern\":\"[domain-name:value = 'otbthgperc.ciqhjai.net' OR domain-name:value = 'tlamnkgesb.ciqhjai.net' OR domain-name:value = 'hiduwpndsd.ciqhjai.net' OR domain-name:value = 'kufhnvncpd.ciqhjai.net' OR ipv4-addr:value = '203.0.113.88' OR ipv4-addr:value = '192.0.2.209']\",\"indicator_types\":[\"malicious-activity\",\"attribution\"],\"valid_from\":\"2043-05-15T09:12:16.432678Z\"}",
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_custom-indicator-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "ti_custom",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

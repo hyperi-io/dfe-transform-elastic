@@ -1088,9 +1088,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("zeek.ssl.version") };
             if _cond {
-                // Painless script
-                // Source: def parts = ctx.zeek.ssl.version.splitOnToken(\"v\"); if (parts.length != 2) {\n  return;\n} if (parts[0] == \"SSL\") {\n  ctx.tls.version = parts[1] + \".0\";\n} else {\n  ctx.tls.version = parts[1].substring(0,1) + \".\" + parts[1].substring(1);\n} ctx.tls.version_protocol = parts[0].toLowerCase();
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

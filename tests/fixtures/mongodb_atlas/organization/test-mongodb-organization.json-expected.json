@@ -1,0 +1,229 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-05-25T11:16:10.000Z",
+      "client": {
+        "ip": "0.0.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration",
+          "database"
+        ],
+        "dataset": "mongodb_atlas.organization",
+        "id": "sample_event_id",
+        "kind": "event",
+        "module": "mongodb_atlas",
+        "type": [
+          "info",
+          "access",
+          "change"
+        ]
+      },
+      "group": {
+        "id": "sample_group_id"
+      },
+      "mongodb_atlas": {
+        "organization": {
+          "additional_info": {
+            "_t": "USER_AUDIT",
+            "cid": "sample_group_id",
+            "cre": "2051-05-25T11:16:10Z",
+            "description": "Sample description",
+            "et": "JOINED_GROUP",
+            "hidden": false,
+            "id": "sample_event_id",
+            "is_mms_admin": false,
+            "new_roles": [
+              "admin"
+            ],
+            "remote_addr": "127.0.0.1",
+            "severity": "INFO",
+            "source": "USER",
+            "target_username": "mdlyvb.gxcp@example.com",
+            "un": "mdlyvb.gxcp@example.com",
+            "user_id": "sample_user_id",
+            "ut": "LOCAL"
+          },
+          "alert": {
+            "config": {
+              "id": "sample_alert_config_id"
+            },
+            "id": "sample_alert_id"
+          },
+          "api_key": {
+            "id": "sample_api_key_id"
+          },
+          "cluster": {
+            "id": "sample_cluster_id",
+            "name": "sample_cluster"
+          },
+          "collection": {
+            "name": "sample_collection"
+          },
+          "database": {
+            "name": "sample_db"
+          },
+          "event_type": {
+            "name": "JOINED_GROUP"
+          },
+          "host": {
+            "id": "sample_host_id",
+            "name": "bhrfh-dfg2we-vkdhf-53-11.t2zpe.pnvkjeb.net"
+          },
+          "invoice": {
+            "id": "sample_invoice_id"
+          },
+          "is_global_admin": false,
+          "metric": {
+            "name": "FTS_PROCESS_CPU_USER",
+            "unit": "RAW",
+            "value": 1
+          },
+          "operation": {
+            "type": "update"
+          },
+          "payment": {
+            "id": "sample_payment_id"
+          },
+          "public_key": "sample_public_key",
+          "replicaset": {
+            "name": "sample_replica_set"
+          },
+          "resource": {
+            "id": "663087fcc4818d301a53af",
+            "type": "cluster"
+          },
+          "shard": {
+            "name": "sample_shard"
+          },
+          "target": {
+            "username": "mdlyvb.gxcp@example.com"
+          },
+          "target_public_key": "sample_target_public_key",
+          "team": {
+            "id": "sample_team_id"
+          },
+          "whitelist_entry": "mdlyvb.gxcp@example.com"
+        }
+      },
+      "organization": {
+        "id": "sample_org_id"
+      },
+      "related": {
+        "hosts": [
+          "bhrfh-dfg2we-vkdhf-53-11.t2zpe.pnvkjeb.net"
+        ],
+        "ip": [
+          "0.0.0.0"
+        ],
+        "user": [
+          "mdlyvb.gxcp@example.com",
+          "scgppa3.opfk",
+          "scgppa3.opfk@example.com"
+        ]
+      },
+      "server": {
+        "port": 80
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "scgppa3.opfk@example.com",
+        "id": "sample_user_id",
+        "name": "scgppa3.opfk"
+      }
+    }
+  ],
+  "input": [
+    {
+      "response": {
+        "alertConfigId": "sample_alert_config_id",
+        "alertId": "sample_alert_id",
+        "apiKeyId": "sample_api_key_id",
+        "clusterId": "sample_cluster_id",
+        "clusterName": "sample_cluster",
+        "collection": "sample_collection",
+        "created": "2051-05-25T11:16:10Z",
+        "currentValue": {
+          "number": 1,
+          "units": "RAW"
+        },
+        "database": "sample_db",
+        "eventTypeName": "JOINED_GROUP",
+        "groupId": "sample_group_id",
+        "hostId": "sample_host_id",
+        "hostname": "bhrfh-dfg2we-vkdhf-53-11.t2zpe.pnvkjeb.net",
+        "id": "sample_event_id",
+        "invoiceId": "sample_invoice_id",
+        "isGlobalAdmin": false,
+        "metricName": "FTS_PROCESS_CPU_USER",
+        "opType": "update",
+        "orgId": "sample_org_id",
+        "paymentId": "sample_payment_id",
+        "port": 80,
+        "publicKey": "sample_public_key",
+        "raw": {
+          "_t": "USER_AUDIT",
+          "accountUserId": null,
+          "alertConfigId": null,
+          "cid": "sample_group_id",
+          "cre": "2051-05-25T11:16:10Z",
+          "description": "Sample description",
+          "et": "JOINED_GROUP",
+          "gn": null,
+          "hidden": false,
+          "id": "sample_event_id",
+          "isMmsAdmin": false,
+          "newRoles": [
+            "admin"
+          ],
+          "orgId": null,
+          "orgName": null,
+          "reason": null,
+          "remoteAddr": "127.0.0.1",
+          "salesforceChange": null,
+          "severity": "INFO",
+          "source": "USER",
+          "statusCode": null,
+          "targetUsername": "mdlyvb.gxcp@example.com",
+          "teamId": null,
+          "teamName": null,
+          "tempId": null,
+          "un": "mdlyvb.gxcp@example.com",
+          "userApiKeyType": null,
+          "userId": "sample_user_id",
+          "ut": "LOCAL"
+        },
+        "remoteAddress": "0.0.0.0",
+        "replicaSetName": "sample_replica_set",
+        "resourceId": "663087fcc4818d301a53af",
+        "resourceType": "cluster",
+        "shardName": "sample_shard",
+        "targetPublicKey": "sample_target_public_key",
+        "targetUsername": "mdlyvb.gxcp@example.com",
+        "teamId": "sample_team_id",
+        "userId": "sample_user_id",
+        "username": "scgppa3.opfk@example.com",
+        "whitelistEntry": "mdlyvb.gxcp@example.com"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "organization",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-mongodb_atlas-organization-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [
+      "mongodb_atlas.organization.additional_info.hidden",
+      "mongodb_atlas.organization.additional_info.is_mms_admin"
+    ],
+    "package": "mongodb_atlas",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

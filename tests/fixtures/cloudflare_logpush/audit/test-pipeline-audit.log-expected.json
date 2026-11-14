@@ -1,0 +1,265 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-30T20:19:48.000Z",
+      "cloudflare_logpush": {
+        "audit": {
+          "action": {
+            "result": "success",
+            "type": "token_create"
+          },
+          "actor": {
+            "email": "user@example.com",
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "ip": "203.0.113.138",
+            "type": "user"
+          },
+          "id": "24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543",
+          "interface": "UI",
+          "metadata": {
+            "token_name": "test",
+            "token_tag": "a2016e37f505d94441c45007c9bb6837"
+          },
+          "new_value": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "old_value": {
+            "key3": "value4",
+            "key4": "value4"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          },
+          "timestamp": "2049-11-30T20:19:48.000Z"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "token_create",
+        "category": [
+          "authentication"
+        ],
+        "id": "24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543",
+        "kind": "event",
+        "original": "{\"ActionResult\":true,\"ActionType\":\"token_create\",\"ActorEmail\":\"user@example.com\",\"ActorID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ActorIP\":\"203.0.113.138\",\"ActorType\":\"user\",\"ID\":\"24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543\",\"Interface\":\"UI\",\"Metadata\":{\"token_name\":\"test\",\"token_tag\":\"a2016e37f505d94441c45007c9bb6837\"},\"NewValue\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"OldValue\":{\"key3\":\"value4\",\"key4\":\"value4\"},\"OwnerID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceType\":\"account\",\"When\":\"2049-11-30T20:19:48Z\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s",
+          "user@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.138"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2021-11-30T20:19:48.000Z",
+      "cloudflare_logpush": {
+        "audit": {
+          "action": {
+            "result": "success",
+            "type": "token_create"
+          },
+          "actor": {
+            "email": "user@example.com",
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "ip": "203.0.113.138",
+            "type": "user"
+          },
+          "id": "24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543",
+          "interface": "UI",
+          "metadata": {
+            "token_name": "test",
+            "token_tag": "a2016e37f505d94441c45007c9bb6837"
+          },
+          "new_value": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "old_value": {
+            "key3": "value4",
+            "key4": "value4"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          },
+          "timestamp": "2021-11-30T20:19:48.000Z"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "token_create",
+        "category": [
+          "authentication"
+        ],
+        "id": "24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543",
+        "kind": "event",
+        "original": "{\"ActionResult\":true,\"ActionType\":\"token_create\",\"ActorEmail\":\"user@example.com\",\"ActorID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ActorIP\":\"203.0.113.138\",\"ActorType\":\"user\",\"ID\":\"24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543\",\"Interface\":\"UI\",\"Metadata\":{\"token_name\":\"test\",\"token_tag\":\"a2016e37f505d94441c45007c9bb6837\"},\"NewValue\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"OldValue\":{\"key3\":\"value4\",\"key4\":\"value4\"},\"OwnerID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceType\":\"account\",\"When\":\"1638303588\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s",
+          "user@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.138"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    },
+    {
+      "@timestamp": "2021-11-30T20:19:48.000Z",
+      "cloudflare_logpush": {
+        "audit": {
+          "action": {
+            "result": "success",
+            "type": "token_create"
+          },
+          "actor": {
+            "email": "user@example.com",
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "ip": "203.0.113.138",
+            "type": "user"
+          },
+          "id": "24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543",
+          "interface": "UI",
+          "metadata": {
+            "token_name": "test",
+            "token_tag": "a2016e37f505d94441c45007c9bb6837"
+          },
+          "new_value": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "old_value": {
+            "key3": "value4",
+            "key4": "value4"
+          },
+          "owner": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+          },
+          "resource": {
+            "id": "enl3j9du8rnx2swwd9l32qots7l54t9s",
+            "type": "account"
+          },
+          "timestamp": "2021-11-30T20:19:48.000Z"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "token_create",
+        "category": [
+          "authentication"
+        ],
+        "id": "24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543",
+        "kind": "event",
+        "original": "{\"ActionResult\":true,\"ActionType\":\"token_create\",\"ActorEmail\":\"user@example.com\",\"ActorID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ActorIP\":\"203.0.113.138\",\"ActorType\":\"user\",\"ID\":\"24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543\",\"Interface\":\"UI\",\"Metadata\":{\"token_name\":\"test\",\"token_tag\":\"a2016e37f505d94441c45007c9bb6837\"},\"NewValue\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"OldValue\":{\"key3\":\"value4\",\"key4\":\"value4\"},\"OwnerID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceType\":\"account\",\"When\":\"1638303588000000000\"}",
+        "outcome": "success",
+        "provider": "UI",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "enl3j9du8rnx2swwd9l32qots7l54t9s",
+          "user@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.138"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "enl3j9du8rnx2swwd9l32qots7l54t9s"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"ActionResult\":true,\"ActionType\":\"token_create\",\"ActorEmail\":\"user@example.com\",\"ActorID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ActorIP\":\"203.0.113.138\",\"ActorType\":\"user\",\"ID\":\"24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543\",\"Interface\":\"UI\",\"Metadata\":{\"token_name\":\"test\",\"token_tag\":\"a2016e37f505d94441c45007c9bb6837\"},\"NewValue\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"OldValue\":{\"key3\":\"value4\",\"key4\":\"value4\"},\"OwnerID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceType\":\"account\",\"When\":\"2049-11-30T20:19:48Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"ActionResult\":true,\"ActionType\":\"token_create\",\"ActorEmail\":\"user@example.com\",\"ActorID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ActorIP\":\"203.0.113.138\",\"ActorType\":\"user\",\"ID\":\"24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543\",\"Interface\":\"UI\",\"Metadata\":{\"token_name\":\"test\",\"token_tag\":\"a2016e37f505d94441c45007c9bb6837\"},\"NewValue\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"OldValue\":{\"key3\":\"value4\",\"key4\":\"value4\"},\"OwnerID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceType\":\"account\",\"When\":\"1638303588\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"ActionResult\":true,\"ActionType\":\"token_create\",\"ActorEmail\":\"user@example.com\",\"ActorID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ActorIP\":\"203.0.113.138\",\"ActorType\":\"user\",\"ID\":\"24fa77bc-9aeb-4c2a-b45b-c1b5daa7d543\",\"Interface\":\"UI\",\"Metadata\":{\"token_name\":\"test\",\"token_tag\":\"a2016e37f505d94441c45007c9bb6837\"},\"NewValue\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"OldValue\":{\"key3\":\"value4\",\"key4\":\"value4\"},\"OwnerID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceID\":\"enl3j9du8rnx2swwd9l32qots7l54t9s\",\"ResourceType\":\"account\",\"When\":\"1638303588000000000\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-audit-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

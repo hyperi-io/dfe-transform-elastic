@@ -1,0 +1,263 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-11-01T10:22:23.106Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "detect-again",
+        "category": [
+          "threat"
+        ],
+        "id": "34874a88935860cf6yyfc856d6abb6f35a29d8c077195ed6291aa8373696b44",
+        "kind": "enrichment",
+        "original": "{\"id\":\"34874a88935860cf6yyfc856d6abb6f35a29d8c077195ed6291aa8373696b44\",\"type\":\"ipv4\",\"value\":\"192.0.2.218\",\"action\":\"detect again\",\"severity\":\"critical\",\"description\":\"IS-38887\",\"metadata\":{\"filename\":\"High_Serverity_Heuristic_Sandbox_Threat.docx\"},\"platforms\":[\"windows\",\"mac\",\"linux\"],\"tags\":[\"IS-38887\"],\"expired\":false,\"deleted\":false,\"applied_globally\":true,\"from_parent\":false,\"created_on\":\"2051-11-01T10:22:23.10607613Z\",\"created_by\":\"fcd.tr@example.com\",\"modified_on\":\"2051-11-01T10:22:23.10607613Z\",\"modified_by\":\"aqbkota.um@do.com\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "file": {
+        "name": "High_Serverity_Heuristic_Sandbox_Threat.docx"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.218"
+        ],
+        "user": [
+          "aqbkota.um@do.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "IS-38887",
+          "first_seen": "2051-11-01T10:22:23.106Z",
+          "ip": "192.0.2.218",
+          "modified_at": "2051-11-01T10:22:23.106Z",
+          "name": "192.0.2.218",
+          "provider": "crowdstrike",
+          "type": "ipv4-addr"
+        }
+      },
+      "ti_crowdstrike": {
+        "ioc": {
+          "action": "detect again",
+          "applied_globally": true,
+          "created_by": "fcd.tr@example.com",
+          "created_on": "2051-11-01T10:22:23.106Z",
+          "deleted": false,
+          "description": "IS-38887",
+          "expired": false,
+          "from_parent": false,
+          "id": "34874a88935860cf6yyfc856d6abb6f35a29d8c077195ed6291aa8373696b44",
+          "metadata": {
+            "filename": "High_Serverity_Heuristic_Sandbox_Threat.docx"
+          },
+          "modified_by": "aqbkota.um@do.com",
+          "modified_on": "2051-11-01T10:22:23.106Z",
+          "platforms": [
+            "windows",
+            "mac",
+            "linux"
+          ],
+          "severity": "critical",
+          "tags": [
+            "IS-38887"
+          ],
+          "type": "ipv4",
+          "value": "192.0.2.218"
+        }
+      },
+      "user": {
+        "domain": "example.com",
+        "name": "fcd.tr"
+      }
+    },
+    {
+      "@timestamp": "2053-02-03T10:04:18.395Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "prevent",
+        "category": [
+          "threat"
+        ],
+        "id": "c0810c2a3ae90d2134424e83def503f4d5053a46d1952ea9bfe80c6c048b4c07",
+        "kind": "enrichment",
+        "original": "{\"action\":\"prevent\",\"applied_globally\":true,\"created_by\":\"user@example.com\",\"created_on\":\"2053-02-03T10:04:18.39565409Z\",\"deleted\":false,\"description\":\"some description\",\"expired\":false,\"from_parent\":false,\"id\":\"c0810c2a3ae90d2134424e83def503f4d5053a46d1952ea9bfe80c6c048b4c07\",\"metadata\":{\"av_hits\":-1,\"company_name\":\"org.localsend\",\"file_description\":\"localsend_app\",\"file_version\":\"1.14.0+45\",\"original_filename\":\"localsend_app.exe\",\"product_name\":\"localsend_app\",\"product_version\":\"1.14.0+45\",\"signed\":false},\"modified_by\":\"user@example.com\",\"modified_on\":\"2053-02-03T10:04:18.39565409Z\",\"platforms\":[\"windows\",\"mac\",\"linux\"],\"severity\":\"low\",\"type\":\"sha256\",\"value\":\"50714c79709004885c964e529dbce5d04d5171eb4ce6aeb2bc4416242df6a8da\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "hash": [
+          "50714c79709004885c964e529dbce5d04d5171eb4ce6aeb2bc4416242df6a8da"
+        ],
+        "user": [
+          "user@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "some description",
+          "file": {
+            "hash": {
+              "sha256": "50714c79709004885c964e529dbce5d04d5171eb4ce6aeb2bc4416242df6a8da"
+            }
+          },
+          "first_seen": "2053-02-03T10:04:18.395Z",
+          "modified_at": "2053-02-03T10:04:18.395Z",
+          "name": "50714c79709004885c964e529dbce5d04d5171eb4ce6aeb2bc4416242df6a8da",
+          "provider": "crowdstrike",
+          "type": "file"
+        }
+      },
+      "ti_crowdstrike": {
+        "ioc": {
+          "action": "prevent",
+          "applied_globally": true,
+          "created_by": "user@example.com",
+          "created_on": "2053-02-03T10:04:18.395Z",
+          "deleted": false,
+          "description": "some description",
+          "expired": false,
+          "from_parent": false,
+          "id": "c0810c2a3ae90d2134424e83def503f4d5053a46d1952ea9bfe80c6c048b4c07",
+          "metadata": {
+            "av_hits": -1,
+            "company_name": "org.localsend",
+            "file_description": "localsend_app",
+            "file_version": "1.14.0+45",
+            "original_filename": "localsend_app.exe",
+            "product_name": "localsend_app",
+            "product_version": "1.14.0+45",
+            "signed": false
+          },
+          "modified_by": "user@example.com",
+          "modified_on": "2053-02-03T10:04:18.395Z",
+          "platforms": [
+            "windows",
+            "mac",
+            "linux"
+          ],
+          "severity": "low",
+          "type": "sha256",
+          "value": "50714c79709004885c964e529dbce5d04d5171eb4ce6aeb2bc4416242df6a8da"
+        }
+      },
+      "user": {
+        "domain": "example.com",
+        "name": "user"
+      }
+    },
+    {
+      "@timestamp": "2053-01-29T11:28:52.379Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "detect",
+        "category": [
+          "threat"
+        ],
+        "id": "32d12c3a8fe0dc819984a146d795492ec79173326dfdd9af388b5fe70fde243d",
+        "kind": "enrichment",
+        "original": "{\"action\":\"detect\",\"applied_globally\":true,\"created_by\":\"user@example.com\",\"created_on\":\"2053-01-29T09:01:39.125982486Z\",\"deleted\":false,\"description\":\"Monitor use of deepseek.\",\"expired\":false,\"from_parent\":false,\"id\":\"32d12c3a8fe0dc819984a146d795492ec79173326dfdd9af388b5fe70fde243d\",\"metadata\":{},\"modified_by\":\"user@example.com\",\"modified_on\":\"2053-01-29T11:28:52.379311339Z\",\"platforms\":[\"windows\",\"mac\",\"linux\"],\"severity\":\"informational\",\"type\":\"domain\",\"value\":\"richdivr.aaamgedk.com\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "user": [
+          "user@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "Monitor use of deepseek.",
+          "first_seen": "2053-01-29T09:01:39.125Z",
+          "modified_at": "2053-01-29T11:28:52.379Z",
+          "name": "richdivr.aaamgedk.com",
+          "provider": "crowdstrike",
+          "type": "domain-name",
+          "url": {
+            "domain": "richdivr.aaamgedk.com"
+          }
+        }
+      },
+      "ti_crowdstrike": {
+        "ioc": {
+          "action": "detect",
+          "applied_globally": true,
+          "created_by": "user@example.com",
+          "created_on": "2053-01-29T09:01:39.125Z",
+          "deleted": false,
+          "description": "Monitor use of deepseek.",
+          "expired": false,
+          "from_parent": false,
+          "id": "32d12c3a8fe0dc819984a146d795492ec79173326dfdd9af388b5fe70fde243d",
+          "modified_by": "user@example.com",
+          "modified_on": "2053-01-29T11:28:52.379Z",
+          "platforms": [
+            "windows",
+            "mac",
+            "linux"
+          ],
+          "severity": "informational",
+          "type": "domain",
+          "value": "richdivr.aaamgedk.com"
+        }
+      },
+      "user": {
+        "domain": "example.com",
+        "name": "user"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"34874a88935860cf6yyfc856d6abb6f35a29d8c077195ed6291aa8373696b44\",\"type\":\"ipv4\",\"value\":\"192.0.2.218\",\"action\":\"detect again\",\"severity\":\"critical\",\"description\":\"IS-38887\",\"metadata\":{\"filename\":\"High_Serverity_Heuristic_Sandbox_Threat.docx\"},\"platforms\":[\"windows\",\"mac\",\"linux\"],\"tags\":[\"IS-38887\"],\"expired\":false,\"deleted\":false,\"applied_globally\":true,\"from_parent\":false,\"created_on\":\"2051-11-01T10:22:23.10607613Z\",\"created_by\":\"fcd.tr@example.com\",\"modified_on\":\"2051-11-01T10:22:23.10607613Z\",\"modified_by\":\"aqbkota.um@do.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"action\":\"prevent\",\"applied_globally\":true,\"created_by\":\"user@example.com\",\"created_on\":\"2053-02-03T10:04:18.39565409Z\",\"deleted\":false,\"description\":\"some description\",\"expired\":false,\"from_parent\":false,\"id\":\"c0810c2a3ae90d2134424e83def503f4d5053a46d1952ea9bfe80c6c048b4c07\",\"metadata\":{\"av_hits\":-1,\"company_name\":\"org.localsend\",\"file_description\":\"localsend_app\",\"file_version\":\"1.14.0+45\",\"original_filename\":\"localsend_app.exe\",\"product_name\":\"localsend_app\",\"product_version\":\"1.14.0+45\",\"signed\":false},\"modified_by\":\"user@example.com\",\"modified_on\":\"2053-02-03T10:04:18.39565409Z\",\"platforms\":[\"windows\",\"mac\",\"linux\"],\"severity\":\"low\",\"type\":\"sha256\",\"value\":\"50714c79709004885c964e529dbce5d04d5171eb4ce6aeb2bc4416242df6a8da\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"action\":\"detect\",\"applied_globally\":true,\"created_by\":\"user@example.com\",\"created_on\":\"2053-01-29T09:01:39.125982486Z\",\"deleted\":false,\"description\":\"Monitor use of deepseek.\",\"expired\":false,\"from_parent\":false,\"id\":\"32d12c3a8fe0dc819984a146d795492ec79173326dfdd9af388b5fe70fde243d\",\"metadata\":{},\"modified_by\":\"user@example.com\",\"modified_on\":\"2053-01-29T11:28:52.379311339Z\",\"platforms\":[\"windows\",\"mac\",\"linux\"],\"severity\":\"informational\",\"type\":\"domain\",\"value\":\"richdivr.aaamgedk.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "ioc",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_crowdstrike-ioc-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "ti_crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

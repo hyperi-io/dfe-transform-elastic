@@ -1,0 +1,291 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2035-01-09T09:41:00.000Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"01/09/2035 09:41:00\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2007-01-09T09:41:00.000Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"1/9/2007 09:41:00\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-09T09:41:00.000Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"01/09/2035 09:41:00 AM\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2007-01-09T09:41:00.000Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"1/9/2007 9:41:00 AM\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2007-01-09T09:41:00.000Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"1/9/2007 10:41:00 AM +01:00\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-09T09:41:00.000Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"2035-01-09T09:41:00\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-09T09:41:00.220Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"2035-01-09T09:41:00.22Z\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-09T09:41:00.681Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"2035-01-09T09:41:00.6816663Z\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-09T09:41:00.535Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"2035-01-09T09:41:00.535404056Z\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-09T09:41:00.992Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"2035-01-09T09:41:00.992099+00:00\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2035-01-09T09:41:00.000Z",
+      "azure": {
+        "provisioning": {
+          "category": "ProvisioningLogs"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"time\": \"2035-01-09T11:41:00+02:00\", \"category\": \"ProvisioningLogs\"}"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\": \"01/09/2035 09:41:00\", \"category\": \"ProvisioningLogs\"}"
+    },
+    {
+      "message": "{\"time\": \"1/9/2007 09:41:00\", \"category\": \"ProvisioningLogs\"}"
+    },
+    {
+      "message": "{\"time\": \"01/09/2035 09:41:00 AM\", \"category\": \"ProvisioningLogs\"}"
+    },
+    {
+      "message": "{\"time\": \"1/9/2007 9:41:00 AM\", \"category\": \"ProvisioningLogs\"}"
+    },
+    {
+      "message": "{\"time\": \"1/9/2007 10:41:00 AM +01:00\", \"category\": \"ProvisioningLogs\"}"
+    },
+    {
+      "message": "{\"time\": \"2035-01-09T09:41:00\", \"category\": \"ProvisioningLogs\"}"
+    },
+    {
+      "message": "{\"time\": \"2035-01-09T09:41:00.22Z\", \"category\": \"ProvisioningLogs\"}"
+    },
+    {
+      "message": "{\"time\": \"2035-01-09T09:41:00.6816663Z\", \"category\": \"ProvisioningLogs\"}"
+    },
+    {
+      "message": "{\"time\": \"2035-01-09T09:41:00.535404056Z\", \"category\": \"ProvisioningLogs\"}"
+    },
+    {
+      "message": "{\"time\": \"2035-01-09T09:41:00.992099+00:00\", \"category\": \"ProvisioningLogs\"}"
+    },
+    {
+      "message": "{\"time\": \"2035-01-09T11:41:00+02:00\", \"category\": \"ProvisioningLogs\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "provisioning",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-provisioning-default",
+    "event_count": 11,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

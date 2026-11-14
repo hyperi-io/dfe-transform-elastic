@@ -1,0 +1,375 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-signinlogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2050-03-17T09:44:46.309Z",
+      "agent": {
+        "ephemeral_id": "d25752e4-4018-42c4-b676-fdee201cf73f",
+        "id": "a53bb996-fae7-4183-886a-e6718bd759e2",
+        "name": "233ef51bf5c4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "azure": {
+        "correlation_id": "1f50c7fb-8ce9-42d7-ad44-9ab5f735c700",
+        "resource": {
+          "id": "/tenants/069a81a3-c7c3-4179-9a5e-978980e8e176/providers/Microsoft.aadiam",
+          "provider": "Microsoft.aadiam"
+        },
+        "signinlogs": {
+          "caller_ip_address": "198.51.100.111",
+          "category": "NonInteractiveUserSignInLogs",
+          "identity": "Nikhita Sethi",
+          "operation_name": "Sign-in activity",
+          "operation_version": "1.0",
+          "properties": {
+            "app_display_name": "Microsoft Edge Enterprise New Tab Page",
+            "app_id": "f8a032e2-7686-4c84-a5cd-c28c609f2e61",
+            "applied_conditional_access_policies": [
+              {
+                "conditions_not_satisfied": 0,
+                "conditions_satisfied": 19,
+                "display_name": "Qaouzkd UEE ctw dsduvxoc",
+                "enforced_grant_controls": [
+                  "Mfa"
+                ],
+                "id": "4ef10964-5d91-4d7c-bf18-0dad356d2b11",
+                "result": "success"
+              },
+              {
+                "conditions_not_satisfied": 16,
+                "conditions_satisfied": 3,
+                "display_name": "Bysej Ofwdal Bjxneptifftwyh",
+                "enforced_grant_controls": [
+                  "Block"
+                ],
+                "id": "e0029ae7-73cf-419a-8acc-0c1dd4a13bbc",
+                "result": "notApplied"
+              },
+              {
+                "conditions_not_satisfied": 2,
+                "conditions_satisfied": 1,
+                "display_name": "Bysej Uhk-UEE fmf Ofwdal Vjgyydni ZLESN fqis zyi-myunkcf smbfxyquu",
+                "enforced_grant_controls": [
+                  "Block"
+                ],
+                "id": "83ae1a09-8631-48db-af93-18a2afd0eaa6",
+                "result": "notApplied"
+              },
+              {
+                "conditions_not_satisfied": 2,
+                "conditions_satisfied": 1,
+                "display_name": "Bysej bli mnfjo bcadaqh brbyr fqis PqezfOvjry Jzqkjc",
+                "enforced_grant_controls": [
+                  "Block"
+                ],
+                "id": "e50a1841-7100-4b80-9053-4a8a06cb9812",
+                "result": "notApplied"
+              },
+              {
+                "conditions_not_satisfied": 2,
+                "conditions_satisfied": 1,
+                "display_name": "Hifsh uagju me hxc oxtufk",
+                "enforced_grant_controls": [
+                  "Guest terms of use"
+                ],
+                "id": "c59b7817-0655-42a4-ba8d-921f90a99e0f",
+                "result": "notApplied"
+              },
+              {
+                "conditions_not_satisfied": 2,
+                "conditions_satisfied": 1,
+                "display_name": "Hifsh gdxsthx grlbqwt",
+                "enforced_session_controls": [
+                  "SignInFrequency"
+                ],
+                "id": "564fee99-5c06-47a6-836d-7b1b2d3dd819",
+                "result": "notApplied"
+              },
+              {
+                "conditions_not_satisfied": 8,
+                "conditions_satisfied": 3,
+                "display_name": "Fwmemda Egxssvvdq",
+                "enforced_grant_controls": [
+                  "Block"
+                ],
+                "id": "782d4ff3-5b00-4b51-a911-e36087302fee",
+                "result": "notApplied"
+              },
+              {
+                "conditions_not_satisfied": 2,
+                "conditions_satisfied": 1,
+                "display_name": "IEZN - Fzedmdjvp Mmajl uvill zyi-bvvjnkepk cflkacv",
+                "enforced_grant_controls": [
+                  "Mfa"
+                ],
+                "id": "2ede9b70-ff56-49d4-ac14-f34094c02ee0",
+                "result": "reportOnlyNotApplied"
+              },
+              {
+                "conditions_not_satisfied": 2,
+                "conditions_satisfied": 1,
+                "display_name": "IEZN - Fzedmdjvp Mmajl uvill Bnpmtqejs Dbntdaz",
+                "enforced_grant_controls": [
+                  "Mfa",
+                  "RequireCompliantDevice"
+                ],
+                "id": "bb51ffe9-f8fa-49cb-afc6-a91ca11dc83e",
+                "result": "reportOnlyNotApplied"
+              },
+              {
+                "conditions_not_satisfied": 1,
+                "conditions_satisfied": 0,
+                "display_name": "CA – iOS \\\\u0026 Android – Unmanaged",
+                "enforced_grant_controls": [
+                  "Mfa",
+                  "RequireApprovedApp"
+                ],
+                "id": "ae53a823-c6d9-4630-b246-7bfe8f70ea89",
+                "result": "reportOnlyNotApplied"
+              },
+              {
+                "conditions_not_satisfied": 1,
+                "conditions_satisfied": 0,
+                "display_name": "Require Mobile access from protected apps/compliant devices",
+                "enforced_grant_controls": [
+                  "RequireCompliantDevice"
+                ],
+                "id": "05689617-50a1-49e7-af44-549af4fa0b7d",
+                "result": "reportOnlyNotApplied"
+              },
+              {
+                "conditions_not_satisfied": 2,
+                "conditions_satisfied": 1,
+                "display_name": "Bysej Ofwdal DDU Bqwm",
+                "enforced_grant_controls": [
+                  "Block"
+                ],
+                "id": "d3580f33-7806-41e2-891b-52b1b739b862",
+                "result": "reportOnlyNotApplied"
+              }
+            ],
+            "authentication_details": [
+              {
+                "authentication_method": "Previously satisfied",
+                "authentication_step_date_time": "2050-03-17T09:44:46.3097429+00:00",
+                "authentication_step_requirement": "Multi-factor authentication",
+                "authentication_step_result_detail": "MFA requirement satisfied by claim in the token",
+                "succeeded": true
+              }
+            ],
+            "authentication_processing_details": {
+              "Is CAE Token": "False",
+              "Legacy TLS (TLS 1.0, 1.1, 3DES)": "False",
+              "Oauth Scope Info": "[User.Read,Userinfo.ReadWrite]"
+            },
+            "authentication_protocol": "none",
+            "authentication_requirement": "multiFactorAuthentication",
+            "authentication_requirement_policies": [
+              {
+                "detail": "Conditional Access",
+                "requirement_provider": "multiConditionalAccess"
+              }
+            ],
+            "autonomous_system_number": 5089,
+            "client_app_used": "Mobile Apps and Desktop clients",
+            "conditional_access_status": "success",
+            "correlation_id": "1f50c7fb-8ce9-42d7-ad44-9ab5f735c700",
+            "created_at": "2050-03-17T09:44:46.3097429+00:00",
+            "cross_tenant_access_type": "none",
+            "device_detail": {
+              "browser": "Edge 18.19042",
+              "device_id": "cf8c61e1-6785-4199-9994-9e99eac428ea",
+              "display_name": "LW-TBSH006933",
+              "is_compliant": true,
+              "is_managed": true,
+              "operating_system": "Windows 10",
+              "trust_type": "Azure AD joined"
+            },
+            "flagged_for_review": false,
+            "home_tenant_id": "069a81a3-c7c3-4179-9a5e-978980e8e176",
+            "id": "451b3438-4c99-416f-b364-4f5f0d421b80",
+            "incoming_token_type": "none",
+            "is_interactive": false,
+            "is_tenant_restricted": false,
+            "original_request_id": "451b3438-4c99-416f-b364-4f5f0d421b80",
+            "processing_time_ms": 90,
+            "resource_display_name": "Microsoft News Feed",
+            "resource_id": "d504fe2d-0f79-4005-9415-2261782f1f2d",
+            "resource_tenant_id": "069a81a3-c7c3-4179-9a5e-978980e8e176",
+            "risk_detail": "none",
+            "risk_level_aggregated": "none",
+            "risk_level_during_signin": "none",
+            "risk_state": "none",
+            "status": {
+              "error_code": 0
+            },
+            "token_issuer_type": "AzureAD",
+            "unique_token_identifier": "MDg4YjQ0MDktOWU2My00MjVkLWI3NzctMmM4YzZjMzgwYjAw",
+            "user_display_name": "Nikhita Sethi",
+            "user_id": "ad554396-3aca-440e-978b-8870650a49d7",
+            "user_principal_name": "xizpiwb.wfloq@frdfmdkxuuvnpm.com",
+            "user_type": "Member"
+          },
+          "result_signature": "None",
+          "result_type": "0"
+        },
+        "tenant_id": "069a81a3-c7c3-4179-9a5e-978980e8e176"
+      },
+      "client": {
+        "ip": "198.51.100.111"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Sign-in activity",
+        "category": [
+          "authentication"
+        ],
+        "dataset": "azure.signinlogs",
+        "duration": 0,
+        "id": "451b3438-4c99-416f-b364-4f5f0d421b80",
+        "kind": "event",
+        "module": "azure",
+        "original": "{\"Level\":4,\"callerIpAddress\":\"198.51.100.111\",\"category\":\"NonInteractiveUserSignInLogs\",\"correlationId\":\"1f50c7fb-8ce9-42d7-ad44-9ab5f735c700\",\"durationMs\":0,\"identity\":\"Nikhita Sethi\",\"location\":\"GB\",\"operationName\":\"Sign-in activity\",\"operationVersion\":\"1.0\",\"properties\":{\"appDisplayName\":\"Microsoft Edge Enterprise New Tab Page\",\"appId\":\"f8a032e2-7686-4c84-a5cd-c28c609f2e61\",\"appliedConditionalAccessPolicies\":[{\"conditionsNotSatisfied\":0,\"conditionsSatisfied\":19,\"displayName\":\"Qaouzkd UEE ctw dsduvxoc\",\"enforcedGrantControls\":[\"Mfa\"],\"enforcedSessionControls\":[],\"id\":\"4ef10964-5d91-4d7c-bf18-0dad356d2b11\",\"result\":\"success\"},{\"conditionsNotSatisfied\":16,\"conditionsSatisfied\":3,\"displayName\":\"Bysej Ofwdal Bjxneptifftwyh\",\"enforcedGrantControls\":[\"Block\"],\"enforcedSessionControls\":[],\"id\":\"e0029ae7-73cf-419a-8acc-0c1dd4a13bbc\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"Bysej Uhk-UEE fmf Ofwdal Vjgyydni ZLESN fqis zyi-myunkcf smbfxyquu\",\"enforcedGrantControls\":[\"Block\"],\"enforcedSessionControls\":[],\"id\":\"83ae1a09-8631-48db-af93-18a2afd0eaa6\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"Bysej bli mnfjo bcadaqh brbyr fqis PqezfOvjry Jzqkjc\",\"enforcedGrantControls\":[\"Block\"],\"enforcedSessionControls\":[],\"id\":\"e50a1841-7100-4b80-9053-4a8a06cb9812\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"Hifsh uagju me hxc oxtufk\",\"enforcedGrantControls\":[\"Guest terms of use\"],\"enforcedSessionControls\":[],\"id\":\"c59b7817-0655-42a4-ba8d-921f90a99e0f\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"Hifsh gdxsthx grlbqwt\",\"enforcedGrantControls\":[],\"enforcedSessionControls\":[\"SignInFrequency\"],\"id\":\"564fee99-5c06-47a6-836d-7b1b2d3dd819\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":8,\"conditionsSatisfied\":3,\"displayName\":\"Fwmemda Egxssvvdq\",\"enforcedGrantControls\":[\"Block\"],\"enforcedSessionControls\":[],\"id\":\"782d4ff3-5b00-4b51-a911-e36087302fee\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"IEZN - Fzedmdjvp Mmajl uvill zyi-bvvjnkepk cflkacv\",\"enforcedGrantControls\":[\"Mfa\"],\"enforcedSessionControls\":[],\"id\":\"2ede9b70-ff56-49d4-ac14-f34094c02ee0\",\"result\":\"reportOnlyNotApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"IEZN - Fzedmdjvp Mmajl uvill Bnpmtqejs Dbntdaz\",\"enforcedGrantControls\":[\"Mfa\",\"RequireCompliantDevice\"],\"enforcedSessionControls\":[],\"id\":\"bb51ffe9-f8fa-49cb-afc6-a91ca11dc83e\",\"result\":\"reportOnlyNotApplied\"},{\"conditionsNotSatisfied\":1,\"conditionsSatisfied\":0,\"displayName\":\"CA – iOS \\\\\\\\u0026 Android – Unmanaged\",\"enforcedGrantControls\":[\"Mfa\",\"RequireApprovedApp\"],\"enforcedSessionControls\":[],\"id\":\"ae53a823-c6d9-4630-b246-7bfe8f70ea89\",\"result\":\"reportOnlyNotApplied\"},{\"conditionsNotSatisfied\":1,\"conditionsSatisfied\":0,\"displayName\":\"Require Mobile access from protected apps/compliant devices\",\"enforcedGrantControls\":[\"RequireCompliantDevice\"],\"enforcedSessionControls\":[],\"id\":\"05689617-50a1-49e7-af44-549af4fa0b7d\",\"result\":\"reportOnlyNotApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"Bysej Ofwdal DDU Bqwm\",\"enforcedGrantControls\":[\"Block\"],\"enforcedSessionControls\":[],\"id\":\"d3580f33-7806-41e2-891b-52b1b739b862\",\"result\":\"reportOnlyNotApplied\"}],\"authenticationDetails\":[{\"authenticationMethod\":\"Previously satisfied\",\"authenticationStepDateTime\":\"2050-03-17T09:44:46.3097429+00:00\",\"authenticationStepRequirement\":\"Multi-factor authentication\",\"authenticationStepResultDetail\":\"MFA requirement satisfied by claim in the token\",\"succeeded\":true}],\"authenticationProcessingDetails\":[{\"key\":\"Legacy TLS (TLS 1.0, 1.1, 3DES)\",\"value\":\"False\"},{\"key\":\"Oauth Scope Info\",\"value\":\"[User.Read,Userinfo.ReadWrite]\"},{\"key\":\"Is CAE Token\",\"value\":\"False\"}],\"authenticationProtocol\":\"none\",\"authenticationRequirement\":\"multiFactorAuthentication\",\"authenticationRequirementPolicies\":[{\"detail\":\"Conditional Access\",\"requirementProvider\":\"multiConditionalAccess\"}],\"autonomousSystemNumber\":5089,\"clientAppUsed\":\"Mobile Apps and Desktop clients\",\"conditionalAccessStatus\":\"success\",\"correlationId\":\"1f50c7fb-8ce9-42d7-ad44-9ab5f735c700\",\"createdDateTime\":\"2050-03-17T09:44:46.3097429+00:00\",\"crossTenantAccessType\":\"none\",\"deviceDetail\":{\"browser\":\"Edge 18.19042\",\"deviceId\":\"cf8c61e1-6785-4199-9994-9e99eac428ea\",\"displayName\":\"LW-TBSH006933\",\"isCompliant\":true,\"isManaged\":true,\"operatingSystem\":\"Windows 10\",\"trustType\":\"Azure AD joined\"},\"flaggedForReview\":false,\"homeTenantId\":\"069a81a3-c7c3-4179-9a5e-978980e8e176\",\"id\":\"451b3438-4c99-416f-b364-4f5f0d421b80\",\"incomingTokenType\":\"none\",\"ipAddress\":\"198.51.100.111\",\"isInteractive\":false,\"isTenantRestricted\":false,\"location\":{\"city\":\"Strood\",\"countryOrRegion\":\"GB\",\"geoCoordinates\":{\"latitude\":51.394798278808594,\"longitude\":0.4803900122642517},\"state\":\"Medway\"},\"mfaDetail\":{},\"networkLocationDetails\":[],\"originalRequestId\":\"451b3438-4c99-416f-b364-4f5f0d421b80\",\"privateLinkDetails\":{},\"processingTimeInMilliseconds\":90,\"resourceDisplayName\":\"Microsoft News Feed\",\"resourceId\":\"d504fe2d-0f79-4005-9415-2261782f1f2d\",\"resourceTenantId\":\"069a81a3-c7c3-4179-9a5e-978980e8e176\",\"riskDetail\":\"none\",\"riskEventTypes\":[],\"riskEventTypes_v2\":[],\"riskLevelAggregated\":\"none\",\"riskLevelDuringSignIn\":\"none\",\"riskState\":\"none\",\"servicePrincipalId\":\"\",\"ssoExtensionVersion\":\"\",\"status\":{\"additionalDetails\":\"MFA requirement satisfied by claim in the token\",\"errorCode\":0},\"tokenIssuerName\":\"\",\"tokenIssuerType\":\"AzureAD\",\"uniqueTokenIdentifier\":\"MDg4YjQ0MDktOWU2My00MjVkLWI3NzctMmM4YzZjMzgwYjAw\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19042\",\"userDisplayName\":\"Nikhita Sethi\",\"userId\":\"ad554396-3aca-440e-978b-8870650a49d7\",\"userPrincipalName\":\"xizpiwb.wfloq@frdfmdkxuuvnpm.com\",\"userType\":\"Member\"},\"resourceId\":\"/tenants/069a81a3-c7c3-4179-9a5e-978980e8e176/providers/Microsoft.aadiam\",\"resultSignature\":\"None\",\"resultType\":\"0\",\"tenantId\":\"069a81a3-c7c3-4179-9a5e-978980e8e176\",\"time\":\"2050-03-17T09:44:46.3097429Z\"}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "signinlogs"
+      },
+      "geo": {
+        "city_name": "Strood",
+        "country_iso_code": "GB",
+        "location": {
+          "lat": 51.394798278808594,
+          "lon": 0.4803900122642517
+        },
+        "region_name": "Medway"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "4",
+        "offset": 0
+      },
+      "message": "MFA requirement satisfied by claim in the token",
+      "related": {
+        "entity": [
+          "f8a032e2-7686-4c84-a5cd-c28c609f2e61",
+          "d504fe2d-0f79-4005-9415-2261782f1f2d",
+          "ad554396-3aca-440e-978b-8870650a49d7",
+          "cf8c61e1-6785-4199-9994-9e99eac428ea"
+        ],
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "ad554396-3aca-440e-978b-8870650a49d7",
+          "xizpiwb.wfloq@frdfmdkxuuvnpm.com",
+          "Nikhita Sethi"
+        ]
+      },
+      "service": {
+        "type": "azure"
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "xizpiwb.wfloq@frdfmdkxuuvnpm.com",
+        "full_name": "Nikhita Sethi",
+        "id": "ad554396-3aca-440e-978b-8870650a49d7",
+        "name": "xizpiwb.wfloq@frdfmdkxuuvnpm.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Edge",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19042",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "18.19042"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-signinlogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-21T03:08:32.447Z",
+      "agent": {
+        "ephemeral_id": "d25752e4-4018-42c4-b676-fdee201cf73f",
+        "id": "a53bb996-fae7-4183-886a-e6718bd759e2",
+        "name": "233ef51bf5c4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "azure.signinlogs",
+        "module": "azure"
+      },
+      "fileset": {
+        "name": "signinlogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "{\"Level\":4,\"callerIpAddress\":\"198.51.100.111\",\"category\":\"NonInteractiveUserSignInLogs\",\"correlationId\":\"1f50c7fb-8ce9-42d7-ad44-9ab5f735c700\",\"durationMs\":0,\"identity\":\"Nikhita Sethi\",\"location\":\"GB\",\"operationName\":\"Sign-in activity\",\"operationVersion\":\"1.0\",\"properties\":{\"appDisplayName\":\"Microsoft Edge Enterprise New Tab Page\",\"appId\":\"f8a032e2-7686-4c84-a5cd-c28c609f2e61\",\"appliedConditionalAccessPolicies\":[{\"conditionsNotSatisfied\":0,\"conditionsSatisfied\":19,\"displayName\":\"Qaouzkd UEE ctw dsduvxoc\",\"enforcedGrantControls\":[\"Mfa\"],\"enforcedSessionControls\":[],\"id\":\"4ef10964-5d91-4d7c-bf18-0dad356d2b11\",\"result\":\"success\"},{\"conditionsNotSatisfied\":16,\"conditionsSatisfied\":3,\"displayName\":\"Bysej Ofwdal Bjxneptifftwyh\",\"enforcedGrantControls\":[\"Block\"],\"enforcedSessionControls\":[],\"id\":\"e0029ae7-73cf-419a-8acc-0c1dd4a13bbc\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"Bysej Uhk-UEE fmf Ofwdal Vjgyydni ZLESN fqis zyi-myunkcf smbfxyquu\",\"enforcedGrantControls\":[\"Block\"],\"enforcedSessionControls\":[],\"id\":\"83ae1a09-8631-48db-af93-18a2afd0eaa6\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"Bysej bli mnfjo bcadaqh brbyr fqis PqezfOvjry Jzqkjc\",\"enforcedGrantControls\":[\"Block\"],\"enforcedSessionControls\":[],\"id\":\"e50a1841-7100-4b80-9053-4a8a06cb9812\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"Hifsh uagju me hxc oxtufk\",\"enforcedGrantControls\":[\"Guest terms of use\"],\"enforcedSessionControls\":[],\"id\":\"c59b7817-0655-42a4-ba8d-921f90a99e0f\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"Hifsh gdxsthx grlbqwt\",\"enforcedGrantControls\":[],\"enforcedSessionControls\":[\"SignInFrequency\"],\"id\":\"564fee99-5c06-47a6-836d-7b1b2d3dd819\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":8,\"conditionsSatisfied\":3,\"displayName\":\"Fwmemda Egxssvvdq\",\"enforcedGrantControls\":[\"Block\"],\"enforcedSessionControls\":[],\"id\":\"782d4ff3-5b00-4b51-a911-e36087302fee\",\"result\":\"notApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"IEZN - Fzedmdjvp Mmajl uvill zyi-bvvjnkepk cflkacv\",\"enforcedGrantControls\":[\"Mfa\"],\"enforcedSessionControls\":[],\"id\":\"2ede9b70-ff56-49d4-ac14-f34094c02ee0\",\"result\":\"reportOnlyNotApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"IEZN - Fzedmdjvp Mmajl uvill Bnpmtqejs Dbntdaz\",\"enforcedGrantControls\":[\"Mfa\",\"RequireCompliantDevice\"],\"enforcedSessionControls\":[],\"id\":\"bb51ffe9-f8fa-49cb-afc6-a91ca11dc83e\",\"result\":\"reportOnlyNotApplied\"},{\"conditionsNotSatisfied\":1,\"conditionsSatisfied\":0,\"displayName\":\"CA – iOS \\\\\\\\u0026 Android – Unmanaged\",\"enforcedGrantControls\":[\"Mfa\",\"RequireApprovedApp\"],\"enforcedSessionControls\":[],\"id\":\"ae53a823-c6d9-4630-b246-7bfe8f70ea89\",\"result\":\"reportOnlyNotApplied\"},{\"conditionsNotSatisfied\":1,\"conditionsSatisfied\":0,\"displayName\":\"Require Mobile access from protected apps/compliant devices\",\"enforcedGrantControls\":[\"RequireCompliantDevice\"],\"enforcedSessionControls\":[],\"id\":\"05689617-50a1-49e7-af44-549af4fa0b7d\",\"result\":\"reportOnlyNotApplied\"},{\"conditionsNotSatisfied\":2,\"conditionsSatisfied\":1,\"displayName\":\"Bysej Ofwdal DDU Bqwm\",\"enforcedGrantControls\":[\"Block\"],\"enforcedSessionControls\":[],\"id\":\"d3580f33-7806-41e2-891b-52b1b739b862\",\"result\":\"reportOnlyNotApplied\"}],\"authenticationDetails\":[{\"authenticationMethod\":\"Previously satisfied\",\"authenticationStepDateTime\":\"2050-03-17T09:44:46.3097429+00:00\",\"authenticationStepRequirement\":\"Multi-factor authentication\",\"authenticationStepResultDetail\":\"MFA requirement satisfied by claim in the token\",\"succeeded\":true}],\"authenticationProcessingDetails\":[{\"key\":\"Legacy TLS (TLS 1.0, 1.1, 3DES)\",\"value\":\"False\"},{\"key\":\"Oauth Scope Info\",\"value\":\"[User.Read,Userinfo.ReadWrite]\"},{\"key\":\"Is CAE Token\",\"value\":\"False\"}],\"authenticationProtocol\":\"none\",\"authenticationRequirement\":\"multiFactorAuthentication\",\"authenticationRequirementPolicies\":[{\"detail\":\"Conditional Access\",\"requirementProvider\":\"multiConditionalAccess\"}],\"autonomousSystemNumber\":5089,\"clientAppUsed\":\"Mobile Apps and Desktop clients\",\"conditionalAccessStatus\":\"success\",\"correlationId\":\"1f50c7fb-8ce9-42d7-ad44-9ab5f735c700\",\"createdDateTime\":\"2050-03-17T09:44:46.3097429+00:00\",\"crossTenantAccessType\":\"none\",\"deviceDetail\":{\"browser\":\"Edge 18.19042\",\"deviceId\":\"cf8c61e1-6785-4199-9994-9e99eac428ea\",\"displayName\":\"LW-TBSH006933\",\"isCompliant\":true,\"isManaged\":true,\"operatingSystem\":\"Windows 10\",\"trustType\":\"Azure AD joined\"},\"flaggedForReview\":false,\"homeTenantId\":\"069a81a3-c7c3-4179-9a5e-978980e8e176\",\"id\":\"451b3438-4c99-416f-b364-4f5f0d421b80\",\"incomingTokenType\":\"none\",\"ipAddress\":\"198.51.100.111\",\"isInteractive\":false,\"isTenantRestricted\":false,\"location\":{\"city\":\"Strood\",\"countryOrRegion\":\"GB\",\"geoCoordinates\":{\"latitude\":51.394798278808594,\"longitude\":0.4803900122642517},\"state\":\"Medway\"},\"mfaDetail\":{},\"networkLocationDetails\":[],\"originalRequestId\":\"451b3438-4c99-416f-b364-4f5f0d421b80\",\"privateLinkDetails\":{},\"processingTimeInMilliseconds\":90,\"resourceDisplayName\":\"Microsoft News Feed\",\"resourceId\":\"d504fe2d-0f79-4005-9415-2261782f1f2d\",\"resourceTenantId\":\"069a81a3-c7c3-4179-9a5e-978980e8e176\",\"riskDetail\":\"none\",\"riskEventTypes\":[],\"riskEventTypes_v2\":[],\"riskLevelAggregated\":\"none\",\"riskLevelDuringSignIn\":\"none\",\"riskState\":\"none\",\"servicePrincipalId\":\"\",\"ssoExtensionVersion\":\"\",\"status\":{\"additionalDetails\":\"MFA requirement satisfied by claim in the token\",\"errorCode\":0},\"tokenIssuerName\":\"\",\"tokenIssuerType\":\"AzureAD\",\"uniqueTokenIdentifier\":\"MDg4YjQ0MDktOWU2My00MjVkLWI3NzctMmM4YzZjMzgwYjAw\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19042\",\"userDisplayName\":\"Nikhita Sethi\",\"userId\":\"ad554396-3aca-440e-978b-8870650a49d7\",\"userPrincipalName\":\"xizpiwb.wfloq@frdfmdkxuuvnpm.com\",\"userType\":\"Member\"},\"resourceId\":\"/tenants/069a81a3-c7c3-4179-9a5e-978980e8e176/providers/Microsoft.aadiam\",\"resultSignature\":\"None\",\"resultType\":\"0\",\"tenantId\":\"069a81a3-c7c3-4179-9a5e-978980e8e176\",\"time\":\"2050-03-17T09:44:46.3097429Z\"}",
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "signinlogs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-signinlogs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

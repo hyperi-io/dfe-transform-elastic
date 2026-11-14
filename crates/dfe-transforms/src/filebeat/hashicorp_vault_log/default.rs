@@ -72,9 +72,7 @@ impl Transform for Default {
                         })
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.hashicorp_vault.remove(\"log\");\nif (ctx.hashicorp_vault.isEmpty()) {\n  ctx.remove(\"hashicorp_vault\");\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

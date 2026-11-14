@@ -1,0 +1,117 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-01-24T15:26:47.957Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:12.799387708Z",
+        "original": "2052-01-24T15:26:47.957Z,2419fe17-880c-4bc3-8b1e-303233add4f1,15,1,2507,35,R:{664012EB-5EBF-4F6D-B4F2-898AB0DBB673}:20373;RT:Execute;CI:{EF0F5826-8B8C-4CA5-8ACF-8F783CE1EBF7}:155680117;CID:{EF0F5826-8B8C-4CA5-8ACF-8F783CE1EBF7},Mapi,mail.domain.tld,/mapi/emsmdb/,,Negotiate,true,DOMAIN\\user,domain.tld,MailboxGuid~9ee87ab5-ad60-4747-8e3d-ba7a439c609f,Microsoft Office/16.0 (Windows NT 10.0; Microsoft Outlook 16.0.16731; Pro),10.13.121.26,Host123,200,200,,POST,Proxy,Host456.domain.tld,15.01.2507.000,CrossForest,MailboxGuidWithDomain,Database~d6f6cbb6-2592-4fbe-9be4-868eebb74416~~2052-02-23T15:26:43,,,70,132,,,0,1,,0,,0,,0,0,,0,10,0,0,0,0,3,0,0,0,2,0,10,0,4,7,7,7,10,,?MailboxId=1c71b908-b5c8-4c6f-90ee-18ec8237052a@domain.tld,,BeginRequest=2052-01-24T15:26:47.947Z;CorrelationID=<empty>;ProxyState-Run=None;FEAuth=BEVersion-1942063563;BeginGetRequestStream=2052-01-24T15:26:47.953Z;OnRequestStreamReady=2052-01-24T15:26:47.953Z;BeginGetResponse=2052-01-24T15:26:47.953Z;OnResponseReady=2052-01-24T15:26:47.957Z;EndGetResponse=2052-01-24T15:26:47.957Z;ProxyState-Complete=ProxyResponseData;SharedCacheGuard=0;EndRequest=2052-01-24T15:26:47.957Z;,,,|RoutingDB:0bd5dc66-84b6-48cf-9258-204a35542344,,,CafeV1"
+      },
+      "http": {
+        "request": {
+          "bytes": 70,
+          "method": "POST"
+        },
+        "response": {
+          "bytes": 132,
+          "status_code": 200
+        }
+      },
+      "message": "2052-01-24T15:26:47.957Z,2419fe17-880c-4bc3-8b1e-303233add4f1,15,1,2507,35,R:{664012EB-5EBF-4F6D-B4F2-898AB0DBB673}:20373;RT:Execute;CI:{EF0F5826-8B8C-4CA5-8ACF-8F783CE1EBF7}:155680117;CID:{EF0F5826-8B8C-4CA5-8ACF-8F783CE1EBF7},Mapi,mail.domain.tld,/mapi/emsmdb/,,Negotiate,true,DOMAIN\\user,domain.tld,MailboxGuid~9ee87ab5-ad60-4747-8e3d-ba7a439c609f,Microsoft Office/16.0 (Windows NT 10.0; Microsoft Outlook 16.0.16731; Pro),10.13.121.26,Host123,200,200,,POST,Proxy,Host456.domain.tld,15.01.2507.000,CrossForest,MailboxGuidWithDomain,Database~d6f6cbb6-2592-4fbe-9be4-868eebb74416~~2052-02-23T15:26:43,,,70,132,,,0,1,,0,,0,,0,0,,0,10,0,0,0,0,3,0,0,0,2,0,10,0,4,7,7,7,10,,?MailboxId=1c71b908-b5c8-4c6f-90ee-18ec8237052a@domain.tld,,BeginRequest=2052-01-24T15:26:47.947Z;CorrelationID=<empty>;ProxyState-Run=None;FEAuth=BEVersion-1942063563;BeginGetRequestStream=2052-01-24T15:26:47.953Z;OnRequestStreamReady=2052-01-24T15:26:47.953Z;BeginGetResponse=2052-01-24T15:26:47.953Z;OnResponseReady=2052-01-24T15:26:47.957Z;EndGetResponse=2052-01-24T15:26:47.957Z;ProxyState-Complete=ProxyResponseData;SharedCacheGuard=0;EndRequest=2052-01-24T15:26:47.957Z;,,,|RoutingDB:0bd5dc66-84b6-48cf-9258-204a35542344,,,CafeV1",
+      "microsoft": {
+        "exchange": {
+          "activitycontextlifetime": 10,
+          "adlatency": 0,
+          "anchormailbox": "MailboxGuid~9ee87ab5-ad60-4747-8e3d-ba7a439c609f",
+          "authenticateduser": "DOMAIN\\user",
+          "authenticationtype": "Negotiate",
+          "backendcookie": "Database~d6f6cbb6-2592-4fbe-9be4-868eebb74416~~2052-02-23T15:26:43",
+          "backendprocessinglatency": 3,
+          "backendreqinitlatency": 0,
+          "backendreqstreamlatency": 0,
+          "backendrespinitlatency": 0,
+          "backendrespstreamlatency": 0,
+          "backendstatus": 200,
+          "buildversion": 2507,
+          "calculatetargetbackendlatency": 1,
+          "clientipaddress": [
+            "10.13.121.26"
+          ],
+          "clientreqstreamlatency": 0,
+          "clientrequestid": "R:{664012EB-5EBF-4F6D-B4F2-898AB0DBB673}:20373;RT:Execute;CI:{EF0F5826-8B8C-4CA5-8ACF-8F783CE1EBF7}:155680117;CID:{EF0F5826-8B8C-4CA5-8ACF-8F783CE1EBF7}",
+          "clientrespstreamlatency": 0,
+          "corelatency": 7,
+          "databaseguid": "|RoutingDB:0bd5dc66-84b6-48cf-9258-204a35542344",
+          "genericinfo": "BeginRequest=2052-01-24T15:26:47.947Z;CorrelationID=<empty>;ProxyState-Run=None;FEAuth=BEVersion-1942063563;BeginGetRequestStream=2052-01-24T15:26:47.953Z;OnRequestStreamReady=2052-01-24T15:26:47.953Z;BeginGetResponse=2052-01-24T15:26:47.953Z;OnResponseReady=2052-01-24T15:26:47.957Z;EndGetResponse=2052-01-24T15:26:47.957Z;ProxyState-Complete=ProxyResponseData;SharedCacheGuard=0;EndRequest=2052-01-24T15:26:47.957Z;",
+          "handlercompletionlatency": 0,
+          "handlertomoduleswitchinglatency": 0,
+          "httppipelinelatency": 0,
+          "httpproxyoverhead": 7,
+          "isauthenticated": "true",
+          "kerberosauthheaderlatency": 2,
+          "logtype": "httpproxy",
+          "majorversion": 15,
+          "minorversion": 1,
+          "moduletohandlerswitchinglatency": 0,
+          "organization": "domain.tld",
+          "protocol": "Mapi",
+          "proxyaction": "Proxy",
+          "proxytime": 4,
+          "requesthandlerlatency": 10,
+          "requestid": "2419fe17-880c-4bc3-8b1e-303233add4f1",
+          "revisionversion": 35,
+          "routinghint": "MailboxGuidWithDomain",
+          "routinglatency": 7,
+          "routingstatus": "CafeV1",
+          "routingtype": "CrossForest",
+          "targetserver": "Host456.domain.tld",
+          "targetserverversion": "15.01.2507.000",
+          "totalaccountforestlatency": 0,
+          "totalglslatency": 0,
+          "totalrequesttime": 10,
+          "totalresourceforestlatency": 0,
+          "totalsharedcachelatency": 0,
+          "urlhost": "mail.domain.tld",
+          "urlstem": "/mapi/emsmdb/"
+        }
+      },
+      "observer": {
+        "hostname": "Host123"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "query": "?MailboxId=1c71b908-b5c8-4c6f-90ee-18ec8237052a@domain.tld"
+      },
+      "user": {
+        "name": "user"
+      },
+      "user_agent": {
+        "original": "Microsoft Office/16.0 (Windows NT 10.0; Microsoft Outlook 16.0.16731; Pro)"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "2052-01-24T15:26:47.957Z,2419fe17-880c-4bc3-8b1e-303233add4f1,15,1,2507,35,R:{664012EB-5EBF-4F6D-B4F2-898AB0DBB673}:20373;RT:Execute;CI:{EF0F5826-8B8C-4CA5-8ACF-8F783CE1EBF7}:155680117;CID:{EF0F5826-8B8C-4CA5-8ACF-8F783CE1EBF7},Mapi,mail.domain.tld,/mapi/emsmdb/,,Negotiate,true,DOMAIN\\user,domain.tld,MailboxGuid~9ee87ab5-ad60-4747-8e3d-ba7a439c609f,Microsoft Office/16.0 (Windows NT 10.0; Microsoft Outlook 16.0.16731; Pro),10.13.121.26,Host123,200,200,,POST,Proxy,Host456.domain.tld,15.01.2507.000,CrossForest,MailboxGuidWithDomain,Database~d6f6cbb6-2592-4fbe-9be4-868eebb74416~~2052-02-23T15:26:43,,,70,132,,,0,1,,0,,0,,0,0,,0,10,0,0,0,0,3,0,0,0,2,0,10,0,4,7,7,7,10,,?MailboxId=1c71b908-b5c8-4c6f-90ee-18ec8237052a@domain.tld,,BeginRequest=2052-01-24T15:26:47.947Z;CorrelationID=<empty>;ProxyState-Run=None;FEAuth=BEVersion-1942063563;BeginGetRequestStream=2052-01-24T15:26:47.953Z;OnRequestStreamReady=2052-01-24T15:26:47.953Z;BeginGetResponse=2052-01-24T15:26:47.953Z;OnResponseReady=2052-01-24T15:26:47.957Z;EndGetResponse=2052-01-24T15:26:47.957Z;ProxyState-Complete=ProxyResponseData;SharedCacheGuard=0;EndRequest=2052-01-24T15:26:47.957Z;,,,|RoutingDB:0bd5dc66-84b6-48cf-9258-204a35542344,,,CafeV1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "httpproxy",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-microsoft_exchange_server-httpproxy-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "microsoft_exchange_server",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

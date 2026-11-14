@@ -259,9 +259,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("temp.duration") };
             if _cond {
-                // Painless script
-                // Source: ctx.event.duration = Math.round(ctx.temp.duration * params.scale)
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -307,23 +305,19 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.network.packets = ctx.source.packets + ctx.destination.packets
+                // The pipeline's script, emitted as the runtime's equivalent
                 sum_directions_into_existing(event, &["packets"]);
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
+                // The pipeline's script, emitted as the runtime's equivalent
                 sum_directions_into_existing(event, &["bytes"]);
                 Ok(())
             })();
 
-            // Painless script
-            // Source: if (ctx.zeek?.connection?.local_orig == null ||\n    ctx.zeek?.connection?.local_resp == null) {\n  return;\n}\nif (ctx.zeek.connection.local_orig == true &&\n    ctx.zeek.connection.local_resp == true) {\n  ctx.network.direction = \"internal\";\n  return;\n}\nif (ctx.zeek.connection.local_orig == true &&\n    ctx.zeek.connection.local_resp == false) {\n  ctx.network.direction = \"outbound\";\n  return;\n}\nif (ctx.zeek.connection.local_orig == false &&\n    ctx.zeek.connection.local_resp == true) {\n  ctx.network.direction = \"inbound\";\n  return;\n}\nif (ctx.zeek.connection.local_orig == false &&\n    ctx.zeek.connection.local_resp == false) {\n  ctx.network.direction = \"external\";\n  return;\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -448,9 +442,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: if (ctx.zeek?.connection?.state == null) {\n  return;\n} if (params.containsKey(ctx.zeek.connection.state)) {\n  ctx.zeek.connection.state_message = params[ctx.zeek.connection.state][\"conn_str\"];\n  ctx.event.type = params[ctx.zeek.connection.state][\"types\"];\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(

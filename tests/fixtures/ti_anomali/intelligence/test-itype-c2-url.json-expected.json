@@ -1,0 +1,158 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:46.989923206Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": 100,
+          "deletion_scheduled_at": "2027-02-06T23:07:46.989923206Z",
+          "expiration_ts": "2318-07-09T20:41:16.995Z",
+          "feed_id": 0,
+          "id": "184992550",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": false,
+          "itype": "c2_url",
+          "meta": {
+            "severity": "high"
+          },
+          "owner_organization_id": 1,
+          "retina_confidence": -1,
+          "source_reported_confidence": 100,
+          "status": "active",
+          "threat_type": "c2",
+          "trusted_circle_ids": [
+            "10015"
+          ],
+          "type": "url",
+          "update_id": "376553552",
+          "uuid": "f4a9d82b-d5c5-4083-81b3-807582fd9503",
+          "value": "http://198.51.100.213/"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2048-10-09T18:31:53.706Z",
+        "kind": "enrichment",
+        "severity": 73,
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.213"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "object-type:c2_url"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "geo": {
+            "country_iso_code": "US"
+          },
+          "ip": "198.51.100.213",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "modified_at": "2048-10-09T18:31:53.706Z",
+          "name": "http://198.51.100.213/",
+          "provider": "Default Organization",
+          "type": "url",
+          "url": {
+            "domain": "198.51.100.213",
+            "full": "http://198.51.100.213/",
+            "original": "http://198.51.100.213/",
+            "path": "/",
+            "scheme": "http"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": 100,
+        "country": "US",
+        "created_by": null,
+        "created_ts": "2048-10-09T18:31:53.706Z",
+        "description": null,
+        "expiration_ts": "2318-07-09T20:41:16.995Z",
+        "feed_id": 0,
+        "id": 184992550,
+        "ip": "198.51.100.213",
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": false,
+        "itype": "c2_url",
+        "latitude": 47.6032,
+        "locations": [],
+        "meta": {
+          "detail2": "imported by user 1",
+          "severity": "high"
+        },
+        "modified_ts": "2048-10-09T18:31:53.706Z",
+        "org": "",
+        "owner_organization_id": 1,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/184992550/",
+        "retina_confidence": -1,
+        "sort": [
+          376553552
+        ],
+        "source": "Default Organization",
+        "source_locations": [],
+        "source_reported_confidence": 100,
+        "status": "active",
+        "subtype": null,
+        "tags": [
+          {
+            "id": "8m9",
+            "name": "object-type:c2_url"
+          }
+        ],
+        "target_industry": [],
+        "threat_type": "c2",
+        "threatscore": 70,
+        "tlp": null,
+        "trusted_circle_ids": [
+          10015
+        ],
+        "type": "url",
+        "update_id": 376553552,
+        "uuid": "f4a9d82b-d5c5-4083-81b3-807582fd9503",
+        "value": "http://198.51.100.213/",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

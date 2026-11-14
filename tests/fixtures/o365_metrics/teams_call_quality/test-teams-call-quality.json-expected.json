@@ -1,0 +1,530 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-03-26T13:04:57.232483Z",
+      "agent": {
+        "ephemeral_id": "227107e2-e655-4143-a4fb-803fe5322aa6",
+        "id": "6f3e0bfc-b70c-44bf-a3bb-9379d0acd1d9",
+        "name": "Ilficj-UebCtlx-Ktl.local",
+        "type": "filebeat",
+        "version": "9.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "host": {
+        "name": "Ilficj-UebCtlx-Ktl.local"
+      },
+      "input": {
+        "type": "cel"
+      },
+      "o365": {
+        "metrics": {
+          "teams": {
+            "call": {
+              "quality": {
+                "call_record_id": "a66d-b6f2-4403-b12e-5a7e",
+                "end_date_time": "2053-03-26T13:06:31.4228153Z",
+                "sessions": [
+                  {
+                    "modalities": [
+                      "audio"
+                    ],
+                    "segments": [
+                      {
+                        "callee": {},
+                        "caller": {
+                          "associated_identity": {
+                            "display_name": "Pqas Caah",
+                            "id": "ef58-ad86-4de2-9357-014e8",
+                            "tenant_id": "3f92c-bce5-42b7-8a68-143875af",
+                            "user_principal_name": "ryet.caaj@m396.onmicrosoft.com"
+                          }
+                        },
+                        "end_date_time": "2053-03-26T13:06:31.4228153Z",
+                        "failure_info": {
+                          "reason": "",
+                          "stage": "midcall"
+                        },
+                        "media": [
+                          {
+                            "callee_network": {
+                              "connection_type": "wired",
+                              "ip_address": "2001:db8:7ad2:c607:3500:7f5f:4d8d:ebda",
+                              "link_speed": 0,
+                              "network_transport_protocol": "udp",
+                              "port": 3480,
+                              "reflexive_ip_address": "2001:db8:7ad2:c607:3500:7f5f:4d8d:ebda"
+                            },
+                            "caller_network": {
+                              "connection_type": "unknown",
+                              "network_transport_protocol": "unknown",
+                              "reflexive_ip_address": "192.0.2.87"
+                            },
+                            "label": "main-audio",
+                            "streams": [
+                              {
+                                "audio_codec": "opus",
+                                "average_audio_degradation": 0,
+                                "average_audio_network_jitter": "PT0.032S",
+                                "average_jitter": "PT0.001S",
+                                "average_packet_loss_rate": 0,
+                                "average_ratio_of_concealed_samples": 0.006446,
+                                "average_round_trip_time": "PT0.042S",
+                                "max_audio_network_jitter": "PT0.212S",
+                                "max_jitter": "PT0.011S",
+                                "max_packet_loss_rate": 0,
+                                "max_ratio_of_concealed_samples": 0.00679,
+                                "max_round_trip_time": "PT0.047S",
+                                "packet_utilization": 1669,
+                                "stream_direction": "callerToCallee",
+                                "stream_id": "3896739345",
+                                "video_codec": "unknown"
+                              },
+                              {
+                                "audio_codec": "opus",
+                                "average_jitter": "PT0.002S",
+                                "average_packet_loss_rate": 0,
+                                "average_round_trip_time": "PT0.042S",
+                                "is_audio_forward_error_correction_used": false,
+                                "max_jitter": "PT0.004S",
+                                "max_packet_loss_rate": 0,
+                                "max_round_trip_time": "PT0.047S",
+                                "packet_utilization": 1771,
+                                "stream_direction": "calleeToCaller",
+                                "stream_id": "1001",
+                                "video_codec": "unknown"
+                              }
+                            ]
+                          }
+                        ],
+                        "segment_id": "2e5f89-b0db-40ad-b5d8-dcb439c1",
+                        "start_date_time": "2053-03-26T13:04:57.232483Z"
+                      }
+                    ],
+                    "session_id": "6f4-f0ff-19fd-f1f4-cb1b5"
+                  },
+                  {
+                    "modalities": [
+                      "audio"
+                    ],
+                    "segments": [
+                      {
+                        "callee": {
+                          "associated_identity": {
+                            "display_name": "Vh Emx",
+                            "id": "725b-6ba8-4a80-8ffb-eea77",
+                            "tenant_id": "32c-bce5-42b7-8a68-145af",
+                            "user_principal_name": "uz.bute@m365596.onmicrosoft.com"
+                          }
+                        },
+                        "caller": {
+                          "associated_identity": {
+                            "display_name": "Pqas Caah",
+                            "id": "eb8364e5-ee88-4bd6-9972-835ab5f568b2",
+                            "tenant_id": "3f3e92c-bce5-42b7-8a68-155af",
+                            "user_principal_name": "jcm.fcdj@m36596.onmicrosoft.com"
+                          }
+                        },
+                        "end_date_time": "2053-03-26T13:05:14.2824132Z",
+                        "media": [
+                          {
+                            "callee_network": {
+                              "connection_type": "unknown",
+                              "ip_address": "192.0.2.54",
+                              "network_transport_protocol": "unknown",
+                              "port": 51625,
+                              "reflexive_ip_address": "203.0.113.138"
+                            },
+                            "caller_network": {
+                              "connection_type": "unknown",
+                              "ip_address": "192.168.128.165",
+                              "network_transport_protocol": "unknown",
+                              "port": 52853,
+                              "reflexive_ip_address": "203.0.113.248"
+                            },
+                            "label": "main-audio",
+                            "streams": [
+                              {
+                                "audio_codec": "opus",
+                                "average_round_trip_time": "PT0.041S",
+                                "packet_utilization": 1389,
+                                "stream_direction": "callerToCallee",
+                                "stream_id": "",
+                                "video_codec": "unknown"
+                              },
+                              {
+                                "audio_codec": "opus",
+                                "average_round_trip_time": "PT0.153S",
+                                "packet_utilization": 1771,
+                                "stream_direction": "calleeToCaller",
+                                "stream_id": "",
+                                "video_codec": "unknown"
+                              }
+                            ]
+                          }
+                        ],
+                        "segment_id": "e877d55a-b7c4-4701-b03a-1bd1d634b91b",
+                        "start_date_time": "2053-03-26T13:04:57.232483Z"
+                      }
+                    ],
+                    "session_id": "d745b-a8f0-6554-b55c-41a50b"
+                  },
+                  {
+                    "modalities": [
+                      "audio"
+                    ],
+                    "segments": [
+                      {
+                        "callee": {},
+                        "caller": {
+                          "associated_identity": {
+                            "display_name": "FE An",
+                            "id": "72b-6ba8-4a80-8ffb-eedaa77",
+                            "tenant_id": "3f3d2c-bce5-42b7-8a68-1455af",
+                            "user_principal_name": "a.a@m365x596.onmicrosoft.com"
+                          }
+                        },
+                        "end_date_time": "2053-03-26T13:06:31.4360658Z",
+                        "failure_info": {
+                          "reason": "",
+                          "stage": "midcall"
+                        },
+                        "media": [
+                          {
+                            "callee_network": {
+                              "connection_type": "wired",
+                              "ip_address": "10.60.246.100",
+                              "link_speed": 0,
+                              "network_transport_protocol": "udp",
+                              "port": 3480,
+                              "reflexive_ip_address": "203.0.113.248"
+                            },
+                            "caller_network": {
+                              "connection_type": "unknown",
+                              "network_transport_protocol": "unknown",
+                              "reflexive_ip_address": "192.0.2.54"
+                            },
+                            "label": "main-audio",
+                            "streams": [
+                              {
+                                "audio_codec": "opus",
+                                "average_audio_degradation": 0,
+                                "average_audio_network_jitter": "PT0.028S",
+                                "average_jitter": "PT0.001S",
+                                "average_packet_loss_rate": 0,
+                                "average_ratio_of_concealed_samples": 0.011498,
+                                "average_round_trip_time": "PT0.154S",
+                                "max_audio_network_jitter": "PT0.209S",
+                                "max_jitter": "PT0.019S",
+                                "max_packet_loss_rate": 0,
+                                "max_ratio_of_concealed_samples": 0.022311,
+                                "max_round_trip_time": "PT0.163S",
+                                "packet_utilization": 1982,
+                                "stream_direction": "callerToCallee",
+                                "stream_id": "2530545320",
+                                "video_codec": "unknown"
+                              },
+                              {
+                                "audio_codec": "opus",
+                                "average_jitter": "PT0.003S",
+                                "average_packet_loss_rate": 0,
+                                "average_round_trip_time": "PT0.154S",
+                                "is_audio_forward_error_correction_used": false,
+                                "max_jitter": "PT0.005S",
+                                "max_packet_loss_rate": 0,
+                                "max_round_trip_time": "PT0.163S",
+                                "packet_utilization": 1389,
+                                "stream_direction": "calleeToCaller",
+                                "stream_id": "1000",
+                                "video_codec": "unknown"
+                              }
+                            ]
+                          }
+                        ],
+                        "segment_id": "bfbdb923-fa35-49b4-b7a9-8ba9259d41b1",
+                        "start_date_time": "2053-03-26T13:04:57.2290561Z"
+                      }
+                    ],
+                    "session_id": "bfbdb923-fa35-49b4-b7a9-8ba9259d41b1"
+                  }
+                ],
+                "start_date_time": "2053-03-26T13:04:57.232483Z"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-04-25T07:19:26.209Z",
+      "agent": {
+        "ephemeral_id": "227107e2-e655-4143-a4fb-803fe5322aa6",
+        "id": "6f3e0bfc-b70c-44bf-a3bb-9379d0acd1d9",
+        "name": "Ilficj-UebCtlx-Ktl.local",
+        "type": "filebeat",
+        "version": "9.0.0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "host": {
+        "name": "Ilficj-UebCtlx-Ktl.local"
+      },
+      "input": {
+        "type": "cel"
+      },
+      "o365": {
+        "metrics": {
+          "teams": {
+            "call": {
+              "quality": {
+                "call_record_id": "a66d-b6f2-4403-b12e-5a7e",
+                "end_date_time": "2053-03-26T13:06:31.4228153Z",
+                "sessions": [
+                  {
+                    "modalities": [
+                      "audio"
+                    ],
+                    "segments": [
+                      {
+                        "callee": {},
+                        "caller": {
+                          "associated_identity": {
+                            "display_name": "Pqas Caah",
+                            "id": "ef58-ad86-4de2-9357-014e8",
+                            "tenant_id": "3f92c-bce5-42b7-8a68-143875af",
+                            "user_principal_name": "ryet.caaj@m396.onmicrosoft.com"
+                          }
+                        },
+                        "end_date_time": "2053-03-26T13:06:31.4228153Z",
+                        "failure_info": {
+                          "reason": "",
+                          "stage": "midcall"
+                        },
+                        "media": [
+                          {
+                            "callee_network": {
+                              "connection_type": "wired",
+                              "ip_address": "2001:db8:7ad2:c607:3500:7f5f:4d8d:ebda",
+                              "link_speed": 0,
+                              "network_transport_protocol": "udp",
+                              "port": 3480,
+                              "reflexive_ip_address": "2001:db8:7ad2:c607:3500:7f5f:4d8d:ebda"
+                            },
+                            "caller_network": {
+                              "connection_type": "unknown",
+                              "network_transport_protocol": "unknown",
+                              "reflexive_ip_address": "192.0.2.87"
+                            },
+                            "label": "main-audio",
+                            "streams": [
+                              {
+                                "audio_codec": "opus",
+                                "average_audio_degradation": 0,
+                                "average_audio_network_jitter": "PT0.032S",
+                                "average_jitter": "PT0.001S",
+                                "average_packet_loss_rate": 0,
+                                "average_ratio_of_concealed_samples": 0.006446,
+                                "average_round_trip_time": "PT0.042S",
+                                "max_audio_network_jitter": "PT0.212S",
+                                "max_jitter": "PT0.011S",
+                                "max_packet_loss_rate": 0,
+                                "max_ratio_of_concealed_samples": 0.00679,
+                                "max_round_trip_time": "PT0.047S",
+                                "packet_utilization": 1669,
+                                "stream_direction": "callerToCallee",
+                                "stream_id": "3896739345",
+                                "video_codec": "unknown"
+                              },
+                              {
+                                "audio_codec": "opus",
+                                "average_jitter": "PT0.002S",
+                                "average_packet_loss_rate": 0,
+                                "average_round_trip_time": "PT0.042S",
+                                "is_audio_forward_error_correction_used": false,
+                                "max_jitter": "PT0.004S",
+                                "max_packet_loss_rate": 0,
+                                "max_round_trip_time": "PT0.047S",
+                                "packet_utilization": 1771,
+                                "stream_direction": "calleeToCaller",
+                                "stream_id": "1001",
+                                "video_codec": "unknown"
+                              }
+                            ]
+                          }
+                        ],
+                        "segment_id": "2e5f89-b0db-40ad-b5d8-dcb439c1",
+                        "start_date_time": "2053-03-26T13:04:57.232483Z"
+                      }
+                    ],
+                    "session_id": "6f4-f0ff-19fd-f1f4-cb1b5"
+                  },
+                  {
+                    "modalities": [
+                      "audio"
+                    ],
+                    "segments": [
+                      {
+                        "callee": {
+                          "associated_identity": {
+                            "display_name": "Vh Emx",
+                            "id": "725b-6ba8-4a80-8ffb-eea77",
+                            "tenant_id": "32c-bce5-42b7-8a68-145af",
+                            "user_principal_name": "uz.bute@m365596.onmicrosoft.com"
+                          }
+                        },
+                        "caller": {
+                          "associated_identity": {
+                            "display_name": "Pqas Caah",
+                            "id": "eb8364e5-ee88-4bd6-9972-835ab5f568b2",
+                            "tenant_id": "3f3e92c-bce5-42b7-8a68-155af",
+                            "user_principal_name": "jcm.fcdj@m36596.onmicrosoft.com"
+                          }
+                        },
+                        "end_date_time": "2053-03-26T13:05:14.2824132Z",
+                        "media": [
+                          {
+                            "callee_network": {
+                              "connection_type": "unknown",
+                              "ip_address": "192.0.2.54",
+                              "network_transport_protocol": "unknown",
+                              "port": 51625,
+                              "reflexive_ip_address": "203.0.113.138"
+                            },
+                            "caller_network": {
+                              "connection_type": "unknown",
+                              "ip_address": "192.168.128.165",
+                              "network_transport_protocol": "unknown",
+                              "port": 52853,
+                              "reflexive_ip_address": "203.0.113.248"
+                            },
+                            "label": "main-audio",
+                            "streams": [
+                              {
+                                "audio_codec": "opus",
+                                "average_round_trip_time": "PT0.041S",
+                                "packet_utilization": 1389,
+                                "stream_direction": "callerToCallee",
+                                "stream_id": "",
+                                "video_codec": "unknown"
+                              },
+                              {
+                                "audio_codec": "opus",
+                                "average_round_trip_time": "PT0.153S",
+                                "packet_utilization": 1771,
+                                "stream_direction": "calleeToCaller",
+                                "stream_id": "",
+                                "video_codec": "unknown"
+                              }
+                            ]
+                          }
+                        ],
+                        "segment_id": "e877d55a-b7c4-4701-b03a-1bd1d634b91b",
+                        "start_date_time": "2053-03-26T13:04:57.232483Z"
+                      }
+                    ],
+                    "session_id": "d745b-a8f0-6554-b55c-41a50b"
+                  },
+                  {
+                    "modalities": [
+                      "audio"
+                    ],
+                    "segments": [
+                      {
+                        "callee": {},
+                        "caller": {
+                          "associated_identity": {
+                            "display_name": "FE An",
+                            "id": "72b-6ba8-4a80-8ffb-eedaa77",
+                            "tenant_id": "3f3d2c-bce5-42b7-8a68-1455af",
+                            "user_principal_name": "a.a@m365x596.onmicrosoft.com"
+                          }
+                        },
+                        "end_date_time": "2053-03-26T13:06:31.4360658Z",
+                        "failure_info": {
+                          "reason": "",
+                          "stage": "midcall"
+                        },
+                        "media": [
+                          {
+                            "callee_network": {
+                              "connection_type": "wired",
+                              "ip_address": "10.60.246.100",
+                              "link_speed": 0,
+                              "network_transport_protocol": "udp",
+                              "port": 3480,
+                              "reflexive_ip_address": "203.0.113.248"
+                            },
+                            "caller_network": {
+                              "connection_type": "unknown",
+                              "network_transport_protocol": "unknown",
+                              "reflexive_ip_address": "192.0.2.54"
+                            },
+                            "label": "main-audio",
+                            "streams": [
+                              {
+                                "audio_codec": "opus",
+                                "average_audio_degradation": 0,
+                                "average_audio_network_jitter": "PT0.028S",
+                                "average_jitter": "PT0.001S",
+                                "average_packet_loss_rate": 0,
+                                "average_ratio_of_concealed_samples": 0.011498,
+                                "average_round_trip_time": "PT0.154S",
+                                "max_audio_network_jitter": "PT0.209S",
+                                "max_jitter": "PT0.019S",
+                                "max_packet_loss_rate": 0,
+                                "max_ratio_of_concealed_samples": 0.022311,
+                                "max_round_trip_time": "PT0.163S",
+                                "packet_utilization": 1982,
+                                "stream_direction": "callerToCallee",
+                                "stream_id": "2530545320",
+                                "video_codec": "unknown"
+                              },
+                              {
+                                "audio_codec": "opus",
+                                "average_jitter": "PT0.003S",
+                                "average_packet_loss_rate": 0,
+                                "average_round_trip_time": "PT0.154S",
+                                "is_audio_forward_error_correction_used": false,
+                                "max_jitter": "PT0.005S",
+                                "max_packet_loss_rate": 0,
+                                "max_round_trip_time": "PT0.163S",
+                                "packet_utilization": 1389,
+                                "stream_direction": "calleeToCaller",
+                                "stream_id": "1000",
+                                "video_codec": "unknown"
+                              }
+                            ]
+                          }
+                        ],
+                        "segment_id": "bfbdb923-fa35-49b4-b7a9-8ba9259d41b1",
+                        "start_date_time": "2053-03-26T13:04:57.2290561Z"
+                      }
+                    ],
+                    "session_id": "bfbdb923-fa35-49b4-b7a9-8ba9259d41b1"
+                  }
+                ],
+                "start_date_time": "2053-03-26T13:04:57.232483Z"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "teams_call_quality",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-teams_call_quality-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

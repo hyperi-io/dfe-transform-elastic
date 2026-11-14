@@ -1,0 +1,96 @@
+{
+    "events": [
+        {
+            "@timestamp": "2050-02-24T07:26:15.000Z",
+            "agent": {
+                "ephemeral_id": "489f085b-43b4-4bed-a13e-f9d3835bb67d",
+                "id": "bd6f6f7f-2782-4644-bf68-4b2ad00f6ca6",
+                "name": "docker-fleet-agent",
+                "type": "filebeat",
+                "version": "8.1.3"
+            },
+            "data_stream": {
+                "dataset": "cylance.protect",
+                "namespace": "ep",
+                "type": "logs"
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "elastic_agent": {
+                "id": "bd6f6f7f-2782-4644-bf68-4b2ad00f6ca6",
+                "snapshot": false,
+                "version": "8.1.3"
+            },
+            "event": {
+                "action": "DeviceRemove",
+                "code": "CylancePROTECT",
+                "dataset": "cylance.protect",
+                "original": "24-Feb-2046 7:26:15 very-high idolor3916.www5.home tas \u003c\u003cautfugi\u003etasun 24T19:26:15.duntutla ntium4450.www5.localdomain CylancePROTECT Event Name:DeviceRemove, Device Name:vol, Agent Version:oremquel, IP Address: (10.175.70.154), MAC Address: (71:22:1a:bc:a3:21), Logged On Users: (ztpvbt), OS:animid, Zone Names:mpo",
+                "timezone": "+00:00"
+            },
+            "host": {
+                "mac": "71:22:1a:bc:a3:21",
+                "name": "ntium4450.www5.localdomain"
+            },
+            "input": {
+                "type": "log"
+            },
+            "log": {
+                "file": {
+                    "path": "/tmp/service_logs/cylance-protect-generated.log"
+                },
+                "offset": 14198
+            },
+            "observer": {
+                "product": "Protect",
+                "type": "Anti-Virus",
+                "vendor": "Cylance"
+            },
+            "related": {
+                "ip": [
+                    "10.175.70.154"
+                ],
+                "user": [
+                    "ztpvbt"
+                ]
+            },
+            "rsa": {
+                "db": {
+                    "index": "mpo"
+                },
+                "internal": {
+                    "messageid": "CylancePROTECT"
+                },
+                "investigations": {
+                    "event_cat": 1804020000,
+                    "event_cat_name": "Network.Devices.Removals"
+                },
+                "misc": {
+                    "OS": "animid",
+                    "event_type": "DeviceRemove",
+                    "node": "vol"
+                },
+                "network": {
+                    "alias_host": [
+                        "ntium4450.www5.localdomain"
+                    ],
+                    "eth_host": "71:22:1a:bc:a3:21"
+                },
+                "time": {
+                    "event_time": "2050-02-24T07:26:15.000Z"
+                }
+            },
+            "source": {
+                "ip": "10.175.70.154"
+            },
+            "tags": [
+                "forwarded",
+                "preserve_original_event"
+            ],
+            "user": {
+                "name": "ztpvbt"
+            }
+        }
+    ]
+}

@@ -89,8 +89,7 @@ impl Transform for Default {
 
             event.set("observer.vendor", json!("F5"))?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == 'N/A' || object == 'NA') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -778,9 +777,7 @@ impl Transform for Default {
                         && event.has_value("f5_bigip.log.bytes.out")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.network = new HashMap();\nctx.network.bytes = ctx.f5_bigip.log.bytes.in + ctx.f5_bigip.log.bytes.out;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2461,9 +2458,7 @@ impl Transform for Default {
                         && event.has_value("f5_bigip.log.bytes.out")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.network = new HashMap();\nctx.network.bytes = ctx.f5_bigip.log.bytes.in + ctx.f5_bigip.log.bytes.out;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -3697,9 +3692,7 @@ impl Transform for Default {
                 if event.has_value("json.policy_name") {
                     event.rename("json.policy_name", "f5_bigip.log.policy.name")?;
                 }
-                // Painless script
-                // Source: def log; if (ctx.event?.original != null) {\n  log = ctx.event.original;\n} else if (ctx.json?.originalRawData != null) {\n  log = ctx.json.originalRawData;\n} if (log != null) {\n  def sAMAccountNameMatch = /sAMAccountName=([^\\\\)]+)/.matcher(log);\n  if (sAMAccountNameMatch.find()) {\n    ctx.f5_bigip.log.sam_account_name = sAMAccountNameMatch.group(1);\n  }\n\n  def userPrincipleNameMatch = /UserPrincipleName=([^\\\\)]+)/.matcher(log);\n  if (userPrincipleNameMatch.find()) {\n    ctx.f5_bigip.log.user_principle_name = userPrincipleNameMatch.group(1);\n  }\n\n  def userNameMatch = /User_Name=([^\\\\)]+)/.matcher(log);\n  if (userNameMatch.find()) {\n    ctx.f5_bigip.log.user_name = userNameMatch.group(1);\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3992,9 +3985,7 @@ impl Transform for Default {
                         && event.has_value("f5_bigip.log.request.protocol")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: if (ctx.url == null) {\n    ctx.url = new HashMap();\n}\nctx.url.original = ctx.network.protocol + '://' +ctx.f5_bigip.log.request.host + ctx.f5_bigip.log.request.path\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -11669,8 +11660,7 @@ impl Transform for Default {
                             .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: def client_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsIn'); client_side_traffic.put('bits_in', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n} else{\n  ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_in', obj);\n}
+                    // The pipeline's script, emitted as the runtime's equivalent
                     move_map_entry(
                         event,
                         &MoveMapEntry::new(
@@ -11688,8 +11678,7 @@ impl Transform for Default {
                             .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: def client_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsOut'); client_side_traffic.put('bits_out', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n} else{\n  ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_out', obj);\n}
+                    // The pipeline's script, emitted as the runtime's equivalent
                     move_map_entry(
                         event,
                         &MoveMapEntry::new(
@@ -11707,8 +11696,7 @@ impl Transform for Default {
                             .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: def server_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('serverSideTraffic.bitsIn'); server_side_traffic.put('bits_in', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('server_side_traffic', server_side_traffic);\n} else{\n    if (ctx.f5_bigip?.log?.tmm_traffic?.server_side_traffic == null) {\n        ctx.f5_bigip.log.tmm_traffic.server_side_traffic = new HashMap();\n    }\n    ctx.f5_bigip.log.tmm_traffic.server_side_traffic.put('bits_in', obj);\n}
+                    // The pipeline's script, emitted as the runtime's equivalent
                     move_map_entry(
                         event,
                         &MoveMapEntry::new(
@@ -11726,8 +11714,7 @@ impl Transform for Default {
                             .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: def server_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('serverSideTraffic.bitsOut'); server_side_traffic.put('bits_out', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('server_side_traffic', server_side_traffic);\n} else{\n    if (ctx.f5_bigip?.log?.tmm_traffic?.server_side_traffic == null) {\n        ctx.f5_bigip.log.tmm_traffic.server_side_traffic = new HashMap();\n    }\n    ctx.f5_bigip.log.tmm_traffic.server_side_traffic.put('bits_out', obj);\n}
+                    // The pipeline's script, emitted as the runtime's equivalent
                     move_map_entry(
                         event,
                         &MoveMapEntry::new(
@@ -11995,18 +11982,14 @@ impl Transform for Default {
                 event.append("event.category", json!("vulnerability"))?;
                 event.append("event.type", json!("info"))?;
                 event.set("observer.product", json!("iHealth Information"))?;
-                // Painless script
-                // Source: def convertKeysToString(Map versionMap, String[] keysToConvert) {\n  def convertedMap = [:];\n  versionMap.entrySet().forEach(entry -> {\n    def key = entry.getKey().toString();\n    def value = entry.getValue();\n    if (Arrays.asList(keysToConvert).contains(key)) {\n      convertedMap[key] = value.toString();\n    } else {\n      convertedMap[key] = value;\n    }\n  });\n  return convertedMap;\n}\ndef diagnosticArray = ctx.json.diagnostics;\ndef keysToConvert = new String[] {\n  'minor',\n  'major',\n  'maintenance',\n  'fix',\n  'point'\n};\nif (diagnosticArray instanceof List) {\n  for (int i = 0; i < diagnosticArray.size(); i++) {\n    def versionArray = diagnosticArray[i].version;\n    if (versionArray instanceof List) {\n      for (int j = 0; j < versionArray.size(); j++) {\n        versionArray[j] = convertKeysToString(versionArray[j], keysToConvert);\n      }\n      ctx.json.diagnostics[i].put('version', versionArray);\n    }\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
                         r#"def convertKeysToString(Map versionMap, String[] keysToConvert) {\n  def convertedMap = [:];\n  versionMap.entrySet().forEach(entry -> {\n    def key = entry.getKey().toString();\n    def value = entry.getValue();\n    if (Arrays.asList(keysToConvert).contains(key)) {\n      convertedMap[key] = value.toString();\n    } else {\n      convertedMap[key] = value;\n    }\n  });\n  return convertedMap;\n}\ndef diagnosticArray = ctx.json.diagnostics;\ndef keysToConvert = new String[] {\n  'minor',\n  'major',\n  'maintenance',\n  'fix',\n  'point'\n};\nif (diagnosticArray instanceof List) {\n  for (int i = 0; i < diagnosticArray.size(); i++) {\n    def versionArray = diagnosticArray[i].version;\n    if (versionArray instanceof List) {\n      for (int j = 0; j < versionArray.size(); j++) {\n        versionArray[j] = convertKeysToString(versionArray[j], keysToConvert);\n      }\n      ctx.json.diagnostics[i].put('version', versionArray);\n    }\n  }\n}\n"#
                     ),
                 )?;
-                // Painless script
-                // Source: def diagnosticArray = ctx.json.diagnostics;\ndef cveIds = new HashSet();\ndef importance = new HashSet();\ndef header = new HashSet();\ndef summary = new HashSet();\ndef ruleName = new HashSet();\ndef ruleRef = new HashSet();\ndef threatRef = new HashSet();\nif (ctx.vulnerability == null) {\n  ctx.vulnerability = new HashMap()\n}\nif (ctx.rule == null) {\n  ctx.rule = new HashMap()\n}\nif (ctx.threat == null) {\n  ctx.threat = new HashMap()\n}\nif (ctx.threat.enrichments == null) {\n  ctx.threat.enrichments = new HashMap()\n}\nif (ctx.threat.enrichments.indicator == null) {\n  ctx.threat.enrichments.indicator = new HashMap()\n}\nif (diagnosticArray instanceof List) {\n  for (int i = 0; i < diagnosticArray.size(); i++) {\n    def cveIdsArray = diagnosticArray[i].cveIds;\n    if (cveIdsArray instanceof List) {\n      for (int j=0; j < cveIdsArray.size(); j++) {\n        cveIds.add(cveIdsArray[j]);\n      }\n      ctx.json.diagnostics[i].remove('cveIds');\n      ctx.json.diagnostics[i].put('cve_ids', cveIdsArray);\n    }\n    def solutionArray = diagnosticArray[i].solution;\n    if (solutionArray instanceof List) {\n      for (int j=0; j < solutionArray.size(); j++) {\n        if (solutionArray[j].id != null) {\n          ruleRef.add(solutionArray[j].id);\n        }\n        if (solutionArray[j].value != null) {\n          threatRef.add(solutionArray[j].value);\n        }\n      }\n      ctx.json.diagnostics[i].remove('cveIds');\n      ctx.json.diagnostics[i].put('cve_ids', cveIdsArray);\n    }\n    if (diagnosticArray[i].importance != null){\n      importance.add(diagnosticArray[i].importance);\n    }\n    if (diagnosticArray[i].header != null){\n      header.add(diagnosticArray[i].header);\n    }\n    if (diagnosticArray[i].summary != null){\n      summary.add(diagnosticArray[i].summary);\n    }\n    if (diagnosticArray[i].name != null){\n      ruleName.add(diagnosticArray[i].name);\n    }\n  }\n}\nctx.vulnerability.put('id', cveIds);\nctx.vulnerability.put('severity', importance);\nctx.vulnerability.put('description', header);\nctx.vulnerability.put('description', summary);\nctx.rule.put('name', ruleName);\nctx.rule.put('reference', ruleRef);\nctx.threat.enrichments.indicator.put('reference', threatRef);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -12398,8 +12381,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean dropEmptyFields(Object object) {\n  if (object == 'N/A' || object == 'NA') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -13693,9 +13675,7 @@ impl Transform for Default {
                         str::to_lowercase,
                     )?;
                 }
-                // Painless script
-                // Source: String message = ctx.event.original;\nint startIndex = message.indexOf('http_request=\"') + 'http_request=\"'.length();\nint endIndex = message.indexOf('\"', startIndex);\nif (startIndex >= 0 && endIndex >= 0) {\n  ctx.kv.http_request = message.substring(startIndex, endIndex);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -14458,8 +14438,7 @@ impl Transform for Default {
                 // End nested pipeline: "pipeline_bigip_bot_and_dos"
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'null') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

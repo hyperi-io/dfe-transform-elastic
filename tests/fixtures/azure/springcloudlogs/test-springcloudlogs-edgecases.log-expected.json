@@ -1,0 +1,134 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-07-01T19:30:30.535Z",
+      "azure": {
+        "resource": {
+          "group": "SA-HEMANT",
+          "id": "/SUBSCRIPTIONS/BBF98C40-3EC6-4509-A1CA-AF493B0FE920/RESOURCEGROUPS/SA-HEMANT/PROVIDERS/MICROSOFT.APPPLATFORM/SPRING/HM-SC-PETCLINIC",
+          "name": "HM-SC-PETCLINIC",
+          "provider": "MICROSOFT.APPPLATFORM/SPRING"
+        },
+        "springcloudlogs": {
+          "category": "ApplicationConsole",
+          "event_category": "Administrative",
+          "log_format": "RAW",
+          "operation_name": "Microsoft.AppPlatform/Spring/logs",
+          "properties": {
+            "app_name": "admin-server",
+            "instance_name": "admin-server-default-12-8459d44f68-g4b5f",
+            "service_id": "a37fa726c6e9736be839148475eb95ca",
+            "service_name": "hm-sc-petclinic",
+            "stream": "stdout"
+          }
+        },
+        "subscription_id": "BBF98C40-3EC6-4509-A1CA-AF493B0FE920"
+      },
+      "client": {
+        "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Microsoft.AppPlatform/Spring/logs",
+        "kind": "event",
+        "original": "{ \"time\": \"2049-07-01T19:30:30.535404056Z\", \"LogFormat\": \"RAW\", \"resourceId\": \"/SUBSCRIPTIONS/BBF98C40-3EC6-4509-A1CA-AF493B0FE920/RESOURCEGROUPS/SA-HEMANT/PROVIDERS/MICROSOFT.APPPLATFORM/SPRING/HM-SC-PETCLINIC\", \"operationName\": \"Microsoft.AppPlatform/Spring/logs\", \"category\": \"ApplicationConsole\", \"level\": \"Informational\", \"callerIpAddress\": \"2001:db8:5bff:23b8:b0b2:237:3d1:721c\", \"properties\": {\"Log\":\"2049-07-01 19:30:30.535 INFO 1 --- [oundedElastic-9] c.c.c.ConfigServicePropertySourceLocator : Located environment: name=admin-server, profiles=[mysql], label=null, version=537a2cb2fa2c329b1ab46a562401f406596751d5, state=null\\n\",\"Stream\":\"stdout\",\"AppName\":\"admin-server\",\"InstanceName\":\"admin-server-default-12-8459d44f68-g4b5f\",\"ServiceId\":\"a37fa726c6e9736be839148475eb95ca\",\"ServiceName\":\"hm-sc-petclinic\"}}"
+      },
+      "log": {
+        "level": "Informational"
+      },
+      "message": "2049-07-01 19:30:30.535 INFO 1 --- [oundedElastic-9] c.c.c.ConfigServicePropertySourceLocator : Located environment: name=admin-server, profiles=[mysql], label=null, version=537a2cb2fa2c329b1ab46a562401f406596751d5, state=null\n",
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-01T19:30:30.535Z",
+      "azure": {
+        "resource": {
+          "group": "SA-HEMANT",
+          "id": "/SUBSCRIPTIONS/BBF98C40-3EC6-4509-A1CA-AF493B0FE920/RESOURCEGROUPS/SA-HEMANT/PROVIDERS/MICROSOFT.APPPLATFORM/SPRING/HM-SC-PETCLINIC",
+          "name": "HM-SC-PETCLINIC",
+          "provider": "MICROSOFT.APPPLATFORM/SPRING"
+        },
+        "springcloudlogs": {
+          "category": "ApplicationConsole",
+          "event_category": "Administrative",
+          "log_format": "RAW",
+          "operation_name": "Microsoft.AppPlatform/Spring/logs",
+          "properties": {
+            "app_name": "admin-server",
+            "instance_name": "admin-server-default-12-8459d44f68-g4b5f",
+            "service_id": "a37fa726c6e9736be839148475eb95ca",
+            "service_name": "hm-sc-petclinic",
+            "stream": "stdout"
+          }
+        },
+        "subscription_id": "BBF98C40-3EC6-4509-A1CA-AF493B0FE920"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Microsoft.AppPlatform/Spring/logs",
+        "kind": "event",
+        "original": "{ \"time\": \"2049-07-01T19:30:30.535404056Z\", \"LogFormat\": \"RAW\", \"resourceId\": \"/SUBSCRIPTIONS/BBF98C40-3EC6-4509-A1CA-AF493B0FE920/RESOURCEGROUPS/SA-HEMANT/PROVIDERS/MICROSOFT.APPPLATFORM/SPRING/HM-SC-PETCLINIC\", \"operationName\": \"Microsoft.AppPlatform/Spring/logs\", \"category\": \"ApplicationConsole\", \"level\": \"Informational\", \"callerIpAddress\": \"X:2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6/\", \"properties\": {\"Log\":\"2049-07-01 19:30:30.535 INFO 1 --- [oundedElastic-9] c.c.c.ConfigServicePropertySourceLocator : Located environment: name=admin-server, profiles=[mysql], label=null, version=537a2cb2fa2c329b1ab46a562401f406596751d5, state=null\\n\",\"Stream\":\"stdout\",\"AppName\":\"admin-server\",\"InstanceName\":\"admin-server-default-12-8459d44f68-g4b5f\",\"ServiceId\":\"a37fa726c6e9736be839148475eb95ca\",\"ServiceName\":\"hm-sc-petclinic\"}}"
+      },
+      "log": {
+        "level": "Informational"
+      },
+      "message": "2049-07-01 19:30:30.535 INFO 1 --- [oundedElastic-9] c.c.c.ConfigServicePropertySourceLocator : Located environment: name=admin-server, profiles=[mysql], label=null, version=537a2cb2fa2c329b1ab46a562401f406596751d5, state=null\n",
+      "source": {
+        "address": "X:2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6/"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{ \"time\": \"2049-07-01T19:30:30.535404056Z\", \"LogFormat\": \"RAW\", \"resourceId\": \"/SUBSCRIPTIONS/BBF98C40-3EC6-4509-A1CA-AF493B0FE920/RESOURCEGROUPS/SA-HEMANT/PROVIDERS/MICROSOFT.APPPLATFORM/SPRING/HM-SC-PETCLINIC\", \"operationName\": \"Microsoft.AppPlatform/Spring/logs\", \"category\": \"ApplicationConsole\", \"level\": \"Informational\", \"callerIpAddress\": \"2001:db8:5bff:23b8:b0b2:237:3d1:721c\", \"properties\": {\"Log\":\"2049-07-01 19:30:30.535 INFO 1 --- [oundedElastic-9] c.c.c.ConfigServicePropertySourceLocator : Located environment: name=admin-server, profiles=[mysql], label=null, version=537a2cb2fa2c329b1ab46a562401f406596751d5, state=null\\n\",\"Stream\":\"stdout\",\"AppName\":\"admin-server\",\"InstanceName\":\"admin-server-default-12-8459d44f68-g4b5f\",\"ServiceId\":\"a37fa726c6e9736be839148475eb95ca\",\"ServiceName\":\"hm-sc-petclinic\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{ \"time\": \"2049-07-01T19:30:30.535404056Z\", \"LogFormat\": \"RAW\", \"resourceId\": \"/SUBSCRIPTIONS/BBF98C40-3EC6-4509-A1CA-AF493B0FE920/RESOURCEGROUPS/SA-HEMANT/PROVIDERS/MICROSOFT.APPPLATFORM/SPRING/HM-SC-PETCLINIC\", \"operationName\": \"Microsoft.AppPlatform/Spring/logs\", \"category\": \"ApplicationConsole\", \"level\": \"Informational\", \"callerIpAddress\": \"X:2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6/\", \"properties\": {\"Log\":\"2049-07-01 19:30:30.535 INFO 1 --- [oundedElastic-9] c.c.c.ConfigServicePropertySourceLocator : Located environment: name=admin-server, profiles=[mysql], label=null, version=537a2cb2fa2c329b1ab46a562401f406596751d5, state=null\\n\",\"Stream\":\"stdout\",\"AppName\":\"admin-server\",\"InstanceName\":\"admin-server-default-12-8459d44f68-g4b5f\",\"ServiceId\":\"a37fa726c6e9736be839148475eb95ca\",\"ServiceName\":\"hm-sc-petclinic\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "springcloudlogs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-springcloudlogs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

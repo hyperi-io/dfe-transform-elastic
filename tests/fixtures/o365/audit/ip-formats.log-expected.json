@@ -1,0 +1,2167 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[10.207.243.61]:12345",
+        "ip": "10.207.243.61",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[10.207.243.61]:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "10.207.243.61"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "10.207.243.61",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "10.207.243.61:12345",
+        "ip": "10.207.243.61",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 132
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "10.207.243.61:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "10.207.243.61"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "10.207.243.61",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "10.207.243.61",
+        "ip": "10.207.243.61"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 262
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "10.207.243.61",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "10.207.243.61"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "10.207.243.61"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "::ffff:10.207.243.61",
+        "ip": "::ffff:10.207.243.61"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 386
+      },
+      "network": {
+        "type": "ipv6"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "::ffff:10.207.243.61",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "::ffff:10.207.243.61"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "::ffff:10.207.243.61"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[::ffff:10.207.243.61]:12345",
+        "ip": "::ffff:10.207.243.61",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 517
+      },
+      "network": {
+        "type": "ipv6"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[::ffff:10.207.243.61]:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "::ffff:10.207.243.61"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "::ffff:10.207.243.61",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[2001:db8::abcd]:12345",
+        "ip": "2001:db8::abcd",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 656
+      },
+      "network": {
+        "type": "ipv6"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[2001:db8::abcd]:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "2001:db8::abcd"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "2001:db8::abcd",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "2001:db8::abcd",
+        "ip": "2001:db8::abcd"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 791
+      },
+      "network": {
+        "type": "ipv6"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "2001:db8::abcd",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "2001:db8::abcd"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "2001:db8::abcd"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[2001:db8::abcd]"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 918
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[2001:db8::abcd]",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[10.207.243.61]"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1047
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[10.207.243.61]",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "localhost"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1173
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "localhost",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[localhost]:12345",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1295
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[localhost]:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "localhost:12345"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1425
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "localhost:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[dwjt.dlpbuv.local]:12345",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1553
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[dwjt.dlpbuv.local]:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "dwjt.dlpbuv.local"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1691
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "dwjt.dlpbuv.local",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "dwjt.dlpbuv.local:12345",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1821
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "dwjt.dlpbuv.local:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[10.207.243.61]:12345",
+        "ip": "10.207.243.61",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[10.207.243.61]:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "10.207.243.61"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "10.207.243.61",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "10.207.243.61:12345",
+        "ip": "10.207.243.61",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 132
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "10.207.243.61:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "10.207.243.61"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "10.207.243.61",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "10.207.243.61",
+        "ip": "10.207.243.61"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 262
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "10.207.243.61",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "10.207.243.61"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "10.207.243.61"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "::ffff:10.207.243.61",
+        "ip": "::ffff:10.207.243.61"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 386
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "::ffff:10.207.243.61",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "::ffff:10.207.243.61"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "::ffff:10.207.243.61"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[::ffff:10.207.243.61]:12345",
+        "ip": "::ffff:10.207.243.61",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 517
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[::ffff:10.207.243.61]:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "::ffff:10.207.243.61"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "::ffff:10.207.243.61",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[2001:db8::abcd]:12345",
+        "ip": "2001:db8::abcd",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 656
+      },
+      "network": {
+        "type": "ipv6"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[2001:db8::abcd]:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "2001:db8::abcd"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "2001:db8::abcd",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "2001:db8::abcd",
+        "ip": "2001:db8::abcd"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 791
+      },
+      "network": {
+        "type": "ipv6"
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "2001:db8::abcd",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "related": {
+        "ip": "2001:db8::abcd"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "2001:db8::abcd"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[2001:db8::abcd]"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 918
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[2001:db8::abcd]",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[10.207.243.61]"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1047
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[10.207.243.61]",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "localhost"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1173
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "localhost",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[localhost]:12345",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1295
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[localhost]:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "localhost:12345"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1425
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "localhost:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[dwjt.dlpbuv.local]:12345",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1553
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "[dwjt.dlpbuv.local]:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "dwjt.dlpbuv.local"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1691
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "dwjt.dlpbuv.local",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "500c2ce6-c18d-45d0-a74d-e7ac12a2a150",
+        "id": "0c6a1620-9aaa-4d92-898c-0308a230bdb0",
+        "name": "fb00213b96b4",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "dwjt.dlpbuv.local:12345",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "category": "web",
+        "code": -1,
+        "dataset": "o365.audit",
+        "id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1821
+      },
+      "o365": {
+        "audit": {
+          "ClientIP": "dwjt.dlpbuv.local:12345",
+          "CreationTime": "2048-02-17T17:12:03",
+          "Id": "4ed64e21-ace2-4a0c-ecc4-63f1e1ad2152",
+          "RecordType": -1
+        }
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365-audit-default",
+    "event_count": 15,
+    "numeric_keyword_fields": [
+      "event.id",
+      "host.id",
+      "o365.audit.ExceptionInfo.FalsePositive",
+      "o365.audit.ExchangeMetaData.CC",
+      "o365.audit.ExchangeMetaData.MessageID",
+      "o365.audit.ExchangeMetaData.Sent",
+      "o365.audit.ExchangeMetaData.To",
+      "o365.audit.ExchangeMetaData.UniqueID",
+      "o365.audit.FileSize",
+      "o365.audit.Item.IsRecord",
+      "o365.audit.Item.SizeInBytes",
+      "o365.audit.OperationId",
+      "o365.audit.RequestId",
+      "o365.audit.SharePointMetaData.FileSize",
+      "o365.audit.SharePointMetaData.IsViewableByExternalUsers",
+      "o365.audit.UserId",
+      "o365.audit.WorkspaceId",
+      "organization.id"
+    ],
+    "package": "o365",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `azure_network_watcher_nsg`'s flow tuples, transcribed.
+//! `azure_network_watcher_nsg`'s flow tuples, as the runtime runs them.
 //!
 //! A security-group flow log carries each connection as one comma-separated
 //! line of thirteen fields, nested two deep under the rule that matched it. The
@@ -230,7 +230,7 @@ pub(super) fn write_set(event: &mut Event, path: &str, gathered: Vec<Value>) {
     let _ = event.set(path, Value::Array(java_set_order(distinct)));
 }
 
-/// Every `azure_network_watcher_nsg` script transcribed here.
+/// Every `azure_network_watcher_nsg` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "b6ae82ad3b6a4922b361a502ec931d5db8e9ca6fd67567c4514303ccb23dff3c",
     source: "azure_network_watcher_nsg",

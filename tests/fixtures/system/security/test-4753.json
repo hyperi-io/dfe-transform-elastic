@@ -1,0 +1,63 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:08:44.066Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "82a46264-d320-4212-a0af-573da2073103"
+            },
+            "winlog": {
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-12-19T08:24:36.595Z",
+                "channel": "Security",
+                "event_id": 4753,
+                "record_id": 3707709,
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "event_data": {
+                    "TargetDomainName": "TEST",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2904",
+                    "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+                    "SubjectUserName": "ev_aav",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x2e67800",
+                    "PrivilegeList": "-",
+                    "TargetUserName": "ibsisxmcco9"
+                },
+                "process": {
+                    "pid": 492,
+                    "thread": {
+                        "id": 1076
+                    }
+                },
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "opcode": "Info",
+                "outcome": "success",
+                "level": "information"
+            },
+            "event": {
+                "code": 4753,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "kind": "event"
+            },
+            "log": {
+                "level": "information",
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4753.xml"
+                }
+            }
+        }
+    ]
+}

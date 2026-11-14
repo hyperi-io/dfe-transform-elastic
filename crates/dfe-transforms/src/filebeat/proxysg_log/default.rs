@@ -813,8 +813,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropUnsetFields(Object object) {\n  if (object == \"-\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropUnsetFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropUnsetFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropUnsetFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -992,8 +991,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("proxysg.time_taken") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event.duration = ctx.proxysg.time_taken * 1000000\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new(

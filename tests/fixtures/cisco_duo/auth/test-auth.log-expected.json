@@ -1,0 +1,1970 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-02-13T18:56:20.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "198.51.100.144",
+            "is_encryption_enabled": "true",
+            "is_firewall_enabled": "true",
+            "is_password_set": "true",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            }
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Microsoft Azure Active Directory"
+          },
+          "auth_device": {
+            "ip": "192.168.74.189",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "My iPhone X (734-555-2342)"
+          },
+          "email": "kcskjtaw@example.com",
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2048-02-13T18:56:20.351Z",
+          "reason": "user_approved",
+          "result": "success",
+          "trusted_endpoint_status": "not trusted",
+          "txid": "592b61e4-23f9-28d0-88ab-5006e50dccce"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"67.0.3396.99\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":true,\"is_firewall_enabled\":true,\"is_password_set\":true,\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Mac OS X\",\"os_version\":\"10.14.1\",\"security_agents\":[]},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Microsoft Azure Active Directory\"},\"auth_device\":{\"ip\":\"192.168.74.189\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"My iPhone X (734-555-2342)\"},\"email\":\"kcskjtaw@example.com\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2048-02-13T18:56:20.351346+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2465232980,\"trusted_endpoint_status\":\"not trusted\",\"txid\":\"592b61e4-23f9-28d0-88ab-5006e50dccce\",\"user\":{\"groups\":[\"Duo Users\",\"CorpHQ Users\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw@example.com\"}}",
+        "outcome": "success",
+        "reason": "user_approved",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144",
+          "192.168.74.189"
+        ],
+        "user": [
+          "kcskjtaw@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144",
+        "user": {
+          "email": "kcskjtaw@example.com",
+          "group": {
+            "name": [
+              "Duo Users",
+              "CorpHQ Users"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw@example.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "kcskjtaw@example.com",
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw@example.com"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Mac OS X",
+          "version": "10.14.1"
+        },
+        "version": "67.0.3396.99"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:21:51.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "198.51.100.144",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            }
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "198.51.100.144",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345"
+          },
+          "email": "kcskjtaw@example.com",
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:21:51.271Z",
+          "reason": "user_approved",
+          "result": "success",
+          "txid": "df24a031-4231-47a4-9737-c8a5ecc89ff6"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"198.51.100.144\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"kcskjtaw@example.com\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:21:51.271776+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2510637711,\"txid\":\"df24a031-4231-47a4-9737-c8a5ecc89ff6\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "success",
+        "reason": "user_approved",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144",
+        "user": {
+          "email": "kcskjtaw@example.com",
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "kcskjtaw@example.com",
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-08-12T09:14:23.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "198.51.100.144",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            }
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "198.51.100.144",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345"
+          },
+          "email": "kcskjtaw@example.com",
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-08-12T09:14:23.060Z",
+          "reason": "user_approved",
+          "result": "success",
+          "txid": "133e36f8-4c74-4303-90ee-02d5d81ed570"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.131\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"198.51.100.144\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"kcskjtaw@example.com\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-08-12T09:14:23.060168+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2512372463,\"txid\":\"133e36f8-4c74-4303-90ee-02d5d81ed570\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "success",
+        "reason": "user_approved",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144",
+        "user": {
+          "email": "kcskjtaw@example.com",
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "kcskjtaw@example.com",
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.131"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:20:54.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "198.51.100.144",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            }
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "198.51.100.144",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345"
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:20:54.700Z",
+          "reason": "user_marked_fraud",
+          "result": "fraud",
+          "txid": "21f3a939-717a-4340-811b-fcd2eb0f4b6b"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"198.51.100.144\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:20:54.700050+00:00\",\"ood_software\":null,\"reason\":\"user_marked_fraud\",\"result\":\"fraud\",\"timestamp\":2510637654,\"txid\":\"21f3a939-717a-4340-811b-fcd2eb0f4b6b\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "failure",
+        "reason": "user_marked_fraud",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144",
+        "user": {
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "198.51.100.144",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            }
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "198.51.100.144",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345"
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_mistake",
+          "result": "denied",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"198.51.100.144\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "failure",
+        "reason": "user_mistake",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.144",
+        "user": {
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "203.0.113.248",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "port": 1234
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "192.168.74.189",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345",
+            "port": 4321
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_mistake",
+          "result": "denied",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"203.0.113.248:1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"192.168.74.189:4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "failure",
+        "reason": "user_mistake",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "192.168.74.189"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 1234,
+        "user": {
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            }
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345"
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_mistake",
+          "result": "denied",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "failure",
+        "reason": "user_mistake",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+        "user": {
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "port": 1234
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345",
+            "port": 4321
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_mistake",
+          "result": "denied",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"[2001:db8:5bff:23b8:b0b2:237:3d1:721c]:1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"[2001:db8:5bff:23b8:b0b2:237:3d1:721c]:4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "failure",
+        "reason": "user_mistake",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+        "port": 1234,
+        "user": {
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "port": 1234
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345",
+            "port": 4321
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_mistake",
+          "result": "denied",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c#1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c#4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "failure",
+        "reason": "user_mistake",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+        "port": 1234,
+        "user": {
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "port": 1234
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345",
+            "port": 4321
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_mistake",
+          "result": "denied",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6p1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6p4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "failure",
+        "reason": "user_mistake",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6",
+        "port": 1234,
+        "user": {
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "port": 1234
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345",
+            "port": 4321
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_mistake",
+          "result": "denied",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6:1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6:4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "failure",
+        "reason": "user_mistake",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6",
+        "port": 1234,
+        "user": {
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "port": 1234
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345",
+            "port": 4321
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_mistake",
+          "result": "denied",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c port 1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c port 4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "failure",
+        "reason": "user_mistake",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+        "port": 1234,
+        "user": {
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "flash_version": "uninstalled",
+            "ip": "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "port": 1234
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Duo Access Gateway Launcher"
+          },
+          "auth_device": {
+            "ip": "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345",
+            "port": 4321
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_mistake",
+          "result": "denied",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6.1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6.4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "failure",
+        "reason": "user_mistake",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6",
+        "port": 1234,
+        "user": {
+          "group": {
+            "name": [
+              "AD Sync"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "hostname": "olywn",
+            "ip": "198.51.100.144",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown"
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "OS Application 1"
+          },
+          "auth_device": {
+            "ip": "198.51.100.211",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345"
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_approved",
+          "result": "success",
+          "trusted_endpoint_status": "unknown",
+          "txid": "b16311aa-7025-437f-ab7d-b94caa90c9c8"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":null,\"browser_version\":null,\"epkey\":null,\"flash_version\":null,\"hostname\":\"olywn\",\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":null,\"location\":{\"city\":null,\"country\":null,\"state\":null},\"os\":null,\"os_version\":null,\"security_agents\":null},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"OS Application 1\"},\"auth_device\":{\"ip\":\"198.51.100.211\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2510637574,\"trusted_endpoint_status\":\"unknown\",\"txid\":\"b16311aa-7025-437f-ab7d-b94caa90c9c8\",\"user\":{\"groups\":[],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "success",
+        "reason": "user_approved",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "olywn"
+        ],
+        "ip": [
+          "198.51.100.144",
+          "198.51.100.211"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "address": "olywn",
+        "ip": "198.51.100.144",
+        "user": {
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "hostname": "olywn",
+            "ip": "198.51.100.144",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown"
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "OS Application 1"
+          },
+          "auth_device": {
+            "ip": "198.51.100.211",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345"
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_approved",
+          "result": "success",
+          "trusted_endpoint_status": "unknown",
+          "txid": "f10125bd-7480-476b-ad3f-a72cdb84d5b6"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":null,\"browser_version\":null,\"epkey\":null,\"flash_version\":null,\"hostname\":\"olywn\",\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":null,\"location\":{\"city\":null,\"country\":null,\"state\":null},\"os\":null,\"os_version\":null,\"security_agents\":[]},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"OS Application 1\"},\"auth_device\":{\"ip\":\"198.51.100.211\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2510637574,\"trusted_endpoint_status\":\"unknown\",\"txid\":\"f10125bd-7480-476b-ad3f-a72cdb84d5b6\",\"user\":{\"groups\":[],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "success",
+        "reason": "user_approved",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "olywn"
+        ],
+        "ip": [
+          "198.51.100.144",
+          "198.51.100.211"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "address": "olywn",
+        "ip": "198.51.100.144",
+        "user": {
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "hostname": "olywn",
+            "ip": "198.51.100.144",
+            "is_encryption_enabled": "unknown",
+            "is_firewall_enabled": "unknown",
+            "is_password_set": "unknown"
+          },
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "OS Application 1"
+          },
+          "auth_device": {
+            "ip": "198.51.100.211",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "+91 12345 12345"
+          },
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "reason": "user_approved",
+          "result": "success",
+          "trusted_endpoint_status": "unknown",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":null,\"browser_version\":null,\"epkey\":null,\"flash_version\":null,\"hostname\":\"olywn\",\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":null,\"location\":{\"city\":null,\"country\":null,\"state\":null},\"os\":null,\"os_version\":null,\"security_agents\":\"unknown\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"OS Application 1\"},\"auth_device\":{\"ip\":\"198.51.100.211\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2510637574,\"trusted_endpoint_status\":\"unknown\",\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "success",
+        "reason": "user_approved",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "olywn"
+        ],
+        "ip": [
+          "198.51.100.144",
+          "198.51.100.211"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "address": "olywn",
+        "ip": "198.51.100.144",
+        "user": {
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      }
+    },
+    {
+      "@timestamp": "2049-07-23T07:19:34.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "hostname": "el",
+            "ip": "198.51.100.211",
+            "is_encryption_enabled": "true",
+            "is_firewall_enabled": "true",
+            "is_password_set": "true",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "security_agents": [
+              {
+                "security_agent": "cisco-amp",
+                "version": "1"
+              }
+            ]
+          },
+          "alias": "unknown",
+          "application": {
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "portal"
+          },
+          "event_type": "enrollment",
+          "factor": "not_available",
+          "isotimestamp": "2049-07-23T07:19:34.702Z",
+          "result": "success",
+          "trusted_endpoint_status": "unknown",
+          "txid": "f93896ec-4054-407f-af9b-c37ecf32f0f2"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"epkey\":null,\"flash_version\":null,\"hostname\":\"el\",\"ip\":\"198.51.100.211\",\"is_encryption_enabled\":true,\"is_firewall_enabled\":true,\"is_password_set\":true,\"java_version\":null,\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10.0.1893.15\",\"security_agents\":[{\"security_agent\":\"cisco-amp\",\"version\":\"1\"}]},\"alias\":\"unknown\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"portal\"},\"auth_device\":{\"ip\":null,\"location\":{\"city\":null,\"country\":null,\"state\":null},\"name\":null},\"email\":null,\"event_type\":\"enrollment\",\"factor\":\"not_available\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":null,\"result\":\"success\",\"timestamp\":2510637574,\"trusted_endpoint_status\":\"unknown\",\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "el"
+        ],
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "address": "el",
+        "ip": "198.51.100.211",
+        "user": {
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Windows",
+          "version": "10.0.1893.15"
+        },
+        "version": "92.0.4515.107"
+      }
+    },
+    {
+      "@timestamp": "2048-02-13T18:56:20.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "epkey": "EP18JX1A10AB102M2T2X",
+            "flash_version": "uninstalled",
+            "ip": "192.0.2.87",
+            "is_encryption_enabled": "true",
+            "is_firewall_enabled": "true",
+            "is_password_set": "true",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            }
+          },
+          "adaptive_trust_assessments": {
+            "more_secure_auth": {
+              "detected_attack_detectors": [
+                "USER_MARKED_FRAUD"
+              ],
+              "features_version": "3.0",
+              "model_version": "2022.07.19.001",
+              "policy_enabled": true,
+              "reason": "Low level of trust; detection of one or more known attack patterns",
+              "trust_level": "LOW"
+            },
+            "remember_me": {
+              "features_version": "3.0",
+              "model_version": "2022.07.19.001",
+              "policy_enabled": false,
+              "reason": "Known Access IP",
+              "trust_level": "NORMAL"
+            }
+          },
+          "application": {
+            "destination_name": "Microsoft 365",
+            "key": "DIY231J8BR23QK4UKBY8",
+            "name": "Acme Corp IdP"
+          },
+          "auth_device": {
+            "ip": "203.0.113.75",
+            "key": "DP5BJ05HI4WRBVI4Q7JF",
+            "location": {
+              "city": "Ann Arbor",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "My iPhone X (734-555-2342)"
+          },
+          "email": "kcskjtaw@example.com",
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2048-02-13T18:56:20.351Z",
+          "passport_assessment": {
+            "is_supported": false,
+            "reason": "absent_health_report"
+          },
+          "reason": "user_approved",
+          "result": "success",
+          "trusted_endpoint_status": "not trusted",
+          "trusted_session_info": {
+            "trusted_session_uuid": "e97b6fc1-c032-482d-b440-f5650af5f902"
+          },
+          "txid": "592b61e4-23f9-28d0-88ab-5006e50dccce"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"67.0.3396.99\",\"epkey\":\"EP18JX1A10AB102M2T2X\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"192.0.2.87\",\"is_encryption_enabled\":true,\"is_firewall_enabled\":true,\"is_password_set\":true,\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Mac OS X\",\"os_version\":\"10.14.1\",\"security_agents\":[]},\"adaptive_trust_assessments\":{\"more_secure_auth\":{\"detected_attack_detectors\":[\"USER_MARKED_FRAUD\"],\"features_version\":\"3.0\",\"model_version\":\"2022.07.19.001\",\"policy_enabled\":true,\"reason\":\"Low level of trust; detection of one or more known attack patterns\",\"trust_level\":\"LOW\"},\"remember_me\":{\"features_version\":\"3.0\",\"model_version\":\"2022.07.19.001\",\"policy_enabled\":false,\"reason\":\"Known Access IP\",\"trust_level\":\"NORMAL\"}},\"alias\":\"\",\"application\":{\"destination_name\":\"Microsoft 365\",\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Acme Corp IdP\"},\"auth_device\":{\"ip\":\"203.0.113.75\",\"key\":\"DP5BJ05HI4WRBVI4Q7JF\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"My iPhone X (734-555-2342)\"},\"email\":\"kcskjtaw@example.com\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2048-02-13T18:56:20.351346+00:00\",\"ood_software\":null,\"passport_assessment\":{\"is_supported\":false,\"reason\":\"absent_health_report\"},\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2465232980,\"trusted_endpoint_status\":\"not trusted\",\"trusted_session_info\":{\"trusted_session_uuid\":\"e97b6fc1-c032-482d-b440-f5650af5f902\"},\"txid\":\"592b61e4-23f9-28d0-88ab-5006e50dccce\",\"user\":{\"groups\":[\"Duo Users\",\"CorpHQ Users\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw@example.com\"}}",
+        "outcome": "success",
+        "reason": "user_approved",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "203.0.113.75"
+        ],
+        "user": [
+          "kcskjtaw@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87",
+        "user": {
+          "email": "kcskjtaw@example.com",
+          "group": {
+            "name": [
+              "Duo Users",
+              "CorpHQ Users"
+            ]
+          },
+          "id": "DU3KC77WJ06Y5HIV7XKQ",
+          "name": "kcskjtaw@example.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "kcskjtaw@example.com",
+        "id": "DU3KC77WJ06Y5HIV7XKQ",
+        "name": "kcskjtaw@example.com"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Mac OS X",
+          "version": "10.14.1"
+        },
+        "version": "67.0.3396.99"
+      }
+    },
+    {
+      "@timestamp": "2052-09-10T18:57:44.000Z",
+      "cisco_duo": {
+        "auth": {
+          "access_device": {
+            "epkey": "EP2ULFE874LMXBYJZE4D",
+            "flash_version": "uninstalled",
+            "ip": "203.0.113.75",
+            "is_encryption_enabled": "true",
+            "is_firewall_enabled": "true",
+            "is_password_set": "true",
+            "java_version": "uninstalled",
+            "location": {
+              "city": "Detroit",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "security_agents": [
+              {
+                "security_agent": "cisco-amp",
+                "version": "1.24.0.967"
+              }
+            ]
+          },
+          "adaptive_trust_assessments": {
+            "more_secure_auth": {
+              "detected_attack_detectors": [
+                "NOVEL_ASN"
+              ],
+              "features_version": "3.0",
+              "model_version": "2022.07.19.001",
+              "policy_enabled": false,
+              "preview_mode_enabled": true,
+              "reason": "Low level of trust; detection of one or more known attack patterns",
+              "trust_level": "LOW"
+            },
+            "remember_me": {
+              "features_version": "3.0",
+              "model_version": "2022.07.19.001",
+              "policy_enabled": false,
+              "reason": "Novel Access IP",
+              "trust_level": "LOW"
+            }
+          },
+          "application": {
+            "destination_name": "Acme Intranet",
+            "key": "DI0P00LD4DX50O2VCAVK",
+            "name": "Acme Corp"
+          },
+          "auth_device": {
+            "ip": "192.0.2.87",
+            "key": "DP5IWE1PCVP00LD4D64A",
+            "location": {
+              "city": "Detroit",
+              "country": "United States",
+              "state": "Michigan"
+            },
+            "name": "Norben's Phone"
+          },
+          "email": "kcskjtaw@example.com",
+          "event_type": "authentication",
+          "factor": "duo_push",
+          "isotimestamp": "2052-09-10T18:57:44.444Z",
+          "rbfs_triggered_attacks": [
+            {
+              "detected_occurrences": 1,
+              "detector": "NOVEL_ASN",
+              "shadow_mode": false,
+              "threshold_occurrences": 1
+            },
+            {
+              "country_code_access": "US",
+              "country_code_auth": "IN",
+              "detected_occurrences": 1,
+              "detector": "NOVEL_ASN",
+              "shadow_mode": false,
+              "suppressed": "KNOWN_IP",
+              "threshold_occurrences": 1,
+              "threshold_time_frame": 86400,
+              "unrealistic_travel_velocity": 3360
+            }
+          ],
+          "reason": "user_approved",
+          "result": "success",
+          "trusted_endpoint_status": "unknown",
+          "txid": "22bca04f-6b43-4635-ae92-856842eb1108"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"128.0.6613.120\",\"epkey\":\"EP2ULFE874LMXBYJZE4D\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"203.0.113.75\",\"is_encryption_enabled\":true,\"is_firewall_enabled\":true,\"is_password_set\":true,\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Detroit\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Mac OS X\",\"os_version\":\"14.6.1\",\"security_agents\":[{\"security_agent\":\"cisco-amp\",\"version\":\"1.24.0.967\"}]},\"adaptive_trust_assessments\":{\"more_secure_auth\":{\"detected_attack_detectors\":[\"NOVEL_ASN\"],\"features_version\":\"3.0\",\"model_version\":\"2022.07.19.001\",\"policy_enabled\":false,\"preview_mode_enabled\":true,\"reason\":\"Low level of trust; detection of one or more known attack patterns\",\"trust_level\":\"LOW\"},\"remember_me\":{\"features_version\":\"3.0\",\"model_version\":\"2022.07.19.001\",\"policy_enabled\":false,\"reason\":\"Novel Access IP\",\"trust_level\":\"LOW\"}},\"alias\":\"\",\"application\":{\"key\":\"DI0P00LD4DX50O2VCAVK\",\"name\":\"Acme Corp\",\"destination_name\":\"Acme Intranet\"},\"auth_device\":{\"ip\":\"192.0.2.87\",\"key\":\"DP5IWE1PCVP00LD4D64A\",\"location\":{\"city\":\"Detroit\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"Norben's Phone\"},\"email\":\"kcskjtaw@example.com\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2052-09-10T18:57:44.444611+00:00\",\"ood_software\":null,\"rbfs_triggered_attacks\":[{\"country_code_access\":null,\"country_code_auth\":null,\"detected_occurrences\":1,\"detector\":\"NOVEL_ASN\",\"shadow_mode\":false,\"suppressed\":null,\"threshold_occurrences\":1,\"threshold_time_frame\":null,\"unrealistic_travel_velocity\":null},{\"country_code_access\":\"US\",\"country_code_auth\":\"IN\",\"detected_occurrences\":1,\"detector\":\"NOVEL_ASN\",\"shadow_mode\":false,\"suppressed\":\"KNOWN_IP\",\"threshold_occurrences\":1,\"threshold_time_frame\":86400,\"unrealistic_travel_velocity\":3360}],\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2609607464,\"trusted_endpoint_status\":\"unknown\",\"txid\":\"22bca04f-6b43-4635-ae92-856842eb1108\",\"user\":{\"groups\":[],\"key\":\"DU53P00LD4D4C075WQGK\",\"name\":\"kcskjtaw\"}}",
+        "outcome": "success",
+        "reason": "user_approved",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "192.0.2.87"
+        ],
+        "user": [
+          "kcskjtaw"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.75",
+        "user": {
+          "email": "kcskjtaw@example.com",
+          "id": "DU53P00LD4D4C075WQGK",
+          "name": "kcskjtaw"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "kcskjtaw@example.com",
+        "id": "DU53P00LD4D4C075WQGK",
+        "name": "kcskjtaw"
+      },
+      "user_agent": {
+        "name": "Chrome",
+        "os": {
+          "name": "Mac OS X",
+          "version": "14.6.1"
+        },
+        "version": "128.0.6613.120"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"67.0.3396.99\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":true,\"is_firewall_enabled\":true,\"is_password_set\":true,\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Mac OS X\",\"os_version\":\"10.14.1\",\"security_agents\":[]},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Microsoft Azure Active Directory\"},\"auth_device\":{\"ip\":\"192.168.74.189\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"My iPhone X (734-555-2342)\"},\"email\":\"kcskjtaw@example.com\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2048-02-13T18:56:20.351346+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2465232980,\"trusted_endpoint_status\":\"not trusted\",\"txid\":\"592b61e4-23f9-28d0-88ab-5006e50dccce\",\"user\":{\"groups\":[\"Duo Users\",\"CorpHQ Users\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw@example.com\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"198.51.100.144\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"kcskjtaw@example.com\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:21:51.271776+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2510637711,\"txid\":\"df24a031-4231-47a4-9737-c8a5ecc89ff6\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.131\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"198.51.100.144\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"kcskjtaw@example.com\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-08-12T09:14:23.060168+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2512372463,\"txid\":\"133e36f8-4c74-4303-90ee-02d5d81ed570\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"198.51.100.144\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:20:54.700050+00:00\",\"ood_software\":null,\"reason\":\"user_marked_fraud\",\"result\":\"fraud\",\"timestamp\":2510637654,\"txid\":\"21f3a939-717a-4340-811b-fcd2eb0f4b6b\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"198.51.100.144\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"203.0.113.248:1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"192.168.74.189:4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"[2001:db8:5bff:23b8:b0b2:237:3d1:721c]:1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"[2001:db8:5bff:23b8:b0b2:237:3d1:721c]:4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c#1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c#4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6p1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6p4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6:1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6:4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c port 1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c port 4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6.1234\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Duo Access Gateway Launcher\"},\"auth_device\":{\"ip\":\"2a02:cf40:add:4002:91f2:a9b2:e09a:6fc6.4321\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_mistake\",\"result\":\"denied\",\"timestamp\":2510637574,\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[\"AD Sync\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":null,\"browser_version\":null,\"epkey\":null,\"flash_version\":null,\"hostname\":\"olywn\",\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":null,\"location\":{\"city\":null,\"country\":null,\"state\":null},\"os\":null,\"os_version\":null,\"security_agents\":null},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"OS Application 1\"},\"auth_device\":{\"ip\":\"198.51.100.211\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2510637574,\"trusted_endpoint_status\":\"unknown\",\"txid\":\"b16311aa-7025-437f-ab7d-b94caa90c9c8\",\"user\":{\"groups\":[],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":null,\"browser_version\":null,\"epkey\":null,\"flash_version\":null,\"hostname\":\"olywn\",\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":null,\"location\":{\"city\":null,\"country\":null,\"state\":null},\"os\":null,\"os_version\":null,\"security_agents\":[]},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"OS Application 1\"},\"auth_device\":{\"ip\":\"198.51.100.211\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2510637574,\"trusted_endpoint_status\":\"unknown\",\"txid\":\"f10125bd-7480-476b-ad3f-a72cdb84d5b6\",\"user\":{\"groups\":[],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":null,\"browser_version\":null,\"epkey\":null,\"flash_version\":null,\"hostname\":\"olywn\",\"ip\":\"198.51.100.144\",\"is_encryption_enabled\":\"unknown\",\"is_firewall_enabled\":\"unknown\",\"is_password_set\":\"unknown\",\"java_version\":null,\"location\":{\"city\":null,\"country\":null,\"state\":null},\"os\":null,\"os_version\":null,\"security_agents\":\"unknown\"},\"alias\":\"\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"OS Application 1\"},\"auth_device\":{\"ip\":\"198.51.100.211\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"+91 12345 12345\"},\"email\":\"\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2510637574,\"trusted_endpoint_status\":\"unknown\",\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"92.0.4515.107\",\"epkey\":null,\"flash_version\":null,\"hostname\":\"el\",\"ip\":\"198.51.100.211\",\"is_encryption_enabled\":true,\"is_firewall_enabled\":true,\"is_password_set\":true,\"java_version\":null,\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Windows\",\"os_version\":\"10.0.1893.15\",\"security_agents\":[{\"security_agent\":\"cisco-amp\",\"version\":\"1\"}]},\"alias\":\"unknown\",\"application\":{\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"portal\"},\"auth_device\":{\"ip\":null,\"location\":{\"city\":null,\"country\":null,\"state\":null},\"name\":null},\"email\":null,\"event_type\":\"enrollment\",\"factor\":\"not_available\",\"isotimestamp\":\"2049-07-23T07:19:34.702203+00:00\",\"ood_software\":null,\"reason\":null,\"result\":\"success\",\"timestamp\":2510637574,\"trusted_endpoint_status\":\"unknown\",\"txid\":\"f93896ec-4054-407f-af9b-c37ecf32f0f2\",\"user\":{\"groups\":[],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"67.0.3396.99\",\"epkey\":\"EP18JX1A10AB102M2T2X\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"192.0.2.87\",\"is_encryption_enabled\":true,\"is_firewall_enabled\":true,\"is_password_set\":true,\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Mac OS X\",\"os_version\":\"10.14.1\",\"security_agents\":[]},\"adaptive_trust_assessments\":{\"more_secure_auth\":{\"detected_attack_detectors\":[\"USER_MARKED_FRAUD\"],\"features_version\":\"3.0\",\"model_version\":\"2022.07.19.001\",\"policy_enabled\":true,\"reason\":\"Low level of trust; detection of one or more known attack patterns\",\"trust_level\":\"LOW\"},\"remember_me\":{\"features_version\":\"3.0\",\"model_version\":\"2022.07.19.001\",\"policy_enabled\":false,\"reason\":\"Known Access IP\",\"trust_level\":\"NORMAL\"}},\"alias\":\"\",\"application\":{\"destination_name\":\"Microsoft 365\",\"key\":\"DIY231J8BR23QK4UKBY8\",\"name\":\"Acme Corp IdP\"},\"auth_device\":{\"ip\":\"203.0.113.75\",\"key\":\"DP5BJ05HI4WRBVI4Q7JF\",\"location\":{\"city\":\"Ann Arbor\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"My iPhone X (734-555-2342)\"},\"email\":\"kcskjtaw@example.com\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2048-02-13T18:56:20.351346+00:00\",\"ood_software\":null,\"passport_assessment\":{\"is_supported\":false,\"reason\":\"absent_health_report\"},\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2465232980,\"trusted_endpoint_status\":\"not trusted\",\"trusted_session_info\":{\"trusted_session_uuid\":\"e97b6fc1-c032-482d-b440-f5650af5f902\"},\"txid\":\"592b61e4-23f9-28d0-88ab-5006e50dccce\",\"user\":{\"groups\":[\"Duo Users\",\"CorpHQ Users\"],\"key\":\"DU3KC77WJ06Y5HIV7XKQ\",\"name\":\"kcskjtaw@example.com\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"access_device\":{\"browser\":\"Chrome\",\"browser_version\":\"128.0.6613.120\",\"epkey\":\"EP2ULFE874LMXBYJZE4D\",\"flash_version\":\"uninstalled\",\"hostname\":null,\"ip\":\"203.0.113.75\",\"is_encryption_enabled\":true,\"is_firewall_enabled\":true,\"is_password_set\":true,\"java_version\":\"uninstalled\",\"location\":{\"city\":\"Detroit\",\"country\":\"United States\",\"state\":\"Michigan\"},\"os\":\"Mac OS X\",\"os_version\":\"14.6.1\",\"security_agents\":[{\"security_agent\":\"cisco-amp\",\"version\":\"1.24.0.967\"}]},\"adaptive_trust_assessments\":{\"more_secure_auth\":{\"detected_attack_detectors\":[\"NOVEL_ASN\"],\"features_version\":\"3.0\",\"model_version\":\"2022.07.19.001\",\"policy_enabled\":false,\"preview_mode_enabled\":true,\"reason\":\"Low level of trust; detection of one or more known attack patterns\",\"trust_level\":\"LOW\"},\"remember_me\":{\"features_version\":\"3.0\",\"model_version\":\"2022.07.19.001\",\"policy_enabled\":false,\"reason\":\"Novel Access IP\",\"trust_level\":\"LOW\"}},\"alias\":\"\",\"application\":{\"key\":\"DI0P00LD4DX50O2VCAVK\",\"name\":\"Acme Corp\",\"destination_name\":\"Acme Intranet\"},\"auth_device\":{\"ip\":\"192.0.2.87\",\"key\":\"DP5IWE1PCVP00LD4D64A\",\"location\":{\"city\":\"Detroit\",\"country\":\"United States\",\"state\":\"Michigan\"},\"name\":\"Norben's Phone\"},\"email\":\"kcskjtaw@example.com\",\"event_type\":\"authentication\",\"factor\":\"duo_push\",\"isotimestamp\":\"2052-09-10T18:57:44.444611+00:00\",\"ood_software\":null,\"rbfs_triggered_attacks\":[{\"country_code_access\":null,\"country_code_auth\":null,\"detected_occurrences\":1,\"detector\":\"NOVEL_ASN\",\"shadow_mode\":false,\"suppressed\":null,\"threshold_occurrences\":1,\"threshold_time_frame\":null,\"unrealistic_travel_velocity\":null},{\"country_code_access\":\"US\",\"country_code_auth\":\"IN\",\"detected_occurrences\":1,\"detector\":\"NOVEL_ASN\",\"shadow_mode\":false,\"suppressed\":\"KNOWN_IP\",\"threshold_occurrences\":1,\"threshold_time_frame\":86400,\"unrealistic_travel_velocity\":3360}],\"reason\":\"user_approved\",\"result\":\"success\",\"timestamp\":2609607464,\"trusted_endpoint_status\":\"unknown\",\"txid\":\"22bca04f-6b43-4635-ae92-856842eb1108\",\"user\":{\"groups\":[],\"key\":\"DU53P00LD4D4C075WQGK\",\"name\":\"kcskjtaw\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "auth",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_duo-auth-default",
+    "event_count": 19,
+    "numeric_keyword_fields": [],
+    "package": "cisco_duo",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

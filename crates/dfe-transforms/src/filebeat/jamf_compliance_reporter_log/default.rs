@@ -370,9 +370,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("json.app_metric_info.cpu_percentage") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.host.cpu = new HashMap();\nctx.host.cpu.usage = Math.round(ctx.json.app_metric_info.cpu_percentage * 10) / 1000.0;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -467,9 +465,7 @@ impl Transform for Default {
                         && event.get_i64("json.header.time_seconds_epoch") != Some(0)
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.json.time_milliseconds = (long)ctx.json.header.time_seconds_epoch * 1000;\nif (ctx.json?.header?.time_milliseconds_offset != null && ctx.json.header.time_milliseconds_offset != 0) {\n  ctx.json.time_milliseconds = ctx.json.time_milliseconds + (long)ctx.json.header.time_milliseconds_offset;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1086,9 +1082,7 @@ impl Transform for Default {
                     })();
                     let _cond = { event.has_value("json.inet_family") };
                     if _cond {
-                        // Painless script
-                        // Source: Map map = new HashMap();\nmap.put('0', 'AF_UNSPEC');\nmap.put('1', 'AF_LOCAL');\nmap.put('AF_LOCAL', 'AF_UNIX');\nmap.put('2', 'AF_INET');\nmap.put('3', 'AF_ImapPLINK');\nmap.put('4', 'AF_PUP');\nmap.put('5', 'AF_CHAOS');\nmap.put('6', 'AF_NS');\nmap.put('7', 'AF_ISO');\nmap.put('AF_ISO', 'AF_OSI');\nmap.put('8', 'AF_ECmapA');\nmap.put('9', 'AF_DATAKIT');\nmap.put('10', 'AF_CCITT');\nmap.put('11', 'AF_SNA');\nmap.put('12', 'AF_DECnet');\nmap.put('13', 'AF_DLI');\nmap.put('14', 'AF_LAT');\nmap.put('15', 'AF_HYLINK');\nmap.put('16', 'AF_APPLETALK');\nmap.put('17', 'AF_ROUTE');\nmap.put('18', 'AF_LINK');\nmap.put('19', 'pseudo_AF_XTP');\nmap.put('20', 'AF_COIP');\nmap.put('21', 'AF_CNT');\nmap.put('22', 'pseudo_AF_RTIP');\nmap.put('23', 'AF_IPX');\nmap.put('24', 'AF_SIP');\nmap.put('25', 'pseudo_AF_PIP');\nctx.jamf_compliance_reporter.log.socket.unix.family = map.get(ctx.json.inet_family);\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -1454,9 +1448,7 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("json.inet_family") };
                     if _cond {
-                        // Painless script
-                        // Source: Map map = new HashMap();\nmap.put('0', 'AF_UNSPEC');\nmap.put('1', 'AF_LOCAL');\nmap.put('AF_LOCAL', 'AF_UNIX');\nmap.put('2', 'AF_INET');\nmap.put('3', 'AF_ImapPLINK');\nmap.put('4', 'AF_PUP');\nmap.put('5', 'AF_CHAOS');\nmap.put('6', 'AF_NS');\nmap.put('7', 'AF_ISO');\nmap.put('AF_ISO', 'AF_OSI');\nmap.put('8', 'AF_ECmapA');\nmap.put('9', 'AF_DATAKIT');\nmap.put('10', 'AF_CCITT');\nmap.put('11', 'AF_SNA');\nmap.put('12', 'AF_DECnet');\nmap.put('13', 'AF_DLI');\nmap.put('14', 'AF_LAT');\nmap.put('15', 'AF_HYLINK');\nmap.put('16', 'AF_APPLETALK');\nmap.put('17', 'AF_ROUTE');\nmap.put('18', 'AF_LINK');\nmap.put('19', 'pseudo_AF_XTP');\nmap.put('20', 'AF_COIP');\nmap.put('21', 'AF_CNT');\nmap.put('22', 'pseudo_AF_RTIP');\nmap.put('23', 'AF_IPX');\nmap.put('24', 'AF_SIP');\nmap.put('25', 'pseudo_AF_PIP');\nctx.jamf_compliance_reporter.log.socket.inet.family = map.get(ctx.json.inet_family);\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -1803,8 +1795,7 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
+                        // The pipeline's script, emitted as the runtime's equivalent
                         octal_string(
                             event,
                             &OctalString::new(
@@ -2103,8 +2094,7 @@ impl Transform for Default {
                     // End nested pipeline: "pipeline_exec_chain_child_object"
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
+                        // The pipeline's script, emitted as the runtime's equivalent
                         octal_string(
                             event,
                             &OctalString::new(
@@ -2417,9 +2407,7 @@ impl Transform for Default {
                             && event.get_str("json.exec_env.env.ARCH") != Some("")
                     };
                     if _cond {
-                        // Painless script
-                        // Source: for (entry in params.replacements.entrySet()) {\n  if (ctx.json.exec_env.env.ARCH == entry.getKey()) {\n    ctx.json.exec_env.env.put('ARCH', entry.getValue());\n  }\n}\nif (!params.allowed.contains(ctx.json.exec_env.env.ARCH)) {\n  return;\n}\nif (ctx.host == null) {\n  HashMap hm = new HashMap();\n  ctx.put('host', hm);\n}\nif (ctx.host.os == null) {\n  HashMap hm = new HashMap();\n  ctx.host.put('os', hm);\n}\nctx.host.os.put('type', ctx.json.exec_env.env.ARCH);\nctx.json.exec_env.env.remove('ARCH');\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -2463,9 +2451,7 @@ impl Transform for Default {
                             "jamf_compliance_reporter.log.exec_env.env.compiled",
                         )?;
                     }
-                    // Painless script
-                    // Source: def args_list = new ArrayList();\nctx.process.args = args_list;\nif (ctx.json?.args != null) {\n  for (Map.Entry m : ctx.json.args.entrySet()) {\n    ctx.process.args.add(m.getValue());\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2474,8 +2460,7 @@ impl Transform for Default {
                     )?;
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
+                        // The pipeline's script, emitted as the runtime's equivalent
                         octal_string(
                             event,
                             &OctalString::new(
@@ -3509,8 +3494,7 @@ impl Transform for Default {
                     })();
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: int temp = (int)ctx.json?.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
+                        // The pipeline's script, emitted as the runtime's equivalent
                         octal_string(
                             event,
                             &OctalString::new(
@@ -3589,9 +3573,7 @@ impl Transform for Default {
                             "jamf_compliance_reporter.log.exec_chain_parent.uuid",
                         )?;
                     }
-                    // Painless script
-                    // Source: def args_list = new ArrayList();\nctx.process.args = args_list;\nif (ctx.json?.args != null) {\n  for (Map.Entry m : ctx.json.args.entrySet()) {\n    ctx.process.args.add(m.getValue());\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -4545,8 +4527,7 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
+                        // The pipeline's script, emitted as the runtime's equivalent
                         octal_string(
                             event,
                             &OctalString::new(
@@ -9609,9 +9590,7 @@ impl Transform for Default {
                     if event.has_value("json.texts") {
                         event.rename("json.texts", "jamf_compliance_reporter.log.texts")?;
                     }
-                    // Painless script
-                    // Source: def args_list = new ArrayList();\nctx.process.args = args_list;\nif (ctx.json?.args != null) {\n  for (Map.Entry m : ctx.json.args.entrySet()) {\n    ctx.process.args.add(m.getValue());\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -10868,8 +10847,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

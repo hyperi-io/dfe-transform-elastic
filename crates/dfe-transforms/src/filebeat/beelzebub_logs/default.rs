@@ -261,9 +261,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_string()))
             };
             if _cond {
-                // Painless script
-                // Source: ctx.http.request.body.bytes = ctx.http.request.body.content.length();
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -430,8 +428,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_object())
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def lowercaseMap = [:];\nfor(def entry : ctx.json.event.Headers.entrySet()){\n  lowercaseMap.put(entry.getKey().toLowerCase(), entry.getValue());\n}\nctx.json.event.Headers = lowercaseMap;\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 rewrite_keys(
                     event,
                     &RewriteKeys::new(
@@ -620,8 +617,7 @@ impl Transform for Default {
 
             event.rename("json", "beelzebub")?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

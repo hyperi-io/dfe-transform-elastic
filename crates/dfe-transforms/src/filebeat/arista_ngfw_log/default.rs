@@ -32,13 +32,10 @@ impl Transform for Default {
                     }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: if (ctx.log?.syslog?.priority != null) {\n  def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  facility['code'] = ctx.log.syslog.priority>>3;\n  ctx.log.syslog['facility'] = facility;\n}\n
+            // The pipeline's script, emitted as the runtime's equivalent
             syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
 
-            // Painless script
-            // Source: if (ctx.log?.syslog?.facility?.code == null || !params.containsKey((ctx.log.syslog.facility.code).toString())) {\n  return;\n}\nctx.log.syslog.facility.name = params[(ctx.log.syslog.facility.code).toString()];
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -49,9 +46,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: if (ctx.log?.syslog?.severity?.code == null || !params.containsKey((ctx.log.syslog.severity.code).toString())) {\n  return;\n}\nctx.log.syslog.severity.name = params[(ctx.log.syslog.severity.code).toString()];
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -82,7 +77,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // SKIPPED: condition not transpiled: Collection supportedClasses = [ 'class com.untangle.uvm.event.AdminLoginEvent', 'class com.untangle.app.firewall.FirewallEvent', 'class com.untangle.app.http.HttpRequestEvent', 'class com.untangle.app ...
+            // SKIPPED: the pipeline's condition has no equivalent here
             #[allow(unreachable_code, unused_variables)]
             if false {
                 return Ok(TransformResult::Drop);
@@ -103,9 +98,7 @@ impl Transform for Default {
                 if event.has_value("arista.clientAddress") {
                     event.rename("arista.clientAddress", "source.ip")?;
                 }
-                // Painless script
-                // Source: if (ctx?.event == null) {\n  Map map = new HashMap();\n  ctx.put('event', map);\n} if (ctx.arista?.succeeded == null || !params.containsKey((ctx.arista.succeeded).toString())) {\n  return;\n} ctx.event.category = params.get((ctx.arista.succeeded).toString()).get('category').clone(); ctx.event.kind = params.get((ctx.arista.succeeded).toString()).get('kind'); ctx.event.outcome = params.get((ctx.arista.succeeded).toString()).get('outcome'); ctx.event.type = params.get((ctx.arista.succeeded).toString()).get('type').clone(); ctx.event.provider = params.get((ctx.arista.succeeded).toString()).get('provider'); ctx.arista.remove('succeeded');
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -200,9 +193,7 @@ impl Transform for Default {
                         && event.has_value("arista.cpu.user.pct")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: if (ctx.arista?.cpu?.total == null) {\n  Map map = new HashMap();\n  ctx.arista.cpu.put('total', map);\n}\nif (ctx.arista?.cpu?.system?.pct != null && ctx.arista?.cpu?.user?.pct != null) {\n  ctx.arista.cpu.total.pct = (ctx.arista.cpu.system.pct + ctx.arista.cpu.user.pct);\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1161,9 +1152,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx?.event == null) {\n  Map map = new HashMap();\n  ctx.put('event', map);\n}\nif (ctx.arista?.blocked != null) {\n  if (ctx.arista.blocked) {\n    ctx.event.outcome = 'failure';\n    ctx.event.type = 'denied';\n  } else {\n    ctx.event.outcome = 'success';\n    ctx.event.type = 'allowed';\n  }\n}\nif (ctx.arista?.filterPrefix != null) {\n  if (ctx.arista.filterPrefix == 'filter_blocked') {\n    ctx.event.outcome = 'failure';\n    ctx.event.type = 'denied';\n  } else if (ctx.arista.filterPrefix == 'invalid_blocked') {\n    ctx.event.outcome = 'failure';\n    ctx.event.type = 'denied';\n  } else if (ctx.arista.filterPrefix == 'shield_blocked') {\n    ctx.event.outcome = 'failure';\n    ctx.event.type = 'denied';\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -1338,9 +1327,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.start") && event.has_value("event.end") };
             if _cond {
-                // Painless script
-                // Source: Instant eventstart = ZonedDateTime.parse(ctx.event?.start).toInstant(); Instant eventend = ZonedDateTime.parse(ctx.event?.end).toInstant(); ctx.event['duration'] = ChronoUnit.NANOS.between(eventstart, eventend);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1349,9 +1336,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: if (ctx?.arista?.class == null || !params.containsKey(ctx.arista.class)) {\n  return;\n} ctx.event.kind = params.get(ctx.arista.class).get('kind'); ctx.event.category = params.get(ctx.arista.class).get('category').clone(); ctx.event.type = params.get(ctx.arista.class).get('type').clone(); ctx.event.provider = params.get(ctx.arista.class).get('provider'); if (ctx?.event?.outcome == null) {\n  return;\n} if (ctx.event.category.contains('network') || ctx.event.category.contains('intrusion_detection')) {\n  if (ctx.event.outcome == 'success') {\n    if (ctx.event?.type == null || !ctx.event.type.contains('allowed')) {\n      ctx.event.type.add('allowed');\n    }\n  }\n  if (ctx.event.outcome == 'failure') {\n    if (ctx.event?.type == null || !ctx.event.type.contains('denied')) {\n      ctx.event.type.add('denied');\n    }\n  }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1389,8 +1374,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: if (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nif (ctx.source.bytes != null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes\n} else if (ctx.source.bytes == null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.destination.bytes\n} else if (ctx.source.bytes != null && ctx.destination.bytes == null) {\n  ctx.network.bytes = ctx.source.bytes\n}\n
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions(event, &["bytes"]);
                     Ok(())
                 })();
@@ -1403,8 +1387,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: if (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nif (ctx.source.packets != null && ctx.destination.packets != null) {\n  ctx.network.packets = ctx.source.packets + ctx.destination.packets\n} else if (ctx.source.packets == null && ctx.destination.packets != null) {\n  ctx.network.packets = ctx.destination.packets\n} else if (ctx.source.packets != null && ctx.destination.packets == null) {\n  ctx.network.packets = ctx.source.packets\n}\n
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions(event, &["packets"]);
                     Ok(())
                 })();
@@ -1412,9 +1395,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.ip") && event.has_value("destination.ip") };
             if _cond {
-                // Painless script
-                // Source: boolean isPrivateCIDR(def ip) {\n  CIDR class_a_network = new CIDR('10.0.0.0/8');\n  CIDR class_b_network = new CIDR('172.16.0.0/12');\n  CIDR class_c_network = new CIDR('192.168.0.0/16');\n\n  try {\n    return class_a_network.contains(ip) || class_b_network.contains(ip) || class_c_network.contains(ip);\n  } catch (IllegalArgumentException e) {\n    return false;\n  }\n}\ntry {\n  if (ctx?.network == null) {\n    Map map = new HashMap();\n    ctx.put('network', map);\n  }\n\n  if (!isPrivateCIDR(ctx.source.ip) && isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'inbound';\n  } else if (isPrivateCIDR(ctx.source.ip) && !isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'outbound';\n  } else if (isPrivateCIDR(ctx.source.ip) && isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'internal';\n  } else if (!isPrivateCIDR(ctx.source.ip) && !isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'external';\n  } else {\n    ctx.network.direction = 'unknown';\n  }\n}\ncatch (Exception e) {\n  ctx.network.direction = null;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1499,9 +1480,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx.observer?.egress?.interface?.id == \"1\") {\n  if (ctx._conf?.interface_id_1_alias != null) {\n    ctx.observer.egress.interface.alias = ctx._conf.interface_id_1_alias;\n  }\n  if (ctx._conf?.interface_id_1_name != null) {\n    ctx.observer.egress.interface.name = ctx._conf.interface_id_1_name;\n  }\n} else if (ctx?.observer?.egress?.interface?.id == \"2\") {\n  if (ctx._conf?.interface_id_2_alias != null) {\n    ctx.observer.egress.interface.alias = ctx._conf.interface_id_2_alias;\n  }\n  if (ctx._conf?.interface_id_2_name != null) {\n    ctx.observer.egress.interface.name = ctx._conf.interface_id_2_name;\n  }\n}\nif (ctx.observer?.ingress?.interface?.id == \"1\") {\n  if (ctx._conf?.interface_id_1_alias != null) {\n    ctx.observer.ingress.interface.alias = ctx._conf.interface_id_1_alias;\n  }\n  if (ctx._conf?.interface_id_1_name != null) {\n    ctx.observer.ingress.interface.name = ctx._conf.interface_id_1_name;\n  }\n} else if (ctx.observer?.ingress?.interface?.id == \"2\") {\n  if (ctx._conf?.interface_id_2_alias != null) {\n    ctx.observer.ingress.interface.alias = ctx._conf.interface_id_2_alias;\n  }\n  if (ctx._conf?.interface_id_2_name != null) {\n    ctx.observer.ingress.interface.name = ctx._conf.interface_id_2_name;\n  }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

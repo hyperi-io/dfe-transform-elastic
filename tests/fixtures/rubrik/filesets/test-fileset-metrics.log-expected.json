@@ -1,0 +1,55 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "kind": "metric",
+        "original": "{\"archiveStorage\":0,\"totalSnapshots\":6,\"filesetName\":\"Linux\",\"osType\":\"LINUX\",\"localStorage\":1286184885,\"archiveSnapshots\":0,\"complianceStatus\":\"OUT_OF_COMPLIANCE\", \"clusterID\": \"2a3c27d1-a042-4bfa-be10-78e16cafe888\", \"clusterName\": \"401-rubrik\", \"effectiveSlaDomainName\": \"Bronze\", \"effectiveSlaDomainID\": \"5c981d21-e01b-5fab-b28b-531392e51a3b\"}"
+      },
+      "rubrik": {
+        "cluster": {
+          "id": "2a3c27d1-a042-4bfa-be10-78e16cafe888",
+          "name": "401-rubrik"
+        },
+        "effective_sla_domain": {
+          "id": "5c981d21-e01b-5fab-b28b-531392e51a3b",
+          "name": "Bronze"
+        },
+        "fileset": {
+          "archive_snapshots": {
+            "count": 0
+          },
+          "archive_storage": {
+            "bytes": 0
+          },
+          "compliance_status": "OUT_OF_COMPLIANCE",
+          "host_os_type": "LINUX",
+          "local_storage": {
+            "bytes": 1286184885
+          },
+          "name": "Linux",
+          "total_snapshots": {
+            "count": 6
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"archiveStorage\":0,\"totalSnapshots\":6,\"filesetName\":\"Linux\",\"osType\":\"LINUX\",\"localStorage\":1286184885,\"archiveSnapshots\":0,\"complianceStatus\":\"OUT_OF_COMPLIANCE\", \"clusterID\": \"2a3c27d1-a042-4bfa-be10-78e16cafe888\", \"clusterName\": \"401-rubrik\", \"effectiveSlaDomainName\": \"Bronze\", \"effectiveSlaDomainID\": \"5c981d21-e01b-5fab-b28b-531392e51a3b\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "filesets",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-rubrik-filesets-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "rubrik",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

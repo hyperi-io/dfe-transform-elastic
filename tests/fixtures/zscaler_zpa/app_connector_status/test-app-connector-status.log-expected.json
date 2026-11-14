@@ -1,0 +1,129 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-07-03T05:17:22.000Z",
+      "client": {
+        "nat": {
+          "ip": "10.26.137.145"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "package"
+        ],
+        "kind": "event",
+        "original": "{\"LogTimestamp\":\"Wed Jul 3 05:17:22 2047\",\"Customer\":\"Customer Name\",\"SessionID\":\"0F75Hkn6xFpcICZNJsXR\",\"SessionType\":\"ZPN_ASSISTANT_BROKER_CONTROL\",\"SessionStatus\":\"ZPN_STATUS_AUTHENTICATED\",\"Version\":\"19.20.3\",\"Platform\":\"el7\",\"ZEN\":\"US-NY-8179\",\"Connector\":\"Some App Connector\",\"ConnectorGroup\":\"Some App Connector Group\",\"PrivateIP\":\"10.186.49.1\",\"PublicIP\":\"0.0.0.0\",\"Latitude\":47,\"Longitude\":-122,\"CountryCode\":\"\",\"TimestampAuthentication\":\"2047-06-27T05:05:23.348Z\",\"TimestampUnAuthentication\":\"\",\"CPUUtilization\":1,\"MemUtilization\":20,\"ServiceCount\":2,\"InterfaceDefRoute\":\"eth0\",\"DefRouteGW\":\"10.26.137.145\",\"PrimaryDNSResolver\":\"203.0.113.248\",\"HostStartTime\":\"2396842795\",\"ConnectorStartTime\":\"2439532805\",\"NumOfInterfaces\":2,\"BytesRxInterface\":319831966346,\"PacketsRxInterface\":1617569938,\"ErrorsRxInterface\":0,\"DiscardsRxInterface\":0,\"BytesTxInterface\":192958782635,\"PacketsTxInterface\":1797471190,\"ErrorsTxInterface\":0,\"DiscardsTxInterface\":0,\"TotalBytesRx\":10902554,\"TotalBytesTx\":48931771}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "cpu": {
+          "usage": 1
+        },
+        "network": {
+          "egress": {
+            "bytes": 48931771
+          },
+          "ingress": {
+            "bytes": 10902554
+          }
+        }
+      },
+      "observer": {
+        "geo": {
+          "location": {
+            "lat": 47,
+            "lon": -122
+          }
+        },
+        "ip": [
+          "0.0.0.0"
+        ],
+        "os": {
+          "platform": "el7"
+        },
+        "type": "forwarder",
+        "version": "19.20.3"
+      },
+      "organization": {
+        "name": "Customer Name"
+      },
+      "related": {
+        "ip": [
+          "10.26.137.145",
+          "0.0.0.0",
+          "10.186.49.1",
+          "203.0.113.248"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "zscaler_zpa": {
+        "app_connector_status": {
+          "connector": {
+            "group": "Some App Connector Group",
+            "name": "Some App Connector"
+          },
+          "connector_start_time": "2047-04-22T08:00:05.000Z",
+          "host_start_time": "2045-12-14T05:39:55.000Z",
+          "interface": {
+            "name": "eth0",
+            "received": {
+              "bytes": 319831966346,
+              "discards": 0,
+              "errors": 0,
+              "packets": 1617569938
+            },
+            "transmitted": {
+              "bytes": 192958782635,
+              "discards": 0,
+              "errors": 0,
+              "packets": 1797471190
+            }
+          },
+          "memory": {
+            "utilization": 20
+          },
+          "num_of_interfaces": 2,
+          "primary_dns_resolver": "203.0.113.248",
+          "private_ip": "10.186.49.1",
+          "service": {
+            "count": 2
+          },
+          "session": {
+            "id": "0F75Hkn6xFpcICZNJsXR",
+            "status": "ZPN_STATUS_AUTHENTICATED",
+            "type": "ZPN_ASSISTANT_BROKER_CONTROL"
+          },
+          "timestamp": {
+            "authentication": "2047-06-27T05:05:23.348Z"
+          },
+          "zen": "US-NY-8179"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"LogTimestamp\":\"Wed Jul 3 05:17:22 2047\",\"Customer\":\"Customer Name\",\"SessionID\":\"0F75Hkn6xFpcICZNJsXR\",\"SessionType\":\"ZPN_ASSISTANT_BROKER_CONTROL\",\"SessionStatus\":\"ZPN_STATUS_AUTHENTICATED\",\"Version\":\"19.20.3\",\"Platform\":\"el7\",\"ZEN\":\"US-NY-8179\",\"Connector\":\"Some App Connector\",\"ConnectorGroup\":\"Some App Connector Group\",\"PrivateIP\":\"10.186.49.1\",\"PublicIP\":\"0.0.0.0\",\"Latitude\":47,\"Longitude\":-122,\"CountryCode\":\"\",\"TimestampAuthentication\":\"2047-06-27T05:05:23.348Z\",\"TimestampUnAuthentication\":\"\",\"CPUUtilization\":1,\"MemUtilization\":20,\"ServiceCount\":2,\"InterfaceDefRoute\":\"eth0\",\"DefRouteGW\":\"10.26.137.145\",\"PrimaryDNSResolver\":\"203.0.113.248\",\"HostStartTime\":\"2396842795\",\"ConnectorStartTime\":\"2439532805\",\"NumOfInterfaces\":2,\"BytesRxInterface\":319831966346,\"PacketsRxInterface\":1617569938,\"ErrorsRxInterface\":0,\"DiscardsRxInterface\":0,\"BytesTxInterface\":192958782635,\"PacketsTxInterface\":1797471190,\"ErrorsTxInterface\":0,\"DiscardsTxInterface\":0,\"TotalBytesRx\":10902554,\"TotalBytesTx\":48931771}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "app_connector_status",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zscaler_zpa-app_connector_status-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zscaler_zpa",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-01-17T06:42:13.922Z",
+        "id": "9f059ad1-88d3-457b-81ec-12412325ba85",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2046-05-09T18:56:06.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 1,
+          "pattern": "[mutex:name = 'flPGdvyhPykxGvhDOAZnU']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 50,
+          "standard_id": "indicator--dd9ffd8c-0b03-5ee3-8fb7-e939db6c353c",
+          "valid_from": "2045-05-09T18:56:06.000Z",
+          "valid_until": "2046-05-09T18:56:06.000Z"
+        },
+        "observable": {
+          "mutex": {
+            "entity_type": "Mutex",
+            "id": "27323131-df9e-4996-8681-3c1fb3a2aea5",
+            "name": "flPGdvyhPykxGvhDOAZnU",
+            "standard_id": "mutex--9c83da8c-f1d8-529e-80d4-7cc8cc16d8b1",
+            "value": "flPGdvyhPykxGvhDOAZnU"
+          }
+        }
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "office",
+        "turla",
+        "sofacy",
+        "apt28",
+        "0day",
+        "fireeye",
+        "netwire",
+        "gamefish"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Medium",
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "modified_at": "2051-01-17T08:01:28.313Z",
+          "name": "flPGdvyhPykxGvhDOAZnU",
+          "provider": "AlienVault",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/9f059ad1-88d3-457b-81ec-12412325ba85",
+          "type": "mutex"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 30,
+      "created": "2051-01-17T06:42:13.922Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "AlienVault"
+      },
+      "description": "",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "9f059ad1-88d3-457b-81ec-12412325ba85",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T08:01:28.313Z",
+      "name": "flPGdvyhPykxGvhDOAZnU",
+      "objectLabel": [
+        {
+          "value": "office"
+        },
+        {
+          "value": "turla"
+        },
+        {
+          "value": "sofacy"
+        },
+        {
+          "value": "apt28"
+        },
+        {
+          "value": "0day"
+        },
+        {
+          "value": "fireeye"
+        },
+        {
+          "value": "netwire"
+        },
+        {
+          "value": "gamefish"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:CLEAR",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [
+          {
+            "node": {
+              "entity_type": "Mutex",
+              "id": "27323131-df9e-4996-8681-3c1fb3a2aea5",
+              "name": "flPGdvyhPykxGvhDOAZnU",
+              "observable_value": "flPGdvyhPykxGvhDOAZnU",
+              "standard_id": "mutex--9c83da8c-f1d8-529e-80d4-7cc8cc16d8b1"
+            }
+          }
+        ],
+        "pageInfo": {
+          "globalCount": 1
+        }
+      },
+      "pattern": "[mutex:name = 'flPGdvyhPykxGvhDOAZnU']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--dd9ffd8c-0b03-5ee3-8fb7-e939db6c353c",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2045-05-09T18:56:06.000Z",
+      "valid_until": "2046-05-09T18:56:06.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "Mutex",
+      "x_opencti_score": 50
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_opencti-indicator-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_opencti",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

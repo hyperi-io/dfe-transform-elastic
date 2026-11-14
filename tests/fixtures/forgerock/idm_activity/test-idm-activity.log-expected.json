@@ -1,0 +1,234 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-11-01T17:55:08.523Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "a9a32d9e-7029-45e6-b581-eafb5d502273-259113",
+        "original": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-259113\",\"changedFields\":[],\"eventName\":\"activity\",\"level\":\"INFO\",\"message\":\"\",\"objectId\":\"internal/role/9862fb3e-8f2d-402e-9502-1e97e2fcb60f\",\"operation\":\"PATCH\",\"passwordChanged\":false,\"revision\":\"00000000478fd92b\",\"runAs\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T17:55:08.523Z\",\"topic\":\"activity\",\"transactionId\":\"1667325297350-5f3959fa550528a7ef3d-23359/0\",\"userId\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\"},\"timestamp\":\"2050-11-01T17:55:08.527382286Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}",
+        "outcome": "success"
+      },
+      "forgerock": {
+        "eventName": "activity",
+        "level": "INFO",
+        "objectId": "internal/role/9862fb3e-8f2d-402e-9502-1e97e2fcb60f",
+        "operation": "PATCH",
+        "passwordChanged": false,
+        "revision": "00000000478fd92b",
+        "source": "audit",
+        "topic": "activity"
+      },
+      "observer": {
+        "vendor": "ForgeRock Identity Platform"
+      },
+      "transaction": {
+        "id": "1667325297350-5f3959fa550528a7ef3d-23359/0"
+      },
+      "user": {
+        "effective": {
+          "id": "a2ff86fb-883c-4016-a31b-d84ecad1f0ea"
+        },
+        "id": "a2ff86fb-883c-4016-a31b-d84ecad1f0ea"
+      }
+    },
+    {
+      "@timestamp": "2050-11-01T18:02:39.806Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "a9a32d9e-7029-45e6-b581-eafb5d502273-268903",
+        "original": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-268903\",\"changedFields\":[],\"eventName\":\"activity\",\"level\":\"INFO\",\"message\":\"create\",\"objectId\":\"managed/alpha_organization/c4eb0cc0-f792-4264-bc91-ed0c1da8fe89\",\"operation\":\"CREATE\",\"passwordChanged\":false,\"revision\":\"00000000478fd92c\",\"runAs\":\"6457c2df-d5c6-4d89-b655-21dbfe3a1eb8\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T18:02:39.806Z\",\"topic\":\"activity\",\"transactionId\":\"1667325742545-ee41d6454a6b4a815b69-24798/0\",\"userId\":\"6457c2df-d5c6-4d89-b655-21dbfe3a1eb8\"},\"timestamp\":\"2050-11-01T18:02:39.808577423Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}",
+        "outcome": "success"
+      },
+      "forgerock": {
+        "eventName": "activity",
+        "level": "INFO",
+        "message": "create",
+        "objectId": "managed/alpha_organization/c4eb0cc0-f792-4264-bc91-ed0c1da8fe89",
+        "operation": "CREATE",
+        "passwordChanged": false,
+        "revision": "00000000478fd92c",
+        "source": "audit",
+        "topic": "activity"
+      },
+      "observer": {
+        "vendor": "ForgeRock Identity Platform"
+      },
+      "transaction": {
+        "id": "1667325742545-ee41d6454a6b4a815b69-24798/0"
+      },
+      "user": {
+        "effective": {
+          "id": "6457c2df-d5c6-4d89-b655-21dbfe3a1eb8"
+        },
+        "id": "6457c2df-d5c6-4d89-b655-21dbfe3a1eb8"
+      }
+    },
+    {
+      "@timestamp": "2050-11-01T18:02:39.882Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "a9a32d9e-7029-45e6-b581-eafb5d502273-268906",
+        "original": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-268906\",\"changedFields\":[],\"eventName\":\"relationship_created\",\"level\":\"INFO\",\"message\":\"Relationship originating from managed/alpha_organization/c4eb0cc0-f792-4264-bc91-ed0c1da8fe89 via the relationship field parent and referencing managed/alpha_organization/d3fd160b-6b9c-426a-9cb9-7dcc74b44043  was created.\",\"objectId\":\"managed/alpha_organization/c4eb0cc0-f792-4264-bc91-ed0c1da8fe89/parent/cb61ac64-d2fa-49ca-8de3-f4a7e7e3697e\",\"operation\":\"CREATE\",\"passwordChanged\":false,\"revision\":\"00000000478fd92d\",\"runAs\":\"6457c2df-d5c6-4d89-b655-21dbfe3a1eb8\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T18:02:39.882Z\",\"topic\":\"activity\",\"transactionId\":\"1667325742545-ee41d6454a6b4a815b69-24798/0\",\"userId\":\"6457c2df-d5c6-4d89-b655-21dbfe3a1eb8\"},\"timestamp\":\"2050-11-01T18:02:39.885141134Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}",
+        "outcome": "success"
+      },
+      "forgerock": {
+        "eventName": "relationship_created",
+        "level": "INFO",
+        "message": "Relationship originating from managed/alpha_organization/c4eb0cc0-f792-4264-bc91-ed0c1da8fe89 via the relationship field parent and referencing managed/alpha_organization/d3fd160b-6b9c-426a-9cb9-7dcc74b44043  was created.",
+        "objectId": "managed/alpha_organization/c4eb0cc0-f792-4264-bc91-ed0c1da8fe89/parent/cb61ac64-d2fa-49ca-8de3-f4a7e7e3697e",
+        "operation": "CREATE",
+        "passwordChanged": false,
+        "revision": "00000000478fd92d",
+        "source": "audit",
+        "topic": "activity"
+      },
+      "observer": {
+        "vendor": "ForgeRock Identity Platform"
+      },
+      "transaction": {
+        "id": "1667325742545-ee41d6454a6b4a815b69-24798/0"
+      },
+      "user": {
+        "effective": {
+          "id": "6457c2df-d5c6-4d89-b655-21dbfe3a1eb8"
+        },
+        "id": "6457c2df-d5c6-4d89-b655-21dbfe3a1eb8"
+      }
+    },
+    {
+      "@timestamp": "2050-11-01T18:07:23.147Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "a9a32d9e-7029-45e6-b581-eafb5d502273-276027",
+        "original": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-276027\",\"changedFields\":[],\"eventName\":\"activity\",\"level\":\"INFO\",\"message\":\"Action: relationshipNotification\",\"objectId\":\"managed/alpha_user/3cc62d50-6a50-474d-8a0c-46157ec6863e\",\"operation\":\"relationshipNotification\",\"passwordChanged\":false,\"revision\":null,\"runAs\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T18:07:23.147Z\",\"topic\":\"activity\",\"transactionId\":\"1667326038630-ee41d6454a6b4a815b69-25547/0\",\"userId\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\"},\"timestamp\":\"2050-11-01T18:07:23.149398175Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}",
+        "outcome": "success"
+      },
+      "forgerock": {
+        "eventName": "activity",
+        "level": "INFO",
+        "message": "Action: relationshipNotification",
+        "objectId": "managed/alpha_user/3cc62d50-6a50-474d-8a0c-46157ec6863e",
+        "operation": "relationshipNotification",
+        "passwordChanged": false,
+        "source": "audit",
+        "topic": "activity"
+      },
+      "observer": {
+        "vendor": "ForgeRock Identity Platform"
+      },
+      "transaction": {
+        "id": "1667326038630-ee41d6454a6b4a815b69-25547/0"
+      },
+      "user": {
+        "effective": {
+          "id": "a2ff86fb-883c-4016-a31b-d84ecad1f0ea"
+        },
+        "id": "a2ff86fb-883c-4016-a31b-d84ecad1f0ea"
+      }
+    },
+    {
+      "@timestamp": "2050-11-01T18:07:23.407Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "a9a32d9e-7029-45e6-b581-eafb5d502273-276057",
+        "original": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-276057\",\"changedFields\":[],\"eventName\":\"activity\",\"level\":\"INFO\",\"message\":\"\",\"objectId\":\"managed/alpha_organization/603b187a-3707-4687-88b8-91fa5a01f8ef\",\"operation\":\"PATCH\",\"passwordChanged\":false,\"revision\":\"00000000478fd92e\",\"runAs\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T18:07:23.407Z\",\"topic\":\"activity\",\"transactionId\":\"1667326038630-ee41d6454a6b4a815b69-25547/0\",\"userId\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\"},\"timestamp\":\"2050-11-01T18:07:23.409398365Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}",
+        "outcome": "success"
+      },
+      "forgerock": {
+        "eventName": "activity",
+        "level": "INFO",
+        "objectId": "managed/alpha_organization/603b187a-3707-4687-88b8-91fa5a01f8ef",
+        "operation": "PATCH",
+        "passwordChanged": false,
+        "revision": "00000000478fd92e",
+        "source": "audit",
+        "topic": "activity"
+      },
+      "observer": {
+        "vendor": "ForgeRock Identity Platform"
+      },
+      "transaction": {
+        "id": "1667326038630-ee41d6454a6b4a815b69-25547/0"
+      },
+      "user": {
+        "effective": {
+          "id": "a2ff86fb-883c-4016-a31b-d84ecad1f0ea"
+        },
+        "id": "a2ff86fb-883c-4016-a31b-d84ecad1f0ea"
+      }
+    },
+    {
+      "@timestamp": "2050-11-01T18:07:23.367Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "a9a32d9e-7029-45e6-b581-eafb5d502273-276055",
+        "original": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-276055\",\"changedFields\":[],\"eventName\":\"activity\",\"level\":\"INFO\",\"message\":\"Action: relationshipNotification\",\"objectId\":\"managed/alpha_user/e432bfb7-fde0-46ff-b6a1-19ddb558c100\",\"operation\":\"relationshipNotification\",\"passwordChanged\":false,\"revision\":null,\"runAs\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T18:07:23.367Z\",\"topic\":\"activity\",\"transactionId\":\"1667326038630-ee41d6454a6b4a815b69-25547/0\",\"userId\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\"},\"timestamp\":\"2050-11-01T18:07:23.369529335Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}",
+        "outcome": "success"
+      },
+      "forgerock": {
+        "eventName": "activity",
+        "level": "INFO",
+        "message": "Action: relationshipNotification",
+        "objectId": "managed/alpha_user/e432bfb7-fde0-46ff-b6a1-19ddb558c100",
+        "operation": "relationshipNotification",
+        "passwordChanged": false,
+        "source": "audit",
+        "topic": "activity"
+      },
+      "observer": {
+        "vendor": "ForgeRock Identity Platform"
+      },
+      "transaction": {
+        "id": "1667326038630-ee41d6454a6b4a815b69-25547/0"
+      },
+      "user": {
+        "effective": {
+          "id": "a2ff86fb-883c-4016-a31b-d84ecad1f0ea"
+        },
+        "id": "a2ff86fb-883c-4016-a31b-d84ecad1f0ea"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-259113\",\"changedFields\":[],\"eventName\":\"activity\",\"level\":\"INFO\",\"message\":\"\",\"objectId\":\"internal/role/9862fb3e-8f2d-402e-9502-1e97e2fcb60f\",\"operation\":\"PATCH\",\"passwordChanged\":false,\"revision\":\"00000000478fd92b\",\"runAs\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T17:55:08.523Z\",\"topic\":\"activity\",\"transactionId\":\"1667325297350-5f3959fa550528a7ef3d-23359/0\",\"userId\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\"},\"timestamp\":\"2050-11-01T17:55:08.527382286Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}"
+    },
+    {
+      "message": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-268903\",\"changedFields\":[],\"eventName\":\"activity\",\"level\":\"INFO\",\"message\":\"create\",\"objectId\":\"managed/alpha_organization/c4eb0cc0-f792-4264-bc91-ed0c1da8fe89\",\"operation\":\"CREATE\",\"passwordChanged\":false,\"revision\":\"00000000478fd92c\",\"runAs\":\"6457c2df-d5c6-4d89-b655-21dbfe3a1eb8\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T18:02:39.806Z\",\"topic\":\"activity\",\"transactionId\":\"1667325742545-ee41d6454a6b4a815b69-24798/0\",\"userId\":\"6457c2df-d5c6-4d89-b655-21dbfe3a1eb8\"},\"timestamp\":\"2050-11-01T18:02:39.808577423Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}"
+    },
+    {
+      "message": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-268906\",\"changedFields\":[],\"eventName\":\"relationship_created\",\"level\":\"INFO\",\"message\":\"Relationship originating from managed/alpha_organization/c4eb0cc0-f792-4264-bc91-ed0c1da8fe89 via the relationship field parent and referencing managed/alpha_organization/d3fd160b-6b9c-426a-9cb9-7dcc74b44043  was created.\",\"objectId\":\"managed/alpha_organization/c4eb0cc0-f792-4264-bc91-ed0c1da8fe89/parent/cb61ac64-d2fa-49ca-8de3-f4a7e7e3697e\",\"operation\":\"CREATE\",\"passwordChanged\":false,\"revision\":\"00000000478fd92d\",\"runAs\":\"6457c2df-d5c6-4d89-b655-21dbfe3a1eb8\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T18:02:39.882Z\",\"topic\":\"activity\",\"transactionId\":\"1667325742545-ee41d6454a6b4a815b69-24798/0\",\"userId\":\"6457c2df-d5c6-4d89-b655-21dbfe3a1eb8\"},\"timestamp\":\"2050-11-01T18:02:39.885141134Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}"
+    },
+    {
+      "message": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-276027\",\"changedFields\":[],\"eventName\":\"activity\",\"level\":\"INFO\",\"message\":\"Action: relationshipNotification\",\"objectId\":\"managed/alpha_user/3cc62d50-6a50-474d-8a0c-46157ec6863e\",\"operation\":\"relationshipNotification\",\"passwordChanged\":false,\"revision\":null,\"runAs\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T18:07:23.147Z\",\"topic\":\"activity\",\"transactionId\":\"1667326038630-ee41d6454a6b4a815b69-25547/0\",\"userId\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\"},\"timestamp\":\"2050-11-01T18:07:23.149398175Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}"
+    },
+    {
+      "message": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-276057\",\"changedFields\":[],\"eventName\":\"activity\",\"level\":\"INFO\",\"message\":\"\",\"objectId\":\"managed/alpha_organization/603b187a-3707-4687-88b8-91fa5a01f8ef\",\"operation\":\"PATCH\",\"passwordChanged\":false,\"revision\":\"00000000478fd92e\",\"runAs\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T18:07:23.407Z\",\"topic\":\"activity\",\"transactionId\":\"1667326038630-ee41d6454a6b4a815b69-25547/0\",\"userId\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\"},\"timestamp\":\"2050-11-01T18:07:23.409398365Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}"
+    },
+    {
+      "message": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-276055\",\"changedFields\":[],\"eventName\":\"activity\",\"level\":\"INFO\",\"message\":\"Action: relationshipNotification\",\"objectId\":\"managed/alpha_user/e432bfb7-fde0-46ff-b6a1-19ddb558c100\",\"operation\":\"relationshipNotification\",\"passwordChanged\":false,\"revision\":null,\"runAs\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\",\"source\":\"audit\",\"status\":\"SUCCESS\",\"timestamp\":\"2050-11-01T18:07:23.367Z\",\"topic\":\"activity\",\"transactionId\":\"1667326038630-ee41d6454a6b4a815b69-25547/0\",\"userId\":\"a2ff86fb-883c-4016-a31b-d84ecad1f0ea\"},\"timestamp\":\"2050-11-01T18:07:23.369529335Z\",\"type\":\"application/json\",\"source\":\"idm-activity\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "idm_activity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-forgerock-idm_activity-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "forgerock",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

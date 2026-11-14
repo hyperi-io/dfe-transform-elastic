@@ -1,0 +1,10 @@
+# Test inputs for this directory's fixtures.
+fields:
+  '@timestamp': '2049-11-11T01:02:03.123456789Z'
+  tags:
+  - preserve_original_event
+  - actor_target_mapping
+  _conf:
+    retain: keyword
+dynamic_fields:
+  user_agent.version: ^\d+\.\d+(\.|\..*)?$

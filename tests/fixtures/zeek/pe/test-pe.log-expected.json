@@ -1,0 +1,69 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2045-10-09T16:13:19.578Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "file"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":2391178399.578328,\"id\":\"FtIFnm3ZqI1s96P74l\",\"machine\":\"Z056\",\"compile_ts\":2350752114.0,\"os\":\"Windows XP\",\"subsystem\":\"WINDOWS_CUI\",\"is_exe\":true,\"is_64bit\":false,\"uses_aslr\":true,\"uses_dep\":true,\"uses_code_integrity\":false,\"uses_seh\":true,\"has_import_table\":true,\"has_export_table\":false,\"has_cert_table\":true,\"has_debug_data\":false,\"section_names\":[\".text\",\".rdata\",\".data\",\".rsrc\",\".reloc\"]}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "zeek": {
+        "pe": {
+          "compile_time": "2044-06-28T18:41:54.000Z",
+          "has_cert_table": true,
+          "has_debug_data": false,
+          "has_export_table": false,
+          "has_import_table": true,
+          "id": "FtIFnm3ZqI1s96P74l",
+          "is_64bit": false,
+          "is_exe": true,
+          "machine": "Z056",
+          "os": "Windows XP",
+          "section_names": [
+            ".text",
+            ".rdata",
+            ".data",
+            ".rsrc",
+            ".reloc"
+          ],
+          "subsystem": "WINDOWS_CUI",
+          "uses_aslr": true,
+          "uses_code_integrity": false,
+          "uses_dep": true,
+          "uses_seh": true
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2391178399.578328,\"id\":\"FtIFnm3ZqI1s96P74l\",\"machine\":\"Z056\",\"compile_ts\":2350752114.0,\"os\":\"Windows XP\",\"subsystem\":\"WINDOWS_CUI\",\"is_exe\":true,\"is_64bit\":false,\"uses_aslr\":true,\"uses_dep\":true,\"uses_code_integrity\":false,\"uses_seh\":true,\"has_import_table\":true,\"has_export_table\":false,\"has_cert_table\":true,\"has_debug_data\":false,\"section_names\":[\".text\",\".rdata\",\".data\",\".rsrc\",\".reloc\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "pe",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-pe-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

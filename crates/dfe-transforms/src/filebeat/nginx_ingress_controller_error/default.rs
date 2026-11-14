@@ -137,9 +137,7 @@ impl Transform for Default {
                 event.set("timestamp_nano", converted)?;
             }
 
-            // Painless script
-            // Source: ZoneId zid = ZoneId.of(ctx.event.timezone); ZonedDateTime zdt = ZonedDateTime.parse(ctx.event.created)\n         .withMonth(ctx.timestamp_month)\n         .withDayOfMonth(ctx.timestamp_day)\n         .withHour(ctx.timestamp_hour)\n         .withMinute(ctx.timestamp_minute)\n         .withSecond(ctx.timestamp_second)\n         .withNano(ctx.timestamp_nano * 1000)\n         .withZoneSameLocal(zid);\nctx.timestamp = zdt;
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

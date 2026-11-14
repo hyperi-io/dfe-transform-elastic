@@ -1,0 +1,3 @@
+Jul 30 09:03:52 localhost haproxy[32450]: 192.0.2.97:38862 [30/Jul/2046:09:03:52.726] incoming~ docs_microservice/docs 0/0/1/0/2 304 168 - - ---- 6/6/0/0/0 0/0 {eufh.areggve.internal||} {|||} "GET /component---src-pages-index-js-4b15624544f97cf0bb8f.js HTTP/1.1"
+May 22 02:22:22 newjbj7 haproxy[5089]: -:22222 [22/May/2049:02:22:22.222] www-https~ myapp/node2 hlkd.dwofop.com 0/0/0/18/18 200 200 - - ---- 222/222/2/0/0 0/0 "OPTIONS /api/v2/app/ HTTP/1.1"
+Feb  6 12:14:14 localhost haproxy[14389]: 10.209.157.224:33317 [06/Feb/2037:12:14:14.655] http-in static/srv1 10/0/30/69/109 200 2750 - - ---- 1/1/1/1/0 0/0 {5yq.eu} {} "GET /index.html HTTP/1.1"

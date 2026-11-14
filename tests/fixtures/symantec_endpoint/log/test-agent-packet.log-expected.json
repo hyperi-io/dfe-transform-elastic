@@ -1,0 +1,174 @@
+{
+  "expected": [
+    {
+      "destination": {
+        "address": "198.51.100.211.",
+        "port": 138
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "blocked",
+        "category": [
+          "intrusion_detection",
+          "network",
+          "process"
+        ],
+        "kind": "event",
+        "original": "exampleserver,Local Host: 198.51.100.111,Local Port: 138,Remote Host IP: 198.51.100.211.,Remote Host Name: ,Remote Port: 138,Outbound,Application: C:/windows/system32/NTOSKRNL.EXE,Action: Blocked",
+        "provider": "Agent Packet Log",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "host": {
+        "hostname": "exampleserver",
+        "ip": [
+          "198.51.100.111"
+        ],
+        "name": "exampleserver"
+      },
+      "network": {
+        "direction": "egress",
+        "type": "ipv4"
+      },
+      "process": {
+        "executable": "C:/windows/system32/NTOSKRNL.EXE"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111",
+        "port": 138
+      },
+      "symantec_endpoint": {
+        "log": {
+          "action": "blocked",
+          "application": "C:/windows/system32/NTOSKRNL.EXE",
+          "local_host_ip": "198.51.100.111",
+          "local_port": "138",
+          "remote_host_ip": "198.51.100.211.",
+          "remote_port": "138",
+          "traffic_direction": "Outbound"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "destination": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211",
+        "port": 138
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "blocked",
+        "category": [
+          "intrusion_detection",
+          "network",
+          "process"
+        ],
+        "kind": "event",
+        "original": "exampleserver,Local Host: 198.51.100.111,Local Port: 138,Remote Host IP: 198.51.100.211,Remote Host Name: ,Remote Port: 138,Outbound,Application: C:/windows/system32/NTOSKRNL.EXE,Action: Blocked",
+        "provider": "Agent Packet Log",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "host": {
+        "hostname": "exampleserver",
+        "ip": [
+          "198.51.100.111"
+        ],
+        "name": "exampleserver"
+      },
+      "network": {
+        "direction": "egress",
+        "type": "ipv4"
+      },
+      "process": {
+        "executable": "C:/windows/system32/NTOSKRNL.EXE"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111",
+          "198.51.100.211"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111",
+        "port": 138
+      },
+      "symantec_endpoint": {
+        "log": {
+          "action": "blocked",
+          "application": "C:/windows/system32/NTOSKRNL.EXE",
+          "local_host_ip": "198.51.100.111",
+          "local_port": "138",
+          "remote_host_ip": "198.51.100.211",
+          "remote_port": "138",
+          "traffic_direction": "Outbound"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "exampleserver,Local Host: 198.51.100.111,Local Port: 138,Remote Host IP: 198.51.100.211.,Remote Host Name: ,Remote Port: 138,Outbound,Application: C:/windows/system32/NTOSKRNL.EXE,Action: Blocked",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "exampleserver,Local Host: 198.51.100.111,Local Port: 138,Remote Host IP: 198.51.100.211,Remote Host Name: ,Remote Port: 138,Outbound,Application: C:/windows/system32/NTOSKRNL.EXE,Action: Blocked",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

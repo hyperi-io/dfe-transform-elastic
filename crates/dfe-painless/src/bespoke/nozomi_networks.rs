@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Scripts the `nozomi_networks` package ships, transcribed by hand.
+//! The `nozomi_networks` package's scripts, as the runtime runs them.
 
 use serde_json::{Map, Value};
 
@@ -71,7 +71,7 @@ fn set_event_severity_and_label(event: &mut Event, _params: &Value) {
     let _ = event.set("event.severity", score);
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "a5ad050926ebbc2cdb0bf18c3912370ea7c65141139f29483403d2e2245190e8",

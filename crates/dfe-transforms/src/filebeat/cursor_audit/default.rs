@@ -62,9 +62,7 @@ impl Transform for Default {
                 // Begin nested pipeline: "s3"
                 let _cond = { event.get("json").is_some_and(|v| v.is_object()) };
                 if _cond {
-                    // Painless script
-                    // Source: def doc = ctx.json;\nSet reserved = new HashSet(['metadata', 'team_id', 'ip_address', 'user_email']);\nString eventKey = null;\nfor (def k : doc.keySet()) {\n  if (!reserved.contains(k)) {\n    eventKey = k;\n    break;\n  }\n}\nif (eventKey == null) {\n  return;\n}\ndef payload = doc.remove(eventKey);\ndoc.event_type = eventKey;\nif (payload instanceof Map) {\n  doc.event_data = payload;\n} else if (payload != null) {\n  def wrap = new HashMap();\n  wrap.put('value', payload);\n  doc.event_data = wrap;\n} else {\n  doc.event_data = new HashMap();\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -84,9 +82,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_object())
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def ctxMap = ctx.json.metadata.context;\nfor (def entry : ctxMap.entrySet()) {\n  if (!ctx.json.containsKey(entry.getKey())) {\n    ctx.json[entry.getKey()] = entry.getValue();\n  }\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -152,9 +148,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.event_type") };
             if _cond {
-                // Painless script
-                // Source: def action = ctx.json.event_type;\nctx.event = ctx.event ?: [:];\nctx.event.action = action;\nctx.event.kind = 'event';\ndef mapping = params.mappings.get(action);\nif (mapping == null && action.startsWith('bugbot_')) {\n  mapping = params.bugbot;\n}\nmapping = mapping ?: params.defaults;\ndef hm = new HashMap(mapping);\nhm.forEach((k, v) -> ctx.event[k] = v);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

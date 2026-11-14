@@ -1,0 +1,469 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-05-18T21:12:57.000Z",
+      "cloudflare_logpush": {
+        "gateway_network": {
+          "account_id": "e1827685112b25aedb996ee9bd79a895",
+          "action": "allowedOnNoRuleMatch",
+          "destination": {
+            "ip": "203.0.113.88",
+            "port": 443
+          },
+          "host": {
+            "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+            "name": "tp-yfgp-zu4"
+          },
+          "override": {
+            "ip": "192.0.2.246",
+            "port": 8080
+          },
+          "policy": {
+            "id": "04623cbb-18af-4446-85f4-d4aae0edfaa1",
+            "name": "My policy"
+          },
+          "session_id": "6a1c20ec-1639-17d5-b264-3da7e97f040c",
+          "sni": "www.apejtlc.co",
+          "source": {
+            "internal_ip": "192.168.188.246",
+            "ip": "192.0.2.127",
+            "port": 47924
+          },
+          "timestamp": "2051-05-18T21:12:57.000Z",
+          "transport": "tcp",
+          "user": {
+            "email": "user@xcyx.com",
+            "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+          }
+        }
+      },
+      "destination": {
+        "domain": "www.apejtlc.co",
+        "ip": "203.0.113.88",
+        "port": 443
+      },
+      "device": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "allowedOnNoRuleMatch",
+        "category": [
+          "network"
+        ],
+        "id": "6a1c20ec-1639-17d5-b264-3da7e97f040c",
+        "kind": "event",
+        "original": "{\"AccountID\":\"e1827685112b25aedb996ee9bd79a895\",\"Action\":\"allowedOnNoRuleMatch\",\"Datetime\":\"2051-05-19T06:42:57+09:30\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"Email\":\"user@xcyx.com\",\"OverrideIP\":\"192.0.2.246\",\"OverridePort\":8080,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"My policy\",\"SNI\":\"www.apejtlc.co\",\"SessionID\":\"6a1c20ec-1639-17d5-b264-3da7e97f040c\",\"SourceIP\":\"192.0.2.127\",\"SourceInternalIP\":\"192.168.188.246\",\"SourcePort\":47924,\"Transport\":\"tcp\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+        "name": "tp-yfgp-zu4"
+      },
+      "network": {
+        "transport": "tcp"
+      },
+      "related": {
+        "hosts": [
+          "www.apejtlc.co",
+          "528d7697-f63a-11eb-9960-4c837e977cfa",
+          "tp-yfgp-zu4"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88",
+          "192.0.2.246",
+          "192.168.188.246"
+        ],
+        "user": [
+          "098ecbea-84f6-5e16-bd8f-36946486388a",
+          "user@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "port": 47924
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "client": {
+          "server_name": "www.apejtlc.co"
+        }
+      },
+      "user": {
+        "email": "user@xcyx.com",
+        "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+      }
+    },
+    {
+      "@timestamp": "2051-05-18T21:12:57.000Z",
+      "cloudflare_logpush": {
+        "gateway_network": {
+          "account_id": "e1827685112b25aedb996ee9bd79a895",
+          "action": "allowedOnNoRuleMatch",
+          "destination": {
+            "ip": "203.0.113.88",
+            "port": 443
+          },
+          "host": {
+            "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+            "name": "tp-yfgp-zu4"
+          },
+          "override": {
+            "ip": "192.0.2.246",
+            "port": 8080
+          },
+          "policy": {
+            "id": "04623cbb-18af-4446-85f4-d4aae0edfaa1",
+            "name": "My policy"
+          },
+          "session_id": "6a1c20ec-1639-17d5-b264-3da7e97f040c",
+          "sni": "www.apejtlc.co",
+          "source": {
+            "internal_ip": "192.168.188.246",
+            "ip": "192.0.2.127",
+            "port": 47924
+          },
+          "timestamp": "2051-05-18T21:12:57.000Z",
+          "transport": "tcp",
+          "user": {
+            "email": "user@xcyx.com",
+            "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+          }
+        }
+      },
+      "destination": {
+        "domain": "www.apejtlc.co",
+        "ip": "203.0.113.88",
+        "port": 443
+      },
+      "device": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "allowedOnNoRuleMatch",
+        "category": [
+          "network"
+        ],
+        "id": "6a1c20ec-1639-17d5-b264-3da7e97f040c",
+        "kind": "event",
+        "original": "{\"AccountID\":\"e1827685112b25aedb996ee9bd79a895\",\"Action\":\"allowedOnNoRuleMatch\",\"Datetime\":2568057177,\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"Email\":\"user@xcyx.com\",\"OverrideIP\":\"192.0.2.246\",\"OverridePort\":8080,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"My policy\",\"SNI\":\"www.apejtlc.co\",\"SessionID\":\"6a1c20ec-1639-17d5-b264-3da7e97f040c\",\"SourceIP\":\"192.0.2.127\",\"SourceInternalIP\":\"192.168.188.246\",\"SourcePort\":47924,\"Transport\":\"tcp\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+        "name": "tp-yfgp-zu4"
+      },
+      "network": {
+        "transport": "tcp"
+      },
+      "related": {
+        "hosts": [
+          "www.apejtlc.co",
+          "528d7697-f63a-11eb-9960-4c837e977cfa",
+          "tp-yfgp-zu4"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88",
+          "192.0.2.246",
+          "192.168.188.246"
+        ],
+        "user": [
+          "098ecbea-84f6-5e16-bd8f-36946486388a",
+          "user@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "port": 47924
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "client": {
+          "server_name": "www.apejtlc.co"
+        }
+      },
+      "user": {
+        "email": "user@xcyx.com",
+        "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+      }
+    },
+    {
+      "@timestamp": "2051-05-18T21:12:57.058Z",
+      "cloudflare_logpush": {
+        "gateway_network": {
+          "account_id": "e1827685112b25aedb996ee9bd79a895",
+          "action": "allowedOnNoRuleMatch",
+          "destination": {
+            "ip": "203.0.113.88",
+            "port": 443
+          },
+          "host": {
+            "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+            "name": "tp-yfgp-zu4"
+          },
+          "override": {
+            "ip": "192.0.2.246",
+            "port": 8080
+          },
+          "policy": {
+            "id": "04623cbb-18af-4446-85f4-d4aae0edfaa1",
+            "name": "My policy"
+          },
+          "session_id": "6a1c20ec-1639-17d5-b264-3da7e97f040c",
+          "sni": "www.apejtlc.co",
+          "source": {
+            "internal_ip": "192.168.188.246",
+            "ip": "192.0.2.127",
+            "port": 47924
+          },
+          "timestamp": "2051-05-18T21:12:57.058Z",
+          "transport": "tcp",
+          "user": {
+            "email": "user@xcyx.com",
+            "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+          }
+        }
+      },
+      "destination": {
+        "domain": "www.apejtlc.co",
+        "ip": "203.0.113.88",
+        "port": 443
+      },
+      "device": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "allowedOnNoRuleMatch",
+        "category": [
+          "network"
+        ],
+        "id": "6a1c20ec-1639-17d5-b264-3da7e97f040c",
+        "kind": "event",
+        "original": "{\"AccountID\":\"e1827685112b25aedb996ee9bd79a895\",\"Action\":\"allowedOnNoRuleMatch\",\"Datetime\":2568057177058000000,\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"Email\":\"user@xcyx.com\",\"OverrideIP\":\"192.0.2.246\",\"OverridePort\":8080,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"My policy\",\"SNI\":\"www.apejtlc.co\",\"SessionID\":\"6a1c20ec-1639-17d5-b264-3da7e97f040c\",\"SourceIP\":\"192.0.2.127\",\"SourceInternalIP\":\"192.168.188.246\",\"SourcePort\":47924,\"Transport\":\"tcp\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+        "name": "tp-yfgp-zu4"
+      },
+      "network": {
+        "transport": "tcp"
+      },
+      "related": {
+        "hosts": [
+          "www.apejtlc.co",
+          "528d7697-f63a-11eb-9960-4c837e977cfa",
+          "tp-yfgp-zu4"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88",
+          "192.0.2.246",
+          "192.168.188.246"
+        ],
+        "user": [
+          "098ecbea-84f6-5e16-bd8f-36946486388a",
+          "user@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "port": 47924
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "client": {
+          "server_name": "www.apejtlc.co"
+        }
+      },
+      "user": {
+        "email": "user@xcyx.com",
+        "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+      }
+    },
+    {
+      "@timestamp": "2054-04-29T08:04:00.000Z",
+      "cloudflare_logpush": {
+        "gateway_network": {
+          "account_id": "e1827685112b25aedb996ee9bd79a895",
+          "action": "allowedOnNoRuleMatch",
+          "destination": {
+            "ip": "203.0.113.88",
+            "port": 443
+          },
+          "host": {
+            "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+            "name": "tp-yfgp-zu4"
+          },
+          "override": {
+            "ip": "192.0.2.246",
+            "port": 8080
+          },
+          "policy": {
+            "id": "04623cbb-18af-4446-85f4-d4aae0edfaa1",
+            "name": "Allow Internal"
+          },
+          "registration_id": "8d7a1f3f-25ba-4d7a-8f4e-5a9c2a4b5a4c",
+          "session_id": "5e5d33fb-5955-13b9-b482-9ed7c42a931b",
+          "sni": "www.apejtlc.co",
+          "source": {
+            "internal_ip": "192.168.188.246",
+            "ip": "192.0.2.127",
+            "port": 47925
+          },
+          "timestamp": "2054-04-29T08:04:00.000Z",
+          "transport": "tcp",
+          "user": {
+            "email": "user@xcyx.com",
+            "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+          }
+        }
+      },
+      "destination": {
+        "domain": "www.apejtlc.co",
+        "ip": "203.0.113.88",
+        "port": 443
+      },
+      "device": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "allowedOnNoRuleMatch",
+        "category": [
+          "network"
+        ],
+        "id": "5e5d33fb-5955-13b9-b482-9ed7c42a931b",
+        "kind": "event",
+        "original": "{\"AccountID\":\"e1827685112b25aedb996ee9bd79a895\",\"Action\":\"allowedOnNoRuleMatch\",\"Datetime\":\"2054-04-29T08:04:00Z\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"Email\":\"user@xcyx.com\",\"OverrideIP\":\"192.0.2.246\",\"OverridePort\":8080,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"Allow Internal\",\"RegistrationID\":\"8d7a1f3f-25ba-4d7a-8f4e-5a9c2a4b5a4c\",\"SNI\":\"www.apejtlc.co\",\"SessionID\":\"5e5d33fb-5955-13b9-b482-9ed7c42a931b\",\"SourceInternalIP\":\"192.168.188.246\",\"SourceIP\":\"192.0.2.127\",\"SourcePort\":47925,\"Transport\":\"tcp\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "528d7697-f63a-11eb-9960-4c837e977cfa",
+        "name": "tp-yfgp-zu4"
+      },
+      "network": {
+        "transport": "tcp"
+      },
+      "related": {
+        "hosts": [
+          "www.apejtlc.co",
+          "528d7697-f63a-11eb-9960-4c837e977cfa",
+          "tp-yfgp-zu4"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88",
+          "192.0.2.246",
+          "192.168.188.246"
+        ],
+        "user": [
+          "098ecbea-84f6-5e16-bd8f-36946486388a",
+          "user@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "port": 47925
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "client": {
+          "server_name": "www.apejtlc.co"
+        }
+      },
+      "user": {
+        "email": "user@xcyx.com",
+        "id": "098ecbea-84f6-5e16-bd8f-36946486388a"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"AccountID\":\"e1827685112b25aedb996ee9bd79a895\",\"Action\":\"allowedOnNoRuleMatch\",\"Datetime\":\"2051-05-19T06:42:57+09:30\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"Email\":\"user@xcyx.com\",\"OverrideIP\":\"192.0.2.246\",\"OverridePort\":8080,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"My policy\",\"SNI\":\"www.apejtlc.co\",\"SessionID\":\"6a1c20ec-1639-17d5-b264-3da7e97f040c\",\"SourceIP\":\"192.0.2.127\",\"SourceInternalIP\":\"192.168.188.246\",\"SourcePort\":47924,\"Transport\":\"tcp\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AccountID\":\"e1827685112b25aedb996ee9bd79a895\",\"Action\":\"allowedOnNoRuleMatch\",\"Datetime\":2568057177,\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"Email\":\"user@xcyx.com\",\"OverrideIP\":\"192.0.2.246\",\"OverridePort\":8080,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"My policy\",\"SNI\":\"www.apejtlc.co\",\"SessionID\":\"6a1c20ec-1639-17d5-b264-3da7e97f040c\",\"SourceIP\":\"192.0.2.127\",\"SourceInternalIP\":\"192.168.188.246\",\"SourcePort\":47924,\"Transport\":\"tcp\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AccountID\":\"e1827685112b25aedb996ee9bd79a895\",\"Action\":\"allowedOnNoRuleMatch\",\"Datetime\":2568057177058000000,\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"Email\":\"user@xcyx.com\",\"OverrideIP\":\"192.0.2.246\",\"OverridePort\":8080,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"My policy\",\"SNI\":\"www.apejtlc.co\",\"SessionID\":\"6a1c20ec-1639-17d5-b264-3da7e97f040c\",\"SourceIP\":\"192.0.2.127\",\"SourceInternalIP\":\"192.168.188.246\",\"SourcePort\":47924,\"Transport\":\"tcp\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AccountID\":\"e1827685112b25aedb996ee9bd79a895\",\"Action\":\"allowedOnNoRuleMatch\",\"Datetime\":\"2054-04-29T08:04:00Z\",\"DestinationIP\":\"203.0.113.88\",\"DestinationPort\":443,\"DeviceID\":\"528d7697-f63a-11eb-9960-4c837e977cfa\",\"DeviceName\":\"tp-yfgp-zu4\",\"Email\":\"user@xcyx.com\",\"OverrideIP\":\"192.0.2.246\",\"OverridePort\":8080,\"PolicyID\":\"04623cbb-18af-4446-85f4-d4aae0edfaa1\",\"PolicyName\":\"Allow Internal\",\"RegistrationID\":\"8d7a1f3f-25ba-4d7a-8f4e-5a9c2a4b5a4c\",\"SNI\":\"www.apejtlc.co\",\"SessionID\":\"5e5d33fb-5955-13b9-b482-9ed7c42a931b\",\"SourceInternalIP\":\"192.168.188.246\",\"SourceIP\":\"192.0.2.127\",\"SourcePort\":47925,\"Transport\":\"tcp\",\"UserID\":\"098ecbea-84f6-5e16-bd8f-36946486388a\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "gateway_network",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-gateway_network-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

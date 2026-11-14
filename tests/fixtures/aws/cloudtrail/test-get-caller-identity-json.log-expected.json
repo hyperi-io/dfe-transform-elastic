@@ -1,0 +1,139 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-02T00:20:40.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::00000000000:user/wczrcalljbr"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_category": "Management",
+          "event_type": "AwsApiCall",
+          "event_version": "1.08",
+          "read_only": true,
+          "recipient_account_id": "00000000000",
+          "request_id": "47de93f4-cdfb-472c-801f-00a6a37bea13",
+          "user_identity": {
+            "access_key_id": "ACCESSKEY",
+            "arn": "arn:aws:iam::00000000000:user/wczrcalljbr",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "00000000000"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entity": {
+        "target": {
+          "id": [
+            "00000000000"
+          ]
+        }
+      },
+      "event": {
+        "action": "GetCallerIdentity",
+        "category": [
+          "authentication"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "b62ee2cc-cb45-418c-a8e4-96edd8c9283c",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.08\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"PRINCIPALID\",\"arn\":\"arn:aws:iam::00000000000:user/wczrcalljbr\",\"accountId\":\"00000000000\",\"accessKeyId\":\"ACCESSKEY\",\"userName\":\"wczrcalljbr\"},\"eventTime\":\"2052-11-02T00:20:40Z\",\"eventSource\":\"sts.amazonaws.com\",\"eventName\":\"GetCallerIdentity\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"198.51.100.124\",\"userAgent\":\"aws-sdk-nodejs/2.1384.0 darwin/v20.16.0 AWS-Toolkit-For-VSCode/3.31.0 Visual-Studio-Code/1.94.2 ClientId/85f3145c-bbd2-4214-9fec-5fb0b0483206 promise\",\"requestParameters\":null,\"responseElements\":null,\"requestID\":\"47de93f4-cdfb-472c-801f-00a6a37bea13\",\"eventID\":\"b62ee2cc-cb45-418c-a8e4-96edd8c9283c\",\"readOnly\":true,\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"00000000000\",\"eventCategory\":\"Management\",\"tlsDetails\":{\"tlsVersion\":\"TLSv1.3\",\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"sts.us-east-1.amazonaws.com\"}}",
+        "outcome": "success",
+        "provider": "sts.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "00000000000",
+          "ACCESSKEY",
+          "wczrcalljbr",
+          "arn:aws:iam::00000000000:user/wczrcalljbr"
+        ],
+        "user": [
+          "PRINCIPALID",
+          "wczrcalljbr"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "00000000000"
+          ]
+        }
+      },
+      "tls": {
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "client": {
+          "server_name": "sts.us-east-1.amazonaws.com"
+        },
+        "version": "1.3",
+        "version_protocol": "tls"
+      },
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::00000000000:user/wczrcalljbr"
+          ]
+        },
+        "id": "PRINCIPALID",
+        "name": "wczrcalljbr"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "aws-sdk-nodejs",
+        "original": "aws-sdk-nodejs/2.1384.0 darwin/v20.16.0 AWS-Toolkit-For-VSCode/3.31.0 Visual-Studio-Code/1.94.2 ClientId/85f3145c-bbd2-4214-9fec-5fb0b0483206 promise",
+        "version": "2.1384.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.08\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"PRINCIPALID\",\"arn\":\"arn:aws:iam::00000000000:user/wczrcalljbr\",\"accountId\":\"00000000000\",\"accessKeyId\":\"ACCESSKEY\",\"userName\":\"wczrcalljbr\"},\"eventTime\":\"2052-11-02T00:20:40Z\",\"eventSource\":\"sts.amazonaws.com\",\"eventName\":\"GetCallerIdentity\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"198.51.100.124\",\"userAgent\":\"aws-sdk-nodejs/2.1384.0 darwin/v20.16.0 AWS-Toolkit-For-VSCode/3.31.0 Visual-Studio-Code/1.94.2 ClientId/85f3145c-bbd2-4214-9fec-5fb0b0483206 promise\",\"requestParameters\":null,\"responseElements\":null,\"requestID\":\"47de93f4-cdfb-472c-801f-00a6a37bea13\",\"eventID\":\"b62ee2cc-cb45-418c-a8e4-96edd8c9283c\",\"readOnly\":true,\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"00000000000\",\"eventCategory\":\"Management\",\"tlsDetails\":{\"tlsVersion\":\"TLSv1.3\",\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"sts.us-east-1.amazonaws.com\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

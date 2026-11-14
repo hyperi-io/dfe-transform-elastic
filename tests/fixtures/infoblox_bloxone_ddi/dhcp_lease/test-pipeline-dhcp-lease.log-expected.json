@@ -1,0 +1,280 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-07-14T11:51:15.417Z",
+      "client": {
+        "user": {
+          "id": "pwszju"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2050-07-14T11:51:15.417Z",
+        "kind": "event",
+        "original": "{\"address\":\"192.0.2.218\",\"client_id\":\"pwszju\",\"ends\":\"2050-07-14T11:51:15.417Z\",\"fingerprint\":\"pwszju\",\"fingerprint_processed\":\"pwszju\",\"ha_group\":\"pwszju\",\"hardware\":\"pwszju\",\"host\":\"pwszju\",\"hostname\":\"pwszju\",\"iaid\":0,\"last_updated\":\"2050-07-14T11:51:15.417Z\",\"options\":{\"message\":\"Hello\"},\"preferred_lifetime\":\"2050-07-14T11:51:15.417Z\",\"protocol\":\"ip6\",\"space\":\"pwszju\",\"starts\":\"2050-07-14T11:51:15.417Z\",\"state\":\"pwszju\",\"type\":\"pwszju\"}",
+        "start": "2050-07-14T11:51:15.417Z",
+        "type": [
+          "protocol"
+        ]
+      },
+      "host": {
+        "hostname": "pwszju",
+        "name": "pwszju"
+      },
+      "infoblox_bloxone_ddi": {
+        "dhcp_lease": {
+          "address": "192.0.2.218",
+          "client_id": "pwszju",
+          "ends": "2050-07-14T11:51:15.417Z",
+          "fingerprint": {
+            "processed": "pwszju",
+            "value": "pwszju"
+          },
+          "ha_group": "pwszju",
+          "hardware": "PWSZJU",
+          "host": "pwszju",
+          "hostname": "pwszju",
+          "iaid": 0,
+          "last_updated": "2050-07-14T11:51:15.417Z",
+          "options": {
+            "message": "Hello"
+          },
+          "preferred_lifetime": "2050-07-14T11:51:15.417Z",
+          "protocol": "ipv6",
+          "space": "pwszju",
+          "starts": "2050-07-14T11:51:15.417Z",
+          "state": "pwszju",
+          "type": "pwszju"
+        }
+      },
+      "network": {
+        "type": "ipv6"
+      },
+      "related": {
+        "hosts": [
+          "pwszju"
+        ],
+        "ip": [
+          "192.0.2.218"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2050-07-14T11:51:15.417Z",
+      "client": {
+        "user": {
+          "id": "abc3212caabc"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2050-07-14T11:51:15.417Z",
+        "kind": "event",
+        "original": "{\"address\":\"192.0.2.218\",\"client_id\":\"abc3212caabc\",\"ends\":\"2050-07-14T11:51:15.417Z\",\"fingerprint\":\"ab3213cbabab/abc23bca\",\"fingerprint_processed\":\"12abca32bca32abcd\",\"ha_group\":\"abc321cdcbda321\",\"hardware\":\"19:65:1E:84:22:48\",\"host\":\"admin\",\"hostname\":\"example.com\",\"iaid\":0,\"last_updated\":\"2050-07-14T11:51:15.417Z\",\"options\":{\"message\":\"Hello\"},\"preferred_lifetime\":\"2050-07-14T11:51:15.417Z\",\"protocol\":\"ip4\",\"space\":\"pwszju\",\"starts\":\"2050-07-14T11:51:15.417Z\",\"state\":\"used\",\"type\":\"DHCPv4: DHCPv4 lease\"}",
+        "start": "2050-07-14T11:51:15.417Z",
+        "type": [
+          "protocol"
+        ]
+      },
+      "host": {
+        "hostname": "example.com",
+        "name": "admin"
+      },
+      "infoblox_bloxone_ddi": {
+        "dhcp_lease": {
+          "address": "192.0.2.218",
+          "client_id": "abc3212caabc",
+          "ends": "2050-07-14T11:51:15.417Z",
+          "fingerprint": {
+            "processed": "12abca32bca32abcd",
+            "value": "ab3213cbabab/abc23bca"
+          },
+          "ha_group": "abc321cdcbda321",
+          "hardware": "19-65-1E-84-22-48",
+          "host": "admin",
+          "hostname": "example.com",
+          "iaid": 0,
+          "last_updated": "2050-07-14T11:51:15.417Z",
+          "options": {
+            "message": "Hello"
+          },
+          "preferred_lifetime": "2050-07-14T11:51:15.417Z",
+          "protocol": "ipv4",
+          "space": "pwszju",
+          "starts": "2050-07-14T11:51:15.417Z",
+          "state": "used",
+          "type": "DHCPv4: DHCPv4 lease"
+        }
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "hosts": [
+          "admin",
+          "example.com"
+        ],
+        "ip": [
+          "192.0.2.218"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-09-21T20:27:00.774Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2051-09-22T00:27:00.000Z",
+        "kind": "event",
+        "original": "{\"address\":\"10.182.2.165\",\"client_id\":\"\",\"ends\":\"2051-09-22T00:27:00Z\",\"fingerprint\":\"System Name\",\"fingerprint_processed\":\"processed\",\"ha_group\":\"dhcp/ha_group/45231317-73ad-cacd-fdfe-be4494466730\",\"hardware\":\"09:94:47:38:62:02\",\"host\":\"dhcp/host/123456\",\"hostname\":\"swwrck_neoa.egmukjj.com\",\"iaid\":0,\"last_updated\":\"2051-09-21T20:27:00.774Z\",\"options\":\"{\\\"Options\\\":[{\\\"Code\\\":\\\"51\\\",\\\"Value\\\":\\\"AAA4QA==\\\"},{\\\"Code\\\":\\\"53\\\",\\\"Value\\\":\\\"Aw==\\\"},{\\\"Code\\\":\\\"55\\\",\\\"Value\\\":\\\"AQIDBAYPKjYHoEIr\\\"},{\\\"Code\\\":\\\"6\\\",\\\"Value\\\":\\\"CmQGYwozAGM=\\\"},{\\\"Code\\\":\\\"60\\\",\\\"Value\\\":\\\"UG9seWNvbS1TU0lQNzAwMA==\\\"},{\\\"Code\\\":\\\"1\\\",\\\"Value\\\":\\\"///+AA==\\\"},{\\\"Code\\\":\\\"125\\\",\\\"Value\\\":\\\"LoremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaUtenimadminimveniamquisnostrudexercitationullamcolaborisnisiut\\\"},{\\\"Code\\\":\\\"12\\\",\\\"Value\\\":\\\"Loremipsumdolorsitametconse=\\\"},{\\\"Code\\\":\\\"3\\\",\\\"Value\\\":\\\"CnVgAQ==\\\"}]}\",\"preferred_lifetime\":\"2051-09-21T20:27:00Z\",\"protocol\":\"\",\"space\":\"ipam/ip_space/45231317-73ad-cacd-fdfe-be4494466730\",\"starts\":\"2051-09-21T20:27:00Z\",\"state\":\"used\",\"type\":\"DHCPv4\"}",
+        "start": "2051-09-21T20:27:00.000Z",
+        "type": [
+          "protocol"
+        ]
+      },
+      "host": {
+        "hostname": "swwrck_neoa.egmukjj.com",
+        "name": "dhcp/host/123456"
+      },
+      "infoblox_bloxone_ddi": {
+        "dhcp_lease": {
+          "address": "10.182.2.165",
+          "ends": "2051-09-22T00:27:00.000Z",
+          "fingerprint": {
+            "processed": "processed",
+            "value": "System Name"
+          },
+          "ha_group": "dhcp/ha_group/45231317-73ad-cacd-fdfe-be4494466730",
+          "hardware": "09-94-47-38-62-02",
+          "host": "dhcp/host/123456",
+          "hostname": "swwrck_neoa.egmukjj.com",
+          "iaid": 0,
+          "last_updated": "2051-09-21T20:27:00.774Z",
+          "options": {
+            "Options": [
+              {
+                "Code": "51",
+                "Value": "AAA4QA=="
+              },
+              {
+                "Code": "53",
+                "Value": "Aw=="
+              },
+              {
+                "Code": "55",
+                "Value": "AQIDBAYPKjYHoEIr"
+              },
+              {
+                "Code": "6",
+                "Value": "CmQGYwozAGM="
+              },
+              {
+                "Code": "60",
+                "Value": "UG9seWNvbS1TU0lQNzAwMA=="
+              },
+              {
+                "Code": "1",
+                "Value": "///+AA=="
+              },
+              {
+                "Code": "125",
+                "Value": "LoremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaUtenimadminimveniamquisnostrudexercitationullamcolaborisnisiut"
+              },
+              {
+                "Code": "12",
+                "Value": "Loremipsumdolorsitametconse="
+              },
+              {
+                "Code": "3",
+                "Value": "CnVgAQ=="
+              }
+            ]
+          },
+          "preferred_lifetime": "2051-09-21T20:27:00.000Z",
+          "space": "ipam/ip_space/45231317-73ad-cacd-fdfe-be4494466730",
+          "starts": "2051-09-21T20:27:00.000Z",
+          "state": "used",
+          "type": "DHCPv4"
+        }
+      },
+      "related": {
+        "hosts": [
+          "dhcp/host/123456",
+          "swwrck_neoa.egmukjj.com"
+        ],
+        "ip": [
+          "10.182.2.165"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"address\":\"192.0.2.218\",\"client_id\":\"pwszju\",\"ends\":\"2050-07-14T11:51:15.417Z\",\"fingerprint\":\"pwszju\",\"fingerprint_processed\":\"pwszju\",\"ha_group\":\"pwszju\",\"hardware\":\"pwszju\",\"host\":\"pwszju\",\"hostname\":\"pwszju\",\"iaid\":0,\"last_updated\":\"2050-07-14T11:51:15.417Z\",\"options\":{\"message\":\"Hello\"},\"preferred_lifetime\":\"2050-07-14T11:51:15.417Z\",\"protocol\":\"ip6\",\"space\":\"pwszju\",\"starts\":\"2050-07-14T11:51:15.417Z\",\"state\":\"pwszju\",\"type\":\"pwszju\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"address\":\"192.0.2.218\",\"client_id\":\"abc3212caabc\",\"ends\":\"2050-07-14T11:51:15.417Z\",\"fingerprint\":\"ab3213cbabab/abc23bca\",\"fingerprint_processed\":\"12abca32bca32abcd\",\"ha_group\":\"abc321cdcbda321\",\"hardware\":\"19:65:1E:84:22:48\",\"host\":\"admin\",\"hostname\":\"example.com\",\"iaid\":0,\"last_updated\":\"2050-07-14T11:51:15.417Z\",\"options\":{\"message\":\"Hello\"},\"preferred_lifetime\":\"2050-07-14T11:51:15.417Z\",\"protocol\":\"ip4\",\"space\":\"pwszju\",\"starts\":\"2050-07-14T11:51:15.417Z\",\"state\":\"used\",\"type\":\"DHCPv4: DHCPv4 lease\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"address\":\"10.182.2.165\",\"client_id\":\"\",\"ends\":\"2051-09-22T00:27:00Z\",\"fingerprint\":\"System Name\",\"fingerprint_processed\":\"processed\",\"ha_group\":\"dhcp/ha_group/45231317-73ad-cacd-fdfe-be4494466730\",\"hardware\":\"09:94:47:38:62:02\",\"host\":\"dhcp/host/123456\",\"hostname\":\"swwrck_neoa.egmukjj.com\",\"iaid\":0,\"last_updated\":\"2051-09-21T20:27:00.774Z\",\"options\":\"{\\\"Options\\\":[{\\\"Code\\\":\\\"51\\\",\\\"Value\\\":\\\"AAA4QA==\\\"},{\\\"Code\\\":\\\"53\\\",\\\"Value\\\":\\\"Aw==\\\"},{\\\"Code\\\":\\\"55\\\",\\\"Value\\\":\\\"AQIDBAYPKjYHoEIr\\\"},{\\\"Code\\\":\\\"6\\\",\\\"Value\\\":\\\"CmQGYwozAGM=\\\"},{\\\"Code\\\":\\\"60\\\",\\\"Value\\\":\\\"UG9seWNvbS1TU0lQNzAwMA==\\\"},{\\\"Code\\\":\\\"1\\\",\\\"Value\\\":\\\"///+AA==\\\"},{\\\"Code\\\":\\\"125\\\",\\\"Value\\\":\\\"LoremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaUtenimadminimveniamquisnostrudexercitationullamcolaborisnisiut\\\"},{\\\"Code\\\":\\\"12\\\",\\\"Value\\\":\\\"Loremipsumdolorsitametconse=\\\"},{\\\"Code\\\":\\\"3\\\",\\\"Value\\\":\\\"CnVgAQ==\\\"}]}\",\"preferred_lifetime\":\"2051-09-21T20:27:00Z\",\"protocol\":\"\",\"space\":\"ipam/ip_space/45231317-73ad-cacd-fdfe-be4494466730\",\"starts\":\"2051-09-21T20:27:00Z\",\"state\":\"used\",\"type\":\"DHCPv4\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"results\":[]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "dhcp_lease",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-infoblox_bloxone_ddi-dhcp_lease-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "infoblox_bloxone_ddi",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

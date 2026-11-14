@@ -115,9 +115,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx.axonius?.alert_finding?.event?.data instanceof Map) {\n  Map eventData = ctx.axonius.alert_finding.event.data;\n  for (String key : new ArrayList(eventData.keySet())) {\n    if (ctx.axonius.alert_finding.containsKey(key)) {\n      ctx.axonius.alert_finding['data_' + key] = eventData[key];\n    } else {\n      ctx.axonius.alert_finding[key] = eventData[key];\n    }\n  }\n  ctx.axonius.alert_finding.event.remove('data');\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -224,8 +222,7 @@ impl Transform for Default {
             event.remove("axonius.alert_finding.finding_message");
             event.remove("axonius.alert_finding.trigger_date");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

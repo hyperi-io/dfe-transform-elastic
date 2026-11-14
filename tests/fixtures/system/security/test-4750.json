@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:09:14.108Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "winlog": {
+                "channel": "Security",
+                "record_id": 3707550,
+                "opcode": "Info",
+                "event_data": {
+                    "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x2e67800",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2904",
+                    "TargetDomainName": "TEST",
+                    "SubjectUserName": "ev_aav",
+                    "PrivilegeList": "-",
+                    "SamAccountName": "ibsisxmcco9",
+                    "SidHistory": "-",
+                    "TargetUserName": "ibsisxmcco9"
+                },
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-12-19T08:10:57.473Z",
+                "outcome": "success",
+                "level": "information",
+                "event_id": 4750,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "process": {
+                    "pid": 492,
+                    "thread": {
+                        "id": 664
+                    }
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4750,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "level": "information",
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4750.xml"
+                }
+            },
+            "agent": {
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "955bd1d7-94ae-41d3-b365-1170db0b92e0",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain"
+            }
+        }
+    ]
+}

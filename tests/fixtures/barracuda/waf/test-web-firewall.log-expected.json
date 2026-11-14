@@ -1,0 +1,432 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-03-01T13:54:44.502Z",
+      "barracuda": {
+        "waf": {
+          "action_taken": "LOG",
+          "attack_description": "NO_PARAM_PROFILE_MATCH",
+          "attack_details": "Parameter\\=\"0x\\\\[\\\\]\" value\\=\"androxgh0st\"",
+          "followup_action": "NONE",
+          "log_type": "WF",
+          "protocol": "TLSv1.2",
+          "severity_level": "ALER",
+          "unit_name": "barracuda"
+        }
+      },
+      "client": {
+        "ip": "198.51.100.211",
+        "port": 61507
+      },
+      "destination": {
+        "ip": "203.0.113.134",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOG",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2051-03-01T13:54:44.502Z",
+        "kind": "event",
+        "original": "<129>2051-03-01 14:54:44.502 +0100  barracuda WF ALER NO_PARAM_PROFILE_MATCH 198.51.100.211 61507 203.0.113.134 443 Hackazon:adaptive_url_42099b4af021e53fd8fd URL_PROFILE LOG NONE [Parameter\\=\"0x\\\\[\\\\]\" value\\=\"androxgh0st\"] POST / TLSv1.2 \"-\" \"Mozilla/5.0 (Linux; U; Android 4.4.2; en-US; HM NOTE 1W Build/KOT49H) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/11.0.5.850 U3/0.8.0 Mobile Safari/534.30\" 192.0.2.169 61507 \"-\" \"-\" 1869d743696-dfcf8d96"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        }
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.169"
+      },
+      "rule": {
+        "category": "URL_PROFILE",
+        "name": "Hackazon:adaptive_url_42099b4af021e53fd8fd"
+      },
+      "server": {
+        "ip": "203.0.113.134",
+        "port": 443
+      },
+      "source": {
+        "ip": "198.51.100.211",
+        "port": 61507
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      },
+      "user": {
+        "id": "1869d743696-dfcf8d96"
+      },
+      "user_agent": {
+        "device": {
+          "name": "XiaoMi HM NOTE 1W"
+        },
+        "name": "UC Browser",
+        "original": "Mozilla/5.0 (Linux; U; Android 4.4.2; en-US; HM NOTE 1W Build/KOT49H) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/11.0.5.850 U3/0.8.0 Mobile Safari/534.30",
+        "os": {
+          "full": "Android 4.4.2",
+          "name": "Android",
+          "version": "4.4.2"
+        },
+        "version": "11.0.5"
+      }
+    },
+    {
+      "@timestamp": "2051-03-08T11:21:58.661Z",
+      "barracuda": {
+        "waf": {
+          "action_taken": "LOG",
+          "attack_description": "NO_DOMAIN_MATCH_IN_PROFILE",
+          "followup_action": "NONE",
+          "log_type": "WF",
+          "protocol": "TLSv1.2",
+          "severity_level": "ALER",
+          "unit_name": "barracuda"
+        }
+      },
+      "client": {
+        "ip": "198.51.100.211",
+        "port": 55111
+      },
+      "destination": {
+        "ip": "203.0.113.134",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOG",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2051-03-08T11:21:58.661Z",
+        "kind": "event",
+        "original": "<129>2051-03-08 12:21:58.661 +0100  barracuda WF ALER NO_DOMAIN_MATCH_IN_PROFILE 198.51.100.211 55111 203.0.113.134 443 Hackazon GLOBAL LOG NONE [\"-\"] GET / TLSv1.2 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36 \" 192.0.2.169 55111 \"-\" http://203.0.113.234/ 186c0f4de06-e0f7a19f"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "http://203.0.113.234/"
+        }
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.169"
+      },
+      "rule": {
+        "category": "GLOBAL",
+        "name": "Hackazon"
+      },
+      "server": {
+        "ip": "203.0.113.134",
+        "port": 443
+      },
+      "source": {
+        "ip": "198.51.100.211",
+        "port": 55111
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      },
+      "user": {
+        "id": "186c0f4de06-e0f7a19f"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36 ",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "60.0.3112.113"
+      }
+    },
+    {
+      "@timestamp": "2051-03-08T11:19:10.177Z",
+      "barracuda": {
+        "waf": {
+          "action_taken": "LOG",
+          "attack_description": "NO_DOMAIN_MATCH_IN_PROFILE",
+          "followup_action": "NONE",
+          "log_type": "WF",
+          "protocol": "TLSv1.2",
+          "severity_level": "ALER",
+          "unit_name": "barracuda"
+        }
+      },
+      "client": {
+        "ip": "198.51.100.211",
+        "port": 52532
+      },
+      "destination": {
+        "ip": "203.0.113.134",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOG",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2051-03-08T11:19:10.177Z",
+        "kind": "event",
+        "original": "<129>2051-03-08 12:19:10.177 +0100  barracuda WF ALER NO_DOMAIN_MATCH_IN_PROFILE 198.51.100.211 52532 203.0.113.134 443 Hackazon GLOBAL LOG NONE [\"-\"] GET /sitemap.xml TLSv1.2 \"-\" \"Go-http-client/1.1\" 192.0.2.169 52532 \"-\" http://203.0.113.231/sitemap.xml 186c0f24c61-427e368"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "http://203.0.113.231/sitemap.xml"
+        }
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.169"
+      },
+      "rule": {
+        "category": "GLOBAL",
+        "name": "Hackazon"
+      },
+      "server": {
+        "ip": "203.0.113.134",
+        "port": 443
+      },
+      "source": {
+        "ip": "198.51.100.211",
+        "port": 52532
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/sitemap.xml"
+      },
+      "user": {
+        "id": "186c0f24c61-427e368"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/1.1",
+        "version": "1.1"
+      }
+    },
+    {
+      "@timestamp": "2051-03-08T11:19:10.177Z",
+      "barracuda": {
+        "waf": {
+          "action_taken": "LOG",
+          "attack_description": "NO_URL_PROFILE_MATCH",
+          "followup_action": "NONE",
+          "log_type": "WF",
+          "protocol": "TLSv1.2",
+          "severity_level": "ALER",
+          "unit_name": "barracuda"
+        }
+      },
+      "client": {
+        "ip": "198.51.100.211",
+        "port": 52532
+      },
+      "destination": {
+        "ip": "203.0.113.134",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOG",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2051-03-08T11:19:10.177Z",
+        "kind": "event",
+        "original": "<129>2051-03-08 12:19:10.177 +0100  barracuda WF ALER NO_URL_PROFILE_MATCH 198.51.100.211 52532 203.0.113.134 443 Hackazon GLOBAL LOG NONE [\"-\"] GET /sitemap.xml TLSv1.2 \"-\" \"Go-http-client/1.1\" 192.0.2.169 52532 \"-\" http://203.0.113.231/sitemap.xml 186c0f24c61-427e368"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "http://203.0.113.231/sitemap.xml"
+        }
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.169"
+      },
+      "rule": {
+        "category": "GLOBAL",
+        "name": "Hackazon"
+      },
+      "server": {
+        "ip": "203.0.113.134",
+        "port": 443
+      },
+      "source": {
+        "ip": "198.51.100.211",
+        "port": 52532
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/sitemap.xml"
+      },
+      "user": {
+        "id": "186c0f24c61-427e368"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/1.1",
+        "version": "1.1"
+      }
+    },
+    {
+      "@timestamp": "2051-03-08T11:19:07.530Z",
+      "barracuda": {
+        "waf": {
+          "action_taken": "DENY",
+          "attack_description": "FINGERPRINT_RISK_LEVEL_SUSPECTED_CLIENT",
+          "attack_details": "Reason\\=\"Request originating from robot or robot mobile\"",
+          "followup_action": "CHALLENGE",
+          "log_type": "WF",
+          "protocol": "TLSv1.2",
+          "severity_level": "ALER",
+          "unit_name": "barracuda"
+        }
+      },
+      "client": {
+        "ip": "198.51.100.211",
+        "port": 20835
+      },
+      "destination": {
+        "ip": "203.0.113.134",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DENY",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2051-03-08T11:19:07.530Z",
+        "kind": "event",
+        "original": "<129>2051-03-08 12:19:07.530 +0100  barracuda WF ALER FINGERPRINT_RISK_LEVEL_SUSPECTED_CLIENT 198.51.100.211 20835 203.0.113.134 443 global GLOBAL DENY CHALLENGE WITH CAPTCHA [Reason\\=\"Request originating from robot or robot mobile\"] GET /robots.txt TLSv1.2 \"-\" \"Go-http-client/1.1\" 192.0.2.169 20835 \"-\" http://203.0.113.231/robots.txt 186c0f2420a-325d480"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "http://203.0.113.231/robots.txt"
+        }
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.169"
+      },
+      "rule": {
+        "category": "GLOBAL",
+        "name": "global"
+      },
+      "server": {
+        "ip": "203.0.113.134",
+        "port": 443
+      },
+      "source": {
+        "ip": "198.51.100.211",
+        "port": 20835
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/robots.txt"
+      },
+      "user": {
+        "id": "186c0f2420a-325d480"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/1.1",
+        "version": "1.1"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "<129>2051-03-01 14:54:44.502 +0100  barracuda WF ALER NO_PARAM_PROFILE_MATCH 198.51.100.211 61507 203.0.113.134 443 Hackazon:adaptive_url_42099b4af021e53fd8fd URL_PROFILE LOG NONE [Parameter\\=\"0x\\\\[\\\\]\" value\\=\"androxgh0st\"] POST / TLSv1.2 \"-\" \"Mozilla/5.0 (Linux; U; Android 4.4.2; en-US; HM NOTE 1W Build/KOT49H) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/11.0.5.850 U3/0.8.0 Mobile Safari/534.30\" 192.0.2.169 61507 \"-\" \"-\" 1869d743696-dfcf8d96",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<129>2051-03-08 12:21:58.661 +0100  barracuda WF ALER NO_DOMAIN_MATCH_IN_PROFILE 198.51.100.211 55111 203.0.113.134 443 Hackazon GLOBAL LOG NONE [\"-\"] GET / TLSv1.2 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36 \" 192.0.2.169 55111 \"-\" http://203.0.113.234/ 186c0f4de06-e0f7a19f",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<129>2051-03-08 12:19:10.177 +0100  barracuda WF ALER NO_DOMAIN_MATCH_IN_PROFILE 198.51.100.211 52532 203.0.113.134 443 Hackazon GLOBAL LOG NONE [\"-\"] GET /sitemap.xml TLSv1.2 \"-\" \"Go-http-client/1.1\" 192.0.2.169 52532 \"-\" http://203.0.113.231/sitemap.xml 186c0f24c61-427e368",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<129>2051-03-08 12:19:10.177 +0100  barracuda WF ALER NO_URL_PROFILE_MATCH 198.51.100.211 52532 203.0.113.134 443 Hackazon GLOBAL LOG NONE [\"-\"] GET /sitemap.xml TLSv1.2 \"-\" \"Go-http-client/1.1\" 192.0.2.169 52532 \"-\" http://203.0.113.231/sitemap.xml 186c0f24c61-427e368",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<129>2051-03-08 12:19:07.530 +0100  barracuda WF ALER FINGERPRINT_RISK_LEVEL_SUSPECTED_CLIENT 198.51.100.211 20835 203.0.113.134 443 global GLOBAL DENY CHALLENGE WITH CAPTCHA [Reason\\=\"Request originating from robot or robot mobile\"] GET /robots.txt TLSv1.2 \"-\" \"Go-http-client/1.1\" 192.0.2.169 20835 \"-\" http://203.0.113.231/robots.txt 186c0f2420a-325d480",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "waf",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-barracuda-waf-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "barracuda",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

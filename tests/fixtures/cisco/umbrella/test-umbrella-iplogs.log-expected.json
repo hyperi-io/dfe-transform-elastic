@@ -1,0 +1,148 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-08-26T20:32:46.000Z",
+      "cisco": {
+        "umbrella": {
+          "categories": "Test Category",
+          "identity": "elasticuser"
+        }
+      },
+      "destination": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211",
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "\"2048-08-26 20:32:46\",\"elasticuser\",\"192.168.124.110\",\"0\",\"198.51.100.211\",\"0\",\"Test Category\"",
+        "type": [
+          "connection"
+        ]
+      },
+      "log": {
+        "file": {
+          "path": "/test/path/iplogs"
+        }
+      },
+      "observer": {
+        "product": "Umbrella",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "192.168.124.110",
+          "198.51.100.211"
+        ]
+      },
+      "source": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110",
+        "port": 0
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2048-08-26T20:32:45.000Z",
+      "cisco": {
+        "umbrella": {
+          "categories": "Test Category",
+          "identity": "elasticuser"
+        }
+      },
+      "destination": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211",
+        "port": 445
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "\"2048-08-26 20:32:45\",\"elasticuser\",\"192.168.124.110\",\"61095\",\"198.51.100.211\",\"445\",\"Test Category\"",
+        "type": [
+          "connection"
+        ]
+      },
+      "log": {
+        "file": {
+          "path": "/test/path/iplogs"
+        }
+      },
+      "observer": {
+        "product": "Umbrella",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "192.168.124.110",
+          "198.51.100.211"
+        ]
+      },
+      "source": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110",
+        "port": 61095
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "log": {
+        "file": {
+          "path": "/test/path/iplogs"
+        }
+      },
+      "message": "\"2048-08-26 20:32:46\",\"elasticuser\",\"192.168.124.110\",\"0\",\"198.51.100.211\",\"0\",\"Test Category\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "log": {
+        "file": {
+          "path": "/test/path/iplogs"
+        }
+      },
+      "message": "\"2048-08-26 20:32:45\",\"elasticuser\",\"192.168.124.110\",\"61095\",\"198.51.100.211\",\"445\",\"Test Category\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_umbrella-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "cisco_umbrella",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

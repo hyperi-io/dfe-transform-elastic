@@ -38,7 +38,7 @@ use std::path::{Path, PathBuf};
 use dfe_runtime::testutil::ratchets::Ratchets;
 
 /// The marker the generator leaves where a condition defeated the transpiler.
-const MARKER: &str = "// SKIPPED: condition not transpiled: ";
+const MARKER: &str = "// SKIPPED: the pipeline's condition has no equivalent here";
 
 /// The walk has to actually reach the generated tree.
 ///

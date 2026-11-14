@@ -1,0 +1,66 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:04:58.290Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "version": "8.0.0",
+                "ephemeral_id": "3c23c20e-9b34-4fa2-adb7-e3c2100d8b2c",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat"
+            },
+            "winlog": {
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "outcome": "success",
+                "level": "information",
+                "event_data": {
+                    "ServiceName": "krbtgt",
+                    "ServiceSid": "S-1-5-21-1717121054-434620538-60925301-502",
+                    "TicketEncryptionType": "0x12",
+                    "PreAuthType": "2",
+                    "TargetUserName": "ev_aav",
+                    "Status": "0x0",
+                    "IpAddress": "::ffff:10.38.147.236",
+                    "TicketOptions": "0x40810010",
+                    "TargetDomainName": "TEST.SAAS",
+                    "IpPort": "0",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2794"
+                },
+                "channel": "Security",
+                "record_id": 5040235,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "time_created": "2048-04-01T08:45:44.171Z",
+                "process": {
+                    "pid": 496,
+                    "thread": {
+                        "id": 2868
+                    }
+                },
+                "event_id": 4768,
+                "provider_name": "Microsoft-Windows-Security-Auditing"
+            },
+            "event": {
+                "outcome": "success",
+                "kind": "event",
+                "code": 4768,
+                "provider": "Microsoft-Windows-Security-Auditing"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4768.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

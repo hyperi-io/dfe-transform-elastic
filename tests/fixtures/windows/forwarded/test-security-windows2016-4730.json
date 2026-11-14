@@ -1,0 +1,63 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:05:48.555Z",
+            "winlog": {
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-10-22T11:34:01.610Z",
+                "level": "information",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 4670,
+                "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "event_data": {
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1112",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "SubjectDomainName": "WLBEAT",
+                    "SubjectLogonId": "0x4a727",
+                    "PrivilegeList": "-",
+                    "TargetUserName": "jbtq_smhhu3l5",
+                    "TargetDomainName": "WLBEAT"
+                },
+                "channel": "Security",
+                "event_id": 4730,
+                "outcome": "success",
+                "process": {
+                    "pid": 772,
+                    "thread": {
+                        "id": 1664
+                    }
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4730,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "level": "information",
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4730.xml"
+                }
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG.jwbfen.local"
+            },
+            "agent": {
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "d97ee80c-9b18-475c-8084-88a2714403ac",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain"
+            }
+        }
+    ]
+}

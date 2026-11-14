@@ -1247,9 +1247,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("organization.id") && event.has_value("_tmp.tenants") };
             if _cond {
-                // Painless script
-                // Source: def conftenants = ctx._tmp.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1289,9 +1287,7 @@ impl Transform for Default {
                 event.set("event.module", v)?;
             }
 
-            // Painless script
-            // Source: def schemaId = ctx.bitdefender?.event?.module.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.kind = schema;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1302,9 +1298,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: def schemaId = ctx.bitdefender?.event?.module.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.category = schema;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1315,9 +1309,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: def schemaId = ctx.bitdefender?.event?.module.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.type = schema;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1328,9 +1320,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: def schemaId = ctx.bitdefender?.event?.module.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.provider = schema;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1684,7 +1674,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.bitdefender?.event?.url != null && ctx.bitdefender?.event?.url =~ /^(?![a-zA-Z0-9]+:\/\/)/
+            // SKIPPED: the pipeline's condition has no equivalent here
             #[allow(unreachable_code, unused_variables)]
             if false {
                 if event.has_value("bitdefender.event.url") {
@@ -3081,8 +3071,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'undefined') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\n// Prevent empty fields in correlated arrays from being removed.\n// The first two cases should never happen, but are included\n// defensively. The remediationActions elements may be validly\n// empty.\nctx.bitdefender?.event?.filePath?.replaceAll(e -> e == \"\" ? \"-\" : e);\nctx.bitdefender?.event?.fileSizes?.replaceAll(e -> e == \"\" ? \"-\" : e);\nctx.bitdefender?.event?.remediationActions?.replaceAll(e -> e == \"\" ? \"-\" : e);\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             fill_empty_elements(
                 event,
                 &ListFill::new("bitdefender.event.filePath".into(), "-".into()),

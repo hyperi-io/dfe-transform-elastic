@@ -76,9 +76,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: // Severity can arrive either as a number (1-4) or as a textual label,\n// so first resolve it to a canonical label before deriving a score.\ndef severity = ctx.beyondtrust_isi.incident.severity;\nString label = null;\n\nif (severity instanceof Long) {\n  label = params.number_to_label.get(String.valueOf(severity));\n} else if (severity instanceof String) {\n  label = (String) severity;\n}\n\n// Drop unrecognized or out-of-range values so only valid labels remain.\nif (label == null) {\n  ctx.beyondtrust_isi.incident.remove('severity');\n  return;\n}\n\nctx.beyondtrust_isi.incident.severity = label;\n\ndef score = params.label_to_score.get(label.toLowerCase());\nif (score != null) {\n  ctx.event.severity = score;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -444,8 +442,7 @@ impl Transform for Default {
             event.remove("beyondtrust_isi.incident.tenantId");
             event.remove("beyondtrust_isi.incident.timestamp");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -458,9 +455,7 @@ impl Transform for Default {
                 None,
             );
 
-            // Painless script
-            // Source: String camelToSnake(String str) {\n  StringBuilder result = new StringBuilder();\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0) {\n        char prev = str.charAt(i - 1);\n        boolean nextIsLower = (i + 1 < str.length()) && Character.isLowerCase(str.charAt(i + 1));\n        boolean prevIsDigit = Character.isDigit(prev);\n        if (Character.isLowerCase(prev) || prevIsDigit || (Character.isUpperCase(prev) && nextIsLower)) {\n          result.append('_');\n        }\n      }\n      result.append(Character.toLowerCase(c));\n    } else {\n      result.append(c);\n    }\n  }\n  return result.toString();\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\nctx.beyondtrust_isi = ctx.beyondtrust_isi ?: [:];\nif (ctx.beyondtrust_isi?.incident != null) {\n  ctx.beyondtrust_isi.incident = convertToSnakeCase(ctx.beyondtrust_isi.incident);\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

@@ -1,0 +1,179 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-07-28T13:22:18.799Z",
+      "agent": {
+        "ephemeral_id": "3b700ea2-28bc-4467-85ba-381a1ecd8314",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "permissions-changed",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "code": "4670",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "admin",
+          "change"
+        ]
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4670_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\services.exe",
+        "name": "services.exe",
+        "pid": 764
+      },
+      "related": {
+        "user": [
+          "ZVK-EPQ9VR7G6I6$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TEST",
+        "id": "S-1-5-18",
+        "name": "ZVK-EPQ9VR7G6I6$"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "event_data": {
+          "HandleId": "0x56c",
+          "NewSd": "D:(A;;GA;;;SY)(A;;RC;;;OW)(A;;GA;;;S-1-5-80-123231216-2592883651-3715271367-3753151631-4175906628)",
+          "NewSdDacl0": "Local system :Access Allowed ([Generic All])",
+          "NewSdDacl1": "OW :Access Allowed ([Read Permissions])",
+          "NewSdDacl2": "S-1-5-80-123231216-2592883651-3715271367-3753151631-4175906628 :Access Allowed ([Generic All])",
+          "ObjectServer": "Security",
+          "ObjectType": "Token",
+          "OldSd": "D:(A;;GA;;;SY)(A;;GA;;;NS)",
+          "OldSdDacl0": "Local system :Access Allowed ([Generic All])",
+          "OldSdDacl1": "Network service account :Access Allowed ([Generic All])",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+          "SubjectUserSid": "S-1-5-18"
+        },
+        "event_id": "4670",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 4604
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "31932",
+        "time_created": "2048-07-28T13:22:18.799Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:09:09.111Z",
+      "agent": {
+        "ephemeral_id": "3b700ea2-28bc-4467-85ba-381a1ecd8314",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4670,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4670_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "event_data": {
+          "HandleId": "0x56c",
+          "NewSd": "D:(A;;GA;;;SY)(A;;RC;;;OW)(A;;GA;;;S-1-5-80-123231216-2592883651-3715271367-3753151631-4175906628)",
+          "ObjectName": "-",
+          "ObjectServer": "Security",
+          "ObjectType": "Token",
+          "OldSd": "D:(A;;GA;;;SY)(A;;GA;;;NS)",
+          "ProcessId": "0x2fc",
+          "ProcessName": "C:\\Windows\\System32\\services.exe",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+          "SubjectUserSid": "S-1-5-18"
+        },
+        "event_id": 4670,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 4604
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 31932,
+        "time_created": "2048-07-28T13:22:18.799Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

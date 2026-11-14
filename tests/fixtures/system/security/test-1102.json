@@ -1,0 +1,60 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:07:33.932Z",
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/1102.xml"
+                },
+                "level": "information"
+            },
+            "agent": {
+                "ephemeral_id": "031e9777-0034-47b1-b3a1-a84ced0373a4",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG.jwbfen.local"
+            },
+            "winlog": {
+                "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+                "opcode": "Info",
+                "provider_guid": "{cd70abd9-f2ce-4855-83a5-2b1ffa7fb066}",
+                "time_created": "2047-11-07T10:34:29.055Z",
+                "outcome": "success",
+                "level": "information",
+                "event_id": 1102,
+                "provider_name": "Microsoft-Windows-Eventlog",
+                "user_data": {
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "SubjectDomainName": "WLBEAT",
+                    "SubjectLogonId": "0x50e87",
+                    "xml_name": "LogFileCleared"
+                },
+                "keywords": [
+                    "Audit Success"
+                ],
+                "process": {
+                    "pid": 1144,
+                    "thread": {
+                        "id": 1824
+                    }
+                },
+                "channel": "Security",
+                "record_id": 14224
+            },
+            "event": {
+                "provider": "Microsoft-Windows-Eventlog",
+                "outcome": "success",
+                "kind": "event",
+                "code": 1102
+            }
+        }
+    ]
+}

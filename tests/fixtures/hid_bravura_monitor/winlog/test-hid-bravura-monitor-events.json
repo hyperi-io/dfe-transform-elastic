@@ -1,0 +1,100 @@
+{
+    "events": [
+        {
+            "@timestamp": "2048-05-13T09:04:04.755Z",
+            "winlog": {
+                "time_created": "2048-05-13T09:04:04.755Z",
+                "process": {
+                    "pid": 4204,
+                    "thread": {
+                        "id": 1476
+                    }
+                },
+                "provider_name": "Hitachi-Hitachi ID Systems-Hitachi ID Suite",
+                "record_id": 1548167,
+                "computer_name": "dwofop.cpdmrvbsbemhttl8.corp",
+                "version": 1,
+                "channel": "Hitachi-Hitachi ID Systems-Hitachi ID Suite/Operational",
+                "event_id": "118",
+                "provider_guid": "{c6d7251a-1c26-4d32-8890-1ea6b35e794b}",
+                "level": "warning"
+            },
+            "host": {
+                "name": "dwofop.cpdmrvbsbemhttl8.corp"
+            },
+            "log": {
+                "level": "warning"
+            },
+            "event": {
+                "code": "118",
+                "provider": "Hitachi-Hitachi ID Systems-Hitachi ID Suite",
+                "original": "Database replication queue delay exceeded configured threshold.|Node=domain.bravurasecurity1.corp_pmim|QueueDelay=89239|DelayThreshold=14400",
+                "kind": "event"
+            }
+        },
+        {
+            "@timestamp": "2049-11-03T20:05:14.092Z",
+            "event": {
+                "code": "64",
+                "kind": "event",
+                "provider": "Hitachi-Hitachi ID Systems-Hitachi ID Suite",
+                "original": "Self-service password reset failed.|Profile=Random|FailedTargets=AZURE,AD,LDAP"
+            },
+            "log": {
+                "level": "error"
+            },
+            "host": {
+                "name": "dwofop.cpdmrvbsbemhttl8.corp"
+            },
+            "winlog": {
+                "process": {
+                    "pid": 13272,
+                    "thread": {
+                        "id": 6992
+                    }
+                },
+                "channel": "Hitachi-Hitachi ID Systems-Hitachi ID Suite/Operational",
+                "event_id": "64",
+                "record_id": 2097980,
+                "version": 1,
+                "activity_id": "{1e4ba58a-e788-4dd1-8c87-a3ca3e48e489}",
+                "provider_guid": "{0c062205-81b9-413d-8f0c-7552dd85b049}",
+                "provider_name": "Hitachi-Hitachi ID Systems-Hitachi ID Suite",
+                "computer_name": "dwofop.cpdmrvbsbemhttl8.corp",
+                "level": "error"
+            }
+        },
+        {
+            "@timestamp": "2049-11-03T20:05:14.092Z",
+            "event": {
+                "code": "94",
+                "kind": "event",
+                "provider": "Hitachi-Hitachi ID Systems-Hitachi ID Suite",
+                "original": "Federated authn request successfully parsed.|Issuer=google.com|ClientIPs=192.0.2.87,203.0.113.61|Method=GET|MessageType=AuthnRequest|RequestID=ihikhiagiilnkipblfilbkmjmgmdbhmbgblhihdm"
+            },
+            "log": {
+                "level": "information"
+            },
+            "host": {
+                "name": "dwofop.cpdmrvbsbemhttl8.corp"
+            },
+            "winlog": {
+                "process": {
+                    "pid": 13272,
+                    "thread": {
+                        "id": 6992
+                    }
+                },
+                "channel": "Hitachi-Hitachi ID Systems-Hitachi ID Suite/Operational",
+                "event_id": "94",
+                "record_id": 2097980,
+                "version": 1,
+                "activity_id": "{1e4ba58a-e788-4dd1-8c87-a3ca3e48e489}",
+                "provider_guid": "{0c062205-81b9-413d-8f0c-7552dd85b049}",
+                "provider_name": "Hitachi-Hitachi ID Systems-Hitachi ID Suite",
+                "computer_name": "dwofop.cpdmrvbsbemhttl8.corp",
+                "level": "information"
+            }
+        }
+    ]
+}

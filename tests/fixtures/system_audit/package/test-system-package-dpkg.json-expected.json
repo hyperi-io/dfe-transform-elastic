@@ -1,0 +1,175 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-25T07:13:22.548Z",
+      "agent": {
+        "ephemeral_id": "d5681a48-a566-4b66-b46e-ecb236526423",
+        "id": "6eee23f9-5160-4757-893e-43d2f4a52c9c",
+        "name": "ezdhdr-bldfh-dvenz",
+        "type": "auditbeat",
+        "version": "8.5.1"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "elastic_agent": {
+        "id": "6eee23f9-5160-4757-893e-43d2f4a52c9c",
+        "snapshot": false,
+        "version": "8.5.1"
+      },
+      "event": {
+        "action": "existing_package",
+        "agent_id_status": "verified",
+        "category": [
+          "package"
+        ],
+        "dataset": "system_audit.package",
+        "id": "93fc2998-b6e1-4428-95d9-0f9a0db64ef4",
+        "ingested": "2051-01-25T07:13:23Z",
+        "kind": "state",
+        "module": "system",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "containerized": false,
+        "hostname": "ezdhdr-bldfh-dvenz",
+        "id": "84f54809357b3fce49d7e1652d2a3e77",
+        "ip": [
+          "172.22.216.159"
+        ],
+        "mac": [
+          "88-44-BB-75-35-97"
+        ],
+        "name": "ezdhdr-bldfh-dvenz",
+        "os": {
+          "codename": "focal",
+          "family": "debian",
+          "kernel": "5.15.49-linuxkit",
+          "name": "Ubuntu",
+          "platform": "ubuntu",
+          "type": "linux",
+          "version": "20.04.5 LTS (Focal Fossa)"
+        }
+      },
+      "input": {
+        "type": "audit/system"
+      },
+      "message": "Package adduser (3.118ubuntu2) is already installed",
+      "package": {
+        "architecture": "all",
+        "description": "add and remove users and groups",
+        "name": "adduser",
+        "size": 624,
+        "type": "dpkg",
+        "version": "3.118ubuntu2"
+      },
+      "system_audit": {
+        "package": {
+          "arch": "all",
+          "entity_id": "OnUSNhuUQkyYgoKf",
+          "name": "adduser",
+          "size": 624,
+          "summary": "add and remove users and groups",
+          "version": "3.118ubuntu2"
+        }
+      },
+      "tags": [
+        "audit-system-package"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2051-01-25T07:13:22.548Z",
+      "agent": {
+        "ephemeral_id": "d5681a48-a566-4b66-b46e-ecb236526423",
+        "id": "6eee23f9-5160-4757-893e-43d2f4a52c9c",
+        "name": "ezdhdr-bldfh-dvenz",
+        "type": "auditbeat",
+        "version": "8.5.1"
+      },
+      "ecs": {
+        "version": "8.5.1"
+      },
+      "elastic_agent": {
+        "id": "6eee23f9-5160-4757-893e-43d2f4a52c9c",
+        "snapshot": false,
+        "version": "8.5.1"
+      },
+      "event": {
+        "action": "existing_package",
+        "agent_id_status": "verified",
+        "category": [
+          "package"
+        ],
+        "dataset": "package",
+        "id": "93fc2998-b6e1-4428-95d9-0f9a0db64ef4",
+        "ingested": "2051-01-25T07:13:23Z",
+        "kind": "state",
+        "module": "system",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "containerized": false,
+        "hostname": "ezdhdr-bldfh-dvenz",
+        "id": "84f54809357b3fce49d7e1652d2a3e77",
+        "ip": [
+          "172.22.216.159"
+        ],
+        "mac": [
+          "88-44-BB-75-35-97"
+        ],
+        "name": "ezdhdr-bldfh-dvenz",
+        "os": {
+          "codename": "focal",
+          "family": "debian",
+          "kernel": "5.15.49-linuxkit",
+          "name": "Ubuntu",
+          "platform": "ubuntu",
+          "type": "linux",
+          "version": "20.04.5 LTS (Focal Fossa)"
+        }
+      },
+      "message": "Package adduser (3.118ubuntu2) is already installed",
+      "package": {
+        "architecture": "",
+        "description": "add and remove users and groups",
+        "name": "adduser",
+        "size": 624,
+        "type": "dpkg",
+        "version": "3.118ubuntu2"
+      },
+      "system": {
+        "audit": {
+          "package": {
+            "arch": "all",
+            "entity_id": "OnUSNhuUQkyYgoKf",
+            "name": "adduser",
+            "size": 624,
+            "summary": "add and remove users and groups",
+            "version": "3.118ubuntu2"
+          }
+        }
+      },
+      "tags": [
+        "audit-system-package"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "package",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system_audit-package-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system_audit",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

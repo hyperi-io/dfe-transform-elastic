@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `tychon`'s agent-output scripts, transcribed.
+//! `tychon`'s agent-output scripts, as the runtime runs them.
 //!
 //! The agent reports Windows values the way .NET prints them, so a file's
 //! attribute list carries the enum's own members beside the strings, a link
@@ -104,7 +104,7 @@ fn wrap_x509_party_fields(event: &mut Event, params: &Value) {
     }
 }
 
-/// Every `tychon` script transcribed here.
+/// Every `tychon` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "876124fc95551302e2783d9931bc83a8d7890673c0e98face3b30ba1ef10f6d3",

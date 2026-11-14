@@ -92,9 +92,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json") };
             if _cond {
-                // Painless script
-                // Source: String camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      if (!entry.getKey().contains(\"@\")) {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\nctx.wiz = ctx.wiz ?: [:];\nctx.wiz.defend_v2 = convertToSnakeCase(ctx.json);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -255,9 +253,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_string())
             };
             if _cond {
-                // Painless script
-                // Source: String severity = ctx.wiz.defend_v2.severity;\nif (severity.equalsIgnoreCase(\"low\")) {\n  ctx.event.severity = 21;\n} else if (severity.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 0;\n} else if (severity.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (severity.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (severity.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1050,9 +1046,7 @@ impl Transform for Default {
                         })
             };
             if _cond {
-                // Painless script
-                // Source: String mapOsType(def osType) {\n  if (osType == null) {\n    return null;\n  }\n  String os = osType.toString().toLowerCase();\n  if (os.contains('windows')) {\n    return 'windows';\n  } else if (os.contains('mac') || os.contains('darwin')) {\n    return 'macos';\n  } else if (os.contains('linux') || os.contains('amazon') || os.contains('ubuntu') || os.contains('debian') || os.contains('centos') || os.contains('rhel') || os.contains('unix')) {\n    return 'linux';\n  } else if (os.contains('android')) {\n    return 'android';\n  } else if (os.contains('ios')) {\n    return 'ios';\n  }\n  return null;\n}\ndef osTypes = [];\nfor (def node : ctx.wiz.defend_v2.triggering_events.nodes) {\n  def audit = node.raw_audit_log_record;\n  if (!(audit instanceof Map)) {\n    continue;\n  }\n  def common = audit.common;\n  if (!(common instanceof Map)) {\n    continue;\n  }\n  def hostInfo = common.host_info;\n  if (!(hostInfo instanceof Map)) {\n    continue;\n  }\n  String mappedOsType = mapOsType(hostInfo.os_type);\n  if (mappedOsType != null && !osTypes.contains(mappedOsType)) {\n    osTypes.add(mappedOsType);\n  }\n}\nif (!osTypes.isEmpty()) {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.os = ctx.host.os ?: [:];\n  ctx.host.os.type = osTypes.size() == 1 ? osTypes[0] : osTypes;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1231,8 +1225,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

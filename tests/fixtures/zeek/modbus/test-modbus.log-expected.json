@@ -1,0 +1,78 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2040-11-12T11:04:25.222Z",
+      "destination": {
+        "address": "192.168.147.61",
+        "ip": "192.168.147.61",
+        "port": 502
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "READ_COILS",
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CpIIXl4DFGswmjH2bl",
+        "kind": "event",
+        "original": "{\"ts\":2236331065.222457,\"uid\":\"CpIIXl4DFGswmjH2bl\",\"id.orig_h\":\"192.168.26.209\",\"id.orig_p\":64342,\"id.resp_h\":\"192.168.147.61\",\"id.resp_p\":502,\"func\":\"READ_COILS\"}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:oaFmyy4DRcEbiiYFZzXrb2u/Rsw=",
+        "protocol": "modbus",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "192.168.26.209",
+          "192.168.147.61"
+        ]
+      },
+      "source": {
+        "address": "192.168.26.209",
+        "ip": "192.168.26.209",
+        "port": 64342
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "modbus": {
+          "function": "READ_COILS"
+        },
+        "session_id": "CpIIXl4DFGswmjH2bl"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2236331065.222457,\"uid\":\"CpIIXl4DFGswmjH2bl\",\"id.orig_h\":\"192.168.26.209\",\"id.orig_p\":64342,\"id.resp_h\":\"192.168.147.61\",\"id.resp_p\":502,\"func\":\"READ_COILS\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "modbus",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-modbus-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

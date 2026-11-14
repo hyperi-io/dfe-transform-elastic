@@ -1,0 +1,959 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-11-13T11:55:43.123Z",
+      "client": {
+        "ip": "192.0.2.54"
+      },
+      "destination": {
+        "ip": "203.0.113.138",
+        "port": 443
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "duration": 45000000,
+        "kind": "event",
+        "original": "{\"endpointHostName\": \"workstation-pc01\", \"customerId\": \"d7b7c8d3-b2c8-7187-abad-ed9830843751\", \"osName\": \"Windows 10\", \"dst\": \"203.0.113.138\", \"endpointGuid\": \"67311730-a9a1-458a-9261-0bad8136ac68\", \"principalName\": \"hshg.fqb@example.com\", \"request\": \"https://portal.example.com/dashboard\", \"act\": 1, \"src\": \"192.0.2.134\", \"serverTls\": \"TLS 1.3\", \"eventTime\": 2583489343123, \"serverProtocol\": \"HTTP/2\", \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36\", \"rt\": 1699876545, \"tenantGuid\": \"c8e0e8b9-f636-9118-bbdc-d85218261134\", \"eventName\": \"SWG_ACTIVITY_LOG\", \"application\": \"Microsoft 365\", \"ruleName\": \"Corporate_Access_Policy\", \"clientIp\": \"192.0.2.54\", \"requestBase\": \"portal.example.com\", \"score\": 95, \"userDomain\": \"example.com\", \"suid\": \"John Doe\", \"duration\": 45, \"eventSubName\": \"SharePoint file download\", \"fileHash\": \"e7c9d0c8d7d1311701478351694346547059acab\", \"fileHashSha256\": \"de0cfcfbb99be6057973421b52309cb08521a02be01d297719b21c189e032e12\", \"fileName\": \"quarterly_report.xlsx\", \"fileSize\": 245678, \"fileType\": \"Microsoft Excel\", \"malName\": \"\", \"mimeType\": \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\", \"sender\": \"Corporate Gateway\", \"detectionType\": 10, \"profile\": \"standard\", \"userDepartment\": \"Finance\", \"requestMethod\": \"GET\", \"pname\": \"2200\", \"pver\": \"2.1\", \"deviceGUID\": \"d4a0e2f5-0474-1392-cdec-423726366946\", \"requestMimeType\": \"application/json\", \"ruleType\": \"access\", \"ruleUuid\": \"e2b2f422-6081-3851-dfc7-199906724056\", \"objectId\": \"f5f30330-2255-5796-ec89-383878206543\", \"spt\": 49152, \"policyUuid\": \"c5958549-7985-7114-f678-355133766537\", \"dpt\": 443, \"companyName\": \"Acme Corporation\", \"start\": 2583489300}",
+        "start": 2583489300
+      },
+      "file": {
+        "hash": {
+          "sha1": "e7c9d0c8d7d1311701478351694346547059acab",
+          "sha256": "de0cfcfbb99be6057973421b52309cb08521a02be01d297719b21c189e032e12"
+        },
+        "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "name": "quarterly_report.xlsx",
+        "size": 245678,
+        "type": "Microsoft Excel"
+      },
+      "host": {
+        "hostname": "workstation-pc01",
+        "os": {
+          "name": "Windows 10"
+        }
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "mime_type": "application/json"
+        }
+      },
+      "network": {
+        "protocol": "HTTP/2"
+      },
+      "organization": {
+        "name": "Acme Corporation"
+      },
+      "related": {
+        "hash": [
+          "e7c9d0c8d7d1311701478351694346547059acab",
+          "de0cfcfbb99be6057973421b52309cb08521a02be01d297719b21c189e032e12"
+        ],
+        "hosts": [
+          "workstation-pc01",
+          "portal.example.com"
+        ],
+        "ip": [
+          "192.0.2.134",
+          "203.0.113.138",
+          "192.0.2.54"
+        ],
+        "user": [
+          "John Doe",
+          "hshg.fqb@example.com"
+        ]
+      },
+      "rule": {
+        "category": "access",
+        "name": "Corporate_Access_Policy",
+        "uuid": "e2b2f422-6081-3851-dfc7-199906724056"
+      },
+      "source": {
+        "ip": "192.0.2.134",
+        "port": 49152
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "tls": {
+        "version": "TLS 1.3"
+      },
+      "trend_micro_vision_one": {
+        "network_activity": {
+          "act": 1,
+          "act_value": "monitor",
+          "application": "Microsoft 365",
+          "client": {
+            "ip": "192.0.2.54"
+          },
+          "company_name": "Acme Corporation",
+          "customer": {
+            "id": "d7b7c8d3-b2c8-7187-abad-ed9830843751"
+          },
+          "destination": {
+            "ip": "203.0.113.138",
+            "port": 443
+          },
+          "detection": {
+            "type": 10
+          },
+          "device": {
+            "guid": "d4a0e2f5-0474-1392-cdec-423726366946"
+          },
+          "duration": 45,
+          "endpoint": {
+            "guid": "67311730-a9a1-458a-9261-0bad8136ac68",
+            "host_name": "workstation-pc01"
+          },
+          "event": {
+            "name": "SWG_ACTIVITY_LOG",
+            "sub_name": "SharePoint file download",
+            "time": "2051-11-13T11:55:43.123Z"
+          },
+          "file": {
+            "hash_sha1": "e7c9d0c8d7d1311701478351694346547059acab",
+            "hash_sha256": "de0cfcfbb99be6057973421b52309cb08521a02be01d297719b21c189e032e12",
+            "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "name": "quarterly_report.xlsx",
+            "size": 245678,
+            "type": "Microsoft Excel"
+          },
+          "object": {
+            "id": "f5f30330-2255-5796-ec89-383878206543"
+          },
+          "os": {
+            "name": "Windows 10"
+          },
+          "pname": "2200",
+          "policy": {
+            "uuid": "c5958549-7985-7114-f678-355133766537"
+          },
+          "profile": "standard",
+          "pver": "2.1",
+          "request": {
+            "base": "portal.example.com",
+            "method": "GET",
+            "mime_type": "application/json",
+            "url": "https://portal.example.com/dashboard"
+          },
+          "rt": 1699876545,
+          "rule": {
+            "name": "Corporate_Access_Policy",
+            "type": "access",
+            "uuid": "e2b2f422-6081-3851-dfc7-199906724056"
+          },
+          "score": 95,
+          "sender": "Corporate Gateway",
+          "server": {
+            "protocol": "HTTP/2",
+            "tls": "TLS 1.3"
+          },
+          "source": {
+            "ip": "192.0.2.134",
+            "port": 49152
+          },
+          "start": 2583489300,
+          "tenant": {
+            "guid": "c8e0e8b9-f636-9118-bbdc-d85218261134"
+          },
+          "user": {
+            "department": "Finance",
+            "domain": "example.com",
+            "id": "John Doe",
+            "principal_name": "hshg.fqb@example.com"
+          },
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+        }
+      },
+      "url": {
+        "original": "https://portal.example.com/dashboard"
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "hshg.fqb@example.com",
+        "name": "John Doe"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "@timestamp": "2051-11-13T12:14:14.000Z",
+      "client": {
+        "ip": "192.0.2.218"
+      },
+      "destination": {
+        "ip": "192.0.2.54",
+        "port": 443
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "duration": 120000000,
+        "kind": "event",
+        "original": "{\"endpointHostName\": \"laptop-sales03\", \"customerId\": \"c8e0e8b9-f636-9118-bbdc-d85218261134\", \"osName\": \"Windows 11\", \"dst\": \"192.0.2.54\", \"endpointGuid\": \"91185698-c3c7-525b-a48b-0ceb9157be68\", \"principalName\": \"pfleo.xrspi@example.com\", \"request\": \"https://drive.example.com/files/contract.pdf\", \"act\": 4, \"src\": \"198.51.100.211\", \"serverTls\": \"TLS 1.2\", \"eventTime\": 2583490454, \"serverProtocol\": \"HTTP/1.1\", \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0\", \"rt\": 1699877656, \"tenantGuid\": \"d4a0e2f5-0474-1392-cdec-423726366946\", \"eventName\": \"SWG_ACTIVITY_LOG\", \"application\": \"Google Drive\", \"ruleName\": \"DLP_Sensitive_Files\", \"clientIp\": \"192.0.2.218\", \"requestBase\": \"drive.example.com\", \"score\": 45, \"userDomain\": \"example.com\", \"suid\": \"Sarah Smith\", \"duration\": 120, \"eventSubName\": \"Cloud storage upload blocked\", \"fileHash\": \"d1e7e2c9d76815180722323603120539802deffe\", \"fileHashSha256\": \"cc8411786907726410903780551193abfbfd940553510941086677095580bbfb\", \"fileName\": \"contract_confidential.pdf\", \"fileSize\": 1567890, \"fileType\": \"Adobe PDF\", \"malName\": \"\", \"mimeType\": \"application/pdf\", \"sender\": \"Remote VPN Gateway\", \"detectionType\": 30, \"profile\": \"dlp_strict\", \"userDepartment\": \"Sales\", \"requestMethod\": \"POST\", \"pname\": \"2200\", \"pver\": \"2.1\", \"deviceGUID\": \"e2b2f422-6081-3851-dfc7-199906724056\", \"requestMimeType\": \"multipart/form-data\", \"ruleType\": \"dlp\", \"ruleUuid\": \"f5f30330-2255-5796-ec89-383878206543\", \"objectId\": \"c5958549-7985-7114-f678-355133766537\", \"spt\": 51234, \"policyUuid\": \"31913207-38fa-cecd-0814-099215afccef\", \"dpt\": 443, \"companyName\": \"Acme Corporation\", \"start\": 2583490400}",
+        "start": 2583490400
+      },
+      "file": {
+        "hash": {
+          "sha1": "d1e7e2c9d76815180722323603120539802deffe",
+          "sha256": "cc8411786907726410903780551193abfbfd940553510941086677095580bbfb"
+        },
+        "mime_type": "application/pdf",
+        "name": "contract_confidential.pdf",
+        "size": 1567890,
+        "type": "Adobe PDF"
+      },
+      "host": {
+        "hostname": "laptop-sales03",
+        "os": {
+          "name": "Windows 11"
+        }
+      },
+      "http": {
+        "request": {
+          "method": "POST",
+          "mime_type": "multipart/form-data"
+        }
+      },
+      "network": {
+        "protocol": "HTTP/1.1"
+      },
+      "organization": {
+        "name": "Acme Corporation"
+      },
+      "related": {
+        "hash": [
+          "d1e7e2c9d76815180722323603120539802deffe",
+          "cc8411786907726410903780551193abfbfd940553510941086677095580bbfb"
+        ],
+        "hosts": [
+          "laptop-sales03",
+          "drive.example.com"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "192.0.2.54",
+          "192.0.2.218"
+        ],
+        "user": [
+          "Sarah Smith",
+          "pfleo.xrspi@example.com"
+        ]
+      },
+      "rule": {
+        "category": "dlp",
+        "name": "DLP_Sensitive_Files",
+        "uuid": "f5f30330-2255-5796-ec89-383878206543"
+      },
+      "source": {
+        "ip": "198.51.100.211",
+        "port": 51234
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "tls": {
+        "version": "TLS 1.2"
+      },
+      "trend_micro_vision_one": {
+        "network_activity": {
+          "act": 4,
+          "act_value": "override",
+          "application": "Google Drive",
+          "client": {
+            "ip": "192.0.2.218"
+          },
+          "company_name": "Acme Corporation",
+          "customer": {
+            "id": "c8e0e8b9-f636-9118-bbdc-d85218261134"
+          },
+          "destination": {
+            "ip": "192.0.2.54",
+            "port": 443
+          },
+          "detection": {
+            "type": 30
+          },
+          "device": {
+            "guid": "e2b2f422-6081-3851-dfc7-199906724056"
+          },
+          "duration": 120,
+          "endpoint": {
+            "guid": "91185698-c3c7-525b-a48b-0ceb9157be68",
+            "host_name": "laptop-sales03"
+          },
+          "event": {
+            "name": "SWG_ACTIVITY_LOG",
+            "sub_name": "Cloud storage upload blocked",
+            "time": "2051-11-13T12:14:14.000Z"
+          },
+          "file": {
+            "hash_sha1": "d1e7e2c9d76815180722323603120539802deffe",
+            "hash_sha256": "cc8411786907726410903780551193abfbfd940553510941086677095580bbfb",
+            "mime_type": "application/pdf",
+            "name": "contract_confidential.pdf",
+            "size": 1567890,
+            "type": "Adobe PDF"
+          },
+          "object": {
+            "id": "c5958549-7985-7114-f678-355133766537"
+          },
+          "os": {
+            "name": "Windows 11"
+          },
+          "pname": "2200",
+          "policy": {
+            "uuid": "31913207-38fa-cecd-0814-099215afccef"
+          },
+          "profile": "dlp_strict",
+          "pver": "2.1",
+          "request": {
+            "base": "drive.example.com",
+            "method": "POST",
+            "mime_type": "multipart/form-data",
+            "url": "https://drive.example.com/files/contract.pdf"
+          },
+          "rt": 1699877656,
+          "rule": {
+            "name": "DLP_Sensitive_Files",
+            "type": "dlp",
+            "uuid": "f5f30330-2255-5796-ec89-383878206543"
+          },
+          "score": 45,
+          "sender": "Remote VPN Gateway",
+          "server": {
+            "protocol": "HTTP/1.1",
+            "tls": "TLS 1.2"
+          },
+          "source": {
+            "ip": "198.51.100.211",
+            "port": 51234
+          },
+          "start": 2583490400,
+          "tenant": {
+            "guid": "d4a0e2f5-0474-1392-cdec-423726366946"
+          },
+          "user": {
+            "department": "Sales",
+            "domain": "example.com",
+            "id": "Sarah Smith",
+            "principal_name": "pfleo.xrspi@example.com"
+          },
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0"
+        }
+      },
+      "url": {
+        "original": "https://drive.example.com/files/contract.pdf"
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "pfleo.xrspi@example.com",
+        "name": "Sarah Smith"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0"
+      }
+    },
+    {
+      "@timestamp": "2051-11-13T12:32:45.000Z",
+      "client": {
+        "ip": "192.0.2.134"
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 8443
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "duration": 15000000,
+        "kind": "event",
+        "original": "{\"endpointHostName\": \"server-web01\", \"customerId\": \"d4a0e2f5-0474-1392-cdec-423726366946\", \"osName\": \"Windows Server 2022\", \"dst\": \"198.51.100.211\", \"endpointGuid\": \"91389619-c0e9-621e-b9cb-9ecc0499fd02\", \"principalName\": \"admin@example.com\", \"request\": \"https://api.example.com/v2/users\", \"act\": 1, \"src\": \"192.0.2.218\", \"serverTls\": \"TLS 1.3\", \"eventTime\": 2583491565, \"serverProtocol\": \"HTTP/2\", \"userAgent\": \"curl/8.4.0\", \"rt\": 1699878766, \"tenantGuid\": \"e2b2f422-6081-3851-dfc7-199906724056\", \"eventName\": \"SWG_ACTIVITY_LOG\", \"application\": \"Custom API\", \"ruleName\": \"API_Gateway_Access\", \"clientIp\": \"192.0.2.134\", \"requestBase\": \"api.example.com\", \"score\": 100, \"userDomain\": \"example.com\", \"suid\": \"API Service Account\", \"duration\": 15, \"eventSubName\": \"API request allowed\", \"fileHash\": \"\", \"fileHashSha256\": \"\", \"fileName\": \"\", \"fileSize\": 0, \"fileType\": \"\", \"malName\": \"\", \"mimeType\": \"application/json\", \"sender\": \"Internal Gateway\", \"detectionType\": 0, \"profile\": \"api_default\", \"userDepartment\": \"IT\", \"requestMethod\": \"GET\", \"pname\": \"2200\", \"pver\": \"2.1\", \"deviceGUID\": \"f5f30330-2255-5796-ec89-383878206543\", \"requestMimeType\": \"application/json\", \"ruleType\": \"access\", \"ruleUuid\": \"c5958549-7985-7114-f678-355133766537\", \"objectId\": \"31913207-38fa-cecd-0814-099215afccef\", \"spt\": 52345, \"policyUuid\": \"47334614-7cfd-dfc4-1247-47333cbcdda0\", \"dpt\": 8443, \"companyName\": \"Acme Corporation\", \"start\": 2583491560}",
+        "start": 2583491560
+      },
+      "file": {
+        "mime_type": "application/json",
+        "size": 0
+      },
+      "host": {
+        "hostname": "server-web01",
+        "os": {
+          "name": "Windows Server 2022"
+        }
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "mime_type": "application/json"
+        }
+      },
+      "network": {
+        "protocol": "HTTP/2"
+      },
+      "organization": {
+        "name": "Acme Corporation"
+      },
+      "related": {
+        "hosts": [
+          "server-web01",
+          "api.example.com"
+        ],
+        "ip": [
+          "192.0.2.218",
+          "198.51.100.211",
+          "192.0.2.134"
+        ],
+        "user": [
+          "API Service Account",
+          "admin@example.com"
+        ]
+      },
+      "rule": {
+        "category": "access",
+        "name": "API_Gateway_Access",
+        "uuid": "c5958549-7985-7114-f678-355133766537"
+      },
+      "source": {
+        "ip": "192.0.2.218",
+        "port": 52345
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "tls": {
+        "version": "TLS 1.3"
+      },
+      "trend_micro_vision_one": {
+        "network_activity": {
+          "act": 1,
+          "act_value": "monitor",
+          "application": "Custom API",
+          "client": {
+            "ip": "192.0.2.134"
+          },
+          "company_name": "Acme Corporation",
+          "customer": {
+            "id": "d4a0e2f5-0474-1392-cdec-423726366946"
+          },
+          "destination": {
+            "ip": "198.51.100.211",
+            "port": 8443
+          },
+          "detection": {
+            "type": 0
+          },
+          "device": {
+            "guid": "f5f30330-2255-5796-ec89-383878206543"
+          },
+          "duration": 15,
+          "endpoint": {
+            "guid": "91389619-c0e9-621e-b9cb-9ecc0499fd02",
+            "host_name": "server-web01"
+          },
+          "event": {
+            "name": "SWG_ACTIVITY_LOG",
+            "sub_name": "API request allowed",
+            "time": "2051-11-13T12:32:45.000Z"
+          },
+          "file": {
+            "mime_type": "application/json",
+            "size": 0
+          },
+          "object": {
+            "id": "31913207-38fa-cecd-0814-099215afccef"
+          },
+          "os": {
+            "name": "Windows Server 2022"
+          },
+          "pname": "2200",
+          "policy": {
+            "uuid": "47334614-7cfd-dfc4-1247-47333cbcdda0"
+          },
+          "profile": "api_default",
+          "pver": "2.1",
+          "request": {
+            "base": "api.example.com",
+            "method": "GET",
+            "mime_type": "application/json",
+            "url": "https://api.example.com/v2/users"
+          },
+          "rt": 1699878766,
+          "rule": {
+            "name": "API_Gateway_Access",
+            "type": "access",
+            "uuid": "c5958549-7985-7114-f678-355133766537"
+          },
+          "score": 100,
+          "sender": "Internal Gateway",
+          "server": {
+            "protocol": "HTTP/2",
+            "tls": "TLS 1.3"
+          },
+          "source": {
+            "ip": "192.0.2.218",
+            "port": 52345
+          },
+          "start": 2583491560,
+          "tenant": {
+            "guid": "e2b2f422-6081-3851-dfc7-199906724056"
+          },
+          "user": {
+            "department": "IT",
+            "domain": "example.com",
+            "id": "API Service Account",
+            "principal_name": "admin@example.com"
+          },
+          "user_agent": "curl/8.4.0"
+        }
+      },
+      "url": {
+        "original": "https://api.example.com/v2/users"
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "admin@example.com",
+        "name": "API Service Account"
+      },
+      "user_agent": {
+        "original": "curl/8.4.0"
+      }
+    },
+    {
+      "@timestamp": "2051-11-13T12:51:16.000Z",
+      "client": {
+        "ip": "192.0.2.54"
+      },
+      "destination": {
+        "ip": "192.0.2.134",
+        "port": 80
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "duration": 8000000,
+        "kind": "event",
+        "original": "{\"endpointHostName\": \"desktop-hr04\", \"customerId\": \"e2b2f422-6081-3851-dfc7-199906724056\", \"osName\": \"macOS Sonoma\", \"dst\": \"192.0.2.134\", \"endpointGuid\": \"d1970739-a2c9-7c0d-c2ca-6da25245db34\", \"principalName\": \"fvpd.yktew@example.com\", \"request\": \"https://malicious-site.example.net/download.exe\", \"act\": 2, \"src\": \"203.0.113.138\", \"serverTls\": \"TLS 1.2\", \"eventTime\": 2583492676, \"serverProtocol\": \"HTTP/1.1\", \"userAgent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 14_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15\", \"rt\": 1699879878, \"tenantGuid\": \"f5f30330-2255-5796-ec89-383878206543\", \"eventName\": \"SWG_ACTIVITY_LOG\", \"application\": \"Unknown\", \"ruleName\": \"Malware_Block_Policy\", \"clientIp\": \"192.0.2.54\", \"requestBase\": \"malicious-site.example.net\", \"score\": 5, \"userDomain\": \"example.com\", \"suid\": \"Emma Jones\", \"duration\": 8, \"eventSubName\": \"Malware download blocked\", \"fileHash\": \"d0a0f0f053786443434525582357521714bfecdc\", \"fileHashSha256\": \"ff944312049340071191596689406affced1028903837474369276588590bcde\", \"fileName\": \"invoice_update.exe\", \"fileSize\": 4567890, \"fileType\": \"Windows Executable\", \"malName\": \"Trojan.GenericKD.46584712\", \"mimeType\": \"application/x-msdownload\", \"sender\": \"Corporate Gateway\", \"detectionType\": 60, \"profile\": \"threat_protection\", \"userDepartment\": \"HR\", \"requestMethod\": \"GET\", \"pname\": \"2200\", \"pver\": \"2.1\", \"deviceGUID\": \"c5958549-7985-7114-f678-355133766537\", \"requestMimeType\": \"application/octet-stream\", \"ruleType\": \"threat\", \"ruleUuid\": \"31913207-38fa-cecd-0814-099215afccef\", \"objectId\": \"47334614-7cfd-dfc4-1247-47333cbcdda0\", \"spt\": 53456, \"policyUuid\": \"01342003-dffe-ee93-2444-2430fbeadd82\", \"dpt\": 80, \"companyName\": \"Acme Corporation\", \"start\": 2583492670}",
+        "start": 2583492670
+      },
+      "file": {
+        "hash": {
+          "sha1": "d0a0f0f053786443434525582357521714bfecdc",
+          "sha256": "ff944312049340071191596689406affced1028903837474369276588590bcde"
+        },
+        "mime_type": "application/x-msdownload",
+        "name": "invoice_update.exe",
+        "size": 4567890,
+        "type": "Windows Executable"
+      },
+      "host": {
+        "hostname": "desktop-hr04",
+        "os": {
+          "name": "macOS Sonoma"
+        }
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "mime_type": "application/octet-stream"
+        }
+      },
+      "network": {
+        "protocol": "HTTP/1.1"
+      },
+      "organization": {
+        "name": "Acme Corporation"
+      },
+      "related": {
+        "hash": [
+          "d0a0f0f053786443434525582357521714bfecdc",
+          "ff944312049340071191596689406affced1028903837474369276588590bcde"
+        ],
+        "hosts": [
+          "desktop-hr04",
+          "malicious-site.example.net"
+        ],
+        "ip": [
+          "203.0.113.138",
+          "192.0.2.134",
+          "192.0.2.54"
+        ],
+        "user": [
+          "Emma Jones",
+          "fvpd.yktew@example.com"
+        ]
+      },
+      "rule": {
+        "category": "threat",
+        "name": "Malware_Block_Policy",
+        "uuid": "31913207-38fa-cecd-0814-099215afccef"
+      },
+      "source": {
+        "ip": "203.0.113.138",
+        "port": 53456
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "tls": {
+        "version": "TLS 1.2"
+      },
+      "trend_micro_vision_one": {
+        "network_activity": {
+          "act": 2,
+          "act_value": "block",
+          "application": "Unknown",
+          "client": {
+            "ip": "192.0.2.54"
+          },
+          "company_name": "Acme Corporation",
+          "customer": {
+            "id": "e2b2f422-6081-3851-dfc7-199906724056"
+          },
+          "destination": {
+            "ip": "192.0.2.134",
+            "port": 80
+          },
+          "detection": {
+            "type": 60
+          },
+          "device": {
+            "guid": "c5958549-7985-7114-f678-355133766537"
+          },
+          "duration": 8,
+          "endpoint": {
+            "guid": "d1970739-a2c9-7c0d-c2ca-6da25245db34",
+            "host_name": "desktop-hr04"
+          },
+          "event": {
+            "name": "SWG_ACTIVITY_LOG",
+            "sub_name": "Malware download blocked",
+            "time": "2051-11-13T12:51:16.000Z"
+          },
+          "file": {
+            "hash_sha1": "d0a0f0f053786443434525582357521714bfecdc",
+            "hash_sha256": "ff944312049340071191596689406affced1028903837474369276588590bcde",
+            "mime_type": "application/x-msdownload",
+            "name": "invoice_update.exe",
+            "size": 4567890,
+            "type": "Windows Executable"
+          },
+          "malware": {
+            "name": "Trojan.GenericKD.46584712"
+          },
+          "object": {
+            "id": "47334614-7cfd-dfc4-1247-47333cbcdda0"
+          },
+          "os": {
+            "name": "macOS Sonoma"
+          },
+          "pname": "2200",
+          "policy": {
+            "uuid": "01342003-dffe-ee93-2444-2430fbeadd82"
+          },
+          "profile": "threat_protection",
+          "pver": "2.1",
+          "request": {
+            "base": "malicious-site.example.net",
+            "method": "GET",
+            "mime_type": "application/octet-stream",
+            "url": "https://malicious-site.example.net/download.exe"
+          },
+          "rt": 1699879878,
+          "rule": {
+            "name": "Malware_Block_Policy",
+            "type": "threat",
+            "uuid": "31913207-38fa-cecd-0814-099215afccef"
+          },
+          "score": 5,
+          "sender": "Corporate Gateway",
+          "server": {
+            "protocol": "HTTP/1.1",
+            "tls": "TLS 1.2"
+          },
+          "source": {
+            "ip": "203.0.113.138",
+            "port": 53456
+          },
+          "start": 2583492670,
+          "tenant": {
+            "guid": "f5f30330-2255-5796-ec89-383878206543"
+          },
+          "user": {
+            "department": "HR",
+            "domain": "example.com",
+            "id": "Emma Jones",
+            "principal_name": "fvpd.yktew@example.com"
+          },
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15"
+        }
+      },
+      "url": {
+        "original": "https://malicious-site.example.net/download.exe"
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "fvpd.yktew@example.com",
+        "name": "Emma Jones"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15"
+      }
+    },
+    {
+      "@timestamp": "2051-11-13T13:09:47.000Z",
+      "client": {
+        "ip": "198.51.100.211"
+      },
+      "destination": {
+        "ip": "192.0.2.218",
+        "port": 443
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "duration": 250000000,
+        "kind": "event",
+        "original": "{\"endpointHostName\": \"laptop-dev05\", \"customerId\": \"f5f30330-2255-5796-ec89-383878206543\", \"osName\": \"Ubuntu 22.04\", \"dst\": \"192.0.2.218\", \"endpointGuid\": \"f162b0e1-d6c4-8f3b-d1eb-8d865f54a696\", \"principalName\": \"qvgc.tojgwz@example.com\", \"request\": \"https://github.example.com/repos/internal-tools\", \"act\": 1, \"src\": \"192.0.2.54\", \"serverTls\": \"TLS 1.3\", \"eventTime\": 2583493787, \"serverProtocol\": \"HTTP/2\", \"userAgent\": \"git/2.42.0\", \"rt\": 1699880990, \"tenantGuid\": \"c5958549-7985-7114-f678-355133766537\", \"eventName\": \"SWG_ACTIVITY_LOG\", \"application\": \"GitHub Enterprise\", \"ruleName\": \"Developer_Tools_Access\", \"clientIp\": \"198.51.100.211\", \"requestBase\": \"github.example.com\", \"score\": 92, \"userDomain\": \"example.com\", \"suid\": \"Mike Wilson\", \"duration\": 250, \"eventSubName\": \"Git repository clone\", \"fileHash\": \"f0e6f3550588121264207238788123176dedbaa3\", \"fileHashSha256\": \"ae58634951370755578509413327dcbedc37533961360249425344203719edca\", \"fileName\": \"internal-tools.git\", \"fileSize\": 89012345, \"fileType\": \"Git Repository\", \"malName\": \"\", \"mimeType\": \"application/x-git\", \"sender\": \"Developer VPN\", \"detectionType\": 0, \"profile\": \"developer\", \"userDepartment\": \"Engineering\", \"requestMethod\": \"GET\", \"pname\": \"2200\", \"pver\": \"2.1\", \"deviceGUID\": \"31913207-38fa-cecd-0814-099215afccef\", \"requestMimeType\": \"application/x-git-upload-pack-request\", \"ruleType\": \"access\", \"ruleUuid\": \"47334614-7cfd-dfc4-1247-47333cbcdda0\", \"objectId\": \"01342003-dffe-ee93-2444-2430fbeadd82\", \"spt\": 54567, \"policyUuid\": \"10363924-cead-f475-3188-312abeebe367\", \"dpt\": 443, \"companyName\": \"Acme Corporation\", \"start\": 2583493700}",
+        "start": 2583493700
+      },
+      "file": {
+        "hash": {
+          "sha1": "f0e6f3550588121264207238788123176dedbaa3",
+          "sha256": "ae58634951370755578509413327dcbedc37533961360249425344203719edca"
+        },
+        "mime_type": "application/x-git",
+        "name": "internal-tools.git",
+        "size": 89012345,
+        "type": "Git Repository"
+      },
+      "host": {
+        "hostname": "laptop-dev05",
+        "os": {
+          "name": "Ubuntu 22.04"
+        }
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "mime_type": "application/x-git-upload-pack-request"
+        }
+      },
+      "network": {
+        "protocol": "HTTP/2"
+      },
+      "organization": {
+        "name": "Acme Corporation"
+      },
+      "related": {
+        "hash": [
+          "f0e6f3550588121264207238788123176dedbaa3",
+          "ae58634951370755578509413327dcbedc37533961360249425344203719edca"
+        ],
+        "hosts": [
+          "laptop-dev05",
+          "github.example.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "192.0.2.218",
+          "198.51.100.211"
+        ],
+        "user": [
+          "Mike Wilson",
+          "qvgc.tojgwz@example.com"
+        ]
+      },
+      "rule": {
+        "category": "access",
+        "name": "Developer_Tools_Access",
+        "uuid": "47334614-7cfd-dfc4-1247-47333cbcdda0"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 54567
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "tls": {
+        "version": "TLS 1.3"
+      },
+      "trend_micro_vision_one": {
+        "network_activity": {
+          "act": 1,
+          "act_value": "monitor",
+          "application": "GitHub Enterprise",
+          "client": {
+            "ip": "198.51.100.211"
+          },
+          "company_name": "Acme Corporation",
+          "customer": {
+            "id": "f5f30330-2255-5796-ec89-383878206543"
+          },
+          "destination": {
+            "ip": "192.0.2.218",
+            "port": 443
+          },
+          "detection": {
+            "type": 0
+          },
+          "device": {
+            "guid": "31913207-38fa-cecd-0814-099215afccef"
+          },
+          "duration": 250,
+          "endpoint": {
+            "guid": "f162b0e1-d6c4-8f3b-d1eb-8d865f54a696",
+            "host_name": "laptop-dev05"
+          },
+          "event": {
+            "name": "SWG_ACTIVITY_LOG",
+            "sub_name": "Git repository clone",
+            "time": "2051-11-13T13:09:47.000Z"
+          },
+          "file": {
+            "hash_sha1": "f0e6f3550588121264207238788123176dedbaa3",
+            "hash_sha256": "ae58634951370755578509413327dcbedc37533961360249425344203719edca",
+            "mime_type": "application/x-git",
+            "name": "internal-tools.git",
+            "size": 89012345,
+            "type": "Git Repository"
+          },
+          "object": {
+            "id": "01342003-dffe-ee93-2444-2430fbeadd82"
+          },
+          "os": {
+            "name": "Ubuntu 22.04"
+          },
+          "pname": "2200",
+          "policy": {
+            "uuid": "10363924-cead-f475-3188-312abeebe367"
+          },
+          "profile": "developer",
+          "pver": "2.1",
+          "request": {
+            "base": "github.example.com",
+            "method": "GET",
+            "mime_type": "application/x-git-upload-pack-request",
+            "url": "https://github.example.com/repos/internal-tools"
+          },
+          "rt": 1699880990,
+          "rule": {
+            "name": "Developer_Tools_Access",
+            "type": "access",
+            "uuid": "47334614-7cfd-dfc4-1247-47333cbcdda0"
+          },
+          "score": 92,
+          "sender": "Developer VPN",
+          "server": {
+            "protocol": "HTTP/2",
+            "tls": "TLS 1.3"
+          },
+          "source": {
+            "ip": "192.0.2.54",
+            "port": 54567
+          },
+          "start": 2583493700,
+          "tenant": {
+            "guid": "c5958549-7985-7114-f678-355133766537"
+          },
+          "user": {
+            "department": "Engineering",
+            "domain": "example.com",
+            "id": "Mike Wilson",
+            "principal_name": "qvgc.tojgwz@example.com"
+          },
+          "user_agent": "git/2.42.0"
+        }
+      },
+      "url": {
+        "original": "https://github.example.com/repos/internal-tools"
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "qvgc.tojgwz@example.com",
+        "name": "Mike Wilson"
+      },
+      "user_agent": {
+        "original": "git/2.42.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"endpointHostName\": \"workstation-pc01\", \"customerId\": \"d7b7c8d3-b2c8-7187-abad-ed9830843751\", \"osName\": \"Windows 10\", \"dst\": \"203.0.113.138\", \"endpointGuid\": \"67311730-a9a1-458a-9261-0bad8136ac68\", \"principalName\": \"hshg.fqb@example.com\", \"request\": \"https://portal.example.com/dashboard\", \"act\": 1, \"src\": \"192.0.2.134\", \"serverTls\": \"TLS 1.3\", \"eventTime\": 2583489343123, \"serverProtocol\": \"HTTP/2\", \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36\", \"rt\": 1699876545, \"tenantGuid\": \"c8e0e8b9-f636-9118-bbdc-d85218261134\", \"eventName\": \"SWG_ACTIVITY_LOG\", \"application\": \"Microsoft 365\", \"ruleName\": \"Corporate_Access_Policy\", \"clientIp\": \"192.0.2.54\", \"requestBase\": \"portal.example.com\", \"score\": 95, \"userDomain\": \"example.com\", \"suid\": \"John Doe\", \"duration\": 45, \"eventSubName\": \"SharePoint file download\", \"fileHash\": \"e7c9d0c8d7d1311701478351694346547059acab\", \"fileHashSha256\": \"de0cfcfbb99be6057973421b52309cb08521a02be01d297719b21c189e032e12\", \"fileName\": \"quarterly_report.xlsx\", \"fileSize\": 245678, \"fileType\": \"Microsoft Excel\", \"malName\": \"\", \"mimeType\": \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\", \"sender\": \"Corporate Gateway\", \"detectionType\": 10, \"profile\": \"standard\", \"userDepartment\": \"Finance\", \"requestMethod\": \"GET\", \"pname\": \"2200\", \"pver\": \"2.1\", \"deviceGUID\": \"d4a0e2f5-0474-1392-cdec-423726366946\", \"requestMimeType\": \"application/json\", \"ruleType\": \"access\", \"ruleUuid\": \"e2b2f422-6081-3851-dfc7-199906724056\", \"objectId\": \"f5f30330-2255-5796-ec89-383878206543\", \"spt\": 49152, \"policyUuid\": \"c5958549-7985-7114-f678-355133766537\", \"dpt\": 443, \"companyName\": \"Acme Corporation\", \"start\": 2583489300}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"endpointHostName\": \"laptop-sales03\", \"customerId\": \"c8e0e8b9-f636-9118-bbdc-d85218261134\", \"osName\": \"Windows 11\", \"dst\": \"192.0.2.54\", \"endpointGuid\": \"91185698-c3c7-525b-a48b-0ceb9157be68\", \"principalName\": \"pfleo.xrspi@example.com\", \"request\": \"https://drive.example.com/files/contract.pdf\", \"act\": 4, \"src\": \"198.51.100.211\", \"serverTls\": \"TLS 1.2\", \"eventTime\": 2583490454, \"serverProtocol\": \"HTTP/1.1\", \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0\", \"rt\": 1699877656, \"tenantGuid\": \"d4a0e2f5-0474-1392-cdec-423726366946\", \"eventName\": \"SWG_ACTIVITY_LOG\", \"application\": \"Google Drive\", \"ruleName\": \"DLP_Sensitive_Files\", \"clientIp\": \"192.0.2.218\", \"requestBase\": \"drive.example.com\", \"score\": 45, \"userDomain\": \"example.com\", \"suid\": \"Sarah Smith\", \"duration\": 120, \"eventSubName\": \"Cloud storage upload blocked\", \"fileHash\": \"d1e7e2c9d76815180722323603120539802deffe\", \"fileHashSha256\": \"cc8411786907726410903780551193abfbfd940553510941086677095580bbfb\", \"fileName\": \"contract_confidential.pdf\", \"fileSize\": 1567890, \"fileType\": \"Adobe PDF\", \"malName\": \"\", \"mimeType\": \"application/pdf\", \"sender\": \"Remote VPN Gateway\", \"detectionType\": 30, \"profile\": \"dlp_strict\", \"userDepartment\": \"Sales\", \"requestMethod\": \"POST\", \"pname\": \"2200\", \"pver\": \"2.1\", \"deviceGUID\": \"e2b2f422-6081-3851-dfc7-199906724056\", \"requestMimeType\": \"multipart/form-data\", \"ruleType\": \"dlp\", \"ruleUuid\": \"f5f30330-2255-5796-ec89-383878206543\", \"objectId\": \"c5958549-7985-7114-f678-355133766537\", \"spt\": 51234, \"policyUuid\": \"31913207-38fa-cecd-0814-099215afccef\", \"dpt\": 443, \"companyName\": \"Acme Corporation\", \"start\": 2583490400}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"endpointHostName\": \"server-web01\", \"customerId\": \"d4a0e2f5-0474-1392-cdec-423726366946\", \"osName\": \"Windows Server 2022\", \"dst\": \"198.51.100.211\", \"endpointGuid\": \"91389619-c0e9-621e-b9cb-9ecc0499fd02\", \"principalName\": \"admin@example.com\", \"request\": \"https://api.example.com/v2/users\", \"act\": 1, \"src\": \"192.0.2.218\", \"serverTls\": \"TLS 1.3\", \"eventTime\": 2583491565, \"serverProtocol\": \"HTTP/2\", \"userAgent\": \"curl/8.4.0\", \"rt\": 1699878766, \"tenantGuid\": \"e2b2f422-6081-3851-dfc7-199906724056\", \"eventName\": \"SWG_ACTIVITY_LOG\", \"application\": \"Custom API\", \"ruleName\": \"API_Gateway_Access\", \"clientIp\": \"192.0.2.134\", \"requestBase\": \"api.example.com\", \"score\": 100, \"userDomain\": \"example.com\", \"suid\": \"API Service Account\", \"duration\": 15, \"eventSubName\": \"API request allowed\", \"fileHash\": \"\", \"fileHashSha256\": \"\", \"fileName\": \"\", \"fileSize\": 0, \"fileType\": \"\", \"malName\": \"\", \"mimeType\": \"application/json\", \"sender\": \"Internal Gateway\", \"detectionType\": 0, \"profile\": \"api_default\", \"userDepartment\": \"IT\", \"requestMethod\": \"GET\", \"pname\": \"2200\", \"pver\": \"2.1\", \"deviceGUID\": \"f5f30330-2255-5796-ec89-383878206543\", \"requestMimeType\": \"application/json\", \"ruleType\": \"access\", \"ruleUuid\": \"c5958549-7985-7114-f678-355133766537\", \"objectId\": \"31913207-38fa-cecd-0814-099215afccef\", \"spt\": 52345, \"policyUuid\": \"47334614-7cfd-dfc4-1247-47333cbcdda0\", \"dpt\": 8443, \"companyName\": \"Acme Corporation\", \"start\": 2583491560}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"endpointHostName\": \"desktop-hr04\", \"customerId\": \"e2b2f422-6081-3851-dfc7-199906724056\", \"osName\": \"macOS Sonoma\", \"dst\": \"192.0.2.134\", \"endpointGuid\": \"d1970739-a2c9-7c0d-c2ca-6da25245db34\", \"principalName\": \"fvpd.yktew@example.com\", \"request\": \"https://malicious-site.example.net/download.exe\", \"act\": 2, \"src\": \"203.0.113.138\", \"serverTls\": \"TLS 1.2\", \"eventTime\": 2583492676, \"serverProtocol\": \"HTTP/1.1\", \"userAgent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 14_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15\", \"rt\": 1699879878, \"tenantGuid\": \"f5f30330-2255-5796-ec89-383878206543\", \"eventName\": \"SWG_ACTIVITY_LOG\", \"application\": \"Unknown\", \"ruleName\": \"Malware_Block_Policy\", \"clientIp\": \"192.0.2.54\", \"requestBase\": \"malicious-site.example.net\", \"score\": 5, \"userDomain\": \"example.com\", \"suid\": \"Emma Jones\", \"duration\": 8, \"eventSubName\": \"Malware download blocked\", \"fileHash\": \"d0a0f0f053786443434525582357521714bfecdc\", \"fileHashSha256\": \"ff944312049340071191596689406affced1028903837474369276588590bcde\", \"fileName\": \"invoice_update.exe\", \"fileSize\": 4567890, \"fileType\": \"Windows Executable\", \"malName\": \"Trojan.GenericKD.46584712\", \"mimeType\": \"application/x-msdownload\", \"sender\": \"Corporate Gateway\", \"detectionType\": 60, \"profile\": \"threat_protection\", \"userDepartment\": \"HR\", \"requestMethod\": \"GET\", \"pname\": \"2200\", \"pver\": \"2.1\", \"deviceGUID\": \"c5958549-7985-7114-f678-355133766537\", \"requestMimeType\": \"application/octet-stream\", \"ruleType\": \"threat\", \"ruleUuid\": \"31913207-38fa-cecd-0814-099215afccef\", \"objectId\": \"47334614-7cfd-dfc4-1247-47333cbcdda0\", \"spt\": 53456, \"policyUuid\": \"01342003-dffe-ee93-2444-2430fbeadd82\", \"dpt\": 80, \"companyName\": \"Acme Corporation\", \"start\": 2583492670}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"endpointHostName\": \"laptop-dev05\", \"customerId\": \"f5f30330-2255-5796-ec89-383878206543\", \"osName\": \"Ubuntu 22.04\", \"dst\": \"192.0.2.218\", \"endpointGuid\": \"f162b0e1-d6c4-8f3b-d1eb-8d865f54a696\", \"principalName\": \"qvgc.tojgwz@example.com\", \"request\": \"https://github.example.com/repos/internal-tools\", \"act\": 1, \"src\": \"192.0.2.54\", \"serverTls\": \"TLS 1.3\", \"eventTime\": 2583493787, \"serverProtocol\": \"HTTP/2\", \"userAgent\": \"git/2.42.0\", \"rt\": 1699880990, \"tenantGuid\": \"c5958549-7985-7114-f678-355133766537\", \"eventName\": \"SWG_ACTIVITY_LOG\", \"application\": \"GitHub Enterprise\", \"ruleName\": \"Developer_Tools_Access\", \"clientIp\": \"198.51.100.211\", \"requestBase\": \"github.example.com\", \"score\": 92, \"userDomain\": \"example.com\", \"suid\": \"Mike Wilson\", \"duration\": 250, \"eventSubName\": \"Git repository clone\", \"fileHash\": \"f0e6f3550588121264207238788123176dedbaa3\", \"fileHashSha256\": \"ae58634951370755578509413327dcbedc37533961360249425344203719edca\", \"fileName\": \"internal-tools.git\", \"fileSize\": 89012345, \"fileType\": \"Git Repository\", \"malName\": \"\", \"mimeType\": \"application/x-git\", \"sender\": \"Developer VPN\", \"detectionType\": 0, \"profile\": \"developer\", \"userDepartment\": \"Engineering\", \"requestMethod\": \"GET\", \"pname\": \"2200\", \"pver\": \"2.1\", \"deviceGUID\": \"31913207-38fa-cecd-0814-099215afccef\", \"requestMimeType\": \"application/x-git-upload-pack-request\", \"ruleType\": \"access\", \"ruleUuid\": \"47334614-7cfd-dfc4-1247-47333cbcdda0\", \"objectId\": \"01342003-dffe-ee93-2444-2430fbeadd82\", \"spt\": 54567, \"policyUuid\": \"10363924-cead-f475-3188-312abeebe367\", \"dpt\": 443, \"companyName\": \"Acme Corporation\", \"start\": 2583493700}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "network_activity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-trend_micro_vision_one-network_activity-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [
+      "trend_micro_vision_one.telemetry.event_id",
+      "trend_micro_vision_one.telemetry.event_sub_id",
+      "trend_micro_vision_one.telemetry.event_source_type"
+    ],
+    "package": "trend_micro_vision_one",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

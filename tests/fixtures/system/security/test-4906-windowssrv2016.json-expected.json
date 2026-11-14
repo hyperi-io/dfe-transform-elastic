@@ -1,0 +1,135 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-08-18T09:19:00.237Z",
+      "agent": {
+        "ephemeral_id": "99108360-69d2-48c4-a2cb-f1dffbb9ac3e",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "crash-on-audit-changed",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "code": "4906",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "admin",
+          "change"
+        ]
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4906_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "event_data": {
+          "CrashOnAuditFailValue": "1"
+        },
+        "event_id": "4906",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 804
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "123786",
+        "time_created": "2048-08-18T09:19:00.237Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:06:33.772Z",
+      "agent": {
+        "ephemeral_id": "99108360-69d2-48c4-a2cb-f1dffbb9ac3e",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4906,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4906_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "event_data": {
+          "CrashOnAuditFailValue": "1"
+        },
+        "event_id": 4906,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 804
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 123786,
+        "time_created": "2048-08-18T09:19:00.237Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

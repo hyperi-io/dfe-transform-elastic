@@ -1,0 +1,103 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2039-06-10T13:27:01.847Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":2191325221.847886,\"id\":\"FSEWoS3ff8FcTn3WLf\",\"hashAlgorithm\":\"sha1\",\"issuerNameHash\":\"84A1C163D63A74E359614D49BF83146135E202D9\",\"issuerKeyHash\":\"CFBF68D2E703F65A4E05AE18F7A6F43BEEEBBEF1\",\"serialNumber\":\"2274C2815F02A4191A792774C9E34C37\",\"certStatus\":\"revoked\",\"revoketime\":2183832920.0,\"thisUpdate\":2191253143.0,\"nextUpdate\":2191598743.0}"
+      },
+      "network": {
+        "transport": "tcp"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "zeek": {
+        "ocsp": {
+          "file_id": "FSEWoS3ff8FcTn3WLf",
+          "hash": {
+            "algorithm": "sha1",
+            "issuer": {
+              "key": "CFBF68D2E703F65A4E05AE18F7A6F43BEEEBBEF1",
+              "name": "84A1C163D63A74E359614D49BF83146135E202D9"
+            }
+          },
+          "revoke": {
+            "date": "2039-03-15T20:15:20.000Z"
+          },
+          "serial_number": "2274C2815F02A4191A792774C9E34C37",
+          "status": "revoked",
+          "update": {
+            "next": "2039-06-13T17:25:43.000Z",
+            "this": "2039-06-09T17:25:43.000Z"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2039-06-08T19:46:56.100Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":2191175216.100084,\"id\":\"FdZBFMEYgAErVhoC8\",\"hashAlgorithm\":\"sha1\",\"issuerNameHash\":\"7D3EC05ADD1C30CA62BDC45C129F17B03C3804D4\",\"issuerKeyHash\":\"D6CD7F69FAC68476C83D259583C02CD1811D4C91\",\"serialNumber\":\"04730C5BC02BAEF0DCFE373BCC6E4680\",\"certStatus\":\"good\",\"thisUpdate\":2191162798.0,\"nextUpdate\":2191767598.0}"
+      },
+      "network": {
+        "transport": "tcp"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "zeek": {
+        "ocsp": {
+          "file_id": "FdZBFMEYgAErVhoC8",
+          "hash": {
+            "algorithm": "sha1",
+            "issuer": {
+              "key": "D6CD7F69FAC68476C83D259583C02CD1811D4C91",
+              "name": "7D3EC05ADD1C30CA62BDC45C129F17B03C3804D4"
+            }
+          },
+          "serial_number": "04730C5BC02BAEF0DCFE373BCC6E4680",
+          "status": "good",
+          "update": {
+            "next": "2039-06-15T16:19:58.000Z",
+            "this": "2039-06-08T16:19:58.000Z"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2191325221.847886,\"id\":\"FSEWoS3ff8FcTn3WLf\",\"hashAlgorithm\":\"sha1\",\"issuerNameHash\":\"84A1C163D63A74E359614D49BF83146135E202D9\",\"issuerKeyHash\":\"CFBF68D2E703F65A4E05AE18F7A6F43BEEEBBEF1\",\"serialNumber\":\"2274C2815F02A4191A792774C9E34C37\",\"certStatus\":\"revoked\",\"revoketime\":2183832920.0,\"thisUpdate\":2191253143.0,\"nextUpdate\":2191598743.0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2191175216.100084,\"id\":\"FdZBFMEYgAErVhoC8\",\"hashAlgorithm\":\"sha1\",\"issuerNameHash\":\"7D3EC05ADD1C30CA62BDC45C129F17B03C3804D4\",\"issuerKeyHash\":\"D6CD7F69FAC68476C83D259583C02CD1811D4C91\",\"serialNumber\":\"04730C5BC02BAEF0DCFE373BCC6E4680\",\"certStatus\":\"good\",\"thisUpdate\":2191162798.0,\"nextUpdate\":2191767598.0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "ocsp",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-ocsp-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-09-19T12:30:00.000Z",
+      "cloudflare_logpush": {
+        "dns_firewall": {
+          "cluster_id": "CLUSTER-001",
+          "colo": {
+            "code": "SFO"
+          },
+          "edns": {
+            "subnet": "203.0.113.212",
+            "subnet_length": 24
+          },
+          "question": {
+            "dnssec_ok": true,
+            "name": "example.com",
+            "recursion_desired": true,
+            "size": 60,
+            "tcp": false,
+            "type": 1
+          },
+          "response": {
+            "cached": true,
+            "cached_stale": false,
+            "code": "0"
+          },
+          "source": {
+            "ip": "192.0.2.127"
+          },
+          "timestamp": "2051-09-19T12:30:00.000Z",
+          "upstream": {
+            "ip": "198.51.100.211",
+            "response_code": "0",
+            "response_time_ms": 30
+          }
+        }
+      },
+      "destination": {
+        "ip": "198.51.100.211"
+      },
+      "dns": {
+        "question": {
+          "name": "example.com",
+          "type": "A"
+        },
+        "response_code": "NoError"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"ClientResponseCode\":0,\"ClusterID\":\"CLUSTER-001\",\"ColoCode\":\"SFO\",\"EDNSSubnet\":\"203.0.113.212\",\"EDNSSubnetLength\":24,\"QueryDO\":true,\"QueryName\":\"example.com\",\"QueryRD\":true,\"QuerySize\":60,\"QueryTCP\":false,\"QueryType\":1,\"ResponseCached\":true,\"ResponseCachedStale\":false,\"SourceIP\":\"192.0.2.127\",\"Timestamp\":\"2051-09-19T12:30:00Z\",\"UpstreamIP\":\"198.51.100.211\",\"UpstreamResponseCode\":0,\"UpstreamResponseTimeMs\":30}",
+        "type": [
+          "info"
+        ]
+      },
+      "network": {
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.212",
+          "198.51.100.211"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-09-19T12:35:00.000Z",
+      "cloudflare_logpush": {
+        "dns_firewall": {
+          "cluster_id": "CLUSTER-002",
+          "colo": {
+            "code": "JFK"
+          },
+          "edns": {
+            "subnet": "192.0.2.134",
+            "subnet_length": 12
+          },
+          "question": {
+            "dnssec_ok": true,
+            "name": "nonexistentdomain.xyz",
+            "recursion_desired": false,
+            "size": 65,
+            "tcp": true,
+            "type": 28
+          },
+          "response": {
+            "cached": false,
+            "cached_stale": false,
+            "code": "3"
+          },
+          "source": {
+            "ip": "192.0.2.127"
+          },
+          "timestamp": "2051-09-19T12:35:00.000Z",
+          "upstream": {
+            "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+            "response_code": "3",
+            "response_time_ms": 45
+          }
+        }
+      },
+      "destination": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "dns": {
+        "question": {
+          "name": "nonexistentdomain.xyz",
+          "type": "AAAA"
+        },
+        "response_code": "NXDomain"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"ClientResponseCode\":3,\"ClusterID\":\"CLUSTER-002\",\"ColoCode\":\"JFK\",\"EDNSSubnet\":\"192.0.2.134\",\"EDNSSubnetLength\":12,\"QueryDO\":true,\"QueryName\":\"nonexistentdomain.xyz\",\"QueryRD\":false,\"QuerySize\":65,\"QueryTCP\":true,\"QueryType\":28,\"ResponseCached\":false,\"ResponseCachedStale\":false,\"SourceIP\":\"192.0.2.127\",\"Timestamp\":\"2051-09-19T12:35:00Z\",\"UpstreamIP\":\"2001:db8:dfd5:c2d1:ef97:9e27:1831:3153\",\"UpstreamResponseCode\":3,\"UpstreamResponseTimeMs\":45}",
+        "type": [
+          "info"
+        ]
+      },
+      "network": {
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.127",
+          "192.0.2.134",
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"ClientResponseCode\":0,\"ClusterID\":\"CLUSTER-001\",\"ColoCode\":\"SFO\",\"EDNSSubnet\":\"203.0.113.212\",\"EDNSSubnetLength\":24,\"QueryDO\":true,\"QueryName\":\"example.com\",\"QueryRD\":true,\"QuerySize\":60,\"QueryTCP\":false,\"QueryType\":1,\"ResponseCached\":true,\"ResponseCachedStale\":false,\"SourceIP\":\"192.0.2.127\",\"Timestamp\":\"2051-09-19T12:30:00Z\",\"UpstreamIP\":\"198.51.100.211\",\"UpstreamResponseCode\":0,\"UpstreamResponseTimeMs\":30}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"ClientResponseCode\":3,\"ClusterID\":\"CLUSTER-002\",\"ColoCode\":\"JFK\",\"EDNSSubnet\":\"192.0.2.134\",\"EDNSSubnetLength\":12,\"QueryDO\":true,\"QueryName\":\"nonexistentdomain.xyz\",\"QueryRD\":false,\"QuerySize\":65,\"QueryTCP\":true,\"QueryType\":28,\"ResponseCached\":false,\"ResponseCachedStale\":false,\"SourceIP\":\"192.0.2.127\",\"Timestamp\":\"2051-09-19T12:35:00Z\",\"UpstreamIP\":\"2001:db8:dfd5:c2d1:ef97:9e27:1831:3153\",\"UpstreamResponseCode\":3,\"UpstreamResponseTimeMs\":45}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "dns_firewall",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-dns_firewall-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

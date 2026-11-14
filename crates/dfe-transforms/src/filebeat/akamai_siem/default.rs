@@ -426,9 +426,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: String full = '';\nif (ctx.url?.scheme != null && ctx.url.scheme != \"\") {\n  full += ctx.url.scheme+\"://\";\n}\nif (ctx.url?.domain != null && ctx.url.domain != \"\") {\n  full += ctx.url.domain;\n}\nif (ctx.json.httpMessage?.path != null && ctx.json.httpMessage.path != \"\") {\n  full += ctx.json.httpMessage.path;\n}\nif (ctx.json.httpMessage?.query != null && ctx.json.httpMessage.query != \"\") {\n  full += \"?\"+ctx.json.httpMessage.query;\n}\nif (full != \"\") {\n  if (ctx.url == null) {\n    ctx.url = [:];\n  }\n  ctx.url.full = full\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -802,9 +800,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: ArrayList rules_array = new ArrayList();\nArrayList rule_actions = new ArrayList();\nArrayList rule_tags = new ArrayList();\nfor (def i = 0; i < ctx.json.attackData.rules.length; i++) {\n  HashMap map = new HashMap();\n  for (String key: params.items) {\n    if (i < ctx.json.attackData[key].length) {\n      String data = ctx.json.attackData[key][i].replace(\" \", \"\");\n      try {\n        String value = data.decodeBase64();\n        map.put(key, value);\n        if (key == \"ruleTags\") {\n          rule_tags.add(value.toLowerCase());\n        } else if (key == \"ruleActions\") {\n          rule_actions.add(value.toLowerCase());\n        }\n      }\n      catch (Exception e) {\n        if (data.length() > 10) {\n          data = data.substring(0,10)+\"...\"\n        }\n        String error = e.toString();\n        if (error.startsWith(\"java.lang.IllegalArgumentException: \")) {\n          error = error.substring(\"java.lang.IllegalArgumentException: \".length());\n        }\n        String warning = \"failed to decode base64 data: \" + error + \": \" + data;\n        map.put(key, warning);\n      }\n    }\n  }\n  rules_array.add(map);\n}\nctx.akamai.siem.rules = rules_array;\nctx._rule_actions = rule_actions;\nctx._rule_tags = rule_tags;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1106,9 +1102,7 @@ impl Transform for Default {
                     && event.get_str("json.userRiskData.general") != Some("")
             };
             if _cond {
-                // Painless script
-                // Source: String text = ctx.json.userRiskData.general.trim();\nif (text != \"\") {\n  def m = new HashMap();\n  for (String f: /\\|/.split(text)) {\n    if (f == \"\") {\n      continue;\n    }\n    int idx = f.indexOf(':');\n    if (idx == -1) {\n      m.put(f, \"-\"); // Include a non-empty string to prevent the field being removed.\n      continue;\n    }\n    String k = f.substring(0, idx);\n    String v = f.substring(idx+1);\n    m.put(k, v);\n  }\n  if (m.size() > 0) {\n    if (ctx.akamai == null) {\n      ctx.akamai = new HashMap();\n    }\n    if (ctx.akamai.siem == null) {\n      ctx.akamai.siem = new HashMap();\n    }\n    if (ctx.akamai.siem.user_risk == null) {\n      ctx.akamai.siem.user_risk = new HashMap();\n    }\n    ctx.akamai.siem.user_risk.general = m;\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1137,8 +1131,7 @@ impl Transform for Default {
             event.remove("json");
             event.remove("_tmp");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

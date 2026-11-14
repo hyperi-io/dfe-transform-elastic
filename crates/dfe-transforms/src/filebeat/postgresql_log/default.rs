@@ -48,9 +48,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp_.timestamp") };
             if _cond {
-                // Painless script
-                // Source: String get_timezone(def ctx) {\n  if (ctx.event?.timezone != null) {\n    if (ctx._conf?.tz_map != null) {\n      for (def item : ctx._conf.tz_map) {\n        if (item.tz_short == ctx.event?.timezone) {\n          return item.tz_long;\n        }\n      }\n    }\n    return ctx.event.timezone;\n  }\n\n  ctx.event.timezone = 'UTC';\n  return 'UTC';\n}\n\ndef event_timezone = get_timezone(ctx);\nif (!(event_timezone.contains('+')) && !(event_timezone.contains('-')) && !(event_timezone.length() > 4)) {\n  // timezone abbreviation e.g. CEST need to be put inside the timestamp\n  SimpleDateFormat sdf = new SimpleDateFormat(\"z\");\n  sdf.parse(event_timezone);\n  ctx._temp_.date_timezone = ZoneId.of(sdf.getTimeZone().getID(), ZoneId.SHORT_IDS).getId();\n  ctx?._temp_.timestamp = ctx?._temp_.timestamp + \" \" + event_timezone;\n} else {\n  // timezone is either abbreviation+-offset e.g. UTC+1 or long representation\n  // e.g. Europe/Athens needs to be put as a ZoneId and *not* inside the timestamp\n  ctx._temp_.date_timezone = event_timezone;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -498,9 +496,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("temp.duration") };
             if _cond {
-                // Painless script
-                // Source: ctx.event.duration = Math.round(ctx.temp.duration * params.scale)
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -564,8 +560,7 @@ impl Transform for Default {
             event.remove("_temp_");
             event.remove("_conf");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).size() == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

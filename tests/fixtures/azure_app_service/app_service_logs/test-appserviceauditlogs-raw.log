@@ -1,0 +1,1 @@
+{"time":"2050-12-14T12:17:57.2735099Z","ResourceId":"/SUBSCRIPTIONS/16AFBBC6-40C2-110A-A4A3-0BA3308F56FD/RESOURCEGROUPS/USER-TEST/PROVIDERS/MICROSOFT.WEB/SITES/USER-TEST-APP","Category":"AppServiceAuditLogs","OperationName":"Authorization","Properties":{"User":"022637297DCEFB13","UserDisplayName":"user@apejtlc.co","UserAddress":"0.0.0.0:5432","Protocol":"AAD"}}

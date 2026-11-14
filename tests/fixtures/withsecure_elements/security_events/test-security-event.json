@@ -1,0 +1,7 @@
+{
+  "events": [
+    {
+      "message": "{\"id\":\"09b665bd-00bb-3134-8976-010293cd07bd_0\",\"action\":\"reported\",\"engine\":\"setting\",\"severity\":\"info\",\"serverTimestamp\":\"2051-08-31T09:31:01.092Z\",\"persistenceTimestamp\":\"2051-08-31T09:31:03.292Z\",\"eventTransactionId\":\"0000-187cf62797634fef\",\"clientTimestamp\":\"2051-08-31T07:31:03.292Z\",\"acknowledged\":false,\"message\":\"Firewall was turned on\",\"description\":\"Setting event\",\"organization\":{\"id\":\"633819ee-3342-4c0d-a451-e8492b2be319\",\"name\":\"my-org\"},\"target\":{\"name\":\"Doe,John DESKTOP\",\"id\":\"91fdfd8c-5873-4fd3-8e01-101ffbc06b73\"},\"device\":{\"id\":\"91fdfd8c-5873-4fd3-8e01-101ffbc06b73\",\"name\":\"Doe,John DESKTOP\"},\"userName\":\"Pnvw Eyd\",\"details\":{\"profileName\":\"My Company Profile\",\"path\":\"C:\\\\Program Files\\\\WithSecure\\\\PSB\\\\diagnostics\\\\fsdiag.exe\",\"alertType\":\"product.path.excluded\",\"throttledCount\":\"0\",\"profileId\":\"12444818\",\"profileVersion\":\"34313431491\",\"hostIpAddress\":\"192.0.2.184/8\",\"userName\":\"Pnvw Eyd\",\"clientTimestamp\":\"2579502023479\"}}"
+    }
+  ]
+}

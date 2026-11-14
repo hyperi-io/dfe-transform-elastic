@@ -1,0 +1,96 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.signinlogs",
+        "kind": "event"
+      },
+      "message": "{\"Category\":\"SignInLogs\"}",
+      "routing": {
+        "category": "SignInLogs"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.signinlogs",
+        "kind": "event"
+      },
+      "message": "{\"Category\":\"NonInteractiveUserSignInLogs\"}",
+      "routing": {
+        "category": "NonInteractiveUserSignInLogs"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.signinlogs",
+        "kind": "event"
+      },
+      "message": "{\"Category\":\"ServicePrincipalSignInLogs\"}",
+      "routing": {
+        "category": "ServicePrincipalSignInLogs"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.signinlogs",
+        "kind": "event"
+      },
+      "message": "{\"Category\":\"MicrosoftServicePrincipalSignInLogs\"}",
+      "routing": {
+        "category": "MicrosoftServicePrincipalSignInLogs"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.signinlogs",
+        "kind": "event"
+      },
+      "message": "{\"Category\":\"ManagedIdentitySignInLogs\"}",
+      "routing": {
+        "category": "ManagedIdentitySignInLogs"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Category\":\"SignInLogs\"}"
+    },
+    {
+      "message": "{\"Category\":\"NonInteractiveUserSignInLogs\"}"
+    },
+    {
+      "message": "{\"Category\":\"ServicePrincipalSignInLogs\"}"
+    },
+    {
+      "message": "{\"Category\":\"MicrosoftServicePrincipalSignInLogs\"}"
+    },
+    {
+      "message": "{\"Category\":\"ManagedIdentitySignInLogs\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-events-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

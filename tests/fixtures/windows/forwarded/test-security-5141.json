@@ -1,0 +1,49 @@
+{
+    "events": [
+        {
+            "event": {
+                "code": "5141",
+                "kind": "event",
+                "outcome": "success",
+                "provider": "Microsoft-Windows-Security-Auditing"
+            },
+            "host": {
+                "name": "CF43.egmukjj.local"
+            },
+            "log": {
+                "level": "information"
+            },
+            "winlog": {
+                "channel": "Security",
+                "computer_name": "CF43.egmukjj.local",
+                "event_data": {
+                    "OpCorrelationID": "{C3C3941F-C724-4AB3-88EB-D138A6466A25}",
+                    "AppCorrelationID": "-",
+                    "SubjectUserSid": "S-1-5-21-3457937927-2839227994-823803824-1104",
+                    "SubjectUserName": "fddrio",
+                    "SubjectDomainName": "CONTOSO",
+                    "SubjectLogonId": "0x32004",
+                    "DSName": "egmukjj.local",
+                    "DSType": "%%14676",
+                    "ObjectDN": "CN=WIN2003,CN=Users,DC=contoso,DC=local",
+                    "ObjectGUID": "{CA59A178-EFF5-4A5D-80F1-28A06FA55339}",
+                    "ObjectClass": "computer",
+                    "TreeDelete": "%%14679"
+                },
+                "event_id": "5141",
+                "keywords": ["Audit Success"],
+                "opcode": "Info",
+                "process": {
+                    "pid": 516,
+                    "thread": {
+                        "id": 4092
+                    }
+                },
+                "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 411118,
+                "time_created": "2043-08-28T18:48:06.792762900Z"
+            }
+        }
+    ]
+}

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `auditd_manager`'s key rewrite, transcribed.
+//! `auditd_manager`'s key rewrite, as the runtime runs them.
 //!
 //! auditd names several of its own fields with a hyphen -- `old-ses`,
 //! `old-auid`, `selected-context` -- and Elasticsearch cannot index a document
@@ -46,7 +46,7 @@ fn handle_map(map: &mut Map<String, Value>) {
     }
 }
 
-/// Every `auditd_manager` script transcribed here.
+/// Every `auditd_manager` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "a43f0caf53a71d9ddf4055de84d7a687c0fc6f67f28c81cc01452a6207e1d249",
     source: "auditd_manager",

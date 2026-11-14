@@ -1,0 +1,142 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:47.019629285Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": 50,
+          "deletion_scheduled_at": "2027-02-06T23:07:47.019629285Z",
+          "expiration_ts": "9999-12-31T00:00:00.000Z",
+          "feed_id": 0,
+          "id": "184902936",
+          "import_session_id": "876",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": false,
+          "itype": "mal_md5",
+          "meta": {
+            "severity": "very-high"
+          },
+          "owner_organization_id": 1,
+          "retina_confidence": -1,
+          "source_reported_confidence": 50,
+          "status": "active",
+          "threat_type": "malware",
+          "trusted_circle_ids": [
+            "10015"
+          ],
+          "type": "md5",
+          "update_id": "376395928",
+          "uuid": "35a887a4-67ea-4db7-b98a-6a838dba3aad",
+          "value": "c80a479e8a119b11c18fc4c54337baa7e6ffb6fd"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2048-10-08T12:22:15.640Z",
+        "kind": "enrichment",
+        "severity": 99,
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "hash": [
+          "c80a479e8a119b11c18fc4c54337baa7e6ffb6fd"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "confidence": "Medium",
+          "file": {
+            "hash": {
+              "sha1": "c80a479e8a119b11c18fc4c54337baa7e6ffb6fd"
+            }
+          },
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "modified_at": "2048-10-08T12:24:42.454Z",
+          "name": "c80a479e8a119b11c18fc4c54337baa7e6ffb6fd",
+          "provider": "Default Organization",
+          "type": "file"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": 50,
+        "created_by": null,
+        "created_ts": "2048-10-08T12:22:15.640Z",
+        "description": null,
+        "expiration_ts": "9999-12-31T00:00:00.000Z",
+        "feed_id": 0,
+        "id": 184902936,
+        "import_session_id": 876,
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": false,
+        "itype": "mal_md5",
+        "locations": [],
+        "meta": {
+          "detail2": "imported by user 1",
+          "severity": "very-high"
+        },
+        "modified_ts": "2048-10-08T12:24:42.454Z",
+        "org": "",
+        "owner_organization_id": 1,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/184902936/",
+        "retina_confidence": -1,
+        "sort": [
+          376395928
+        ],
+        "source": "Default Organization",
+        "source_locations": [],
+        "source_reported_confidence": 50,
+        "status": "active",
+        "subtype": "SHA1",
+        "tags": null,
+        "target_industry": [],
+        "threat_type": "malware",
+        "threatscore": 45,
+        "tlp": null,
+        "trusted_circle_ids": [
+          10015
+        ],
+        "type": "md5",
+        "update_id": 376395928,
+        "uuid": "35a887a4-67ea-4db7-b98a-6a838dba3aad",
+        "value": "c80a479e8a119b11c18fc4c54337baa7e6ffb6fd",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

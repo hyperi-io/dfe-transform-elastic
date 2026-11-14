@@ -1,0 +1,154 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-04T04:49:18.215Z",
+      "agent": {
+        "ephemeral_id": "8ec27101-08f4-4601-88e9-5189fd145348",
+        "hostname": "Wfmmax1",
+        "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+        "type": "winlogbeat",
+        "version": "7.3.1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "dpapi-master-key-backup-attempted",
+        "category": [
+          "configuration"
+        ],
+        "code": "4692",
+        "created": "2051-01-04T04:49:24.671Z",
+        "kind": "event",
+        "type": [
+          "access"
+        ]
+      },
+      "host": {
+        "name": "Wfmmax1"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "Backup of data protection master key was attempted.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-21-1280187532-2219128962-763009249-500\n\tAccount Name:\t\tadministrator\n\tAccount Domain:\t\tTEST1\n\tLogon ID:\t\t0x56B3A\n\nKey Information:\n\tKey Identifier:\t42464b43-cf55-4a64-a82e-0c0431038b7c\n\tRecovery Server:\t\n\tRecovery Key ID:\t7416d98c-bb79-4c85-9bfd-ceb5890e1dfe\n\nStatus Information:\n\tStatus Code:\t0x0",
+      "related": {
+        "user": [
+          "administrator"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TEST1",
+        "id": "S-1-5-21-1280187532-2219128962-763009249-500",
+        "name": "administrator"
+      },
+      "winlog": {
+        "activity_id": "{9560F130-3BF9-0087-28D8-0823D55CF468}",
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "Wfmmax1.xcyu5.local",
+        "event_data": {
+          "FailureReasons": "0x0",
+          "FailureReasonsOutcome": "Success",
+          "MasterKeyId": "89029a31-dd10-4f63-a46c-3f8543740a4a",
+          "RecoveryKeyId": "6241e26f-cc88-4c88-9caa-dea6037a8ada",
+          "SubjectDomainName": "TEST1",
+          "SubjectLogonId": "0x56b3a",
+          "SubjectUserName": "administrator",
+          "SubjectUserSid": "S-1-5-21-1280187532-2219128962-763009249-500"
+        },
+        "event_id": "4692",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x56b3a"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 652,
+          "thread": {
+            "id": 6380
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "623337543",
+        "task": "DPAPI Activity"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2051-01-04T04:49:18.215Z",
+      "agent": {
+        "ephemeral_id": "8ec27101-08f4-4601-88e9-5189fd145348",
+        "hostname": "Wfmmax1",
+        "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+        "type": "winlogbeat",
+        "version": "7.3.1"
+      },
+      "ecs": {
+        "version": "1.0.1"
+      },
+      "event": {
+        "action": "DPAPI Activity",
+        "code": 4692,
+        "created": "2051-01-04T04:49:24.671Z",
+        "kind": "event"
+      },
+      "host": {
+        "name": "Wfmmax1"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "Backup of data protection master key was attempted.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-21-1280187532-2219128962-763009249-500\n\tAccount Name:\t\tadministrator\n\tAccount Domain:\t\tTEST1\n\tLogon ID:\t\t0x56B3A\n\nKey Information:\n\tKey Identifier:\t42464b43-cf55-4a64-a82e-0c0431038b7c\n\tRecovery Server:\t\n\tRecovery Key ID:\t7416d98c-bb79-4c85-9bfd-ceb5890e1dfe\n\nStatus Information:\n\tStatus Code:\t0x0",
+      "winlog": {
+        "activity_id": "{9560F130-3BF9-0087-28D8-0823D55CF468}",
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "Wfmmax1.xcyu5.local",
+        "event_data": {
+          "FailureReason": "0x0",
+          "MasterKeyId": "89029a31-dd10-4f63-a46c-3f8543740a4a",
+          "RecoveryKeyId": "6241e26f-cc88-4c88-9caa-dea6037a8ada",
+          "SubjectDomainName": "TEST1",
+          "SubjectLogonId": "0x56b3a",
+          "SubjectUserName": "administrator",
+          "SubjectUserSid": "S-1-5-21-1280187532-2219128962-763009249-500"
+        },
+        "event_id": 4692,
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 652,
+          "thread": {
+            "id": 6380
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 623337543,
+        "task": "DPAPI Activity"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

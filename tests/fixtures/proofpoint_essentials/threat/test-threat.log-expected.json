@@ -1,0 +1,1619 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-03-21T07:52:11Z",
+      "destination": {
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "cbc617@example.com"
+          ]
+        },
+        "message_id": "78620046315671.28323.ybkp@example.com",
+        "sender": {
+          "address": "cbc617@example.com"
+        },
+        "to": {
+          "address": [
+            "221aaf@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "denied",
+        "category": [
+          "email"
+        ],
+        "id": "8760d0fc-1234-1234-1234-2exxfxxxxx1xd",
+        "kind": "event",
+        "original": "{\"event_type\":\"clicks_blocked\",\"url\":\"https://www.example.com/?name=john\",\"classification\":\"phish\",\"clickTime\":\"2050-03-21T07:52:11.000Z\",\"threatTime\":\"2050-03-18T14:54:20.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39\",\"id\":\"8760d0fc-1234-1234-1234-2exxfxxxxx1xd\",\"clickIP\":\"203.0.113.248\",\"sender\":\"cbc617@example.com\",\"recipient\":\"221aaf@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"x11xxxx1-12f9-111x-x12x-1x1x123456xx\",\"threatID\":\"3xx97xx852c66a7xx761450xxxxxx9f4ffaxxxxxxxxxxxxxxx7a76481xx\",\"threatStatus\":\"active\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "classification": "phish",
+          "click_time": "2050-03-21T07:52:11.000Z",
+          "event_type": "clicks_blocked",
+          "guid": "x11xxxx1-12f9-111x-x12x-1x1x123456xx",
+          "id": "8760d0fc-1234-1234-1234-2exxfxxxxx1xd",
+          "threat_id": "3xx97xx852c66a7xx761450xxxxxx9f4ffaxxxxxxxxxxxxxxx7a76481xx",
+          "threat_status": "active",
+          "threat_time": "2050-03-18T14:54:20.000Z",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111",
+          "203.0.113.248"
+        ],
+        "user": [
+          "cbc617@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "last_seen": "2050-03-18T14:54:20.000Z",
+          "name": "https://www.example.com/?name=john",
+          "type": "url",
+          "url": {
+            "original": "https://www.example.com/?name=john"
+          }
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Edge",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "99.0.1150.39"
+      }
+    },
+    {
+      "@timestamp": "2050-03-30T07:22:52Z",
+      "destination": {
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "cbc617@example.com"
+          ]
+        },
+        "message_id": "78620046315671.28323.ybkp@example.com",
+        "sender": {
+          "address": "cbc617@example.com"
+        },
+        "to": {
+          "address": [
+            "eb9df326408e30882c8dbc94246a0973@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "denied",
+        "category": [
+          "email"
+        ],
+        "id": "b80af74a-1234-1234-1234-43xdxxbxxxxx6",
+        "kind": "event",
+        "original": "{\"event_type\":\"clicks_blocked\",\"url\":\"http://www.example.com/public/download-shares/wwwxxxyyyzzz12345\",\"classification\":\"phish\",\"clickTime\":\"2050-03-30T07:22:52.000Z\",\"threatTime\":\"2050-03-07T01:21:41.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36\",\"id\":\"b80af74a-1234-1234-1234-43xdxxbxxxxx6\",\"clickIP\":\"203.0.113.248\",\"sender\":\"cbc617@example.com\",\"recipient\":\"eb9df326408e30882c8dbc94246a0973@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"bXkXXUrXAXVXWXGXxXrXAXXX-XXXH\",\"threatID\":\"fdxxxxxxxxxxxcc34aff1aefxbx3xx7xb7xfxcxx1xxxxxxxx98780b5xxxexbx5xc32c\",\"threatStatus\":\"active\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "classification": "phish",
+          "click_time": "2050-03-30T07:22:52.000Z",
+          "event_type": "clicks_blocked",
+          "guid": "bXkXXUrXAXVXWXGXxXrXAXXX-XXXH",
+          "id": "b80af74a-1234-1234-1234-43xdxxbxxxxx6",
+          "threat_id": "fdxxxxxxxxxxxcc34aff1aefxbx3xx7xb7xfxcxx1xxxxxxxx98780b5xxxexbx5xc32c",
+          "threat_status": "active",
+          "threat_time": "2050-03-07T01:21:41.000Z",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111",
+          "203.0.113.248"
+        ],
+        "user": [
+          "cbc617@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "last_seen": "2050-03-07T01:21:41.000Z",
+          "name": "http://www.example.com/public/download-shares/wwwxxxyyyzzz12345",
+          "type": "url",
+          "url": {
+            "original": "http://www.example.com/public/download-shares/wwwxxxyyyzzz12345"
+          }
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "100.0.4896.60"
+      }
+    },
+    {
+      "@timestamp": "2053-03-21T07:52:11Z",
+      "destination": {
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "sbgq@example.com"
+          ]
+        },
+        "message_id": "78620046315671.28323.ybkp@example.com",
+        "sender": {
+          "address": "sbgq@example.com"
+        },
+        "to": {
+          "address": [
+            "eebylx@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "denied",
+        "category": [
+          "email"
+        ],
+        "id": "8760d0fc-1234-5678-1234-2exxfxxxxx1xd",
+        "kind": "event",
+        "original": "{\"event_type\":\"clicks_blocked\",\"url\":\"https://www.example.com/?name=abcd\",\"classification\":\"phish\",\"clickTime\":\"2053-03-21T07:52:11.000Z\",\"threatTime\":\"2053-03-18T14:54:20.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39\",\"id\":\"8760d0fc-1234-5678-1234-2exxfxxxxx1xd\",\"clickIP\":\"203.0.113.248\",\"sender\":\"sbgq@example.com\",\"recipient\":\"eebylx@example.com\",\"senderIP\":\"203.0.113.75\",\"GUID\":\"x11xxxx1-12f9-111x-x12x-1x1x123456xx\",\"threatID\":\"3xx97xx852c66a7xx761450xxxxxx9f4ffaxxxxxxxxxxxxxxx7a76481xx\",\"threatStatus\":\"active\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "classification": "phish",
+          "click_time": "2053-03-21T07:52:11.000Z",
+          "event_type": "clicks_blocked",
+          "guid": "x11xxxx1-12f9-111x-x12x-1x1x123456xx",
+          "id": "8760d0fc-1234-5678-1234-2exxfxxxxx1xd",
+          "threat_id": "3xx97xx852c66a7xx761450xxxxxx9f4ffaxxxxxxxxxxxxxxx7a76481xx",
+          "threat_status": "active",
+          "threat_time": "2053-03-18T14:54:20.000Z",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "203.0.113.248"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.75"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "last_seen": "2053-03-18T14:54:20.000Z",
+          "name": "https://www.example.com/?name=abcd",
+          "type": "url",
+          "url": {
+            "original": "https://www.example.com/?name=abcd"
+          }
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Edge",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "99.0.1150.39"
+      }
+    },
+    {
+      "@timestamp": "2053-03-30T07:22:52Z",
+      "destination": {
+        "ip": "192.0.2.156"
+      },
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "sepcrdp@example.com"
+          ]
+        },
+        "message_id": "78620046315671.28323.ybkp@example.com",
+        "sender": {
+          "address": "sepcrdp@example.com"
+        },
+        "to": {
+          "address": [
+            "rvny@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "denied",
+        "category": [
+          "email"
+        ],
+        "id": "b80af74a-1234-adfe-1234-43xdxxbxxxxx6",
+        "kind": "event",
+        "original": "{\"event_type\":\"clicks_blocked\",\"url\":\"http://www.example.com/public/download-shares/wwwxxxskvdljyyyzzz12345\",\"classification\":\"malware\",\"clickTime\":\"2053-03-30T07:22:52.000Z\",\"threatTime\":\"2053-03-07T01:21:41.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36\",\"id\":\"b80af74a-1234-adfe-1234-43xdxxbxxxxx6\",\"clickIP\":\"192.0.2.156\",\"sender\":\"sepcrdp@example.com\",\"recipient\":\"rvny@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"bXkXXUrXAXVXWXGXxXrXAXXX-XXXH\",\"threatID\":\"fdxxxxxxxxxxxcc34aff1aefxbx3xx7xb7xfxcxx1xxxxxxxx98780b5xxxexbx5xc32c\",\"threatStatus\":\"falsepositive\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "classification": "malware",
+          "click_time": "2053-03-30T07:22:52.000Z",
+          "event_type": "clicks_blocked",
+          "guid": "bXkXXUrXAXVXWXGXxXrXAXXX-XXXH",
+          "id": "b80af74a-1234-adfe-1234-43xdxxbxxxxx6",
+          "threat_id": "fdxxxxxxxxxxxcc34aff1aefxbx3xx7xb7xfxcxx1xxxxxxxx98780b5xxxexbx5xc32c",
+          "threat_status": "falsepositive",
+          "threat_time": "2053-03-07T01:21:41.000Z",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111",
+          "192.0.2.156"
+        ],
+        "user": [
+          "sepcrdp@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "last_seen": "2053-03-07T01:21:41.000Z",
+          "name": "http://www.example.com/public/download-shares/wwwxxxskvdljyyyzzz12345",
+          "type": "url",
+          "url": {
+            "original": "http://www.example.com/public/download-shares/wwwxxxskvdljyyyzzz12345"
+          }
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "100.0.4896.60"
+      }
+    },
+    {
+      "@timestamp": "2050-03-30T10:51:53Z",
+      "destination": {
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "cbc617@example.com"
+          ]
+        },
+        "message_id": "78620046315671.28323.ybkp@example.com",
+        "sender": {
+          "address": "cbc617@example.com"
+        },
+        "to": {
+          "address": [
+            "cwqzwhjl6v6ngqh0i8q0tumvn6nzmk1@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "allowed",
+        "category": [
+          "email"
+        ],
+        "id": "90dd54bc-1234-1234-1234-cxxxxxxxxx4",
+        "kind": "event",
+        "original": "{\"event_type\":\"clicks_permitted\",\"url\":\"http://example.com/ixxxx464xxx6x6xxd_cXxxxT_kxxTuQx_xIhxlx2qxxnxvxPxn\",\"classification\":\"spam\",\"clickTime\":\"2050-03-30T10:51:53.000Z\",\"threatTime\":\"2050-02-26T00:36:25.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36\",\"id\":\"90dd54bc-1234-1234-1234-cxxxxxxxxx4\",\"clickIP\":\"203.0.113.248\",\"sender\":\"cbc617@example.com\",\"recipient\":\"cwqzwhjl6v6ngqh0i8q0tumvn6nzmk1@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"QUWXXxXXJHlYXRXXXXVXUXXk\",\"threatID\":\"xxxxxxbx1cxcxx0xcx5xxxxdx5xex8xbx7xxxeexxxxxxxx9\",\"threatStatus\":\"cleared\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "classification": "spam",
+          "click_time": "2050-03-30T10:51:53.000Z",
+          "event_type": "clicks_permitted",
+          "guid": "QUWXXxXXJHlYXRXXXXVXUXXk",
+          "id": "90dd54bc-1234-1234-1234-cxxxxxxxxx4",
+          "threat_id": "xxxxxxbx1cxcxx0xcx5xxxxdx5xex8xbx7xxxeexxxxxxxx9",
+          "threat_status": "cleared",
+          "threat_time": "2050-02-26T00:36:25.000Z",
+          "user_agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111",
+          "203.0.113.248"
+        ],
+        "user": [
+          "cbc617@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "last_seen": "2050-02-26T00:36:25.000Z",
+          "name": "http://example.com/ixxxx464xxx6x6xxd_cXxxxT_kxxTuQx_xIhxlx2qxxnxvxPxn",
+          "type": "url",
+          "url": {
+            "original": "http://example.com/ixxxx464xxx6x6xxd_cXxxxT_kxxTuQx_xIhxlx2qxxnxvxPxn"
+          }
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "72.0.3626.109"
+      }
+    },
+    {
+      "@timestamp": "2050-03-30T00:56:14Z",
+      "destination": {
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "cbc617@example.com"
+          ]
+        },
+        "message_id": "78620046315671.28323.ybkp@example.com",
+        "sender": {
+          "address": "cbc617@example.com"
+        },
+        "to": {
+          "address": [
+            "f6uooy4x9pbi8ieleydh2qeqkkcgpqu5@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "allowed",
+        "category": [
+          "email"
+        ],
+        "id": "4b4ae949-1234-1234-1234-6axxxxx9xxxxx3",
+        "kind": "event",
+        "original": "{\"event_type\":\"clicks_permitted\",\"url\":\"https://xyz123456789.support.com#wns@example.com\",\"classification\":\"phish\",\"clickTime\":\"2050-03-30T00:56:14.000Z\",\"threatTime\":\"2050-03-30T00:53:43.000Z\",\"userAgent\":\"Mozilla/5.0 (Linux; Android 12; SM-N976U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36\",\"id\":\"4b4ae949-1234-1234-1234-6axxxxx9xxxxx3\",\"clickIP\":\"203.0.113.248\",\"sender\":\"cbc617@example.com\",\"recipient\":\"f6uooy4x9pbi8ieleydh2qeqkkcgpqu5@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"VXXhXiXyXBXlXdXXfXXXXXWXLXXX\",\"threatID\":\"xxxdxxdx6x7x6xxxxx5xxx837ex4x4xcx8xcxxxexxx2xxxxxx5\",\"threatStatus\":\"active\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "classification": "phish",
+          "click_time": "2050-03-30T00:56:14.000Z",
+          "event_type": "clicks_permitted",
+          "guid": "VXXhXiXyXBXlXdXXfXXXXXWXLXXX",
+          "id": "4b4ae949-1234-1234-1234-6axxxxx9xxxxx3",
+          "threat_id": "xxxdxxdx6x7x6xxxxx5xxx837ex4x4xcx8xcxxxexxx2xxxxxx5",
+          "threat_status": "active",
+          "threat_time": "2050-03-30T00:53:43.000Z",
+          "user_agent": "Mozilla/5.0 (Linux; Android 12; SM-N976U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111",
+          "203.0.113.248"
+        ],
+        "user": [
+          "cbc617@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "last_seen": "2050-03-30T00:53:43.000Z",
+          "name": "https://xyz123456789.support.com#wns@example.com",
+          "type": "url",
+          "url": {
+            "original": "https://xyz123456789.support.com#wns@example.com"
+          }
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Samsung SM-N976U"
+        },
+        "name": "Chrome Mobile",
+        "original": "Mozilla/5.0 (Linux; Android 12; SM-N976U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "os": {
+          "full": "Android 12",
+          "name": "Android",
+          "version": "12"
+        },
+        "version": "99.0.4844.88"
+      }
+    },
+    {
+      "@timestamp": "2053-03-30T10:51:53Z",
+      "destination": {
+        "ip": "203.0.113.75"
+      },
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "pb@example.com"
+          ]
+        },
+        "message_id": "78620046315671.28323.ybkp@example.com",
+        "sender": {
+          "address": "pb@example.com"
+        },
+        "to": {
+          "address": [
+            "nqvj@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "allowed",
+        "category": [
+          "email"
+        ],
+        "id": "90dd54bc-acdf-1234-1234-cxxxxxxxxx4",
+        "kind": "event",
+        "original": "{\"event_type\":\"clicks_permitted\",\"url\":\"http://example.com/ixxxx464xxx6x6xxd_cXxxxT_kxxTuQx_xsjbvkajbsdffIhxlx2qxxnxvxPxn\",\"classification\":\"spam\",\"clickTime\":\"2053-03-30T10:51:53.000Z\",\"threatTime\":\"2053-02-26T00:36:25.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36\",\"id\":\"90dd54bc-acdf-1234-1234-cxxxxxxxxx4\",\"clickIP\":\"203.0.113.75\",\"sender\":\"pb@example.com\",\"recipient\":\"nqvj@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"QUWXXxXXJHlYXRXXXXVXUXXk\",\"threatID\":\"xxxxxxbx1cxcxx0xcx5xxxxdx5xex8xbx7xxxeexxxxxxxx9\",\"threatStatus\":\"falsepositive\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "classification": "spam",
+          "click_time": "2053-03-30T10:51:53.000Z",
+          "event_type": "clicks_permitted",
+          "guid": "QUWXXxXXJHlYXRXXXXVXUXXk",
+          "id": "90dd54bc-acdf-1234-1234-cxxxxxxxxx4",
+          "threat_id": "xxxxxxbx1cxcxx0xcx5xxxxdx5xex8xbx7xxxeexxxxxxxx9",
+          "threat_status": "falsepositive",
+          "threat_time": "2053-02-26T00:36:25.000Z",
+          "user_agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.111",
+          "203.0.113.75"
+        ],
+        "user": [
+          "pb@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "last_seen": "2053-02-26T00:36:25.000Z",
+          "name": "http://example.com/ixxxx464xxx6x6xxd_cXxxxT_kxxTuQx_xsjbvkajbsdffIhxlx2qxxnxvxPxn",
+          "type": "url",
+          "url": {
+            "original": "http://example.com/ixxxx464xxx6x6xxd_cXxxxT_kxxTuQx_xsjbvkajbsdffIhxlx2qxxnxvxPxn"
+          }
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "72.0.3626.109"
+      }
+    },
+    {
+      "@timestamp": "2053-03-30T00:56:14Z",
+      "destination": {
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "qyqkttr@example.com"
+          ]
+        },
+        "message_id": "78620046315671.28323.ybkp@example.com",
+        "sender": {
+          "address": "qyqkttr@example.com"
+        },
+        "to": {
+          "address": [
+            "f6uooy4x9pbi8ieleydh2qeqkkcgpqu5@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "allowed",
+        "category": [
+          "email"
+        ],
+        "id": "4b4ae949-1234-1234-abcd-6axxxdv9xxxxx3",
+        "kind": "event",
+        "original": "{\"event_type\":\"clicks_permitted\",\"url\":\"https://xyz123456789.support.com#wns@example.com\",\"classification\":\"phish\",\"clickTime\":\"2053-03-30T00:56:14.000Z\",\"threatTime\":\"2053-03-30T00:53:43.000Z\",\"userAgent\":\"Mozilla/5.0 (Linux; Android 12; SM-N976U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36\",\"id\":\"4b4ae949-1234-1234-abcd-6axxxdv9xxxxx3\",\"clickIP\":\"203.0.113.248\",\"sender\":\"qyqkttr@example.com\",\"recipient\":\"f6uooy4x9pbi8ieleydh2qeqkkcgpqu5@example.com\",\"senderIP\":\"192.0.2.87\",\"GUID\":\"VXXhXiXyXBXlXdXXfXXXXXWXLXXX\",\"threatID\":\"xxxdxxdx6x7x6xxxxx5xxx837ex4x4xcx8xcxxxexxx2xxxxxx5\",\"threatStatus\":\"active\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "classification": "phish",
+          "click_time": "2053-03-30T00:56:14.000Z",
+          "event_type": "clicks_permitted",
+          "guid": "VXXhXiXyXBXlXdXXfXXXXXWXLXXX",
+          "id": "4b4ae949-1234-1234-abcd-6axxxdv9xxxxx3",
+          "threat_id": "xxxdxxdx6x7x6xxxxx5xxx837ex4x4xcx8xcxxxexxx2xxxxxx5",
+          "threat_status": "active",
+          "threat_time": "2053-03-30T00:53:43.000Z",
+          "user_agent": "Mozilla/5.0 (Linux; Android 12; SM-N976U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36"
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "203.0.113.248"
+        ],
+        "user": [
+          "qyqkttr@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "last_seen": "2053-03-30T00:53:43.000Z",
+          "name": "https://xyz123456789.support.com#wns@example.com",
+          "type": "url",
+          "url": {
+            "original": "https://xyz123456789.support.com#wns@example.com"
+          }
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Samsung SM-N976U"
+        },
+        "name": "Chrome Mobile",
+        "original": "Mozilla/5.0 (Linux; Android 12; SM-N976U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "os": {
+          "full": "Android 12",
+          "name": "Android",
+          "version": "12"
+        },
+        "version": "99.0.4844.88"
+      }
+    },
+    {
+      "@timestamp": "2053-11-18T06:47:26.915Z",
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "6ff16deea21abfd981df61fb3e1fbfe8",
+                "sha256": "e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3"
+              },
+              "mime_type": "application/octet-stream",
+              "name": "demo_146987645346416845132.docx.lrf"
+            }
+          }
+        ],
+        "from": {
+          "address": [
+            "rvny@example.com"
+          ]
+        },
+        "message_id": "13289940608542.PC636974@n2277549.xzksg.net",
+        "sender": {
+          "address": "sbgq@example.org"
+        },
+        "subject": "attachment threat",
+        "to": {
+          "address": [
+            "fpf@example.org"
+          ]
+        }
+      },
+      "event": {
+        "action": "denied",
+        "category": [
+          "email"
+        ],
+        "id": "PE10US31763448305Iuh6KWTOOjEJV01",
+        "kind": "event",
+        "original": "{\"event_type\":\"messages_blocked\",\"GUID\":\"PE10US31763448305Iuh6KWTOOjEJV01\",\"completelyRewritten\":\"false\",\"customerEid\":\"1234567\",\"customerName\":\"Plan ABC\",\"fromAddress\":\"rvny@example.com\",\"headerFrom\":\"rvny@example.com\",\"impostorScore\":0,\"malwareScore\":0,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1234567&k=k1&payload=jsdbivugjkaegklmfa5dhta79hrg6dsab6nydtfjgn4ryt46sgdfvwetsr4dgf6earsg64qhea64rg64wv6s4hf65bsr68td4hfb68rts4dfh654brs6zd5s4dg6ba5z41r6hs5a4zd165dtu4h1j65nr1bgdf6g6s8d6fhg\",\"messageID\":\"<13289940608542.PC636974@n2277549.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"5b596567d9533331156b6957b3d427a4\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9\"},{\"contentType\":\"application/octet-stream\",\"disposition\":\"attached\",\"filename\":\"demo_146987645346416845132.docx.lrf\",\"md5\":\"6ff16deea21abfd981df61fb3e1fbfe8\",\"oContentType\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3\"}],\"messageSize\":52944,\"messageTime\":\"2053-11-18T06:45:05.000000Z\",\"parentEid\":\"12365\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"malware\",\"recipient\":[\"fpf@example.org\"],\"replyToAddress\":\"\",\"sender\":\"sbgq@example.org\",\"senderIP\":\"203.0.113.75\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"attachment threat\",\"threatsInfoMap\":[{\"classification\":\"malware\",\"threat\":\"ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d\",\"threatId\":\"DBDF3734-7125-5915-ACFA-61782282570F\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T06:47:26.915Z\",\"threatType\":\"attachment\"}],\"toAddresses\":[\"fpf@example.org\"],\"xmailer\":\"\"}",
+        "reference": "https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1234567&k=k1&payload=jsdbivugjkaegklmfa5dhta79hrg6dsab6nydtfjgn4ryt46sgdfvwetsr4dgf6earsg64qhea64rg64wv6s4hf65bsr68td4hfb68rts4dfh654brs6zd5s4dg6ba5z41r6hs5a4zd165dtu4h1j65nr1bgdf6g6s8d6fhg",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "completely_rewritten": "false",
+          "customer_eid": "1234567",
+          "customer_name": "Plan ABC",
+          "event_type": "messages_blocked",
+          "guid": "PE10US31763448305Iuh6KWTOOjEJV01",
+          "header_from": "rvny@example.com",
+          "impostor_score": 0,
+          "malware_score": 0,
+          "message_parts": [
+            {
+              "content_type": "text/html",
+              "disposition": "inline",
+              "filename": "text.html",
+              "md5": "5b596567d9533331156b6957b3d427a4",
+              "o_content_type": "text/html",
+              "sandbox_status": "notrequested",
+              "sha256": "586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9"
+            },
+            {
+              "content_type": "application/octet-stream",
+              "disposition": "attached",
+              "filename": "demo_146987645346416845132.docx.lrf",
+              "md5": "6ff16deea21abfd981df61fb3e1fbfe8",
+              "o_content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              "sandbox_status": "notrequested",
+              "sha256": "e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3"
+            }
+          ],
+          "message_size": 52944,
+          "message_time": "2053-11-18T06:45:05.000Z",
+          "parent_eid": "12365",
+          "parent_name": "QA Test Account - example.net",
+          "phish_score": 0,
+          "spam_score": 0,
+          "stack_name": "us3",
+          "threats_info_map": [
+            {
+              "classification": "malware",
+              "threat": "ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d",
+              "threat_id": "DBDF3734-7125-5915-ACFA-61782282570F",
+              "threat_status": "active",
+              "threat_time": "2053-11-18T06:47:26.915Z",
+              "threat_type": "attachment"
+            }
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d",
+          "5b596567d9533331156b6957b3d427a4",
+          "6ff16deea21abfd981df61fb3e1fbfe8",
+          "586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9",
+          "e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3"
+        ],
+        "ip": [
+          "203.0.113.75"
+        ],
+        "user": [
+          "rvny@example.com",
+          "sbgq@example.org",
+          "fpf@example.org"
+        ]
+      },
+      "rule": {
+        "name": "malware"
+      },
+      "source": {
+        "ip": "203.0.113.75"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "name": [
+            "ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2053-11-18T16:45:05Z",
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "6ff16deea21abfd981df61fb3e1fbfe8",
+                "sha256": "e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3"
+              },
+              "mime_type": "application/octet-stream",
+              "name": "demo_146987645346416845132.docx.lrf"
+            }
+          }
+        ],
+        "from": {
+          "address": [
+            "rvny@example.com"
+          ]
+        },
+        "message_id": "13289940608542.PC636974@v8305884.xzksg.net",
+        "sender": {
+          "address": "sbgq@example.org"
+        },
+        "subject": "attachment threat",
+        "to": {
+          "address": [
+            "eqek@example.org",
+            "fpf@example.org"
+          ]
+        }
+      },
+      "event": {
+        "action": "denied",
+        "category": [
+          "email"
+        ],
+        "id": "nadjkbgajgakjnvjkrgnaergevVFHJBvyujb",
+        "kind": "event",
+        "original": "{\"event_type\":\"messages_blocked\",\"GUID\":\"nadjkbgajgakjnvjkrgnaergevVFHJBvyujb\",\"completelyRewritten\":\"false\",\"customerEid\":\"1235567\",\"customerName\":\"Customer 4\",\"fromAddress\":\"rvny@example.com\",\"headerFrom\":\"fnvfc@example.com\",\"impostorScore\":10,\"malwareScore\":30,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1235567&k=k1&payload=jsdbivugjkaegklmffdvdfa5dhta79hrg6dsab6nydtfjgn4ryt46sgdfvwetsr4dgf6earsg64qhea64rg64wv6s4hf65bsr68td4hfb68rts4dfh654brs6zd5s4dg6ba5z41r6hs5a4zd165dtu4h1j65nr1bgdf6g6s8d6fhg\",\"messageID\":\"<13289940608542.PC636974@v8305884.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"5b596567d9533331156b6957b3d427a4\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9\"},{\"contentType\":\"application/octet-stream\",\"disposition\":\"attached\",\"filename\":\"demo_146987645346416845132.docx.lrf\",\"md5\":\"6ff16deea21abfd981df61fb3e1fbfe8\",\"oContentType\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3\"}],\"messageSize\":52944,\"messageTime\":\"2053-11-18T16:45:05.000000Z\",\"parentEid\":\"12365\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"spam\",\"recipient\":[\"eqek@example.org\"],\"replyToAddress\":\"\",\"sender\":\"sbgq@example.org\",\"senderIP\":\"203.0.113.75\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"attachment threat\",\"threatsInfoMap\":[{\"classification\":\"spam\",\"threat\":\"ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d\",\"threatId\":\"DBDF3734-7125-5915-ACFA-61782282570F\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T06:47:26.915Z\",\"threatType\":\"attachment\"}],\"toAddresses\":[\"fpf@example.org\"],\"xmailer\":\"\"}",
+        "reference": "https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1235567&k=k1&payload=jsdbivugjkaegklmffdvdfa5dhta79hrg6dsab6nydtfjgn4ryt46sgdfvwetsr4dgf6earsg64qhea64rg64wv6s4hf65bsr68td4hfb68rts4dfh654brs6zd5s4dg6ba5z41r6hs5a4zd165dtu4h1j65nr1bgdf6g6s8d6fhg",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "completely_rewritten": "false",
+          "customer_eid": "1235567",
+          "customer_name": "Customer 4",
+          "event_type": "messages_blocked",
+          "guid": "nadjkbgajgakjnvjkrgnaergevVFHJBvyujb",
+          "header_from": "fnvfc@example.com",
+          "impostor_score": 10,
+          "malware_score": 30,
+          "message_parts": [
+            {
+              "content_type": "text/html",
+              "disposition": "inline",
+              "filename": "text.html",
+              "md5": "5b596567d9533331156b6957b3d427a4",
+              "o_content_type": "text/html",
+              "sandbox_status": "notrequested",
+              "sha256": "586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9"
+            },
+            {
+              "content_type": "application/octet-stream",
+              "disposition": "attached",
+              "filename": "demo_146987645346416845132.docx.lrf",
+              "md5": "6ff16deea21abfd981df61fb3e1fbfe8",
+              "o_content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              "sandbox_status": "notrequested",
+              "sha256": "e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3"
+            }
+          ],
+          "message_size": 52944,
+          "message_time": "2053-11-18T16:45:05.000Z",
+          "parent_eid": "12365",
+          "parent_name": "QA Test Account - example.net",
+          "phish_score": 0,
+          "spam_score": 0,
+          "stack_name": "us3",
+          "threats_info_map": [
+            {
+              "classification": "spam",
+              "threat": "ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d",
+              "threat_id": "DBDF3734-7125-5915-ACFA-61782282570F",
+              "threat_status": "active",
+              "threat_time": "2053-11-18T06:47:26.915Z",
+              "threat_type": "attachment"
+            }
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d",
+          "5b596567d9533331156b6957b3d427a4",
+          "6ff16deea21abfd981df61fb3e1fbfe8",
+          "586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9",
+          "e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3"
+        ],
+        "ip": [
+          "203.0.113.75"
+        ],
+        "user": [
+          "rvny@example.com",
+          "sbgq@example.org",
+          "eqek@example.org",
+          "fpf@example.org"
+        ]
+      },
+      "rule": {
+        "name": "spam"
+      },
+      "source": {
+        "ip": "203.0.113.75"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "name": [
+            "ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2053-11-19T16:45:05Z",
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "6ff16deea21abfd981df61fb3e1fbfe8",
+                "sha256": "e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3"
+              },
+              "mime_type": "application/octet-stream",
+              "name": "demo_146987645346416845132.docx.lrf"
+            }
+          }
+        ],
+        "from": {
+          "address": [
+            "rvny@example.com"
+          ]
+        },
+        "message_id": "13289940608542.PC636974@n2277549.xzksg.net",
+        "sender": {
+          "address": "qyqkttr@example.org"
+        },
+        "subject": "attachment threat",
+        "to": {
+          "address": [
+            "eqek@example.org",
+            "fpf@example.org"
+          ]
+        }
+      },
+      "event": {
+        "action": "denied",
+        "category": [
+          "email"
+        ],
+        "id": "PE10US317634483018F4D6V464S6V46S5Iuh6KWTOOjEJV01",
+        "kind": "event",
+        "original": "{\"event_type\":\"messages_blocked\",\"GUID\":\"PE10US317634483018F4D6V464S6V46S5Iuh6KWTOOjEJV01\",\"completelyRewritten\":\"na\",\"customerEid\":\"1234567\",\"customerName\":\"Plan ABC\",\"fromAddress\":\"rvny@example.com\",\"headerFrom\":\"fnvfc@example.com\",\"impostorScore\":70,\"malwareScore\":80,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1234567&k=k1&payload=jsdvdfdfbdfbivugjkaegklmfa5dhta79hrg6dsab6nydtfjgn4ryt46sgdfvwetsr4dgf6earsg64qhea64rg64wv6s4hf65bsr68td4hfb68rts4dfh654brs6zd5s4dg6ba5z41r6hs5a4zd165dtu4h1j65nr1bgdf6g6s8d6fhg\",\"messageID\":\"<13289940608542.PC636974@n2277549.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"5b596567d9533331156b6957b3d427a4\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9\"},{\"contentType\":\"application/octet-stream\",\"disposition\":\"attached\",\"filename\":\"demo_146987645346416845132.docx.lrf\",\"md5\":\"6ff16deea21abfd981df61fb3e1fbfe8\",\"oContentType\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3\"}],\"messageSize\":52944,\"messageTime\":\"2053-11-19T16:45:05.000000Z\",\"parentEid\":\"12365\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"PHish Detection\",\"recipient\":[\"eqek@example.org\"],\"replyToAddress\":\"\",\"sender\":\"qyqkttr@example.org\",\"senderIP\":\"203.0.113.75\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"attachment threat\",\"threatsInfoMap\":[{\"classification\":\"spam\",\"threat\":\"ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d\",\"threatId\":\"DBDF3734-7125-5915-ACFA-61782282570F\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T06:47:26.915Z\",\"threatType\":\"attachment\"}],\"toAddresses\":[\"fpf@example.org\"],\"xmailer\":\"\"}",
+        "reference": "https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1234567&k=k1&payload=jsdvdfdfbdfbivugjkaegklmfa5dhta79hrg6dsab6nydtfjgn4ryt46sgdfvwetsr4dgf6earsg64qhea64rg64wv6s4hf65bsr68td4hfb68rts4dfh654brs6zd5s4dg6ba5z41r6hs5a4zd165dtu4h1j65nr1bgdf6g6s8d6fhg",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "completely_rewritten": "na",
+          "customer_eid": "1234567",
+          "customer_name": "Plan ABC",
+          "event_type": "messages_blocked",
+          "guid": "PE10US317634483018F4D6V464S6V46S5Iuh6KWTOOjEJV01",
+          "header_from": "fnvfc@example.com",
+          "impostor_score": 70,
+          "malware_score": 80,
+          "message_parts": [
+            {
+              "content_type": "text/html",
+              "disposition": "inline",
+              "filename": "text.html",
+              "md5": "5b596567d9533331156b6957b3d427a4",
+              "o_content_type": "text/html",
+              "sandbox_status": "notrequested",
+              "sha256": "586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9"
+            },
+            {
+              "content_type": "application/octet-stream",
+              "disposition": "attached",
+              "filename": "demo_146987645346416845132.docx.lrf",
+              "md5": "6ff16deea21abfd981df61fb3e1fbfe8",
+              "o_content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              "sandbox_status": "notrequested",
+              "sha256": "e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3"
+            }
+          ],
+          "message_size": 52944,
+          "message_time": "2053-11-19T16:45:05.000Z",
+          "parent_eid": "12365",
+          "parent_name": "QA Test Account - example.net",
+          "phish_score": 0,
+          "spam_score": 0,
+          "stack_name": "us3",
+          "threats_info_map": [
+            {
+              "classification": "spam",
+              "threat": "ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d",
+              "threat_id": "DBDF3734-7125-5915-ACFA-61782282570F",
+              "threat_status": "active",
+              "threat_time": "2053-11-18T06:47:26.915Z",
+              "threat_type": "attachment"
+            }
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d",
+          "5b596567d9533331156b6957b3d427a4",
+          "6ff16deea21abfd981df61fb3e1fbfe8",
+          "586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9",
+          "e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3"
+        ],
+        "ip": [
+          "203.0.113.75"
+        ],
+        "user": [
+          "rvny@example.com",
+          "qyqkttr@example.org",
+          "eqek@example.org",
+          "fpf@example.org"
+        ]
+      },
+      "rule": {
+        "name": "PHish Detection"
+      },
+      "source": {
+        "ip": "203.0.113.75"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "name": [
+            "ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2053-11-18T07:37:18.000Z",
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "riq_f_cbcsgl@example.com"
+          ]
+        },
+        "message_id": "23196301852265.PB76027@n2277549.xzksg.net",
+        "sender": {
+          "address": "www-data@example.com"
+        },
+        "subject": "URL threat",
+        "to": {
+          "address": [
+            "pb@example.org"
+          ]
+        }
+      },
+      "event": {
+        "action": "allowed",
+        "category": [
+          "email"
+        ],
+        "id": "GBCJHVbvfdjHIVBDBbliuvsvoehfb64V9SFgvuvhVUYVbi-abcd",
+        "kind": "event",
+        "original": "{\"event_type\":\"messages_delivered\",\"GUID\":\"GBCJHVbvfdjHIVBDBbliuvsvoehfb64V9SFgvuvhVUYVbi-abcd\",\"completelyRewritten\":\"true\",\"customerEid\":\"1234567\",\"customerName\":\"Customer 1\",\"fromAddress\":\"riq_f_cbcsgl@example.com\",\"headerFrom\":\"riq_f_cbcsgl@example.com\",\"impostorScore\":0,\"malwareScore\":0,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1234567&k=k1&payload=4i7f2b8466a51c60523eef35e6295c91e9bhvdsdvabvadhv14684fbdf654b6dfba31g68t4h15badf65g4a4fd86b4trs65h1b6a53s4gde8a7sthgbaf6dg4v6aer8d7g46v5adr4fgv86aw4zs9f68b4y6j84nuy64ko6iu54kyjghf6ga54s6rzhxjtuf45jhn1b6svd5s4gh68mu5yf4ihj86h45srbd6g6\",\"messageID\":\"<23196301852265.PB76027@n2277549.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"2c59640eae6e3e79e8674d856866a840\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780\"}],\"messageSize\":2319,\"messageTime\":\"2053-11-18T07:35:04.000000Z\",\"parentEid\":\"56890\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"N/A\",\"recipient\":[\"pb@example.org\"],\"replyToAddress\":\"\",\"sender\":\"www-data@example.com\",\"senderIP\":\"192.0.2.87\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"URL threat\",\"threatsInfoMap\":[{\"classification\":\"malware\",\"threat\":\"https://example.com/files/demo_1234567890.docx\",\"threatId\":\"4cccebc1-2577-5363-9801-abededc91177\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T07:37:18Z\",\"threatType\":\"URL\"}],\"toAddresses\":[\"pb@example.org\"],\"xmailer\":\"\"}",
+        "reference": "https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1234567&k=k1&payload=4i7f2b8466a51c60523eef35e6295c91e9bhvdsdvabvadhv14684fbdf654b6dfba31g68t4h15badf65g4a4fd86b4trs65h1b6a53s4gde8a7sthgbaf6dg4v6aer8d7g46v5adr4fgv86aw4zs9f68b4y6j84nuy64ko6iu54kyjghf6ga54s6rzhxjtuf45jhn1b6svd5s4gh68mu5yf4ihj86h45srbd6g6",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "completely_rewritten": "true",
+          "customer_eid": "1234567",
+          "customer_name": "Customer 1",
+          "event_type": "messages_delivered",
+          "guid": "GBCJHVbvfdjHIVBDBbliuvsvoehfb64V9SFgvuvhVUYVbi-abcd",
+          "header_from": "riq_f_cbcsgl@example.com",
+          "impostor_score": 0,
+          "malware_score": 0,
+          "message_parts": [
+            {
+              "content_type": "text/html",
+              "disposition": "inline",
+              "filename": "text.html",
+              "md5": "2c59640eae6e3e79e8674d856866a840",
+              "o_content_type": "text/html",
+              "sandbox_status": "notrequested",
+              "sha256": "8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780"
+            }
+          ],
+          "message_size": 2319,
+          "message_time": "2053-11-18T07:35:04.000Z",
+          "parent_eid": "56890",
+          "parent_name": "QA Test Account - example.net",
+          "phish_score": 0,
+          "spam_score": 0,
+          "stack_name": "us3",
+          "threats_info_map": [
+            {
+              "classification": "malware",
+              "threat": "https://example.com/files/demo_1234567890.docx",
+              "threat_id": "4cccebc1-2577-5363-9801-abededc91177",
+              "threat_status": "active",
+              "threat_time": "2053-11-18T07:37:18.000Z",
+              "threat_type": "URL"
+            }
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "2c59640eae6e3e79e8674d856866a840",
+          "8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "riq_f_cbcsgl@example.com",
+          "www-data@example.com",
+          "pb@example.org"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "name": [
+            "https://example.com/files/demo_1234567890.docx"
+          ],
+          "type": [
+            "url"
+          ],
+          "url": {
+            "original": [
+              "https://example.com/files/demo_1234567890.docx"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2053-11-19T09:35:04Z",
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "edyhq@example.com"
+          ]
+        },
+        "message_id": "23196301852265.PB76027@v8305884.xzksg.net",
+        "sender": {
+          "address": "www-data@example.com"
+        },
+        "subject": "URL threat",
+        "to": {
+          "address": [
+            "qyqkttr@example.com",
+            "pb@example.org"
+          ]
+        }
+      },
+      "event": {
+        "action": "allowed",
+        "category": [
+          "email"
+        ],
+        "id": "GBCJHVbvfdjHIVsvoehfb64V9SFgvuvhVUYVbi-abcd",
+        "kind": "event",
+        "original": "{\"event_type\":\"messages_delivered\",\"GUID\":\"GBCJHVbvfdjHIVsvoehfb64V9SFgvuvhVUYVbi-abcd\",\"completelyRewritten\":\"true\",\"customerEid\":\"1235567\",\"customerName\":\"Customer 4\",\"fromAddress\":\"edyhq@example.com\",\"headerFrom\":\"riq_f_cbcsgl@example.com\",\"impostorScore\":30,\"malwareScore\":40,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1235567&k=k1&payload=4i7dfvfdvf2b8466a51c60523eef35e6295c91e9bhvdsdvabvadhv14684fbdf654b6dfba31g68t4h15badf65g4a4fd86b4trs65h1b6a53s4gde8a7sthgbaf6dg4v6aer8d7g46v5adr4fgv86aw4zs9f68b4y6j84nuy64ko6iu54kyjghf6ga54s6rzhxjtuf45jhn1b6svd5s4gh68mu5yf4ihj86h45srbd6g6\",\"messageID\":\"<23196301852265.PB76027@v8305884.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"2c59640eae6e3e79e8674d856866a840\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780\"}],\"messageSize\":2319,\"messageTime\":\"2053-11-19T09:35:04.000000Z\",\"parentEid\":\"56890\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"N/A\",\"recipient\":[\"qyqkttr@example.com\"],\"replyToAddress\":\"\",\"sender\":\"www-data@example.com\",\"senderIP\":\"192.0.2.187\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"URL threat\",\"threatsInfoMap\":[{\"classification\":\"toad\",\"threat\":\"https://example.com/files/demo_1234567890.docx\",\"threatId\":\"4cccebc1-2577-5363-9801-abededc91177\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T07:37:18Z\",\"threatType\":\"URL\"}],\"toAddresses\":[\"pb@example.org\"],\"xmailer\":\"\"}",
+        "reference": "https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1235567&k=k1&payload=4i7dfvfdvf2b8466a51c60523eef35e6295c91e9bhvdsdvabvadhv14684fbdf654b6dfba31g68t4h15badf65g4a4fd86b4trs65h1b6a53s4gde8a7sthgbaf6dg4v6aer8d7g46v5adr4fgv86aw4zs9f68b4y6j84nuy64ko6iu54kyjghf6ga54s6rzhxjtuf45jhn1b6svd5s4gh68mu5yf4ihj86h45srbd6g6",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "completely_rewritten": "true",
+          "customer_eid": "1235567",
+          "customer_name": "Customer 4",
+          "event_type": "messages_delivered",
+          "guid": "GBCJHVbvfdjHIVsvoehfb64V9SFgvuvhVUYVbi-abcd",
+          "header_from": "riq_f_cbcsgl@example.com",
+          "impostor_score": 30,
+          "malware_score": 40,
+          "message_parts": [
+            {
+              "content_type": "text/html",
+              "disposition": "inline",
+              "filename": "text.html",
+              "md5": "2c59640eae6e3e79e8674d856866a840",
+              "o_content_type": "text/html",
+              "sandbox_status": "notrequested",
+              "sha256": "8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780"
+            }
+          ],
+          "message_size": 2319,
+          "message_time": "2053-11-19T09:35:04.000Z",
+          "parent_eid": "56890",
+          "parent_name": "QA Test Account - example.net",
+          "phish_score": 0,
+          "spam_score": 0,
+          "stack_name": "us3",
+          "threats_info_map": [
+            {
+              "classification": "toad",
+              "threat": "https://example.com/files/demo_1234567890.docx",
+              "threat_id": "4cccebc1-2577-5363-9801-abededc91177",
+              "threat_status": "active",
+              "threat_time": "2053-11-18T07:37:18.000Z",
+              "threat_type": "URL"
+            }
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "2c59640eae6e3e79e8674d856866a840",
+          "8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780"
+        ],
+        "ip": [
+          "192.0.2.187"
+        ],
+        "user": [
+          "edyhq@example.com",
+          "www-data@example.com",
+          "qyqkttr@example.com",
+          "pb@example.org"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.187"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "name": [
+            "https://example.com/files/demo_1234567890.docx"
+          ],
+          "type": [
+            "url"
+          ],
+          "url": {
+            "original": [
+              "https://example.com/files/demo_1234567890.docx"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2053-11-18T09:35:04Z",
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "edyhq@example.com"
+          ]
+        },
+        "message_id": "23196301852265.PB76027@v8305884.xzksg.net",
+        "sender": {
+          "address": "www-data@example.com"
+        },
+        "subject": "URL threat",
+        "to": {
+          "address": [
+            "sbgq@example.org",
+            "pb@example.org"
+          ]
+        }
+      },
+      "event": {
+        "action": "allowed",
+        "category": [
+          "email"
+        ],
+        "id": "GBCJHVbvfdjHIVBDBbliuvsvojsdvnlaehfb64V9SFgvuvhVUYVbi-abcd",
+        "kind": "event",
+        "original": "{\"event_type\":\"messages_delivered\",\"GUID\":\"GBCJHVbvfdjHIVBDBbliuvsvojsdvnlaehfb64V9SFgvuvhVUYVbi-abcd\",\"completelyRewritten\":\"true\",\"customerEid\":\"1235567\",\"customerName\":\"Customer 4\",\"fromAddress\":\"edyhq@example.com\",\"headerFrom\":\"riq_f_cbcsgl@example.com\",\"impostorScore\":20,\"malwareScore\":30,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1235567&k=k1&payload=4i7ffvdf2b8466a51c60523eef35e6295c91e9bhvdsdvabvadhv14684fbdf654b6dfba31g68t4h15badf65g4a4fd86b4trs65h1b6a53s4gde8a7sthgbaf6dg4v6aer8d7g46v5adr4fgv86aw4zs9f68b4y6j84nuy64ko6iu54kyjghf6ga54s6rzhxjtuf45jhn1b6svd5s4gh68mu5yf4ihj86h45srbd6g6\",\"messageID\":\"<23196301852265.PB76027@v8305884.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"2c59640eae6e3e79e8674d856866a840\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780\"}],\"messageSize\":2319,\"messageTime\":\"2053-11-18T09:35:04.000000Z\",\"parentEid\":\"56890\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"N/A\",\"recipient\":[\"sbgq@example.org\"],\"replyToAddress\":\"\",\"sender\":\"www-data@example.com\",\"senderIP\":\"192.0.2.87\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"URL threat\",\"threatsInfoMap\":[{\"classification\":\"phish\",\"threat\":\"https://example.com/files/demo_1234567890.docx\",\"threatId\":\"4cccebc1-2577-5363-9801-abededc91177\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T07:37:18Z\",\"threatType\":\"URL\"}],\"toAddresses\":[\"pb@example.org\"],\"xmailer\":\"\"}",
+        "reference": "https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1235567&k=k1&payload=4i7ffvdf2b8466a51c60523eef35e6295c91e9bhvdsdvabvadhv14684fbdf654b6dfba31g68t4h15badf65g4a4fd86b4trs65h1b6a53s4gde8a7sthgbaf6dg4v6aer8d7g46v5adr4fgv86aw4zs9f68b4y6j84nuy64ko6iu54kyjghf6ga54s6rzhxjtuf45jhn1b6svd5s4gh68mu5yf4ihj86h45srbd6g6",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Proofpoint Essentials",
+        "vendor": "Proofpoint"
+      },
+      "proofpoint_essentials": {
+        "threat": {
+          "completely_rewritten": "true",
+          "customer_eid": "1235567",
+          "customer_name": "Customer 4",
+          "event_type": "messages_delivered",
+          "guid": "GBCJHVbvfdjHIVBDBbliuvsvojsdvnlaehfb64V9SFgvuvhVUYVbi-abcd",
+          "header_from": "riq_f_cbcsgl@example.com",
+          "impostor_score": 20,
+          "malware_score": 30,
+          "message_parts": [
+            {
+              "content_type": "text/html",
+              "disposition": "inline",
+              "filename": "text.html",
+              "md5": "2c59640eae6e3e79e8674d856866a840",
+              "o_content_type": "text/html",
+              "sandbox_status": "notrequested",
+              "sha256": "8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780"
+            }
+          ],
+          "message_size": 2319,
+          "message_time": "2053-11-18T09:35:04.000Z",
+          "parent_eid": "56890",
+          "parent_name": "QA Test Account - example.net",
+          "phish_score": 0,
+          "spam_score": 0,
+          "stack_name": "us3",
+          "threats_info_map": [
+            {
+              "classification": "phish",
+              "threat": "https://example.com/files/demo_1234567890.docx",
+              "threat_id": "4cccebc1-2577-5363-9801-abededc91177",
+              "threat_status": "active",
+              "threat_time": "2053-11-18T07:37:18.000Z",
+              "threat_type": "URL"
+            }
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "2c59640eae6e3e79e8674d856866a840",
+          "8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "edyhq@example.com",
+          "www-data@example.com",
+          "sbgq@example.org",
+          "pb@example.org"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "name": [
+            "https://example.com/files/demo_1234567890.docx"
+          ],
+          "type": [
+            "url"
+          ],
+          "url": {
+            "original": [
+              "https://example.com/files/demo_1234567890.docx"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"event_type\":\"clicks_blocked\",\"url\":\"https://www.example.com/?name=john\",\"classification\":\"phish\",\"clickTime\":\"2050-03-21T07:52:11.000Z\",\"threatTime\":\"2050-03-18T14:54:20.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39\",\"id\":\"8760d0fc-1234-1234-1234-2exxfxxxxx1xd\",\"clickIP\":\"203.0.113.248\",\"sender\":\"cbc617@example.com\",\"recipient\":\"221aaf@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"x11xxxx1-12f9-111x-x12x-1x1x123456xx\",\"threatID\":\"3xx97xx852c66a7xx761450xxxxxx9f4ffaxxxxxxxxxxxxxxx7a76481xx\",\"threatStatus\":\"active\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"clicks_blocked\",\"url\":\"http://www.example.com/public/download-shares/wwwxxxyyyzzz12345\",\"classification\":\"phish\",\"clickTime\":\"2050-03-30T07:22:52.000Z\",\"threatTime\":\"2050-03-07T01:21:41.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36\",\"id\":\"b80af74a-1234-1234-1234-43xdxxbxxxxx6\",\"clickIP\":\"203.0.113.248\",\"sender\":\"cbc617@example.com\",\"recipient\":\"eb9df326408e30882c8dbc94246a0973@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"bXkXXUrXAXVXWXGXxXrXAXXX-XXXH\",\"threatID\":\"fdxxxxxxxxxxxcc34aff1aefxbx3xx7xb7xfxcxx1xxxxxxxx98780b5xxxexbx5xc32c\",\"threatStatus\":\"active\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"clicks_blocked\",\"url\":\"https://www.example.com/?name=abcd\",\"classification\":\"phish\",\"clickTime\":\"2053-03-21T07:52:11.000Z\",\"threatTime\":\"2053-03-18T14:54:20.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39\",\"id\":\"8760d0fc-1234-5678-1234-2exxfxxxxx1xd\",\"clickIP\":\"203.0.113.248\",\"sender\":\"sbgq@example.com\",\"recipient\":\"eebylx@example.com\",\"senderIP\":\"203.0.113.75\",\"GUID\":\"x11xxxx1-12f9-111x-x12x-1x1x123456xx\",\"threatID\":\"3xx97xx852c66a7xx761450xxxxxx9f4ffaxxxxxxxxxxxxxxx7a76481xx\",\"threatStatus\":\"active\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"clicks_blocked\",\"url\":\"http://www.example.com/public/download-shares/wwwxxxskvdljyyyzzz12345\",\"classification\":\"malware\",\"clickTime\":\"2053-03-30T07:22:52.000Z\",\"threatTime\":\"2053-03-07T01:21:41.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36\",\"id\":\"b80af74a-1234-adfe-1234-43xdxxbxxxxx6\",\"clickIP\":\"192.0.2.156\",\"sender\":\"sepcrdp@example.com\",\"recipient\":\"rvny@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"bXkXXUrXAXVXWXGXxXrXAXXX-XXXH\",\"threatID\":\"fdxxxxxxxxxxxcc34aff1aefxbx3xx7xb7xfxcxx1xxxxxxxx98780b5xxxexbx5xc32c\",\"threatStatus\":\"falsepositive\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"clicks_permitted\",\"url\":\"http://example.com/ixxxx464xxx6x6xxd_cXxxxT_kxxTuQx_xIhxlx2qxxnxvxPxn\",\"classification\":\"spam\",\"clickTime\":\"2050-03-30T10:51:53.000Z\",\"threatTime\":\"2050-02-26T00:36:25.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36\",\"id\":\"90dd54bc-1234-1234-1234-cxxxxxxxxx4\",\"clickIP\":\"203.0.113.248\",\"sender\":\"cbc617@example.com\",\"recipient\":\"cwqzwhjl6v6ngqh0i8q0tumvn6nzmk1@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"QUWXXxXXJHlYXRXXXXVXUXXk\",\"threatID\":\"xxxxxxbx1cxcxx0xcx5xxxxdx5xex8xbx7xxxeexxxxxxxx9\",\"threatStatus\":\"cleared\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"clicks_permitted\",\"url\":\"https://xyz123456789.support.com#wns@example.com\",\"classification\":\"phish\",\"clickTime\":\"2050-03-30T00:56:14.000Z\",\"threatTime\":\"2050-03-30T00:53:43.000Z\",\"userAgent\":\"Mozilla/5.0 (Linux; Android 12; SM-N976U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36\",\"id\":\"4b4ae949-1234-1234-1234-6axxxxx9xxxxx3\",\"clickIP\":\"203.0.113.248\",\"sender\":\"cbc617@example.com\",\"recipient\":\"f6uooy4x9pbi8ieleydh2qeqkkcgpqu5@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"VXXhXiXyXBXlXdXXfXXXXXWXLXXX\",\"threatID\":\"xxxdxxdx6x7x6xxxxx5xxx837ex4x4xcx8xcxxxexxx2xxxxxx5\",\"threatStatus\":\"active\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"clicks_permitted\",\"url\":\"http://example.com/ixxxx464xxx6x6xxd_cXxxxT_kxxTuQx_xsjbvkajbsdffIhxlx2qxxnxvxPxn\",\"classification\":\"spam\",\"clickTime\":\"2053-03-30T10:51:53.000Z\",\"threatTime\":\"2053-02-26T00:36:25.000Z\",\"userAgent\":\"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36\",\"id\":\"90dd54bc-acdf-1234-1234-cxxxxxxxxx4\",\"clickIP\":\"203.0.113.75\",\"sender\":\"pb@example.com\",\"recipient\":\"nqvj@example.com\",\"senderIP\":\"198.51.100.111\",\"GUID\":\"QUWXXxXXJHlYXRXXXXVXUXXk\",\"threatID\":\"xxxxxxbx1cxcxx0xcx5xxxxdx5xex8xbx7xxxeexxxxxxxx9\",\"threatStatus\":\"falsepositive\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"clicks_permitted\",\"url\":\"https://xyz123456789.support.com#wns@example.com\",\"classification\":\"phish\",\"clickTime\":\"2053-03-30T00:56:14.000Z\",\"threatTime\":\"2053-03-30T00:53:43.000Z\",\"userAgent\":\"Mozilla/5.0 (Linux; Android 12; SM-N976U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36\",\"id\":\"4b4ae949-1234-1234-abcd-6axxxdv9xxxxx3\",\"clickIP\":\"203.0.113.248\",\"sender\":\"qyqkttr@example.com\",\"recipient\":\"f6uooy4x9pbi8ieleydh2qeqkkcgpqu5@example.com\",\"senderIP\":\"192.0.2.87\",\"GUID\":\"VXXhXiXyXBXlXdXXfXXXXXWXLXXX\",\"threatID\":\"xxxdxxdx6x7x6xxxxx5xxx837ex4x4xcx8xcxxxexxx2xxxxxx5\",\"threatStatus\":\"active\",\"messageID\":\"78620046315671.28323.ybkp@example.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"messages_blocked\",\"GUID\":\"PE10US31763448305Iuh6KWTOOjEJV01\",\"completelyRewritten\":\"false\",\"customerEid\":\"1234567\",\"customerName\":\"Plan ABC\",\"fromAddress\":\"rvny@example.com\",\"headerFrom\":\"rvny@example.com\",\"impostorScore\":0,\"malwareScore\":0,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1234567&k=k1&payload=jsdbivugjkaegklmfa5dhta79hrg6dsab6nydtfjgn4ryt46sgdfvwetsr4dgf6earsg64qhea64rg64wv6s4hf65bsr68td4hfb68rts4dfh654brs6zd5s4dg6ba5z41r6hs5a4zd165dtu4h1j65nr1bgdf6g6s8d6fhg\",\"messageID\":\"<13289940608542.PC636974@n2277549.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"5b596567d9533331156b6957b3d427a4\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9\"},{\"contentType\":\"application/octet-stream\",\"disposition\":\"attached\",\"filename\":\"demo_146987645346416845132.docx.lrf\",\"md5\":\"6ff16deea21abfd981df61fb3e1fbfe8\",\"oContentType\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3\"}],\"messageSize\":52944,\"messageTime\":\"2053-11-18T06:45:05.000000Z\",\"parentEid\":\"12365\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"malware\",\"recipient\":[\"fpf@example.org\"],\"replyToAddress\":\"\",\"sender\":\"sbgq@example.org\",\"senderIP\":\"203.0.113.75\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"attachment threat\",\"threatsInfoMap\":[{\"classification\":\"malware\",\"threat\":\"ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d\",\"threatId\":\"DBDF3734-7125-5915-ACFA-61782282570F\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T06:47:26.915Z\",\"threatType\":\"attachment\"}],\"toAddresses\":[\"fpf@example.org\"],\"xmailer\":\"\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"messages_blocked\",\"GUID\":\"nadjkbgajgakjnvjkrgnaergevVFHJBvyujb\",\"completelyRewritten\":\"false\",\"customerEid\":\"1235567\",\"customerName\":\"Customer 4\",\"fromAddress\":\"rvny@example.com\",\"headerFrom\":\"fnvfc@example.com\",\"impostorScore\":10,\"malwareScore\":30,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1235567&k=k1&payload=jsdbivugjkaegklmffdvdfa5dhta79hrg6dsab6nydtfjgn4ryt46sgdfvwetsr4dgf6earsg64qhea64rg64wv6s4hf65bsr68td4hfb68rts4dfh654brs6zd5s4dg6ba5z41r6hs5a4zd165dtu4h1j65nr1bgdf6g6s8d6fhg\",\"messageID\":\"<13289940608542.PC636974@v8305884.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"5b596567d9533331156b6957b3d427a4\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9\"},{\"contentType\":\"application/octet-stream\",\"disposition\":\"attached\",\"filename\":\"demo_146987645346416845132.docx.lrf\",\"md5\":\"6ff16deea21abfd981df61fb3e1fbfe8\",\"oContentType\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3\"}],\"messageSize\":52944,\"messageTime\":\"2053-11-18T16:45:05.000000Z\",\"parentEid\":\"12365\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"spam\",\"recipient\":[\"eqek@example.org\"],\"replyToAddress\":\"\",\"sender\":\"sbgq@example.org\",\"senderIP\":\"203.0.113.75\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"attachment threat\",\"threatsInfoMap\":[{\"classification\":\"spam\",\"threat\":\"ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d\",\"threatId\":\"DBDF3734-7125-5915-ACFA-61782282570F\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T06:47:26.915Z\",\"threatType\":\"attachment\"}],\"toAddresses\":[\"fpf@example.org\"],\"xmailer\":\"\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"messages_blocked\",\"GUID\":\"PE10US317634483018F4D6V464S6V46S5Iuh6KWTOOjEJV01\",\"completelyRewritten\":\"na\",\"customerEid\":\"1234567\",\"customerName\":\"Plan ABC\",\"fromAddress\":\"rvny@example.com\",\"headerFrom\":\"fnvfc@example.com\",\"impostorScore\":70,\"malwareScore\":80,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1234567&k=k1&payload=jsdvdfdfbdfbivugjkaegklmfa5dhta79hrg6dsab6nydtfjgn4ryt46sgdfvwetsr4dgf6earsg64qhea64rg64wv6s4hf65bsr68td4hfb68rts4dfh654brs6zd5s4dg6ba5z41r6hs5a4zd165dtu4h1j65nr1bgdf6g6s8d6fhg\",\"messageID\":\"<13289940608542.PC636974@n2277549.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"5b596567d9533331156b6957b3d427a4\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"586cd87530b1ff6db404c03a1b1ac03a5f02be13ad28bd4d3d9b16124f3dc9f9\"},{\"contentType\":\"application/octet-stream\",\"disposition\":\"attached\",\"filename\":\"demo_146987645346416845132.docx.lrf\",\"md5\":\"6ff16deea21abfd981df61fb3e1fbfe8\",\"oContentType\":\"application/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"e32b86c0498b9e41f42b43d9ac9cecafe697dee36c7152ea8017b6bff4abbde3\"}],\"messageSize\":52944,\"messageTime\":\"2053-11-19T16:45:05.000000Z\",\"parentEid\":\"12365\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"PHish Detection\",\"recipient\":[\"eqek@example.org\"],\"replyToAddress\":\"\",\"sender\":\"qyqkttr@example.org\",\"senderIP\":\"203.0.113.75\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"attachment threat\",\"threatsInfoMap\":[{\"classification\":\"spam\",\"threat\":\"ec7b394d1c53593ba1547db7dd733e99d6b008af54299cd82e5c2bc500f86b0d\",\"threatId\":\"DBDF3734-7125-5915-ACFA-61782282570F\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T06:47:26.915Z\",\"threatType\":\"attachment\"}],\"toAddresses\":[\"fpf@example.org\"],\"xmailer\":\"\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"messages_delivered\",\"GUID\":\"GBCJHVbvfdjHIVBDBbliuvsvoehfb64V9SFgvuvhVUYVbi-abcd\",\"completelyRewritten\":\"true\",\"customerEid\":\"1234567\",\"customerName\":\"Customer 1\",\"fromAddress\":\"riq_f_cbcsgl@example.com\",\"headerFrom\":\"riq_f_cbcsgl@example.com\",\"impostorScore\":0,\"malwareScore\":0,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1234567&k=k1&payload=4i7f2b8466a51c60523eef35e6295c91e9bhvdsdvabvadhv14684fbdf654b6dfba31g68t4h15badf65g4a4fd86b4trs65h1b6a53s4gde8a7sthgbaf6dg4v6aer8d7g46v5adr4fgv86aw4zs9f68b4y6j84nuy64ko6iu54kyjghf6ga54s6rzhxjtuf45jhn1b6svd5s4gh68mu5yf4ihj86h45srbd6g6\",\"messageID\":\"<23196301852265.PB76027@n2277549.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"2c59640eae6e3e79e8674d856866a840\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780\"}],\"messageSize\":2319,\"messageTime\":\"2053-11-18T07:35:04.000000Z\",\"parentEid\":\"56890\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"N/A\",\"recipient\":[\"pb@example.org\"],\"replyToAddress\":\"\",\"sender\":\"www-data@example.com\",\"senderIP\":\"192.0.2.87\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"URL threat\",\"threatsInfoMap\":[{\"classification\":\"malware\",\"threat\":\"https://example.com/files/demo_1234567890.docx\",\"threatId\":\"4cccebc1-2577-5363-9801-abededc91177\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T07:37:18Z\",\"threatType\":\"URL\"}],\"toAddresses\":[\"pb@example.org\"],\"xmailer\":\"\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"messages_delivered\",\"GUID\":\"GBCJHVbvfdjHIVsvoehfb64V9SFgvuvhVUYVbi-abcd\",\"completelyRewritten\":\"true\",\"customerEid\":\"1235567\",\"customerName\":\"Customer 4\",\"fromAddress\":\"edyhq@example.com\",\"headerFrom\":\"riq_f_cbcsgl@example.com\",\"impostorScore\":30,\"malwareScore\":40,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1235567&k=k1&payload=4i7dfvfdvf2b8466a51c60523eef35e6295c91e9bhvdsdvabvadhv14684fbdf654b6dfba31g68t4h15badf65g4a4fd86b4trs65h1b6a53s4gde8a7sthgbaf6dg4v6aer8d7g46v5adr4fgv86aw4zs9f68b4y6j84nuy64ko6iu54kyjghf6ga54s6rzhxjtuf45jhn1b6svd5s4gh68mu5yf4ihj86h45srbd6g6\",\"messageID\":\"<23196301852265.PB76027@v8305884.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"2c59640eae6e3e79e8674d856866a840\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780\"}],\"messageSize\":2319,\"messageTime\":\"2053-11-19T09:35:04.000000Z\",\"parentEid\":\"56890\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"N/A\",\"recipient\":[\"qyqkttr@example.com\"],\"replyToAddress\":\"\",\"sender\":\"www-data@example.com\",\"senderIP\":\"192.0.2.187\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"URL threat\",\"threatsInfoMap\":[{\"classification\":\"toad\",\"threat\":\"https://example.com/files/demo_1234567890.docx\",\"threatId\":\"4cccebc1-2577-5363-9801-abededc91177\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T07:37:18Z\",\"threatType\":\"URL\"}],\"toAddresses\":[\"pb@example.org\"],\"xmailer\":\"\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"event_type\":\"messages_delivered\",\"GUID\":\"GBCJHVbvfdjHIVBDBbliuvsvojsdvnlaehfb64V9SFgvuvhVUYVbi-abcd\",\"completelyRewritten\":\"true\",\"customerEid\":\"1235567\",\"customerName\":\"Customer 4\",\"fromAddress\":\"edyhq@example.com\",\"headerFrom\":\"riq_f_cbcsgl@example.com\",\"impostorScore\":20,\"malwareScore\":30,\"messageDetailsUrl\":\"https://us3.proofpointessentials.com/index01.php?mod_id=13&mod_option=logitem&type=message_details&e_id=1235567&k=k1&payload=4i7ffvdf2b8466a51c60523eef35e6295c91e9bhvdsdvabvadhv14684fbdf654b6dfba31g68t4h15badf65g4a4fd86b4trs65h1b6a53s4gde8a7sthgbaf6dg4v6aer8d7g46v5adr4fgv86aw4zs9f68b4y6j84nuy64ko6iu54kyjghf6ga54s6rzhxjtuf45jhn1b6svd5s4gh68mu5yf4ihj86h45srbd6g6\",\"messageID\":\"<23196301852265.PB76027@v8305884.xzksg.net>\",\"messageParts\":[{\"contentType\":\"text/html\",\"disposition\":\"inline\",\"filename\":\"text.html\",\"md5\":\"2c59640eae6e3e79e8674d856866a840\",\"oContentType\":\"text/html\",\"sandboxStatus\":\"notrequested\",\"sha256\":\"8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780\"}],\"messageSize\":2319,\"messageTime\":\"2053-11-18T09:35:04.000000Z\",\"parentEid\":\"56890\",\"parentName\":\"QA Test Account - example.net\",\"phishScore\":0,\"quarantineRule\":\"N/A\",\"recipient\":[\"sbgq@example.org\"],\"replyToAddress\":\"\",\"sender\":\"www-data@example.com\",\"senderIP\":\"192.0.2.87\",\"spamScore\":0,\"stackName\":\"us3\",\"subject\":\"URL threat\",\"threatsInfoMap\":[{\"classification\":\"phish\",\"threat\":\"https://example.com/files/demo_1234567890.docx\",\"threatId\":\"4cccebc1-2577-5363-9801-abededc91177\",\"threatStatus\":\"active\",\"threatTime\":\"2053-11-18T07:37:18Z\",\"threatType\":\"URL\"}],\"toAddresses\":[\"pb@example.org\"],\"xmailer\":\"\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "threat",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-proofpoint_essentials-threat-default",
+    "event_count": 14,
+    "numeric_keyword_fields": [],
+    "package": "proofpoint_essentials",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

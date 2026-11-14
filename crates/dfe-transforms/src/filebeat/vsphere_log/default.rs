@@ -56,13 +56,10 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: if (ctx.log?.syslog?.priority != null) {\n  def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  facility['code'] = ctx.log.syslog.priority>>3;\n  ctx.log.syslog['facility'] = facility;\n}\n
+            // The pipeline's script, emitted as the runtime's equivalent
             syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
 
-            // Painless script
-            // Source: if (ctx.log?.syslog?.facility?.code == null || !params.containsKey((ctx.log.syslog.facility.code).toString())) {\n  return;\n}\nctx.log.syslog.facility.name = params[(ctx.log.syslog.facility.code).toString()];
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -73,9 +70,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: if (ctx.log?.syslog?.severity?.code == null || !params.containsKey((ctx.log.syslog.severity.code).toString())) {\n  return;\n}\nctx.log.syslog.severity.name = params[(ctx.log.syslog.severity.code).toString()];
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1242,9 +1237,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.end") && event.has_value("event.start") };
                 if _cond {
-                    // Painless script
-                    // Source: ZonedDateTime start = ZonedDateTime.parse(ctx.event.start);\n ZonedDateTime end = ZonedDateTime.parse(ctx.event.end);\n ctx.event.duration= ChronoUnit.NANOS.between(start, end);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1477,8 +1470,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n                for (def x : map.values()) {\n                  if (x instanceof Map) {\n                    handleMap(x);\n                  } else if (x instanceof List) {\n                    handleList(x);\n                  }\n                }\n                map.values().removeIf(v -> v == null);\n              }\n              void handleList(List list) {\n                for (def x : list) {\n                  if (x instanceof Map) {\n                    handleMap(x);\n                  } else if (x instanceof List) {\n                    handleList(x);\n                  }\n                }\n              }\n              handleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

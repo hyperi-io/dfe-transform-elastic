@@ -382,9 +382,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("zerofox.perpetrator") };
             if _cond {
-                // Painless script
-                // Source: ctx.zerofox.perpetrator?.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().equals(\"\") || (entry.getValue() instanceof List && entry.getValue().length == 0) || (entry.getValue() instanceof Map && entry.getValue().size() == 0));
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -395,9 +393,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("zerofox.metadata") };
             if _cond {
-                // Painless script
-                // Source: ctx?.zerofox?.metadata?.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().equals(\"\") || (entry.getValue() instanceof List && entry.getValue().length == 0) || (entry.getValue() instanceof Map && entry.getValue().size() == 0));
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -408,9 +404,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("zerofox") };
             if _cond {
-                // Painless script
-                // Source: ctx?.zerofox?.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().equals(\"\") || (entry.getValue() instanceof List && entry.getValue().length == 0) || (entry.getValue() instanceof Map && entry.getValue().size() == 0));
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

@@ -217,9 +217,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def cves = [];\ndef data = ctx.prisma_cloud.host.all_compliance.data;\nctx.prisma_cloud.host.all_compliance.data = [\"cve\": cves];\nfor (item in data) {\n  if (item.cve != null && item.cve != \"\") {\n    cves.add(item.cve)\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1459,9 +1457,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def cves = [];\ndef data = ctx.prisma_cloud.host.compliance_issues.data;\nctx.prisma_cloud.host.compliance_issues.data = [\"cve\": cves];\nfor (item in data) {\n  if (item.cve != null && item.cve != \"\") {\n    cves.add(item.cve)\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2645,9 +2641,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: for (historyItem in ctx.prisma_cloud.host.history) {\n  def cves = [];\n  def data = historyItem.vulnerabilities;\n  historyItem.vulnerabilities = [\"cve\": cves];\n  for (item in data) {\n    if (item.cve != null && item.cve != \"\") {\n      cves.add(item.cve)\n    }\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3341,9 +3335,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: for (historyItem in ctx.prisma_cloud.host.image.history) {\n  def cves = [];\n  def data = historyItem.vulnerabilities;\n  historyItem.vulnerabilities = [\"cve\": cves];\n  for (item in data) {\n    if (item.cve != null && item.cve != \"\") {\n      cves.add(item.cve)\n    }\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6614,9 +6606,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def cves = [];\ndef data = ctx.prisma_cloud.host.vulnerabilities.data;\nctx.prisma_cloud.host.vulnerabilities.data = [\"cve\": cves];\nfor (item in data) {\n  if (item.cve != null && item.cve != \"\") {\n    cves.add(item.cve)\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -7136,8 +7126,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

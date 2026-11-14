@@ -1,0 +1,56 @@
+{
+    "events": [
+        {
+            "message": "V1 SQL Injection on \"/WebGoat/attack\"",
+            "observer": {
+                "vendor": "Contrast Security",
+                "product": "Contrast ADR",
+                "type": "adr"
+            },
+            "ecs": {
+                "version": "9.1"
+            },
+            "rule": {
+                "category": "Security Incident",
+                "ruleset": "Contrast ADR",
+                "reference": [
+                    "https://github.com/Cljpidjo-Ubfvtxlt-ONP/adr-runbooks/blob/main/_runbooks/path-traversal.md"
+                ],
+                "name": "sql-injection"
+            },
+            "event": {
+                "category": [
+                    "intrusion_detection"
+                ],
+                "type": [
+                    "info"
+                ],
+                "id": "INC-1996-19960",
+                "reason": "Incident Severity Updated",
+                "url": "https://test.contrast.com/Contrast/cs/index.html#/5adc5c44-c730-49a6-9d0d-69730612ac8e/incidents/INC-1996-19960",
+                "created": "2054-06-18T16:05:47.365052Z",
+                "end": "2054-06-18T16:05:15.902Z",
+                "risk_score": 10,
+                "severity": 10,
+                "action": "incident_updated",
+                "provider": "contrast-security-adr"
+            },
+            "organization": {
+                "id": "5adc5c44-c730-49a6-9d0d-69730612ac8e"
+            },
+            "contrast_security": {
+                "event_type": "contrast_security_incidentalert",
+                "status": "OPEN",
+                "related_rules": [
+                    "sql-injection"
+                ],
+                "issue_ids": [
+                    "ISS-2025-6"
+                ]
+            },
+            "source": {
+                "ip": "203.0.113.138"
+            }
+        }
+    ]
+}

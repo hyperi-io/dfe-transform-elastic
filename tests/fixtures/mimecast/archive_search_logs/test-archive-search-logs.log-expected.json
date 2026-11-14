@@ -1,0 +1,532 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-09-01T14:56:42.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2051-09-01T14:56:42.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2051-09-01T14:56:42+0000\",\"emailAddr\":\"dufyrjtpr@einb.e58.one\",\"source\":\"archive\",\"searchText\":\"\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Message Tracking Search",
+          "source": "archive"
+        }
+      },
+      "related": {
+        "user": [
+          "dufyrjtpr",
+          "dufyrjtpr@einb.e58.one"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "einb.e58.one",
+        "email": "dufyrjtpr@einb.e58.one",
+        "name": "dufyrjtpr"
+      }
+    },
+    {
+      "@timestamp": "2051-08-15T13:16:05.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2051-08-15T13:16:05.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2051-08-15T13:16:05+0000\",\"emailAddr\":\"dufyrjtpr@einb.e58.one\",\"source\":\"archive\",\"searchText\":\"[Route : outbound]\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Message Tracking Search",
+          "source": "archive",
+          "text": "[Route : outbound]"
+        }
+      },
+      "related": {
+        "user": [
+          "dufyrjtpr",
+          "dufyrjtpr@einb.e58.one"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "einb.e58.one",
+        "email": "dufyrjtpr@einb.e58.one",
+        "name": "dufyrjtpr"
+      }
+    },
+    {
+      "@timestamp": "2051-08-02T15:53:16.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2051-08-02T15:53:16.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2051-08-02T15:53:16+0000\",\"emailAddr\":\"dufyrjtpr@ga-idsj.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"<34159171beeecb7f-94404@uano.e58.one>\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Message Tracking Search",
+          "source": "archive",
+          "text": "<34159171beeecb7f-94404@uano.e58.one>"
+        }
+      },
+      "related": {
+        "user": [
+          "dufyrjtpr",
+          "dufyrjtpr@ga-idsj.gbjksmlx182.net"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "ga-idsj.gbjksmlx182.net",
+        "email": "dufyrjtpr@ga-idsj.gbjksmlx182.net",
+        "name": "dufyrjtpr"
+      }
+    },
+    {
+      "@timestamp": "2051-07-19T20:58:43.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2051-07-19T20:58:43.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2051-07-19T20:58:43+0000\",\"emailAddr\":\"dufyrjtpr@ga-idsj.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"0a264ee07d1064c5ae5771c7809a22fef422c44189c26779877dc087104e6ad2 [User : dufyrjtpr@ga-idsj.gbjksmlx182.net]\",\"searchReason\":\"\",\"description\":\"Threat Remediation search\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Threat Remediation search",
+          "source": "archive",
+          "text": "0a264ee07d1064c5ae5771c7809a22fef422c44189c26779877dc087104e6ad2 [User : dufyrjtpr@ga-idsj.gbjksmlx182.net]"
+        }
+      },
+      "related": {
+        "user": [
+          "dufyrjtpr",
+          "dufyrjtpr@ga-idsj.gbjksmlx182.net"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "ga-idsj.gbjksmlx182.net",
+        "email": "dufyrjtpr@ga-idsj.gbjksmlx182.net",
+        "name": "dufyrjtpr"
+      }
+    },
+    {
+      "@timestamp": "2051-06-09T19:15:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2051-06-09T19:15:50.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2051-06-09T19:15:50+0000\",\"emailAddr\":\"dufyrjtpr@ga-idsj.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"pete\",\"searchReason\":\"\",\"description\":\"Audit [Page 1] - Depth 100\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Audit [Page 1] - Depth 100",
+          "source": "archive",
+          "text": "pete"
+        }
+      },
+      "related": {
+        "user": [
+          "dufyrjtpr",
+          "dufyrjtpr@ga-idsj.gbjksmlx182.net"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "ga-idsj.gbjksmlx182.net",
+        "email": "dufyrjtpr@ga-idsj.gbjksmlx182.net",
+        "name": "dufyrjtpr"
+      }
+    },
+    {
+      "@timestamp": "2050-08-01T20:58:33.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2050-08-01T20:58:33.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2050-08-01T20:58:33+0000\",\"emailAddr\":\"dufyrjtpr@ga-idsj.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Message Tracking Search",
+          "source": "archive"
+        }
+      },
+      "related": {
+        "user": [
+          "dufyrjtpr",
+          "dufyrjtpr@ga-idsj.gbjksmlx182.net"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "ga-idsj.gbjksmlx182.net",
+        "email": "dufyrjtpr@ga-idsj.gbjksmlx182.net",
+        "name": "dufyrjtpr"
+      }
+    },
+    {
+      "@timestamp": "2050-03-07T14:46:35.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2050-03-07T14:46:35.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2050-03-07T14:46:35+0000\",\"emailAddr\":\"dufyrjtpr@ga-idsj.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Message Tracking Search",
+          "source": "archive"
+        }
+      },
+      "related": {
+        "user": [
+          "dufyrjtpr",
+          "dufyrjtpr@ga-idsj.gbjksmlx182.net"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "ga-idsj.gbjksmlx182.net",
+        "email": "dufyrjtpr@ga-idsj.gbjksmlx182.net",
+        "name": "dufyrjtpr"
+      }
+    },
+    {
+      "@timestamp": "2049-05-04T22:02:45.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2049-05-04T22:02:45.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2049-05-04T22:02:45+0000\",\"emailAddr\":\"dbxuo_dnavqzwvk@nfro0.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"<641ad09.90b3a77-613593@s144f.gbjksmlx182.net>\",\"searchReason\":\"sample search\",\"description\":\"Message Tracking Search\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Message Tracking Search",
+          "reason": "sample search",
+          "source": "archive",
+          "text": "<641ad09.90b3a77-613593@s144f.gbjksmlx182.net>"
+        }
+      },
+      "related": {
+        "user": [
+          "dbxuo_dnavqzwvk",
+          "dbxuo_dnavqzwvk@nfro0.gbjksmlx182.net"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "nfro0.gbjksmlx182.net",
+        "email": "dbxuo_dnavqzwvk@nfro0.gbjksmlx182.net",
+        "name": "dbxuo_dnavqzwvk"
+      }
+    },
+    {
+      "@timestamp": "2049-04-08T22:23:38.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2049-04-08T22:23:38.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2049-04-08T22:23:38+0000\",\"emailAddr\":\"dbxuo_dnavqzwvk@nfro0.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"92130005-4339685930104@yk-vkc-641.oh.vsxfeayv.lan\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\",\"searchPath\":\"/foo/bar\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Message Tracking Search",
+          "path": "/foo/bar",
+          "source": "archive",
+          "text": "92130005-4339685930104@yk-vkc-641.oh.vsxfeayv.lan"
+        }
+      },
+      "related": {
+        "user": [
+          "dbxuo_dnavqzwvk",
+          "dbxuo_dnavqzwvk@nfro0.gbjksmlx182.net"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "nfro0.gbjksmlx182.net",
+        "email": "dbxuo_dnavqzwvk@nfro0.gbjksmlx182.net",
+        "name": "dbxuo_dnavqzwvk"
+      }
+    },
+    {
+      "@timestamp": "2052-11-12T16:22:16.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2052-11-12T16:22:16.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2052-11-12T16:22:16+0000\",\"emailAddr\":\"dufyrjtpr@vsxfeayv.local\",\"source\":\"archive\",\"searchText\":\"fclz-xtx.apejtlc.mxgb-bys.com\",\"searchReason\":\"\",\"description\":\"Audit [Page 1] - Depth 100\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Audit [Page 1] - Depth 100",
+          "source": "archive",
+          "text": "fclz-xtx.apejtlc.mxgb-bys.com"
+        }
+      },
+      "related": {
+        "user": [
+          "dufyrjtpr",
+          "dufyrjtpr@vsxfeayv.local"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "vsxfeayv.local",
+        "email": "dufyrjtpr@vsxfeayv.local",
+        "name": "dufyrjtpr"
+      }
+    },
+    {
+      "@timestamp": "2052-11-12T16:22:01.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2052-11-12T16:22:01.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2052-11-12T16:22:01+0000\",\"emailAddr\":\"dufyrjtpr@vsxfeayv.local\",\"source\":\"archive\",\"searchText\":\"fclz-xtx.apejtlc.mxgb-bys.com\",\"searchReason\":\"\",\"description\":\"Audit [Page 1] - Depth 100\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Audit [Page 1] - Depth 100",
+          "source": "archive",
+          "text": "fclz-xtx.apejtlc.mxgb-bys.com"
+        }
+      },
+      "related": {
+        "user": [
+          "dufyrjtpr",
+          "dufyrjtpr@vsxfeayv.local"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "vsxfeayv.local",
+        "email": "dufyrjtpr@vsxfeayv.local",
+        "name": "dufyrjtpr"
+      }
+    },
+    {
+      "@timestamp": "2052-11-12T16:21:27.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "created": "2052-11-12T16:21:27.000Z",
+        "kind": "event",
+        "original": "{\"createTime\":\"2052-11-12T16:21:27+0000\",\"description\":\"Message Tracking Search\",\"emailAddr\":\"\\u003c\\u003e\",\"searchReason\":\"\",\"searchText\":\"[User : dufyrjtpr@vsxfeayv.local]\",\"source\":\"archive\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "mimecast": {
+        "search_details": {
+          "description": "Message Tracking Search",
+          "source": "archive",
+          "text": "[User : dufyrjtpr@vsxfeayv.local]"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"createTime\":\"2051-09-01T14:56:42+0000\",\"emailAddr\":\"dufyrjtpr@einb.e58.one\",\"source\":\"archive\",\"searchText\":\"\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2051-08-15T13:16:05+0000\",\"emailAddr\":\"dufyrjtpr@einb.e58.one\",\"source\":\"archive\",\"searchText\":\"[Route : outbound]\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2051-08-02T15:53:16+0000\",\"emailAddr\":\"dufyrjtpr@ga-idsj.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"<34159171beeecb7f-94404@uano.e58.one>\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2051-07-19T20:58:43+0000\",\"emailAddr\":\"dufyrjtpr@ga-idsj.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"0a264ee07d1064c5ae5771c7809a22fef422c44189c26779877dc087104e6ad2 [User : dufyrjtpr@ga-idsj.gbjksmlx182.net]\",\"searchReason\":\"\",\"description\":\"Threat Remediation search\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2051-06-09T19:15:50+0000\",\"emailAddr\":\"dufyrjtpr@ga-idsj.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"pete\",\"searchReason\":\"\",\"description\":\"Audit [Page 1] - Depth 100\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2050-08-01T20:58:33+0000\",\"emailAddr\":\"dufyrjtpr@ga-idsj.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2050-03-07T14:46:35+0000\",\"emailAddr\":\"dufyrjtpr@ga-idsj.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2049-05-04T22:02:45+0000\",\"emailAddr\":\"dbxuo_dnavqzwvk@nfro0.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"<641ad09.90b3a77-613593@s144f.gbjksmlx182.net>\",\"searchReason\":\"sample search\",\"description\":\"Message Tracking Search\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2049-04-08T22:23:38+0000\",\"emailAddr\":\"dbxuo_dnavqzwvk@nfro0.gbjksmlx182.net\",\"source\":\"archive\",\"searchText\":\"92130005-4339685930104@yk-vkc-641.oh.vsxfeayv.lan\",\"searchReason\":\"\",\"description\":\"Message Tracking Search\",\"searchPath\":\"/foo/bar\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2052-11-12T16:22:16+0000\",\"emailAddr\":\"dufyrjtpr@vsxfeayv.local\",\"source\":\"archive\",\"searchText\":\"fclz-xtx.apejtlc.mxgb-bys.com\",\"searchReason\":\"\",\"description\":\"Audit [Page 1] - Depth 100\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2052-11-12T16:22:01+0000\",\"emailAddr\":\"dufyrjtpr@vsxfeayv.local\",\"source\":\"archive\",\"searchText\":\"fclz-xtx.apejtlc.mxgb-bys.com\",\"searchReason\":\"\",\"description\":\"Audit [Page 1] - Depth 100\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"createTime\":\"2052-11-12T16:21:27+0000\",\"description\":\"Message Tracking Search\",\"emailAddr\":\"\\u003c\\u003e\",\"searchReason\":\"\",\"searchText\":\"[User : dufyrjtpr@vsxfeayv.local]\",\"source\":\"archive\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "archive_search_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-mimecast-archive_search_logs-default",
+    "event_count": 12,
+    "numeric_keyword_fields": [],
+    "package": "mimecast",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

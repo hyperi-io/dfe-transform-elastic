@@ -1,0 +1,61 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-23",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "original": "{\"Report Date\":\"2052-11-23\",\"Report Period\":\"7\",\"Site Type\":\"All\",\"Storage Used (Byte)\":\"1933176386\",\"Report Refresh Date\":\"2052-11-29\"}"
+      },
+      "o365": {
+        "metrics": {
+          "sharepoint": {
+            "site": {
+              "usage": {
+                "storage": {
+                  "report": {
+                    "date": "2052-11-23",
+                    "period": {
+                      "day": "7"
+                    },
+                    "refresh_date": "2052-11-29"
+                  },
+                  "site_type": "All",
+                  "storage_used": {
+                    "byte": 1933176386
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "o365.metrics.sharepoint_site_usage_storage"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "sharepoint_site_usage_storage": "{\"Report Date\":\"2052-11-23\",\"Report Period\":\"7\",\"Site Type\":\"All\",\"Storage Used (Byte)\":\"1933176386\",\"Report Refresh Date\":\"2052-11-29\"}",
+      "tags": [
+        "preserve_original_event",
+        "o365.metrics.sharepoint_site_usage_storage"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "sharepoint_site_usage_storage",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-sharepoint_site_usage_storage-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

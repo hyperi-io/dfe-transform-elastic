@@ -1,0 +1,469 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-06-11T04:48:03.000Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "destination": {
+        "ip": "203.0.113.75"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "delete",
+        "category": [
+          "network"
+        ],
+        "code": "DHCP-LEASE-DELETE",
+        "created": "2053-06-11T04:48:03.000Z",
+        "kind": "event",
+        "original": "CEF:0|Infoblox|Data Connector|2.1.3|DHCP-LEASE-DELETE|DHCP Lease Delete|1|src=192.0.2.54 InfobloxClientID=01:00:1A:2B:3C:4D:5E InfobloxHostID=dhcp/host/1516583 InfobloxFingerprintPr=true InfobloxRangeEnd=198.51.100.96 InfobloxRangeStart=203.0.113.212 smac=13:6D:3E:1C:3E:0E InfobloxIPSpace=ipam/ip_space/4e69d7b8-1915-11a1-b13d-ab51c452d5e7 InfobloxSubnet=192.0.2.54/24 InfobloxFingerprint=VMware::Windows: shost= InfobloxLeaseUUID=a39442b7-8674-11f6-b744-fd2336172b28 InfobloxLifetime=3600 InfobloxLeaseOp=Delete app=DHCP cat=DHCP Lease Delete InfobloxDUID= InfobloxDHCPOptions=code_12='ubuntu';code_53='\\003';code_55='\\001\\002\\006\\014\\017\\032\\034y\\003!()*w\\371\\374\\021';code_57='\\377\\377';code_61='\\001\\000\\014)\\371\\202&' InfobloxHost=TDXHLB_GMOP dst=203.0.113.75",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "TDXHLB_GMOP",
+        "id": "1516583",
+        "name": "co7-50-9-149"
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "DHCP",
+          "created": "2053-06-11T04:48:03.000Z",
+          "destination": {
+            "address": "203.0.113.75"
+          },
+          "device": {
+            "event_category": "DHCP Lease Delete",
+            "event_class_id": "DHCP-LEASE-DELETE",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "client_id": "01:00:0c:29:f9:82:26",
+            "fingerprint": "VMware::Windows:",
+            "fingerprint_pr": true,
+            "host_id": "dhcp/host/1516583",
+            "host_name": "TDXHLB_GMOP",
+            "ip_space": {
+              "value": "ipam/ip_space/4e69d7b8-1915-11a1-b13d-ab51c452d5e7"
+            },
+            "lease": {
+              "op": "Delete",
+              "uuid": "a39442b7-8674-11f6-b744-fd2336172b28"
+            },
+            "lifetime": 3600,
+            "range": {
+              "end": "198.51.100.96",
+              "start": "203.0.113.212"
+            },
+            "subnet": "192.0.2.54/24"
+          },
+          "name": "DHCP Lease Delete",
+          "severity": 1,
+          "source": {
+            "address": "192.0.2.54",
+            "mac_address": "28:0d:79:f2:46:24"
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "hostname": "TDXHLB_GMOP",
+            "msgid": "DHCP-LEASE-DELETE",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "198.51.100.211:51433"
+        }
+      },
+      "network": {
+        "application": "dhcp"
+      },
+      "observer": {
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co7-50-9-149",
+          "TDXHLB_GMOP",
+          "1516583"
+        ],
+        "ip": [
+          "203.0.113.75",
+          "198.51.100.96",
+          "203.0.113.212",
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "mac": "59-3F-57-C4-00-91"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-03-03T11:57:45.000Z",
+      "agent": {
+        "ephemeral_id": "387d8923-fd35-42c7-af7b-ea9e4f3d1e7f",
+        "id": "56ee9273-585c-4af9-94da-7a22b52957c9",
+        "name": "co8-50-6-111",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "destination": {
+        "ip": "203.0.113.75"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "network"
+        ],
+        "code": "DHCP-LEASE-UPDATE",
+        "created": "2049-03-03T11:57:45.000Z",
+        "kind": "event",
+        "original": "CEF:0|Infoblox|Data Connector|2.1.3|DHCP-LEASE-UPDATE|DHCP Lease Update|1|src=192.0.2.54 InfobloxClientID=01:00:0c:29:71:d8:95 InfobloxHostID=dhcp/host/94617 InfobloxFingerprintPr=false InfobloxRangeEnd=198.51.100.96 InfobloxRangeStart=203.0.113.212 smac=72:0a:68:52:c4:29 InfobloxIPSpaceName= InfobloxIPSpace=ipam/ip_space/f40ea6ee-d105-19cc-b54b-ef85526cda49 InfobloxSubnet=192.0.2.54/24 InfobloxFingerprint= shost=vz-iepm-5. InfobloxLeaseUUID= InfobloxLifetime=3600 InfobloxLeaseOp=Update app=DHCP cat=\"DHCP Lease Update\" InfobloxDUID= InfobloxDHCPOptions= InfobloxHost= dst=203.0.113.75",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "94617",
+        "name": "co8-50-6-111"
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "DHCP",
+          "created": "2049-03-03T11:57:45.000Z",
+          "destination": {
+            "address": "203.0.113.75"
+          },
+          "device": {
+            "event_category": "\"DHCP Lease Update\"",
+            "event_class_id": "DHCP-LEASE-UPDATE",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "client_id": "01:00:0c:29:71:d8:95",
+            "fingerprint_pr": false,
+            "host_id": "dhcp/host/94617",
+            "ip_space": {
+              "value": "ipam/ip_space/f40ea6ee-d105-19cc-b54b-ef85526cda49"
+            },
+            "lease": {
+              "op": "Update"
+            },
+            "lifetime": 3600,
+            "range": {
+              "end": "198.51.100.96",
+              "start": "203.0.113.212"
+            },
+            "subnet": "192.0.2.54/24"
+          },
+          "name": "DHCP Lease Update",
+          "severity": 1,
+          "source": {
+            "address": "192.0.2.54",
+            "hostname": "vz-iepm-5.",
+            "mac_address": "72:0a:68:52:c4:29"
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "msgid": "DHCP-LEASE-UPDATE",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "filestream"
+      },
+      "log": {
+        "source": {
+          "address": "198.51.100.211:51433"
+        }
+      },
+      "network": {
+        "application": "dhcp"
+      },
+      "observer": {
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co8-50-6-111",
+          "94617"
+        ],
+        "ip": [
+          "203.0.113.75",
+          "198.51.100.96",
+          "203.0.113.212",
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "domain": "vz-iepm-5.",
+        "ip": "192.0.2.54",
+        "mac": "75-0D-39-27-E6-61"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-06-11T04:48:03.000Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "DHCP-LEASE-DELETE",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxClientID": "01:00:0c:29:f9:82:26",
+          "InfobloxDHCPOptions": "",
+          "InfobloxFingerprint": "VMware::Windows:",
+          "InfobloxFingerprintPr": "true",
+          "InfobloxHost": "TDXHLB_GMOP",
+          "InfobloxHostID": "dhcp/host/1516583",
+          "InfobloxIPSpace": "ipam/ip_space/4e69d7b8-1915-11a1-b13d-ab51c452d5e7",
+          "InfobloxLeaseOp": "Delete",
+          "InfobloxLeaseUUID": "a39442b7-8674-11f6-b744-fd2336172b28",
+          "InfobloxLifetime": 3600,
+          "InfobloxRangeEnd": "198.51.100.96",
+          "InfobloxRangeStart": "203.0.113.212",
+          "InfobloxSubnet": "192.0.2.54/24",
+          "applicationProtocol": "DHCP",
+          "destinationAddress": "203.0.113.75",
+          "deviceEventCategory": "DHCP Lease Delete",
+          "sourceAddress": "192.0.2.54",
+          "sourceMacAddress": "28:0d:79:f2:46:24"
+        },
+        "name": "DHCP Lease Delete",
+        "severity": "1",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "203.0.113.75"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "code": "DHCP-LEASE-DELETE",
+        "original": "CEF:0|Infoblox|Data Connector|2.1.3|DHCP-LEASE-DELETE|DHCP Lease Delete|1|src=192.0.2.54 InfobloxClientID=01:00:1A:2B:3C:4D:5E InfobloxHostID=dhcp/host/1516583 InfobloxFingerprintPr=true InfobloxRangeEnd=198.51.100.96 InfobloxRangeStart=203.0.113.212 smac=13:6D:3E:1C:3E:0E InfobloxIPSpace=ipam/ip_space/4e69d7b8-1915-11a1-b13d-ab51c452d5e7 InfobloxSubnet=192.0.2.54/24 InfobloxFingerprint=VMware::Windows: shost= InfobloxLeaseUUID=a39442b7-8674-11f6-b744-fd2336172b28 InfobloxLifetime=3600 InfobloxLeaseOp=Delete app=DHCP cat=DHCP Lease Delete InfobloxDUID= InfobloxDHCPOptions=code_12='ubuntu';code_53='\\003';code_55='\\001\\002\\006\\014\\017\\032\\034y\\003!()*w\\371\\374\\021';code_57='\\377\\377';code_61='\\001\\000\\014)\\371\\202&' InfobloxHost=TDXHLB_GMOP dst=203.0.113.75",
+        "severity": 1
+      },
+      "host": {
+        "name": "co7-50-9-149"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "198.51.100.211:51433"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "hostname": "TDXHLB_GMOP",
+          "msgid": "DHCP-LEASE-DELETE",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "DHCP Lease Delete",
+      "network": {
+        "application": "DHCP"
+      },
+      "observer": {
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "mac": "59-3F-57-C4-00-91"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2049-03-03T11:57:45.000Z",
+      "agent": {
+        "ephemeral_id": "387d8923-fd35-42c7-af7b-ea9e4f3d1e7f",
+        "id": "56ee9273-585c-4af9-94da-7a22b52957c9",
+        "name": "co8-50-6-111",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "DHCP-LEASE-UPDATE",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxClientID": "01:00:0c:29:71:d8:95",
+          "InfobloxDHCPOptions": "",
+          "InfobloxDUID": "",
+          "InfobloxFingerprint": "",
+          "InfobloxFingerprintPr": "false",
+          "InfobloxHost": "",
+          "InfobloxHostID": "dhcp/host/94617",
+          "InfobloxIPSpace": "ipam/ip_space/f40ea6ee-d105-19cc-b54b-ef85526cda49",
+          "InfobloxIPSpaceName": "",
+          "InfobloxLeaseOp": "Update",
+          "InfobloxLeaseUUID": "",
+          "InfobloxLifetime": "3600",
+          "InfobloxRangeEnd": "198.51.100.96",
+          "InfobloxRangeStart": "203.0.113.212",
+          "InfobloxSubnet": "192.0.2.54/24",
+          "applicationProtocol": "DHCP",
+          "destinationAddress": "203.0.113.75",
+          "deviceEventCategory": "\"DHCP Lease Update\"",
+          "sourceAddress": "192.0.2.54",
+          "sourceHostName": "vz-iepm-5.",
+          "sourceMacAddress": "72:0a:68:52:c4:29"
+        },
+        "name": "DHCP Lease Update",
+        "severity": "1",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "203.0.113.75"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "code": "DHCP-LEASE-UPDATE",
+        "original": "CEF:0|Infoblox|Data Connector|2.1.3|DHCP-LEASE-UPDATE|DHCP Lease Update|1|src=192.0.2.54 InfobloxClientID=01:00:0c:29:71:d8:95 InfobloxHostID=dhcp/host/94617 InfobloxFingerprintPr=false InfobloxRangeEnd=198.51.100.96 InfobloxRangeStart=203.0.113.212 smac=72:0a:68:52:c4:29 InfobloxIPSpaceName= InfobloxIPSpace=ipam/ip_space/f40ea6ee-d105-19cc-b54b-ef85526cda49 InfobloxSubnet=192.0.2.54/24 InfobloxFingerprint= shost=vz-iepm-5. InfobloxLeaseUUID= InfobloxLifetime=3600 InfobloxLeaseOp=Update app=DHCP cat=\"DHCP Lease Update\" InfobloxDUID= InfobloxDHCPOptions= InfobloxHost= dst=203.0.113.75",
+        "severity": 1
+      },
+      "host": {
+        "name": "co8-50-6-111"
+      },
+      "input": {
+        "type": "filestream"
+      },
+      "log": {
+        "source": {
+          "address": "198.51.100.211:51433"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "msgid": "DHCP-LEASE-UPDATE",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "DHCP Lease Update",
+      "network": {
+        "application": "DHCP"
+      },
+      "observer": {
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "domain": "vz-iepm-5.",
+        "ip": "192.0.2.54",
+        "mac": "75-0D-39-27-E6-61"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-infoblox_threat_defense-event-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "infoblox_threat_defense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

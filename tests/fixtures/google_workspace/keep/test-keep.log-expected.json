@@ -1,0 +1,412 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-03-27T12:46:57.714Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "modified-acl",
+        "category": [
+          "iam"
+        ],
+        "id": "0",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-27T12:46:57.714Z\", \"uniqueQualifier\": \"0\", \"applicationName\": \"keep\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU\", \"actor\": {\"callerType\": \"USER\", \"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"events\": {\"type\": \"user_action\", \"name\": \"modified_acl\", \"parameters\": [{\"name\": \"owner_email\", \"value\": \"cnk@dau.com\"}, {\"name\": \"note_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz\"}]}}",
+        "provider": "keep",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "caller_type": "USER",
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "etag": "abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU",
+        "id": {
+          "application_name": "keep",
+          "customer_id": "1",
+          "time": "2053-03-27T12:46:57.714Z",
+          "unique_qualifier": "0"
+        },
+        "keep": {
+          "name": "modified_acl",
+          "note_name": "https://keep.googleapis.com/v1/notes/abc-xyz",
+          "owner_email": "cnk@dau.com",
+          "type": "user_action"
+        },
+        "kind": "admin#reports#activity"
+      },
+      "observer": {
+        "product": "Keep",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "full": "https://keep.googleapis.com/v1/notes/abc-xyz"
+      },
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      }
+    },
+    {
+      "@timestamp": "2053-03-27T12:46:29.430Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "deleted-attachment",
+        "category": [
+          "file"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-27T12:46:29.430Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"keep\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU\", \"actor\": {\"callerType\": \"USER\", \"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"events\": {\"type\": \"user_action\", \"name\": \"deleted_attachment\", \"parameters\": [{\"name\": \"owner_email\", \"value\": \"cnk@dau.com\"}, {\"name\": \"note_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz\"}, {\"name\": \"attachment_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz/attachments/abcdefgh\"}]}}",
+        "provider": "keep",
+        "type": [
+          "deletion"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "caller_type": "USER",
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "etag": "abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU",
+        "id": {
+          "application_name": "keep",
+          "customer_id": "1",
+          "time": "2053-03-27T12:46:29.430Z",
+          "unique_qualifier": "1"
+        },
+        "keep": {
+          "attachment_name": "https://keep.googleapis.com/v1/notes/abc-xyz/attachments/abcdefgh",
+          "name": "deleted_attachment",
+          "note_name": "https://keep.googleapis.com/v1/notes/abc-xyz",
+          "owner_email": "cnk@dau.com",
+          "type": "user_action"
+        },
+        "kind": "admin#reports#activity"
+      },
+      "observer": {
+        "product": "Keep",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "full": "https://keep.googleapis.com/v1/notes/abc-xyz"
+      },
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      }
+    },
+    {
+      "@timestamp": "2053-03-27T12:45:08.310Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "uploaded-attachment",
+        "category": [
+          "file"
+        ],
+        "id": "0",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-27T12:45:08.310Z\", \"uniqueQualifier\": \"0\", \"applicationName\": \"keep\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU\", \"actor\": {\"callerType\": \"USER\", \"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"events\": {\"type\": \"user_action\", \"name\": \"uploaded_attachment\", \"parameters\": [{\"name\": \"owner_email\", \"value\": \"cnk@dau.com\"}, {\"name\": \"note_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz\"}, {\"name\": \"attachment_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz/attachments/abcdefgh\"}]}}",
+        "provider": "keep",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "caller_type": "USER",
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "etag": "abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU",
+        "id": {
+          "application_name": "keep",
+          "customer_id": "1",
+          "time": "2053-03-27T12:45:08.310Z",
+          "unique_qualifier": "0"
+        },
+        "keep": {
+          "attachment_name": "https://keep.googleapis.com/v1/notes/abc-xyz/attachments/abcdefgh",
+          "name": "uploaded_attachment",
+          "note_name": "https://keep.googleapis.com/v1/notes/abc-xyz",
+          "owner_email": "cnk@dau.com",
+          "type": "user_action"
+        },
+        "kind": "admin#reports#activity"
+      },
+      "observer": {
+        "product": "Keep",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "full": "https://keep.googleapis.com/v1/notes/abc-xyz"
+      },
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      }
+    },
+    {
+      "@timestamp": "2053-03-25T10:13:35.077Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "edited-note-content",
+        "id": "0",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-25T10:13:35.077Z\", \"uniqueQualifier\": \"0\", \"applicationName\": \"keep\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU\", \"actor\": {\"callerType\": \"USER\", \"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"events\": {\"type\": \"user_action\", \"name\": \"edited_note_content\", \"parameters\": [{\"name\": \"owner_email\", \"value\": \"cnk@dau.com\"}, {\"name\": \"note_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz\"}]}}",
+        "provider": "keep",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "caller_type": "USER",
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "etag": "abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU",
+        "id": {
+          "application_name": "keep",
+          "customer_id": "1",
+          "time": "2053-03-25T10:13:35.077Z",
+          "unique_qualifier": "0"
+        },
+        "keep": {
+          "name": "edited_note_content",
+          "note_name": "https://keep.googleapis.com/v1/notes/abc-xyz",
+          "owner_email": "cnk@dau.com",
+          "type": "user_action"
+        },
+        "kind": "admin#reports#activity"
+      },
+      "observer": {
+        "product": "Keep",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "full": "https://keep.googleapis.com/v1/notes/abc-xyz"
+      },
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      }
+    },
+    {
+      "@timestamp": "2053-03-25T09:32:46.784Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "created-note",
+        "id": "0",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-25T09:32:46.784Z\", \"uniqueQualifier\": \"0\", \"applicationName\": \"keep\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU\", \"actor\": {\"callerType\": \"USER\", \"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"events\": {\"type\": \"user_action\", \"name\": \"created_note\", \"parameters\": [{\"name\": \"owner_email\", \"value\": \"cnk@dau.com\"}, {\"name\": \"note_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz\"}]}}",
+        "provider": "keep",
+        "type": [
+          "creation"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "caller_type": "USER",
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "etag": "abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU",
+        "id": {
+          "application_name": "keep",
+          "customer_id": "1",
+          "time": "2053-03-25T09:32:46.784Z",
+          "unique_qualifier": "0"
+        },
+        "keep": {
+          "name": "created_note",
+          "note_name": "https://keep.googleapis.com/v1/notes/abc-xyz",
+          "owner_email": "cnk@dau.com",
+          "type": "user_action"
+        },
+        "kind": "admin#reports#activity"
+      },
+      "observer": {
+        "product": "Keep",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "full": "https://keep.googleapis.com/v1/notes/abc-xyz"
+      },
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-27T12:46:57.714Z\", \"uniqueQualifier\": \"0\", \"applicationName\": \"keep\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU\", \"actor\": {\"callerType\": \"USER\", \"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"events\": {\"type\": \"user_action\", \"name\": \"modified_acl\", \"parameters\": [{\"name\": \"owner_email\", \"value\": \"cnk@dau.com\"}, {\"name\": \"note_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-27T12:46:29.430Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"keep\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU\", \"actor\": {\"callerType\": \"USER\", \"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"events\": {\"type\": \"user_action\", \"name\": \"deleted_attachment\", \"parameters\": [{\"name\": \"owner_email\", \"value\": \"cnk@dau.com\"}, {\"name\": \"note_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz\"}, {\"name\": \"attachment_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz/attachments/abcdefgh\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-27T12:45:08.310Z\", \"uniqueQualifier\": \"0\", \"applicationName\": \"keep\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU\", \"actor\": {\"callerType\": \"USER\", \"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"events\": {\"type\": \"user_action\", \"name\": \"uploaded_attachment\", \"parameters\": [{\"name\": \"owner_email\", \"value\": \"cnk@dau.com\"}, {\"name\": \"note_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz\"}, {\"name\": \"attachment_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz/attachments/abcdefgh\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-25T10:13:35.077Z\", \"uniqueQualifier\": \"0\", \"applicationName\": \"keep\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU\", \"actor\": {\"callerType\": \"USER\", \"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"events\": {\"type\": \"user_action\", \"name\": \"edited_note_content\", \"parameters\": [{\"name\": \"owner_email\", \"value\": \"cnk@dau.com\"}, {\"name\": \"note_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-25T09:32:46.784Z\", \"uniqueQualifier\": \"0\", \"applicationName\": \"keep\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh-SHfJfeOMlTPu983WfVweBonaAPdmU\", \"actor\": {\"callerType\": \"USER\", \"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"events\": {\"type\": \"user_action\", \"name\": \"created_note\", \"parameters\": [{\"name\": \"owner_email\", \"value\": \"cnk@dau.com\"}, {\"name\": \"note_name\", \"value\": \"https://keep.googleapis.com/v1/notes/abc-xyz\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "keep",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-google_workspace-keep-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "google_workspace",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

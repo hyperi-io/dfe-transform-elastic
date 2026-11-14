@@ -177,8 +177,7 @@ impl Transform for Default {
                 event.remove("tanium.reporting.computer_name");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyfield(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyfield(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyfield(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyfield(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

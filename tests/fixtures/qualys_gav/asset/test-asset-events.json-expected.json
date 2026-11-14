@@ -1,0 +1,1953 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-11-20T22:57:42.484Z",
+      "cloud": {
+        "provider": "aws"
+      },
+      "device": {
+        "manufacturer": "Xen Project"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2050-05-24T10:37:04.000Z",
+        "kind": "event",
+        "original": "{\"assetId\":12345,\"assetUUID\":\"c062c9b0-6bd1-4d88-a031-d7f20f17856f\",\"hostId\":23456,\"lastModifiedDate\":\"2053-09-17T07:58:52.000Z\",\"agentId\":\"c062c9b0-6bd1-4d88-a031-d7f20f17856f\",\"createdDate\":\"2050-05-24T10:37:04.000Z\",\"sensorLastUpdatedDate\":\"2053-09-17T07:58:52.000Z\",\"assetType\":null,\"address\":\"10.196.63.21\",\"dnsName\":\"dnsName_value\",\"assetName\":\"assetName_value\",\"netbiosName\":\"netbiosName_value\",\"timeZone\":\"UTC\",\"biosDescription\":\"Xen 4.11.amazon 08/24/2034\",\"lastBoot\":\"2052-06-10T02:42:22.000Z\",\"totalMemory\":7935,\"cpuCount\":2,\"lastLoggedOnUser\":\"lastLoggedOnUser_value\",\"domainRole\":null,\"hwUUID\":\"ce4c294e-3d70-39c1-b8ef-e7bce4491717\",\"biosSerialNumber\":\"biosSerialNumber_value\",\"biosAssetTag\":\"Not Specified\",\"isContainerHost\":false,\"operatingSystem\":{\"osName\":\"Ubuntu Linux 20.04.4\",\"fullName\":\"Canonical Ubuntu Focal Fossa (20.04.4 LTS)\",\"category\":\"Linux / Unidentified\",\"category1\":\"Linux\",\"category2\":\"Unidentified\",\"productName\":\"Ubuntu\",\"publisher\":\"Canonical\",\"edition\":null,\"marketVersion\":\"Focal Fossa\",\"version\":\"20.04 LTS\",\"update\":\"20.04 LTS 20.04.4 LTS\",\"architecture\":\"x86_64\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Linux / Unidentified\",\"category1\":\"Linux\",\"category2\":\"Unidentified\"},\"productUrl\":null,\"productFamily\":null,\"installDate\":null,\"release\":\"20.04.4\",\"cpeId\":null,\"cpe\":null,\"cpeType\":null},\"hardware\":{\"fullName\":\"Ofs Glnxbdh YZL amxP\",\"category\":\"Virtualized / Virtual Machine\",\"category1\":\"Virtualized\",\"category2\":\"Virtual Machine\",\"manufacturer\":\"Xen Project\",\"productName\":\"HVM domU\",\"model\":null,\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Virtualized / Virtual Machine\",\"category1\":\"Virtualized\",\"category2\":\"Virtual Machine\"},\"productUrl\":null,\"productFamily\":null},\"userAccountListData\":{\"userAccount\":[{\"name\":\"user1\"},{\"name\":\"user2\"}]},\"openPortListData\":{\"openPort\":[{\"port\":53,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"detectedService_value_1\",\"firstFound\":\"2053-09-09T15:51:43.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":68,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"detectedService_value_2\",\"firstFound\":\"2053-09-09T15:51:43.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":22,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"detectedService_value_3\",\"firstFound\":\"2050-05-24T11:29:47.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"}]},\"volumeListData\":{\"volume\":[{\"name\":\"/snap/amazon-ssm-agent/11797\",\"free\":0,\"size\":29097984},{\"name\":\"/snap/snapd/24792\",\"free\":0,\"size\":51773440}]},\"networkInterfaceListData\":{\"networkInterface\":[{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87\",\"addressIpV6\":null,\"macAddress\":\"\",\"interfaceName\":\"\",\"dnsAddress\":null,\"gatewayAddress\":\"\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null},{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87\",\"addressIpV6\":\"2001:db8:15e6:9235:5ab4:64ce:b456:8207\",\"macAddress\":\"36:b2:30:08:45:30\",\"interfaceName\":\"ens3\",\"dnsAddress\":\"192.0.2.87\",\"gatewayAddress\":\"192.0.2.87\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null}]},\"softwareListData\":{\"software\":[{\"id\":1350996231234171400,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Canonical Vim 8.1.2269-1 (Ubuntu Focal Fossa)\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Application Development / Development Tool\",\"category1\":\"Application Development\",\"category2\":\"Development Tool\",\"productName\":\"Vim\",\"component\":null,\"publisher\":\"Canonical\",\"edition\":\"Unknown\",\"marketVersion\":\"8\",\"version\":\"8.1\",\"update\":\"8.1.2269-1 (Ubuntu Focal Fossa)\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:39:28.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"vim\",\"discoveredVersion\":\"2:8.1.2269-1ubuntu5.22\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null},{\"id\":-2774205715073934300,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"vim-common 2:8.1.2269-1ubuntu5.22\",\"softwareType\":\"Others\",\"isIgnored\":true,\"ignoredReason\":\"Library Packages\",\"category\":\"Unknown / Unknown\",\"category1\":\"Unknown\",\"category2\":\"Unknown\",\"productName\":\"Unknown\",\"component\":null,\"publisher\":\"Unknown\",\"edition\":null,\"marketVersion\":null,\"version\":\"2:8.1.2269-1ubuntu5.22\",\"update\":\"2:8.1.2269-1ubuntu5.22\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:39:28.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"vim-common\",\"discoveredVersion\":\"2:8.1.2269-1ubuntu5.22\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null}]},\"softwareComponent\":null,\"provider\":\"AWS\",\"cloudProvider\":{\"aws\":{\"ec2\":{\"accountId\":\"1234\",\"availabilityZone\":\"us-west-2a\",\"hasAgent\":true,\"hostname\":\"vwmkkbpe_sfnqc\",\"imageId\":\"imageId_value\",\"instanceId\":\"instanceId_value\",\"instanceState\":\"RUNNING\",\"instanceType\":\"m4.large\",\"qualysScanner\":false,\"kernelId\":null,\"launchdate\":2536999692000,\"privateDNS\":\"privateDNS_value\",\"privateIpAddress\":\"10.26.137.145\",\"publicDNS\":null,\"publicIpAddress\":\"192.0.2.87\",\"region\":{\"code\":\"us-west-2\",\"name\":\"US West (Oregon)\"},\"spotInstance\":false,\"subnetId\":\"subnetId_value\",\"vpcId\":\"vpcId_value\"},\"tags\":[{\"key\":\"tags_key_1\",\"value\":\"tags_value_1\"},{\"key\":\"tags_key_2\",\"value\":\"tags_value_2\"}]},\"azure\":null,\"gcp\":null,\"oci\":null,\"ibm\":null,\"alibaba\":null},\"agent\":{\"version\":\"192.0.2.150\",\"configurationProfile\":\"configurationProfile_value\",\"activations\":[{\"key\":\"key_value\",\"status\":\"ACTIVE\"}],\"connectedFrom\":\"192.0.2.87\",\"lastActivity\":1758054146000,\"lastCheckedIn\":1758094769000,\"lastInventory\":1758054210000,\"udcManifestAssigned\":false,\"errorStatus\":false},\"sensor\":{\"activatedForModules\":[\"SCA\",\"PC\",\"VM\"],\"pendingActivationForModules\":[],\"lastVMScan\":1758094767000,\"lastComplianceScan\":1681892534000,\"lastFullScan\":1758094767000,\"lastVmScanDateScanner\":0,\"lastVmScanDateAgent\":2641707567000,\"lastPcScanDateScanner\":0,\"lastPcScanDateAgent\":2565505334000,\"firstEasmScanDate\":null,\"lastEasmScanDate\":null},\"container\":{\"product\":null,\"version\":null,\"noOfContainers\":0,\"noOfImages\":0,\"hasSensor\":null},\"inventory\":{\"source\":\"QAGENT\",\"created\":2537001424000,\"lastUpdated\":2641708576000},\"activity\":{\"source\":\"QAGENT\",\"lastScannedDate\":2641708576000},\"tagList\":{\"tag\":[{\"tagId\":1234,\"tagName\":\"env:development\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null},{\"tagId\":2345,\"tagName\":\"asset_criticality:3\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null}]},\"serviceList\":{\"service\":[{\"description\":null,\"name\":\"systemd-tmpfiles-setup-dev.service\",\"status\":\"loaded/active/exited\"},{\"description\":null,\"name\":\"systemd-journal-flush.service\",\"status\":\"loaded/active/exited\"}]},\"lastLocation\":{\"city\":\"Boardman\",\"state\":\"Oregon\",\"country\":\"United States\",\"name\":\"Boardman, Oregon - United States\",\"continent\":\"North America\",\"postal\":\"97818\"},\"criticality\":{\"score\":3,\"isDefault\":false,\"lastUpdated\":\"2051-03-07T22:18:45.000Z\"},\"businessInformation\":null,\"assignedLocation\":null,\"businessAppListData\":null,\"riskScore\":506,\"passiveSensor\":null,\"domain\":null,\"subdomain\":null,\"missingSoftware\":[],\"whois\":null,\"organizationName\":null,\"isp\":null,\"asn\":null,\"easmTags\":null,\"hostingCategory1\":null,\"customAttributes\":null,\"lparId\":null,\"processor\":{\"description\":\"Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz\",\"speed\":2300,\"numCPUs\":2,\"noOfSocket\":1,\"threadsPerCore\":2,\"coresPerSocket\":1,\"multithreadingStatus\":\"ENABLED\"}}",
+        "risk_score": 506.0,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "geo": {
+          "city_name": "Boardman",
+          "continent_name": "North America",
+          "country_name": "Boardman, Oregon - United States",
+          "postal_code": "97818"
+        },
+        "hostname": "dnsName_value",
+        "id": "12345",
+        "ip": [
+          "10.196.63.21"
+        ],
+        "name": "assetname_value",
+        "os": {
+          "full": "Canonical Ubuntu Focal Fossa (20.04.4 LTS)",
+          "name": "Ubuntu Linux 20.04.4",
+          "platform": "Ubuntu",
+          "type": "linux",
+          "version": "20.04 LTS"
+        }
+      },
+      "observer": {
+        "product": "Global AssetView",
+        "vendor": "Qualys"
+      },
+      "package": {
+        "name": [
+          "Canonical Vim 8.1.2269-1 (Ubuntu Focal Fossa)",
+          "vim-common 2:8.1.2269-1ubuntu5.22"
+        ],
+        "type": [
+          "Application",
+          "Others"
+        ],
+        "version": [
+          "8.1",
+          "2:8.1.2269-1ubuntu5.22"
+        ]
+      },
+      "qualys_gav": {
+        "asset": {
+          "activity": {
+            "last_scanned_date": "2053-09-17T07:56:16.000Z",
+            "source": "QAGENT"
+          },
+          "address": "10.196.63.21",
+          "agent": {
+            "activations": [
+              {
+                "key": "key_value",
+                "status": "ACTIVE"
+              }
+            ],
+            "configuration_profile": "configurationProfile_value",
+            "connected_from": "192.0.2.87",
+            "error_status": false,
+            "last_activity": "2025-09-16T20:22:26.000Z",
+            "last_checked_in": "2025-09-17T07:39:29.000Z",
+            "last_inventory": "2025-09-16T20:23:30.000Z",
+            "udc_manifest_assigned": false,
+            "version": "192.0.2.150"
+          },
+          "agent_id": "c062c9b0-6bd1-4d88-a031-d7f20f17856f",
+          "asset_id": "12345",
+          "asset_name": "assetName_value",
+          "asset_uuid": "c062c9b0-6bd1-4d88-a031-d7f20f17856f",
+          "bios_asset_tag": "Not Specified",
+          "bios_description": "Xen 4.11.amazon 08/24/2034",
+          "bios_serial_number": "biosSerialNumber_value",
+          "cloud_provider": {
+            "aws": {
+              "ec2": {
+                "account_id": "1234",
+                "availability_zone": "us-west-2a",
+                "has_agent": true,
+                "hostname": "vwmkkbpe_sfnqc",
+                "image_id": "imageId_value",
+                "instance_id": "instanceId_value",
+                "instance_state": "RUNNING",
+                "instance_type": "m4.large",
+                "launchdate": "2050-05-24T10:08:12.000Z",
+                "private_dns": "privateDNS_value",
+                "private_ip_address": "10.26.137.145",
+                "public_ip_address": "192.0.2.87",
+                "qualys_scanner": false,
+                "region": {
+                  "code": "us-west-2",
+                  "name": "US West (Oregon)"
+                },
+                "spot_instance": false,
+                "subnet_id": "subnetId_value",
+                "vpc_id": "vpcId_value"
+              },
+              "tags": [
+                {
+                  "key": "tags_key_1",
+                  "value": "tags_value_1"
+                },
+                {
+                  "key": "tags_key_2",
+                  "value": "tags_value_2"
+                }
+              ]
+            }
+          },
+          "container": {
+            "no_of_containers": 0,
+            "no_of_images": 0
+          },
+          "cpu_count": 2,
+          "created_date": "2050-05-24T10:37:04.000Z",
+          "criticality": {
+            "is_default": false,
+            "last_updated": "2051-03-07T22:18:45.000Z",
+            "score": 3
+          },
+          "dns_name": "dnsName_value",
+          "hardware": {
+            "category": "Virtualized / Virtual Machine",
+            "category1": "Virtualized",
+            "category2": "Virtual Machine",
+            "full_name": "Ofs Glnxbdh YZL amxP",
+            "manufacturer": "Xen Project",
+            "product_name": "HVM domU",
+            "taxonomy": {
+              "category1": "Virtualized",
+              "category2": "Virtual Machine",
+              "name": "Virtualized / Virtual Machine"
+            }
+          },
+          "host_id": "23456",
+          "hw_uuid": "ce4c294e-3d70-39c1-b8ef-e7bce4491717",
+          "interval_id": "15fda9b2-3459-4b94-aa61-8b2fe6e0eaf3",
+          "interval_start": "2053-11-20T22:57:38.484Z",
+          "inventory": {
+            "created": "2050-05-24T10:37:04.000Z",
+            "last_updated": "2053-09-17T07:56:16.000Z",
+            "source": "QAGENT"
+          },
+          "is_container_host": false,
+          "last_boot": "2052-06-10T02:42:22.000Z",
+          "last_location": {
+            "city": "Boardman",
+            "continent": "North America",
+            "country": "United States",
+            "name": "Boardman, Oregon - United States",
+            "postal": "97818",
+            "state": "Oregon"
+          },
+          "last_logged_on_user": "lastLoggedOnUser_value",
+          "last_modified_date": "2053-09-17T07:58:52.000Z",
+          "netbios_name": "netbiosName_value",
+          "network_interface_list_data": {
+            "network_interface": [
+              {
+                "address_ip_v4": [
+                  "192.0.2.87"
+                ],
+                "hostname": "vwmkkbpe_sfnqc"
+              },
+              {
+                "address_ip_v4": [
+                  "192.0.2.87"
+                ],
+                "address_ip_v6": [
+                  "2001:db8:15e6:9235:5ab4:64ce:b456:8207"
+                ],
+                "dns_address": "192.0.2.87",
+                "gateway_address": "192.0.2.87",
+                "hostname": "vwmkkbpe_sfnqc",
+                "interface_name": "ens3",
+                "mac_address": "36-B2-30-08-45-30"
+              }
+            ]
+          },
+          "open_port_list_data": {
+            "open_port": [
+              {
+                "detected_service": "detectedService_value_1",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-09-09T15:51:43.000Z",
+                "last_updated": "2053-09-09T15:51:43.000Z",
+                "port": 53,
+                "protocol": "UDP"
+              },
+              {
+                "detected_service": "detectedService_value_2",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-09-09T15:51:43.000Z",
+                "last_updated": "2053-09-09T15:51:43.000Z",
+                "port": 68,
+                "protocol": "UDP"
+              },
+              {
+                "detected_service": "detectedService_value_3",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2050-05-24T11:29:47.000Z",
+                "last_updated": "2053-09-09T15:51:43.000Z",
+                "port": 22,
+                "protocol": "TCP"
+              }
+            ]
+          },
+          "operating_system": {
+            "architecture": "x86_64",
+            "category": "Linux / Unidentified",
+            "category1": "Linux",
+            "category2": "Unidentified",
+            "full_name": "Canonical Ubuntu Focal Fossa (20.04.4 LTS)",
+            "market_version": "Focal Fossa",
+            "os_name": "Ubuntu Linux 20.04.4",
+            "product_name": "Ubuntu",
+            "publisher": "Canonical",
+            "release": "20.04.4",
+            "taxonomy": {
+              "category1": "Linux",
+              "category2": "Unidentified",
+              "name": "Linux / Unidentified"
+            },
+            "update": "20.04 LTS 20.04.4 LTS",
+            "version": "20.04 LTS"
+          },
+          "processor": {
+            "cores_per_socket": 1,
+            "description": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+            "multithreading_status": "ENABLED",
+            "no_of_socket": 1,
+            "num_cpus": 2,
+            "speed": 2300,
+            "threads_per_core": 2
+          },
+          "provider": "AWS",
+          "risk_score": 506.0,
+          "sensor": {
+            "activated_for_modules": [
+              "SCA",
+              "PC",
+              "VM"
+            ],
+            "last_compliance_scan": "2023-04-19T08:22:14.000Z",
+            "last_full_scan": "2025-09-17T07:39:27.000Z",
+            "last_pc_scan_date_agent": "2051-04-19T08:22:14.000Z",
+            "last_vm_scan_date_agent": "2053-09-17T07:39:27.000Z",
+            "last_vmscan": "2025-09-17T07:39:27.000Z"
+          },
+          "sensor_last_updated_date": "2053-09-17T07:58:52.000Z",
+          "service_list": {
+            "service": [
+              {
+                "name": "systemd-tmpfiles-setup-dev.service",
+                "status": "loaded/active/exited"
+              },
+              {
+                "name": "systemd-journal-flush.service",
+                "status": "loaded/active/exited"
+              }
+            ]
+          },
+          "software_list_data": {
+            "software": [
+              {
+                "category": "Application Development / Development Tool",
+                "category1": "Application Development",
+                "category2": "Development Tool",
+                "discovered_name": "vim",
+                "discovered_version": "2:8.1.2269-1ubuntu5.22",
+                "discovery_sources": "Cloud Agent, Cloud Agent",
+                "edition": "Unknown",
+                "full_name": "Canonical Vim 8.1.2269-1 (Ubuntu Focal Fossa)",
+                "id": "1350996231234171400",
+                "is_ignored": false,
+                "last_updated": "2053-09-17T07:39:28.000Z",
+                "market_version": "8",
+                "product_name": "Vim",
+                "publisher": "Canonical",
+                "software_type": "Application",
+                "update": "8.1.2269-1 (Ubuntu Focal Fossa)",
+                "version": "8.1"
+              },
+              {
+                "category": "Unknown / Unknown",
+                "category1": "Unknown",
+                "category2": "Unknown",
+                "discovered_name": "vim-common",
+                "discovered_version": "2:8.1.2269-1ubuntu5.22",
+                "discovery_sources": "Cloud Agent, Cloud Agent",
+                "full_name": "vim-common 2:8.1.2269-1ubuntu5.22",
+                "id": "-2774205715073934300",
+                "ignored_reason": "Library Packages",
+                "is_ignored": true,
+                "last_updated": "2053-09-17T07:39:28.000Z",
+                "product_name": "Unknown",
+                "publisher": "Unknown",
+                "software_type": "Others",
+                "update": "2:8.1.2269-1ubuntu5.22",
+                "version": "2:8.1.2269-1ubuntu5.22"
+              }
+            ]
+          },
+          "tag_list": {
+            "tag": [
+              {
+                "background_color": "0",
+                "foreground_color": "0",
+                "tag_id": "1234",
+                "tag_name": "env:development"
+              },
+              {
+                "background_color": "0",
+                "foreground_color": "0",
+                "tag_id": "2345",
+                "tag_name": "asset_criticality:3"
+              }
+            ]
+          },
+          "time_zone": "UTC",
+          "total_memory": 7935,
+          "user_account_list_data": {
+            "user_account": [
+              {
+                "name": "user1"
+              },
+              {
+                "name": "user2"
+              }
+            ]
+          },
+          "volume_list_data": {
+            "volume": [
+              {
+                "free": 0,
+                "name": "/snap/amazon-ssm-agent/11797",
+                "size": 29097984
+              },
+              {
+                "free": 0,
+                "name": "/snap/snapd/24792",
+                "size": 51773440
+              }
+            ]
+          }
+        }
+      },
+      "related": {
+        "hosts": [
+          "12345",
+          "assetName_value",
+          "c062c9b0-6bd1-4d88-a031-d7f20f17856f",
+          "dnsName_value",
+          "23456",
+          "netbiosName_value",
+          "vwmkkbpe_sfnqc"
+        ],
+        "ip": [
+          "10.196.63.21",
+          "192.0.2.87",
+          "2001:db8:15e6:9235:5ab4:64ce:b456:8207"
+        ],
+        "user": [
+          "lastLoggedOnUser_value"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "lastLoggedOnUser_value"
+      }
+    },
+    {
+      "@timestamp": "2053-11-20T22:57:42.484Z",
+      "cloud": {
+        "provider": "gcp"
+      },
+      "device": {
+        "manufacturer": "Google"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2051-02-15T20:32:36.000Z",
+        "kind": "event",
+        "original": "{\"assetId\":688003347,\"assetUUID\":\"64926498-3ee3-4591-82ba-2b5199c96cb9\",\"hostId\":547254569,\"lastModifiedDate\":\"2053-09-17T08:40:35.000Z\",\"agentId\":\"64926498-3ee3-4591-82ba-2b5199c96cb9\",\"createdDate\":\"2051-02-15T20:32:36.000Z\",\"sensorLastUpdatedDate\":\"2053-09-17T08:40:35.000Z\",\"assetType\":null,\"address\":\"10.122.23.140\",\"dnsName\":\"dnsName_value\",\"assetName\":\"assetName_value\",\"netbiosName\":\"netbiosName_value\",\"timeZone\":\"UTC\",\"biosDescription\":\"Google Google 09/13/2052\",\"lastBoot\":\"2053-05-24T04:01:12.000Z\",\"totalMemory\":16008,\"cpuCount\":4,\"lastLoggedOnUser\":\"lastLoggedOnUser_value\",\"domainRole\":null,\"hwUUID\":\"b14c4353-2946-b499-57aa-fac46c19238a\",\"biosSerialNumber\":\"GoogleCloud-D77D64706209A96212DDBCA99D52231D\",\"biosAssetTag\":\"Not Specified\",\"isContainerHost\":true,\"operatingSystem\":{\"osName\":\"Debian Linux 11.11\",\"fullName\":\"Debian Project Debian Bullseye (11.11)\",\"category\":\"Linux / Server\",\"category1\":\"Linux\",\"category2\":\"Server\",\"productName\":\"Debian\",\"publisher\":\"Debian Project\",\"edition\":null,\"marketVersion\":\"Bullseye\",\"version\":\"11.11\",\"update\":\"11.11\",\"architecture\":\"x86_64\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Linux / Server\",\"category1\":\"Linux\",\"category2\":\"Server\"},\"productUrl\":null,\"productFamily\":null,\"installDate\":null,\"release\":\"11.11\",\"cpeId\":null,\"cpe\":null,\"cpeType\":null},\"hardware\":{\"fullName\":\"Mqttic Drmmkjf Aszjkd\",\"category\":\"Virtualized / Cloud Instance\",\"category1\":\"Virtualized\",\"category2\":\"Cloud Instance\",\"manufacturer\":\"Google\",\"productName\":\"Compute Engine\",\"model\":null,\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Virtualized / Cloud Instance\",\"category1\":\"Virtualized\",\"category2\":\"Cloud Instance\"},\"productUrl\":null,\"productFamily\":null},\"userAccountListData\":{\"userAccount\":[{\"name\":\"root\"}]},\"openPortListData\":{\"openPort\":[{\"port\":22,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"sshd\",\"firstFound\":\"2051-04-07T04:07:38.000Z\",\"lastUpdated\":\"2053-09-09T15:52:49.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":68,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"dhclient\",\"firstFound\":\"2053-02-27T14:58:06.000Z\",\"lastUpdated\":\"2053-09-09T15:52:49.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":323,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"chronyd\",\"firstFound\":\"2053-02-27T14:58:06.000Z\",\"lastUpdated\":\"2053-09-09T15:52:49.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"}]},\"volumeListData\":{\"volume\":[{\"name\":\"/dev\",\"free\":8381861888,\"size\":8381861888},{\"name\":\"/boot/efi\",\"free\":118566912,\"size\":129751040}]},\"networkInterfaceListData\":{\"networkInterface\":[{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87\",\"addressIpV6\":null,\"macAddress\":\"\",\"interfaceName\":\"\",\"dnsAddress\":null,\"gatewayAddress\":\"\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null},{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":null,\"addressIpV6\":\"2001:db8:15e6:9235:5ab4:64ce:b456:8207\",\"macAddress\":\"09:94:47:38:62:02\",\"interfaceName\":\"interfaceName_value\",\"dnsAddress\":\"192.0.2.87\",\"gatewayAddress\":\"192.0.2.87\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null}]},\"softwareListData\":{\"software\":[{\"id\":3472954331957710000,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"libtasn1-6:amd64 4.16.0-2+deb11u2\",\"softwareType\":\"Others\",\"isIgnored\":true,\"ignoredReason\":\"Library Packages\",\"category\":\"Unknown / Unknown\",\"category1\":\"Unknown\",\"category2\":\"Unknown\",\"productName\":\"Unknown\",\"component\":null,\"publisher\":\"Unknown\",\"edition\":null,\"marketVersion\":null,\"version\":\"4.16.0-2+deb11u2\",\"update\":\"4.16.0-2+deb11u2\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:48:42.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"libtasn1-6:amd64\",\"discoveredVersion\":\"4.16.0-2+deb11u2\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null},{\"id\":-7272038036848305000,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"git-man 1:2.30.2-1+deb11u4\",\"softwareType\":\"Others\",\"isIgnored\":true,\"ignoredReason\":\"Helper Packages\",\"category\":\"Unknown / Unknown\",\"category1\":\"Unknown\",\"category2\":\"Unknown\",\"productName\":\"Unknown\",\"component\":null,\"publisher\":\"Unknown\",\"edition\":null,\"marketVersion\":null,\"version\":\"1:2.30.2-1+deb11u4\",\"update\":\"1:2.30.2-1+deb11u4\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:48:42.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"git-man\",\"discoveredVersion\":\"1:2.30.2-1+deb11u4\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null}]},\"softwareComponent\":null,\"provider\":\"GCP\",\"cloudProvider\":{\"aws\":null,\"azure\":null,\"gcp\":{\"compute\":{\"hostname\":\"vwmkkbpe_sfnqc\",\"instanceId\":\"instanceId_value\",\"macAddress\":\"09:94:47:38:62:02\",\"machineType\":\"e2-standard-4\",\"network\":\"network_value\",\"privateIpAddress\":\"192.0.2.87\",\"projectId\":\"projectId_value\",\"projectNumber\":\"123456789012\",\"publicIpAddress\":\"198.51.100.71\",\"zone\":\"us-central1-a\",\"state\":\"RUNNING\",\"imageId\":\"projects/debian-cloud/global/images/debian-11-bullseye-v20221206\"},\"tags\":[{\"key\":\"tags_key_1\",\"value\":\"tags_value_1\"},{\"key\":\"tags_key_2\",\"value\":\"tags_value_2\"}]},\"oci\":null,\"ibm\":null,\"alibaba\":null},\"agent\":{\"version\":\"192.0.2.150\",\"configurationProfile\":\"configurationProfile_value\",\"activations\":[{\"key\":\"key_value\",\"status\":\"ACTIVE\"}],\"connectedFrom\":\"192.0.2.87\",\"lastActivity\":1758054384000,\"lastCheckedIn\":1758095323000,\"lastInventory\":1758054655000,\"udcManifestAssigned\":false,\"errorStatus\":false},\"sensor\":{\"activatedForModules\":[\"VM\",\"SCA\",\"VM\"],\"pendingActivationForModules\":[],\"lastVMScan\":1758095321000,\"lastComplianceScan\":0,\"lastFullScan\":1758095321000,\"lastVmScanDateScanner\":0,\"lastVmScanDateAgent\":2641708121000,\"lastPcScanDateScanner\":0,\"lastPcScanDateAgent\":0,\"firstEasmScanDate\":null,\"lastEasmScanDate\":null},\"container\":{\"product\":\"DOCKER\",\"version\":\"28.3.2\",\"noOfContainers\":10,\"noOfImages\":5,\"hasSensor\":false},\"inventory\":{\"source\":\"QAGENT\",\"created\":2560105956000,\"lastUpdated\":2641711146000},\"activity\":{\"source\":\"QAGENT\",\"lastScannedDate\":2641711146000},\"tagList\":{\"tag\":[{\"tagId\":1234,\"tagName\":\"env:development\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null},{\"tagId\":2345,\"tagName\":\"asset_criticality:3\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null}]},\"serviceList\":{\"service\":[{\"description\":null,\"name\":\"networkd-dispatcher.service\",\"status\":\"loaded/active/running\"},{\"description\":null,\"name\":\"google-guest-agent-manager.service\",\"status\":\"loaded/active/running\"}]},\"lastLocation\":{\"city\":\"Council Bluffs\",\"state\":\"Iowa\",\"country\":\"United States\",\"name\":\"Council Bluffs, Iowa - United States\",\"continent\":\"North America\",\"postal\":\"51502\"},\"criticality\":{\"score\":3,\"isDefault\":false,\"lastUpdated\":\"2052-11-28T22:24:02.000Z\"},\"businessInformation\":null,\"assignedLocation\":null,\"businessAppListData\":null,\"riskScore\":0,\"passiveSensor\":null,\"domain\":null,\"subdomain\":null,\"missingSoftware\":[],\"whois\":null,\"organizationName\":null,\"isp\":null,\"asn\":null,\"easmTags\":null,\"hostingCategory1\":null,\"customAttributes\":null,\"lparId\":null,\"processor\":{\"description\":\"AMD EPYC 7B12\",\"speed\":null,\"numCPUs\":4,\"noOfSocket\":1,\"threadsPerCore\":2,\"coresPerSocket\":2,\"multithreadingStatus\":\"ENABLED\"}}",
+        "risk_score": 0.0,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "geo": {
+          "city_name": "Council Bluffs",
+          "continent_name": "North America",
+          "country_name": "Council Bluffs, Iowa - United States",
+          "postal_code": "51502"
+        },
+        "hostname": "dnsName_value",
+        "id": "688003347",
+        "ip": [
+          "10.122.23.140"
+        ],
+        "name": "assetname_value",
+        "os": {
+          "full": "Debian Project Debian Bullseye (11.11)",
+          "name": "Debian Linux 11.11",
+          "platform": "Debian",
+          "type": "linux",
+          "version": "11.11"
+        }
+      },
+      "observer": {
+        "product": "Global AssetView",
+        "vendor": "Qualys"
+      },
+      "package": {
+        "name": [
+          "libtasn1-6:amd64 4.16.0-2+deb11u2",
+          "git-man 1:2.30.2-1+deb11u4"
+        ],
+        "type": [
+          "Others"
+        ],
+        "version": [
+          "4.16.0-2+deb11u2",
+          "1:2.30.2-1+deb11u4"
+        ]
+      },
+      "qualys_gav": {
+        "asset": {
+          "activity": {
+            "last_scanned_date": "2053-09-17T08:39:06.000Z",
+            "source": "QAGENT"
+          },
+          "address": "10.122.23.140",
+          "agent": {
+            "activations": [
+              {
+                "key": "key_value",
+                "status": "ACTIVE"
+              }
+            ],
+            "configuration_profile": "configurationProfile_value",
+            "connected_from": "192.0.2.87",
+            "error_status": false,
+            "last_activity": "2025-09-16T20:26:24.000Z",
+            "last_checked_in": "2025-09-17T07:48:43.000Z",
+            "last_inventory": "2025-09-16T20:30:55.000Z",
+            "udc_manifest_assigned": false,
+            "version": "192.0.2.150"
+          },
+          "agent_id": "64926498-3ee3-4591-82ba-2b5199c96cb9",
+          "asset_id": "688003347",
+          "asset_name": "assetName_value",
+          "asset_uuid": "64926498-3ee3-4591-82ba-2b5199c96cb9",
+          "bios_asset_tag": "Not Specified",
+          "bios_description": "Google Google 09/13/2052",
+          "bios_serial_number": "GoogleCloud-D77D64706209A96212DDBCA99D52231D",
+          "cloud_provider": {
+            "gcp": {
+              "compute": {
+                "hostname": "vwmkkbpe_sfnqc",
+                "image_id": "projects/debian-cloud/global/images/debian-11-bullseye-v20221206",
+                "instance_id": "instanceId_value",
+                "mac_address": "09:94:47:38:62:02",
+                "machine_type": "e2-standard-4",
+                "network": "network_value",
+                "private_ip_address": "192.0.2.87",
+                "project_id": "projectId_value",
+                "project_number": "123456789012",
+                "public_ip_address": "198.51.100.71",
+                "state": "RUNNING",
+                "zone": "us-central1-a"
+              },
+              "tags": [
+                {
+                  "key": "tags_key_1",
+                  "value": "tags_value_1"
+                },
+                {
+                  "key": "tags_key_2",
+                  "value": "tags_value_2"
+                }
+              ]
+            }
+          },
+          "container": {
+            "has_sensor": "false",
+            "no_of_containers": 10,
+            "no_of_images": 5,
+            "product": "DOCKER",
+            "version": "28.3.2"
+          },
+          "cpu_count": 4,
+          "created_date": "2051-02-15T20:32:36.000Z",
+          "criticality": {
+            "is_default": false,
+            "last_updated": "2052-11-28T22:24:02.000Z",
+            "score": 3
+          },
+          "dns_name": "dnsName_value",
+          "hardware": {
+            "category": "Virtualized / Cloud Instance",
+            "category1": "Virtualized",
+            "category2": "Cloud Instance",
+            "full_name": "Mqttic Drmmkjf Aszjkd",
+            "manufacturer": "Google",
+            "product_name": "Compute Engine",
+            "taxonomy": {
+              "category1": "Virtualized",
+              "category2": "Cloud Instance",
+              "name": "Virtualized / Cloud Instance"
+            }
+          },
+          "host_id": "547254569",
+          "hw_uuid": "b14c4353-2946-b499-57aa-fac46c19238a",
+          "interval_id": "14fab8a6-8149-1588-5283-0d3bc2a2cfe4",
+          "interval_start": "2053-11-20T22:57:38.484Z",
+          "inventory": {
+            "created": "2051-02-15T20:32:36.000Z",
+            "last_updated": "2053-09-17T08:39:06.000Z",
+            "source": "QAGENT"
+          },
+          "is_container_host": true,
+          "last_boot": "2053-05-24T04:01:12.000Z",
+          "last_location": {
+            "city": "Council Bluffs",
+            "continent": "North America",
+            "country": "United States",
+            "name": "Council Bluffs, Iowa - United States",
+            "postal": "51502",
+            "state": "Iowa"
+          },
+          "last_logged_on_user": "lastLoggedOnUser_value",
+          "last_modified_date": "2053-09-17T08:40:35.000Z",
+          "netbios_name": "netbiosName_value",
+          "network_interface_list_data": {
+            "network_interface": [
+              {
+                "address_ip_v4": [
+                  "192.0.2.87"
+                ],
+                "hostname": "vwmkkbpe_sfnqc"
+              },
+              {
+                "address_ip_v6": [
+                  "2001:db8:15e6:9235:5ab4:64ce:b456:8207"
+                ],
+                "dns_address": "192.0.2.87",
+                "gateway_address": "192.0.2.87",
+                "hostname": "vwmkkbpe_sfnqc",
+                "interface_name": "interfaceName_value",
+                "mac_address": "09-94-47-38-62-02"
+              }
+            ]
+          },
+          "open_port_list_data": {
+            "open_port": [
+              {
+                "detected_service": "sshd",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2051-04-07T04:07:38.000Z",
+                "last_updated": "2053-09-09T15:52:49.000Z",
+                "port": 22,
+                "protocol": "TCP"
+              },
+              {
+                "detected_service": "dhclient",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-02-27T14:58:06.000Z",
+                "last_updated": "2053-09-09T15:52:49.000Z",
+                "port": 68,
+                "protocol": "UDP"
+              },
+              {
+                "detected_service": "chronyd",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-02-27T14:58:06.000Z",
+                "last_updated": "2053-09-09T15:52:49.000Z",
+                "port": 323,
+                "protocol": "UDP"
+              }
+            ]
+          },
+          "operating_system": {
+            "architecture": "x86_64",
+            "category": "Linux / Server",
+            "category1": "Linux",
+            "category2": "Server",
+            "full_name": "Debian Project Debian Bullseye (11.11)",
+            "market_version": "Bullseye",
+            "os_name": "Debian Linux 11.11",
+            "product_name": "Debian",
+            "publisher": "Debian Project",
+            "release": "11.11",
+            "taxonomy": {
+              "category1": "Linux",
+              "category2": "Server",
+              "name": "Linux / Server"
+            },
+            "update": "11.11",
+            "version": "11.11"
+          },
+          "processor": {
+            "cores_per_socket": 2,
+            "description": "AMD EPYC 7B12",
+            "multithreading_status": "ENABLED",
+            "no_of_socket": 1,
+            "num_cpus": 4,
+            "threads_per_core": 2
+          },
+          "provider": "GCP",
+          "risk_score": 0.0,
+          "sensor": {
+            "activated_for_modules": [
+              "VM",
+              "SCA",
+              "VM"
+            ],
+            "last_full_scan": "2025-09-17T07:48:41.000Z",
+            "last_vm_scan_date_agent": "2053-09-17T07:48:41.000Z",
+            "last_vmscan": "2025-09-17T07:48:41.000Z"
+          },
+          "sensor_last_updated_date": "2053-09-17T08:40:35.000Z",
+          "service_list": {
+            "service": [
+              {
+                "name": "networkd-dispatcher.service",
+                "status": "loaded/active/running"
+              },
+              {
+                "name": "google-guest-agent-manager.service",
+                "status": "loaded/active/running"
+              }
+            ]
+          },
+          "software_list_data": {
+            "software": [
+              {
+                "category": "Unknown / Unknown",
+                "category1": "Unknown",
+                "category2": "Unknown",
+                "discovered_name": "libtasn1-6:amd64",
+                "discovered_version": "4.16.0-2+deb11u2",
+                "discovery_sources": "Cloud Agent, Cloud Agent",
+                "full_name": "libtasn1-6:amd64 4.16.0-2+deb11u2",
+                "id": "3472954331957710000",
+                "ignored_reason": "Library Packages",
+                "is_ignored": true,
+                "last_updated": "2053-09-17T07:48:42.000Z",
+                "product_name": "Unknown",
+                "publisher": "Unknown",
+                "software_type": "Others",
+                "update": "4.16.0-2+deb11u2",
+                "version": "4.16.0-2+deb11u2"
+              },
+              {
+                "category": "Unknown / Unknown",
+                "category1": "Unknown",
+                "category2": "Unknown",
+                "discovered_name": "git-man",
+                "discovered_version": "1:2.30.2-1+deb11u4",
+                "discovery_sources": "Cloud Agent, Cloud Agent",
+                "full_name": "git-man 1:2.30.2-1+deb11u4",
+                "id": "-7272038036848305000",
+                "ignored_reason": "Helper Packages",
+                "is_ignored": true,
+                "last_updated": "2053-09-17T07:48:42.000Z",
+                "product_name": "Unknown",
+                "publisher": "Unknown",
+                "software_type": "Others",
+                "update": "1:2.30.2-1+deb11u4",
+                "version": "1:2.30.2-1+deb11u4"
+              }
+            ]
+          },
+          "tag_list": {
+            "tag": [
+              {
+                "background_color": "0",
+                "foreground_color": "0",
+                "tag_id": "1234",
+                "tag_name": "env:development"
+              },
+              {
+                "background_color": "0",
+                "foreground_color": "0",
+                "tag_id": "2345",
+                "tag_name": "asset_criticality:3"
+              }
+            ]
+          },
+          "time_zone": "UTC",
+          "total_memory": 16008,
+          "user_account_list_data": {
+            "user_account": [
+              {
+                "name": "root"
+              }
+            ]
+          },
+          "volume_list_data": {
+            "volume": [
+              {
+                "free": 8381861888,
+                "name": "/dev",
+                "size": 8381861888
+              },
+              {
+                "free": 118566912,
+                "name": "/boot/efi",
+                "size": 129751040
+              }
+            ]
+          }
+        }
+      },
+      "related": {
+        "hosts": [
+          "688003347",
+          "assetName_value",
+          "64926498-3ee3-4591-82ba-2b5199c96cb9",
+          "dnsName_value",
+          "547254569",
+          "netbiosName_value",
+          "vwmkkbpe_sfnqc"
+        ],
+        "ip": [
+          "10.122.23.140",
+          "192.0.2.87",
+          "2001:db8:15e6:9235:5ab4:64ce:b456:8207"
+        ],
+        "user": [
+          "lastLoggedOnUser_value"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "lastLoggedOnUser_value"
+      }
+    },
+    {
+      "@timestamp": "2053-11-20T22:59:42.480Z",
+      "device": {
+        "manufacturer": "Apple",
+        "model": {
+          "name": "MacBook Pro (16-inch, 2021)"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-07-03T09:13:57.000Z",
+        "kind": "event",
+        "original": "{\"assetId\":1355987018,\"assetUUID\":\"67e90835-3dd6-41fa-aaa3-4753a7a879b5\",\"hostId\":1023155286,\"lastModifiedDate\":\"2053-09-17T09:49:18.000Z\",\"agentId\":\"67e90835-3dd6-41fa-aaa3-4753a7a879b5\",\"createdDate\":\"2053-07-03T09:13:57.000Z\",\"sensorLastUpdatedDate\":\"2053-09-17T09:49:18.000Z\",\"assetType\":null,\"address\":\"192.168.222.69\",\"dnsName\":\"dnsName_value\",\"assetName\":\"assetName_value\",\"netbiosName\":\"netbiosName_value\",\"timeZone\":\"+02:00\",\"biosDescription\":\"MacBookPro18,2\",\"lastBoot\":\"2053-09-12T09:08:00.000Z\",\"totalMemory\":32768,\"cpuCount\":10,\"lastLoggedOnUser\":\"lastLoggedOnUser_value\",\"domainRole\":null,\"hwUUID\":\"57040426-4bef-5845-9f3b-dd4f941eb317\",\"biosSerialNumber\":\"biosSerialNumber_value\",\"biosAssetTag\":\"\",\"isContainerHost\":true,\"operatingSystem\":{\"osName\":\"macOS 15.6.1\",\"fullName\":\"Apple macOS Sequoia (15.6.1)\",\"category\":\"Mac / Client\",\"category1\":\"Mac\",\"category2\":\"Client\",\"productName\":\"macOS\",\"publisher\":\"Apple\",\"edition\":null,\"marketVersion\":\"Sequoia\",\"version\":\"15.6\",\"update\":\"15.6.1\",\"architecture\":\"arm64_M1\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Mac / Client\",\"category1\":\"Mac\",\"category2\":\"Client\"},\"productUrl\":null,\"productFamily\":null,\"installDate\":\"2053-08-23T23:12:00.000Z\",\"release\":\"15.6.1\",\"cpeId\":null,\"cpe\":null,\"cpeType\":null},\"hardware\":{\"fullName\":\"Apple MacBook Pro MacBook Pro (16-inch, 2021)\",\"category\":\"Computers / Notebook\",\"category1\":\"Computers\",\"category2\":\"Notebook\",\"manufacturer\":\"Apple\",\"productName\":\"MacBook Pro\",\"model\":\"MacBook Pro (16-inch, 2021)\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Computers / Notebook\",\"category1\":\"Computers\",\"category2\":\"Notebook\"},\"productUrl\":null,\"productFamily\":null},\"userAccountListData\":{\"userAccount\":[{\"name\":\"user1\"},{\"name\":\"user2\"}]},\"openPortListData\":{\"openPort\":[{\"port\":49417,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"ollama\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":6789,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"elastic-a\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":1900,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"spotify\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"}]},\"volumeListData\":{\"volume\":[{\"name\":\"/System/Volumes/xarts\",\"free\":504315904,\"size\":510627840},{\"name\":\"/System/Volumes/Data\",\"free\":113497677824,\"size\":959979847680}]},\"networkInterfaceListData\":{\"networkInterface\":[{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87\",\"addressIpV6\":null,\"macAddress\":\"6d:b0:01:cc:6e:4a\",\"interfaceName\":\"en0\",\"dnsAddress\":\"192.0.2.87\",\"gatewayAddress\":\"192.0.2.87\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null}]},\"softwareListData\":{\"software\":[{\"id\":3349453983575593500,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Apple Find My 1.0\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Security / Other\",\"category1\":\"Security\",\"category2\":\"Other\",\"productName\":\"Find My\",\"component\":null,\"publisher\":\"Apple\",\"edition\":\"Unknown\",\"marketVersion\":\"1\",\"version\":\"1.0\",\"update\":\"1.0\",\"architecture\":null,\"installDate\":\"2053-08-16T18:44:29.000Z\",\"installPath\":\"/System/Applications/FindMy.app\",\"lastUpdated\":\"2053-09-17T09:38:25.000Z\",\"lastUseDate\":\"2053-08-16T18:44:29.000Z\",\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"Find My\",\"discoveredVersion\":\"4.0\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null},{\"id\":9033964968011558000,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Apple iCloud 1.0\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Storage / Backup and Recovery\",\"category1\":\"Storage\",\"category2\":\"Backup and Recovery\",\"productName\":\"iCloud\",\"component\":null,\"publisher\":\"Apple\",\"edition\":\"Unknown\",\"marketVersion\":\"1\",\"version\":\"1.0\",\"update\":\"1.0\",\"architecture\":null,\"installDate\":\"2053-08-16T18:44:29.000Z\",\"installPath\":\"/System/Library/CoreServices/iCloud.app\",\"lastUpdated\":\"2053-09-17T09:38:25.000Z\",\"lastUseDate\":\"2053-08-16T18:44:29.000Z\",\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"iCloud\",\"discoveredVersion\":\"1.0\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null}]},\"softwareComponent\":null,\"provider\":null,\"cloudProvider\":null,\"agent\":{\"version\":\"192.0.2.43\",\"configurationProfile\":\"configurationProfile_value\",\"activations\":[{\"key\":\"key_value\",\"status\":\"ACTIVE\"}],\"connectedFrom\":\"192.0.2.87\",\"lastActivity\":1758095990000,\"lastCheckedIn\":1758101907000,\"lastInventory\":1758096048000,\"udcManifestAssigned\":false,\"errorStatus\":false},\"sensor\":{\"activatedForModules\":[\"PM\",\"VM\"],\"pendingActivationForModules\":[],\"lastVMScan\":1758101903000,\"lastComplianceScan\":0,\"lastFullScan\":1758101903000,\"lastVmScanDateScanner\":0,\"lastVmScanDateAgent\":2641714703000,\"lastPcScanDateScanner\":0,\"lastPcScanDateAgent\":0,\"firstEasmScanDate\":null,\"lastEasmScanDate\":null},\"container\":{\"product\":\"DOCKER\",\"version\":\"28.3.3\",\"noOfContainers\":0,\"noOfImages\":0,\"hasSensor\":false},\"inventory\":{\"source\":\"QAGENT\",\"created\":2635146837000,\"lastUpdated\":2641714707000},\"activity\":{\"source\":\"QAGENT\",\"lastScannedDate\":2641714707000},\"tagList\":{\"tag\":[{\"tagId\":1234,\"tagName\":\"status:running\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null},{\"tagId\":2345,\"tagName\":\"status:running:other\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null}]},\"serviceList\":{\"service\":[{\"description\":null,\"name\":\"com.apple.fpsd.arcadeservice\",\"status\":\"stopped\"},{\"description\":null,\"name\":\"com.apple.IOUserDockChannelSerial-0x100000fd9\",\"status\":\"running\"}]},\"lastLocation\":{\"city\":\"Boardman\",\"state\":\"Oregon\",\"country\":\"United States\",\"name\":\"Boardman, Oregon - United States\",\"continent\":\"North America\",\"postal\":\"97818\"},\"criticality\":{\"score\":3,\"isDefault\":false,\"lastUpdated\":\"2053-07-03T09:13:57.000Z\"},\"businessInformation\":null,\"assignedLocation\":null,\"businessAppListData\":null,\"riskScore\":369,\"passiveSensor\":null,\"domain\":null,\"subdomain\":null,\"missingSoftware\":[],\"whois\":null,\"organizationName\":null,\"isp\":null,\"asn\":null,\"easmTags\":null,\"hostingCategory1\":null,\"customAttributes\":null,\"lparId\":null,\"processor\":{\"description\":\"Apple M1 Max\",\"speed\":3200,\"numCPUs\":10,\"noOfSocket\":null,\"threadsPerCore\":null,\"coresPerSocket\":10,\"multithreadingStatus\":\"DISABLED\"}}",
+        "risk_score": 369.0,
+        "timezone": "+02:00",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "arm64_M1",
+        "geo": {
+          "city_name": "Boardman",
+          "continent_name": "North America",
+          "country_name": "Boardman, Oregon - United States",
+          "postal_code": "97818"
+        },
+        "hostname": "dnsName_value",
+        "id": "1355987018",
+        "ip": [
+          "192.168.222.69"
+        ],
+        "name": "assetname_value",
+        "os": {
+          "full": "Apple macOS Sequoia (15.6.1)",
+          "name": "macOS 15.6.1",
+          "platform": "macOS",
+          "version": "15.6"
+        }
+      },
+      "observer": {
+        "product": "Global AssetView",
+        "vendor": "Qualys"
+      },
+      "package": {
+        "installed": [
+          "2053-08-16T18:44:29.000Z"
+        ],
+        "name": [
+          "Apple Find My 1.0",
+          "Apple iCloud 1.0"
+        ],
+        "path": [
+          "/System/Applications/FindMy.app",
+          "/System/Library/CoreServices/iCloud.app"
+        ],
+        "type": [
+          "Application"
+        ],
+        "version": [
+          "1.0"
+        ]
+      },
+      "qualys_gav": {
+        "asset": {
+          "activity": {
+            "last_scanned_date": "2053-09-17T09:38:27.000Z",
+            "source": "QAGENT"
+          },
+          "address": "192.168.222.69",
+          "agent": {
+            "activations": [
+              {
+                "key": "key_value",
+                "status": "ACTIVE"
+              }
+            ],
+            "configuration_profile": "configurationProfile_value",
+            "connected_from": "192.0.2.87",
+            "error_status": false,
+            "last_activity": "2025-09-17T07:59:50.000Z",
+            "last_checked_in": "2025-09-17T09:38:27.000Z",
+            "last_inventory": "2025-09-17T08:00:48.000Z",
+            "udc_manifest_assigned": false,
+            "version": "192.0.2.43"
+          },
+          "agent_id": "67e90835-3dd6-41fa-aaa3-4753a7a879b5",
+          "asset_id": "1355987018",
+          "asset_name": "assetName_value",
+          "asset_uuid": "67e90835-3dd6-41fa-aaa3-4753a7a879b5",
+          "bios_description": "MacBookPro18,2",
+          "bios_serial_number": "biosSerialNumber_value",
+          "container": {
+            "has_sensor": "false",
+            "no_of_containers": 0,
+            "no_of_images": 0,
+            "product": "DOCKER",
+            "version": "28.3.3"
+          },
+          "cpu_count": 10,
+          "created_date": "2053-07-03T09:13:57.000Z",
+          "criticality": {
+            "is_default": false,
+            "last_updated": "2053-07-03T09:13:57.000Z",
+            "score": 3
+          },
+          "dns_name": "dnsName_value",
+          "hardware": {
+            "category": "Computers / Notebook",
+            "category1": "Computers",
+            "category2": "Notebook",
+            "full_name": "Apple MacBook Pro MacBook Pro (16-inch, 2021)",
+            "manufacturer": "Apple",
+            "model": "MacBook Pro (16-inch, 2021)",
+            "product_name": "MacBook Pro",
+            "taxonomy": {
+              "category1": "Computers",
+              "category2": "Notebook",
+              "name": "Computers / Notebook"
+            }
+          },
+          "host_id": "1023155286",
+          "hw_uuid": "57040426-4bef-5845-9f3b-dd4f941eb317",
+          "interval_id": "30dbd8f6-6992-4a19-5937-1658a4d3fce8",
+          "interval_start": "2053-11-20T22:59:40.480Z",
+          "inventory": {
+            "created": "2053-07-03T09:13:57.000Z",
+            "last_updated": "2053-09-17T09:38:27.000Z",
+            "source": "QAGENT"
+          },
+          "is_container_host": true,
+          "last_boot": "2053-09-12T09:08:00.000Z",
+          "last_location": {
+            "city": "Boardman",
+            "continent": "North America",
+            "country": "United States",
+            "name": "Boardman, Oregon - United States",
+            "postal": "97818",
+            "state": "Oregon"
+          },
+          "last_logged_on_user": "lastLoggedOnUser_value",
+          "last_modified_date": "2053-09-17T09:49:18.000Z",
+          "netbios_name": "netbiosName_value",
+          "network_interface_list_data": {
+            "network_interface": [
+              {
+                "address_ip_v4": [
+                  "192.0.2.87"
+                ],
+                "dns_address": "192.0.2.87",
+                "gateway_address": "192.0.2.87",
+                "hostname": "vwmkkbpe_sfnqc",
+                "interface_name": "en0",
+                "mac_address": "6D-B0-01-CC-6E-4A"
+              }
+            ]
+          },
+          "open_port_list_data": {
+            "open_port": [
+              {
+                "detected_service": "ollama",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-09-12T07:11:00.000Z",
+                "last_updated": "2053-09-12T07:11:00.000Z",
+                "port": 49417,
+                "protocol": "TCP"
+              },
+              {
+                "detected_service": "elastic-a",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-09-12T07:11:00.000Z",
+                "last_updated": "2053-09-12T07:11:00.000Z",
+                "port": 6789,
+                "protocol": "TCP"
+              },
+              {
+                "detected_service": "spotify",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-09-12T07:11:00.000Z",
+                "last_updated": "2053-09-12T07:11:00.000Z",
+                "port": 1900,
+                "protocol": "UDP"
+              }
+            ]
+          },
+          "operating_system": {
+            "architecture": "arm64_M1",
+            "category": "Mac / Client",
+            "category1": "Mac",
+            "category2": "Client",
+            "full_name": "Apple macOS Sequoia (15.6.1)",
+            "install_date": "2053-08-23T23:12:00.000Z",
+            "market_version": "Sequoia",
+            "os_name": "macOS 15.6.1",
+            "product_name": "macOS",
+            "publisher": "Apple",
+            "release": "15.6.1",
+            "taxonomy": {
+              "category1": "Mac",
+              "category2": "Client",
+              "name": "Mac / Client"
+            },
+            "update": "15.6.1",
+            "version": "15.6"
+          },
+          "processor": {
+            "cores_per_socket": 10,
+            "description": "Apple M1 Max",
+            "multithreading_status": "DISABLED",
+            "num_cpus": 10,
+            "speed": 3200
+          },
+          "risk_score": 369.0,
+          "sensor": {
+            "activated_for_modules": [
+              "PM",
+              "VM"
+            ],
+            "last_full_scan": "2025-09-17T09:38:23.000Z",
+            "last_vm_scan_date_agent": "2053-09-17T09:38:23.000Z",
+            "last_vmscan": "2025-09-17T09:38:23.000Z"
+          },
+          "sensor_last_updated_date": "2053-09-17T09:49:18.000Z",
+          "service_list": {
+            "service": [
+              {
+                "name": "com.apple.fpsd.arcadeservice",
+                "status": "stopped"
+              },
+              {
+                "name": "com.apple.IOUserDockChannelSerial-0x100000fd9",
+                "status": "running"
+              }
+            ]
+          },
+          "software_list_data": {
+            "software": [
+              {
+                "category": "Security / Other",
+                "category1": "Security",
+                "category2": "Other",
+                "discovered_name": "Find My",
+                "discovered_version": "4.0",
+                "discovery_sources": "Cloud Agent, Cloud Agent",
+                "edition": "Unknown",
+                "full_name": "Apple Find My 1.0",
+                "id": "3349453983575593500",
+                "install_date": "2053-08-16T18:44:29.000Z",
+                "install_path": "/System/Applications/FindMy.app",
+                "is_ignored": false,
+                "last_updated": "2053-09-17T09:38:25.000Z",
+                "last_use_date": "2053-08-16T18:44:29.000Z",
+                "market_version": "1",
+                "product_name": "Find My",
+                "publisher": "Apple",
+                "software_type": "Application",
+                "update": "1.0",
+                "version": "1.0"
+              },
+              {
+                "category": "Storage / Backup and Recovery",
+                "category1": "Storage",
+                "category2": "Backup and Recovery",
+                "discovered_name": "iCloud",
+                "discovered_version": "1.0",
+                "discovery_sources": "Cloud Agent, Cloud Agent",
+                "edition": "Unknown",
+                "full_name": "Apple iCloud 1.0",
+                "id": "9033964968011558000",
+                "install_date": "2053-08-16T18:44:29.000Z",
+                "install_path": "/System/Library/CoreServices/iCloud.app",
+                "is_ignored": false,
+                "last_updated": "2053-09-17T09:38:25.000Z",
+                "last_use_date": "2053-08-16T18:44:29.000Z",
+                "market_version": "1",
+                "product_name": "iCloud",
+                "publisher": "Apple",
+                "software_type": "Application",
+                "update": "1.0",
+                "version": "1.0"
+              }
+            ]
+          },
+          "tag_list": {
+            "tag": [
+              {
+                "background_color": "0",
+                "foreground_color": "0",
+                "tag_id": "1234",
+                "tag_name": "status:running"
+              },
+              {
+                "background_color": "0",
+                "foreground_color": "0",
+                "tag_id": "2345",
+                "tag_name": "status:running:other"
+              }
+            ]
+          },
+          "time_zone": "+02:00",
+          "total_memory": 32768,
+          "user_account_list_data": {
+            "user_account": [
+              {
+                "name": "user1"
+              },
+              {
+                "name": "user2"
+              }
+            ]
+          },
+          "volume_list_data": {
+            "volume": [
+              {
+                "free": 504315904,
+                "name": "/System/Volumes/xarts",
+                "size": 510627840
+              },
+              {
+                "free": 113497677824,
+                "name": "/System/Volumes/Data",
+                "size": 959979847680
+              }
+            ]
+          }
+        }
+      },
+      "related": {
+        "hosts": [
+          "1355987018",
+          "assetName_value",
+          "67e90835-3dd6-41fa-aaa3-4753a7a879b5",
+          "dnsName_value",
+          "1023155286",
+          "netbiosName_value",
+          "vwmkkbpe_sfnqc"
+        ],
+        "ip": [
+          "192.168.222.69",
+          "192.0.2.87"
+        ],
+        "user": [
+          "lastLoggedOnUser_value"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "lastLoggedOnUser_value"
+      }
+    },
+    {
+      "@timestamp": "2053-11-20T22:59:42.480Z",
+      "cloud": {
+        "provider": "aws"
+      },
+      "device": {
+        "manufacturer": "Xen Project"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2050-05-24T10:37:04.000Z",
+        "kind": "event",
+        "original": "{\"assetId\":12345,\"assetUUID\":\"c062c9b0-6bd1-4d88-a031-d7f20f17856f\",\"hostId\":23456,\"lastModifiedDate\":\"2053-09-17T07:58:52.000Z\",\"agentId\":\"c062c9b0-6bd1-4d88-a031-d7f20f17856f\",\"createdDate\":\"2050-05-24T10:37:04.000Z\",\"sensorLastUpdatedDate\":\"2053-09-17T07:58:52.000Z\",\"assetType\":null,\"address\":\"10.196.63.21\",\"dnsName\":\"dnsName_value\",\"assetName\":\"assetName_value\",\"netbiosName\":\"netbiosName_value\",\"timeZone\":\"UTC\",\"biosDescription\":\"Xen 4.11.amazon 08/24/2034\",\"lastBoot\":\"2052-06-10T02:42:22.000Z\",\"totalMemory\":7935,\"cpuCount\":2,\"lastLoggedOnUser\":\"lastLoggedOnUser_value\",\"domainRole\":null,\"hwUUID\":\"ce4c294e-3d70-39c1-b8ef-e7bce4491717\",\"biosSerialNumber\":\"biosSerialNumber_value\",\"biosAssetTag\":\"Not Specified\",\"isContainerHost\":false,\"operatingSystem\":{\"osName\":\"Ubuntu Linux 20.04.4\",\"fullName\":\"Canonical Ubuntu Focal Fossa (20.04.4 LTS)\",\"category\":\"Linux / Unidentified\",\"category1\":\"Linux\",\"category2\":\"Unidentified\",\"productName\":\"Ubuntu\",\"publisher\":\"Canonical\",\"edition\":null,\"marketVersion\":\"Focal Fossa\",\"version\":\"20.04 LTS\",\"update\":\"20.04 LTS 20.04.4 LTS\",\"architecture\":\"x86_64\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Linux / Unidentified\",\"category1\":\"Linux\",\"category2\":\"Unidentified\"},\"productUrl\":null,\"productFamily\":null,\"installDate\":null,\"release\":\"20.04.4\",\"cpeId\":null,\"cpe\":null,\"cpeType\":null},\"hardware\":{\"fullName\":\"Ofs Glnxbdh YZL amxP\",\"category\":\"Virtualized / Virtual Machine\",\"category1\":\"Virtualized\",\"category2\":\"Virtual Machine\",\"manufacturer\":\"Xen Project\",\"productName\":\"HVM domU\",\"model\":null,\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Virtualized / Virtual Machine\",\"category1\":\"Virtualized\",\"category2\":\"Virtual Machine\"},\"productUrl\":null,\"productFamily\":null},\"userAccountListData\":{\"userAccount\":[{\"name\":\"user1\"},{\"name\":\"user2\"}]},\"openPortListData\":{\"openPort\":[{\"port\":53,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"detectedService_value_1\",\"firstFound\":\"2053-09-09T15:51:43.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":68,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"detectedService_value_2\",\"firstFound\":\"2053-09-09T15:51:43.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":22,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"detectedService_value_3\",\"firstFound\":\"2050-05-24T11:29:47.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"}]},\"volumeListData\":{\"volume\":[{\"name\":\"/snap/amazon-ssm-agent/11797\",\"free\":0,\"size\":29097984},{\"name\":\"/snap/snapd/24792\",\"free\":0,\"size\":51773440}]},\"networkInterfaceListData\":{\"networkInterface\":[{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87, 10.196.63.21\",\"addressIpV6\":null,\"macAddress\":\"\",\"interfaceName\":\"\",\"dnsAddress\":null,\"gatewayAddress\":\"\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null},{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87,10.196.63.21\",\"addressIpV6\":\"2001:db8:15e6:9235:5ab4:64ce:b456:8207\",\"macAddress\":\"36:b2:30:08:45:30\",\"interfaceName\":\"ens3\",\"dnsAddress\":\"192.0.2.87\",\"gatewayAddress\":\"192.0.2.87\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null}]},\"softwareListData\":{\"software\":[{\"id\":1350996231234171400,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Canonical Vim 8.1.2269-1 (Ubuntu Focal Fossa)\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Application Development / Development Tool\",\"category1\":\"Application Development\",\"category2\":\"Development Tool\",\"productName\":\"Vim\",\"component\":null,\"publisher\":\"Canonical\",\"edition\":\"Unknown\",\"marketVersion\":\"8\",\"version\":\"8.1\",\"update\":\"8.1.2269-1 (Ubuntu Focal Fossa)\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:39:28.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"vim\",\"discoveredVersion\":\"2:8.1.2269-1ubuntu5.22\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null},{\"id\":-2774205715073934300,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"vim-common 2:8.1.2269-1ubuntu5.22\",\"softwareType\":\"Others\",\"isIgnored\":true,\"ignoredReason\":\"Library Packages\",\"category\":\"Unknown / Unknown\",\"category1\":\"Unknown\",\"category2\":\"Unknown\",\"productName\":\"Unknown\",\"component\":null,\"publisher\":\"Unknown\",\"edition\":null,\"marketVersion\":null,\"version\":\"2:8.1.2269-1ubuntu5.22\",\"update\":\"2:8.1.2269-1ubuntu5.22\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:39:28.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"vim-common\",\"discoveredVersion\":\"2:8.1.2269-1ubuntu5.22\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null}]},\"softwareComponent\":null,\"provider\":\"AWS\",\"cloudProvider\":{\"aws\":{\"ec2\":{\"accountId\":\"1234\",\"availabilityZone\":\"us-west-2a\",\"hasAgent\":true,\"hostname\":\"vwmkkbpe_sfnqc\",\"imageId\":\"imageId_value\",\"instanceId\":\"instanceId_value\",\"instanceState\":\"RUNNING\",\"instanceType\":\"m4.large\",\"qualysScanner\":false,\"kernelId\":null,\"launchdate\":2536999692000,\"privateDNS\":\"privateDNS_value\",\"privateIpAddress\":\"10.26.137.145\",\"publicDNS\":null,\"publicIpAddress\":\"192.0.2.87\",\"region\":{\"code\":\"us-west-2\",\"name\":\"US West (Oregon)\"},\"spotInstance\":false,\"subnetId\":\"subnetId_value\",\"vpcId\":\"vpcId_value\"},\"tags\":[{\"key\":\"tags_key_1\",\"value\":\"tags_value_1\"},{\"key\":\"tags_key_2\",\"value\":\"tags_value_2\"}]},\"azure\":null,\"gcp\":null,\"oci\":null,\"ibm\":null,\"alibaba\":null},\"agent\":{\"version\":\"192.0.2.150\",\"configurationProfile\":\"configurationProfile_value\",\"activations\":[{\"key\":\"key_value\",\"status\":\"ACTIVE\"}],\"connectedFrom\":\"192.0.2.87\",\"lastActivity\":1758054146000,\"lastCheckedIn\":1758094769000,\"lastInventory\":1758054210000,\"udcManifestAssigned\":false,\"errorStatus\":false},\"sensor\":{\"activatedForModules\":[\"SCA\",\"PC\",\"VM\"],\"pendingActivationForModules\":[],\"lastVMScan\":1758094767000,\"lastComplianceScan\":1681892534000,\"lastFullScan\":1758094767000,\"lastVmScanDateScanner\":0,\"lastVmScanDateAgent\":2641707567000,\"lastPcScanDateScanner\":0,\"lastPcScanDateAgent\":2565505334000,\"firstEasmScanDate\":null,\"lastEasmScanDate\":null},\"container\":{\"product\":null,\"version\":null,\"noOfContainers\":0,\"noOfImages\":0,\"hasSensor\":null},\"inventory\":{\"source\":\"QAGENT\",\"created\":2537001424000,\"lastUpdated\":2641708576000},\"activity\":{\"source\":\"QAGENT\",\"lastScannedDate\":2641708576000},\"tagList\":{\"tag\":[{\"tagId\":1234,\"tagName\":\"env:development\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null},{\"tagId\":2345,\"tagName\":\"asset_criticality:3\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null}]},\"serviceList\":{\"service\":[{\"description\":null,\"name\":\"systemd-tmpfiles-setup-dev.service\",\"status\":\"loaded/active/exited\"},{\"description\":null,\"name\":\"systemd-journal-flush.service\",\"status\":\"loaded/active/exited\"}]},\"lastLocation\":{\"city\":\"Boardman\",\"state\":\"Oregon\",\"country\":\"United States\",\"name\":\"Boardman, Oregon - United States\",\"continent\":\"North America\",\"postal\":\"97818\"},\"criticality\":{\"score\":3,\"isDefault\":false,\"lastUpdated\":\"2051-03-07T22:18:45.000Z\"},\"businessInformation\":null,\"assignedLocation\":null,\"businessAppListData\":null,\"riskScore\":506,\"passiveSensor\":null,\"domain\":null,\"subdomain\":null,\"missingSoftware\":[],\"whois\":null,\"organizationName\":null,\"isp\":null,\"asn\":null,\"easmTags\":null,\"hostingCategory1\":null,\"customAttributes\":null,\"lparId\":null,\"processor\":{\"description\":\"Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz\",\"speed\":2300,\"numCPUs\":2,\"noOfSocket\":1,\"threadsPerCore\":2,\"coresPerSocket\":1,\"multithreadingStatus\":\"ENABLED\"}}",
+        "risk_score": 506.0,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "geo": {
+          "city_name": "Boardman",
+          "continent_name": "North America",
+          "country_name": "Boardman, Oregon - United States",
+          "postal_code": "97818"
+        },
+        "hostname": "dnsName_value",
+        "id": "12345",
+        "ip": [
+          "10.196.63.21"
+        ],
+        "name": "assetname_value",
+        "os": {
+          "full": "Canonical Ubuntu Focal Fossa (20.04.4 LTS)",
+          "name": "Ubuntu Linux 20.04.4",
+          "platform": "Ubuntu",
+          "type": "linux",
+          "version": "20.04 LTS"
+        }
+      },
+      "observer": {
+        "product": "Global AssetView",
+        "vendor": "Qualys"
+      },
+      "package": {
+        "name": [
+          "Canonical Vim 8.1.2269-1 (Ubuntu Focal Fossa)",
+          "vim-common 2:8.1.2269-1ubuntu5.22"
+        ],
+        "type": [
+          "Application",
+          "Others"
+        ],
+        "version": [
+          "8.1",
+          "2:8.1.2269-1ubuntu5.22"
+        ]
+      },
+      "qualys_gav": {
+        "asset": {
+          "activity": {
+            "last_scanned_date": "2053-09-17T07:56:16.000Z",
+            "source": "QAGENT"
+          },
+          "address": "10.196.63.21",
+          "agent": {
+            "activations": [
+              {
+                "key": "key_value",
+                "status": "ACTIVE"
+              }
+            ],
+            "configuration_profile": "configurationProfile_value",
+            "connected_from": "192.0.2.87",
+            "error_status": false,
+            "last_activity": "2025-09-16T20:22:26.000Z",
+            "last_checked_in": "2025-09-17T07:39:29.000Z",
+            "last_inventory": "2025-09-16T20:23:30.000Z",
+            "udc_manifest_assigned": false,
+            "version": "192.0.2.150"
+          },
+          "agent_id": "c062c9b0-6bd1-4d88-a031-d7f20f17856f",
+          "asset_id": "12345",
+          "asset_name": "assetName_value",
+          "asset_uuid": "c062c9b0-6bd1-4d88-a031-d7f20f17856f",
+          "bios_asset_tag": "Not Specified",
+          "bios_description": "Xen 4.11.amazon 08/24/2034",
+          "bios_serial_number": "biosSerialNumber_value",
+          "cloud_provider": {
+            "aws": {
+              "ec2": {
+                "account_id": "1234",
+                "availability_zone": "us-west-2a",
+                "has_agent": true,
+                "hostname": "vwmkkbpe_sfnqc",
+                "image_id": "imageId_value",
+                "instance_id": "instanceId_value",
+                "instance_state": "RUNNING",
+                "instance_type": "m4.large",
+                "launchdate": "2050-05-24T10:08:12.000Z",
+                "private_dns": "privateDNS_value",
+                "private_ip_address": "10.26.137.145",
+                "public_ip_address": "192.0.2.87",
+                "qualys_scanner": false,
+                "region": {
+                  "code": "us-west-2",
+                  "name": "US West (Oregon)"
+                },
+                "spot_instance": false,
+                "subnet_id": "subnetId_value",
+                "vpc_id": "vpcId_value"
+              },
+              "tags": [
+                {
+                  "key": "tags_key_1",
+                  "value": "tags_value_1"
+                },
+                {
+                  "key": "tags_key_2",
+                  "value": "tags_value_2"
+                }
+              ]
+            }
+          },
+          "container": {
+            "no_of_containers": 0,
+            "no_of_images": 0
+          },
+          "cpu_count": 2,
+          "created_date": "2050-05-24T10:37:04.000Z",
+          "criticality": {
+            "is_default": false,
+            "last_updated": "2051-03-07T22:18:45.000Z",
+            "score": 3
+          },
+          "dns_name": "dnsName_value",
+          "hardware": {
+            "category": "Virtualized / Virtual Machine",
+            "category1": "Virtualized",
+            "category2": "Virtual Machine",
+            "full_name": "Ofs Glnxbdh YZL amxP",
+            "manufacturer": "Xen Project",
+            "product_name": "HVM domU",
+            "taxonomy": {
+              "category1": "Virtualized",
+              "category2": "Virtual Machine",
+              "name": "Virtualized / Virtual Machine"
+            }
+          },
+          "host_id": "23456",
+          "hw_uuid": "ce4c294e-3d70-39c1-b8ef-e7bce4491717",
+          "interval_id": "55bee5f4-3385-4b95-aecb-abbbdff0efc2",
+          "interval_start": "2053-11-20T22:59:40.480Z",
+          "inventory": {
+            "created": "2050-05-24T10:37:04.000Z",
+            "last_updated": "2053-09-17T07:56:16.000Z",
+            "source": "QAGENT"
+          },
+          "is_container_host": false,
+          "last_boot": "2052-06-10T02:42:22.000Z",
+          "last_location": {
+            "city": "Boardman",
+            "continent": "North America",
+            "country": "United States",
+            "name": "Boardman, Oregon - United States",
+            "postal": "97818",
+            "state": "Oregon"
+          },
+          "last_logged_on_user": "lastLoggedOnUser_value",
+          "last_modified_date": "2053-09-17T07:58:52.000Z",
+          "netbios_name": "netbiosName_value",
+          "network_interface_list_data": {
+            "network_interface": [
+              {
+                "address_ip_v4": [
+                  "192.0.2.87",
+                  "10.196.63.21"
+                ],
+                "hostname": "vwmkkbpe_sfnqc"
+              },
+              {
+                "address_ip_v4": [
+                  "192.0.2.87",
+                  "10.196.63.21"
+                ],
+                "address_ip_v6": [
+                  "2001:db8:15e6:9235:5ab4:64ce:b456:8207"
+                ],
+                "dns_address": "192.0.2.87",
+                "gateway_address": "192.0.2.87",
+                "hostname": "vwmkkbpe_sfnqc",
+                "interface_name": "ens3",
+                "mac_address": "36-B2-30-08-45-30"
+              }
+            ]
+          },
+          "open_port_list_data": {
+            "open_port": [
+              {
+                "detected_service": "detectedService_value_1",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-09-09T15:51:43.000Z",
+                "last_updated": "2053-09-09T15:51:43.000Z",
+                "port": 53,
+                "protocol": "UDP"
+              },
+              {
+                "detected_service": "detectedService_value_2",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-09-09T15:51:43.000Z",
+                "last_updated": "2053-09-09T15:51:43.000Z",
+                "port": 68,
+                "protocol": "UDP"
+              },
+              {
+                "detected_service": "detectedService_value_3",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2050-05-24T11:29:47.000Z",
+                "last_updated": "2053-09-09T15:51:43.000Z",
+                "port": 22,
+                "protocol": "TCP"
+              }
+            ]
+          },
+          "operating_system": {
+            "architecture": "x86_64",
+            "category": "Linux / Unidentified",
+            "category1": "Linux",
+            "category2": "Unidentified",
+            "full_name": "Canonical Ubuntu Focal Fossa (20.04.4 LTS)",
+            "market_version": "Focal Fossa",
+            "os_name": "Ubuntu Linux 20.04.4",
+            "product_name": "Ubuntu",
+            "publisher": "Canonical",
+            "release": "20.04.4",
+            "taxonomy": {
+              "category1": "Linux",
+              "category2": "Unidentified",
+              "name": "Linux / Unidentified"
+            },
+            "update": "20.04 LTS 20.04.4 LTS",
+            "version": "20.04 LTS"
+          },
+          "processor": {
+            "cores_per_socket": 1,
+            "description": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+            "multithreading_status": "ENABLED",
+            "no_of_socket": 1,
+            "num_cpus": 2,
+            "speed": 2300,
+            "threads_per_core": 2
+          },
+          "provider": "AWS",
+          "risk_score": 506.0,
+          "sensor": {
+            "activated_for_modules": [
+              "SCA",
+              "PC",
+              "VM"
+            ],
+            "last_compliance_scan": "2023-04-19T08:22:14.000Z",
+            "last_full_scan": "2025-09-17T07:39:27.000Z",
+            "last_pc_scan_date_agent": "2051-04-19T08:22:14.000Z",
+            "last_vm_scan_date_agent": "2053-09-17T07:39:27.000Z",
+            "last_vmscan": "2025-09-17T07:39:27.000Z"
+          },
+          "sensor_last_updated_date": "2053-09-17T07:58:52.000Z",
+          "service_list": {
+            "service": [
+              {
+                "name": "systemd-tmpfiles-setup-dev.service",
+                "status": "loaded/active/exited"
+              },
+              {
+                "name": "systemd-journal-flush.service",
+                "status": "loaded/active/exited"
+              }
+            ]
+          },
+          "software_list_data": {
+            "software": [
+              {
+                "category": "Application Development / Development Tool",
+                "category1": "Application Development",
+                "category2": "Development Tool",
+                "discovered_name": "vim",
+                "discovered_version": "2:8.1.2269-1ubuntu5.22",
+                "discovery_sources": "Cloud Agent, Cloud Agent",
+                "edition": "Unknown",
+                "full_name": "Canonical Vim 8.1.2269-1 (Ubuntu Focal Fossa)",
+                "id": "1350996231234171400",
+                "is_ignored": false,
+                "last_updated": "2053-09-17T07:39:28.000Z",
+                "market_version": "8",
+                "product_name": "Vim",
+                "publisher": "Canonical",
+                "software_type": "Application",
+                "update": "8.1.2269-1 (Ubuntu Focal Fossa)",
+                "version": "8.1"
+              },
+              {
+                "category": "Unknown / Unknown",
+                "category1": "Unknown",
+                "category2": "Unknown",
+                "discovered_name": "vim-common",
+                "discovered_version": "2:8.1.2269-1ubuntu5.22",
+                "discovery_sources": "Cloud Agent, Cloud Agent",
+                "full_name": "vim-common 2:8.1.2269-1ubuntu5.22",
+                "id": "-2774205715073934300",
+                "ignored_reason": "Library Packages",
+                "is_ignored": true,
+                "last_updated": "2053-09-17T07:39:28.000Z",
+                "product_name": "Unknown",
+                "publisher": "Unknown",
+                "software_type": "Others",
+                "update": "2:8.1.2269-1ubuntu5.22",
+                "version": "2:8.1.2269-1ubuntu5.22"
+              }
+            ]
+          },
+          "tag_list": {
+            "tag": [
+              {
+                "background_color": "0",
+                "foreground_color": "0",
+                "tag_id": "1234",
+                "tag_name": "env:development"
+              },
+              {
+                "background_color": "0",
+                "foreground_color": "0",
+                "tag_id": "2345",
+                "tag_name": "asset_criticality:3"
+              }
+            ]
+          },
+          "time_zone": "UTC",
+          "total_memory": 7935,
+          "user_account_list_data": {
+            "user_account": [
+              {
+                "name": "user1"
+              },
+              {
+                "name": "user2"
+              }
+            ]
+          },
+          "volume_list_data": {
+            "volume": [
+              {
+                "free": 0,
+                "name": "/snap/amazon-ssm-agent/11797",
+                "size": 29097984
+              },
+              {
+                "free": 0,
+                "name": "/snap/snapd/24792",
+                "size": 51773440
+              }
+            ]
+          }
+        }
+      },
+      "related": {
+        "hosts": [
+          "12345",
+          "assetName_value",
+          "c062c9b0-6bd1-4d88-a031-d7f20f17856f",
+          "dnsName_value",
+          "23456",
+          "netbiosName_value",
+          "vwmkkbpe_sfnqc"
+        ],
+        "ip": [
+          "10.196.63.21",
+          "192.0.2.87",
+          "2001:db8:15e6:9235:5ab4:64ce:b456:8207"
+        ],
+        "user": [
+          "lastLoggedOnUser_value"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "lastLoggedOnUser_value"
+      }
+    },
+    {
+      "@timestamp": "2053-11-20T22:59:42.480Z",
+      "device": {
+        "manufacturer": "Apple",
+        "model": {
+          "name": "MacBook Pro (16-inch, 2021)"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-05-03T09:13:57.000Z",
+        "kind": "event",
+        "original": "{\"assetId\":9055956448,\"assetUUID\":\"67e90835-3dd6-41fa-aaa3-4753a7a879b5\",\"hostId\":1023987686,\"lastModifiedDate\":\"2053-08-17T09:49:18.000Z\",\"agentId\":\"67e90835-3dd6-41fa-aaa3-4753a7a879b5\",\"createdDate\":\"2053-05-03T09:13:57.000Z\",\"sensorLastUpdatedDate\":\"2053-08-17T09:49:18.000Z\",\"assetType\":null,\"address\":\"192.168.222.69\",\"dnsName\":\"dnsName_value\",\"assetName\":\"assetName_value\",\"netbiosName\":\"netbiosName_value\",\"timeZone\":\"+02:00\",\"biosDescription\":\"MacBookPro18,2\",\"lastBoot\":\"2053-09-12T09:08:00.000Z\",\"totalMemory\":32768,\"cpuCount\":10,\"lastLoggedOnUser\":\"lastLoggedOnUser_value\",\"domainRole\":null,\"hwUUID\":\"57040426-4bef-5845-9f3b-dd4f941eb317\",\"biosSerialNumber\":\"biosSerialNumber_value\",\"biosAssetTag\":\"\",\"isContainerHost\":true,\"operatingSystem\":{\"osName\":\"macOS 15.6.1\",\"fullName\":\"Apple macOS Sequoia (15.6.1)\",\"category\":\"Mac / Client\",\"category1\":\"Mac\",\"category2\":\"Client\",\"productName\":\"macOS\",\"publisher\":\"Apple\",\"edition\":null,\"marketVersion\":\"Sequoia\",\"version\":\"15.6\",\"update\":\"15.6.1\",\"architecture\":\"arm64_M1\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Mac / Client\",\"category1\":\"Mac\",\"category2\":\"Client\"},\"productUrl\":null,\"productFamily\":null,\"installDate\":\"2053-08-23T23:12:00.000Z\",\"release\":\"15.6.1\",\"cpeId\":null,\"cpe\":null,\"cpeType\":null},\"hardware\":{\"fullName\":\"Apple MacBook Pro MacBook Pro (16-inch, 2021)\",\"category\":\"Computers / Notebook\",\"category1\":\"Computers\",\"category2\":\"Notebook\",\"manufacturer\":\"Apple\",\"productName\":\"MacBook Pro\",\"model\":\"MacBook Pro (16-inch, 2021)\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Computers / Notebook\",\"category1\":\"Computers\",\"category2\":\"Notebook\"},\"productUrl\":null,\"productFamily\":null},\"userAccountListData\":{\"userAccount\":[{\"name\":\"user1\"},{\"name\":\"user2\"}]},\"openPortListData\":{\"openPort\":[{\"port\":49417,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"ollama\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":6789,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"elastic-a\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":1900,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"spotify\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"}]},\"volumeListData\":{\"volume\":[{\"name\":\"/System/Volumes/xarts\",\"free\":504315904,\"size\":510627840},{\"name\":\"/System/Volumes/Data\",\"free\":113497677824,\"size\":959979847680}]},\"networkInterfaceListData\":{\"networkInterface\":[{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87\",\"addressIpV6\":null,\"macAddress\":\"6d:b0:01:cc:6e:4a\",\"interfaceName\":\"en0\",\"dnsAddress\":\"192.0.2.87\",\"gatewayAddress\":\"192.0.2.87\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null}]},\"softwareListData\":{\"software\":[{\"id\":3349453983575593500,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Apple Find My 1.0\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Security / Other\",\"category1\":\"Security\",\"category2\":\"Other\",\"productName\":\"Find My\",\"component\":null,\"publisher\":\"Apple\",\"edition\":\"Unknown\",\"marketVersion\":\"1\",\"version\":\"1.0\",\"update\":\"1.0\",\"architecture\":null,\"installDate\":\"2053-08-16T18:44:29.000Z\",\"installPath\":\"/System/Applications/FindMy.app\",\"lastUpdated\":\"2053-09-17T09:38:25.000Z\",\"lastUseDate\":\"2053-08-16T18:44:29.000Z\",\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"Find My\",\"discoveredVersion\":\"4.0\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null},{\"id\":9033964968011558000,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Apple iCloud 1.0\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Storage / Backup and Recovery\",\"category1\":\"Storage\",\"category2\":\"Backup and Recovery\",\"productName\":\"iCloud\",\"component\":null,\"publisher\":\"Apple\",\"edition\":\"Unknown\",\"marketVersion\":\"1\",\"version\":\"1.0\",\"update\":\"1.0\",\"architecture\":null,\"installDate\":\"2053-08-16T18:44:29.000Z\",\"installPath\":\"/System/Library/CoreServices/iCloud.app\",\"lastUpdated\":\"2053-09-17T09:38:25.000Z\",\"lastUseDate\":\"2053-08-16T18:44:29.000Z\",\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"iCloud\",\"discoveredVersion\":\"1.0\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null}]},\"softwareComponent\":null,\"provider\":null,\"cloudProvider\":null,\"agent\":{\"version\":\"192.0.2.43\",\"configurationProfile\":\"configurationProfile_value\",\"activations\":[{\"key\":\"key_value\",\"status\":\"ACTIVE\"}],\"connectedFrom\":\"192.0.2.87\",\"lastActivity\":1758095990000,\"lastCheckedIn\":1758101907000,\"lastInventory\":1758096048000,\"udcManifestAssigned\":false,\"errorStatus\":false},\"sensor\":{\"activatedForModules\":[\"PM\",\"VM\"],\"pendingActivationForModules\":[],\"lastVMScan\":1758101903000,\"lastComplianceScan\":0,\"lastFullScan\":1758101903000,\"lastVmScanDateScanner\":0,\"lastVmScanDateAgent\":2641714703000,\"lastPcScanDateScanner\":0,\"lastPcScanDateAgent\":0,\"firstEasmScanDate\":null,\"lastEasmScanDate\":null},\"container\":{\"product\":\"DOCKER\",\"version\":\"28.3.3\",\"noOfContainers\":0,\"noOfImages\":0,\"hasSensor\":false},\"inventory\":{\"source\":\"QAGENT\",\"created\":2635146837000,\"lastUpdated\":2641714707000},\"activity\":{\"source\":\"QAGENT\",\"lastScannedDate\":2641714707000},\"tagList\":{\"tag\":[{\"tagId\":1234,\"tagName\":\"status:running\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null},{\"tagId\":2345,\"tagName\":\"status:running:other\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null}]},\"serviceList\":{\"service\":[{\"description\":null,\"name\":\"com.apple.fpsd.arcadeservice\",\"status\":\"stopped\"},{\"description\":null,\"name\":\"com.apple.IOUserDockChannelSerial-0x100000fd9\",\"status\":\"running\"}]},\"lastLocation\":{\"city\":\"Boardman\",\"state\":\"Oregon\",\"country\":\"United States\",\"name\":\"Boardman, Oregon - United States\",\"continent\":\"North America\",\"postal\":\"97818\"},\"criticality\":{\"score\":3,\"isDefault\":false,\"lastUpdated\":\"2053-07-03T09:13:57.000Z\"},\"businessInformation\":null,\"assignedLocation\":null,\"businessAppListData\":null,\"riskScore\":369,\"passiveSensor\":null,\"domain\":null,\"subdomain\":null,\"missingSoftware\":[],\"whois\":null,\"organizationName\":null,\"isp\":null,\"asn\":null,\"easmTags\":null,\"hostingCategory1\":null,\"customAttributes\":null,\"lparId\":null,\"processor\":{\"description\":\"Apple M1 Max\",\"speed\":3200,\"numCPUs\":10,\"noOfSocket\":null,\"threadsPerCore\":null,\"coresPerSocket\":10,\"multithreadingStatus\":\"DISABLED\"}}",
+        "risk_score": 369.0,
+        "timezone": "+02:00",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "arm64_M1",
+        "geo": {
+          "city_name": "Boardman",
+          "continent_name": "North America",
+          "country_name": "Boardman, Oregon - United States",
+          "postal_code": "97818"
+        },
+        "hostname": "dnsName_value",
+        "id": "9055956448",
+        "ip": [
+          "192.168.222.69"
+        ],
+        "name": "assetname_value",
+        "os": {
+          "full": "Apple macOS Sequoia (15.6.1)",
+          "name": "macOS 15.6.1",
+          "platform": "macOS",
+          "version": "15.6"
+        }
+      },
+      "observer": {
+        "product": "Global AssetView",
+        "vendor": "Qualys"
+      },
+      "package": {
+        "installed": [
+          "2053-08-16T18:44:29.000Z"
+        ],
+        "name": [
+          "Apple Find My 1.0",
+          "Apple iCloud 1.0"
+        ],
+        "path": [
+          "/System/Applications/FindMy.app",
+          "/System/Library/CoreServices/iCloud.app"
+        ],
+        "type": [
+          "Application"
+        ],
+        "version": [
+          "1.0"
+        ]
+      },
+      "qualys_gav": {
+        "asset": {
+          "activity": {
+            "last_scanned_date": "2053-09-17T09:38:27.000Z",
+            "source": "QAGENT"
+          },
+          "address": "192.168.222.69",
+          "agent": {
+            "activations": [
+              {
+                "key": "key_value",
+                "status": "ACTIVE"
+              }
+            ],
+            "configuration_profile": "configurationProfile_value",
+            "connected_from": "192.0.2.87",
+            "error_status": false,
+            "last_activity": "2025-09-17T07:59:50.000Z",
+            "last_checked_in": "2025-09-17T09:38:27.000Z",
+            "last_inventory": "2025-09-17T08:00:48.000Z",
+            "udc_manifest_assigned": false,
+            "version": "192.0.2.43"
+          },
+          "agent_id": "67e90835-3dd6-41fa-aaa3-4753a7a879b5",
+          "asset_id": "9055956448",
+          "asset_name": "assetName_value",
+          "asset_uuid": "67e90835-3dd6-41fa-aaa3-4753a7a879b5",
+          "bios_description": "MacBookPro18,2",
+          "bios_serial_number": "biosSerialNumber_value",
+          "container": {
+            "has_sensor": "false",
+            "no_of_containers": 0,
+            "no_of_images": 0,
+            "product": "DOCKER",
+            "version": "28.3.3"
+          },
+          "cpu_count": 10,
+          "created_date": "2053-05-03T09:13:57.000Z",
+          "criticality": {
+            "is_default": false,
+            "last_updated": "2053-07-03T09:13:57.000Z",
+            "score": 3
+          },
+          "dns_name": "dnsName_value",
+          "hardware": {
+            "category": "Computers / Notebook",
+            "category1": "Computers",
+            "category2": "Notebook",
+            "full_name": "Apple MacBook Pro MacBook Pro (16-inch, 2021)",
+            "manufacturer": "Apple",
+            "model": "MacBook Pro (16-inch, 2021)",
+            "product_name": "MacBook Pro",
+            "taxonomy": {
+              "category1": "Computers",
+              "category2": "Notebook",
+              "name": "Computers / Notebook"
+            }
+          },
+          "host_id": "1023987686",
+          "hw_uuid": "57040426-4bef-5845-9f3b-dd4f941eb317",
+          "interval_id": "05bcc7b3-8475-4c52-8974-bdeac8e6bfa1",
+          "interval_start": "2053-11-20T22:59:40.480Z",
+          "inventory": {
+            "created": "2053-07-03T09:13:57.000Z",
+            "last_updated": "2053-09-17T09:38:27.000Z",
+            "source": "QAGENT"
+          },
+          "is_container_host": true,
+          "last_boot": "2053-09-12T09:08:00.000Z",
+          "last_location": {
+            "city": "Boardman",
+            "continent": "North America",
+            "country": "United States",
+            "name": "Boardman, Oregon - United States",
+            "postal": "97818",
+            "state": "Oregon"
+          },
+          "last_logged_on_user": "lastLoggedOnUser_value",
+          "last_modified_date": "2053-08-17T09:49:18.000Z",
+          "netbios_name": "netbiosName_value",
+          "network_interface_list_data": {
+            "network_interface": [
+              {
+                "address_ip_v4": [
+                  "192.0.2.87"
+                ],
+                "dns_address": "192.0.2.87",
+                "gateway_address": "192.0.2.87",
+                "hostname": "vwmkkbpe_sfnqc",
+                "interface_name": "en0",
+                "mac_address": "6D-B0-01-CC-6E-4A"
+              }
+            ]
+          },
+          "open_port_list_data": {
+            "open_port": [
+              {
+                "detected_service": "ollama",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-09-12T07:11:00.000Z",
+                "last_updated": "2053-09-12T07:11:00.000Z",
+                "port": 49417,
+                "protocol": "TCP"
+              },
+              {
+                "detected_service": "elastic-a",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-09-12T07:11:00.000Z",
+                "last_updated": "2053-09-12T07:11:00.000Z",
+                "port": 6789,
+                "protocol": "TCP"
+              },
+              {
+                "detected_service": "spotify",
+                "discovery_sources": "Cloud Agent",
+                "first_found": "2053-09-12T07:11:00.000Z",
+                "last_updated": "2053-09-12T07:11:00.000Z",
+                "port": 1900,
+                "protocol": "UDP"
+              }
+            ]
+          },
+          "operating_system": {
+            "architecture": "arm64_M1",
+            "category": "Mac / Client",
+            "category1": "Mac",
+            "category2": "Client",
+            "full_name": "Apple macOS Sequoia (15.6.1)",
+            "install_date": "2053-08-23T23:12:00.000Z",
+            "market_version": "Sequoia",
+            "os_name": "macOS 15.6.1",
+            "product_name": "macOS",
+            "publisher": "Apple",
+            "release": "15.6.1",
+            "taxonomy": {
+              "category1": "Mac",
+              "category2": "Client",
+              "name": "Mac / Client"
+            },
+            "update": "15.6.1",
+            "version": "15.6"
+          },
+          "processor": {
+            "cores_per_socket": 10,
+            "description": "Apple M1 Max",
+            "multithreading_status": "DISABLED",
+            "num_cpus": 10,
+            "speed": 3200
+          },
+          "risk_score": 369.0,
+          "sensor": {
+            "activated_for_modules": [
+              "PM",
+              "VM"
+            ],
+            "last_full_scan": "2025-09-17T09:38:23.000Z",
+            "last_vm_scan_date_agent": "2053-09-17T09:38:23.000Z",
+            "last_vmscan": "2025-09-17T09:38:23.000Z"
+          },
+          "sensor_last_updated_date": "2053-08-17T09:49:18.000Z",
+          "service_list": {
+            "service": [
+              {
+                "name": "com.apple.fpsd.arcadeservice",
+                "status": "stopped"
+              },
+              {
+                "name": "com.apple.IOUserDockChannelSerial-0x100000fd9",
+                "status": "running"
+              }
+            ]
+          },
+          "software_list_data": {
+            "software": [
+              {
+                "category": "Security / Other",
+                "category1": "Security",
+                "category2": "Other",
+                "discovered_name": "Find My",
+                "discovered_version": "4.0",
+                "discovery_sources": "Cloud Agent, Cloud Agent",
+                "edition": "Unknown",
+                "full_name": "Apple Find My 1.0",
+                "id": "3349453983575593500",
+                "install_date": "2053-08-16T18:44:29.000Z",
+                "install_path": "/System/Applications/FindMy.app",
+                "is_ignored": false,
+                "last_updated": "2053-09-17T09:38:25.000Z",
+                "last_use_date": "2053-08-16T18:44:29.000Z",
+                "market_version": "1",
+                "product_name": "Find My",
+                "publisher": "Apple",
+                "software_type": "Application",
+                "update": "1.0",
+                "version": "1.0"
+              },
+              {
+                "category": "Storage / Backup and Recovery",
+                "category1": "Storage",
+                "category2": "Backup and Recovery",
+                "discovered_name": "iCloud",
+                "discovered_version": "1.0",
+                "discovery_sources": "Cloud Agent, Cloud Agent",
+                "edition": "Unknown",
+                "full_name": "Apple iCloud 1.0",
+                "id": "9033964968011558000",
+                "install_date": "2053-08-16T18:44:29.000Z",
+                "install_path": "/System/Library/CoreServices/iCloud.app",
+                "is_ignored": false,
+                "last_updated": "2053-09-17T09:38:25.000Z",
+                "last_use_date": "2053-08-16T18:44:29.000Z",
+                "market_version": "1",
+                "product_name": "iCloud",
+                "publisher": "Apple",
+                "software_type": "Application",
+                "update": "1.0",
+                "version": "1.0"
+              }
+            ]
+          },
+          "tag_list": {
+            "tag": [
+              {
+                "background_color": "0",
+                "foreground_color": "0",
+                "tag_id": "1234",
+                "tag_name": "status:running"
+              },
+              {
+                "background_color": "0",
+                "foreground_color": "0",
+                "tag_id": "2345",
+                "tag_name": "status:running:other"
+              }
+            ]
+          },
+          "time_zone": "+02:00",
+          "total_memory": 32768,
+          "user_account_list_data": {
+            "user_account": [
+              {
+                "name": "user1"
+              },
+              {
+                "name": "user2"
+              }
+            ]
+          },
+          "volume_list_data": {
+            "volume": [
+              {
+                "free": 504315904,
+                "name": "/System/Volumes/xarts",
+                "size": 510627840
+              },
+              {
+                "free": 113497677824,
+                "name": "/System/Volumes/Data",
+                "size": 959979847680
+              }
+            ]
+          }
+        }
+      },
+      "related": {
+        "hosts": [
+          "9055956448",
+          "assetName_value",
+          "67e90835-3dd6-41fa-aaa3-4753a7a879b5",
+          "dnsName_value",
+          "1023987686",
+          "netbiosName_value",
+          "vwmkkbpe_sfnqc"
+        ],
+        "ip": [
+          "192.168.222.69",
+          "192.0.2.87"
+        ],
+        "user": [
+          "lastLoggedOnUser_value"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "lastLoggedOnUser_value"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-11-20T22:57:42.484Z",
+      "interval_id": "15fda9b2-3459-4b94-aa61-8b2fe6e0eaf3",
+      "interval_start": "2053-11-20T22:57:38.484Z",
+      "message": "{\"assetId\":12345,\"assetUUID\":\"c062c9b0-6bd1-4d88-a031-d7f20f17856f\",\"hostId\":23456,\"lastModifiedDate\":\"2053-09-17T07:58:52.000Z\",\"agentId\":\"c062c9b0-6bd1-4d88-a031-d7f20f17856f\",\"createdDate\":\"2050-05-24T10:37:04.000Z\",\"sensorLastUpdatedDate\":\"2053-09-17T07:58:52.000Z\",\"assetType\":null,\"address\":\"10.196.63.21\",\"dnsName\":\"dnsName_value\",\"assetName\":\"assetName_value\",\"netbiosName\":\"netbiosName_value\",\"timeZone\":\"UTC\",\"biosDescription\":\"Xen 4.11.amazon 08/24/2034\",\"lastBoot\":\"2052-06-10T02:42:22.000Z\",\"totalMemory\":7935,\"cpuCount\":2,\"lastLoggedOnUser\":\"lastLoggedOnUser_value\",\"domainRole\":null,\"hwUUID\":\"ce4c294e-3d70-39c1-b8ef-e7bce4491717\",\"biosSerialNumber\":\"biosSerialNumber_value\",\"biosAssetTag\":\"Not Specified\",\"isContainerHost\":false,\"operatingSystem\":{\"osName\":\"Ubuntu Linux 20.04.4\",\"fullName\":\"Canonical Ubuntu Focal Fossa (20.04.4 LTS)\",\"category\":\"Linux / Unidentified\",\"category1\":\"Linux\",\"category2\":\"Unidentified\",\"productName\":\"Ubuntu\",\"publisher\":\"Canonical\",\"edition\":null,\"marketVersion\":\"Focal Fossa\",\"version\":\"20.04 LTS\",\"update\":\"20.04 LTS 20.04.4 LTS\",\"architecture\":\"x86_64\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Linux / Unidentified\",\"category1\":\"Linux\",\"category2\":\"Unidentified\"},\"productUrl\":null,\"productFamily\":null,\"installDate\":null,\"release\":\"20.04.4\",\"cpeId\":null,\"cpe\":null,\"cpeType\":null},\"hardware\":{\"fullName\":\"Ofs Glnxbdh YZL amxP\",\"category\":\"Virtualized / Virtual Machine\",\"category1\":\"Virtualized\",\"category2\":\"Virtual Machine\",\"manufacturer\":\"Xen Project\",\"productName\":\"HVM domU\",\"model\":null,\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Virtualized / Virtual Machine\",\"category1\":\"Virtualized\",\"category2\":\"Virtual Machine\"},\"productUrl\":null,\"productFamily\":null},\"userAccountListData\":{\"userAccount\":[{\"name\":\"user1\"},{\"name\":\"user2\"}]},\"openPortListData\":{\"openPort\":[{\"port\":53,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"detectedService_value_1\",\"firstFound\":\"2053-09-09T15:51:43.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":68,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"detectedService_value_2\",\"firstFound\":\"2053-09-09T15:51:43.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":22,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"detectedService_value_3\",\"firstFound\":\"2050-05-24T11:29:47.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"}]},\"volumeListData\":{\"volume\":[{\"name\":\"/snap/amazon-ssm-agent/11797\",\"free\":0,\"size\":29097984},{\"name\":\"/snap/snapd/24792\",\"free\":0,\"size\":51773440}]},\"networkInterfaceListData\":{\"networkInterface\":[{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87\",\"addressIpV6\":null,\"macAddress\":\"\",\"interfaceName\":\"\",\"dnsAddress\":null,\"gatewayAddress\":\"\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null},{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87\",\"addressIpV6\":\"2001:db8:15e6:9235:5ab4:64ce:b456:8207\",\"macAddress\":\"36:b2:30:08:45:30\",\"interfaceName\":\"ens3\",\"dnsAddress\":\"192.0.2.87\",\"gatewayAddress\":\"192.0.2.87\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null}]},\"softwareListData\":{\"software\":[{\"id\":1350996231234171400,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Canonical Vim 8.1.2269-1 (Ubuntu Focal Fossa)\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Application Development / Development Tool\",\"category1\":\"Application Development\",\"category2\":\"Development Tool\",\"productName\":\"Vim\",\"component\":null,\"publisher\":\"Canonical\",\"edition\":\"Unknown\",\"marketVersion\":\"8\",\"version\":\"8.1\",\"update\":\"8.1.2269-1 (Ubuntu Focal Fossa)\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:39:28.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"vim\",\"discoveredVersion\":\"2:8.1.2269-1ubuntu5.22\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null},{\"id\":-2774205715073934300,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"vim-common 2:8.1.2269-1ubuntu5.22\",\"softwareType\":\"Others\",\"isIgnored\":true,\"ignoredReason\":\"Library Packages\",\"category\":\"Unknown / Unknown\",\"category1\":\"Unknown\",\"category2\":\"Unknown\",\"productName\":\"Unknown\",\"component\":null,\"publisher\":\"Unknown\",\"edition\":null,\"marketVersion\":null,\"version\":\"2:8.1.2269-1ubuntu5.22\",\"update\":\"2:8.1.2269-1ubuntu5.22\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:39:28.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"vim-common\",\"discoveredVersion\":\"2:8.1.2269-1ubuntu5.22\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null}]},\"softwareComponent\":null,\"provider\":\"AWS\",\"cloudProvider\":{\"aws\":{\"ec2\":{\"accountId\":\"1234\",\"availabilityZone\":\"us-west-2a\",\"hasAgent\":true,\"hostname\":\"vwmkkbpe_sfnqc\",\"imageId\":\"imageId_value\",\"instanceId\":\"instanceId_value\",\"instanceState\":\"RUNNING\",\"instanceType\":\"m4.large\",\"qualysScanner\":false,\"kernelId\":null,\"launchdate\":2536999692000,\"privateDNS\":\"privateDNS_value\",\"privateIpAddress\":\"10.26.137.145\",\"publicDNS\":null,\"publicIpAddress\":\"192.0.2.87\",\"region\":{\"code\":\"us-west-2\",\"name\":\"US West (Oregon)\"},\"spotInstance\":false,\"subnetId\":\"subnetId_value\",\"vpcId\":\"vpcId_value\"},\"tags\":[{\"key\":\"tags_key_1\",\"value\":\"tags_value_1\"},{\"key\":\"tags_key_2\",\"value\":\"tags_value_2\"}]},\"azure\":null,\"gcp\":null,\"oci\":null,\"ibm\":null,\"alibaba\":null},\"agent\":{\"version\":\"192.0.2.150\",\"configurationProfile\":\"configurationProfile_value\",\"activations\":[{\"key\":\"key_value\",\"status\":\"ACTIVE\"}],\"connectedFrom\":\"192.0.2.87\",\"lastActivity\":1758054146000,\"lastCheckedIn\":1758094769000,\"lastInventory\":1758054210000,\"udcManifestAssigned\":false,\"errorStatus\":false},\"sensor\":{\"activatedForModules\":[\"SCA\",\"PC\",\"VM\"],\"pendingActivationForModules\":[],\"lastVMScan\":1758094767000,\"lastComplianceScan\":1681892534000,\"lastFullScan\":1758094767000,\"lastVmScanDateScanner\":0,\"lastVmScanDateAgent\":2641707567000,\"lastPcScanDateScanner\":0,\"lastPcScanDateAgent\":2565505334000,\"firstEasmScanDate\":null,\"lastEasmScanDate\":null},\"container\":{\"product\":null,\"version\":null,\"noOfContainers\":0,\"noOfImages\":0,\"hasSensor\":null},\"inventory\":{\"source\":\"QAGENT\",\"created\":2537001424000,\"lastUpdated\":2641708576000},\"activity\":{\"source\":\"QAGENT\",\"lastScannedDate\":2641708576000},\"tagList\":{\"tag\":[{\"tagId\":1234,\"tagName\":\"env:development\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null},{\"tagId\":2345,\"tagName\":\"asset_criticality:3\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null}]},\"serviceList\":{\"service\":[{\"description\":null,\"name\":\"systemd-tmpfiles-setup-dev.service\",\"status\":\"loaded/active/exited\"},{\"description\":null,\"name\":\"systemd-journal-flush.service\",\"status\":\"loaded/active/exited\"}]},\"lastLocation\":{\"city\":\"Boardman\",\"state\":\"Oregon\",\"country\":\"United States\",\"name\":\"Boardman, Oregon - United States\",\"continent\":\"North America\",\"postal\":\"97818\"},\"criticality\":{\"score\":3,\"isDefault\":false,\"lastUpdated\":\"2051-03-07T22:18:45.000Z\"},\"businessInformation\":null,\"assignedLocation\":null,\"businessAppListData\":null,\"riskScore\":506,\"passiveSensor\":null,\"domain\":null,\"subdomain\":null,\"missingSoftware\":[],\"whois\":null,\"organizationName\":null,\"isp\":null,\"asn\":null,\"easmTags\":null,\"hostingCategory1\":null,\"customAttributes\":null,\"lparId\":null,\"processor\":{\"description\":\"Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz\",\"speed\":2300,\"numCPUs\":2,\"noOfSocket\":1,\"threadsPerCore\":2,\"coresPerSocket\":1,\"multithreadingStatus\":\"ENABLED\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-11-20T22:57:42.484Z",
+      "interval_id": "14fab8a6-8149-1588-5283-0d3bc2a2cfe4",
+      "interval_start": "2053-11-20T22:57:38.484Z",
+      "message": "{\"assetId\":688003347,\"assetUUID\":\"64926498-3ee3-4591-82ba-2b5199c96cb9\",\"hostId\":547254569,\"lastModifiedDate\":\"2053-09-17T08:40:35.000Z\",\"agentId\":\"64926498-3ee3-4591-82ba-2b5199c96cb9\",\"createdDate\":\"2051-02-15T20:32:36.000Z\",\"sensorLastUpdatedDate\":\"2053-09-17T08:40:35.000Z\",\"assetType\":null,\"address\":\"10.122.23.140\",\"dnsName\":\"dnsName_value\",\"assetName\":\"assetName_value\",\"netbiosName\":\"netbiosName_value\",\"timeZone\":\"UTC\",\"biosDescription\":\"Google Google 09/13/2052\",\"lastBoot\":\"2053-05-24T04:01:12.000Z\",\"totalMemory\":16008,\"cpuCount\":4,\"lastLoggedOnUser\":\"lastLoggedOnUser_value\",\"domainRole\":null,\"hwUUID\":\"b14c4353-2946-b499-57aa-fac46c19238a\",\"biosSerialNumber\":\"GoogleCloud-D77D64706209A96212DDBCA99D52231D\",\"biosAssetTag\":\"Not Specified\",\"isContainerHost\":true,\"operatingSystem\":{\"osName\":\"Debian Linux 11.11\",\"fullName\":\"Debian Project Debian Bullseye (11.11)\",\"category\":\"Linux / Server\",\"category1\":\"Linux\",\"category2\":\"Server\",\"productName\":\"Debian\",\"publisher\":\"Debian Project\",\"edition\":null,\"marketVersion\":\"Bullseye\",\"version\":\"11.11\",\"update\":\"11.11\",\"architecture\":\"x86_64\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Linux / Server\",\"category1\":\"Linux\",\"category2\":\"Server\"},\"productUrl\":null,\"productFamily\":null,\"installDate\":null,\"release\":\"11.11\",\"cpeId\":null,\"cpe\":null,\"cpeType\":null},\"hardware\":{\"fullName\":\"Mqttic Drmmkjf Aszjkd\",\"category\":\"Virtualized / Cloud Instance\",\"category1\":\"Virtualized\",\"category2\":\"Cloud Instance\",\"manufacturer\":\"Google\",\"productName\":\"Compute Engine\",\"model\":null,\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Virtualized / Cloud Instance\",\"category1\":\"Virtualized\",\"category2\":\"Cloud Instance\"},\"productUrl\":null,\"productFamily\":null},\"userAccountListData\":{\"userAccount\":[{\"name\":\"root\"}]},\"openPortListData\":{\"openPort\":[{\"port\":22,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"sshd\",\"firstFound\":\"2051-04-07T04:07:38.000Z\",\"lastUpdated\":\"2053-09-09T15:52:49.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":68,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"dhclient\",\"firstFound\":\"2053-02-27T14:58:06.000Z\",\"lastUpdated\":\"2053-09-09T15:52:49.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":323,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"chronyd\",\"firstFound\":\"2053-02-27T14:58:06.000Z\",\"lastUpdated\":\"2053-09-09T15:52:49.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"}]},\"volumeListData\":{\"volume\":[{\"name\":\"/dev\",\"free\":8381861888,\"size\":8381861888},{\"name\":\"/boot/efi\",\"free\":118566912,\"size\":129751040}]},\"networkInterfaceListData\":{\"networkInterface\":[{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87\",\"addressIpV6\":null,\"macAddress\":\"\",\"interfaceName\":\"\",\"dnsAddress\":null,\"gatewayAddress\":\"\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null},{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":null,\"addressIpV6\":\"2001:db8:15e6:9235:5ab4:64ce:b456:8207\",\"macAddress\":\"09:94:47:38:62:02\",\"interfaceName\":\"interfaceName_value\",\"dnsAddress\":\"192.0.2.87\",\"gatewayAddress\":\"192.0.2.87\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null}]},\"softwareListData\":{\"software\":[{\"id\":3472954331957710000,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"libtasn1-6:amd64 4.16.0-2+deb11u2\",\"softwareType\":\"Others\",\"isIgnored\":true,\"ignoredReason\":\"Library Packages\",\"category\":\"Unknown / Unknown\",\"category1\":\"Unknown\",\"category2\":\"Unknown\",\"productName\":\"Unknown\",\"component\":null,\"publisher\":\"Unknown\",\"edition\":null,\"marketVersion\":null,\"version\":\"4.16.0-2+deb11u2\",\"update\":\"4.16.0-2+deb11u2\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:48:42.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"libtasn1-6:amd64\",\"discoveredVersion\":\"4.16.0-2+deb11u2\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null},{\"id\":-7272038036848305000,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"git-man 1:2.30.2-1+deb11u4\",\"softwareType\":\"Others\",\"isIgnored\":true,\"ignoredReason\":\"Helper Packages\",\"category\":\"Unknown / Unknown\",\"category1\":\"Unknown\",\"category2\":\"Unknown\",\"productName\":\"Unknown\",\"component\":null,\"publisher\":\"Unknown\",\"edition\":null,\"marketVersion\":null,\"version\":\"1:2.30.2-1+deb11u4\",\"update\":\"1:2.30.2-1+deb11u4\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:48:42.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"git-man\",\"discoveredVersion\":\"1:2.30.2-1+deb11u4\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null}]},\"softwareComponent\":null,\"provider\":\"GCP\",\"cloudProvider\":{\"aws\":null,\"azure\":null,\"gcp\":{\"compute\":{\"hostname\":\"vwmkkbpe_sfnqc\",\"instanceId\":\"instanceId_value\",\"macAddress\":\"09:94:47:38:62:02\",\"machineType\":\"e2-standard-4\",\"network\":\"network_value\",\"privateIpAddress\":\"192.0.2.87\",\"projectId\":\"projectId_value\",\"projectNumber\":\"123456789012\",\"publicIpAddress\":\"198.51.100.71\",\"zone\":\"us-central1-a\",\"state\":\"RUNNING\",\"imageId\":\"projects/debian-cloud/global/images/debian-11-bullseye-v20221206\"},\"tags\":[{\"key\":\"tags_key_1\",\"value\":\"tags_value_1\"},{\"key\":\"tags_key_2\",\"value\":\"tags_value_2\"}]},\"oci\":null,\"ibm\":null,\"alibaba\":null},\"agent\":{\"version\":\"192.0.2.150\",\"configurationProfile\":\"configurationProfile_value\",\"activations\":[{\"key\":\"key_value\",\"status\":\"ACTIVE\"}],\"connectedFrom\":\"192.0.2.87\",\"lastActivity\":1758054384000,\"lastCheckedIn\":1758095323000,\"lastInventory\":1758054655000,\"udcManifestAssigned\":false,\"errorStatus\":false},\"sensor\":{\"activatedForModules\":[\"VM\",\"SCA\",\"VM\"],\"pendingActivationForModules\":[],\"lastVMScan\":1758095321000,\"lastComplianceScan\":0,\"lastFullScan\":1758095321000,\"lastVmScanDateScanner\":0,\"lastVmScanDateAgent\":2641708121000,\"lastPcScanDateScanner\":0,\"lastPcScanDateAgent\":0,\"firstEasmScanDate\":null,\"lastEasmScanDate\":null},\"container\":{\"product\":\"DOCKER\",\"version\":\"28.3.2\",\"noOfContainers\":10,\"noOfImages\":5,\"hasSensor\":false},\"inventory\":{\"source\":\"QAGENT\",\"created\":2560105956000,\"lastUpdated\":2641711146000},\"activity\":{\"source\":\"QAGENT\",\"lastScannedDate\":2641711146000},\"tagList\":{\"tag\":[{\"tagId\":1234,\"tagName\":\"env:development\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null},{\"tagId\":2345,\"tagName\":\"asset_criticality:3\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null}]},\"serviceList\":{\"service\":[{\"description\":null,\"name\":\"networkd-dispatcher.service\",\"status\":\"loaded/active/running\"},{\"description\":null,\"name\":\"google-guest-agent-manager.service\",\"status\":\"loaded/active/running\"}]},\"lastLocation\":{\"city\":\"Council Bluffs\",\"state\":\"Iowa\",\"country\":\"United States\",\"name\":\"Council Bluffs, Iowa - United States\",\"continent\":\"North America\",\"postal\":\"51502\"},\"criticality\":{\"score\":3,\"isDefault\":false,\"lastUpdated\":\"2052-11-28T22:24:02.000Z\"},\"businessInformation\":null,\"assignedLocation\":null,\"businessAppListData\":null,\"riskScore\":0,\"passiveSensor\":null,\"domain\":null,\"subdomain\":null,\"missingSoftware\":[],\"whois\":null,\"organizationName\":null,\"isp\":null,\"asn\":null,\"easmTags\":null,\"hostingCategory1\":null,\"customAttributes\":null,\"lparId\":null,\"processor\":{\"description\":\"AMD EPYC 7B12\",\"speed\":null,\"numCPUs\":4,\"noOfSocket\":1,\"threadsPerCore\":2,\"coresPerSocket\":2,\"multithreadingStatus\":\"ENABLED\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-11-20T22:59:42.480Z",
+      "interval_id": "30dbd8f6-6992-4a19-5937-1658a4d3fce8",
+      "interval_start": "2053-11-20T22:59:40.480Z",
+      "message": "{\"assetId\":1355987018,\"assetUUID\":\"67e90835-3dd6-41fa-aaa3-4753a7a879b5\",\"hostId\":1023155286,\"lastModifiedDate\":\"2053-09-17T09:49:18.000Z\",\"agentId\":\"67e90835-3dd6-41fa-aaa3-4753a7a879b5\",\"createdDate\":\"2053-07-03T09:13:57.000Z\",\"sensorLastUpdatedDate\":\"2053-09-17T09:49:18.000Z\",\"assetType\":null,\"address\":\"192.168.222.69\",\"dnsName\":\"dnsName_value\",\"assetName\":\"assetName_value\",\"netbiosName\":\"netbiosName_value\",\"timeZone\":\"+02:00\",\"biosDescription\":\"MacBookPro18,2\",\"lastBoot\":\"2053-09-12T09:08:00.000Z\",\"totalMemory\":32768,\"cpuCount\":10,\"lastLoggedOnUser\":\"lastLoggedOnUser_value\",\"domainRole\":null,\"hwUUID\":\"57040426-4bef-5845-9f3b-dd4f941eb317\",\"biosSerialNumber\":\"biosSerialNumber_value\",\"biosAssetTag\":\"\",\"isContainerHost\":true,\"operatingSystem\":{\"osName\":\"macOS 15.6.1\",\"fullName\":\"Apple macOS Sequoia (15.6.1)\",\"category\":\"Mac / Client\",\"category1\":\"Mac\",\"category2\":\"Client\",\"productName\":\"macOS\",\"publisher\":\"Apple\",\"edition\":null,\"marketVersion\":\"Sequoia\",\"version\":\"15.6\",\"update\":\"15.6.1\",\"architecture\":\"arm64_M1\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Mac / Client\",\"category1\":\"Mac\",\"category2\":\"Client\"},\"productUrl\":null,\"productFamily\":null,\"installDate\":\"2053-08-23T23:12:00.000Z\",\"release\":\"15.6.1\",\"cpeId\":null,\"cpe\":null,\"cpeType\":null},\"hardware\":{\"fullName\":\"Apple MacBook Pro MacBook Pro (16-inch, 2021)\",\"category\":\"Computers / Notebook\",\"category1\":\"Computers\",\"category2\":\"Notebook\",\"manufacturer\":\"Apple\",\"productName\":\"MacBook Pro\",\"model\":\"MacBook Pro (16-inch, 2021)\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Computers / Notebook\",\"category1\":\"Computers\",\"category2\":\"Notebook\"},\"productUrl\":null,\"productFamily\":null},\"userAccountListData\":{\"userAccount\":[{\"name\":\"user1\"},{\"name\":\"user2\"}]},\"openPortListData\":{\"openPort\":[{\"port\":49417,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"ollama\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":6789,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"elastic-a\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":1900,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"spotify\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"}]},\"volumeListData\":{\"volume\":[{\"name\":\"/System/Volumes/xarts\",\"free\":504315904,\"size\":510627840},{\"name\":\"/System/Volumes/Data\",\"free\":113497677824,\"size\":959979847680}]},\"networkInterfaceListData\":{\"networkInterface\":[{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87\",\"addressIpV6\":null,\"macAddress\":\"6d:b0:01:cc:6e:4a\",\"interfaceName\":\"en0\",\"dnsAddress\":\"192.0.2.87\",\"gatewayAddress\":\"192.0.2.87\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null}]},\"softwareListData\":{\"software\":[{\"id\":3349453983575593500,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Apple Find My 1.0\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Security / Other\",\"category1\":\"Security\",\"category2\":\"Other\",\"productName\":\"Find My\",\"component\":null,\"publisher\":\"Apple\",\"edition\":\"Unknown\",\"marketVersion\":\"1\",\"version\":\"1.0\",\"update\":\"1.0\",\"architecture\":null,\"installDate\":\"2053-08-16T18:44:29.000Z\",\"installPath\":\"/System/Applications/FindMy.app\",\"lastUpdated\":\"2053-09-17T09:38:25.000Z\",\"lastUseDate\":\"2053-08-16T18:44:29.000Z\",\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"Find My\",\"discoveredVersion\":\"4.0\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null},{\"id\":9033964968011558000,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Apple iCloud 1.0\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Storage / Backup and Recovery\",\"category1\":\"Storage\",\"category2\":\"Backup and Recovery\",\"productName\":\"iCloud\",\"component\":null,\"publisher\":\"Apple\",\"edition\":\"Unknown\",\"marketVersion\":\"1\",\"version\":\"1.0\",\"update\":\"1.0\",\"architecture\":null,\"installDate\":\"2053-08-16T18:44:29.000Z\",\"installPath\":\"/System/Library/CoreServices/iCloud.app\",\"lastUpdated\":\"2053-09-17T09:38:25.000Z\",\"lastUseDate\":\"2053-08-16T18:44:29.000Z\",\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"iCloud\",\"discoveredVersion\":\"1.0\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null}]},\"softwareComponent\":null,\"provider\":null,\"cloudProvider\":null,\"agent\":{\"version\":\"192.0.2.43\",\"configurationProfile\":\"configurationProfile_value\",\"activations\":[{\"key\":\"key_value\",\"status\":\"ACTIVE\"}],\"connectedFrom\":\"192.0.2.87\",\"lastActivity\":1758095990000,\"lastCheckedIn\":1758101907000,\"lastInventory\":1758096048000,\"udcManifestAssigned\":false,\"errorStatus\":false},\"sensor\":{\"activatedForModules\":[\"PM\",\"VM\"],\"pendingActivationForModules\":[],\"lastVMScan\":1758101903000,\"lastComplianceScan\":0,\"lastFullScan\":1758101903000,\"lastVmScanDateScanner\":0,\"lastVmScanDateAgent\":2641714703000,\"lastPcScanDateScanner\":0,\"lastPcScanDateAgent\":0,\"firstEasmScanDate\":null,\"lastEasmScanDate\":null},\"container\":{\"product\":\"DOCKER\",\"version\":\"28.3.3\",\"noOfContainers\":0,\"noOfImages\":0,\"hasSensor\":false},\"inventory\":{\"source\":\"QAGENT\",\"created\":2635146837000,\"lastUpdated\":2641714707000},\"activity\":{\"source\":\"QAGENT\",\"lastScannedDate\":2641714707000},\"tagList\":{\"tag\":[{\"tagId\":1234,\"tagName\":\"status:running\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null},{\"tagId\":2345,\"tagName\":\"status:running:other\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null}]},\"serviceList\":{\"service\":[{\"description\":null,\"name\":\"com.apple.fpsd.arcadeservice\",\"status\":\"stopped\"},{\"description\":null,\"name\":\"com.apple.IOUserDockChannelSerial-0x100000fd9\",\"status\":\"running\"}]},\"lastLocation\":{\"city\":\"Boardman\",\"state\":\"Oregon\",\"country\":\"United States\",\"name\":\"Boardman, Oregon - United States\",\"continent\":\"North America\",\"postal\":\"97818\"},\"criticality\":{\"score\":3,\"isDefault\":false,\"lastUpdated\":\"2053-07-03T09:13:57.000Z\"},\"businessInformation\":null,\"assignedLocation\":null,\"businessAppListData\":null,\"riskScore\":369,\"passiveSensor\":null,\"domain\":null,\"subdomain\":null,\"missingSoftware\":[],\"whois\":null,\"organizationName\":null,\"isp\":null,\"asn\":null,\"easmTags\":null,\"hostingCategory1\":null,\"customAttributes\":null,\"lparId\":null,\"processor\":{\"description\":\"Apple M1 Max\",\"speed\":3200,\"numCPUs\":10,\"noOfSocket\":null,\"threadsPerCore\":null,\"coresPerSocket\":10,\"multithreadingStatus\":\"DISABLED\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-11-20T22:59:42.480Z",
+      "interval_id": "55bee5f4-3385-4b95-aecb-abbbdff0efc2",
+      "interval_start": "2053-11-20T22:59:40.480Z",
+      "message": "{\"assetId\":12345,\"assetUUID\":\"c062c9b0-6bd1-4d88-a031-d7f20f17856f\",\"hostId\":23456,\"lastModifiedDate\":\"2053-09-17T07:58:52.000Z\",\"agentId\":\"c062c9b0-6bd1-4d88-a031-d7f20f17856f\",\"createdDate\":\"2050-05-24T10:37:04.000Z\",\"sensorLastUpdatedDate\":\"2053-09-17T07:58:52.000Z\",\"assetType\":null,\"address\":\"10.196.63.21\",\"dnsName\":\"dnsName_value\",\"assetName\":\"assetName_value\",\"netbiosName\":\"netbiosName_value\",\"timeZone\":\"UTC\",\"biosDescription\":\"Xen 4.11.amazon 08/24/2034\",\"lastBoot\":\"2052-06-10T02:42:22.000Z\",\"totalMemory\":7935,\"cpuCount\":2,\"lastLoggedOnUser\":\"lastLoggedOnUser_value\",\"domainRole\":null,\"hwUUID\":\"ce4c294e-3d70-39c1-b8ef-e7bce4491717\",\"biosSerialNumber\":\"biosSerialNumber_value\",\"biosAssetTag\":\"Not Specified\",\"isContainerHost\":false,\"operatingSystem\":{\"osName\":\"Ubuntu Linux 20.04.4\",\"fullName\":\"Canonical Ubuntu Focal Fossa (20.04.4 LTS)\",\"category\":\"Linux / Unidentified\",\"category1\":\"Linux\",\"category2\":\"Unidentified\",\"productName\":\"Ubuntu\",\"publisher\":\"Canonical\",\"edition\":null,\"marketVersion\":\"Focal Fossa\",\"version\":\"20.04 LTS\",\"update\":\"20.04 LTS 20.04.4 LTS\",\"architecture\":\"x86_64\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Linux / Unidentified\",\"category1\":\"Linux\",\"category2\":\"Unidentified\"},\"productUrl\":null,\"productFamily\":null,\"installDate\":null,\"release\":\"20.04.4\",\"cpeId\":null,\"cpe\":null,\"cpeType\":null},\"hardware\":{\"fullName\":\"Ofs Glnxbdh YZL amxP\",\"category\":\"Virtualized / Virtual Machine\",\"category1\":\"Virtualized\",\"category2\":\"Virtual Machine\",\"manufacturer\":\"Xen Project\",\"productName\":\"HVM domU\",\"model\":null,\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Virtualized / Virtual Machine\",\"category1\":\"Virtualized\",\"category2\":\"Virtual Machine\"},\"productUrl\":null,\"productFamily\":null},\"userAccountListData\":{\"userAccount\":[{\"name\":\"user1\"},{\"name\":\"user2\"}]},\"openPortListData\":{\"openPort\":[{\"port\":53,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"detectedService_value_1\",\"firstFound\":\"2053-09-09T15:51:43.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":68,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"detectedService_value_2\",\"firstFound\":\"2053-09-09T15:51:43.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":22,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"detectedService_value_3\",\"firstFound\":\"2050-05-24T11:29:47.000Z\",\"lastUpdated\":\"2053-09-09T15:51:43.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"}]},\"volumeListData\":{\"volume\":[{\"name\":\"/snap/amazon-ssm-agent/11797\",\"free\":0,\"size\":29097984},{\"name\":\"/snap/snapd/24792\",\"free\":0,\"size\":51773440}]},\"networkInterfaceListData\":{\"networkInterface\":[{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87, 10.196.63.21\",\"addressIpV6\":null,\"macAddress\":\"\",\"interfaceName\":\"\",\"dnsAddress\":null,\"gatewayAddress\":\"\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null},{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87,10.196.63.21\",\"addressIpV6\":\"2001:db8:15e6:9235:5ab4:64ce:b456:8207\",\"macAddress\":\"36:b2:30:08:45:30\",\"interfaceName\":\"ens3\",\"dnsAddress\":\"192.0.2.87\",\"gatewayAddress\":\"192.0.2.87\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null}]},\"softwareListData\":{\"software\":[{\"id\":1350996231234171400,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Canonical Vim 8.1.2269-1 (Ubuntu Focal Fossa)\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Application Development / Development Tool\",\"category1\":\"Application Development\",\"category2\":\"Development Tool\",\"productName\":\"Vim\",\"component\":null,\"publisher\":\"Canonical\",\"edition\":\"Unknown\",\"marketVersion\":\"8\",\"version\":\"8.1\",\"update\":\"8.1.2269-1 (Ubuntu Focal Fossa)\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:39:28.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"vim\",\"discoveredVersion\":\"2:8.1.2269-1ubuntu5.22\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null},{\"id\":-2774205715073934300,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"vim-common 2:8.1.2269-1ubuntu5.22\",\"softwareType\":\"Others\",\"isIgnored\":true,\"ignoredReason\":\"Library Packages\",\"category\":\"Unknown / Unknown\",\"category1\":\"Unknown\",\"category2\":\"Unknown\",\"productName\":\"Unknown\",\"component\":null,\"publisher\":\"Unknown\",\"edition\":null,\"marketVersion\":null,\"version\":\"2:8.1.2269-1ubuntu5.22\",\"update\":\"2:8.1.2269-1ubuntu5.22\",\"architecture\":null,\"installDate\":null,\"installPath\":null,\"lastUpdated\":\"2053-09-17T07:39:28.000Z\",\"lastUseDate\":null,\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"vim-common\",\"discoveredVersion\":\"2:8.1.2269-1ubuntu5.22\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null}]},\"softwareComponent\":null,\"provider\":\"AWS\",\"cloudProvider\":{\"aws\":{\"ec2\":{\"accountId\":\"1234\",\"availabilityZone\":\"us-west-2a\",\"hasAgent\":true,\"hostname\":\"vwmkkbpe_sfnqc\",\"imageId\":\"imageId_value\",\"instanceId\":\"instanceId_value\",\"instanceState\":\"RUNNING\",\"instanceType\":\"m4.large\",\"qualysScanner\":false,\"kernelId\":null,\"launchdate\":2536999692000,\"privateDNS\":\"privateDNS_value\",\"privateIpAddress\":\"10.26.137.145\",\"publicDNS\":null,\"publicIpAddress\":\"192.0.2.87\",\"region\":{\"code\":\"us-west-2\",\"name\":\"US West (Oregon)\"},\"spotInstance\":false,\"subnetId\":\"subnetId_value\",\"vpcId\":\"vpcId_value\"},\"tags\":[{\"key\":\"tags_key_1\",\"value\":\"tags_value_1\"},{\"key\":\"tags_key_2\",\"value\":\"tags_value_2\"}]},\"azure\":null,\"gcp\":null,\"oci\":null,\"ibm\":null,\"alibaba\":null},\"agent\":{\"version\":\"192.0.2.150\",\"configurationProfile\":\"configurationProfile_value\",\"activations\":[{\"key\":\"key_value\",\"status\":\"ACTIVE\"}],\"connectedFrom\":\"192.0.2.87\",\"lastActivity\":1758054146000,\"lastCheckedIn\":1758094769000,\"lastInventory\":1758054210000,\"udcManifestAssigned\":false,\"errorStatus\":false},\"sensor\":{\"activatedForModules\":[\"SCA\",\"PC\",\"VM\"],\"pendingActivationForModules\":[],\"lastVMScan\":1758094767000,\"lastComplianceScan\":1681892534000,\"lastFullScan\":1758094767000,\"lastVmScanDateScanner\":0,\"lastVmScanDateAgent\":2641707567000,\"lastPcScanDateScanner\":0,\"lastPcScanDateAgent\":2565505334000,\"firstEasmScanDate\":null,\"lastEasmScanDate\":null},\"container\":{\"product\":null,\"version\":null,\"noOfContainers\":0,\"noOfImages\":0,\"hasSensor\":null},\"inventory\":{\"source\":\"QAGENT\",\"created\":2537001424000,\"lastUpdated\":2641708576000},\"activity\":{\"source\":\"QAGENT\",\"lastScannedDate\":2641708576000},\"tagList\":{\"tag\":[{\"tagId\":1234,\"tagName\":\"env:development\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null},{\"tagId\":2345,\"tagName\":\"asset_criticality:3\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null}]},\"serviceList\":{\"service\":[{\"description\":null,\"name\":\"systemd-tmpfiles-setup-dev.service\",\"status\":\"loaded/active/exited\"},{\"description\":null,\"name\":\"systemd-journal-flush.service\",\"status\":\"loaded/active/exited\"}]},\"lastLocation\":{\"city\":\"Boardman\",\"state\":\"Oregon\",\"country\":\"United States\",\"name\":\"Boardman, Oregon - United States\",\"continent\":\"North America\",\"postal\":\"97818\"},\"criticality\":{\"score\":3,\"isDefault\":false,\"lastUpdated\":\"2051-03-07T22:18:45.000Z\"},\"businessInformation\":null,\"assignedLocation\":null,\"businessAppListData\":null,\"riskScore\":506,\"passiveSensor\":null,\"domain\":null,\"subdomain\":null,\"missingSoftware\":[],\"whois\":null,\"organizationName\":null,\"isp\":null,\"asn\":null,\"easmTags\":null,\"hostingCategory1\":null,\"customAttributes\":null,\"lparId\":null,\"processor\":{\"description\":\"Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz\",\"speed\":2300,\"numCPUs\":2,\"noOfSocket\":1,\"threadsPerCore\":2,\"coresPerSocket\":1,\"multithreadingStatus\":\"ENABLED\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-11-20T22:59:42.480Z",
+      "interval_id": "05bcc7b3-8475-4c52-8974-bdeac8e6bfa1",
+      "interval_start": "2053-11-20T22:59:40.480Z",
+      "message": "{\"assetId\":9055956448,\"assetUUID\":\"67e90835-3dd6-41fa-aaa3-4753a7a879b5\",\"hostId\":1023987686,\"lastModifiedDate\":\"2053-08-17T09:49:18.000Z\",\"agentId\":\"67e90835-3dd6-41fa-aaa3-4753a7a879b5\",\"createdDate\":\"2053-05-03T09:13:57.000Z\",\"sensorLastUpdatedDate\":\"2053-08-17T09:49:18.000Z\",\"assetType\":null,\"address\":\"192.168.222.69\",\"dnsName\":\"dnsName_value\",\"assetName\":\"assetName_value\",\"netbiosName\":\"netbiosName_value\",\"timeZone\":\"+02:00\",\"biosDescription\":\"MacBookPro18,2\",\"lastBoot\":\"2053-09-12T09:08:00.000Z\",\"totalMemory\":32768,\"cpuCount\":10,\"lastLoggedOnUser\":\"lastLoggedOnUser_value\",\"domainRole\":null,\"hwUUID\":\"57040426-4bef-5845-9f3b-dd4f941eb317\",\"biosSerialNumber\":\"biosSerialNumber_value\",\"biosAssetTag\":\"\",\"isContainerHost\":true,\"operatingSystem\":{\"osName\":\"macOS 15.6.1\",\"fullName\":\"Apple macOS Sequoia (15.6.1)\",\"category\":\"Mac / Client\",\"category1\":\"Mac\",\"category2\":\"Client\",\"productName\":\"macOS\",\"publisher\":\"Apple\",\"edition\":null,\"marketVersion\":\"Sequoia\",\"version\":\"15.6\",\"update\":\"15.6.1\",\"architecture\":\"arm64_M1\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Mac / Client\",\"category1\":\"Mac\",\"category2\":\"Client\"},\"productUrl\":null,\"productFamily\":null,\"installDate\":\"2053-08-23T23:12:00.000Z\",\"release\":\"15.6.1\",\"cpeId\":null,\"cpe\":null,\"cpeType\":null},\"hardware\":{\"fullName\":\"Apple MacBook Pro MacBook Pro (16-inch, 2021)\",\"category\":\"Computers / Notebook\",\"category1\":\"Computers\",\"category2\":\"Notebook\",\"manufacturer\":\"Apple\",\"productName\":\"MacBook Pro\",\"model\":\"MacBook Pro (16-inch, 2021)\",\"lifecycle\":null,\"taxonomy\":{\"id\":null,\"name\":\"Computers / Notebook\",\"category1\":\"Computers\",\"category2\":\"Notebook\"},\"productUrl\":null,\"productFamily\":null},\"userAccountListData\":{\"userAccount\":[{\"name\":\"user1\"},{\"name\":\"user2\"}]},\"openPortListData\":{\"openPort\":[{\"port\":49417,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"ollama\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":6789,\"description\":\"\",\"protocol\":\"TCP\",\"detectedService\":\"elastic-a\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"},{\"port\":1900,\"description\":\"\",\"protocol\":\"UDP\",\"detectedService\":\"spotify\",\"firstFound\":\"2053-09-12T07:11:00.000Z\",\"lastUpdated\":\"2053-09-12T07:11:00.000Z\",\"authorization\":null,\"detectionScore\":null,\"discoverySources\":\"Cloud Agent\"}]},\"volumeListData\":{\"volume\":[{\"name\":\"/System/Volumes/xarts\",\"free\":504315904,\"size\":510627840},{\"name\":\"/System/Volumes/Data\",\"free\":113497677824,\"size\":959979847680}]},\"networkInterfaceListData\":{\"networkInterface\":[{\"hostname\":\"vwmkkbpe_sfnqc\",\"addressIpV4\":\"192.0.2.87\",\"addressIpV6\":null,\"macAddress\":\"6d:b0:01:cc:6e:4a\",\"interfaceName\":\"en0\",\"dnsAddress\":\"192.0.2.87\",\"gatewayAddress\":\"192.0.2.87\",\"manufacturer\":null,\"macVendorIntroDate\":null,\"netmask\":null,\"addresses\":null}]},\"softwareListData\":{\"software\":[{\"id\":3349453983575593500,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Apple Find My 1.0\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Security / Other\",\"category1\":\"Security\",\"category2\":\"Other\",\"productName\":\"Find My\",\"component\":null,\"publisher\":\"Apple\",\"edition\":\"Unknown\",\"marketVersion\":\"1\",\"version\":\"1.0\",\"update\":\"1.0\",\"architecture\":null,\"installDate\":\"2053-08-16T18:44:29.000Z\",\"installPath\":\"/System/Applications/FindMy.app\",\"lastUpdated\":\"2053-09-17T09:38:25.000Z\",\"lastUseDate\":\"2053-08-16T18:44:29.000Z\",\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"Find My\",\"discoveredVersion\":\"4.0\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null},{\"id\":9033964968011558000,\"discoverySources\":\"Cloud Agent, Cloud Agent\",\"fullName\":\"Apple iCloud 1.0\",\"softwareType\":\"Application\",\"isIgnored\":false,\"ignoredReason\":null,\"category\":\"Storage / Backup and Recovery\",\"category1\":\"Storage\",\"category2\":\"Backup and Recovery\",\"productName\":\"iCloud\",\"component\":null,\"publisher\":\"Apple\",\"edition\":\"Unknown\",\"marketVersion\":\"1\",\"version\":\"1.0\",\"update\":\"1.0\",\"architecture\":null,\"installDate\":\"2053-08-16T18:44:29.000Z\",\"installPath\":\"/System/Library/CoreServices/iCloud.app\",\"lastUpdated\":\"2053-09-17T09:38:25.000Z\",\"lastUseDate\":\"2053-08-16T18:44:29.000Z\",\"language\":null,\"formerlyKnownAs\":null,\"isPackage\":null,\"isPackageComponent\":null,\"packageName\":null,\"productUrl\":null,\"lifecycle\":null,\"supportStageDesc\":null,\"license\":null,\"authorization\":null,\"discoveredPublisher\":null,\"discoveredName\":\"iCloud\",\"discoveredVersion\":\"1.0\",\"authorizationDetectionScore\":null,\"cpeId\":null,\"cpe\":null,\"cpeType\":null,\"softwareInstances\":null}]},\"softwareComponent\":null,\"provider\":null,\"cloudProvider\":null,\"agent\":{\"version\":\"192.0.2.43\",\"configurationProfile\":\"configurationProfile_value\",\"activations\":[{\"key\":\"key_value\",\"status\":\"ACTIVE\"}],\"connectedFrom\":\"192.0.2.87\",\"lastActivity\":1758095990000,\"lastCheckedIn\":1758101907000,\"lastInventory\":1758096048000,\"udcManifestAssigned\":false,\"errorStatus\":false},\"sensor\":{\"activatedForModules\":[\"PM\",\"VM\"],\"pendingActivationForModules\":[],\"lastVMScan\":1758101903000,\"lastComplianceScan\":0,\"lastFullScan\":1758101903000,\"lastVmScanDateScanner\":0,\"lastVmScanDateAgent\":2641714703000,\"lastPcScanDateScanner\":0,\"lastPcScanDateAgent\":0,\"firstEasmScanDate\":null,\"lastEasmScanDate\":null},\"container\":{\"product\":\"DOCKER\",\"version\":\"28.3.3\",\"noOfContainers\":0,\"noOfImages\":0,\"hasSensor\":false},\"inventory\":{\"source\":\"QAGENT\",\"created\":2635146837000,\"lastUpdated\":2641714707000},\"activity\":{\"source\":\"QAGENT\",\"lastScannedDate\":2641714707000},\"tagList\":{\"tag\":[{\"tagId\":1234,\"tagName\":\"status:running\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null},{\"tagId\":2345,\"tagName\":\"status:running:other\",\"foregroundColor\":0,\"backgroundColor\":0,\"businessImpact\":null,\"criticalityScore\":null}]},\"serviceList\":{\"service\":[{\"description\":null,\"name\":\"com.apple.fpsd.arcadeservice\",\"status\":\"stopped\"},{\"description\":null,\"name\":\"com.apple.IOUserDockChannelSerial-0x100000fd9\",\"status\":\"running\"}]},\"lastLocation\":{\"city\":\"Boardman\",\"state\":\"Oregon\",\"country\":\"United States\",\"name\":\"Boardman, Oregon - United States\",\"continent\":\"North America\",\"postal\":\"97818\"},\"criticality\":{\"score\":3,\"isDefault\":false,\"lastUpdated\":\"2053-07-03T09:13:57.000Z\"},\"businessInformation\":null,\"assignedLocation\":null,\"businessAppListData\":null,\"riskScore\":369,\"passiveSensor\":null,\"domain\":null,\"subdomain\":null,\"missingSoftware\":[],\"whois\":null,\"organizationName\":null,\"isp\":null,\"asn\":null,\"easmTags\":null,\"hostingCategory1\":null,\"customAttributes\":null,\"lparId\":null,\"processor\":{\"description\":\"Apple M1 Max\",\"speed\":3200,\"numCPUs\":10,\"noOfSocket\":null,\"threadsPerCore\":null,\"coresPerSocket\":10,\"multithreadingStatus\":\"DISABLED\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "asset",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-qualys_gav-asset-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "qualys_gav",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

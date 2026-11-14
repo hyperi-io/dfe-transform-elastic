@@ -1,0 +1,214 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "dataset": "spring_boot.gc",
+        "kind": "metric",
+        "module": "spring_boot",
+        "type": [
+          "info"
+        ]
+      },
+      "spring_boot": {
+        "gc": {
+          "last_info": {
+            "id": 2,
+            "memory_usage": {
+              "after": {
+                "code_cache": {
+                  "committed": 13893632.0,
+                  "init": 2555904.0,
+                  "max": 251658240.0,
+                  "used": 12812032.0
+                },
+                "compressed_class_space": {
+                  "committed": 4890624.0,
+                  "init": 0,
+                  "max": 1073741824.0,
+                  "used": 4451536.0
+                },
+                "metaspace": {
+                  "committed": 36347904.0,
+                  "init": 0,
+                  "max": -1,
+                  "used": 33828160.0
+                },
+                "ps_eden_space": {
+                  "committed": 258998272.0,
+                  "init": 65536000.0,
+                  "max": 1363148800.0,
+                  "used": 0
+                },
+                "ps_old_gen": {
+                  "committed": 134742016.0,
+                  "init": 173539328.0,
+                  "max": 2774007808.0,
+                  "used": 16529992.0
+                },
+                "ps_survivor_space": {
+                  "committed": 11010048.0,
+                  "init": 10485760.0,
+                  "max": 11010048.0,
+                  "used": 0
+                }
+              },
+              "before": {
+                "code_cache": {
+                  "committed": 13893632.0,
+                  "init": 2555904.0,
+                  "max": 251658240.0,
+                  "used": 12812032.0
+                },
+                "compressed_class_space": {
+                  "committed": 4890624.0,
+                  "init": 0,
+                  "max": 1073741824.0,
+                  "used": 4451536.0
+                },
+                "metaspace": {
+                  "committed": 36347904.0,
+                  "init": 0,
+                  "max": -1,
+                  "used": 33828160.0
+                },
+                "ps_eden_space": {
+                  "committed": 258998272.0,
+                  "init": 65536000.0,
+                  "max": 1363148800.0,
+                  "used": 0
+                },
+                "ps_old_gen": {
+                  "committed": 88604672.0,
+                  "init": 173539328.0,
+                  "max": 2774007808.0,
+                  "used": 6651256.0
+                },
+                "ps_survivor_space": {
+                  "committed": 11010048.0,
+                  "init": 10485760.0,
+                  "max": 11010048.0,
+                  "used": 10977344.0
+                }
+              }
+            },
+            "thread_count": 10,
+            "time": {
+              "duration": 73,
+              "end": 3508,
+              "start": 3435
+            }
+          },
+          "name": "PS MarkSweep"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "jolokia": {
+        "metrics": {
+          "last_info": {
+            "GcThreadCount": 10,
+            "duration": 73,
+            "endTime": 3508,
+            "id": 2,
+            "memoryUsageAfterGc": {
+              "Code Cache": {
+                "committed": 13893632.0,
+                "init": 2555904.0,
+                "max": 251658240.0,
+                "used": 12812032.0
+              },
+              "Compressed Class Space": {
+                "committed": 4890624.0,
+                "init": 0,
+                "max": 1073741824.0,
+                "used": 4451536.0
+              },
+              "Metaspace": {
+                "committed": 36347904.0,
+                "init": 0,
+                "max": -1,
+                "used": 33828160.0
+              },
+              "PS Eden Space": {
+                "committed": 258998272.0,
+                "init": 65536000.0,
+                "max": 1363148800.0,
+                "used": 0
+              },
+              "PS Old Gen": {
+                "committed": 134742016.0,
+                "init": 173539328.0,
+                "max": 2774007808.0,
+                "used": 16529992.0
+              },
+              "PS Survivor Space": {
+                "committed": 11010048.0,
+                "init": 10485760.0,
+                "max": 11010048.0,
+                "used": 0
+              }
+            },
+            "memoryUsageBeforeGc": {
+              "Code Cache": {
+                "committed": 13893632.0,
+                "init": 2555904.0,
+                "max": 251658240.0,
+                "used": 12812032.0
+              },
+              "Compressed Class Space": {
+                "committed": 4890624.0,
+                "init": 0,
+                "max": 1073741824.0,
+                "used": 4451536.0
+              },
+              "Metaspace": {
+                "committed": 36347904.0,
+                "init": 0,
+                "max": -1,
+                "used": 33828160.0
+              },
+              "PS Eden Space": {
+                "committed": 258998272.0,
+                "init": 65536000.0,
+                "max": 1363148800.0,
+                "used": 0
+              },
+              "PS Old Gen": {
+                "committed": 88604672.0,
+                "init": 173539328.0,
+                "max": 2774007808.0,
+                "used": 6651256.0
+              },
+              "PS Survivor Space": {
+                "committed": 11010048.0,
+                "init": 10485760.0,
+                "max": 11010048.0,
+                "used": 10977344.0
+              }
+            },
+            "startTime": 3435
+          },
+          "name": "PS MarkSweep"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "gc",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-spring_boot-gc-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "spring_boot",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

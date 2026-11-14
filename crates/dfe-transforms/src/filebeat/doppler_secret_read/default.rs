@@ -141,9 +141,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: // Doppler normally sends secrets as a list, but tolerate a single object\n// so the read is never silently dropped before doppler.metadata is removed.\ndef raw = ctx.doppler.metadata.secrets;\nArrayList secrets = new ArrayList();\nif (raw instanceof List) { secrets.addAll(raw); }\nelse if (raw instanceof Map) { secrets.add(raw); }\nArrayList out = new ArrayList();\nArrayList names = new ArrayList();\nArrayList projects = new ArrayList();\nArrayList envs = new ArrayList();\nArrayList configs = new ArrayList();\nfor (def s : secrets) {\n  if (!(s instanceof Map)) { continue; }\n  HashMap m = new HashMap();\n  if (s.p != null) { m.project = s.p; if (!projects.contains(s.p)) { projects.add(s.p); } }\n  if (s.e != null) { m.environment = s.e; if (!envs.contains(s.e)) { envs.add(s.e); } }\n  if (s.c != null) { m.config = s.c; if (!configs.contains(s.c)) { configs.add(s.c); } }\n  if (s.s != null) { m.name = s.s; if (!names.contains(s.s)) { names.add(s.s); } }\n  if (s.v != null) { m.version = s.v; }\n  if (s.r instanceof Map) {\n    HashMap r = new HashMap();\n    if (s.r.p != null) { r.project = s.r.p; }\n    if (s.r.e != null) { r.environment = s.r.e; }\n    if (s.r.c != null) { r.config = s.r.c; }\n    m.inherited_from = r;\n  }\n  out.add(m);\n}\nif (ctx.doppler.secret_read == null) { ctx.doppler.secret_read = new HashMap(); }\nctx.doppler.secret_read.secrets = out;\nctx.doppler.secret_read.secret_names = names;\nctx.doppler.secret_read.projects = projects;\nctx.doppler.secret_read.environments = envs;\nctx.doppler.secret_read.configs = configs;\n// Count the secrets actually reshaped (well-formed entries), so the count\n// matches doppler.secret_read.secrets rather than any malformed input.\nctx.doppler.secret_read.secret_count = out.size();
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -169,8 +167,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

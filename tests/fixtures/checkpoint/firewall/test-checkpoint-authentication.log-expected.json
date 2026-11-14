@@ -1,0 +1,989 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-12-29T14:20:02.000Z",
+      "checkpoint": {
+        "additional_info": "login by localhost",
+        "administrator": "WEB_API",
+        "operation": "Log In",
+        "origin_sic_name": "cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local",
+        "sendtotrackerasadvancedauditlog": "0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "id": "{0x658ed593,0x0,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-29T14:20:02Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658ed593,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587472402\"; version:\"5\"; additional_info:\"login by localhost\"; administrator:\"WEB_API\"; client_ip:\"192.168.120.242\"; operation:\"Log In\"; product:\"WEB_API\"; sendtotrackerasadvancedauditlog:\"0\"; subject:\"Administrator Login\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "WEB_API",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "192.168.120.242"
+        ],
+        "user": [
+          "web_api"
+        ]
+      },
+      "source": {
+        "ip": "192.168.120.242",
+        "user": {
+          "name": "web_api"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "web_api"
+      }
+    },
+    {
+      "@timestamp": "2051-12-29T14:03:03.000Z",
+      "checkpoint": {
+        "additional_info": "Authentication method: Active Directory",
+        "administrator": "User (Example)",
+        "machine": "localhost",
+        "operation": "Log In",
+        "operation_number": "10",
+        "origin_sic_name": "cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "10",
+        "id": "{0x658ed198,0x0,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-29T14:03:03Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658ed198,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587471383\"; version:\"5\"; additional_info:\"Authentication method: Active Directory\"; administrator:\"User (Example)\"; client_ip:\"127.0.0.1\"; machine:\"localhost\"; operation:\"Log In\"; operation_number:\"10\"; product:\"WEB_API\"; subject:\"Administrator Login\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "WEB_API",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1",
+          "192.168.120.242"
+        ],
+        "user": [
+          "example",
+          "User"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1",
+        "user": {
+          "full_name": "User",
+          "name": "example"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "User",
+        "name": "example"
+      }
+    },
+    {
+      "@timestamp": "2051-12-29T08:42:55.000Z",
+      "checkpoint": {
+        "additional_info": "Authentication method: radius",
+        "administrator": "tbmvj.mjitg@example.org",
+        "machine": "eegmwkg8885.areggve.local",
+        "operation": "Log In",
+        "operation_number": "10",
+        "origin_sic_name": "cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "10",
+        "id": "{0x658e8690,0x0,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-29T08:42:55Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658e8690,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587452175\"; version:\"5\"; additional_info:\"Authentication method: radius\"; administrator:\"tbmvj.mjitg@example.org\"; client_ip:\"10.7.123.123\"; machine:\"eegmwkg8885.areggve.local\"; operation:\"Log In\"; operation_number:\"10\"; product:\"SmartConsole\"; subject:\"Administrator Login\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "SmartConsole",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "10.7.123.123",
+          "192.168.120.242"
+        ],
+        "user": [
+          "tbmvj.mjitg",
+          "tbmvj.mjitg@example.org"
+        ]
+      },
+      "source": {
+        "domain": "eegmwkg8885.areggve.local",
+        "ip": "10.7.123.123",
+        "user": {
+          "domain": "example.org",
+          "email": "tbmvj.mjitg@example.org",
+          "name": "tbmvj.mjitg"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.org",
+        "email": "tbmvj.mjitg@example.org",
+        "name": "tbmvj.mjitg"
+      }
+    },
+    {
+      "@timestamp": "2051-12-15T11:52:02.000Z",
+      "checkpoint": {
+        "additional_info": "Authentication method: radius",
+        "administrator": "v.anfbnr@bvkzkxdq.com",
+        "machine": "vcrex652.gdknkbueds.com",
+        "operation": "Log In",
+        "operation_number": "10",
+        "origin_sic_name": "cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "10",
+        "id": "{0x657c3de4,0x0,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-15T11:52:02Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x657c3de4,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2586253922\"; version:\"5\"; additional_info:\"Authentication method: radius\"; administrator:\"v.anfbnr@bvkzkxdq.com\"; client_ip:\"172.20.189.47\"; machine:\"vcrex652.gdknkbueds.com\"; operation:\"Log In\"; operation_number:\"10\"; product:\"SmartConsole\"; subject:\"Administrator Login\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "SmartConsole",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.20.189.47",
+          "192.168.120.242"
+        ],
+        "user": [
+          "v.anfbnr",
+          "v.anfbnr@bvkzkxdq.com"
+        ]
+      },
+      "source": {
+        "domain": "vcrex652.gdknkbueds.com",
+        "ip": "172.20.189.47",
+        "user": {
+          "domain": "bvkzkxdq.com",
+          "email": "v.anfbnr@bvkzkxdq.com",
+          "name": "v.anfbnr"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "bvkzkxdq.com",
+        "email": "v.anfbnr@bvkzkxdq.com",
+        "name": "v.anfbnr"
+      }
+    },
+    {
+      "@timestamp": "2051-12-27T09:39:55.000Z",
+      "checkpoint": {
+        "additional_info": "Administrator failed to log in: Wrong Password",
+        "administrator": "v.anfbnr@bvkzkxdq.com",
+        "audit_status": "Failure",
+        "machine": "vcrex652.gdknkbueds.com",
+        "operation": "Log In",
+        "operation_number": "11",
+        "origin_sic_name": "cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logon-failed",
+        "category": [
+          "authentication"
+        ],
+        "code": "11",
+        "id": "{0x658bf0ed,0x0,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-27T09:39:55Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658bf0ed,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587282795\"; version:\"5\"; additional_info:\"Administrator failed to log in: Wrong Password\"; administrator:\"v.anfbnr@bvkzkxdq.com\"; audit_status:\"Failure\"; client_ip:\"172.20.189.47\"; machine:\"vcrex652.gdknkbueds.com\"; operation:\"Log In\"; operation_number:\"11\"; product:\"SmartConsole\"; subject:\"Administrator Login\"]",
+        "outcome": "failure",
+        "reason": "Wrong Password",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "SmartConsole",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.20.189.47",
+          "192.168.120.242"
+        ],
+        "user": [
+          "v.anfbnr",
+          "v.anfbnr@bvkzkxdq.com"
+        ]
+      },
+      "source": {
+        "domain": "vcrex652.gdknkbueds.com",
+        "ip": "172.20.189.47",
+        "user": {
+          "domain": "bvkzkxdq.com",
+          "email": "v.anfbnr@bvkzkxdq.com",
+          "name": "v.anfbnr"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "bvkzkxdq.com",
+        "email": "v.anfbnr@bvkzkxdq.com",
+        "name": "v.anfbnr"
+      }
+    },
+    {
+      "@timestamp": "2051-12-28T08:03:28.000Z",
+      "checkpoint": {
+        "additional_info": "Administrator failed to log in: SIC Error for gettopo: Server could not find authentication method for service gettopo. Peer is:",
+        "audit_status": "Failure",
+        "operation": "Log In",
+        "operation_number": "11",
+        "origin_sic_name": "cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logon-failed",
+        "category": [
+          "authentication"
+        ],
+        "code": "11",
+        "id": "{0x658d2bd2,0x0,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-28T08:03:28Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658d2bd2,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587363408\"; version:\"5\"; additional_info:\"Administrator failed to log in: SIC Error for gettopo: Server could not find authentication method for service gettopo. Peer is: \"; audit_status:\"Failure\"; client_ip:\"172.20.189.47\"; operation:\"Log In\"; operation_number:\"11\"; product:\"Unknown\"; subject:\"Administrator Login\"]",
+        "outcome": "failure",
+        "reason": "SIC Error for gettopo: Server could not find authentication method for service gettopo. Peer is:",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "Unknown",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.20.189.47",
+          "192.168.120.242"
+        ]
+      },
+      "source": {
+        "ip": "172.20.189.47"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-12-21T10:41:20.000Z",
+      "checkpoint": {
+        "additional_info": "Administrator failed to log in: Wrong Password",
+        "administrator": "tbmvj.mjitg@example.org",
+        "audit_status": "Failure",
+        "machine": "cp_console.example.local",
+        "operation": "Log In",
+        "operation_number": "11",
+        "origin_sic_name": "cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logon-failed",
+        "category": [
+          "authentication"
+        ],
+        "code": "11",
+        "id": "{0x65841652,0x0,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-21T10:41:20Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65841652,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2586768080\"; version:\"5\"; additional_info:\"Administrator failed to log in: Wrong Password\"; administrator:\"tbmvj.mjitg@example.org\"; audit_status:\"Failure\"; client_ip:\"172.25.59.120\"; machine:\"cp_console.example.local\"; operation:\"Log In\"; operation_number:\"11\"; product:\"SmartConsole\"; subject:\"Administrator Login\"]",
+        "outcome": "failure",
+        "reason": "Wrong Password",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "SmartConsole",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.25.59.120",
+          "192.168.120.242"
+        ],
+        "user": [
+          "tbmvj.mjitg",
+          "tbmvj.mjitg@example.org"
+        ]
+      },
+      "source": {
+        "domain": "cp_console.example.local",
+        "ip": "172.25.59.120",
+        "user": {
+          "domain": "example.org",
+          "email": "tbmvj.mjitg@example.org",
+          "name": "tbmvj.mjitg"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.org",
+        "email": "tbmvj.mjitg@example.org",
+        "name": "tbmvj.mjitg"
+      }
+    },
+    {
+      "@timestamp": "2051-12-22T08:38:43.000Z",
+      "checkpoint": {
+        "additional_info": "SSH connection by admin_org user to Expert Shell",
+        "administrator": "admin_org",
+        "alert": "Expert_Alert",
+        "device_name": "CPFW-0001",
+        "device_type": "GW",
+        "operation": "Log In"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "id": "{0x65854b15,0x0,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-22T08:38:43Z DZ-Ydhcuby CheckPoint 10547 - [alert:\"Expert_Alert\"; flags:\"139296\"; ifdir:\"inbound\"; loguid:\"{0x65854b15,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"10.152.191.193\"; sequencenum:\"71\"; time:\"2586847123\"; version:\"5\"; additional_info:\"SSH connection by admin_org user to Expert Shell\"; administrator:\"admin_org\"; client_ip:\"10.142.1.138\"; device_name:\"CPFW-0001\"; device_type:\"GW\"; operation:\"Log In\"; product:\"Expert Shell\"; subject:\"Administrator Expert Shell login\"]",
+        "outcome": "success",
+        "sequence": 71,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "CPFW-0001",
+        "type": "GW"
+      },
+      "message": "Administrator Expert Shell login",
+      "network": {
+        "direction": "inbound",
+        "protocol": "ssh"
+      },
+      "observer": {
+        "ip": [
+          "10.152.191.193"
+        ],
+        "name": "10.152.191.193",
+        "product": "Expert Shell",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "10.142.1.138",
+          "10.152.191.193"
+        ],
+        "user": [
+          "admin_org"
+        ]
+      },
+      "source": {
+        "ip": "10.142.1.138",
+        "user": {
+          "name": "admin_org"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin_org"
+      }
+    },
+    {
+      "@timestamp": "2051-12-01T08:49:00.000Z",
+      "checkpoint": {
+        "additional_info": "SSH connection by tbmvj.mjitg@example.org user to Expert Shell",
+        "administrator": "tbmvj.mjitg@example.org",
+        "alert": "Expert_Alert",
+        "device_name": "CPFW-0001",
+        "device_type": "GW",
+        "operation": "Log In"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "id": "{0x65699dfe,0x0,0x6401a8c0,0x29fed3f3}",
+        "kind": "event",
+        "original": "<134>1 2051-12-01T08:49:00Z DZ-Ydhcuby CheckPoint 21491 - [alert:\"Expert_Alert\"; flags:\"139296\"; ifdir:\"inbound\"; loguid:\"{0x65699dfe,0x0,0x6401a8c0,0x29fed3f3}\"; origin:\"10.152.191.193\"; sequencenum:\"165\"; time:\"2585033340\"; version:\"5\"; additional_info:\"SSH connection by tbmvj.mjitg@example.org user to Expert Shell\"; administrator:\"tbmvj.mjitg@example.org\"; client_ip:\"172.25.59.120\"; device_name:\"CPFW-0001\"; device_type:\"GW\"; operation:\"Log In\"; product:\"Expert Shell\"; subject:\"Administrator Expert Shell login\"]",
+        "outcome": "success",
+        "sequence": 165,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "CPFW-0001",
+        "type": "GW"
+      },
+      "message": "Administrator Expert Shell login",
+      "network": {
+        "direction": "inbound",
+        "protocol": "ssh"
+      },
+      "observer": {
+        "ip": [
+          "10.152.191.193"
+        ],
+        "name": "10.152.191.193",
+        "product": "Expert Shell",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "172.25.59.120",
+          "10.152.191.193"
+        ],
+        "user": [
+          "tbmvj.mjitg",
+          "tbmvj.mjitg@example.org"
+        ]
+      },
+      "source": {
+        "ip": "172.25.59.120",
+        "user": {
+          "domain": "example.org",
+          "email": "tbmvj.mjitg@example.org",
+          "name": "tbmvj.mjitg"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.org",
+        "email": "tbmvj.mjitg@example.org",
+        "name": "tbmvj.mjitg"
+      }
+    },
+    {
+      "@timestamp": "2051-12-29T14:20:02.000Z",
+      "checkpoint": {
+        "additional_info": "logout localhost",
+        "administrator": "WEB_API",
+        "operation": "Log Out",
+        "origin_sic_name": "cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local",
+        "sendtotrackerasadvancedauditlog": "0",
+        "session_uid": "a842fc29-f79c-43a5-902b-0d329b72f6b2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-out",
+        "category": [
+          "authentication"
+        ],
+        "id": "{0x658ed593,0x1,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-29T14:20:02Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658ed593,0x1,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"2\"; time:\"2587472402\"; version:\"5\"; additional_info:\"logout localhost\"; administrator:\"WEB_API\"; client_ip:\"192.168.120.242\"; domain_name:\"SMC User\"; operation:\"Log Out\"; product:\"WEB_API\"; sendtotrackerasadvancedauditlog:\"0\"; session_uid:\"a842fc29-f79c-43a5-902b-0d329b72f6b2\"; subject:\"Administrator Logout\"]",
+        "outcome": "success",
+        "sequence": 2,
+        "timezone": "UTC",
+        "type": [
+          "end"
+        ]
+      },
+      "message": "Administrator Logout",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "WEB_API",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "192.168.120.242"
+        ],
+        "user": [
+          "web_api"
+        ]
+      },
+      "source": {
+        "ip": "192.168.120.242",
+        "user": {
+          "domain": "SMC User",
+          "name": "web_api"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "smc user",
+        "name": "web_api"
+      }
+    },
+    {
+      "@timestamp": "2051-12-29T13:42:04.000Z",
+      "checkpoint": {
+        "administrator": "User (Example)",
+        "machine": "localhost",
+        "operation": "Log Out",
+        "operation_number": "12",
+        "origin_sic_name": "cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-out",
+        "category": [
+          "authentication"
+        ],
+        "code": "12",
+        "id": "{0x658eccad,0x0,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-29T13:42:04Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658eccad,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587470124\"; version:\"5\"; administrator:\"User (Example)\"; client_ip:\"127.0.0.1\"; machine:\"localhost\"; operation:\"Log Out\"; operation_number:\"12\"; product:\"WEB_API\"; subject:\"Administrator Login\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "end"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "WEB_API",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1",
+          "192.168.120.242"
+        ],
+        "user": [
+          "example",
+          "User"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1",
+        "user": {
+          "full_name": "User",
+          "name": "example"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "full_name": "User",
+        "name": "example"
+      }
+    },
+    {
+      "@timestamp": "2051-12-29T13:23:54.000Z",
+      "checkpoint": {
+        "administrator": "tbmvj.mjitg@example.org",
+        "machine": "eegmwkg8885.areggve.local",
+        "operation": "Log Out",
+        "operation_number": "12",
+        "origin_sic_name": "cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-out",
+        "category": [
+          "authentication"
+        ],
+        "code": "12",
+        "id": "{0x658ec86c,0x0,0x6401a8c0,0x3c7878a}",
+        "kind": "event",
+        "original": "<134>1 2051-12-29T13:23:54Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658ec86c,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587469034\"; version:\"5\"; administrator:\"tbmvj.mjitg@example.org\"; client_ip:\"10.7.123.123\"; machine:\"eegmwkg8885.areggve.local\"; operation:\"Log Out\"; operation_number:\"12\"; product:\"SmartConsole\"; subject:\"Administrator Login\"]",
+        "outcome": "success",
+        "sequence": 1,
+        "timezone": "UTC",
+        "type": [
+          "end"
+        ]
+      },
+      "message": "Administrator Login",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "hostname": "cp_mgmt",
+        "ip": [
+          "192.168.120.242"
+        ],
+        "name": "192.168.120.242",
+        "product": "SmartConsole",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "10.7.123.123",
+          "192.168.120.242"
+        ],
+        "user": [
+          "tbmvj.mjitg",
+          "tbmvj.mjitg@example.org"
+        ]
+      },
+      "source": {
+        "domain": "eegmwkg8885.areggve.local",
+        "ip": "10.7.123.123",
+        "user": {
+          "domain": "example.org",
+          "email": "tbmvj.mjitg@example.org",
+          "name": "tbmvj.mjitg"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.org",
+        "email": "tbmvj.mjitg@example.org",
+        "name": "tbmvj.mjitg"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-29T14:20:02Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658ed593,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587472402\"; version:\"5\"; additional_info:\"login by localhost\"; administrator:\"WEB_API\"; client_ip:\"192.168.120.242\"; operation:\"Log In\"; product:\"WEB_API\"; sendtotrackerasadvancedauditlog:\"0\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-29T14:03:03Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658ed198,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587471383\"; version:\"5\"; additional_info:\"Authentication method: Active Directory\"; administrator:\"User (Example)\"; client_ip:\"127.0.0.1\"; machine:\"localhost\"; operation:\"Log In\"; operation_number:\"10\"; product:\"WEB_API\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-29T08:42:55Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658e8690,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587452175\"; version:\"5\"; additional_info:\"Authentication method: radius\"; administrator:\"tbmvj.mjitg@example.org\"; client_ip:\"10.7.123.123\"; machine:\"eegmwkg8885.areggve.local\"; operation:\"Log In\"; operation_number:\"10\"; product:\"SmartConsole\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-15T11:52:02Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x657c3de4,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2586253922\"; version:\"5\"; additional_info:\"Authentication method: radius\"; administrator:\"v.anfbnr@bvkzkxdq.com\"; client_ip:\"172.20.189.47\"; machine:\"vcrex652.gdknkbueds.com\"; operation:\"Log In\"; operation_number:\"10\"; product:\"SmartConsole\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-27T09:39:55Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658bf0ed,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587282795\"; version:\"5\"; additional_info:\"Administrator failed to log in: Wrong Password\"; administrator:\"v.anfbnr@bvkzkxdq.com\"; audit_status:\"Failure\"; client_ip:\"172.20.189.47\"; machine:\"vcrex652.gdknkbueds.com\"; operation:\"Log In\"; operation_number:\"11\"; product:\"SmartConsole\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-28T08:03:28Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658d2bd2,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587363408\"; version:\"5\"; additional_info:\"Administrator failed to log in: SIC Error for gettopo: Server could not find authentication method for service gettopo. Peer is: \"; audit_status:\"Failure\"; client_ip:\"172.20.189.47\"; operation:\"Log In\"; operation_number:\"11\"; product:\"Unknown\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-21T10:41:20Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x65841652,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2586768080\"; version:\"5\"; additional_info:\"Administrator failed to log in: Wrong Password\"; administrator:\"tbmvj.mjitg@example.org\"; audit_status:\"Failure\"; client_ip:\"172.25.59.120\"; machine:\"cp_console.example.local\"; operation:\"Log In\"; operation_number:\"11\"; product:\"SmartConsole\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-22T08:38:43Z DZ-Ydhcuby CheckPoint 10547 - [alert:\"Expert_Alert\"; flags:\"139296\"; ifdir:\"inbound\"; loguid:\"{0x65854b15,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"10.152.191.193\"; sequencenum:\"71\"; time:\"2586847123\"; version:\"5\"; additional_info:\"SSH connection by admin_org user to Expert Shell\"; administrator:\"admin_org\"; client_ip:\"10.142.1.138\"; device_name:\"CPFW-0001\"; device_type:\"GW\"; operation:\"Log In\"; product:\"Expert Shell\"; subject:\"Administrator Expert Shell login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-01T08:49:00Z DZ-Ydhcuby CheckPoint 21491 - [alert:\"Expert_Alert\"; flags:\"139296\"; ifdir:\"inbound\"; loguid:\"{0x65699dfe,0x0,0x6401a8c0,0x29fed3f3}\"; origin:\"10.152.191.193\"; sequencenum:\"165\"; time:\"2585033340\"; version:\"5\"; additional_info:\"SSH connection by tbmvj.mjitg@example.org user to Expert Shell\"; administrator:\"tbmvj.mjitg@example.org\"; client_ip:\"172.25.59.120\"; device_name:\"CPFW-0001\"; device_type:\"GW\"; operation:\"Log In\"; product:\"Expert Shell\"; subject:\"Administrator Expert Shell login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-29T14:20:02Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658ed593,0x1,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"2\"; time:\"2587472402\"; version:\"5\"; additional_info:\"logout localhost\"; administrator:\"WEB_API\"; client_ip:\"192.168.120.242\"; domain_name:\"SMC User\"; operation:\"Log Out\"; product:\"WEB_API\"; sendtotrackerasadvancedauditlog:\"0\"; session_uid:\"a842fc29-f79c-43a5-902b-0d329b72f6b2\"; subject:\"Administrator Logout\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-29T13:42:04Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658eccad,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587470124\"; version:\"5\"; administrator:\"User (Example)\"; client_ip:\"127.0.0.1\"; machine:\"localhost\"; operation:\"Log Out\"; operation_number:\"12\"; product:\"WEB_API\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2051-12-29T13:23:54Z DZ-Ydhcuby CheckPoint 10547 - [action:\"Accept\"; flags:\"163872\"; ifdir:\"outbound\"; loguid:\"{0x658ec86c,0x0,0x6401a8c0,0x3c7878a}\"; origin:\"192.168.120.242\"; originsicname:\"cn=cp_mgmt,o=DZ-Ydhcuby.areggve.local\"; sequencenum:\"1\"; time:\"2587469034\"; version:\"5\"; administrator:\"tbmvj.mjitg@example.org\"; client_ip:\"10.7.123.123\"; machine:\"eegmwkg8885.areggve.local\"; operation:\"Log Out\"; operation_number:\"12\"; product:\"SmartConsole\"; subject:\"Administrator Login\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "firewall",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-checkpoint-firewall-default",
+    "event_count": 12,
+    "numeric_keyword_fields": [],
+    "package": "checkpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

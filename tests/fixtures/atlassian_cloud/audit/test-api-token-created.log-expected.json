@@ -1,0 +1,94 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-05-19T10:10:00.000Z",
+      "atlassian_cloud": {
+        "audit": {
+          "actor": {
+            "auth": {
+              "auth_type": "session",
+              "token_id": "token-00000001",
+              "token_label": "Example API Token"
+            }
+          },
+          "location": {
+            "geo": "EU"
+          },
+          "message": {
+            "format": "simple"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "api_token_created",
+        "category": [
+          "iam"
+        ],
+        "created": "2054-05-19T10:10:01.000Z",
+        "id": "d1462407-5511-4351-8097-371496703367",
+        "kind": "event",
+        "original": "{\"type\":\"events\",\"id\":\"d1462407-5511-4351-8097-371496703367\",\"attributes\":{\"time\":\"2054-05-19T10:10:00.000Z\",\"processedAt\":\"2054-05-19T10:10:01.000Z\",\"action\":\"api_token_created\",\"actor\":{\"id\":\"712020:dededfca-fefe-fcde-feae-efcffedeedbd\",\"name\":\"Frank Nguyen\",\"email\":\"eybsp.qljidw@example.com\",\"auth\":{\"authType\":\"session\",\"tokenId\":\"token-00000001\",\"tokenLabel\":\"Example API Token\"}},\"location\":{\"ip\":\"198.51.100.30\",\"geo\":\"EU\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Frank Nguyen created an API token\",\"format\":\"simple\"}}",
+        "outcome": "success",
+        "type": [
+          "creation"
+        ]
+      },
+      "message": "Frank Nguyen created an API token",
+      "observer": {
+        "product": "Atlassian Cloud",
+        "type": "saas",
+        "vendor": "Atlassian"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.30"
+        ],
+        "user": [
+          "Frank Nguyen",
+          "eybsp.qljidw@example.com"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "Example City",
+          "country_name": "Example Country"
+        },
+        "ip": "198.51.100.30"
+      },
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "eybsp.qljidw@example.com",
+        "id": "712020:dededfca-fefe-fcde-feae-efcffedeedbd",
+        "name": "Frank Nguyen"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"type\":\"events\",\"id\":\"d1462407-5511-4351-8097-371496703367\",\"attributes\":{\"time\":\"2054-05-19T10:10:00.000Z\",\"processedAt\":\"2054-05-19T10:10:01.000Z\",\"action\":\"api_token_created\",\"actor\":{\"id\":\"712020:dededfca-fefe-fcde-feae-efcffedeedbd\",\"name\":\"Frank Nguyen\",\"email\":\"eybsp.qljidw@example.com\",\"auth\":{\"authType\":\"session\",\"tokenId\":\"token-00000001\",\"tokenLabel\":\"Example API Token\"}},\"location\":{\"ip\":\"198.51.100.30\",\"geo\":\"EU\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Frank Nguyen created an API token\",\"format\":\"simple\"}}",
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_cloud-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

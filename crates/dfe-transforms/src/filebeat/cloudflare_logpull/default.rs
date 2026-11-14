@@ -51,9 +51,7 @@ impl Transform for Default {
                 // Begin nested pipeline: "http"
                 let _cond = { event.has_value("json.EdgeStartTimestamp") };
                 if _cond {
-                    // Painless script
-                    // Source: try {\n  long t;\n  if (ctx.json.EdgeStartTimestamp instanceof String) {\n    t = Long.parseLong(ctx.json.EdgeStartTimestamp);\n  } else if (ctx.json.EdgeStartTimestamp instanceof Number) {\n    t = (long)(ctx.json.EdgeStartTimestamp);\n  } else {\n    return;\n  }\n  if (t > (long)(1e18)) {\n    ctx.json.EdgeStartTimestamp = t/(long)(1e6)\n  } else if (t < (long)(1e10))  {\n    ctx.json.EdgeStartTimestamp = t*(long)(1e3)\n  }\n}\ncatch (Exception e) {}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -63,9 +61,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("json.EdgeEndTimestamp") };
                 if _cond {
-                    // Painless script
-                    // Source: try {\n  long t;\n  if (ctx.json.EdgeEndTimestamp instanceof String) {\n    t = Long.parseLong(ctx.json.EdgeEndTimestamp);\n  } else if (ctx.json.EdgeEndTimestamp instanceof Number) {\n    t = (long)(ctx.json.EdgeEndTimestamp);\n  } else {\n    return;\n  }\n  if (t > (long)(1e18)) {\n    ctx.json.EdgeEndTimestamp = t/(long)(1e6)\n  } else if (t < (long)(1e10))  {\n    ctx.json.EdgeEndTimestamp = t*(long)(1e3)\n  }\n}\ncatch (Exception e) {}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -127,9 +123,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.start") && event.has_value("event.end") };
                 if _cond {
-                    // Painless script
-                    // Source: ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ZonedDateTime end = ZonedDateTime.parse(ctx.event.end); ctx.event.duration = ChronoUnit.NANOS.between(start, end);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -248,9 +242,7 @@ impl Transform for Default {
                         event.set("url.scheme", v)?;
                     }
                 }
-                // Painless script
-                // Source: def full = \"\";\nif(ctx.url.scheme != null && ctx.url.scheme != \"\") {\n    full += ctx.url.scheme+\"://\";\n}\nif(ctx.url.domain != null && ctx.url.domain != \"\") {\n    full += ctx.url.domain;\n}\nif(ctx.url.path != null && ctx.url.path != \"\") {\n    full += ctx.url.path;\n}\nif(ctx.url.query != null && ctx.url.query != \"\") {\n    full += \"?\"+ctx.url.query;\n}\nif(full != \"\") {\n    ctx.url.full = full\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -897,8 +889,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
+                        // The pipeline's script, emitted as the runtime's equivalent
                         sum_directions_into_existing(event, &["bytes"]);
                         Ok(())
                     })();
@@ -909,8 +900,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

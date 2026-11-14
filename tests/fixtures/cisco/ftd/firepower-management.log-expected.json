@@ -1,0 +1,3826 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:56:30.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:56:30 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /platinum/platformSettingEdit.cgi?type=AuditLog, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 0,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "platformSettingEdit.cgi"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:57:19.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:57:19 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /platinum/platformSettingEdit.cgi?type=Banner, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 194,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "platformSettingEdit.cgi"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:57:26.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:57:26 ChangeReconciliation.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /platinum/ChangeReconciliation.cgi, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 386,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "ChangeReconciliation.cgi"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:57:34.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:57:34 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /platinum/platformSettingEdit.cgi?type=IntrusionPolicyPrefs, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 568,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "platformSettingEdit.cgi"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:57:43.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:57:43 lights_out_mgmt.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /admin/lights_out_mgmt.cgi, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 774,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "lights_out_mgmt.cgi"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:58:02.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:58:02 mojo_server.pl: siem-management: admin@10.28.137.126, Cloud Services, View url filtering settings\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 943,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "mojo_server.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:58:02.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:58:02 mojo_server.pl: siem-management: admin@10.28.137.126, Cloud Services, View amp settings\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 1072,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "mojo_server.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:58:20.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:58:20 mojo_server.pl: siem-management: admin@10.28.137.126, System > Monitoring > Syslog, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 1191,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "mojo_server.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:58:41.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:58:41 mojo_server.pl: siem-management: admin@10.28.137.126, Devices > Device Management, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 1316,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "mojo_server.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:58:47.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:58:47 sfdccsm: siem-management: admin@10.28.137.126, Devices > Device Management > NGFW Interfaces, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 1440,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:58:52.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:58:52 mojo_server.pl: siem-management: admin@10.28.137.126, Devices > Device Management > NGFW Device Summary, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 1575,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "mojo_server.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:58:54.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:58:54 mojo_server.pl: siem-management: admin@10.28.137.126, Devices > Device Management > NGFW Device Summary, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 1721,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "mojo_server.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:59:10.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:59:10 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 1867,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T13:59:15.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 13:59:15 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 1984,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:00:37.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:00:37 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Save Policy ftd-policy\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 2128,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:00:37.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:00:37 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Modified: Syslog\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 2285,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:00:37.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:00:37 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 2436,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:12.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:12 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Save Policy ftd-policy\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 2580,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:12.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:12 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Modified: Syslog\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 2737,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:13.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:13 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 2888,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:20.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:20 sfdccsm: siem-management: csm_processes@Default User IP, Login, Login Success\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 3032,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:31.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:31 ActionQueueScrape.pl: siem-management: csm_processes@Default User IP, Login, Login Success\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 3143,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "ActionQueueScrape.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:31.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:31 ActionQueueScrape.pl: siem-management: admin@localhost, Task Queue, Successful task completion : Pre-deploy Global Configuration Generation\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 3267,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "ActionQueueScrape.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:35.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:35 ActionQueueScrape.pl: siem-management: csm_processes@Default User IP, Login, Login Success\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 3440,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "ActionQueueScrape.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:36.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:36 ActionQueueScrape.pl: siem-management: admin@localhost, Task Queue, Successful task completion : Pre-deploy Device Configuration for siem-ftd\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 3564,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "ActionQueueScrape.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:55.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:55 mojo_server.pl: siem-management: admin@10.28.137.126, System > Configuration > Configuration, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 3739,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "mojo_server.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:56.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:56 sfdccsm: siem-management: admin@localhost, Task Queue, Policy Deployment to siem-ftd - SUCCESS\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 3874,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:01:57.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:01:57 sfdccsm: siem-management: csm_processes@Default User IP, Login, Login Success\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 4002,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "sfdccsm"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:02:03.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:02:03 mojo_server.pl: siem-management: admin@10.28.137.126, System > Monitoring > Syslog, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 4113,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "mojo_server.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:02:11.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:02:11 index.cgi: siem-management: admin@10.28.137.126, System > Monitoring > Audit, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 4238,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "index.cgi"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:02:19.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:02:19 mojo_server.pl: siem-management: admin@10.28.137.126, System > Configuration > Configuration, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 4357,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "mojo_server.pl"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:02:31.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:02:31 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /platinum/platformSettingEdit.cgi?type=AuditLog, Page View\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 4492,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "platformSettingEdit.cgi"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:02:38.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:02:38 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, Devices > Platform Settings > Local System Configuration, Save Local System Configuration\u0000x0a\u0000x00",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 4686,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "platformSettingEdit.cgi"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-14T14:02:38.000Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "original": "<14>Aug 14 2047 14:02:38 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, Devices > Platform Settings > Audit Log Settings >  Modified: Send Audit Log to Syslog enabled > Disabled",
+        "severity": 7,
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "name": "siem-management"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 4870,
+        "syslog": {
+          "facility": {
+            "code": 1
+          },
+          "priority": 14,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "observer": {
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "platformSettingEdit.cgi"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "<14>Aug 14 2047 13:56:30 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /platinum/platformSettingEdit.cgi?type=AuditLog, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 194
+      },
+      "message": "<14>Aug 14 2047 13:57:19 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /platinum/platformSettingEdit.cgi?type=Banner, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 386
+      },
+      "message": "<14>Aug 14 2047 13:57:26 ChangeReconciliation.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /platinum/ChangeReconciliation.cgi, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 568
+      },
+      "message": "<14>Aug 14 2047 13:57:34 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /platinum/platformSettingEdit.cgi?type=IntrusionPolicyPrefs, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 774
+      },
+      "message": "<14>Aug 14 2047 13:57:43 lights_out_mgmt.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /admin/lights_out_mgmt.cgi, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 943
+      },
+      "message": "<14>Aug 14 2047 13:58:02 mojo_server.pl: siem-management: admin@10.28.137.126, Cloud Services, View url filtering settings\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1072
+      },
+      "message": "<14>Aug 14 2047 13:58:02 mojo_server.pl: siem-management: admin@10.28.137.126, Cloud Services, View amp settings\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1191
+      },
+      "message": "<14>Aug 14 2047 13:58:20 mojo_server.pl: siem-management: admin@10.28.137.126, System > Monitoring > Syslog, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1316
+      },
+      "message": "<14>Aug 14 2047 13:58:41 mojo_server.pl: siem-management: admin@10.28.137.126, Devices > Device Management, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1440
+      },
+      "message": "<14>Aug 14 2047 13:58:47 sfdccsm: siem-management: admin@10.28.137.126, Devices > Device Management > NGFW Interfaces, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1575
+      },
+      "message": "<14>Aug 14 2047 13:58:52 mojo_server.pl: siem-management: admin@10.28.137.126, Devices > Device Management > NGFW Device Summary, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1721
+      },
+      "message": "<14>Aug 14 2047 13:58:54 mojo_server.pl: siem-management: admin@10.28.137.126, Devices > Device Management > NGFW Device Summary, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1867
+      },
+      "message": "<14>Aug 14 2047 13:59:10 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1984
+      },
+      "message": "<14>Aug 14 2047 13:59:15 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2128
+      },
+      "message": "<14>Aug 14 2047 14:00:37 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Save Policy ftd-policy\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2285
+      },
+      "message": "<14>Aug 14 2047 14:00:37 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Modified: Syslog\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2436
+      },
+      "message": "<14>Aug 14 2047 14:00:37 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2580
+      },
+      "message": "<14>Aug 14 2047 14:01:12 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Save Policy ftd-policy\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2737
+      },
+      "message": "<14>Aug 14 2047 14:01:12 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Modified: Syslog\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2888
+      },
+      "message": "<14>Aug 14 2047 14:01:13 sfdccsm: siem-management: admin@10.28.137.126, Devices > Platform Settings > Platform Settings Editor, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3032
+      },
+      "message": "<14>Aug 14 2047 14:01:20 sfdccsm: siem-management: csm_processes@Default User IP, Login, Login Success\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3143
+      },
+      "message": "<14>Aug 14 2047 14:01:31 ActionQueueScrape.pl: siem-management: csm_processes@Default User IP, Login, Login Success\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3267
+      },
+      "message": "<14>Aug 14 2047 14:01:31 ActionQueueScrape.pl: siem-management: admin@localhost, Task Queue, Successful task completion : Pre-deploy Global Configuration Generation\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3440
+      },
+      "message": "<14>Aug 14 2047 14:01:35 ActionQueueScrape.pl: siem-management: csm_processes@Default User IP, Login, Login Success\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.424Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3564
+      },
+      "message": "<14>Aug 14 2047 14:01:36 ActionQueueScrape.pl: siem-management: admin@localhost, Task Queue, Successful task completion : Pre-deploy Device Configuration for siem-ftd\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.425Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3739
+      },
+      "message": "<14>Aug 14 2047 14:01:55 mojo_server.pl: siem-management: admin@10.28.137.126, System > Configuration > Configuration, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.425Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3874
+      },
+      "message": "<14>Aug 14 2047 14:01:56 sfdccsm: siem-management: admin@localhost, Task Queue, Policy Deployment to siem-ftd - SUCCESS\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.425Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4002
+      },
+      "message": "<14>Aug 14 2047 14:01:57 sfdccsm: siem-management: csm_processes@Default User IP, Login, Login Success\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.425Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4113
+      },
+      "message": "<14>Aug 14 2047 14:02:03 mojo_server.pl: siem-management: admin@10.28.137.126, System > Monitoring > Syslog, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.425Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4238
+      },
+      "message": "<14>Aug 14 2047 14:02:11 index.cgi: siem-management: admin@10.28.137.126, System > Monitoring > Audit, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.425Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4357
+      },
+      "message": "<14>Aug 14 2047 14:02:19 mojo_server.pl: siem-management: admin@10.28.137.126, System > Configuration > Configuration, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.425Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4492
+      },
+      "message": "<14>Aug 14 2047 14:02:31 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, System > Configuration > Configuration > /platinum/platformSettingEdit.cgi?type=AuditLog, Page View\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.425Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4686
+      },
+      "message": "<14>Aug 14 2047 14:02:38 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, Devices > Platform Settings > Local System Configuration, Save Local System Configuration\u0000x0a\u0000x00",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:55:29.425Z",
+      "agent": {
+        "ephemeral_id": "e09dda03-75ce-4eb2-ba2c-8c33b4095459",
+        "id": "048ae991-5d87-40af-91db-2d2d0141ca87",
+        "name": "f9359a4c5c4f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4870
+      },
+      "message": "<14>Aug 14 2047 14:02:38 platformSettingEdit.cgi: siem-management: admin@10.28.137.126, Devices > Platform Settings > Audit Log Settings >  Modified: Send Audit Log to Syslog enabled > Disabled",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_ftd-log-default",
+    "event_count": 34,
+    "numeric_keyword_fields": [],
+    "package": "cisco_ftd",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

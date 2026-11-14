@@ -1,0 +1,160 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-07-27T09:30:41.903Z",
+      "agent": {
+        "ephemeral_id": "1191d863-4d7b-42a8-bf4d-dabaa2101c17",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "system-security-access-granted",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "code": "4717",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "admin",
+          "change"
+        ]
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4717_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "ZVK-EPQ9VR7G6I6$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "WORKGROUP",
+        "id": "S-1-5-18",
+        "name": "ZVK-EPQ9VR7G6I6$"
+      },
+      "winlog": {
+        "activity_id": "{d09dd4ce-14f6-0707-30ae-7ec0c384e128}",
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6",
+        "event_data": {
+          "AccessGranted": "SeNetworkLogonRight",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetSid": "S-1-5-9"
+        },
+        "event_id": "4717",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 776,
+          "thread": {
+            "id": 820
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1571",
+        "time_created": "2048-07-27T09:30:41.903Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:04:08.002Z",
+      "agent": {
+        "ephemeral_id": "1191d863-4d7b-42a8-bf4d-dabaa2101c17",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4717,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4717_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{d09dd4ce-14f6-0707-30ae-7ec0c384e128}",
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6",
+        "event_data": {
+          "AccessGranted": "SeNetworkLogonRight",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetSid": "S-1-5-9"
+        },
+        "event_id": 4717,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 776,
+          "thread": {
+            "id": 820
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1571,
+        "time_created": "2048-07-27T09:30:41.903Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

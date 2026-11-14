@@ -1,0 +1,61 @@
+{
+    "events": [
+        {
+            "@timestamp": "2053-04-22T10:53:25.282Z",
+            "winlog": {
+              "event_data": {
+                "ReasonForRejection": "An error occurred.",
+                "RuleId": "WMPNetworkSvc-2",
+                "RuleName": "-",
+                "Profile": "All"
+              },
+              "activity_id": "{A06DDF30-D426-0280-2BAA-5AA128C5AE13}",
+              "task": "MPSSVC Rule-Level Policy Change",
+              "channel": "Security",
+              "process": {
+                "pid": 808,
+                "thread": {
+                  "id": 2416
+                }
+              },
+              "record_id": 141730,
+              "event_id": "4953",
+              "opcode": "Info",
+              "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+              "provider_name": "Microsoft-Windows-Security-Auditing",
+              "computer_name": "Vxln.admin.local",
+              "keywords": [
+                "Audit Failure"
+              ]
+            },
+            "log": {
+              "level": "information"
+            },
+            "message": "Windows Firewall ignored a rule because it could not be parsed.\n\t\nProfile:\tAll\n\nReason for Rejection:\tAn error occurred.\n\nRule:\n\tID:\tWMPNetwordkSvc-2\n\tName:\t-",
+            "agent": {
+              "ephemeral_id": "92d27392-ba41-4974-b3e0-32179dbd8276",
+              "id": "f3c72740-4ca9-44df-838f-7f6dadddd113",
+              "name": "Host",
+              "type": "filebeat",
+              "version": "9.1.0"
+            },
+            "ecs": {
+              "version": "8.0.0"
+            },
+            "event": {
+              "code": "4953",
+              "kind": "event",
+              "provider": "Microsoft-Windows-Security-Auditing",
+              "outcome": "failure",
+              "action": "MPSSVC Rule-Level Policy Change",
+              "created": "2053-04-29T05:18:09.559Z"
+            },
+            "host": {
+              "name": "Vxln.admin.local"
+            },
+            "input": {
+              "type": "winlog"
+            }
+          }
+    ]
+}

@@ -1,0 +1,1 @@
+type=USER_LOGIN msg=audit(1489636960.072:19623791): pid=28281 uid=0 auid=700 ses=6793 msg='op=login acct="root" exe="/usr/sbin/sshd" hostname=192.0.2.197 addr=192.0.2.197 terminal=sshd res=success'

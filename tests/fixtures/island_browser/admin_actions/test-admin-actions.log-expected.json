@@ -1,0 +1,990 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-08-28T11:04:18.985Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Create",
+        "created": "2053-08-28T11:04:18.985Z",
+        "id": "a3a5922f-114a-4535-8dac-f0f8776eef0e",
+        "kind": "event",
+        "original": "{\"entityType\":\"User\",\"entityId\":\"auth0|77c25704-7397-4e42-bafd-91c80b5018dc\",\"actionType\":\"Create\",\"actionDomain\":\"UserManagement\",\"entityName\":\"jnmy.opex+85642@example.com\",\"timestamp\":\"2053-08-28T11:04:18.985019Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"API|Testing API Key\",\"sourceIp\":\"203.0.113.75\",\"apiKeyName\":\"Testing API Key\",\"tenantId\":\"elastic-testing\",\"id\":\"a3a5922f-114a-4535-8dac-f0f8776eef0e\",\"createdDate\":\"2053-08-28T11:04:18.985287Z\",\"updatedDate\":\"2053-08-28T11:04:18.985287Z\"}"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "UserManagement",
+          "action_type": "Create",
+          "api_key_name": "Testing API Key",
+          "created_date": "2053-08-28T11:04:18.985Z",
+          "email": "API|Testing API Key",
+          "entity_id": "auth0|77c25704-7397-4e42-bafd-91c80b5018dc",
+          "entity_name": "jnmy.opex+85642@example.com",
+          "entity_type": "User",
+          "id": "a3a5922f-114a-4535-8dac-f0f8776eef0e",
+          "source_ip": "203.0.113.75",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-08-28T11:04:18.985Z",
+          "updated_date": "2053-08-28T11:04:18.985Z",
+          "user_id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75"
+        ],
+        "user": [
+          "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.75"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+      }
+    },
+    {
+      "@timestamp": "2053-08-19T06:20:28.982Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Create",
+        "created": "2053-08-19T06:20:28.983Z",
+        "id": "ea67dabc-e414-4d2b-bdcc-24bf806ee6b3",
+        "kind": "event",
+        "original": "{\"entityType\":\"SIEMConnector\",\"entityId\":\"bafa9309-8b05-4878-8e2e-1dfaf6ed9264\",\"actionType\":\"Create\",\"actionDomain\":\"SystemSettings\",\"entityName\":\"Generic SIEM Integration\",\"timestamp\":\"2053-08-19T06:20:28.982451Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"sourceIp\":\"203.0.113.177\",\"tenantId\":\"elastic-testing\",\"id\":\"ea67dabc-e414-4d2b-bdcc-24bf806ee6b3\",\"createdDate\":\"2053-08-19T06:20:28.983078Z\",\"updatedDate\":\"2053-08-19T06:20:28.983078Z\"}"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "SystemSettings",
+          "action_type": "Create",
+          "created_date": "2053-08-19T06:20:28.983Z",
+          "email": "eofso.mcip@example.com",
+          "entity_id": "bafa9309-8b05-4878-8e2e-1dfaf6ed9264",
+          "entity_name": "Generic SIEM Integration",
+          "entity_type": "SIEMConnector",
+          "id": "ea67dabc-e414-4d2b-bdcc-24bf806ee6b3",
+          "source_ip": "203.0.113.177",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-08-19T06:20:28.982Z",
+          "updated_date": "2053-08-19T06:20:28.983Z",
+          "user_id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.177"
+        ],
+        "user": [
+          "eofso.mcip@example.com",
+          "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.177"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "eofso.mcip@example.com",
+        "id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+      }
+    },
+    {
+      "@timestamp": "2053-08-27T07:41:57.196Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "AddUserToRole",
+        "created": "2053-08-27T07:41:57.196Z",
+        "id": "d8fbf64e-b295-425e-bc14-32c862b2b861",
+        "kind": "event",
+        "original": "{\"entityType\":\"RoleEntity\",\"entityId\":\"auth0|ee2c0b70-ef4d-4de4-9bb5-53af35d1dca2\",\"actionType\":\"AddUserToRole\",\"actionDomain\":\"AdminManagement\",\"entityName\":\"kknl.nzao@example.com\",\"timestamp\":\"2053-08-27T07:41:57.196658Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"sourceIp\":\"203.0.113.177\",\"tenantId\":\"elastic-testing\",\"id\":\"d8fbf64e-b295-425e-bc14-32c862b2b861\",\"createdDate\":\"2053-08-27T07:41:57.196777Z\",\"updatedDate\":\"2053-08-27T07:41:57.196777Z\"}"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "AdminManagement",
+          "action_type": "AddUserToRole",
+          "created_date": "2053-08-27T07:41:57.196Z",
+          "email": "eofso.mcip@example.com",
+          "entity_id": "auth0|ee2c0b70-ef4d-4de4-9bb5-53af35d1dca2",
+          "entity_name": "kknl.nzao@example.com",
+          "entity_type": "RoleEntity",
+          "id": "d8fbf64e-b295-425e-bc14-32c862b2b861",
+          "source_ip": "203.0.113.177",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-08-27T07:41:57.196Z",
+          "updated_date": "2053-08-27T07:41:57.196Z",
+          "user_id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.177"
+        ],
+        "user": [
+          "eofso.mcip@example.com",
+          "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.177"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "eofso.mcip@example.com",
+        "id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+      }
+    },
+    {
+      "@timestamp": "2053-09-05T10:19:47.417Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "ApplyChanges",
+        "created": "2053-09-05T10:19:47.424Z",
+        "id": "f7c50741-de58-4ff7-9396-244dbf3cb9d1",
+        "kind": "event",
+        "original": "{\"entityType\":\"PolicyEntity\",\"actionType\":\"ApplyChanges\",\"actionDomain\":\"Policy\",\"entityName\":\"Policy\",\"timestamp\":\"2053-09-05T10:19:47.417638Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"changesBulkId\":6,\"actionStatus\":\"Done\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"f7c50741-de58-4ff7-9396-244dbf3cb9d1\",\"createdDate\":\"2053-09-05T10:19:47.424349Z\",\"updatedDate\":\"2053-09-05T10:19:47.424349Z\"}",
+        "outcome": "success"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "Policy",
+          "action_status": "Done",
+          "action_type": "ApplyChanges",
+          "changes_bulk_id": 6,
+          "created_date": "2053-09-05T10:19:47.424Z",
+          "email": "wzzv.ygjxs@example.com",
+          "entity_name": "Policy",
+          "entity_type": "PolicyEntity",
+          "id": "f7c50741-de58-4ff7-9396-244dbf3cb9d1",
+          "source_ip": "203.0.113.248",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-09-05T10:19:47.417Z",
+          "updated_date": "2053-09-05T10:19:47.424Z",
+          "user_id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "wzzv.ygjxs@example.com",
+          "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "wzzv.ygjxs@example.com",
+        "id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+      }
+    },
+    {
+      "@timestamp": "2053-08-29T10:00:11.559Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "ApplyChanges",
+        "created": "2053-08-29T10:00:11.567Z",
+        "id": "8fc17441-42b9-43d1-bc48-dab26796afa4",
+        "kind": "event",
+        "original": "{\"entityType\":\"PolicyEntity\",\"actionType\":\"ApplyChanges\",\"actionDomain\":\"Policy\",\"entityName\":\"Policy\",\"timestamp\":\"2053-08-29T10:00:11.559643Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"changesBulkId\":3,\"actionStatus\":\"Done\",\"sourceIp\":\"192.0.2.87\",\"tenantId\":\"elastic-testing\",\"id\":\"8fc17441-42b9-43d1-bc48-dab26796afa4\",\"createdDate\":\"2053-08-29T10:00:11.567378Z\",\"updatedDate\":\"2053-08-29T10:00:11.567378Z\"}",
+        "outcome": "success"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "Policy",
+          "action_status": "Done",
+          "action_type": "ApplyChanges",
+          "changes_bulk_id": 3,
+          "created_date": "2053-08-29T10:00:11.567Z",
+          "email": "wzzv.ygjxs@example.com",
+          "entity_name": "Policy",
+          "entity_type": "PolicyEntity",
+          "id": "8fc17441-42b9-43d1-bc48-dab26796afa4",
+          "source_ip": "192.0.2.87",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-08-29T10:00:11.559Z",
+          "updated_date": "2053-08-29T10:00:11.567Z",
+          "user_id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "wzzv.ygjxs@example.com",
+          "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "wzzv.ygjxs@example.com",
+        "id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+      }
+    },
+    {
+      "@timestamp": "2053-08-21T10:10:46.277Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "ApplyChanges",
+        "created": "2053-08-21T10:10:46.283Z",
+        "id": "64a4a5b4-d265-4784-af08-de82cc4226c5",
+        "kind": "event",
+        "original": "{\"entityType\":\"PolicyEntity\",\"actionType\":\"ApplyChanges\",\"actionDomain\":\"Policy\",\"entityName\":\"Policy\",\"timestamp\":\"2053-08-21T10:10:46.277926Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"changesBulkId\":1,\"actionStatus\":\"Done\",\"sourceIp\":\"192.0.2.87\",\"tenantId\":\"elastic-testing\",\"id\":\"64a4a5b4-d265-4784-af08-de82cc4226c5\",\"createdDate\":\"2053-08-21T10:10:46.283406Z\",\"updatedDate\":\"2053-08-21T10:10:46.283406Z\"}",
+        "outcome": "success"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "Policy",
+          "action_status": "Done",
+          "action_type": "ApplyChanges",
+          "changes_bulk_id": 1,
+          "created_date": "2053-08-21T10:10:46.283Z",
+          "email": "eofso.mcip@example.com",
+          "entity_name": "Policy",
+          "entity_type": "PolicyEntity",
+          "id": "64a4a5b4-d265-4784-af08-de82cc4226c5",
+          "source_ip": "192.0.2.87",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-08-21T10:10:46.277Z",
+          "updated_date": "2053-08-21T10:10:46.283Z",
+          "user_id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "eofso.mcip@example.com",
+          "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "eofso.mcip@example.com",
+        "id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+      }
+    },
+    {
+      "@timestamp": "2053-09-05T10:20:12.637Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "ApplyChanges",
+        "created": "2053-09-05T10:20:12.642Z",
+        "id": "8c81c670-6c72-4ff4-8c82-100e2a07a8fc",
+        "kind": "event",
+        "original": "{\"entityType\":\"PolicyEntity\",\"actionType\":\"ApplyChanges\",\"actionDomain\":\"Policy\",\"entityName\":\"Policy\",\"timestamp\":\"2053-09-05T10:20:12.637325Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"changesBulkId\":7,\"actionStatus\":\"Done\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"8c81c670-6c72-4ff4-8c82-100e2a07a8fc\",\"createdDate\":\"2053-09-05T10:20:12.642877Z\",\"updatedDate\":\"2053-09-05T10:20:12.642877Z\"}",
+        "outcome": "success"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "Policy",
+          "action_status": "Done",
+          "action_type": "ApplyChanges",
+          "changes_bulk_id": 7,
+          "created_date": "2053-09-05T10:20:12.642Z",
+          "email": "wzzv.ygjxs@example.com",
+          "entity_name": "Policy",
+          "entity_type": "PolicyEntity",
+          "id": "8c81c670-6c72-4ff4-8c82-100e2a07a8fc",
+          "source_ip": "203.0.113.248",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-09-05T10:20:12.637Z",
+          "updated_date": "2053-09-05T10:20:12.642Z",
+          "user_id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "wzzv.ygjxs@example.com",
+          "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "wzzv.ygjxs@example.com",
+        "id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+      }
+    },
+    {
+      "@timestamp": "2053-08-25T05:59:53.135Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Login",
+        "created": "2053-08-25T05:59:53.141Z",
+        "id": "33f567d1-85a9-4b32-90e2-e22036f44c64",
+        "kind": "event",
+        "original": "{\"entityType\":\"ManagementConsole\",\"entityId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"actionType\":\"Login\",\"actionDomain\":\"Authentication\",\"entityName\":\"eofso.mcip@example.com\",\"timestamp\":\"2053-08-25T05:59:53.135511Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"sourceIp\":\"203.0.113.177\",\"tenantId\":\"elastic-testing\",\"id\":\"33f567d1-85a9-4b32-90e2-e22036f44c64\",\"createdDate\":\"2053-08-25T05:59:53.141601Z\",\"updatedDate\":\"2053-08-25T05:59:53.141601Z\"}"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "Authentication",
+          "action_type": "Login",
+          "created_date": "2053-08-25T05:59:53.141Z",
+          "email": "eofso.mcip@example.com",
+          "entity_id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb",
+          "entity_name": "eofso.mcip@example.com",
+          "entity_type": "ManagementConsole",
+          "id": "33f567d1-85a9-4b32-90e2-e22036f44c64",
+          "source_ip": "203.0.113.177",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-08-25T05:59:53.135Z",
+          "updated_date": "2053-08-25T05:59:53.141Z",
+          "user_id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.177"
+        ],
+        "user": [
+          "eofso.mcip@example.com",
+          "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.177"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "eofso.mcip@example.com",
+        "id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+      }
+    },
+    {
+      "@timestamp": "2053-09-09T07:12:46.832Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Logout",
+        "created": "2053-09-09T07:12:46.838Z",
+        "id": "17063562-8bd2-4b12-b5f3-e0e1e8bbe880",
+        "kind": "event",
+        "original": "{\"entityType\":\"ManagementConsole\",\"entityId\":\"samlp|elastic-testing-google-workspace-test|fpf@areggve.io\",\"actionType\":\"Logout\",\"actionDomain\":\"Authentication\",\"entityName\":\"fpf@areggve.io\",\"timestamp\":\"2053-09-09T07:12:46.832441Z\",\"userId\":\"samlp|elastic-testing-google-workspace-test|fpf@areggve.io\",\"email\":\"fpf@areggve.io\",\"sourceIp\":\"198.51.100.124\",\"tenantId\":\"elastic-testing\",\"id\":\"17063562-8bd2-4b12-b5f3-e0e1e8bbe880\",\"createdDate\":\"2053-09-09T07:12:46.838423Z\",\"updatedDate\":\"2053-09-09T07:12:46.838423Z\"}"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "Authentication",
+          "action_type": "Logout",
+          "created_date": "2053-09-09T07:12:46.838Z",
+          "email": "fpf@areggve.io",
+          "entity_id": "samlp|elastic-testing-google-workspace-test|fpf@areggve.io",
+          "entity_name": "fpf@areggve.io",
+          "entity_type": "ManagementConsole",
+          "id": "17063562-8bd2-4b12-b5f3-e0e1e8bbe880",
+          "source_ip": "198.51.100.124",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-09-09T07:12:46.832Z",
+          "updated_date": "2053-09-09T07:12:46.838Z",
+          "user_id": "samlp|elastic-testing-google-workspace-test|fpf@areggve.io"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.124"
+        ],
+        "user": [
+          "fpf@areggve.io",
+          "samlp|elastic-testing-google-workspace-test|fpf@areggve.io"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "areggve.io",
+        "email": "fpf@areggve.io",
+        "id": "samlp|elastic-testing-google-workspace-test|fpf@areggve.io"
+      }
+    },
+    {
+      "@timestamp": "2053-08-18T16:52:18.425Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Create",
+        "created": "2053-08-18T16:52:18.425Z",
+        "id": "09dd0fd6-2127-4536-b8f9-42703e10dd1e",
+        "kind": "event",
+        "original": "{\"entityType\":\"Admin\",\"entityId\":\"auth0|a5d2618e-11fd-4c07-9eb2-bb2d98aa9b57\",\"actionType\":\"Create\",\"actionDomain\":\"AdminManagement\",\"entityName\":\"ybkbye@example.com\",\"timestamp\":\"2053-08-18T16:52:18.425404Z\",\"userId\":\"samlp|elastic-saml-test|00uz7na9uiIrw8OUE1t7\",\"email\":\"gzsjeg@example.com\",\"sourceIp\":\"203.0.113.75\",\"tenantId\":\"elastic-testing\",\"id\":\"09dd0fd6-2127-4536-b8f9-42703e10dd1e\",\"createdDate\":\"2053-08-18T16:52:18.42592Z\",\"updatedDate\":\"2053-08-18T16:52:18.42592Z\"}"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "AdminManagement",
+          "action_type": "Create",
+          "created_date": "2053-08-18T16:52:18.425Z",
+          "email": "gzsjeg@example.com",
+          "entity_id": "auth0|a5d2618e-11fd-4c07-9eb2-bb2d98aa9b57",
+          "entity_name": "ybkbye@example.com",
+          "entity_type": "Admin",
+          "id": "09dd0fd6-2127-4536-b8f9-42703e10dd1e",
+          "source_ip": "203.0.113.75",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-08-18T16:52:18.425Z",
+          "updated_date": "2053-08-18T16:52:18.425Z",
+          "user_id": "samlp|elastic-saml-test|00uz7na9uiIrw8OUE1t7"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75"
+        ],
+        "user": [
+          "gzsjeg@example.com",
+          "samlp|elastic-saml-test|00uz7na9uiIrw8OUE1t7"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.75"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "gzsjeg@example.com",
+        "id": "samlp|elastic-saml-test|00uz7na9uiIrw8OUE1t7"
+      }
+    },
+    {
+      "@timestamp": "2053-08-29T05:58:18.572Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Create",
+        "created": "2053-08-29T05:58:18.575Z",
+        "id": "fc74de1c-bfd6-4ec7-a81a-71ca0701714a",
+        "kind": "event",
+        "original": "{\"entityType\":\"IdpIntegrationCustomSettingsEntity\",\"entityId\":\"01a14410-3232-46b2-b97f-4484d8e159eb\",\"actionType\":\"Create\",\"actionDomain\":\"Policy\",\"entityName\":\"IDP Seamless Login Settings\",\"timestamp\":\"2053-08-29T05:58:18.572796Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"changesBulkId\":3,\"actionStatus\":\"Applied\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"fc74de1c-bfd6-4ec7-a81a-71ca0701714a\",\"createdDate\":\"2053-08-29T05:58:18.575869Z\",\"updatedDate\":\"2053-08-29T10:00:11.654661Z\"}",
+        "outcome": "success"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "Policy",
+          "action_status": "Applied",
+          "action_type": "Create",
+          "changes_bulk_id": 3,
+          "created_date": "2053-08-29T05:58:18.575Z",
+          "email": "wzzv.ygjxs@example.com",
+          "entity_id": "01a14410-3232-46b2-b97f-4484d8e159eb",
+          "entity_name": "IDP Seamless Login Settings",
+          "entity_type": "IdpIntegrationCustomSettingsEntity",
+          "id": "fc74de1c-bfd6-4ec7-a81a-71ca0701714a",
+          "source_ip": "203.0.113.248",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-08-29T05:58:18.572Z",
+          "updated_date": "2053-08-29T10:00:11.654Z",
+          "user_id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "wzzv.ygjxs@example.com",
+          "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "wzzv.ygjxs@example.com",
+        "id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+      }
+    },
+    {
+      "@timestamp": "2053-09-04T09:28:14.021Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Update",
+        "created": "2053-09-04T09:28:14.023Z",
+        "id": "6cef2d96-c52c-40a2-897a-e04ccd85cfb1",
+        "kind": "event",
+        "original": "{\"entityType\":\"IdpConnection\",\"actionType\":\"Update\",\"actionDomain\":\"SystemSettings\",\"entityName\":\"elastic-testing-duo-02-test\",\"timestamp\":\"2053-09-04T09:28:14.021754Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"sourceIp\":\"198.51.100.124\",\"tenantId\":\"elastic-testing\",\"id\":\"6cef2d96-c52c-40a2-897a-e04ccd85cfb1\",\"createdDate\":\"2053-09-04T09:28:14.023318Z\",\"updatedDate\":\"2053-09-04T09:28:14.023318Z\"}"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "SystemSettings",
+          "action_type": "Update",
+          "created_date": "2053-09-04T09:28:14.023Z",
+          "email": "wzzv.ygjxs@example.com",
+          "entity_name": "elastic-testing-duo-02-test",
+          "entity_type": "IdpConnection",
+          "id": "6cef2d96-c52c-40a2-897a-e04ccd85cfb1",
+          "source_ip": "198.51.100.124",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-09-04T09:28:14.021Z",
+          "updated_date": "2053-09-04T09:28:14.023Z",
+          "user_id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.124"
+        ],
+        "user": [
+          "wzzv.ygjxs@example.com",
+          "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "wzzv.ygjxs@example.com",
+        "id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+      }
+    },
+    {
+      "@timestamp": "2053-09-05T09:50:50.331Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Delete",
+        "created": "2053-09-05T09:50:50.331Z",
+        "id": "6dda79eb-5754-416f-b56c-fb5a67e0f8d2",
+        "kind": "event",
+        "original": "{\"entityType\":\"IdpConnection\",\"entityId\":\"con_vlwrjkbgver2\",\"actionType\":\"Delete\",\"actionDomain\":\"SystemSettings\",\"entityName\":\"elastic-testing-duo-03-test\",\"timestamp\":\"2053-09-05T09:50:50.33105Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"6dda79eb-5754-416f-b56c-fb5a67e0f8d2\",\"createdDate\":\"2053-09-05T09:50:50.331311Z\",\"updatedDate\":\"2053-09-05T09:50:50.331311Z\"}"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "SystemSettings",
+          "action_type": "Delete",
+          "created_date": "2053-09-05T09:50:50.331Z",
+          "email": "wzzv.ygjxs@example.com",
+          "entity_id": "con_vlwrjkbgver2",
+          "entity_name": "elastic-testing-duo-03-test",
+          "entity_type": "IdpConnection",
+          "id": "6dda79eb-5754-416f-b56c-fb5a67e0f8d2",
+          "source_ip": "203.0.113.248",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-09-05T09:50:50.331Z",
+          "updated_date": "2053-09-05T09:50:50.331Z",
+          "user_id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "wzzv.ygjxs@example.com",
+          "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "wzzv.ygjxs@example.com",
+        "id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+      }
+    },
+    {
+      "@timestamp": "2053-08-21T10:10:36.709Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Create",
+        "created": "2053-08-21T10:10:36.713Z",
+        "id": "5ad871d8-3911-4f0b-9c95-7a3d35f377c4",
+        "kind": "event",
+        "original": "{\"entityType\":\"EndpointAgentProfileEntity\",\"entityId\":\"aa2333b9-d529-41e6-a230-e4cf97aa0e6a\",\"actionType\":\"Create\",\"actionDomain\":\"Policy\",\"entityName\":\"Test\",\"timestamp\":\"2053-08-21T10:10:36.709884Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"changesBulkId\":1,\"actionStatus\":\"Applied\",\"sourceIp\":\"192.0.2.87\",\"tenantId\":\"elastic-testing\",\"id\":\"5ad871d8-3911-4f0b-9c95-7a3d35f377c4\",\"createdDate\":\"2053-08-21T10:10:36.713598Z\",\"updatedDate\":\"2053-08-21T10:10:46.319347Z\"}",
+        "outcome": "success"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "Policy",
+          "action_status": "Applied",
+          "action_type": "Create",
+          "changes_bulk_id": 1,
+          "created_date": "2053-08-21T10:10:36.713Z",
+          "email": "eofso.mcip@example.com",
+          "entity_id": "aa2333b9-d529-41e6-a230-e4cf97aa0e6a",
+          "entity_name": "Test",
+          "entity_type": "EndpointAgentProfileEntity",
+          "id": "5ad871d8-3911-4f0b-9c95-7a3d35f377c4",
+          "source_ip": "192.0.2.87",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-08-21T10:10:36.709Z",
+          "updated_date": "2053-08-21T10:10:46.319Z",
+          "user_id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "eofso.mcip@example.com",
+          "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "eofso.mcip@example.com",
+        "id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+      }
+    },
+    {
+      "@timestamp": "2053-08-21T05:53:10.350Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Update",
+        "created": "2053-08-21T05:53:10.350Z",
+        "id": "33a7ca8b-410c-4d64-93da-0b07471c0bc5",
+        "kind": "event",
+        "original": "{\"entityType\":\"CustomSettingEntity\",\"entityId\":\"ea9a646d-88b6-4567-1234-abcdefgh123456\",\"actionType\":\"Update\",\"actionDomain\":\"SystemSettings\",\"entityName\":\"IosJailBrokenDevicesLoginEnabled\",\"timestamp\":\"2053-08-21T05:53:10.350661Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"33a7ca8b-410c-4d64-93da-0b07471c0bc5\",\"createdDate\":\"2053-08-21T05:53:10.350897Z\",\"updatedDate\":\"2053-08-21T05:53:10.350897Z\"}"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "SystemSettings",
+          "action_type": "Update",
+          "created_date": "2053-08-21T05:53:10.350Z",
+          "email": "eofso.mcip@example.com",
+          "entity_id": "ea9a646d-88b6-4567-1234-abcdefgh123456",
+          "entity_name": "IosJailBrokenDevicesLoginEnabled",
+          "entity_type": "CustomSettingEntity",
+          "id": "33a7ca8b-410c-4d64-93da-0b07471c0bc5",
+          "source_ip": "203.0.113.248",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-08-21T05:53:10.350Z",
+          "updated_date": "2053-08-21T05:53:10.350Z",
+          "user_id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "eofso.mcip@example.com",
+          "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "eofso.mcip@example.com",
+        "id": "auth0|9f278f28-c367-4965-ae27-b50b16e68efb"
+      }
+    },
+    {
+      "@timestamp": "2053-09-05T10:19:36.788Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Create",
+        "created": "2053-09-05T10:19:36.791Z",
+        "id": "e335b09e-8279-425d-99e8-96007473a56b",
+        "kind": "event",
+        "original": "{\"entityType\":\"BrowserEnforcementIdpEntity\",\"entityId\":\"f4ce7346-b589-4fbe-bfc0-c3aad1563c34\",\"actionType\":\"Create\",\"actionDomain\":\"Policy\",\"entityName\":\"Azure\",\"timestamp\":\"2053-09-05T10:19:36.788092Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"changesBulkId\":6,\"actionStatus\":\"Applied\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"e335b09e-8279-425d-99e8-96007473a56b\",\"createdDate\":\"2053-09-05T10:19:36.791457Z\",\"updatedDate\":\"2053-09-05T10:19:47.479946Z\"}",
+        "outcome": "success"
+      },
+      "island_browser": {
+        "admin_actions": {
+          "action_domain": "Policy",
+          "action_status": "Applied",
+          "action_type": "Create",
+          "changes_bulk_id": 6,
+          "created_date": "2053-09-05T10:19:36.791Z",
+          "email": "wzzv.ygjxs@example.com",
+          "entity_id": "f4ce7346-b589-4fbe-bfc0-c3aad1563c34",
+          "entity_name": "Azure",
+          "entity_type": "BrowserEnforcementIdpEntity",
+          "id": "e335b09e-8279-425d-99e8-96007473a56b",
+          "source_ip": "203.0.113.248",
+          "tenant_id": "elastic-testing",
+          "timestamp": "2053-09-05T10:19:36.788Z",
+          "updated_date": "2053-09-05T10:19:47.479Z",
+          "user_id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "wzzv.ygjxs@example.com",
+          "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "wzzv.ygjxs@example.com",
+        "id": "auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"entityType\":\"User\",\"entityId\":\"auth0|77c25704-7397-4e42-bafd-91c80b5018dc\",\"actionType\":\"Create\",\"actionDomain\":\"UserManagement\",\"entityName\":\"jnmy.opex+85642@example.com\",\"timestamp\":\"2053-08-28T11:04:18.985019Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"API|Testing API Key\",\"sourceIp\":\"203.0.113.75\",\"apiKeyName\":\"Testing API Key\",\"tenantId\":\"elastic-testing\",\"id\":\"a3a5922f-114a-4535-8dac-f0f8776eef0e\",\"createdDate\":\"2053-08-28T11:04:18.985287Z\",\"updatedDate\":\"2053-08-28T11:04:18.985287Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"SIEMConnector\",\"entityId\":\"bafa9309-8b05-4878-8e2e-1dfaf6ed9264\",\"actionType\":\"Create\",\"actionDomain\":\"SystemSettings\",\"entityName\":\"Generic SIEM Integration\",\"timestamp\":\"2053-08-19T06:20:28.982451Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"sourceIp\":\"203.0.113.177\",\"tenantId\":\"elastic-testing\",\"id\":\"ea67dabc-e414-4d2b-bdcc-24bf806ee6b3\",\"createdDate\":\"2053-08-19T06:20:28.983078Z\",\"updatedDate\":\"2053-08-19T06:20:28.983078Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"RoleEntity\",\"entityId\":\"auth0|ee2c0b70-ef4d-4de4-9bb5-53af35d1dca2\",\"actionType\":\"AddUserToRole\",\"actionDomain\":\"AdminManagement\",\"entityName\":\"kknl.nzao@example.com\",\"timestamp\":\"2053-08-27T07:41:57.196658Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"sourceIp\":\"203.0.113.177\",\"tenantId\":\"elastic-testing\",\"id\":\"d8fbf64e-b295-425e-bc14-32c862b2b861\",\"createdDate\":\"2053-08-27T07:41:57.196777Z\",\"updatedDate\":\"2053-08-27T07:41:57.196777Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"PolicyEntity\",\"actionType\":\"ApplyChanges\",\"actionDomain\":\"Policy\",\"entityName\":\"Policy\",\"timestamp\":\"2053-09-05T10:19:47.417638Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"changesBulkId\":6,\"actionStatus\":\"Done\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"f7c50741-de58-4ff7-9396-244dbf3cb9d1\",\"createdDate\":\"2053-09-05T10:19:47.424349Z\",\"updatedDate\":\"2053-09-05T10:19:47.424349Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"PolicyEntity\",\"actionType\":\"ApplyChanges\",\"actionDomain\":\"Policy\",\"entityName\":\"Policy\",\"timestamp\":\"2053-08-29T10:00:11.559643Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"changesBulkId\":3,\"actionStatus\":\"Done\",\"sourceIp\":\"192.0.2.87\",\"tenantId\":\"elastic-testing\",\"id\":\"8fc17441-42b9-43d1-bc48-dab26796afa4\",\"createdDate\":\"2053-08-29T10:00:11.567378Z\",\"updatedDate\":\"2053-08-29T10:00:11.567378Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"PolicyEntity\",\"actionType\":\"ApplyChanges\",\"actionDomain\":\"Policy\",\"entityName\":\"Policy\",\"timestamp\":\"2053-08-21T10:10:46.277926Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"changesBulkId\":1,\"actionStatus\":\"Done\",\"sourceIp\":\"192.0.2.87\",\"tenantId\":\"elastic-testing\",\"id\":\"64a4a5b4-d265-4784-af08-de82cc4226c5\",\"createdDate\":\"2053-08-21T10:10:46.283406Z\",\"updatedDate\":\"2053-08-21T10:10:46.283406Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"PolicyEntity\",\"actionType\":\"ApplyChanges\",\"actionDomain\":\"Policy\",\"entityName\":\"Policy\",\"timestamp\":\"2053-09-05T10:20:12.637325Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"changesBulkId\":7,\"actionStatus\":\"Done\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"8c81c670-6c72-4ff4-8c82-100e2a07a8fc\",\"createdDate\":\"2053-09-05T10:20:12.642877Z\",\"updatedDate\":\"2053-09-05T10:20:12.642877Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"ManagementConsole\",\"entityId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"actionType\":\"Login\",\"actionDomain\":\"Authentication\",\"entityName\":\"eofso.mcip@example.com\",\"timestamp\":\"2053-08-25T05:59:53.135511Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"sourceIp\":\"203.0.113.177\",\"tenantId\":\"elastic-testing\",\"id\":\"33f567d1-85a9-4b32-90e2-e22036f44c64\",\"createdDate\":\"2053-08-25T05:59:53.141601Z\",\"updatedDate\":\"2053-08-25T05:59:53.141601Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"ManagementConsole\",\"entityId\":\"samlp|elastic-testing-google-workspace-test|fpf@areggve.io\",\"actionType\":\"Logout\",\"actionDomain\":\"Authentication\",\"entityName\":\"fpf@areggve.io\",\"timestamp\":\"2053-09-09T07:12:46.832441Z\",\"userId\":\"samlp|elastic-testing-google-workspace-test|fpf@areggve.io\",\"email\":\"fpf@areggve.io\",\"sourceIp\":\"198.51.100.124\",\"tenantId\":\"elastic-testing\",\"id\":\"17063562-8bd2-4b12-b5f3-e0e1e8bbe880\",\"createdDate\":\"2053-09-09T07:12:46.838423Z\",\"updatedDate\":\"2053-09-09T07:12:46.838423Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"Admin\",\"entityId\":\"auth0|a5d2618e-11fd-4c07-9eb2-bb2d98aa9b57\",\"actionType\":\"Create\",\"actionDomain\":\"AdminManagement\",\"entityName\":\"ybkbye@example.com\",\"timestamp\":\"2053-08-18T16:52:18.425404Z\",\"userId\":\"samlp|elastic-saml-test|00uz7na9uiIrw8OUE1t7\",\"email\":\"gzsjeg@example.com\",\"sourceIp\":\"203.0.113.75\",\"tenantId\":\"elastic-testing\",\"id\":\"09dd0fd6-2127-4536-b8f9-42703e10dd1e\",\"createdDate\":\"2053-08-18T16:52:18.42592Z\",\"updatedDate\":\"2053-08-18T16:52:18.42592Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"IdpIntegrationCustomSettingsEntity\",\"entityId\":\"01a14410-3232-46b2-b97f-4484d8e159eb\",\"actionType\":\"Create\",\"actionDomain\":\"Policy\",\"entityName\":\"IDP Seamless Login Settings\",\"timestamp\":\"2053-08-29T05:58:18.572796Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"changesBulkId\":3,\"actionStatus\":\"Applied\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"fc74de1c-bfd6-4ec7-a81a-71ca0701714a\",\"createdDate\":\"2053-08-29T05:58:18.575869Z\",\"updatedDate\":\"2053-08-29T10:00:11.654661Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"IdpConnection\",\"actionType\":\"Update\",\"actionDomain\":\"SystemSettings\",\"entityName\":\"elastic-testing-duo-02-test\",\"timestamp\":\"2053-09-04T09:28:14.021754Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"sourceIp\":\"198.51.100.124\",\"tenantId\":\"elastic-testing\",\"id\":\"6cef2d96-c52c-40a2-897a-e04ccd85cfb1\",\"createdDate\":\"2053-09-04T09:28:14.023318Z\",\"updatedDate\":\"2053-09-04T09:28:14.023318Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"IdpConnection\",\"entityId\":\"con_vlwrjkbgver2\",\"actionType\":\"Delete\",\"actionDomain\":\"SystemSettings\",\"entityName\":\"elastic-testing-duo-03-test\",\"timestamp\":\"2053-09-05T09:50:50.33105Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"6dda79eb-5754-416f-b56c-fb5a67e0f8d2\",\"createdDate\":\"2053-09-05T09:50:50.331311Z\",\"updatedDate\":\"2053-09-05T09:50:50.331311Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"EndpointAgentProfileEntity\",\"entityId\":\"aa2333b9-d529-41e6-a230-e4cf97aa0e6a\",\"actionType\":\"Create\",\"actionDomain\":\"Policy\",\"entityName\":\"Test\",\"timestamp\":\"2053-08-21T10:10:36.709884Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"changesBulkId\":1,\"actionStatus\":\"Applied\",\"sourceIp\":\"192.0.2.87\",\"tenantId\":\"elastic-testing\",\"id\":\"5ad871d8-3911-4f0b-9c95-7a3d35f377c4\",\"createdDate\":\"2053-08-21T10:10:36.713598Z\",\"updatedDate\":\"2053-08-21T10:10:46.319347Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"CustomSettingEntity\",\"entityId\":\"ea9a646d-88b6-4567-1234-abcdefgh123456\",\"actionType\":\"Update\",\"actionDomain\":\"SystemSettings\",\"entityName\":\"IosJailBrokenDevicesLoginEnabled\",\"timestamp\":\"2053-08-21T05:53:10.350661Z\",\"userId\":\"auth0|9f278f28-c367-4965-ae27-b50b16e68efb\",\"email\":\"eofso.mcip@example.com\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"33a7ca8b-410c-4d64-93da-0b07471c0bc5\",\"createdDate\":\"2053-08-21T05:53:10.350897Z\",\"updatedDate\":\"2053-08-21T05:53:10.350897Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"BrowserEnforcementIdpEntity\",\"entityId\":\"f4ce7346-b589-4fbe-bfc0-c3aad1563c34\",\"actionType\":\"Create\",\"actionDomain\":\"Policy\",\"entityName\":\"Azure\",\"timestamp\":\"2053-09-05T10:19:36.788092Z\",\"userId\":\"auth0|8f4f50ae-d46b-4d90-a750-0dc6b96bb8d5\",\"email\":\"wzzv.ygjxs@example.com\",\"changesBulkId\":6,\"actionStatus\":\"Applied\",\"sourceIp\":\"203.0.113.248\",\"tenantId\":\"elastic-testing\",\"id\":\"e335b09e-8279-425d-99e8-96007473a56b\",\"createdDate\":\"2053-09-05T10:19:36.791457Z\",\"updatedDate\":\"2053-09-05T10:19:47.479946Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "admin_actions",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-island_browser-admin_actions-default",
+    "event_count": 16,
+    "numeric_keyword_fields": [],
+    "package": "island_browser",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

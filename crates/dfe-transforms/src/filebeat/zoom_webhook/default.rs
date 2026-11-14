@@ -22,8 +22,7 @@ impl Transform for Default {
 
             event.set("ecs.version", json!("8.11.0"))?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n    if (o == null || o == \"\") {\n    return true;\n    } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n    } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n    }\n    return false;\n}\ndrop(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -464,8 +463,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("zoom.meeting.duration") };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.event.duration = ctx.zoom.meeting.duration * 60L * 1000000000L;
+                    // The pipeline's script, emitted as the runtime's equivalent
                     scale_field(
                         event,
                         &ScaleField::new(
@@ -1091,9 +1089,7 @@ impl Transform for Default {
                         && !event.has_value("zoom.phone.duration")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.event.start = ctx.zoom.phone.ringing_start_time; ctx.event.end = ctx.zoom.phone.call_end_time; ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ZonedDateTime end = ZonedDateTime.parse(ctx.event.end); ctx.event.duration = ChronoUnit.NANOS.between(start, end);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1108,9 +1104,7 @@ impl Transform for Default {
                         && !event.has_value("zoom.phone.duration")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.event.start = ctx.zoom.phone.answer_start_time; ctx.event.end = ctx.zoom.phone.call_end_time; ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ZonedDateTime end = ZonedDateTime.parse(ctx.event.end); ctx.event.duration = ChronoUnit.NANOS.between(start, end);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1120,8 +1114,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("zoom.duration") };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.event.duration = ctx.zoom.phone.duration * 60L * 1000000000L;
+                    // The pipeline's script, emitted as the runtime's equivalent
                     scale_field(
                         event,
                         &ScaleField::new(
@@ -1368,9 +1361,7 @@ impl Transform for Default {
                         && event.get_str("event.action") == Some("recording.stopped")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ZonedDateTime end = ZonedDateTime.parse(ctx.event.end); ctx.event.duration = ChronoUnit.NANOS.between(start, end);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

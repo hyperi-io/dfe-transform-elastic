@@ -26,9 +26,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: if (ctx.mysql?.performance?.events_statements?.digest == null) {\n    return;\n}\ndef digest = ctx.mysql.performance.events_statements.digest;\nctx.mysql.performance.events_statements.query = digest.text;\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

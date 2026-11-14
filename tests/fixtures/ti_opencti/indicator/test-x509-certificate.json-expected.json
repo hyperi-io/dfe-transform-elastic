@@ -1,0 +1,162 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2044-08-16T14:29:16.000Z",
+        "id": "5d4b0068-5abb-4b91-85e7-b426a17b8b10",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2049-08-16T14:29:16.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 1,
+          "pattern": "[x509-certificate:value = 'b62f1501ac68f033f1627cadbf52f5aa2e314205']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 40,
+          "standard_id": "indicator--569a023c-1dc9-55b9-a246-aaa23acba6b7",
+          "valid_from": "2048-08-16T14:29:16.000Z",
+          "valid_until": "2049-08-16T14:29:16.000Z"
+        },
+        "observable": {
+          "x509_certificate": {
+            "entity_type": "X509-Certificate",
+            "id": "ab77505c-7e5b-4928-aece-d9ae23a48b7d",
+            "is_self_signed": true,
+            "serial_number": "55FBB9C7DEBF09809D12CCAA",
+            "signature_algorithm": "SHA256-RSA",
+            "standard_id": "x509-certificate--726e8863-8941-5a1b-b345-1f0131902233",
+            "validity_not_before": "2053-01-05T07:45:52.000Z",
+            "value": "b62f1501ac68f033f1627cadbf52f5aa2e314205",
+            "version": "3"
+          }
+        }
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "malware",
+        "ecs-indicator-detail"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "modified_at": "2051-01-17T09:12:37.556Z",
+          "name": "b62f1501ac68f033f1627cadbf52f5aa2e314205",
+          "provider": "CIRCL",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/5d4b0068-5abb-4b91-85e7-b426a17b8b10",
+          "type": "x509-certificate",
+          "x509": {
+            "not_before": "2053-01-05T07:45:52.000Z",
+            "serial_number": "55FBB9C7DEBF09809D12CCAA",
+            "signature_algorithm": "SHA256-RSA",
+            "version_number": "3"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 15,
+      "created": "2044-08-16T14:29:16.000Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "CIRCL"
+      },
+      "description": "",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "5d4b0068-5abb-4b91-85e7-b426a17b8b10",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T09:12:37.556Z",
+      "name": "b62f1501ac68f033f1627cadbf52f5aa2e314205",
+      "objectLabel": [
+        {
+          "value": "malware"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:CLEAR",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [
+          {
+            "node": {
+              "entity_type": "X509-Certificate",
+              "id": "ab77505c-7e5b-4928-aece-d9ae23a48b7d",
+              "is_self_signed": true,
+              "observable_value": "b62f1501ac68f033f1627cadbf52f5aa2e314205",
+              "serial_number": "55FBB9C7DEBF09809D12CCAA",
+              "signature_algorithm": "SHA256-RSA",
+              "standard_id": "x509-certificate--726e8863-8941-5a1b-b345-1f0131902233",
+              "validity_not_after": "",
+              "validity_not_before": "2053-01-05T07:45:52.000Z",
+              "value": "b62f1501ac68f033f1627cadbf52f5aa2e314205",
+              "version": "3"
+            }
+          }
+        ],
+        "pageInfo": {
+          "globalCount": 1
+        }
+      },
+      "pattern": "[x509-certificate:value = 'b62f1501ac68f033f1627cadbf52f5aa2e314205']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--569a023c-1dc9-55b9-a246-aaa23acba6b7",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2048-08-16T14:29:16.000Z",
+      "valid_until": "2049-08-16T14:29:16.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "X509-Certificate",
+      "x_opencti_score": 40
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_opencti-indicator-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_opencti",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

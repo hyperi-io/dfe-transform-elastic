@@ -1,0 +1,704 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-25T14:27:54.963Z",
+      "cyberark_epm": {
+        "policyaudit_raw_event": {
+          "access_target_name": "C:\\Windows\\System32\\cmd.exe",
+          "access_target_type": "ProcessMemory",
+          "agent_event_count": 1,
+          "agent_id": "65b3ef74-4140-4182-a655-0acf61fd0ba7",
+          "arguments": "status epm",
+          "arrival_time": "2052-11-25T14:27:54.963Z",
+          "computer_name": "l5lnrioci6-81-4-97",
+          "display_name": "lyyqcjdtq",
+          "file_access_permission": "-rwxr-xr-x",
+          "file_description": "lyyqcjdtq",
+          "file_name": "lyyqcjdtq",
+          "file_owner_name": "root",
+          "file_path": "/usr/bin/lyyqcjdtq",
+          "file_qualifier": "2375697114193346955",
+          "file_size": 1115760,
+          "first_event_date": "2052-11-25T10:28:24.298Z",
+          "hash": "7c478610620c36362a1bd744841028d1b9ac0d77",
+          "last_event_date": "2052-11-25T10:28:24.298Z",
+          "modification_time": "2052-10-26T14:27:54.041Z",
+          "operating_system_type": "Linux",
+          "origin_user_uid": "1000",
+          "package_name": "lyyqcjdtq",
+          "policy_action": "Elevate",
+          "policy_name": "Test-elastic",
+          "product_name": "ouiSFX",
+          "run_as_username": "root",
+          "skipped_count": 0,
+          "source_name": "/usr/bin/lyyqcjdtq",
+          "source_type": "LocalDisk",
+          "type": "StartElevated",
+          "user_is_admin": false,
+          "user_name": "mfjyleespav",
+          "working_directory": "/home/mfjyleespav"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "end": "2052-11-25T10:28:24.298Z",
+        "kind": "event",
+        "original": "{\"hash\":\"7c478610620c36362a1bd744841028d1b9ac0d77\",\"publisher\":\"\",\"eventType\":\"StartElevated\",\"sourceType\":\"LocalDisk\",\"sourceName\":\"/usr/bin/lyyqcjdtq\",\"lastEventDate\":\"2052-11-25T10:28:24.298Z\",\"userName\":\"mfjyleespav\",\"fileName\":\"lyyqcjdtq\",\"fileSize\":1115760,\"fileDescription\":\"lyyqcjdtq\",\"packageName\":\"lyyqcjdtq\",\"company\":\"\",\"filePath\":\"/usr/bin/lyyqcjdtq\",\"firstEventDate\":\"2052-11-25T10:28:24.298Z\",\"productName\":\"ouiSFX\",\"productVersion\":\"\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"\",\"modificationTime\":\"2052-10-26T14:27:54.041Z\",\"userIsAdmin\":false,\"agentEventCount\":1,\"skippedCount\":0,\"workingDirectory\":\"/home/mfjyleespav\",\"runAsUsername\":\"root\",\"originUserUID\":\"1000\",\"interpreter\":\"\",\"fileAccessPermission\":\"-rwxr-xr-x\",\"symLink\":\"\",\"commandInfo\":\"\",\"arguments\":\"status epm\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"lyyqcjdtq\",\"originalFileName\":\"\",\"owner\":\"root\",\"policyName\":\"Test-elastic\",\"fileQualifier\":\"2375697114193346955\",\"arrivalTime\":\"2052-11-25T14:27:54.963Z\",\"operatingSystemType\":\"Linux\",\"applicationSubType\":null,\"accessTargetType\":\"ProcessMemory\",\"accessTargetName\":\"C:\\\\Windows\\\\System32\\\\cmd.exe\",\"policyAction\":\"Elevate\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"authorizationRights\":null,\"parentProcess\":\"\",\"agentId\":\"65b3ef74-4140-4182-a655-0acf61fd0ba7\",\"computerName\":\"l5lnrioci6-81-4-97\"}",
+        "start": "2052-11-25T10:28:24.298Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "7c478610620c36362a1bd744841028d1b9ac0d77"
+        },
+        "mode": "755",
+        "mtime": "2052-10-26T14:27:54.041Z",
+        "name": "lyyqcjdtq",
+        "owner": "root",
+        "path": "/usr/bin/lyyqcjdtq",
+        "size": 1115760
+      },
+      "host": {
+        "name": "l5lnrioci6-81-4-97",
+        "os": {
+          "type": "linux"
+        }
+      },
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "package": {
+        "checksum": "7c478610620c36362a1bd744841028d1b9ac0d77",
+        "name": "lyyqcjdtq",
+        "size": 1115760
+      },
+      "process": {
+        "working_directory": "/home/mfjyleespav"
+      },
+      "related": {
+        "hash": [
+          "7c478610620c36362a1bd744841028d1b9ac0d77"
+        ],
+        "hosts": [
+          "l5lnrioci6-81-4-97"
+        ],
+        "user": [
+          "1000",
+          "root",
+          "mfjyleespav"
+        ]
+      },
+      "rule": {
+        "name": "Test-elastic"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "1000",
+        "name": "mfjyleespav"
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T14:27:54.054Z",
+      "cyberark_epm": {
+        "policyaudit_raw_event": {
+          "access_target_name": "C:\\Oracle\\oemmw\\OPatch\\version.txt",
+          "access_target_type": "ransomware",
+          "agent_event_count": 2,
+          "agent_id": "65b3ef74-4140-4182-a655-0acf61fd0ba7",
+          "arguments": "status sshd",
+          "arrival_time": "2052-11-25T14:27:54.054Z",
+          "computer_name": "l5lnrioci6-81-4-97",
+          "display_name": "lyyqcjdtq",
+          "file_access_permission": "-rwxr-xr-x",
+          "file_description": "lyyqcjdtq",
+          "file_name": "lyyqcjdtq",
+          "file_owner_name": "root",
+          "file_path": "/usr/bin/lyyqcjdtq",
+          "file_qualifier": "2375697114193346955",
+          "file_size": 1115760,
+          "first_event_date": "2052-11-25T10:31:12.018Z",
+          "hash": "7c478610620c36362a1bd744841028d1b9ac0d77",
+          "last_event_date": "2052-11-25T10:37:58.431Z",
+          "modification_time": "2052-10-26T14:27:54.041Z",
+          "operating_system_type": "Linux",
+          "origin_user_uid": "0",
+          "package_name": "lyyqcjdtq",
+          "policy_action": "Elevate",
+          "policy_name": "Test-elastic",
+          "product_name": "SQL*PLUS",
+          "run_as_username": "root",
+          "skipped_count": 0,
+          "source_name": "/usr/bin/lyyqcjdtq",
+          "source_type": "LocalDisk",
+          "type": "StartElevated",
+          "user_is_admin": true,
+          "user_name": "root",
+          "working_directory": "/home/mfjyleespav"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "end": "2052-11-25T10:37:58.431Z",
+        "kind": "event",
+        "original": "{\"hash\":\"7c478610620c36362a1bd744841028d1b9ac0d77\",\"publisher\":\"\",\"eventType\":\"StartElevated\",\"sourceType\":\"LocalDisk\",\"sourceName\":\"/usr/bin/lyyqcjdtq\",\"lastEventDate\":\"2052-11-25T10:37:58.431Z\",\"userName\":\"root\",\"fileName\":\"lyyqcjdtq\",\"fileSize\":1115760,\"fileDescription\":\"lyyqcjdtq\",\"packageName\":\"lyyqcjdtq\",\"company\":\"\",\"filePath\":\"/usr/bin/lyyqcjdtq\",\"firstEventDate\":\"2052-11-25T10:31:12.018Z\",\"productName\":\"SQL*PLUS\",\"productVersion\":\"\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"\",\"modificationTime\":\"2052-10-26T14:27:54.041Z\",\"userIsAdmin\":true,\"agentEventCount\":2,\"skippedCount\":0,\"workingDirectory\":\"/home/mfjyleespav\",\"runAsUsername\":\"root\",\"originUserUID\":\"0\",\"interpreter\":\"\",\"fileAccessPermission\":\"-rwxr-xr-x\",\"symLink\":\"\",\"commandInfo\":\"\",\"arguments\":\"status sshd\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"lyyqcjdtq\",\"originalFileName\":\"\",\"owner\":\"root\",\"policyName\":\"Test-elastic\",\"fileQualifier\":\"2375697114193346955\",\"arrivalTime\":\"2052-11-25T14:27:54.054Z\",\"operatingSystemType\":\"Linux\",\"applicationSubType\":null,\"accessTargetType\":\"ransomware\",\"accessTargetName\":\"C:\\\\Oracle\\\\oemmw\\\\OPatch\\\\version.txt\",\"policyAction\":\"Elevate\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"authorizationRights\":null,\"parentProcess\":\"\",\"agentId\":\"65b3ef74-4140-4182-a655-0acf61fd0ba7\",\"computerName\":\"l5lnrioci6-81-4-97\"}",
+        "start": "2052-11-25T10:31:12.018Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "7c478610620c36362a1bd744841028d1b9ac0d77"
+        },
+        "mode": "755",
+        "mtime": "2052-10-26T14:27:54.041Z",
+        "name": "lyyqcjdtq",
+        "owner": "root",
+        "path": "/usr/bin/lyyqcjdtq",
+        "size": 1115760
+      },
+      "host": {
+        "name": "l5lnrioci6-81-4-97",
+        "os": {
+          "type": "linux"
+        }
+      },
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "package": {
+        "checksum": "7c478610620c36362a1bd744841028d1b9ac0d77",
+        "name": "lyyqcjdtq",
+        "size": 1115760
+      },
+      "process": {
+        "working_directory": "/home/mfjyleespav"
+      },
+      "related": {
+        "hash": [
+          "7c478610620c36362a1bd744841028d1b9ac0d77"
+        ],
+        "hosts": [
+          "l5lnrioci6-81-4-97"
+        ],
+        "user": [
+          "0",
+          "root"
+        ]
+      },
+      "rule": {
+        "name": "Test-elastic"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "0",
+        "name": "root"
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T14:27:54.967Z",
+      "cyberark_epm": {
+        "policyaudit_raw_event": {
+          "access_target_name": "C:\\Oracle\\oemmw\\oracle_common\\jdk\\bin\\java.exe",
+          "access_target_type": "ProcessMemory",
+          "agent_event_count": 6,
+          "agent_id": "65b3ef74-4140-4182-a655-0acf61fd0ba7",
+          "arguments": "status sshd",
+          "arrival_time": "2052-11-25T14:27:54.967Z",
+          "computer_name": "l5lnrioci6-81-4-97",
+          "display_name": "lyyqcjdtq",
+          "file_access_permission": "-rwxr-xr-x",
+          "file_description": "lyyqcjdtq",
+          "file_name": "lyyqcjdtq",
+          "file_owner_name": "root",
+          "file_path": "/usr/bin/lyyqcjdtq",
+          "file_qualifier": "2375697114193346955",
+          "file_size": 1115760,
+          "first_event_date": "2052-11-25T10:27:47.420Z",
+          "hash": "7c478610620c36362a1bd744841028d1b9ac0d77",
+          "last_event_date": "2052-11-25T10:38:05.096Z",
+          "modification_time": "2052-10-26T14:27:54.040Z",
+          "operating_system_type": "Linux",
+          "origin_user_uid": "1000",
+          "package_name": "lyyqcjdtq",
+          "policy_action": "Elevate",
+          "policy_name": "Test-elastic",
+          "product_name": "Java(TM) Platform SE 8",
+          "run_as_username": "root",
+          "skipped_count": 0,
+          "source_name": "/usr/bin/lyyqcjdtq",
+          "source_type": "LocalDisk",
+          "type": "StartElevated",
+          "user_is_admin": false,
+          "user_name": "mfjyleespav",
+          "working_directory": "/home/mfjyleespav"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "end": "2052-11-25T10:38:05.096Z",
+        "kind": "event",
+        "original": "{\"hash\":\"7c478610620c36362a1bd744841028d1b9ac0d77\",\"publisher\":\"\",\"eventType\":\"StartElevated\",\"sourceType\":\"LocalDisk\",\"sourceName\":\"/usr/bin/lyyqcjdtq\",\"lastEventDate\":\"2052-11-25T10:38:05.096Z\",\"userName\":\"mfjyleespav\",\"fileName\":\"lyyqcjdtq\",\"fileSize\":1115760,\"fileDescription\":\"lyyqcjdtq\",\"packageName\":\"lyyqcjdtq\",\"company\":\"\",\"filePath\":\"/usr/bin/lyyqcjdtq\",\"firstEventDate\":\"2052-11-25T10:27:47.42Z\",\"productName\":\"Java(TM) Platform SE 8\",\"productVersion\":\"\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"\",\"modificationTime\":\"2052-10-26T14:27:54.04Z\",\"userIsAdmin\":false,\"agentEventCount\":6,\"skippedCount\":0,\"workingDirectory\":\"/home/mfjyleespav\",\"runAsUsername\":\"root\",\"originUserUID\":\"1000\",\"interpreter\":\"\",\"fileAccessPermission\":\"-rwxr-xr-x\",\"symLink\":\"\",\"commandInfo\":\"\",\"arguments\":\"status sshd\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"lyyqcjdtq\",\"originalFileName\":\"\",\"owner\":\"root\",\"policyName\":\"Test-elastic\",\"fileQualifier\":\"2375697114193346955\",\"arrivalTime\":\"2052-11-25T14:27:54.967Z\",\"operatingSystemType\":\"Linux\",\"applicationSubType\":null,\"accessTargetType\":\"ProcessMemory\",\"accessTargetName\":\"C:\\\\Oracle\\\\oemmw\\\\oracle_common\\\\jdk\\\\bin\\\\java.exe\",\"policyAction\":\"Elevate\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"authorizationRights\":null,\"parentProcess\":\"\",\"agentId\":\"65b3ef74-4140-4182-a655-0acf61fd0ba7\",\"computerName\":\"l5lnrioci6-81-4-97\"}",
+        "start": "2052-11-25T10:27:47.420Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "7c478610620c36362a1bd744841028d1b9ac0d77"
+        },
+        "mode": "755",
+        "mtime": "2052-10-26T14:27:54.040Z",
+        "name": "lyyqcjdtq",
+        "owner": "root",
+        "path": "/usr/bin/lyyqcjdtq",
+        "size": 1115760
+      },
+      "host": {
+        "name": "l5lnrioci6-81-4-97",
+        "os": {
+          "type": "linux"
+        }
+      },
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "package": {
+        "checksum": "7c478610620c36362a1bd744841028d1b9ac0d77",
+        "name": "lyyqcjdtq",
+        "size": 1115760
+      },
+      "process": {
+        "working_directory": "/home/mfjyleespav"
+      },
+      "related": {
+        "hash": [
+          "7c478610620c36362a1bd744841028d1b9ac0d77"
+        ],
+        "hosts": [
+          "l5lnrioci6-81-4-97"
+        ],
+        "user": [
+          "1000",
+          "root",
+          "mfjyleespav"
+        ]
+      },
+      "rule": {
+        "name": "Test-elastic"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "1000",
+        "name": "mfjyleespav"
+      }
+    },
+    {
+      "@timestamp": "2052-11-26T11:36:43.990Z",
+      "cyberark_epm": {
+        "policyaudit_raw_event": {
+          "access_target_name": "C:\\Oracle\\oemmw\\oracle_common\\jdk\\bin\\java.exe",
+          "access_target_type": "ProcessMemory",
+          "agent_event_count": 1,
+          "agent_id": "7d9c35c6-6a92-465a-8bda-752428fc66c8",
+          "arguments": "--color=auto",
+          "arrival_time": "2052-11-26T11:36:43.990Z",
+          "computer_name": "w8gsdsxaj-13-6-81",
+          "display_name": "lk",
+          "file_access_permission": "-rwxr-xr-x",
+          "file_description": "lk",
+          "file_name": "lk",
+          "file_owner_name": "root",
+          "file_path": "/usr/bin/lk",
+          "file_qualifier": "-4809306995265559738",
+          "file_size": 138216,
+          "first_event_date": "2052-11-26T11:36:20.716Z",
+          "hash": "6541d83f2462e1a3155e9218dc034c72290665d8",
+          "last_event_date": "2052-11-26T11:36:20.716Z",
+          "modification_time": "2052-10-27T11:36:43.978Z",
+          "operating_system_type": "Linux",
+          "origin_user_uid": "1001",
+          "package_name": "lk",
+          "policy_action": "Block",
+          "policy_name": "test",
+          "product_name": "Microsoft® Windows® Operating System",
+          "run_as_username": "acniufy",
+          "skipped_count": 0,
+          "source_name": "/usr/bin/lk",
+          "source_type": "LocalDisk",
+          "type": "Block",
+          "user_is_admin": false,
+          "user_name": "acniufy",
+          "working_directory": "/home/acniufy"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "end": "2052-11-26T11:36:20.716Z",
+        "kind": "event",
+        "original": "{\"hash\":\"6541d83f2462e1a3155e9218dc034c72290665d8\",\"publisher\":\"\",\"eventType\":\"Block\",\"sourceType\":\"LocalDisk\",\"sourceName\":\"/usr/bin/lk\",\"lastEventDate\":\"2052-11-26T11:36:20.716Z\",\"userName\":\"acniufy\",\"fileName\":\"lk\",\"fileSize\":138216,\"fileDescription\":\"lk\",\"packageName\":\"lk\",\"company\":\"\",\"filePath\":\"/usr/bin/lk\",\"firstEventDate\":\"2052-11-26T11:36:20.716Z\",\"productName\":\"Microsoft® Windows® Operating System\",\"productVersion\":\"\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"\",\"modificationTime\":\"2052-10-27T11:36:43.978Z\",\"userIsAdmin\":false,\"agentEventCount\":1,\"skippedCount\":0,\"workingDirectory\":\"/home/acniufy\",\"runAsUsername\":\"acniufy\",\"originUserUID\":\"1001\",\"interpreter\":\"\",\"fileAccessPermission\":\"-rwxr-xr-x\",\"symLink\":\"\",\"commandInfo\":\"\",\"arguments\":\"--color=auto\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"lk\",\"originalFileName\":\"\",\"owner\":\"root\",\"policyName\":\"test\",\"fileQualifier\":\"-4809306995265559738\",\"arrivalTime\":\"2052-11-26T11:36:43.99Z\",\"operatingSystemType\":\"Linux\",\"applicationSubType\":null,\"accessTargetType\":\"ProcessMemory\",\"accessTargetName\":\"C:\\\\Oracle\\\\oemmw\\\\oracle_common\\\\jdk\\\\bin\\\\java.exe\",\"policyAction\":\"Block\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"authorizationRights\":null,\"parentProcess\":\"\",\"agentId\":\"7d9c35c6-6a92-465a-8bda-752428fc66c8\",\"computerName\":\"w8gsdsxaj-13-6-81\"}",
+        "start": "2052-11-26T11:36:20.716Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "6541d83f2462e1a3155e9218dc034c72290665d8"
+        },
+        "mode": "755",
+        "mtime": "2052-10-27T11:36:43.978Z",
+        "name": "lk",
+        "owner": "root",
+        "path": "/usr/bin/lk",
+        "size": 138216
+      },
+      "host": {
+        "name": "w8gsdsxaj-13-6-81",
+        "os": {
+          "type": "linux"
+        }
+      },
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "package": {
+        "checksum": "6541d83f2462e1a3155e9218dc034c72290665d8",
+        "name": "lk",
+        "size": 138216
+      },
+      "process": {
+        "working_directory": "/home/acniufy"
+      },
+      "related": {
+        "hash": [
+          "6541d83f2462e1a3155e9218dc034c72290665d8"
+        ],
+        "hosts": [
+          "w8gsdsxaj-13-6-81"
+        ],
+        "user": [
+          "1001",
+          "root",
+          "acniufy"
+        ]
+      },
+      "rule": {
+        "name": "test"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "1001",
+        "name": "acniufy"
+      }
+    },
+    {
+      "@timestamp": "2052-11-26T11:29:43.684Z",
+      "cyberark_epm": {
+        "policyaudit_raw_event": {
+          "access_target_type": "Internet",
+          "agent_event_count": 21,
+          "agent_id": "7d9c35c6-6a92-465a-8bda-752428fc66c8",
+          "arguments": "status sshd",
+          "arrival_time": "2052-11-26T11:29:43.684Z",
+          "computer_name": "w8gsdsxaj-13-6-81",
+          "display_name": "lyyqcjdtq",
+          "file_access_permission": "-rwxr-xr-x",
+          "file_description": "lyyqcjdtq",
+          "file_name": "lyyqcjdtq",
+          "file_owner_name": "root",
+          "file_path": "/usr/bin/lyyqcjdtq",
+          "file_qualifier": "2375697114193346955",
+          "file_size": 1115760,
+          "first_event_date": "2052-11-26T06:08:51.751Z",
+          "hash": "7c478610620c36362a1bd744841028d1b9ac0d77",
+          "last_event_date": "2052-11-26T06:20:44.514Z",
+          "modification_time": "2052-10-27T11:29:43.675Z",
+          "operating_system_type": "Linux",
+          "origin_user_uid": "1000",
+          "package_name": "lyyqcjdtq",
+          "policy_action": "Elevate",
+          "policy_name": "[IMPORTED] Test-elastic",
+          "product_name": "Java(TM) Platform SE 8",
+          "run_as_username": "root",
+          "skipped_count": 0,
+          "source_name": "/usr/bin/lyyqcjdtq",
+          "source_type": "LocalDisk",
+          "type": "StartElevated",
+          "user_is_admin": false,
+          "user_name": "mfjyleespav",
+          "working_directory": "/home/mfjyleespav"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "end": "2052-11-26T06:20:44.514Z",
+        "kind": "event",
+        "original": "{\"hash\":\"7c478610620c36362a1bd744841028d1b9ac0d77\",\"publisher\":\"\",\"eventType\":\"StartElevated\",\"sourceType\":\"LocalDisk\",\"sourceName\":\"/usr/bin/lyyqcjdtq\",\"lastEventDate\":\"2052-11-26T06:20:44.514Z\",\"userName\":\"mfjyleespav\",\"fileName\":\"lyyqcjdtq\",\"fileSize\":1115760,\"fileDescription\":\"lyyqcjdtq\",\"packageName\":\"lyyqcjdtq\",\"company\":\"\",\"filePath\":\"/usr/bin/lyyqcjdtq\",\"firstEventDate\":\"2052-11-26T06:08:51.751Z\",\"productName\":\"Java(TM) Platform SE 8\",\"productVersion\":\"\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"\",\"modificationTime\":\"2052-10-27T11:29:43.675Z\",\"userIsAdmin\":false,\"agentEventCount\":21,\"skippedCount\":0,\"workingDirectory\":\"/home/mfjyleespav\",\"runAsUsername\":\"root\",\"originUserUID\":\"1000\",\"interpreter\":\"\",\"fileAccessPermission\":\"-rwxr-xr-x\",\"symLink\":\"\",\"commandInfo\":\"\",\"arguments\":\"status sshd\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"lyyqcjdtq\",\"originalFileName\":\"\",\"owner\":\"root\",\"policyName\":\"[IMPORTED] Test-elastic\",\"fileQualifier\":\"2375697114193346955\",\"arrivalTime\":\"2052-11-26T11:29:43.684Z\",\"operatingSystemType\":\"Linux\",\"applicationSubType\":null,\"accessTargetType\":\"Internet\",\"accessTargetName\":\"\",\"policyAction\":\"Elevate\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"authorizationRights\":null,\"parentProcess\":\"\",\"agentId\":\"7d9c35c6-6a92-465a-8bda-752428fc66c8\",\"computerName\":\"w8gsdsxaj-13-6-81\"}",
+        "start": "2052-11-26T06:08:51.751Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "7c478610620c36362a1bd744841028d1b9ac0d77"
+        },
+        "mode": "755",
+        "mtime": "2052-10-27T11:29:43.675Z",
+        "name": "lyyqcjdtq",
+        "owner": "root",
+        "path": "/usr/bin/lyyqcjdtq",
+        "size": 1115760
+      },
+      "host": {
+        "name": "w8gsdsxaj-13-6-81",
+        "os": {
+          "type": "linux"
+        }
+      },
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "package": {
+        "checksum": "7c478610620c36362a1bd744841028d1b9ac0d77",
+        "name": "lyyqcjdtq",
+        "size": 1115760
+      },
+      "process": {
+        "working_directory": "/home/mfjyleespav"
+      },
+      "related": {
+        "hash": [
+          "7c478610620c36362a1bd744841028d1b9ac0d77"
+        ],
+        "hosts": [
+          "w8gsdsxaj-13-6-81"
+        ],
+        "user": [
+          "1000",
+          "root",
+          "mfjyleespav"
+        ]
+      },
+      "rule": {
+        "name": "[IMPORTED] Test-elastic"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "1000",
+        "name": "mfjyleespav"
+      }
+    },
+    {
+      "@timestamp": "2051-01-31T05:49:01.641Z",
+      "cyberark_epm": {
+        "policyaudit_raw_event": {
+          "agent_event_count": 0,
+          "agent_id": "e742a3f0-425d-43a7-b371-82d57bef020e",
+          "arrival_time": "2051-01-31T05:49:01.641Z",
+          "authorization_right": "com.apple.AOSNotification.FindMyMac.modify",
+          "company": "Microsoft Corporation",
+          "computer_name": "ZJN07EGBQG",
+          "display_name": "COM Surrogate (dllhost.exe)",
+          "file_description": "COM Surrogate",
+          "file_name": "dllhost.exe",
+          "file_owner_domain": "NT SERVICE",
+          "file_owner_name": "TrustedInstaller",
+          "file_path": "C:\\Windows\\System32\\dllhost.exe",
+          "file_qualifier": "6131417963422890440",
+          "file_size": 21304,
+          "file_version": "10.0.18362.1",
+          "first_event_date": "2051-01-30T14:02:11.700Z",
+          "hash": "40D34E20DDA0C2B8EB8E7608C717EB432B2709BE",
+          "last_event_date": "2051-01-31T05:48:28.334Z",
+          "modification_time": "2047-03-19T04:44:33.770Z",
+          "operating_system_type": "Windows",
+          "original_file_name": "dllhost.exe",
+          "package_name": "COM Surrogate (dllhost.exe)",
+          "policy_action": "Block",
+          "policy_name": "Block",
+          "product_name": "Java(TM) Platform SE 7 U111",
+          "product_version": "10.0.18362.1",
+          "publisher": "Microsoft Windows",
+          "skipped_count": 8,
+          "source_name": "Microsoft Windows",
+          "source_type": "Windows",
+          "type": "Block",
+          "user_domain": "NT AUTHORITY",
+          "user_is_admin": false,
+          "user_name": "NETWORK SERVICE"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "end": "2051-01-31T05:48:28.334Z",
+        "kind": "event",
+        "original": "{\"hash\":\"40D34E20DDA0C2B8EB8E7608C717EB432B2709BE\",\"publisher\":\"Microsoft Windows\",\"eventType\":\"Block\",\"sourceType\":\"Windows\",\"sourceName\":\"Microsoft Windows\",\"lastEventDate\":\"2051-01-31T05:48:28.334Z\",\"userName\":\"NT AUTHORITY\\\\NETWORK SERVICE\",\"fileName\":\"dllhost.exe\",\"fileSize\":21304,\"fileDescription\":\"COM Surrogate\",\"packageName\":\"COM Surrogate (dllhost.exe)\",\"company\":\"Microsoft Corporation\",\"filePath\":\"C:\\\\Windows\\\\System32\\\\dllhost.exe\",\"firstEventDate\":\"2051-01-30T14:02:11.7Z\",\"productName\":\"Java(TM) Platform SE 7 U111\",\"productVersion\":\"10.0.18362.1\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"10.0.18362.1\",\"modificationTime\":\"2047-03-19T04:44:33.77Z\",\"userIsAdmin\":false,\"agentEventCount\":0,\"skippedCount\":8,\"workingDirectory\":null,\"runAsUsername\":null,\"originUserUID\":null,\"interpreter\":null,\"fileAccessPermission\":\"\",\"commandInfo\":null,\"arguments\":\"\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"COM Surrogate (dllhost.exe)\",\"originalFileName\":\"dllhost.exe\",\"owner\":\"NT SERVICE\\\\TrustedInstaller\",\"policyName\":\"Block\",\"fileQualifier\":\"6131417963422890440\",\"arrivalTime\":\"2051-01-31T05:49:01.641Z\",\"operatingSystemType\":\"Windows\",\"applicationSubType\":null,\"accessTargetType\":\"\",\"accessTarget\":\"\",\"policyAction\":\"Block\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"agentId\":\"e742a3f0-425d-43a7-b371-82d57bef020e\",\"computerName\":\"ZJN07EGBQG\",\"symLink\":\"\",\"authorizationRight\":\"com.apple.AOSNotification.FindMyMac.modify\"}",
+        "start": "2051-01-30T14:02:11.700Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "40D34E20DDA0C2B8EB8E7608C717EB432B2709BE"
+        },
+        "mtime": "2047-03-19T04:44:33.770Z",
+        "name": "dllhost.exe",
+        "owner": "TrustedInstaller",
+        "path": "C:\\Windows\\System32\\dllhost.exe",
+        "size": 21304
+      },
+      "host": {
+        "name": "ZJN07EGBQG",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "organization": {
+        "name": "Microsoft Corporation"
+      },
+      "package": {
+        "checksum": "40D34E20DDA0C2B8EB8E7608C717EB432B2709BE",
+        "name": "COM Surrogate (dllhost.exe)",
+        "size": 21304,
+        "version": "10.0.18362.1"
+      },
+      "related": {
+        "hash": [
+          "40D34E20DDA0C2B8EB8E7608C717EB432B2709BE"
+        ],
+        "hosts": [
+          "ZJN07EGBQG"
+        ],
+        "user": [
+          "TrustedInstaller",
+          "NETWORK SERVICE"
+        ]
+      },
+      "rule": {
+        "name": "Block"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "name": "NETWORK SERVICE"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"hash\":\"7c478610620c36362a1bd744841028d1b9ac0d77\",\"publisher\":\"\",\"eventType\":\"StartElevated\",\"sourceType\":\"LocalDisk\",\"sourceName\":\"/usr/bin/lyyqcjdtq\",\"lastEventDate\":\"2052-11-25T10:28:24.298Z\",\"userName\":\"mfjyleespav\",\"fileName\":\"lyyqcjdtq\",\"fileSize\":1115760,\"fileDescription\":\"lyyqcjdtq\",\"packageName\":\"lyyqcjdtq\",\"company\":\"\",\"filePath\":\"/usr/bin/lyyqcjdtq\",\"firstEventDate\":\"2052-11-25T10:28:24.298Z\",\"productName\":\"ouiSFX\",\"productVersion\":\"\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"\",\"modificationTime\":\"2052-10-26T14:27:54.041Z\",\"userIsAdmin\":false,\"agentEventCount\":1,\"skippedCount\":0,\"workingDirectory\":\"/home/mfjyleespav\",\"runAsUsername\":\"root\",\"originUserUID\":\"1000\",\"interpreter\":\"\",\"fileAccessPermission\":\"-rwxr-xr-x\",\"symLink\":\"\",\"commandInfo\":\"\",\"arguments\":\"status epm\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"lyyqcjdtq\",\"originalFileName\":\"\",\"owner\":\"root\",\"policyName\":\"Test-elastic\",\"fileQualifier\":\"2375697114193346955\",\"arrivalTime\":\"2052-11-25T14:27:54.963Z\",\"operatingSystemType\":\"Linux\",\"applicationSubType\":null,\"accessTargetType\":\"ProcessMemory\",\"accessTargetName\":\"C:\\\\Windows\\\\System32\\\\cmd.exe\",\"policyAction\":\"Elevate\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"authorizationRights\":null,\"parentProcess\":\"\",\"agentId\":\"65b3ef74-4140-4182-a655-0acf61fd0ba7\",\"computerName\":\"l5lnrioci6-81-4-97\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"hash\":\"7c478610620c36362a1bd744841028d1b9ac0d77\",\"publisher\":\"\",\"eventType\":\"StartElevated\",\"sourceType\":\"LocalDisk\",\"sourceName\":\"/usr/bin/lyyqcjdtq\",\"lastEventDate\":\"2052-11-25T10:37:58.431Z\",\"userName\":\"root\",\"fileName\":\"lyyqcjdtq\",\"fileSize\":1115760,\"fileDescription\":\"lyyqcjdtq\",\"packageName\":\"lyyqcjdtq\",\"company\":\"\",\"filePath\":\"/usr/bin/lyyqcjdtq\",\"firstEventDate\":\"2052-11-25T10:31:12.018Z\",\"productName\":\"SQL*PLUS\",\"productVersion\":\"\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"\",\"modificationTime\":\"2052-10-26T14:27:54.041Z\",\"userIsAdmin\":true,\"agentEventCount\":2,\"skippedCount\":0,\"workingDirectory\":\"/home/mfjyleespav\",\"runAsUsername\":\"root\",\"originUserUID\":\"0\",\"interpreter\":\"\",\"fileAccessPermission\":\"-rwxr-xr-x\",\"symLink\":\"\",\"commandInfo\":\"\",\"arguments\":\"status sshd\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"lyyqcjdtq\",\"originalFileName\":\"\",\"owner\":\"root\",\"policyName\":\"Test-elastic\",\"fileQualifier\":\"2375697114193346955\",\"arrivalTime\":\"2052-11-25T14:27:54.054Z\",\"operatingSystemType\":\"Linux\",\"applicationSubType\":null,\"accessTargetType\":\"ransomware\",\"accessTargetName\":\"C:\\\\Oracle\\\\oemmw\\\\OPatch\\\\version.txt\",\"policyAction\":\"Elevate\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"authorizationRights\":null,\"parentProcess\":\"\",\"agentId\":\"65b3ef74-4140-4182-a655-0acf61fd0ba7\",\"computerName\":\"l5lnrioci6-81-4-97\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"hash\":\"7c478610620c36362a1bd744841028d1b9ac0d77\",\"publisher\":\"\",\"eventType\":\"StartElevated\",\"sourceType\":\"LocalDisk\",\"sourceName\":\"/usr/bin/lyyqcjdtq\",\"lastEventDate\":\"2052-11-25T10:38:05.096Z\",\"userName\":\"mfjyleespav\",\"fileName\":\"lyyqcjdtq\",\"fileSize\":1115760,\"fileDescription\":\"lyyqcjdtq\",\"packageName\":\"lyyqcjdtq\",\"company\":\"\",\"filePath\":\"/usr/bin/lyyqcjdtq\",\"firstEventDate\":\"2052-11-25T10:27:47.42Z\",\"productName\":\"Java(TM) Platform SE 8\",\"productVersion\":\"\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"\",\"modificationTime\":\"2052-10-26T14:27:54.04Z\",\"userIsAdmin\":false,\"agentEventCount\":6,\"skippedCount\":0,\"workingDirectory\":\"/home/mfjyleespav\",\"runAsUsername\":\"root\",\"originUserUID\":\"1000\",\"interpreter\":\"\",\"fileAccessPermission\":\"-rwxr-xr-x\",\"symLink\":\"\",\"commandInfo\":\"\",\"arguments\":\"status sshd\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"lyyqcjdtq\",\"originalFileName\":\"\",\"owner\":\"root\",\"policyName\":\"Test-elastic\",\"fileQualifier\":\"2375697114193346955\",\"arrivalTime\":\"2052-11-25T14:27:54.967Z\",\"operatingSystemType\":\"Linux\",\"applicationSubType\":null,\"accessTargetType\":\"ProcessMemory\",\"accessTargetName\":\"C:\\\\Oracle\\\\oemmw\\\\oracle_common\\\\jdk\\\\bin\\\\java.exe\",\"policyAction\":\"Elevate\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"authorizationRights\":null,\"parentProcess\":\"\",\"agentId\":\"65b3ef74-4140-4182-a655-0acf61fd0ba7\",\"computerName\":\"l5lnrioci6-81-4-97\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"hash\":\"6541d83f2462e1a3155e9218dc034c72290665d8\",\"publisher\":\"\",\"eventType\":\"Block\",\"sourceType\":\"LocalDisk\",\"sourceName\":\"/usr/bin/lk\",\"lastEventDate\":\"2052-11-26T11:36:20.716Z\",\"userName\":\"acniufy\",\"fileName\":\"lk\",\"fileSize\":138216,\"fileDescription\":\"lk\",\"packageName\":\"lk\",\"company\":\"\",\"filePath\":\"/usr/bin/lk\",\"firstEventDate\":\"2052-11-26T11:36:20.716Z\",\"productName\":\"Microsoft® Windows® Operating System\",\"productVersion\":\"\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"\",\"modificationTime\":\"2052-10-27T11:36:43.978Z\",\"userIsAdmin\":false,\"agentEventCount\":1,\"skippedCount\":0,\"workingDirectory\":\"/home/acniufy\",\"runAsUsername\":\"acniufy\",\"originUserUID\":\"1001\",\"interpreter\":\"\",\"fileAccessPermission\":\"-rwxr-xr-x\",\"symLink\":\"\",\"commandInfo\":\"\",\"arguments\":\"--color=auto\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"lk\",\"originalFileName\":\"\",\"owner\":\"root\",\"policyName\":\"test\",\"fileQualifier\":\"-4809306995265559738\",\"arrivalTime\":\"2052-11-26T11:36:43.99Z\",\"operatingSystemType\":\"Linux\",\"applicationSubType\":null,\"accessTargetType\":\"ProcessMemory\",\"accessTargetName\":\"C:\\\\Oracle\\\\oemmw\\\\oracle_common\\\\jdk\\\\bin\\\\java.exe\",\"policyAction\":\"Block\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"authorizationRights\":null,\"parentProcess\":\"\",\"agentId\":\"7d9c35c6-6a92-465a-8bda-752428fc66c8\",\"computerName\":\"w8gsdsxaj-13-6-81\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"hash\":\"7c478610620c36362a1bd744841028d1b9ac0d77\",\"publisher\":\"\",\"eventType\":\"StartElevated\",\"sourceType\":\"LocalDisk\",\"sourceName\":\"/usr/bin/lyyqcjdtq\",\"lastEventDate\":\"2052-11-26T06:20:44.514Z\",\"userName\":\"mfjyleespav\",\"fileName\":\"lyyqcjdtq\",\"fileSize\":1115760,\"fileDescription\":\"lyyqcjdtq\",\"packageName\":\"lyyqcjdtq\",\"company\":\"\",\"filePath\":\"/usr/bin/lyyqcjdtq\",\"firstEventDate\":\"2052-11-26T06:08:51.751Z\",\"productName\":\"Java(TM) Platform SE 8\",\"productVersion\":\"\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"\",\"modificationTime\":\"2052-10-27T11:29:43.675Z\",\"userIsAdmin\":false,\"agentEventCount\":21,\"skippedCount\":0,\"workingDirectory\":\"/home/mfjyleespav\",\"runAsUsername\":\"root\",\"originUserUID\":\"1000\",\"interpreter\":\"\",\"fileAccessPermission\":\"-rwxr-xr-x\",\"symLink\":\"\",\"commandInfo\":\"\",\"arguments\":\"status sshd\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"lyyqcjdtq\",\"originalFileName\":\"\",\"owner\":\"root\",\"policyName\":\"[IMPORTED] Test-elastic\",\"fileQualifier\":\"2375697114193346955\",\"arrivalTime\":\"2052-11-26T11:29:43.684Z\",\"operatingSystemType\":\"Linux\",\"applicationSubType\":null,\"accessTargetType\":\"Internet\",\"accessTargetName\":\"\",\"policyAction\":\"Elevate\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"authorizationRights\":null,\"parentProcess\":\"\",\"agentId\":\"7d9c35c6-6a92-465a-8bda-752428fc66c8\",\"computerName\":\"w8gsdsxaj-13-6-81\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"hash\":\"40D34E20DDA0C2B8EB8E7608C717EB432B2709BE\",\"publisher\":\"Microsoft Windows\",\"eventType\":\"Block\",\"sourceType\":\"Windows\",\"sourceName\":\"Microsoft Windows\",\"lastEventDate\":\"2051-01-31T05:48:28.334Z\",\"userName\":\"NT AUTHORITY\\\\NETWORK SERVICE\",\"fileName\":\"dllhost.exe\",\"fileSize\":21304,\"fileDescription\":\"COM Surrogate\",\"packageName\":\"COM Surrogate (dllhost.exe)\",\"company\":\"Microsoft Corporation\",\"filePath\":\"C:\\\\Windows\\\\System32\\\\dllhost.exe\",\"firstEventDate\":\"2051-01-30T14:02:11.7Z\",\"productName\":\"Java(TM) Platform SE 7 U111\",\"productVersion\":\"10.0.18362.1\",\"bundleName\":\"\",\"bundleVersion\":\"\",\"fileVersion\":\"10.0.18362.1\",\"modificationTime\":\"2047-03-19T04:44:33.77Z\",\"userIsAdmin\":false,\"agentEventCount\":0,\"skippedCount\":8,\"workingDirectory\":null,\"runAsUsername\":null,\"originUserUID\":null,\"interpreter\":null,\"fileAccessPermission\":\"\",\"commandInfo\":null,\"arguments\":\"\",\"justification\":\"\",\"justificationEmail\":\"\",\"displayName\":\"COM Surrogate (dllhost.exe)\",\"originalFileName\":\"dllhost.exe\",\"owner\":\"NT SERVICE\\\\TrustedInstaller\",\"policyName\":\"Block\",\"fileQualifier\":\"6131417963422890440\",\"arrivalTime\":\"2051-01-31T05:49:01.641Z\",\"operatingSystemType\":\"Windows\",\"applicationSubType\":null,\"accessTargetType\":\"\",\"accessTarget\":\"\",\"policyAction\":\"Block\",\"productCode\":\"\",\"upgradeCode\":\"\",\"mimeType\":\"\",\"codeURL\":\"\",\"agentId\":\"e742a3f0-425d-43a7-b371-82d57bef020e\",\"computerName\":\"ZJN07EGBQG\",\"symLink\":\"\",\"authorizationRight\":\"com.apple.AOSNotification.FindMyMac.modify\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "policyaudit_raw_event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cyberark_epm-policyaudit_raw_event-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "cyberark_epm",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:08:34.042Z",
+            "agent": {
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "6760c21d-1f84-4fa7-bafb-b617c0fb54c5",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "winlog": {
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "outcome": "success",
+                "level": "information",
+                "event_id": 4747,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-12-18T16:35:16.681Z",
+                "event_data": {
+                    "MemberName": "CN=Administrator,CN=Users,DC=TEST,DC=SAAS",
+                    "MemberSid": "S-1-5-21-1717121054-434620538-60925301-500",
+                    "TargetUserName": "uaqibnrhjtabt9",
+                    "TargetDomainName": "TEST",
+                    "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+                    "SubjectUserName": "ev_aav",
+                    "SubjectDomainName": "TEST",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2903",
+                    "SubjectLogonId": "0x2e67800",
+                    "PrivilegeList": "-"
+                },
+                "process": {
+                    "pid": 492,
+                    "thread": {
+                        "id": 664
+                    }
+                },
+                "channel": "Security",
+                "record_id": 3700064
+            },
+            "event": {
+                "kind": "event",
+                "code": 4747,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4747.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

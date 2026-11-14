@@ -1,0 +1,252 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-06-05T08:49:00.000+01:00",
+      "destination": {
+        "ip": "198.51.100.74",
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "alert",
+        "category": [
+          "intrusion_detection",
+          "network"
+        ],
+        "code": "18009",
+        "id": "E5C45B0F-9420-4BB4-88EB-E59A58822AA2",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-05 time=08:49:00 timezone=\"BST\" device_name=\"JL972\" device_id=C30006T22TGR89B log_id=086320518009 log_type=\"ATP\" log_component=\"Firewall\" log_subtype=\"Alert\" priority=Notice user_name=\"\" protocol=\" ICMP\" src_port=0 dst_port=0 sourceip=10.122.13.18 destinationip=198.51.100.74 url=198.51.100.74 threatname=C2/Generic-A eventid=E5C45B0F-9420-4BB4-88EB-E59A58822AA2 eventtype=\"Standard\" login_user=\"\" process_user=\"\" ep_uuid= execution_path=\"\"",
+        "outcome": "success",
+        "severity": 5,
+        "timezone": "Etc/GMT-1",
+        "type": [
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "notification"
+      },
+      "network": {
+        "transport": " icmp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C30006T22TGR89B",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ],
+        "ip": [
+          "10.122.13.18",
+          "198.51.100.74"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "device": "SFW",
+          "device_name": "JL972",
+          "eventtype": "Standard",
+          "log_component": "Firewall",
+          "log_id": "086320518009",
+          "log_subtype": "Alert",
+          "log_type": "ATP",
+          "priority": "Notice",
+          "threatname": "C2/Generic-A",
+          "timezone": "BST"
+        }
+      },
+      "source": {
+        "ip": "10.122.13.18",
+        "port": 0
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "198.51.100.74"
+      }
+    },
+    {
+      "@timestamp": "2045-01-31T18:44:31.000+05:30",
+      "destination": {
+        "ip": "192.0.2.22",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "drop",
+        "category": [
+          "intrusion_detection",
+          "network"
+        ],
+        "code": "18010",
+        "id": "D482CADC-4B8F-4747-B577-A1DCFD7E59C8",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2045-01-31 time=18:44:31 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=086304418010 log_type=\"ATP\" log_component=\"Firewall\" log_subtype=\"Drop\" priority=Warning user_name=\"gevlbv\" protocol=\"TCP\" src_port=22623 dst_port=80 sourceip=10.138.93.175 destinationip=192.0.2.22 url=192.0.2.22 threatname=C2 /Generic-A eventid=D482CADC-4B8F-4747-B577-A1DCFD7E59C8 eventtype=\"Standard\" login_user=\"\" process_user=\"\" ep_uuid= execution_path=\"\"",
+        "outcome": "success",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "community_id": "1:Ohx213a4DZLW+gbzgnu/JL6fd3E=",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C44313350024-P29PUA",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ],
+        "ip": [
+          "10.138.93.175",
+          "192.0.2.22"
+        ],
+        "user": [
+          "gevlbv"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "device": "SFW",
+          "device_name": "FT189gKJ-WN",
+          "eventtype": "Standard",
+          "log_component": "Firewall",
+          "log_id": "086304418010",
+          "log_subtype": "Drop",
+          "log_type": "ATP",
+          "priority": "Warning",
+          "threatname": "C2 /Generic-A",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "ip": "10.138.93.175",
+        "port": 22623,
+        "user": {
+          "name": "gevlbv"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "192.0.2.22"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-05 time=08:49:00 timezone=\"BST\" device_name=\"JL972\" device_id=C30006T22TGR89B log_id=086320518009 log_type=\"ATP\" log_component=\"Firewall\" log_subtype=\"Alert\" priority=Notice user_name=\"\" protocol=\" ICMP\" src_port=0 dst_port=0 sourceip=10.122.13.18 destinationip=198.51.100.74 url=198.51.100.74 threatname=C2/Generic-A eventid=E5C45B0F-9420-4BB4-88EB-E59A58822AA2 eventtype=\"Standard\" login_user=\"\" process_user=\"\" ep_uuid= execution_path=\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2045-01-31 time=18:44:31 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=086304418010 log_type=\"ATP\" log_component=\"Firewall\" log_subtype=\"Drop\" priority=Warning user_name=\"gevlbv\" protocol=\"TCP\" src_port=22623 dst_port=80 sourceip=10.138.93.175 destinationip=192.0.2.22 url=192.0.2.22 threatname=C2 /Generic-A eventid=D482CADC-4B8F-4747-B577-A1DCFD7E59C8 eventtype=\"Standard\" login_user=\"\" process_user=\"\" ep_uuid= execution_path=\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "xg",
+    "dynamic_fields": {
+      "network.community_id": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sophos-xg-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "sophos",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

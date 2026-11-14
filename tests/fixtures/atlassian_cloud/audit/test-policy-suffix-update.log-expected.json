@@ -1,0 +1,98 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-05-19T14:00:00.000Z",
+      "atlassian_cloud": {
+        "audit": {
+          "container": [
+            {
+              "attributes": {
+                "name": "Example Corp"
+              },
+              "id": "08166994-2766-0080-0901-658708848682",
+              "type": "orgs"
+            }
+          ],
+          "context": [],
+          "location": {
+            "geo": "NA"
+          },
+          "message": {
+            "format": "simple"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "data_classification_policy_update",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "created": "2054-05-19T14:00:01.000Z",
+        "id": "g8000008-0000-4000-8000-000000000008",
+        "kind": "event",
+        "original": "{\"type\":\"events\",\"id\":\"g8000008-0000-4000-8000-000000000008\",\"attributes\":{\"time\":\"2054-05-19T14:00:00.000Z\",\"processedAt\":\"2054-05-19T14:00:01.000Z\",\"action\":\"data_classification_policy_update\",\"actor\":{\"id\":\"712020:cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\",\"name\":\"Grace Park\",\"email\":\"rrffd.yfrl@example.com\"},\"context\":[],\"container\":[{\"id\":\"08166994-2766-0080-0901-658708848682\",\"type\":\"orgs\",\"attributes\":{\"name\":\"Example Corp\"}}],\"location\":{\"ip\":\"192.0.2.20\",\"geo\":\"NA\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Grace Park updated data classification policy\",\"format\":\"simple\"}}",
+        "outcome": "success",
+        "type": [
+          "change"
+        ]
+      },
+      "message": "Grace Park updated data classification policy",
+      "observer": {
+        "product": "Atlassian Cloud",
+        "type": "saas",
+        "vendor": "Atlassian"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.20"
+        ],
+        "user": [
+          "Grace Park",
+          "rrffd.yfrl@example.com"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "Example City",
+          "country_name": "Example Country"
+        },
+        "ip": "192.0.2.20"
+      },
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "rrffd.yfrl@example.com",
+        "id": "712020:cdaccfff-efcf-cacc-dbaa-ddacecbebfcd",
+        "name": "Grace Park"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"type\":\"events\",\"id\":\"g8000008-0000-4000-8000-000000000008\",\"attributes\":{\"time\":\"2054-05-19T14:00:00.000Z\",\"processedAt\":\"2054-05-19T14:00:01.000Z\",\"action\":\"data_classification_policy_update\",\"actor\":{\"id\":\"712020:cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\",\"name\":\"Grace Park\",\"email\":\"rrffd.yfrl@example.com\"},\"context\":[],\"container\":[{\"id\":\"08166994-2766-0080-0901-658708848682\",\"type\":\"orgs\",\"attributes\":{\"name\":\"Example Corp\"}}],\"location\":{\"ip\":\"192.0.2.20\",\"geo\":\"NA\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Grace Park updated data classification policy\",\"format\":\"simple\"}}",
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_cloud-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

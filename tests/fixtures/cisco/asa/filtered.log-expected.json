@@ -1,0 +1,400 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2026-01-01T01:00:27.000-02:00",
+      "agent": {
+        "ephemeral_id": "ed2d106f-f151-4c4e-af20-032dee4fc79f",
+        "id": "98365b53-bcba-4b7b-a721-6f2e9f45072f",
+        "name": "caed8953f560",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "999999",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jan  1 01:00:27 adepx asa[1234]: %ASA-7-999999: This message is not filtered.",
+        "severity": 7,
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "adepx"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "debug",
+        "offset": 0
+      },
+      "observer": {
+        "hostname": "adepx",
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "asa",
+        "pid": 1234
+      },
+      "related": {
+        "hosts": [
+          "adepx"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2026-01-01T01:00:30.000-02:00",
+      "agent": {
+        "ephemeral_id": "ed2d106f-f151-4c4e-af20-032dee4fc79f",
+        "id": "98365b53-bcba-4b7b-a721-6f2e9f45072f",
+        "name": "caed8953f560",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "999999",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jan  1 01:00:30 adepx asa[1234]: %ASA-8-999999: This phony message is dropped due to log level.",
+        "severity": 8,
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "adepx"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 78
+      },
+      "observer": {
+        "hostname": "adepx",
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "asa",
+        "pid": 1234
+      },
+      "related": {
+        "hosts": [
+          "adepx"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2026-01-01T01:02:12.000-02:00",
+      "agent": {
+        "ephemeral_id": "ed2d106f-f151-4c4e-af20-032dee4fc79f",
+        "id": "98365b53-bcba-4b7b-a721-6f2e9f45072f",
+        "name": "caed8953f560",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "source_interface": "eth0"
+        }
+      },
+      "destination": {
+        "address": "192.168.3.166",
+        "ip": "192.168.3.166",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "106001",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jan  1 01:02:12 adepx asa[1234]: %ASA-2-106001: Inbound TCP connection denied from 10.239.112.165/45321 to 192.168.3.166/443 flags URG+SYN+RST on interface eth0",
+        "outcome": "failure",
+        "severity": 2,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "adepx"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "critical",
+        "offset": 174
+      },
+      "network": {
+        "community_id": "1:EFAvexO4PfWFtadpF4WkUe/1Fhs=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "adepx",
+        "ingress": {
+          "interface": {
+            "name": "eth0"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "process": {
+        "name": "asa",
+        "pid": 1234
+      },
+      "related": {
+        "hosts": [
+          "adepx"
+        ],
+        "ip": [
+          "10.239.112.165",
+          "192.168.3.166"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.239.112.165",
+        "ip": "10.239.112.165",
+        "port": 45321
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T04:00:09.056Z",
+      "agent": {
+        "ephemeral_id": "ed2d106f-f151-4c4e-af20-032dee4fc79f",
+        "id": "98365b53-bcba-4b7b-a721-6f2e9f45072f",
+        "name": "caed8953f560",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "Jan  1 01:00:27 adepx asa[1234]: %ASA-7-999999: This message is not filtered.",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T04:00:09.056Z",
+      "agent": {
+        "ephemeral_id": "ed2d106f-f151-4c4e-af20-032dee4fc79f",
+        "id": "98365b53-bcba-4b7b-a721-6f2e9f45072f",
+        "name": "caed8953f560",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 78
+      },
+      "message": "Jan  1 01:00:30 adepx asa[1234]: %ASA-8-999999: This phony message is dropped due to log level.",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T04:00:09.056Z",
+      "agent": {
+        "ephemeral_id": "ed2d106f-f151-4c4e-af20-032dee4fc79f",
+        "id": "98365b53-bcba-4b7b-a721-6f2e9f45072f",
+        "name": "caed8953f560",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 174
+      },
+      "message": "Jan  1 01:02:12 adepx asa[1234]: %ASA-2-106001: Inbound TCP connection denied from 10.239.112.165/45321 to 192.168.3.166/443 flags URG+SYN+RST on interface eth0",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$",
+      "event.end": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$",
+      "event.start": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_asa-log-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cisco_asa",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

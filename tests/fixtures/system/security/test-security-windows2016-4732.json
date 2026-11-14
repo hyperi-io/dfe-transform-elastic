@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:06:58.824Z",
+            "agent": {
+                "version": "8.0.0",
+                "ephemeral_id": "78f2f98f-95d9-44fa-86a5-897c68b3de04",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG.jwbfen.local"
+            },
+            "winlog": {
+                "event_data": {
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "MemberName": "CN=Administrator,CN=Users,DC=wlbeat,DC=local",
+                    "TargetDomainName": "WLBEAT",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1111",
+                    "SubjectDomainName": "WLBEAT",
+                    "SubjectLogonId": "0x4a727",
+                    "PrivilegeList": "-",
+                    "MemberSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "TargetUserName": "mbtw_mnxgh1"
+                },
+                "process": {
+                    "thread": {
+                        "id": 1664
+                    },
+                    "pid": 772
+                },
+                "event_id": 4732,
+                "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "level": "information",
+                "outcome": "success",
+                "channel": "Security",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 4625,
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-10-22T11:31:58.039Z"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4732,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4732.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

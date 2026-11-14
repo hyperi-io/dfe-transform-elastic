@@ -1,0 +1,300 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-11-01T15:04:50.110Z",
+      "client": {
+        "ip": "192.0.2.134",
+        "port": 56278
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "duration": 2000000,
+        "id": "a9a32d9e-7029-45e6-b581-eafb5d502273-49025",
+        "original": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-49025\",\"client\":{\"ip\":\"192.0.2.134\",\"port\":56278},\"eventName\":\"access\",\"http\":{\"request\":{\"headers\":{\"host\":[\"idm\"]},\"method\":\"GET\",\"path\":\"http://idm/openidm/info/ping\",\"secure\":false}},\"level\":\"INFO\",\"request\":{\"operation\":\"READ\",\"protocol\":\"CREST\"},\"response\":{\"elapsedTime\":2,\"elapsedTimeUnits\":\"MILLISECONDS\",\"status\":\"SUCCESSFUL\",\"statusCode\":\"200\"},\"roles\":[\"internal/role/openidm-reg\"],\"server\":{\"ip\":\"192.0.2.54\",\"port\":8080},\"source\":\"audit\",\"timestamp\":\"2050-11-01T15:04:50.110Z\",\"topic\":\"access\",\"transactionId\":\"a6c32e2e-7716-12d4-c338-eedb0d060029-92649\",\"userId\":\"anonymous\"},\"timestamp\":\"2050-11-01T15:04:50.110401762Z\",\"type\":\"application/json\",\"source\":\"idm-access\"}",
+        "outcome": "success",
+        "type": [
+          "access"
+        ]
+      },
+      "forgerock": {
+        "eventName": "access",
+        "http": {
+          "request": {
+            "headers": {
+              "host": [
+                "idm"
+              ]
+            },
+            "secure": false
+          }
+        },
+        "level": "INFO",
+        "request": {
+          "operation": "READ",
+          "protocol": "CREST"
+        },
+        "response": {
+          "elapsedTime": 2,
+          "elapsedTimeUnits": "MILLISECONDS",
+          "status": "SUCCESSFUL"
+        },
+        "roles": [
+          "internal/role/openidm-reg"
+        ],
+        "source": "audit",
+        "topic": "access"
+      },
+      "http": {
+        "request": {
+          "Path": "http://idm/openidm/info/ping",
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "observer": {
+        "vendor": "ForgeRock Identity Platform"
+      },
+      "server": {
+        "ip": "192.0.2.54"
+      },
+      "transaction": {
+        "id": "a6c32e2e-7716-12d4-c338-eedb0d060029-92649"
+      },
+      "user": {
+        "id": "anonymous"
+      }
+    },
+    {
+      "@timestamp": "2050-11-01T15:04:50.629Z",
+      "client": {
+        "ip": "192.0.2.134",
+        "port": 56286
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "duration": 2000000,
+        "id": "a9a32d9e-7029-45e6-b581-eafb5d502273-49037",
+        "original": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-49037\",\"client\":{\"ip\":\"192.0.2.134\",\"port\":56286},\"eventName\":\"access\",\"http\":{\"request\":{\"headers\":{\"host\":[\"idm\"]},\"method\":\"GET\",\"path\":\"http://idm/openidm/info/ping\",\"secure\":false}},\"level\":\"INFO\",\"request\":{\"operation\":\"READ\",\"protocol\":\"CREST\"},\"response\":{\"elapsedTime\":2,\"elapsedTimeUnits\":\"MILLISECONDS\",\"status\":\"SUCCESSFUL\",\"statusCode\":\"200\"},\"roles\":[\"internal/role/openidm-reg\"],\"server\":{\"ip\":\"192.0.2.54\",\"port\":8080},\"source\":\"audit\",\"timestamp\":\"2050-11-01T15:04:50.629Z\",\"topic\":\"access\",\"transactionId\":\"c6c43e2e-5476-52e3-f721-aaaa1d001319-11380\",\"userId\":\"anonymous\"},\"timestamp\":\"2050-11-01T15:04:50.629542349Z\",\"type\":\"application/json\",\"source\":\"idm-access\"}",
+        "outcome": "success",
+        "type": [
+          "access"
+        ]
+      },
+      "forgerock": {
+        "eventName": "access",
+        "http": {
+          "request": {
+            "headers": {
+              "host": [
+                "idm"
+              ]
+            },
+            "secure": false
+          }
+        },
+        "level": "INFO",
+        "request": {
+          "operation": "READ",
+          "protocol": "CREST"
+        },
+        "response": {
+          "elapsedTime": 2,
+          "elapsedTimeUnits": "MILLISECONDS",
+          "status": "SUCCESSFUL"
+        },
+        "roles": [
+          "internal/role/openidm-reg"
+        ],
+        "source": "audit",
+        "topic": "access"
+      },
+      "http": {
+        "request": {
+          "Path": "http://idm/openidm/info/ping",
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "observer": {
+        "vendor": "ForgeRock Identity Platform"
+      },
+      "server": {
+        "ip": "192.0.2.54"
+      },
+      "transaction": {
+        "id": "c6c43e2e-5476-52e3-f721-aaaa1d001319-11380"
+      },
+      "user": {
+        "id": "anonymous"
+      }
+    },
+    {
+      "@timestamp": "2050-11-01T15:04:50.629Z",
+      "client": {
+        "ip": "192.0.2.134",
+        "port": 44310
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "duration": 2000000,
+        "id": "a9a32d9e-7029-45e6-b581-eafb5d502273-49036",
+        "original": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-49036\",\"client\":{\"ip\":\"192.0.2.134\",\"port\":44310},\"eventName\":\"access\",\"http\":{\"request\":{\"headers\":{\"host\":[\"idm\"]},\"method\":\"GET\",\"path\":\"http://idm/openidm/info/ping\",\"secure\":false}},\"level\":\"INFO\",\"request\":{\"operation\":\"READ\",\"protocol\":\"CREST\"},\"response\":{\"elapsedTime\":2,\"elapsedTimeUnits\":\"MILLISECONDS\",\"status\":\"SUCCESSFUL\",\"statusCode\":\"200\"},\"roles\":[\"internal/role/openidm-reg\"],\"server\":{\"ip\":\"192.0.2.54\",\"port\":8080},\"source\":\"audit\",\"timestamp\":\"2050-11-01T15:04:50.629Z\",\"topic\":\"access\",\"transactionId\":\"e3f91c7d-3553-48b4-c263-dfbd5c780772-56153\",\"userId\":\"anonymous\"},\"timestamp\":\"2050-11-01T15:04:50.629566278Z\",\"type\":\"application/json\",\"source\":\"idm-access\"}",
+        "outcome": "success",
+        "type": [
+          "access"
+        ]
+      },
+      "forgerock": {
+        "eventName": "access",
+        "http": {
+          "request": {
+            "headers": {
+              "host": [
+                "idm"
+              ]
+            },
+            "secure": false
+          }
+        },
+        "level": "INFO",
+        "request": {
+          "operation": "READ",
+          "protocol": "CREST"
+        },
+        "response": {
+          "elapsedTime": 2,
+          "elapsedTimeUnits": "MILLISECONDS",
+          "status": "SUCCESSFUL"
+        },
+        "roles": [
+          "internal/role/openidm-reg"
+        ],
+        "source": "audit",
+        "topic": "access"
+      },
+      "http": {
+        "request": {
+          "Path": "http://idm/openidm/info/ping",
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "observer": {
+        "vendor": "ForgeRock Identity Platform"
+      },
+      "server": {
+        "ip": "192.0.2.54"
+      },
+      "transaction": {
+        "id": "e3f91c7d-3553-48b4-c263-dfbd5c780772-56153"
+      },
+      "user": {
+        "id": "anonymous"
+      }
+    },
+    {
+      "@timestamp": "2050-11-01T15:04:50.691Z",
+      "client": {
+        "ip": "192.0.2.134",
+        "port": 59132
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "duration": 2000000,
+        "id": "a9a32d9e-7029-45e6-b581-eafb5d502273-49043",
+        "original": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-49043\",\"client\":{\"ip\":\"192.0.2.134\",\"port\":59132},\"eventName\":\"access\",\"http\":{\"request\":{\"headers\":{\"host\":[\"idm\"]},\"method\":\"GET\",\"path\":\"http://idm/openidm/info/ping\",\"secure\":false}},\"level\":\"INFO\",\"request\":{\"operation\":\"READ\",\"protocol\":\"CREST\"},\"response\":{\"elapsedTime\":2,\"elapsedTimeUnits\":\"MILLISECONDS\",\"status\":\"SUCCESSFUL\",\"statusCode\":\"200\"},\"roles\":[\"internal/role/openidm-reg\"],\"server\":{\"ip\":\"192.0.2.54\",\"port\":8080},\"source\":\"audit\",\"timestamp\":\"2050-11-01T15:04:50.691Z\",\"topic\":\"access\",\"transactionId\":\"e1a98e5b-2908-29b4-c961-ceab4e678581-56836\",\"userId\":\"anonymous\"},\"timestamp\":\"2050-11-01T15:04:50.691595252Z\",\"type\":\"application/json\",\"source\":\"idm-access\"}",
+        "outcome": "success",
+        "type": [
+          "access"
+        ]
+      },
+      "forgerock": {
+        "eventName": "access",
+        "http": {
+          "request": {
+            "headers": {
+              "host": [
+                "idm"
+              ]
+            },
+            "secure": false
+          }
+        },
+        "level": "INFO",
+        "request": {
+          "operation": "READ",
+          "protocol": "CREST"
+        },
+        "response": {
+          "elapsedTime": 2,
+          "elapsedTimeUnits": "MILLISECONDS",
+          "status": "SUCCESSFUL"
+        },
+        "roles": [
+          "internal/role/openidm-reg"
+        ],
+        "source": "audit",
+        "topic": "access"
+      },
+      "http": {
+        "request": {
+          "Path": "http://idm/openidm/info/ping",
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "observer": {
+        "vendor": "ForgeRock Identity Platform"
+      },
+      "server": {
+        "ip": "192.0.2.54"
+      },
+      "transaction": {
+        "id": "e1a98e5b-2908-29b4-c961-ceab4e678581-56836"
+      },
+      "user": {
+        "id": "anonymous"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-49025\",\"client\":{\"ip\":\"192.0.2.134\",\"port\":56278},\"eventName\":\"access\",\"http\":{\"request\":{\"headers\":{\"host\":[\"idm\"]},\"method\":\"GET\",\"path\":\"http://idm/openidm/info/ping\",\"secure\":false}},\"level\":\"INFO\",\"request\":{\"operation\":\"READ\",\"protocol\":\"CREST\"},\"response\":{\"elapsedTime\":2,\"elapsedTimeUnits\":\"MILLISECONDS\",\"status\":\"SUCCESSFUL\",\"statusCode\":\"200\"},\"roles\":[\"internal/role/openidm-reg\"],\"server\":{\"ip\":\"192.0.2.54\",\"port\":8080},\"source\":\"audit\",\"timestamp\":\"2050-11-01T15:04:50.110Z\",\"topic\":\"access\",\"transactionId\":\"a6c32e2e-7716-12d4-c338-eedb0d060029-92649\",\"userId\":\"anonymous\"},\"timestamp\":\"2050-11-01T15:04:50.110401762Z\",\"type\":\"application/json\",\"source\":\"idm-access\"}"
+    },
+    {
+      "message": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-49037\",\"client\":{\"ip\":\"192.0.2.134\",\"port\":56286},\"eventName\":\"access\",\"http\":{\"request\":{\"headers\":{\"host\":[\"idm\"]},\"method\":\"GET\",\"path\":\"http://idm/openidm/info/ping\",\"secure\":false}},\"level\":\"INFO\",\"request\":{\"operation\":\"READ\",\"protocol\":\"CREST\"},\"response\":{\"elapsedTime\":2,\"elapsedTimeUnits\":\"MILLISECONDS\",\"status\":\"SUCCESSFUL\",\"statusCode\":\"200\"},\"roles\":[\"internal/role/openidm-reg\"],\"server\":{\"ip\":\"192.0.2.54\",\"port\":8080},\"source\":\"audit\",\"timestamp\":\"2050-11-01T15:04:50.629Z\",\"topic\":\"access\",\"transactionId\":\"c6c43e2e-5476-52e3-f721-aaaa1d001319-11380\",\"userId\":\"anonymous\"},\"timestamp\":\"2050-11-01T15:04:50.629542349Z\",\"type\":\"application/json\",\"source\":\"idm-access\"}"
+    },
+    {
+      "message": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-49036\",\"client\":{\"ip\":\"192.0.2.134\",\"port\":44310},\"eventName\":\"access\",\"http\":{\"request\":{\"headers\":{\"host\":[\"idm\"]},\"method\":\"GET\",\"path\":\"http://idm/openidm/info/ping\",\"secure\":false}},\"level\":\"INFO\",\"request\":{\"operation\":\"READ\",\"protocol\":\"CREST\"},\"response\":{\"elapsedTime\":2,\"elapsedTimeUnits\":\"MILLISECONDS\",\"status\":\"SUCCESSFUL\",\"statusCode\":\"200\"},\"roles\":[\"internal/role/openidm-reg\"],\"server\":{\"ip\":\"192.0.2.54\",\"port\":8080},\"source\":\"audit\",\"timestamp\":\"2050-11-01T15:04:50.629Z\",\"topic\":\"access\",\"transactionId\":\"e3f91c7d-3553-48b4-c263-dfbd5c780772-56153\",\"userId\":\"anonymous\"},\"timestamp\":\"2050-11-01T15:04:50.629566278Z\",\"type\":\"application/json\",\"source\":\"idm-access\"}"
+    },
+    {
+      "message": "{\"payload\":{\"_id\":\"a9a32d9e-7029-45e6-b581-eafb5d502273-49043\",\"client\":{\"ip\":\"192.0.2.134\",\"port\":59132},\"eventName\":\"access\",\"http\":{\"request\":{\"headers\":{\"host\":[\"idm\"]},\"method\":\"GET\",\"path\":\"http://idm/openidm/info/ping\",\"secure\":false}},\"level\":\"INFO\",\"request\":{\"operation\":\"READ\",\"protocol\":\"CREST\"},\"response\":{\"elapsedTime\":2,\"elapsedTimeUnits\":\"MILLISECONDS\",\"status\":\"SUCCESSFUL\",\"statusCode\":\"200\"},\"roles\":[\"internal/role/openidm-reg\"],\"server\":{\"ip\":\"192.0.2.54\",\"port\":8080},\"source\":\"audit\",\"timestamp\":\"2050-11-01T15:04:50.691Z\",\"topic\":\"access\",\"transactionId\":\"e1a98e5b-2908-29b4-c961-ceab4e678581-56836\",\"userId\":\"anonymous\"},\"timestamp\":\"2050-11-01T15:04:50.691595252Z\",\"type\":\"application/json\",\"source\":\"idm-access\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "idm_access",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-forgerock-idm_access-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "forgerock",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

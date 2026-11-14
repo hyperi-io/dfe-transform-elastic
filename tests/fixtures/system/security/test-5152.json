@@ -1,0 +1,52 @@
+{
+    "events": [
+        {
+            "event": {
+                "code": "5152",
+                "kind": "event",
+                "outcome": "failure",
+                "provider": "Microsoft-Windows-Security-Auditing"
+            },
+            "host": {
+                "name": "CTSNMNEZ1.egmukjj.com"
+            },
+            "log": {
+                "level": "information"
+            },
+            "winlog": {
+                "activity_id": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "channel": "Security",
+                "computer_name": "CTSNMNEZ1.egmukjj.com",
+                "event_data": {
+                    "SourceAddress": "::ffff:10.38.147.236",
+                    "LayerRTID": "13",
+                    "LayerName": "%%14597",
+                    "DestPort": "1947",
+                    "FilterRTID": "122003",
+                    "ProcessId": "0",
+                    "SourcePort": "58231",
+                    "Protocol": "17",
+                    "FilterOrigin": "Stealth",
+                    "Application": "-",
+                    "Direction": "%%14592",
+                    "DestAddress": "255.255.255.255"
+                },
+                "event_id": "5152",
+                "keywords": [
+                    "Audit Failure"
+                ],
+                "opcode": "Info",
+                "process": {
+                    "pid": 924,
+                    "thread": {
+                        "id": 12672
+                    }
+                },
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 7959006,
+                "time_created": "2051-01-17T22:18:03.5577972Z"
+            }
+        }
+    ]
+}

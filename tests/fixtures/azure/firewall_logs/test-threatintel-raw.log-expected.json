@@ -1,0 +1,95 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-05-16T07:34:42.525Z",
+      "azure": {
+        "firewall": {
+          "action": "Deny",
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallThreatIntelLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 1688
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallThreatIntelLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:49680 to 198.51.100.144:1688. Action: Deny. ThreatIntel: Destination reported by Threat Intelligence\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2053-05-16T07:34:42.525499+00:00\"}",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "198.51.100.144"
+        ]
+      },
+      "rule": {
+        "name": "Destination reported by Threat Intelligence"
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209",
+        "port": 49680
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallThreatIntelLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:49680 to 198.51.100.144:1688. Action: Deny. ThreatIntel: Destination reported by Threat Intelligence\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2053-05-16T07:34:42.525499+00:00\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "firewall_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-firewall_logs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

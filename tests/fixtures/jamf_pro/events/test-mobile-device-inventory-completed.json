@@ -1,0 +1,35 @@
+{
+    "events": [
+        {
+            "json": {
+                "event": {
+                    "udid": "5516786595",
+                    "device_name": "N7TFT",
+                    "version": "O7F2FM",
+                    "model": "CLKF7W",
+                    "bluetooth_mac_address": "ce:bb:a4:55:30:bc",
+                    "wifi_mac_address": "ce:bb:a4:55:30:bc",
+                    "imei": "P4D2IS",
+                    "icci_id": "1067418925",
+                    "product": "QY4BVT",
+                    "serial_number": "3468652",
+                    "user_directory_id": "3185814212",
+                    "room": "2BHL5Q",
+                    "os_version": "67.8497",
+                    "os_build": "89.5146",
+                    "model_display": "ALJRGG",
+                    "username": "Pnvw Eyd",
+                    "jss_id": 673,
+                    "ip_address": "198.51.100.144",
+                    "management_id": "6679969328"
+                },
+                "webhook": {
+                    "event_timestamp": 2609056672001,
+                    "id": 911,
+                    "name": "N7J0R",
+                    "webhook_event": "MobileDeviceInventoryCompleted"
+                }
+            }
+        }
+    ]
+}

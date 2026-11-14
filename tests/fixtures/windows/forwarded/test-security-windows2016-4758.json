@@ -1,0 +1,63 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:03:42.861Z",
+            "host": {
+                "name": "SOV-86VA2XP94FG.jwbfen.local"
+            },
+            "agent": {
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "c3a8bd07-2790-40cb-9ce4-157099882b24",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "winlog": {
+                "event_data": {
+                    "SubjectUserName": "Administrator",
+                    "SubjectDomainName": "WLBEAT",
+                    "SubjectLogonId": "0x4a727",
+                    "PrivilegeList": "-",
+                    "TargetUserName": "Vemj_sxvug2m5",
+                    "TargetDomainName": "WLBEAT",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1113",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500"
+                },
+                "process": {
+                    "pid": 772,
+                    "thread": {
+                        "id": 1664
+                    }
+                },
+                "record_id": 4687,
+                "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "outcome": "success",
+                "level": "information",
+                "channel": "Security",
+                "event_id": 4758,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "time_created": "2047-10-22T11:35:13.550Z"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4758,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4758.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

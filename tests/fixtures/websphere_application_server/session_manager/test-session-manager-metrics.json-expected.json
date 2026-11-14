@@ -1,0 +1,516 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "session_manager": {
+          "activated_non_existent_sessions": 0,
+          "affinity_breaks": 0,
+          "app_name": "MetricsApp#metrics.war",
+          "cache_discarded": 0,
+          "external": {
+            "bytes": {
+              "read": 0,
+              "written": 0
+            },
+            "time_seconds": {
+              "read": 0,
+              "written": 0
+            }
+          },
+          "no_room_for_new_sessions": 0,
+          "persistent_stores": {
+            "data_read": 0,
+            "data_written": 0
+          },
+          "sessions": {
+            "active": 0,
+            "created": 0,
+            "current": 0,
+            "invalidated": {
+              "by_timeouts": 0,
+              "total": 0
+            },
+            "life_time": 0
+          },
+          "time_since_session_last_activated": 0
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "session_manager": {
+          "activated_non_existent_sessions": 0,
+          "affinity_breaks": 0,
+          "app_name": "isclite#WIMPortlet.war",
+          "cache_discarded": 0,
+          "external": {
+            "bytes": {
+              "read": 0,
+              "written": 0
+            },
+            "time_seconds": {
+              "read": 0,
+              "written": 0
+            }
+          },
+          "no_room_for_new_sessions": 0,
+          "persistent_stores": {
+            "data_read": 0,
+            "data_written": 0
+          },
+          "sessions": {
+            "active": 0,
+            "created": 0,
+            "current": 0,
+            "invalidated": {
+              "by_timeouts": 0,
+              "total": 0
+            },
+            "life_time": 0
+          },
+          "time_since_session_last_activated": 0
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "session_manager": {
+          "activated_non_existent_sessions": 0,
+          "affinity_breaks": 0,
+          "app_name": "isclite#isclite.war",
+          "cache_discarded": 0,
+          "external": {
+            "bytes": {
+              "read": 0,
+              "written": 0
+            },
+            "time_seconds": {
+              "read": 0,
+              "written": 0
+            }
+          },
+          "no_room_for_new_sessions": 0,
+          "persistent_stores": {
+            "data_read": 0,
+            "data_written": 0
+          },
+          "sessions": {
+            "active": 0,
+            "created": 0,
+            "current": 0,
+            "invalidated": {
+              "by_timeouts": 0,
+              "total": 0
+            },
+            "life_time": 0
+          },
+          "time_since_session_last_activated": 0
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "session_manager": {
+          "activated_non_existent_sessions": 0,
+          "affinity_breaks": 0,
+          "app_name": "isclite#adminredirector.war",
+          "cache_discarded": 0,
+          "external": {
+            "bytes": {
+              "read": 0,
+              "written": 0
+            },
+            "time_seconds": {
+              "read": 0,
+              "written": 0
+            }
+          },
+          "no_room_for_new_sessions": 0,
+          "persistent_stores": {
+            "data_read": 0,
+            "data_written": 0
+          },
+          "sessions": {
+            "active": 0,
+            "created": 0,
+            "current": 0,
+            "invalidated": {
+              "by_timeouts": 0,
+              "total": 0
+            },
+            "life_time": 0
+          },
+          "time_since_session_last_activated": 0
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "session_manager": {
+          "activated_non_existent_sessions": 0,
+          "affinity_breaks": 0,
+          "app_name": "isclite#kc.war",
+          "cache_discarded": 0,
+          "external": {
+            "bytes": {
+              "read": 0,
+              "written": 0
+            },
+            "time_seconds": {
+              "read": 0,
+              "written": 0
+            }
+          },
+          "no_room_for_new_sessions": 0,
+          "persistent_stores": {
+            "data_read": 0,
+            "data_written": 0
+          },
+          "sessions": {
+            "active": 0,
+            "created": 0,
+            "current": 0,
+            "invalidated": {
+              "by_timeouts": 0,
+              "total": 0
+            },
+            "life_time": 0
+          },
+          "time_since_session_last_activated": 0
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "session_manager": {
+          "activated_non_existent_sessions": 0,
+          "affinity_breaks": 0,
+          "app_name": "isclite#wasportlet.war",
+          "cache_discarded": 0,
+          "external": {
+            "bytes": {
+              "read": 0,
+              "written": 0
+            },
+            "time_seconds": {
+              "read": 0,
+              "written": 0
+            }
+          },
+          "no_room_for_new_sessions": 0,
+          "persistent_stores": {
+            "data_read": 0,
+            "data_written": 0
+          },
+          "sessions": {
+            "active": 0,
+            "created": 0,
+            "current": 0,
+            "invalidated": {
+              "by_timeouts": 0,
+              "total": 0
+            },
+            "life_time": 0
+          },
+          "time_since_session_last_activated": 0
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "prometheus": {
+        "labels": {
+          "appname": "MetricsApp#metrics.war",
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus"
+        },
+        "metrics": {
+          "was_session_activateNonExistSession_total": 0,
+          "was_session_activated_total": 0,
+          "was_session_active_sessions": 0,
+          "was_session_affinityBreak_total": 0,
+          "was_session_cacheDiscard_total": 0,
+          "was_session_create_total": 0,
+          "was_session_externalRead_bytes_total": 0,
+          "was_session_externalRead_seconds_total": 0,
+          "was_session_externalRead_total": 0,
+          "was_session_externalWrite_bytes_total": 0,
+          "was_session_externalWrite_seconds_total": 0,
+          "was_session_externalWrite_total": 0,
+          "was_session_finished_total": 0,
+          "was_session_invalidatedByTimeout_total": 0,
+          "was_session_invalidated_total": 0,
+          "was_session_life_time_seconds_total": 0,
+          "was_session_live_sessions": 0,
+          "was_session_noRoomForNewSession_total": 0,
+          "was_session_sessionObjects_bytes_total": 0,
+          "was_session_sessionObjects_total": 0,
+          "was_session_timeSinceLastActivated_seconds_total": 0
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "appname": "isclite#WIMPortlet.war",
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus"
+        },
+        "metrics": {
+          "was_session_activateNonExistSession_total": 0,
+          "was_session_activated_total": 0,
+          "was_session_active_sessions": 0,
+          "was_session_affinityBreak_total": 0,
+          "was_session_cacheDiscard_total": 0,
+          "was_session_create_total": 0,
+          "was_session_externalRead_bytes_total": 0,
+          "was_session_externalRead_seconds_total": 0,
+          "was_session_externalRead_total": 0,
+          "was_session_externalWrite_bytes_total": 0,
+          "was_session_externalWrite_seconds_total": 0,
+          "was_session_externalWrite_total": 0,
+          "was_session_finished_total": 0,
+          "was_session_invalidatedByTimeout_total": 0,
+          "was_session_invalidated_total": 0,
+          "was_session_life_time_seconds_total": 0,
+          "was_session_live_sessions": 0,
+          "was_session_noRoomForNewSession_total": 0,
+          "was_session_sessionObjects_bytes_total": 0,
+          "was_session_sessionObjects_total": 0,
+          "was_session_timeSinceLastActivated_seconds_total": 0
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "appname": "isclite#isclite.war",
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus"
+        },
+        "metrics": {
+          "was_session_activateNonExistSession_total": 0,
+          "was_session_activated_total": 0,
+          "was_session_active_sessions": 0,
+          "was_session_affinityBreak_total": 0,
+          "was_session_cacheDiscard_total": 0,
+          "was_session_create_total": 0,
+          "was_session_externalRead_bytes_total": 0,
+          "was_session_externalRead_seconds_total": 0,
+          "was_session_externalRead_total": 0,
+          "was_session_externalWrite_bytes_total": 0,
+          "was_session_externalWrite_seconds_total": 0,
+          "was_session_externalWrite_total": 0,
+          "was_session_finished_total": 0,
+          "was_session_invalidatedByTimeout_total": 0,
+          "was_session_invalidated_total": 0,
+          "was_session_life_time_seconds_total": 0,
+          "was_session_live_sessions": 0,
+          "was_session_noRoomForNewSession_total": 0,
+          "was_session_sessionObjects_bytes_total": 0,
+          "was_session_sessionObjects_total": 0,
+          "was_session_timeSinceLastActivated_seconds_total": 0
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "appname": "isclite#adminredirector.war",
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus"
+        },
+        "metrics": {
+          "was_session_activateNonExistSession_total": 0,
+          "was_session_activated_total": 0,
+          "was_session_active_sessions": 0,
+          "was_session_affinityBreak_total": 0,
+          "was_session_cacheDiscard_total": 0,
+          "was_session_create_total": 0,
+          "was_session_externalRead_bytes_total": 0,
+          "was_session_externalRead_seconds_total": 0,
+          "was_session_externalRead_total": 0,
+          "was_session_externalWrite_bytes_total": 0,
+          "was_session_externalWrite_seconds_total": 0,
+          "was_session_externalWrite_total": 0,
+          "was_session_finished_total": 0,
+          "was_session_invalidatedByTimeout_total": 0,
+          "was_session_invalidated_total": 0,
+          "was_session_life_time_seconds_total": 0,
+          "was_session_live_sessions": 0,
+          "was_session_noRoomForNewSession_total": 0,
+          "was_session_sessionObjects_bytes_total": 0,
+          "was_session_sessionObjects_total": 0,
+          "was_session_timeSinceLastActivated_seconds_total": 0
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "appname": "isclite#kc.war",
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus"
+        },
+        "metrics": {
+          "was_session_activateNonExistSession_total": 0,
+          "was_session_activated_total": 0,
+          "was_session_active_sessions": 0,
+          "was_session_affinityBreak_total": 0,
+          "was_session_cacheDiscard_total": 0,
+          "was_session_create_total": 0,
+          "was_session_externalRead_bytes_total": 0,
+          "was_session_externalRead_seconds_total": 0,
+          "was_session_externalRead_total": 0,
+          "was_session_externalWrite_bytes_total": 0,
+          "was_session_externalWrite_seconds_total": 0,
+          "was_session_externalWrite_total": 0,
+          "was_session_finished_total": 0,
+          "was_session_invalidatedByTimeout_total": 0,
+          "was_session_invalidated_total": 0,
+          "was_session_life_time_seconds_total": 0,
+          "was_session_live_sessions": 0,
+          "was_session_noRoomForNewSession_total": 0,
+          "was_session_sessionObjects_bytes_total": 0,
+          "was_session_sessionObjects_total": 0,
+          "was_session_timeSinceLastActivated_seconds_total": 0
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "appname": "isclite#wasportlet.war",
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus"
+        },
+        "metrics": {
+          "was_session_activateNonExistSession_total": 0,
+          "was_session_activated_total": 0,
+          "was_session_active_sessions": 0,
+          "was_session_affinityBreak_total": 0,
+          "was_session_cacheDiscard_total": 0,
+          "was_session_create_total": 0,
+          "was_session_externalRead_bytes_total": 0,
+          "was_session_externalRead_seconds_total": 0,
+          "was_session_externalRead_total": 0,
+          "was_session_externalWrite_bytes_total": 0,
+          "was_session_externalWrite_seconds_total": 0,
+          "was_session_externalWrite_total": 0,
+          "was_session_finished_total": 0,
+          "was_session_invalidatedByTimeout_total": 0,
+          "was_session_invalidated_total": 0,
+          "was_session_life_time_seconds_total": 0,
+          "was_session_live_sessions": 0,
+          "was_session_noRoomForNewSession_total": 0,
+          "was_session_sessionObjects_bytes_total": 0,
+          "was_session_sessionObjects_total": 0,
+          "was_session_timeSinceLastActivated_seconds_total": 0
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "session_manager",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-websphere_application_server-session_manager-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "websphere_application_server",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

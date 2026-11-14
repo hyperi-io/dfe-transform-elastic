@@ -1,0 +1,62 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:04:08.002Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "ZVK-EPQ9VR7G6I6"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "1191d863-4d7b-42a8-bf4d-dabaa2101c17"
+            },
+            "winlog": {
+                "computer_name": "ZVK-EPQ9VR7G6I6",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2048-07-27T09:30:41.903Z",
+                "channel": "Security",
+                "event_id": 4717,
+                "outcome": "success",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 1571,
+                "level": "information",
+                "activity_id": "{d09dd4ce-14f6-0707-30ae-7ec0c384e128}",
+                "process": {
+                    "pid": 776,
+                    "thread": {
+                        "id": 820
+                    }
+                },
+                "event_data": {
+                    "SubjectUserSid": "S-1-5-18",
+                    "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+                    "SubjectDomainName": "WORKGROUP",
+                    "SubjectLogonId": "0x3e7",
+                    "TargetSid": "S-1-5-9",
+                    "AccessGranted": "SeNetworkLogonRight"
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4717,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4717_WindowsSrv2016.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

@@ -1,0 +1,483 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "metric",
+        "module": "ibmmq",
+        "type": [
+          "info"
+        ]
+      },
+      "ibmmq": {
+        "labels": {
+          "job": "ibmmq",
+          "qmgr": "QM1"
+        },
+        "qmgr": {
+          "calls": {
+            "failed": {
+              "callback": {
+                "count": 0
+              },
+              "close": {
+                "count": 0
+              },
+              "connections": {
+                "count": 0
+              },
+              "get": {
+                "count": 3557
+              },
+              "inquire": {
+                "count": 0
+              },
+              "open": {
+                "count": 0
+              },
+              "set": {
+                "count": 0
+              },
+              "subscription_request": {
+                "count": 0
+              }
+            },
+            "succeeded": {
+              "callback": {
+                "count": 0
+              },
+              "close": {
+                "count": 4
+              },
+              "connections": {
+                "count": 0
+              },
+              "control": {
+                "count": 0
+              },
+              "disconnect": {
+                "count": 0
+              },
+              "inquire": {
+                "count": 4314
+              },
+              "open": {
+                "count": 2
+              },
+              "set": {
+                "count": 0
+              },
+              "status": {
+                "count": 0
+              },
+              "subscription_request": {
+                "count": 0
+              }
+            }
+          },
+          "cpu": {
+            "load": {
+              "fifteen_minute": {
+                "average": {
+                  "percentage": 1.09
+                }
+              },
+              "five_minute": {
+                "average": {
+                  "percentage": 1
+                }
+              },
+              "one_minute": {
+                "average": {
+                  "percentage": 0.61
+                }
+              }
+            }
+          },
+          "destructive": {
+            "get": {
+              "bytes": 5255204,
+              "count": 13897
+            }
+          },
+          "errors": {
+            "file_system": {
+              "free_space": {
+                "percentage": 48.68
+              },
+              "in_use": {
+                "bytes": 516420534272
+              }
+            }
+          },
+          "fdc": {
+            "files": 0
+          },
+          "log": {
+            "file_system": {
+              "in_use": {
+                "bytes": 516420644864
+              },
+              "max": {
+                "bytes": 1006450962432
+              }
+            },
+            "in_use": {
+              "bytes": 50331648
+            },
+            "max": {
+              "bytes": 83886080
+            },
+            "primary_space": {
+              "in_use": {
+                "percentage": 2.19
+              }
+            },
+            "slowest_write": {
+              "since_restart": {
+                "seconds": 0.004096
+              }
+            },
+            "workload": {
+              "primary_space": {
+                "utilization": {
+                  "percentage": 2.19
+                }
+              }
+            },
+            "write": {
+              "latency": {
+                "seconds": 0.002037
+              },
+              "size": {
+                "bytes": 6073
+              }
+            },
+            "written": {
+              "bytes": {
+                "logical": 3112,
+                "physical": 4096
+              }
+            }
+          },
+          "messages": {
+            "commit": {
+              "count": 2
+            },
+            "expired": {
+              "count": 0
+            },
+            "failed": {
+              "browse": {
+                "count": 2
+              },
+              "mq": {
+                "put": {
+                  "count": 0
+                },
+                "put1": {
+                  "count": 0
+                }
+              }
+            },
+            "mq": {
+              "put": {
+                "bytes": 5255204,
+                "count": 13897
+              }
+            },
+            "non_persistent": {
+              "browse": {
+                "bytes": 0,
+                "count": 0
+              },
+              "destructive": {
+                "get": {
+                  "count": 13897
+                }
+              },
+              "get": {
+                "bytes": 5255204
+              },
+              "mq": {
+                "put": {
+                  "count": 13897
+                },
+                "put1": {
+                  "count": 0
+                }
+              },
+              "put": {
+                "bytes": 5255204
+              }
+            },
+            "persistent": {
+              "browse": {
+                "bytes": 0,
+                "count": 0
+              },
+              "destructive": {
+                "get": {
+                  "count": 0
+                }
+              },
+              "get": {
+                "bytes": 0
+              },
+              "mq": {
+                "put": {
+                  "count": 0
+                },
+                "put1": {
+                  "count": 0
+                }
+              },
+              "put": {
+                "bytes": 0
+              }
+            },
+            "published": {
+              "subscribers": {
+                "bytes": 3792812,
+                "count": 13897
+              }
+            },
+            "purged": {
+              "queue": {
+                "count": 0
+              }
+            }
+          },
+          "queue_manager": {
+            "file_system": {
+              "free_space": {
+                "percentage": 48.68
+              },
+              "in_use": {
+                "bytes": 516420534272
+              }
+            }
+          },
+          "ram": {
+            "free": {
+              "percentage": 27.36
+            },
+            "usage": {
+              "estimate": {
+                "queue_manager": {
+                  "bytes": 197132288
+                }
+              }
+            }
+          },
+          "rollback": {
+            "count": 0
+          },
+          "subscription": {
+            "durable": {
+              "alter": {
+                "count": 0
+              },
+              "create": {
+                "count": 0
+              },
+              "delete": {
+                "count": 0
+              },
+              "resume": {
+                "count": 0
+              }
+            },
+            "failed": {
+              "create_alter_resume": {
+                "count": 0
+              },
+              "delete": {
+                "count": 0
+              }
+            },
+            "non_durable": {
+              "create": {
+                "count": 0
+              },
+              "delete": {
+                "count": 0
+              }
+            }
+          },
+          "system": {
+            "cpu": {
+              "time": {
+                "estimate": {
+                  "queue_manager": {
+                    "percentage": 0
+                  }
+                },
+                "percentage": 1.04
+              }
+            }
+          },
+          "topic": {
+            "mq": {
+              "put": {
+                "count": 13897,
+                "failed": {
+                  "count": 0
+                },
+                "non_persistent": {
+                  "count": 13897
+                },
+                "persistent": {
+                  "count": 0
+                }
+              }
+            },
+            "put": {
+              "bytes": 3792812
+            }
+          },
+          "trace": {
+            "file_system": {
+              "free_space": {
+                "percentage": 48.68
+              },
+              "in_use": {
+                "bytes": 516420534272
+              }
+            }
+          },
+          "user": {
+            "cpu": {
+              "time": {
+                "estimate": {
+                  "queue_manager": {
+                    "percentage": 0
+                  }
+                },
+                "percentage": 2.92
+              }
+            }
+          }
+        }
+      },
+      "service": {
+        "type": "ibmmq"
+      }
+    }
+  ],
+  "input": [
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "127.0.0.1:32774",
+          "job": "prometheus",
+          "qmgr": "QM1"
+        },
+        "metrics": {
+          "ibmmq_qmgr_commit_total": 2,
+          "ibmmq_qmgr_cpu_load_fifteen_minute_average_percentage": 1.09,
+          "ibmmq_qmgr_cpu_load_five_minute_average_percentage": 1,
+          "ibmmq_qmgr_cpu_load_one_minute_average_percentage": 0.61,
+          "ibmmq_qmgr_destructive_get_bytes_total": 5255204,
+          "ibmmq_qmgr_destructive_get_total": 13897,
+          "ibmmq_qmgr_durable_subscription_alter_total": 0,
+          "ibmmq_qmgr_durable_subscription_create_total": 0,
+          "ibmmq_qmgr_durable_subscription_delete_total": 0,
+          "ibmmq_qmgr_durable_subscription_resume_total": 0,
+          "ibmmq_qmgr_errors_file_system_free_space_percentage": 48.68,
+          "ibmmq_qmgr_errors_file_system_in_use_bytes": 516420534272,
+          "ibmmq_qmgr_expired_message_total": 0,
+          "ibmmq_qmgr_failed_browse_total": 2,
+          "ibmmq_qmgr_failed_mqcb_total": 0,
+          "ibmmq_qmgr_failed_mqclose_total": 0,
+          "ibmmq_qmgr_failed_mqconn_mqconnx_total": 0,
+          "ibmmq_qmgr_failed_mqget_total": 3557,
+          "ibmmq_qmgr_failed_mqinq_total": 0,
+          "ibmmq_qmgr_failed_mqopen_total": 0,
+          "ibmmq_qmgr_failed_mqput1_total": 0,
+          "ibmmq_qmgr_failed_mqput_total": 0,
+          "ibmmq_qmgr_failed_mqset_total": 0,
+          "ibmmq_qmgr_failed_mqsubrq_total": 0,
+          "ibmmq_qmgr_failed_subscription_create_alter_resume_total": 0,
+          "ibmmq_qmgr_failed_subscription_delete_total": 0,
+          "ibmmq_qmgr_failed_topic_mqput_mqput1_total": 0,
+          "ibmmq_qmgr_fdc_files": 0,
+          "ibmmq_qmgr_log_file_system_in_use_bytes": 516420644864,
+          "ibmmq_qmgr_log_file_system_max_bytes": 1006450962432,
+          "ibmmq_qmgr_log_in_use_bytes": 50331648,
+          "ibmmq_qmgr_log_logical_written_bytes_total": 3112,
+          "ibmmq_qmgr_log_max_bytes": 83886080,
+          "ibmmq_qmgr_log_physical_written_bytes_total": 4096,
+          "ibmmq_qmgr_log_primary_space_in_use_percentage": 2.19,
+          "ibmmq_qmgr_log_slowest_write_since_restart_seconds": 0.004096,
+          "ibmmq_qmgr_log_workload_primary_space_utilization_percentage": 2.19,
+          "ibmmq_qmgr_log_write_latency_seconds": 0.002037,
+          "ibmmq_qmgr_log_write_size_bytes": 6073,
+          "ibmmq_qmgr_mqcb_total": 0,
+          "ibmmq_qmgr_mqclose_total": 4,
+          "ibmmq_qmgr_mqconn_mqconnx_total": 0,
+          "ibmmq_qmgr_mqctl_total": 0,
+          "ibmmq_qmgr_mqdisc_total": 0,
+          "ibmmq_qmgr_mqinq_total": 4314,
+          "ibmmq_qmgr_mqopen_total": 2,
+          "ibmmq_qmgr_mqput_mqput1_bytes_total": 5255204,
+          "ibmmq_qmgr_mqput_mqput1_total": 13897,
+          "ibmmq_qmgr_mqset_total": 0,
+          "ibmmq_qmgr_mqstat_total": 0,
+          "ibmmq_qmgr_mqsubrq_total": 0,
+          "ibmmq_qmgr_non_durable_subscription_create_total": 0,
+          "ibmmq_qmgr_non_durable_subscription_delete_total": 0,
+          "ibmmq_qmgr_non_persistent_message_browse_bytes_total": 0,
+          "ibmmq_qmgr_non_persistent_message_browse_total": 0,
+          "ibmmq_qmgr_non_persistent_message_destructive_get_total": 13897,
+          "ibmmq_qmgr_non_persistent_message_get_bytes_total": 5255204,
+          "ibmmq_qmgr_non_persistent_message_mqput1_total": 0,
+          "ibmmq_qmgr_non_persistent_message_mqput_total": 13897,
+          "ibmmq_qmgr_non_persistent_message_put_bytes_total": 5255204,
+          "ibmmq_qmgr_non_persistent_topic_mqput_mqput1_total": 13897,
+          "ibmmq_qmgr_persistent_message_browse_bytes_total": 0,
+          "ibmmq_qmgr_persistent_message_browse_total": 0,
+          "ibmmq_qmgr_persistent_message_destructive_get_total": 0,
+          "ibmmq_qmgr_persistent_message_get_bytes_total": 0,
+          "ibmmq_qmgr_persistent_message_mqput1_total": 0,
+          "ibmmq_qmgr_persistent_message_mqput_total": 0,
+          "ibmmq_qmgr_persistent_message_put_bytes_total": 0,
+          "ibmmq_qmgr_persistent_topic_mqput_mqput1_total": 0,
+          "ibmmq_qmgr_published_to_subscribers_bytes_total": 3792812,
+          "ibmmq_qmgr_published_to_subscribers_message_total": 13897,
+          "ibmmq_qmgr_purged_queue_total": 0,
+          "ibmmq_qmgr_queue_manager_file_system_free_space_percentage": 48.68,
+          "ibmmq_qmgr_queue_manager_file_system_in_use_bytes": 516420534272,
+          "ibmmq_qmgr_ram_free_percentage": 27.36,
+          "ibmmq_qmgr_ram_usage_estimate_for_queue_manager_bytes": 197132288,
+          "ibmmq_qmgr_rollback_total": 0,
+          "ibmmq_qmgr_system_cpu_time_estimate_for_queue_manager_percentage": 0,
+          "ibmmq_qmgr_system_cpu_time_percentage": 1.04,
+          "ibmmq_qmgr_topic_mqput_mqput1_total": 13897,
+          "ibmmq_qmgr_topic_put_bytes_total": 3792812,
+          "ibmmq_qmgr_trace_file_system_free_space_percentage": 48.68,
+          "ibmmq_qmgr_trace_file_system_in_use_bytes": 516420534272,
+          "ibmmq_qmgr_user_cpu_time_estimate_for_queue_manager_percentage": 0,
+          "ibmmq_qmgr_user_cpu_time_percentage": 2.92
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "qmgr",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ibmmq-qmgr-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ibmmq",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

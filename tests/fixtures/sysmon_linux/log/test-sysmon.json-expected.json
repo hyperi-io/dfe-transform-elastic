@@ -1,0 +1,187 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "log",
+        "category": [
+          "process"
+        ],
+        "code": "5",
+        "created": "2050-10-24T17:06:14.193Z",
+        "kind": "event",
+        "provider": "Linux-Sysmon",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "hostname": "wtft-jehrqr"
+      },
+      "log": {
+        "level": "information"
+      },
+      "process": {
+        "entity_id": "{f90225be-3a2d-6791-0790-522194353635}",
+        "executable": "/opt/Elastic/Agent/data/elastic-agent-5ae799/install/osquerybeat-7.15.1-linux-x86_64/osqueryd",
+        "name": "sysmon",
+        "pid": 783
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "winlog": {
+        "channel": "Linux-Sysmon/Operational",
+        "computer_name": "wtft-jehrqr",
+        "event_id": "5",
+        "opcode": "Info",
+        "process": {
+          "pid": 3099,
+          "thread": {
+            "id": 3099
+          }
+        },
+        "provider_guid": "{bb784918-d9f2-4b32-b0b4-16bd497b8a36}",
+        "record_id": "24",
+        "version": 3
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "log",
+        "category": [
+          "process"
+        ],
+        "code": "5",
+        "created": "2050-10-24T17:05:48.296Z",
+        "kind": "event",
+        "provider": "Linux-Sysmon",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "hostname": "wtft-jehrqr"
+      },
+      "log": {
+        "level": "information"
+      },
+      "process": {
+        "entity_id": "{d55077cd-0d26-6108-0569-213899907901}",
+        "executable": "(null)",
+        "name": "sysmon",
+        "pid": 3100
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "winlog": {
+        "channel": "Linux-Sysmon/Operational",
+        "computer_name": "wtft-jehrqr",
+        "event_id": "5",
+        "opcode": "Info",
+        "process": {
+          "pid": 3099,
+          "thread": {
+            "id": 3099
+          }
+        },
+        "provider_guid": "{bb784918-d9f2-4b32-b0b4-16bd497b8a36}",
+        "record_id": "22",
+        "version": 3
+      }
+    }
+  ],
+  "input": [
+    {
+      "log": {
+        "syslog": {
+          "appname": "sysmon",
+          "hostname": "wtft-jehrqr",
+          "procid": "3099"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "winlog": {
+        "channel": "Linux-Sysmon/Operational",
+        "computer_name": "wtft-jehrqr",
+        "event_data": {
+          "Image": "/opt/Elastic/Agent/data/elastic-agent-5ae799/install/osquerybeat-7.15.1-linux-x86_64/osqueryd",
+          "ProcessGuid": "{f90225be-3a2d-6791-0790-522194353635}",
+          "ProcessId": "783",
+          "RuleName": "-",
+          "User": "root",
+          "UtcTime": "2050-10-24 17:06:14.200",
+          "opcode": "Info",
+          "provider_name": "Linux-Sysmon",
+          "version": "3"
+        },
+        "event_id": "5",
+        "level": "information",
+        "process": {
+          "pid": 3099,
+          "thread": {
+            "id": 3099
+          }
+        },
+        "provider_guid": "{bb784918-d9f2-4b32-b0b4-16bd497b8a36}",
+        "record_id": "24",
+        "time_created": "2050-10-24T17:06:14.193Z"
+      }
+    },
+    {
+      "log": {
+        "syslog": {
+          "appname": "sysmon",
+          "hostname": "wtft-jehrqr"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "winlog": {
+        "channel": "Linux-Sysmon/Operational",
+        "computer_name": "wtft-jehrqr",
+        "event_data": {
+          "Image": "(null)",
+          "ProcessGuid": "{d55077cd-0d26-6108-0569-213899907901}",
+          "ProcessId": "3100",
+          "RuleName": "-",
+          "User": "root",
+          "UtcTime": "2050-10-24 17:05:48.302",
+          "opcode": "Info",
+          "provider_name": "Linux-Sysmon",
+          "version": "3"
+        },
+        "event_id": "5",
+        "level": "information",
+        "process": {
+          "pid": 3099,
+          "thread": {
+            "id": 3099
+          }
+        },
+        "provider_guid": "{bb784918-d9f2-4b32-b0b4-16bd497b8a36}",
+        "record_id": "22",
+        "time_created": "2050-10-24T17:05:48.296Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sysmon_linux-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "sysmon_linux",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

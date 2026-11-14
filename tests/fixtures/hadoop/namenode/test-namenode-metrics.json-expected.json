@@ -1,0 +1,150 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2044-10-25T12:49:34.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "kind": "metric",
+        "type": [
+          "info"
+        ]
+      },
+      "hadoop": {
+        "namenode": {
+          "blocks": {
+            "corrupt": 0,
+            "missing_repl_one": 0,
+            "pending_deletion": 0,
+            "pending_replication": 0,
+            "scheduled_replication": 0,
+            "total": 21,
+            "under_replicated": 6
+          },
+          "capacity": {
+            "remaining": 15881027584,
+            "total": 48420556800,
+            "used": 1462272
+          },
+          "estimated_capacity_lost_total": 0,
+          "files_total": 53,
+          "lock_queue_length": 0,
+          "nodes": {
+            "num_dead_data": 0,
+            "num_decom_dead_data": 0,
+            "num_decom_live_data": 0,
+            "num_decommissioning_data": 0,
+            "num_live_data": 1
+          },
+          "num_stale_storages": 0,
+          "stale_data_nodes": 0,
+          "total_load": 0,
+          "volume_failures_total": 0
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2044-10-25T12:49:34.000Z",
+      "http": {
+        "namenode": {
+          "beans": [
+            {
+              "BlockCapacity": 8388608,
+              "BlocksTotal": 21,
+              "BytesInFutureECBlockGroups": 0,
+              "BytesInFutureReplicatedBlocks": 0,
+              "CapacityRemaining": 15881027584,
+              "CapacityRemainingGB": 15,
+              "CapacityTotal": 48420556800,
+              "CapacityTotalGB": 45,
+              "CapacityUsed": 1462272,
+              "CapacityUsedGB": 0,
+              "CapacityUsedNonDFS": 32538066944,
+              "CorruptBlocks": 0,
+              "CorruptECBlockGroups": 0,
+              "CorruptReplicatedBlocks": 0,
+              "CurrentTokensCount": 0,
+              "EstimatedCapacityLostTotal": 0,
+              "ExcessBlocks": 0,
+              "ExpiredHeartbeats": 0,
+              "FilesTotal": 53,
+              "HighestPriorityLowRedundancyECBlocks": 0,
+              "HighestPriorityLowRedundancyReplicatedBlocks": 6,
+              "LastCheckpointTime": 2530851950425,
+              "LastWrittenTransactionId": 2806,
+              "LockQueueLength": 0,
+              "LowRedundancyBlocks": 6,
+              "LowRedundancyECBlockGroups": 0,
+              "LowRedundancyReplicatedBlocks": 6,
+              "MillisSinceLastLoadedEdits": 0,
+              "MissingBlocks": 0,
+              "MissingECBlockGroups": 0,
+              "MissingReplOneBlocks": 0,
+              "MissingReplicatedBlocks": 0,
+              "MissingReplicationOneBlocks": 0,
+              "NumActiveClients": 0,
+              "NumDeadDataNodes": 0,
+              "NumDecomDeadDataNodes": 0,
+              "NumDecomLiveDataNodes": 0,
+              "NumDecommissioningDataNodes": 0,
+              "NumEncryptionZones": 0,
+              "NumEnteringMaintenanceDataNodes": 0,
+              "NumFilesUnderConstruction": 0,
+              "NumInMaintenanceDeadDataNodes": 0,
+              "NumInMaintenanceLiveDataNodes": 0,
+              "NumInServiceLiveDataNodes": 1,
+              "NumLiveDataNodes": 1,
+              "NumStaleStorages": 0,
+              "NumTimedOutPendingReconstructions": 0,
+              "PendingDataNodeMessageCount": 0,
+              "PendingDeletionBlocks": 0,
+              "PendingDeletionECBlocks": 0,
+              "PendingDeletionReplicatedBlocks": 0,
+              "PendingReconstructionBlocks": 0,
+              "PendingReplicationBlocks": 0,
+              "PostponedMisreplicatedBlocks": 0,
+              "ProvidedCapacityTotal": 0,
+              "ReadLockLongHoldCount": 1,
+              "ScheduledReplicationBlocks": 0,
+              "Snapshots": 0,
+              "SnapshottableDirectories": 0,
+              "StaleDataNodes": 0,
+              "TotalECBlockGroups": 0,
+              "TotalLoad": 0,
+              "TotalReplicatedBlocks": 21,
+              "TotalSyncCount": 2,
+              "TransactionsSinceLastCheckpoint": 1,
+              "TransactionsSinceLastLogRoll": 1,
+              "UnderReplicatedBlocks": 6,
+              "VolumeFailuresTotal": 0,
+              "WriteLockLongHoldCount": 73,
+              "modelerType": "FSNamesystem",
+              "name": "Hadoop:service=NameNode,name=FSNamesystem",
+              "tag.Context": "dfs",
+              "tag.EnabledEcPolicies": "RS-6-3-1024k",
+              "tag.HAState": "active",
+              "tag.Hostname": "localhost.localdomain",
+              "tag.TotalSyncTimes": "71 "
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "namenode",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-hadoop-namenode-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "hadoop",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

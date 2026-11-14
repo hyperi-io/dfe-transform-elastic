@@ -1,0 +1,633 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-17T22:18:03.557Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "credential-manager-credentials-were-read",
+        "category": [
+          "iam"
+        ],
+        "code": "5379",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "zqay7"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-000000000-000000000-000000000-00000",
+        "name": "zqay7"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "ClientProcessId": "10428",
+          "CountOfCredentialsReturned": "1",
+          "ProcessCreationTime": "2051-01-17T22:17:36.2114738Z",
+          "ReadOperation": "%%8099",
+          "ReturnCode": "3221226021",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x278a6ed9",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetName": "MicrosoftOffice16_Data:ADAL:c6475e53-b9cd-471d-869e-1c8a0be3e979@@@8.000000",
+          "Type": "1"
+        },
+        "event_id": "5379",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x278a6ed9"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7959006",
+        "time_created": "2051-01-17T22:18:03.5577972Z"
+      }
+    },
+    {
+      "@timestamp": "2051-01-17T22:18:03.553Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "credential-manager-credentials-were-read",
+        "category": [
+          "iam"
+        ],
+        "code": "5379",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "zqay7"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-000000000-000000000-000000000-00000",
+        "name": "zqay7"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "ClientProcessId": "10428",
+          "CountOfCredentialsReturned": "1",
+          "ProcessCreationTime": "2051-01-17T22:17:36.2114738Z",
+          "ReadOperation": "%%8099",
+          "ReturnCode": "0",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x278a6ed9",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetName": "MicrosoftOffice16_Data:ADAL:c6475e53-b9cd-471d-869e-1c8a0be3e979@@@7.000000",
+          "Type": "1"
+        },
+        "event_id": "5379",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x278a6ed9"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7959005",
+        "time_created": "2051-01-17T22:18:03.5530981Z"
+      }
+    },
+    {
+      "@timestamp": "2051-01-17T22:18:03.548Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "credential-manager-credentials-were-read",
+        "category": [
+          "iam"
+        ],
+        "code": "5379",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "zqay7"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-000000000-000000000-000000000-00000",
+        "name": "zqay7"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "ClientProcessId": "10428",
+          "CountOfCredentialsReturned": "1",
+          "ProcessCreationTime": "2051-01-17T22:17:36.2114738Z",
+          "ReadOperation": "%%8099",
+          "ReturnCode": "0",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x278a6ed9",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetName": "MicrosoftOffice16_Data:ADAL:c6475e53-b9cd-471d-869e-1c8a0be3e979@@@6.000000",
+          "Type": "1"
+        },
+        "event_id": "5379",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x278a6ed9"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7959004",
+        "time_created": "2051-01-17T22:18:03.5480672Z"
+      }
+    },
+    {
+      "@timestamp": "2051-01-17T22:18:03.543Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "credential-manager-credentials-were-read",
+        "category": [
+          "iam"
+        ],
+        "code": "5379",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "zqay7"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-000000000-000000000-000000000-00000",
+        "name": "zqay7"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "ClientProcessId": "10428",
+          "CountOfCredentialsReturned": "1",
+          "ProcessCreationTime": "2051-01-17T22:17:36.2114738Z",
+          "ReadOperation": "%%8099",
+          "ReturnCode": "0",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x278a6ed9",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetName": "MicrosoftOffice16_Data:ADAL:c6475e53-b9cd-471d-869e-1c8a0be3e979@@@5.000000",
+          "Type": "1"
+        },
+        "event_id": "5379",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x278a6ed9"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7959003",
+        "time_created": "2051-01-17T22:18:03.5437073Z"
+      }
+    },
+    {
+      "@timestamp": "2051-01-17T22:18:03.539Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "credential-manager-credentials-were-read",
+        "category": [
+          "iam"
+        ],
+        "code": "5379",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "zqay7"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-000000000-000000000-000000000-00000",
+        "name": "zqay7"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "ClientProcessId": "10428",
+          "CountOfCredentialsReturned": "1",
+          "ProcessCreationTime": "2051-01-17T22:17:36.2114738Z",
+          "ReadOperation": "%%8099",
+          "ReturnCode": "0",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x278a6ed9",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetName": "MicrosoftOffice16_Data:ADAL:c6475e53-b9cd-471d-869e-1c8a0be3e979@@@4.000000",
+          "Type": "1"
+        },
+        "event_id": "5379",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x278a6ed9"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7959002",
+        "time_created": "2051-01-17T22:18:03.5397904Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "code": "5379",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "ClientProcessId": "10428",
+          "CountOfCredentialsReturned": "1",
+          "ProcessCreationTime": "2051-01-17T22:17:36.2114738Z",
+          "ReadOperation": "%%8099",
+          "ReturnCode": "3221226021",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x278a6ed9",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetName": "MicrosoftOffice16_Data:ADAL:c6475e53-b9cd-471d-869e-1c8a0be3e979@@@8.000000",
+          "Type": "1"
+        },
+        "event_id": "5379",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7959006,
+        "time_created": "2051-01-17T22:18:03.5577972Z"
+      }
+    },
+    {
+      "event": {
+        "code": "5379",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "ClientProcessId": "10428",
+          "CountOfCredentialsReturned": "1",
+          "ProcessCreationTime": "2051-01-17T22:17:36.2114738Z",
+          "ReadOperation": "%%8099",
+          "ReturnCode": "0",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x278a6ed9",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetName": "MicrosoftOffice16_Data:ADAL:c6475e53-b9cd-471d-869e-1c8a0be3e979@@@7.000000",
+          "Type": "1"
+        },
+        "event_id": "5379",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7959005,
+        "time_created": "2051-01-17T22:18:03.5530981Z"
+      }
+    },
+    {
+      "event": {
+        "code": "5379",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "ClientProcessId": "10428",
+          "CountOfCredentialsReturned": "1",
+          "ProcessCreationTime": "2051-01-17T22:17:36.2114738Z",
+          "ReadOperation": "%%8099",
+          "ReturnCode": "0",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x278a6ed9",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetName": "MicrosoftOffice16_Data:ADAL:c6475e53-b9cd-471d-869e-1c8a0be3e979@@@6.000000",
+          "Type": "1"
+        },
+        "event_id": "5379",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7959004,
+        "time_created": "2051-01-17T22:18:03.5480672Z"
+      }
+    },
+    {
+      "event": {
+        "code": "5379",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "ClientProcessId": "10428",
+          "CountOfCredentialsReturned": "1",
+          "ProcessCreationTime": "2051-01-17T22:17:36.2114738Z",
+          "ReadOperation": "%%8099",
+          "ReturnCode": "0",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x278a6ed9",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetName": "MicrosoftOffice16_Data:ADAL:c6475e53-b9cd-471d-869e-1c8a0be3e979@@@5.000000",
+          "Type": "1"
+        },
+        "event_id": "5379",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7959003,
+        "time_created": "2051-01-17T22:18:03.5437073Z"
+      }
+    },
+    {
+      "event": {
+        "code": "5379",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "ClientProcessId": "10428",
+          "CountOfCredentialsReturned": "1",
+          "ProcessCreationTime": "2051-01-17T22:17:36.2114738Z",
+          "ReadOperation": "%%8099",
+          "ReturnCode": "0",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x278a6ed9",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetName": "MicrosoftOffice16_Data:ADAL:c6475e53-b9cd-471d-869e-1c8a0be3e979@@@4.000000",
+          "Type": "1"
+        },
+        "event_id": "5379",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7959002,
+        "time_created": "2051-01-17T22:18:03.5397904Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

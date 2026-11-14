@@ -1,0 +1,1199 @@
+{
+  "expected": [
+    {
+      "device": {
+        "manufacturer": "Dell Inc.",
+        "model": {
+          "name": "Dell Latitude 7420"
+        },
+        "serial_number": "SN1234567890"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-08-05T09:07:23.735Z",
+        "id": "device-xyz-001",
+        "kind": "asset",
+        "original": "{\"id\":\"device-xyz-001\",\"createdDate\":\"2053-08-05T09:07:23.735Z\",\"updatedDate\":\"2053-08-05T09:07:23.735Z\",\"tenantId\":\"tenant-1234-abcd\",\"machineId\":\"MCHN123456\",\"machineName\":\"AWJK-NELOQW-08\",\"machineModel\":\"Dell Latitude 7420\",\"serialNumber\":\"SN1234567890\",\"userName\":\"Afrona Zsevod\",\"userId\":\"user-5678-defg\",\"email\":\"ecqvrf.xudvgf@djxlbxr.com\",\"osPlatform\":\"Windows\",\"islandPlatform\":\"Browser\",\"osVersion\":\"Windows 11 Pro 22H2\",\"browserVersion\":\"1.18.2.1001\",\"chromiumVersion\":\"116.0.5845.97\",\"extensionVersion\":\"2.5.0\",\"updaterVersion\":\"3.1.0\",\"lastSeen\":\"2053-08-05T09:07:23.735Z\",\"policyUpdateTime\":\"2053-08-05T09:06:00.000Z\",\"diskEncrypted\":true,\"latestSecurityUpdateId\":\"KB5028185\",\"osUserName\":\"CORP\\\\adityas\",\"status\":\"Active\",\"spmProtected\":true,\"internalIpAddress\":\"192.168.135.213\",\"externalIpAddress\":\"203.0.113.248\",\"osDomain\":\"CORP.LOCAL\",\"systemIntegrityProtection\":true,\"osFirewallEnabled\":true,\"osScreenLockEnabled\":true,\"isVirtualMachine\":false,\"isContainer\":false,\"mdmEnrolled\":true,\"mdmProvider\":\"Intune\",\"mdmTopic\":\"corp-mdm-topic\",\"mdmTenantName\":\"corp-mdm-tenant\",\"browserName\":\"Island\",\"authMethod\":\"UserToken\",\"crowdstrikeZtaScore\":92,\"crowdstrikeCid\":\"CID-12345-ABCDE\",\"crowdstrikeAgentId\":\"AGENT-98765-FGHJK\",\"isArchived\":false,\"isJailbroken\":false,\"macAddresses\":\"34:16:86:26:c5:58 | 54:60:2d:fe:6f:2b | 79:47:60:44:84:db\",\"cpuModel\":\"Intel(R) Core(TM) i7-1165G7 @ 2.80GHz\",\"architecture\":\"x64\",\"windowsLicenseStatus\":\"ExtendedGrace\",\"ramSize\":16,\"secureBoot\":true,\"syncEnabled\":true,\"chassisType\":\"Laptop\",\"isDeviceAttested\":true,\"isSystemLevelInstall\":true,\"osCodeName\":\"Sun Valley\",\"country\":\"India\",\"countryCode\":\"IN\",\"browserUpdateStatus\":\"PendingDownload\",\"isDefaultBrowser\":true,\"mdmCompliant\":true,\"extensionUtilityVersion\":\"4.0.1\",\"mobileEnrollmentType\":\"CompanyOwned\",\"azureTenantId\":\"azure-tenant-9999\",\"manufacturer\":\"Dell Inc.\",\"isGatekeeperEnabled\":true,\"gatekeeperVersion\":\"1.0.0\",\"deviceType\":\"Laptop\",\"islandMdmCustomKey\":\"custom-key-001\",\"storageCapacity\":512,\"antiMalwareProducts\":[\"Windows Defender\",\"CrowdStrike Falcon\"],\"installedExtensions\":[\"Island Secure Extension\",\"Zoom Scheduler\"]}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x64",
+        "id": "MCHN123456",
+        "ip": [
+          "203.0.113.248"
+        ],
+        "mac": [
+          "34-16-86-26-C5-58",
+          "54-60-2D-FE-6F-2B",
+          "79-47-60-44-84-DB"
+        ],
+        "name": "AWJK-NELOQW-08",
+        "os": {
+          "platform": "Windows",
+          "type": "windows",
+          "version": "Windows 11 Pro 22H2"
+        },
+        "type": "Laptop"
+      },
+      "island_browser": {
+        "device": {
+          "anti_malware_products": [
+            "Windows Defender",
+            "CrowdStrike Falcon"
+          ],
+          "architecture": "x64",
+          "auth_method": "UserToken",
+          "azure_tenant_id": "azure-tenant-9999",
+          "browser_name": "Island",
+          "browser_update_status": "PendingDownload",
+          "browser_version": "1.18.2.1001",
+          "chassis_type": "Laptop",
+          "chromium_version": "116.0.5845.97",
+          "country": "India",
+          "country_code": "IN",
+          "cpu_model": "Intel(R) Core(TM) i7-1165G7 @ 2.80GHz",
+          "created_date": "2053-08-05T09:07:23.735Z",
+          "crowdstrike_agent_id": "AGENT-98765-FGHJK",
+          "crowdstrike_cid": "CID-12345-ABCDE",
+          "crowdstrike_zta_score": 92,
+          "device_type": "Laptop",
+          "disk_encrypted": true,
+          "email": "ecqvrf.xudvgf@djxlbxr.com",
+          "extension_utility_version": "4.0.1",
+          "extension_version": "2.5.0",
+          "external_ip_address": "203.0.113.248",
+          "gatekeeper_version": "1.0.0",
+          "id": "device-xyz-001",
+          "installed_extensions": [
+            "Island Secure Extension",
+            "Zoom Scheduler"
+          ],
+          "internal_ip_address": "192.168.135.213",
+          "is_archived": false,
+          "is_container": false,
+          "is_default_browser": true,
+          "is_device_attested": true,
+          "is_gatekeeper_enabled": true,
+          "is_jailbroken": false,
+          "is_system_level_install": true,
+          "is_virtual_machine": false,
+          "island_mdm_custom_key": "custom-key-001",
+          "island_platform": "Browser",
+          "last_seen": "2053-08-05T09:07:23.735Z",
+          "latest_security_update_id": "KB5028185",
+          "mac_addresses": "34:16:86:26:c5:58 | 54:60:2d:fe:6f:2b | 79:47:60:44:84:db",
+          "machine_id": "MCHN123456",
+          "machine_model": "Dell Latitude 7420",
+          "machine_name": "AWJK-NELOQW-08",
+          "manufacturer": "Dell Inc.",
+          "mdm_compliant": true,
+          "mdm_enrolled": true,
+          "mdm_provider": "Intune",
+          "mdm_tenant_name": "corp-mdm-tenant",
+          "mdm_topic": "corp-mdm-topic",
+          "mobile_enrollment_type": "CompanyOwned",
+          "os_code_name": "Sun Valley",
+          "os_domain": "CORP.LOCAL",
+          "os_firewall_enabled": true,
+          "os_platform": "Windows",
+          "os_screen_lock_enabled": true,
+          "os_user_name": "CORP\\adityas",
+          "os_version": "Windows 11 Pro 22H2",
+          "policy_update_time": "2053-08-05T09:06:00.000Z",
+          "ram_size": 16,
+          "secure_boot": true,
+          "serial_number": "SN1234567890",
+          "spm_protected": true,
+          "status": "Active",
+          "storage_capacity": 512,
+          "sync_enabled": true,
+          "system_integrity_protection": true,
+          "tenant_id": "tenant-1234-abcd",
+          "updated_date": "2053-08-05T09:07:23.735Z",
+          "updater_version": "3.1.0",
+          "user_id": "user-5678-defg",
+          "user_name": "Afrona Zsevod",
+          "windows_license_status": "ExtendedGrace"
+        }
+      },
+      "organization": {
+        "id": "tenant-1234-abcd"
+      },
+      "related": {
+        "hosts": [
+          "device-xyz-001",
+          "MCHN123456",
+          "AWJK-NELOQW-08"
+        ],
+        "ip": [
+          "203.0.113.248",
+          "192.168.135.213"
+        ],
+        "user": [
+          "ecqvrf.xudvgf@djxlbxr.com",
+          "CORP\\adityas",
+          "user-5678-defg",
+          "Afrona Zsevod"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "ecqvrf.xudvgf@djxlbxr.com",
+        "id": "user-5678-defg",
+        "name": "Afrona Zsevod"
+      },
+      "user_agent": {
+        "name": "Island"
+      }
+    },
+    {
+      "device": {
+        "manufacturer": "VMware, Inc.",
+        "model": {
+          "name": "VMware Virtual Platform"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-08-21T08:38:14.478Z",
+        "id": "6341dd5d-6d88-4184-b0ed-292478234a45",
+        "kind": "asset",
+        "original": "{\"machineId\":\"iNUa5F_2xgA1L51ZX5_YCXX7b7Z\",\"machineName\":\"he21-63-7-456.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Pnvw Eyd\",\"userId\":\"auth0|fdfe7355-d160-4e9b-8335-4d319bbc4656\",\"email\":\"hshg.fqb@example.com\",\"osPlatform\":\"Linux\",\"islandPlatform\":\"Browser\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.72.30\",\"chromiumVersion\":\"139.0.7258.128\",\"extensionVersion\":\"1.12546.6\",\"lastSeen\":\"2053-08-31T04:19:55.342111Z\",\"policyUpdateTime\":\"2053-07-08T14:17:18.527794Z\",\"diskEncrypted\":false,\"osUserName\":\"serviceuser\",\"status\":\"Active\",\"internalIpAddress\":\"10.62.201.252\",\"externalIpAddress\":\"203.0.113.248\",\"osDomain\":\"\",\"osFirewallEnabled\":true,\"osScreenLockEnabled\":true,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"63:44:80:87:c9:69 | 64:59:1d:bf:3f:5f | 65:05:47:28:18:fe\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":16,\"syncEnabled\":true,\"chassisType\":\"Laptop\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"India\",\"countryCode\":\"IN\",\"browserUpdateStatus\":\"UpToDate\",\"isDefaultBrowser\":false,\"authMethod\":\"TenantToken\",\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Laptop\",\"storageCapacity\":48,\"tenantId\":\"elastic-testing\",\"id\":\"6341dd5d-6d88-4184-b0ed-292478234a45\",\"createdDate\":\"2053-08-21T08:38:14.478259Z\",\"updatedDate\":\"2053-08-31T04:19:55.345783Z\",\"windowsLicenseStatus\":\"Unlicensed\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "id": "iNUa5F_2xgA1L51ZX5_YCXX7b7Z",
+        "ip": [
+          "203.0.113.248"
+        ],
+        "mac": [
+          "63-44-80-87-C9-69",
+          "64-59-1D-BF-3F-5F",
+          "65-05-47-28-18-FE"
+        ],
+        "name": "he21-63-7-456.latdrb.local",
+        "os": {
+          "platform": "Linux",
+          "type": "linux",
+          "version": "22.04"
+        },
+        "type": "Laptop"
+      },
+      "island_browser": {
+        "device": {
+          "architecture": "x86_64",
+          "auth_method": "TenantToken",
+          "browser_name": "Island",
+          "browser_update_status": "UpToDate",
+          "browser_version": "1.72.30",
+          "chassis_type": "Laptop",
+          "chromium_version": "139.0.7258.128",
+          "country": "India",
+          "country_code": "IN",
+          "cpu_model": "Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz",
+          "created_date": "2053-08-21T08:38:14.478Z",
+          "device_type": "Laptop",
+          "disk_encrypted": false,
+          "email": "hshg.fqb@example.com",
+          "extension_version": "1.12546.6",
+          "external_ip_address": "203.0.113.248",
+          "id": "6341dd5d-6d88-4184-b0ed-292478234a45",
+          "internal_ip_address": "10.62.201.252",
+          "is_archived": false,
+          "is_default_browser": false,
+          "is_virtual_machine": true,
+          "island_platform": "Browser",
+          "last_seen": "2053-08-31T04:19:55.342Z",
+          "mac_addresses": "63:44:80:87:c9:69 | 64:59:1d:bf:3f:5f | 65:05:47:28:18:fe",
+          "machine_id": "iNUa5F_2xgA1L51ZX5_YCXX7b7Z",
+          "machine_model": "VMware Virtual Platform",
+          "machine_name": "he21-63-7-456.latdrb.local",
+          "manufacturer": "VMware, Inc.",
+          "os_code_name": "Ubuntu 22.04.5 LTS",
+          "os_firewall_enabled": true,
+          "os_platform": "Linux",
+          "os_screen_lock_enabled": true,
+          "os_user_name": "serviceuser",
+          "os_version": "22.04",
+          "policy_update_time": "2053-07-08T14:17:18.527Z",
+          "ram_size": 16,
+          "status": "Active",
+          "storage_capacity": 48,
+          "sync_enabled": true,
+          "tenant_id": "elastic-testing",
+          "updated_date": "2053-08-31T04:19:55.345Z",
+          "user_id": "auth0|fdfe7355-d160-4e9b-8335-4d319bbc4656",
+          "user_name": "Pnvw Eyd",
+          "windows_license_status": "Unlicensed"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "hosts": [
+          "6341dd5d-6d88-4184-b0ed-292478234a45",
+          "iNUa5F_2xgA1L51ZX5_YCXX7b7Z",
+          "he21-63-7-456.latdrb.local"
+        ],
+        "ip": [
+          "203.0.113.248",
+          "10.62.201.252"
+        ],
+        "user": [
+          "hshg.fqb@example.com",
+          "serviceuser",
+          "auth0|fdfe7355-d160-4e9b-8335-4d319bbc4656",
+          "Pnvw Eyd"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "hshg.fqb@example.com",
+        "id": "auth0|fdfe7355-d160-4e9b-8335-4d319bbc4656",
+        "name": "Pnvw Eyd"
+      },
+      "user_agent": {
+        "name": "Island"
+      }
+    },
+    {
+      "device": {
+        "manufacturer": "VMware, Inc.",
+        "model": {
+          "name": "VMware Virtual Platform"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-08-25T14:27:36.781Z",
+        "id": "6241ff9a-0f47-4976-a8bf-442947339d59",
+        "kind": "asset",
+        "original": "{\"machineId\":\"k7D4yH_9xzA3P62MN8_JSXX1a9Y\",\"machineName\":\"wa50-92-5-545.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Kejer Ppgyhss\",\"userId\":\"auth0|a59a6471-f075-5b6e-7537-2f006eec9675\",\"email\":\"pcldt.osihlkw@example.com\",\"osPlatform\":\"MacOs\",\"islandPlatform\":\"Extension\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.73.40\",\"chromiumVersion\":\"139.0.7258.130\",\"extensionVersion\":\"1.12547.8\",\"lastSeen\":\"2053-09-01T07:45:21.562371Z\",\"policyUpdateTime\":\"2053-08-12T11:28:45.218965Z\",\"diskEncrypted\":true,\"osUserName\":\"adminuser\",\"status\":\"Blocked\",\"internalIpAddress\":\"10.137.207.139\",\"externalIpAddress\":\"192.0.2.110\",\"osDomain\":\"\",\"osFirewallEnabled\":true,\"osScreenLockEnabled\":true,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"88:27:04:07:f6:52 | 08:78:4a:eb:6b:4d | 70:84:24:35:73:bc\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":32,\"syncEnabled\":true,\"chassisType\":\"Desktop\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"United States\",\"countryCode\":\"US\",\"browserUpdateStatus\":\"UpToDate\",\"isDefaultBrowser\":false,\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Desktop\",\"storageCapacity\":64,\"tenantId\":\"elastic-testing\",\"id\":\"6241ff9a-0f47-4976-a8bf-442947339d59\",\"createdDate\":\"2053-08-25T14:27:36.781452Z\",\"updatedDate\":\"2053-09-01T07:45:21.568943Z\",\"windowsLicenseStatus\":\"Licensed\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "id": "k7D4yH_9xzA3P62MN8_JSXX1a9Y",
+        "ip": [
+          "192.0.2.110"
+        ],
+        "mac": [
+          "88-27-04-07-F6-52",
+          "08-78-4A-EB-6B-4D",
+          "70-84-24-35-73-BC"
+        ],
+        "name": "wa50-92-5-545.latdrb.local",
+        "os": {
+          "platform": "MacOs",
+          "type": "macos",
+          "version": "22.04"
+        },
+        "type": "Desktop"
+      },
+      "island_browser": {
+        "device": {
+          "architecture": "x86_64",
+          "browser_name": "Island",
+          "browser_update_status": "UpToDate",
+          "browser_version": "1.73.40",
+          "chassis_type": "Desktop",
+          "chromium_version": "139.0.7258.130",
+          "country": "United States",
+          "country_code": "US",
+          "cpu_model": "Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz",
+          "created_date": "2053-08-25T14:27:36.781Z",
+          "device_type": "Desktop",
+          "disk_encrypted": true,
+          "email": "pcldt.osihlkw@example.com",
+          "extension_version": "1.12547.8",
+          "external_ip_address": "192.0.2.110",
+          "id": "6241ff9a-0f47-4976-a8bf-442947339d59",
+          "internal_ip_address": "10.137.207.139",
+          "is_archived": false,
+          "is_default_browser": false,
+          "is_virtual_machine": true,
+          "island_platform": "Extension",
+          "last_seen": "2053-09-01T07:45:21.562Z",
+          "mac_addresses": "88:27:04:07:f6:52 | 08:78:4a:eb:6b:4d | 70:84:24:35:73:bc",
+          "machine_id": "k7D4yH_9xzA3P62MN8_JSXX1a9Y",
+          "machine_model": "VMware Virtual Platform",
+          "machine_name": "wa50-92-5-545.latdrb.local",
+          "manufacturer": "VMware, Inc.",
+          "os_code_name": "Ubuntu 22.04.5 LTS",
+          "os_firewall_enabled": true,
+          "os_platform": "MacOs",
+          "os_screen_lock_enabled": true,
+          "os_user_name": "adminuser",
+          "os_version": "22.04",
+          "policy_update_time": "2053-08-12T11:28:45.218Z",
+          "ram_size": 32,
+          "status": "Blocked",
+          "storage_capacity": 64,
+          "sync_enabled": true,
+          "tenant_id": "elastic-testing",
+          "updated_date": "2053-09-01T07:45:21.568Z",
+          "user_id": "auth0|a59a6471-f075-5b6e-7537-2f006eec9675",
+          "user_name": "Kejer Ppgyhss",
+          "windows_license_status": "Licensed"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "hosts": [
+          "6241ff9a-0f47-4976-a8bf-442947339d59",
+          "k7D4yH_9xzA3P62MN8_JSXX1a9Y",
+          "wa50-92-5-545.latdrb.local"
+        ],
+        "ip": [
+          "192.0.2.110",
+          "10.137.207.139"
+        ],
+        "user": [
+          "pcldt.osihlkw@example.com",
+          "adminuser",
+          "auth0|a59a6471-f075-5b6e-7537-2f006eec9675",
+          "Kejer Ppgyhss"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "pcldt.osihlkw@example.com",
+        "id": "auth0|a59a6471-f075-5b6e-7537-2f006eec9675",
+        "name": "Kejer Ppgyhss"
+      },
+      "user_agent": {
+        "name": "Island"
+      }
+    },
+    {
+      "device": {
+        "manufacturer": "VMware, Inc.",
+        "model": {
+          "name": "VMware Virtual Platform"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-08-18T11:15:42.562Z",
+        "id": "9130cf0f-1c94-4532-b7fe-851443f1b770",
+        "kind": "asset",
+        "original": "{\"machineId\":\"pR8nL2_5bhJ6K74XC3_WZQA4c2P\",\"machineName\":\"pd16-86-2-833.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Nsfnedw Anat\",\"userId\":\"auth0|4ffd1557-d463-9e08-2e96-5ff9716c1138\",\"email\":\"hmawdfw.dmcw@example.com\",\"osPlatform\":\"Windows\",\"islandPlatform\":\"EndpointApp\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.72.28\",\"chromiumVersion\":\"139.0.7258.126\",\"extensionVersion\":\"1.12545.9\",\"lastSeen\":\"2053-08-29T15:33:47.219875Z\",\"policyUpdateTime\":\"2053-07-15T08:42:56.789123Z\",\"diskEncrypted\":true,\"osUserName\":\"techuser\",\"status\":\"BlockedAcknowledged\",\"internalIpAddress\":\"10.122.116.175\",\"externalIpAddress\":\"192.0.2.151\",\"osDomain\":\"\",\"osFirewallEnabled\":true,\"osScreenLockEnabled\":true,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"85:42:84:25:d5:99 | 09:71:9f:ee:2a:3a | 19:86:56:69:69:bd\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":24,\"syncEnabled\":true,\"chassisType\":\"Desktop\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"Germany\",\"countryCode\":\"DE\",\"browserUpdateStatus\":\"UpToDate\",\"isDefaultBrowser\":true,\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Notebook\",\"storageCapacity\":96,\"tenantId\":\"elastic-testing\",\"id\":\"9130cf0f-1c94-4532-b7fe-851443f1b770\",\"createdDate\":\"2053-08-18T11:15:42.562398Z\",\"updatedDate\":\"2053-08-29T15:33:47.223516Z\",\"windowsLicenseStatus\":\"OutofBoxGrace\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "id": "pR8nL2_5bhJ6K74XC3_WZQA4c2P",
+        "ip": [
+          "192.0.2.151"
+        ],
+        "mac": [
+          "85-42-84-25-D5-99",
+          "09-71-9F-EE-2A-3A",
+          "19-86-56-69-69-BD"
+        ],
+        "name": "pd16-86-2-833.latdrb.local",
+        "os": {
+          "platform": "Windows",
+          "type": "windows",
+          "version": "22.04"
+        },
+        "type": "Notebook"
+      },
+      "island_browser": {
+        "device": {
+          "architecture": "x86_64",
+          "browser_name": "Island",
+          "browser_update_status": "UpToDate",
+          "browser_version": "1.72.28",
+          "chassis_type": "Desktop",
+          "chromium_version": "139.0.7258.126",
+          "country": "Germany",
+          "country_code": "DE",
+          "cpu_model": "Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz",
+          "created_date": "2053-08-18T11:15:42.562Z",
+          "device_type": "Notebook",
+          "disk_encrypted": true,
+          "email": "hmawdfw.dmcw@example.com",
+          "extension_version": "1.12545.9",
+          "external_ip_address": "192.0.2.151",
+          "id": "9130cf0f-1c94-4532-b7fe-851443f1b770",
+          "internal_ip_address": "10.122.116.175",
+          "is_archived": false,
+          "is_default_browser": true,
+          "is_virtual_machine": true,
+          "island_platform": "EndpointApp",
+          "last_seen": "2053-08-29T15:33:47.219Z",
+          "mac_addresses": "85:42:84:25:d5:99 | 09:71:9f:ee:2a:3a | 19:86:56:69:69:bd",
+          "machine_id": "pR8nL2_5bhJ6K74XC3_WZQA4c2P",
+          "machine_model": "VMware Virtual Platform",
+          "machine_name": "pd16-86-2-833.latdrb.local",
+          "manufacturer": "VMware, Inc.",
+          "os_code_name": "Ubuntu 22.04.5 LTS",
+          "os_firewall_enabled": true,
+          "os_platform": "Windows",
+          "os_screen_lock_enabled": true,
+          "os_user_name": "techuser",
+          "os_version": "22.04",
+          "policy_update_time": "2053-07-15T08:42:56.789Z",
+          "ram_size": 24,
+          "status": "BlockedAcknowledged",
+          "storage_capacity": 96,
+          "sync_enabled": true,
+          "tenant_id": "elastic-testing",
+          "updated_date": "2053-08-29T15:33:47.223Z",
+          "user_id": "auth0|4ffd1557-d463-9e08-2e96-5ff9716c1138",
+          "user_name": "Nsfnedw Anat",
+          "windows_license_status": "OutofBoxGrace"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "hosts": [
+          "9130cf0f-1c94-4532-b7fe-851443f1b770",
+          "pR8nL2_5bhJ6K74XC3_WZQA4c2P",
+          "pd16-86-2-833.latdrb.local"
+        ],
+        "ip": [
+          "192.0.2.151",
+          "10.122.116.175"
+        ],
+        "user": [
+          "hmawdfw.dmcw@example.com",
+          "techuser",
+          "auth0|4ffd1557-d463-9e08-2e96-5ff9716c1138",
+          "Nsfnedw Anat"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "hmawdfw.dmcw@example.com",
+        "id": "auth0|4ffd1557-d463-9e08-2e96-5ff9716c1138",
+        "name": "Nsfnedw Anat"
+      },
+      "user_agent": {
+        "name": "Island"
+      }
+    },
+    {
+      "device": {
+        "manufacturer": "VMware, Inc.",
+        "model": {
+          "name": "VMware Virtual Platform"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-08-27T16:58:23.789Z",
+        "id": "1278ef9g-4h56-7i89-j0kl-123456789abc",
+        "kind": "asset",
+        "original": "{\"machineId\":\"tV6sQ9_7cdF8G42ZP1_BMXR5e3S\",\"machineName\":\"ma81-33-9-242.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Eplc Jvbwgileg\",\"userId\":\"auth0|66cb9447-6365-3385-a935-af30cb177099\",\"email\":\"fgwa.mpbtryrbv@example.com\",\"osPlatform\":\"Android\",\"islandPlatform\":\"EndpointApp\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.73.35\",\"chromiumVersion\":\"139.0.7258.135\",\"extensionVersion\":\"1.12548.2\",\"lastSeen\":\"2053-09-02T08:17:39.481235Z\",\"policyUpdateTime\":\"2053-08-01T19:53:27.456789Z\",\"diskEncrypted\":false,\"osUserName\":\"devuser\",\"status\":\"BlockedSuspicious\",\"internalIpAddress\":\"10.203.62.244\",\"externalIpAddress\":\"203.0.113.177\",\"osDomain\":\"\",\"osFirewallEnabled\":true,\"osScreenLockEnabled\":false,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"57:78:93:31:c2:2e | 32:78:ee:ef:3a:5c | 22:46:45:49:b8:eb\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":48,\"syncEnabled\":true,\"chassisType\":\"Notebook\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"Brazil\",\"countryCode\":\"BR\",\"browserUpdateStatus\":\"PendingRelaunch\",\"isDefaultBrowser\":false,\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Mobile\",\"storageCapacity\":128,\"tenantId\":\"elastic-testing\",\"id\":\"1278ef9g-4h56-7i89-j0kl-123456789abc\",\"createdDate\":\"2053-08-27T16:58:23.789456Z\",\"updatedDate\":\"2053-09-02T08:17:39.487654Z\",\"windowsLicenseStatus\":\"OutofToleranceGrace\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "id": "tV6sQ9_7cdF8G42ZP1_BMXR5e3S",
+        "ip": [
+          "203.0.113.177"
+        ],
+        "mac": [
+          "57-78-93-31-C2-2E",
+          "32-78-EE-EF-3A-5C",
+          "22-46-45-49-B8-EB"
+        ],
+        "name": "ma81-33-9-242.latdrb.local",
+        "os": {
+          "platform": "Android",
+          "type": "android",
+          "version": "22.04"
+        },
+        "type": "Mobile"
+      },
+      "island_browser": {
+        "device": {
+          "architecture": "x86_64",
+          "browser_name": "Island",
+          "browser_update_status": "PendingRelaunch",
+          "browser_version": "1.73.35",
+          "chassis_type": "Notebook",
+          "chromium_version": "139.0.7258.135",
+          "country": "Brazil",
+          "country_code": "BR",
+          "cpu_model": "Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz",
+          "created_date": "2053-08-27T16:58:23.789Z",
+          "device_type": "Mobile",
+          "disk_encrypted": false,
+          "email": "fgwa.mpbtryrbv@example.com",
+          "extension_version": "1.12548.2",
+          "external_ip_address": "203.0.113.177",
+          "id": "1278ef9g-4h56-7i89-j0kl-123456789abc",
+          "internal_ip_address": "10.203.62.244",
+          "is_archived": false,
+          "is_default_browser": false,
+          "is_virtual_machine": true,
+          "island_platform": "EndpointApp",
+          "last_seen": "2053-09-02T08:17:39.481Z",
+          "mac_addresses": "57:78:93:31:c2:2e | 32:78:ee:ef:3a:5c | 22:46:45:49:b8:eb",
+          "machine_id": "tV6sQ9_7cdF8G42ZP1_BMXR5e3S",
+          "machine_model": "VMware Virtual Platform",
+          "machine_name": "ma81-33-9-242.latdrb.local",
+          "manufacturer": "VMware, Inc.",
+          "os_code_name": "Ubuntu 22.04.5 LTS",
+          "os_firewall_enabled": true,
+          "os_platform": "Android",
+          "os_screen_lock_enabled": false,
+          "os_user_name": "devuser",
+          "os_version": "22.04",
+          "policy_update_time": "2053-08-01T19:53:27.456Z",
+          "ram_size": 48,
+          "status": "BlockedSuspicious",
+          "storage_capacity": 128,
+          "sync_enabled": true,
+          "tenant_id": "elastic-testing",
+          "updated_date": "2053-09-02T08:17:39.487Z",
+          "user_id": "auth0|66cb9447-6365-3385-a935-af30cb177099",
+          "user_name": "Eplc Jvbwgileg",
+          "windows_license_status": "OutofToleranceGrace"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "hosts": [
+          "1278ef9g-4h56-7i89-j0kl-123456789abc",
+          "tV6sQ9_7cdF8G42ZP1_BMXR5e3S",
+          "ma81-33-9-242.latdrb.local"
+        ],
+        "ip": [
+          "203.0.113.177",
+          "10.203.62.244"
+        ],
+        "user": [
+          "fgwa.mpbtryrbv@example.com",
+          "devuser",
+          "auth0|66cb9447-6365-3385-a935-af30cb177099",
+          "Eplc Jvbwgileg"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "fgwa.mpbtryrbv@example.com",
+        "id": "auth0|66cb9447-6365-3385-a935-af30cb177099",
+        "name": "Eplc Jvbwgileg"
+      },
+      "user_agent": {
+        "name": "Island"
+      }
+    },
+    {
+      "device": {
+        "manufacturer": "VMware, Inc.",
+        "model": {
+          "name": "VMware Virtual Platform"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-08-15T09:47:31.234Z",
+        "id": "89rst0uv-1w23-4x56-y78z-9ab01cde2345",
+        "kind": "asset",
+        "original": "{\"machineId\":\"xZ2wT7_3deG4H96VM5_KNYS8f1Q\",\"machineName\":\"lf50-62-3-842.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Aavjc Poi\",\"userId\":\"auth0|56gh7890-1ij2-3kl4-m567-no89pq012345\",\"email\":\"aezod.shy@example.com\",\"osPlatform\":\"ChromeOs\",\"islandPlatform\":\"Other\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.72.32\",\"chromiumVersion\":\"139.0.7258.129\",\"extensionVersion\":\"1.12546.7\",\"lastSeen\":\"2053-08-30T21:42:18.654321Z\",\"policyUpdateTime\":\"2053-07-22T05:36:49.123456Z\",\"diskEncrypted\":true,\"osUserName\":\"qauser\",\"status\":\"Suspicious\",\"internalIpAddress\":\"10.41.177.34\",\"externalIpAddress\":\"192.0.2.218\",\"osDomain\":\"\",\"osFirewallEnabled\":false,\"osScreenLockEnabled\":true,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"44:41:82:72:b5:9e | 45:36:be:ce:6b:2c | 24:84:68:70:d3:de\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":64,\"syncEnabled\":false,\"chassisType\":\"Mobile\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"Japan\",\"countryCode\":\"JP\",\"browserUpdateStatus\":\"PendingRelaunch\",\"isDefaultBrowser\":false,\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Desktop\",\"storageCapacity\":256,\"tenantId\":\"elastic-testing\",\"id\":\"89rst0uv-1w23-4x56-y78z-9ab01cde2345\",\"createdDate\":\"2053-08-15T09:47:31.234567Z\",\"updatedDate\":\"2053-08-30T21:42:18.659876Z\",\"windowsLicenseStatus\":\"NonGenuineGrace\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "id": "xZ2wT7_3deG4H96VM5_KNYS8f1Q",
+        "ip": [
+          "192.0.2.218"
+        ],
+        "mac": [
+          "44-41-82-72-B5-9E",
+          "45-36-BE-CE-6B-2C",
+          "24-84-68-70-D3-DE"
+        ],
+        "name": "lf50-62-3-842.latdrb.local",
+        "os": {
+          "platform": "ChromeOs",
+          "version": "22.04"
+        },
+        "type": "Desktop"
+      },
+      "island_browser": {
+        "device": {
+          "architecture": "x86_64",
+          "browser_name": "Island",
+          "browser_update_status": "PendingRelaunch",
+          "browser_version": "1.72.32",
+          "chassis_type": "Mobile",
+          "chromium_version": "139.0.7258.129",
+          "country": "Japan",
+          "country_code": "JP",
+          "cpu_model": "Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz",
+          "created_date": "2053-08-15T09:47:31.234Z",
+          "device_type": "Desktop",
+          "disk_encrypted": true,
+          "email": "aezod.shy@example.com",
+          "extension_version": "1.12546.7",
+          "external_ip_address": "192.0.2.218",
+          "id": "89rst0uv-1w23-4x56-y78z-9ab01cde2345",
+          "internal_ip_address": "10.41.177.34",
+          "is_archived": false,
+          "is_default_browser": false,
+          "is_virtual_machine": true,
+          "island_platform": "Other",
+          "last_seen": "2053-08-30T21:42:18.654Z",
+          "mac_addresses": "44:41:82:72:b5:9e | 45:36:be:ce:6b:2c | 24:84:68:70:d3:de",
+          "machine_id": "xZ2wT7_3deG4H96VM5_KNYS8f1Q",
+          "machine_model": "VMware Virtual Platform",
+          "machine_name": "lf50-62-3-842.latdrb.local",
+          "manufacturer": "VMware, Inc.",
+          "os_code_name": "Ubuntu 22.04.5 LTS",
+          "os_firewall_enabled": false,
+          "os_platform": "ChromeOs",
+          "os_screen_lock_enabled": true,
+          "os_user_name": "qauser",
+          "os_version": "22.04",
+          "policy_update_time": "2053-07-22T05:36:49.123Z",
+          "ram_size": 64,
+          "status": "Suspicious",
+          "storage_capacity": 256,
+          "sync_enabled": false,
+          "tenant_id": "elastic-testing",
+          "updated_date": "2053-08-30T21:42:18.659Z",
+          "user_id": "auth0|56gh7890-1ij2-3kl4-m567-no89pq012345",
+          "user_name": "Aavjc Poi",
+          "windows_license_status": "NonGenuineGrace"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "hosts": [
+          "89rst0uv-1w23-4x56-y78z-9ab01cde2345",
+          "xZ2wT7_3deG4H96VM5_KNYS8f1Q",
+          "lf50-62-3-842.latdrb.local"
+        ],
+        "ip": [
+          "192.0.2.218",
+          "10.41.177.34"
+        ],
+        "user": [
+          "aezod.shy@example.com",
+          "qauser",
+          "auth0|56gh7890-1ij2-3kl4-m567-no89pq012345",
+          "Aavjc Poi"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "aezod.shy@example.com",
+        "id": "auth0|56gh7890-1ij2-3kl4-m567-no89pq012345",
+        "name": "Aavjc Poi"
+      },
+      "user_agent": {
+        "name": "Island"
+      }
+    },
+    {
+      "device": {
+        "manufacturer": "VMware, Inc.",
+        "model": {
+          "name": "VMware Virtual Platform"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-08-23T18:39:42.345Z",
+        "id": "67stu8vw-9x01-2y34-z567-89a01bcd2345",
+        "kind": "asset",
+        "original": "{\"machineId\":\"bM3yU8_1efH9I25QR7_LTZA6g4J\",\"machineName\":\"le48-95-2-626.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Xmivlb Yfrfm\",\"userId\":\"auth0|fgh3456i-j789-0klm-n123-op45qr678901\",\"email\":\"zpuuwd.odody@example.com\",\"osPlatform\":\"Igel\",\"islandPlatform\":\"Browser\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.73.38\",\"chromiumVersion\":\"139.0.7258.132\",\"extensionVersion\":\"1.12547.5\",\"lastSeen\":\"2053-09-01T12:28:56.987654Z\",\"policyUpdateTime\":\"2053-08-19T22:14:35.654321Z\",\"diskEncrypted\":true,\"osUserName\":\"supportuser\",\"status\":\"Suspicious\",\"internalIpAddress\":\"10.20.127.179\",\"externalIpAddress\":\"198.51.100.74\",\"osDomain\":\"\",\"osFirewallEnabled\":true,\"osScreenLockEnabled\":true,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"98:25:55:00:d6:8e | 59:00:ac:ee:0f:2c | 32:30:41:91:c6:bb\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":96,\"syncEnabled\":true,\"chassisType\":\"Mobile\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"Australia\",\"countryCode\":\"AU\",\"browserUpdateStatus\":\"UpToDate\",\"isDefaultBrowser\":true,\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Desktop\",\"storageCapacity\":512,\"tenantId\":\"elastic-testing\",\"id\":\"67stu8vw-9x01-2y34-z567-89a01bcd2345\",\"createdDate\":\"2053-08-23T18:39:42.345678Z\",\"updatedDate\":\"2053-09-01T12:28:56.992345Z\",\"windowsLicenseStatus\":\"Notification\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "id": "bM3yU8_1efH9I25QR7_LTZA6g4J",
+        "ip": [
+          "198.51.100.74"
+        ],
+        "mac": [
+          "98-25-55-00-D6-8E",
+          "59-00-AC-EE-0F-2C",
+          "32-30-41-91-C6-BB"
+        ],
+        "name": "le48-95-2-626.latdrb.local",
+        "os": {
+          "platform": "Igel",
+          "version": "22.04"
+        },
+        "type": "Desktop"
+      },
+      "island_browser": {
+        "device": {
+          "architecture": "x86_64",
+          "browser_name": "Island",
+          "browser_update_status": "UpToDate",
+          "browser_version": "1.73.38",
+          "chassis_type": "Mobile",
+          "chromium_version": "139.0.7258.132",
+          "country": "Australia",
+          "country_code": "AU",
+          "cpu_model": "Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz",
+          "created_date": "2053-08-23T18:39:42.345Z",
+          "device_type": "Desktop",
+          "disk_encrypted": true,
+          "email": "zpuuwd.odody@example.com",
+          "extension_version": "1.12547.5",
+          "external_ip_address": "198.51.100.74",
+          "id": "67stu8vw-9x01-2y34-z567-89a01bcd2345",
+          "internal_ip_address": "10.20.127.179",
+          "is_archived": false,
+          "is_default_browser": true,
+          "is_virtual_machine": true,
+          "island_platform": "Browser",
+          "last_seen": "2053-09-01T12:28:56.987Z",
+          "mac_addresses": "98:25:55:00:d6:8e | 59:00:ac:ee:0f:2c | 32:30:41:91:c6:bb",
+          "machine_id": "bM3yU8_1efH9I25QR7_LTZA6g4J",
+          "machine_model": "VMware Virtual Platform",
+          "machine_name": "le48-95-2-626.latdrb.local",
+          "manufacturer": "VMware, Inc.",
+          "os_code_name": "Ubuntu 22.04.5 LTS",
+          "os_firewall_enabled": true,
+          "os_platform": "Igel",
+          "os_screen_lock_enabled": true,
+          "os_user_name": "supportuser",
+          "os_version": "22.04",
+          "policy_update_time": "2053-08-19T22:14:35.654Z",
+          "ram_size": 96,
+          "status": "Suspicious",
+          "storage_capacity": 512,
+          "sync_enabled": true,
+          "tenant_id": "elastic-testing",
+          "updated_date": "2053-09-01T12:28:56.992Z",
+          "user_id": "auth0|fgh3456i-j789-0klm-n123-op45qr678901",
+          "user_name": "Xmivlb Yfrfm",
+          "windows_license_status": "Notification"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "hosts": [
+          "67stu8vw-9x01-2y34-z567-89a01bcd2345",
+          "bM3yU8_1efH9I25QR7_LTZA6g4J",
+          "le48-95-2-626.latdrb.local"
+        ],
+        "ip": [
+          "198.51.100.74",
+          "10.20.127.179"
+        ],
+        "user": [
+          "zpuuwd.odody@example.com",
+          "supportuser",
+          "auth0|fgh3456i-j789-0klm-n123-op45qr678901",
+          "Xmivlb Yfrfm"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "zpuuwd.odody@example.com",
+        "id": "auth0|fgh3456i-j789-0klm-n123-op45qr678901",
+        "name": "Xmivlb Yfrfm"
+      },
+      "user_agent": {
+        "name": "Island"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "id": "device-test-multinic-3",
+        "kind": "asset",
+        "original": "{\"id\":\"device-test-multinic-3\",\"machineId\":\"MCHNTEST003\",\"machineName\":\"ZBQQ-TYUP-61\",\"tenantId\":\"elastic-testing\",\"userName\":\"Ibyt Hmfl Rmtfa\",\"email\":\"jasv.ownff@example.com\",\"osPlatform\":\"Windows\",\"browserName\":\"Island\",\"status\":\"Active\",\"lastSeen\":\"2053-09-05T10:00:00.000Z\",\"internalIpAddress\":\"192.0.2.10 | Ethernet0/198.51.100.20 | Wi-Fi/203.0.113.30\",\"externalIpAddress\":\"203.0.113.200\",\"isArchived\":false}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "MCHNTEST003",
+        "ip": [
+          "203.0.113.200"
+        ],
+        "name": "ZBQQ-TYUP-61",
+        "os": {
+          "platform": "Windows",
+          "type": "windows"
+        }
+      },
+      "island_browser": {
+        "device": {
+          "browser_name": "Island",
+          "email": "jasv.ownff@example.com",
+          "external_ip_address": "203.0.113.200",
+          "id": "device-test-multinic-3",
+          "internal_ip": "192.0.2.10 | Ethernet0/198.51.100.20 | Wi-Fi/203.0.113.30",
+          "internal_ip_address": [
+            "192.0.2.10",
+            "198.51.100.20",
+            "203.0.113.30"
+          ],
+          "is_archived": false,
+          "last_seen": "2053-09-05T10:00:00.000Z",
+          "machine_id": "MCHNTEST003",
+          "machine_name": "ZBQQ-TYUP-61",
+          "os_platform": "Windows",
+          "status": "Active",
+          "tenant_id": "elastic-testing",
+          "user_name": "Ibyt Hmfl Rmtfa"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "hosts": [
+          "device-test-multinic-3",
+          "MCHNTEST003",
+          "ZBQQ-TYUP-61"
+        ],
+        "ip": [
+          "203.0.113.200",
+          "192.0.2.10",
+          "198.51.100.20",
+          "203.0.113.30"
+        ],
+        "user": [
+          "jasv.ownff@example.com",
+          "Ibyt Hmfl Rmtfa"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "jasv.ownff@example.com",
+        "name": "Ibyt Hmfl Rmtfa"
+      },
+      "user_agent": {
+        "name": "Island"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "id": "device-test-multinic-2",
+        "kind": "asset",
+        "original": "{\"id\":\"device-test-multinic-2\",\"machineId\":\"MCHNTEST002\",\"machineName\":\"GCJQ-POUY-80\",\"tenantId\":\"elastic-testing\",\"userName\":\"Salj Xgdm Qhw\",\"email\":\"japt.rzj@example.com\",\"osPlatform\":\"Linux\",\"browserName\":\"Island\",\"status\":\"Active\",\"lastSeen\":\"2053-09-05T10:01:00.000Z\",\"internalIpAddress\":\"192.0.2.11 | Ethernet0/198.51.100.21\",\"externalIpAddress\":\"203.0.113.201\",\"isArchived\":false}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "MCHNTEST002",
+        "ip": [
+          "203.0.113.201"
+        ],
+        "name": "GCJQ-POUY-80",
+        "os": {
+          "platform": "Linux",
+          "type": "linux"
+        }
+      },
+      "island_browser": {
+        "device": {
+          "browser_name": "Island",
+          "email": "japt.rzj@example.com",
+          "external_ip_address": "203.0.113.201",
+          "id": "device-test-multinic-2",
+          "internal_ip": "192.0.2.11 | Ethernet0/198.51.100.21",
+          "internal_ip_address": [
+            "192.0.2.11",
+            "198.51.100.21"
+          ],
+          "is_archived": false,
+          "last_seen": "2053-09-05T10:01:00.000Z",
+          "machine_id": "MCHNTEST002",
+          "machine_name": "GCJQ-POUY-80",
+          "os_platform": "Linux",
+          "status": "Active",
+          "tenant_id": "elastic-testing",
+          "user_name": "Salj Xgdm Qhw"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "hosts": [
+          "device-test-multinic-2",
+          "MCHNTEST002",
+          "GCJQ-POUY-80"
+        ],
+        "ip": [
+          "203.0.113.201",
+          "192.0.2.11",
+          "198.51.100.21"
+        ],
+        "user": [
+          "japt.rzj@example.com",
+          "Salj Xgdm Qhw"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "japt.rzj@example.com",
+        "name": "Salj Xgdm Qhw"
+      },
+      "user_agent": {
+        "name": "Island"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "id": "device-test-singlenic-adapter",
+        "kind": "asset",
+        "original": "{\"id\":\"device-test-singlenic-adapter\",\"machineId\":\"MCHNTEST001\",\"machineName\":\"OEWM-RMVM-65\",\"tenantId\":\"elastic-testing\",\"userName\":\"Nelz Ipfj Sxd\",\"email\":\"ucso.zjc@example.com\",\"osPlatform\":\"MacOs\",\"browserName\":\"Island\",\"status\":\"Active\",\"lastSeen\":\"2053-09-05T10:02:00.000Z\",\"internalIpAddress\":\"192.0.2.12 | Ethernet0\",\"externalIpAddress\":\"203.0.113.202\",\"isArchived\":false}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "MCHNTEST001",
+        "ip": [
+          "203.0.113.202"
+        ],
+        "name": "OEWM-RMVM-65",
+        "os": {
+          "platform": "MacOs",
+          "type": "macos"
+        }
+      },
+      "island_browser": {
+        "device": {
+          "browser_name": "Island",
+          "email": "ucso.zjc@example.com",
+          "external_ip_address": "203.0.113.202",
+          "id": "device-test-singlenic-adapter",
+          "internal_ip": "192.0.2.12 | Ethernet0",
+          "internal_ip_address": "192.0.2.12",
+          "is_archived": false,
+          "last_seen": "2053-09-05T10:02:00.000Z",
+          "machine_id": "MCHNTEST001",
+          "machine_name": "OEWM-RMVM-65",
+          "os_platform": "MacOs",
+          "status": "Active",
+          "tenant_id": "elastic-testing",
+          "user_name": "Nelz Ipfj Sxd"
+        }
+      },
+      "organization": {
+        "id": "elastic-testing"
+      },
+      "related": {
+        "hosts": [
+          "device-test-singlenic-adapter",
+          "MCHNTEST001",
+          "OEWM-RMVM-65"
+        ],
+        "ip": [
+          "203.0.113.202",
+          "192.0.2.12"
+        ],
+        "user": [
+          "ucso.zjc@example.com",
+          "Nelz Ipfj Sxd"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "ucso.zjc@example.com",
+        "name": "Nelz Ipfj Sxd"
+      },
+      "user_agent": {
+        "name": "Island"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"device-xyz-001\",\"createdDate\":\"2053-08-05T09:07:23.735Z\",\"updatedDate\":\"2053-08-05T09:07:23.735Z\",\"tenantId\":\"tenant-1234-abcd\",\"machineId\":\"MCHN123456\",\"machineName\":\"AWJK-NELOQW-08\",\"machineModel\":\"Dell Latitude 7420\",\"serialNumber\":\"SN1234567890\",\"userName\":\"Afrona Zsevod\",\"userId\":\"user-5678-defg\",\"email\":\"ecqvrf.xudvgf@djxlbxr.com\",\"osPlatform\":\"Windows\",\"islandPlatform\":\"Browser\",\"osVersion\":\"Windows 11 Pro 22H2\",\"browserVersion\":\"1.18.2.1001\",\"chromiumVersion\":\"116.0.5845.97\",\"extensionVersion\":\"2.5.0\",\"updaterVersion\":\"3.1.0\",\"lastSeen\":\"2053-08-05T09:07:23.735Z\",\"policyUpdateTime\":\"2053-08-05T09:06:00.000Z\",\"diskEncrypted\":true,\"latestSecurityUpdateId\":\"KB5028185\",\"osUserName\":\"CORP\\\\adityas\",\"status\":\"Active\",\"spmProtected\":true,\"internalIpAddress\":\"192.168.135.213\",\"externalIpAddress\":\"203.0.113.248\",\"osDomain\":\"CORP.LOCAL\",\"systemIntegrityProtection\":true,\"osFirewallEnabled\":true,\"osScreenLockEnabled\":true,\"isVirtualMachine\":false,\"isContainer\":false,\"mdmEnrolled\":true,\"mdmProvider\":\"Intune\",\"mdmTopic\":\"corp-mdm-topic\",\"mdmTenantName\":\"corp-mdm-tenant\",\"browserName\":\"Island\",\"authMethod\":\"UserToken\",\"crowdstrikeZtaScore\":92,\"crowdstrikeCid\":\"CID-12345-ABCDE\",\"crowdstrikeAgentId\":\"AGENT-98765-FGHJK\",\"isArchived\":false,\"isJailbroken\":false,\"macAddresses\":\"34:16:86:26:c5:58 | 54:60:2d:fe:6f:2b | 79:47:60:44:84:db\",\"cpuModel\":\"Intel(R) Core(TM) i7-1165G7 @ 2.80GHz\",\"architecture\":\"x64\",\"windowsLicenseStatus\":\"ExtendedGrace\",\"ramSize\":16,\"secureBoot\":true,\"syncEnabled\":true,\"chassisType\":\"Laptop\",\"isDeviceAttested\":true,\"isSystemLevelInstall\":true,\"osCodeName\":\"Sun Valley\",\"country\":\"India\",\"countryCode\":\"IN\",\"browserUpdateStatus\":\"PendingDownload\",\"isDefaultBrowser\":true,\"mdmCompliant\":true,\"extensionUtilityVersion\":\"4.0.1\",\"mobileEnrollmentType\":\"CompanyOwned\",\"azureTenantId\":\"azure-tenant-9999\",\"manufacturer\":\"Dell Inc.\",\"isGatekeeperEnabled\":true,\"gatekeeperVersion\":\"1.0.0\",\"deviceType\":\"Laptop\",\"islandMdmCustomKey\":\"custom-key-001\",\"storageCapacity\":512,\"antiMalwareProducts\":[\"Windows Defender\",\"CrowdStrike Falcon\"],\"installedExtensions\":[\"Island Secure Extension\",\"Zoom Scheduler\"]}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"machineId\":\"iNUa5F_2xgA1L51ZX5_YCXX7b7Z\",\"machineName\":\"he21-63-7-456.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Pnvw Eyd\",\"userId\":\"auth0|fdfe7355-d160-4e9b-8335-4d319bbc4656\",\"email\":\"hshg.fqb@example.com\",\"osPlatform\":\"Linux\",\"islandPlatform\":\"Browser\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.72.30\",\"chromiumVersion\":\"139.0.7258.128\",\"extensionVersion\":\"1.12546.6\",\"lastSeen\":\"2053-08-31T04:19:55.342111Z\",\"policyUpdateTime\":\"2053-07-08T14:17:18.527794Z\",\"diskEncrypted\":false,\"osUserName\":\"serviceuser\",\"status\":\"Active\",\"internalIpAddress\":\"10.62.201.252\",\"externalIpAddress\":\"203.0.113.248\",\"osDomain\":\"\",\"osFirewallEnabled\":true,\"osScreenLockEnabled\":true,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"63:44:80:87:c9:69 | 64:59:1d:bf:3f:5f | 65:05:47:28:18:fe\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":16,\"syncEnabled\":true,\"chassisType\":\"Laptop\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"India\",\"countryCode\":\"IN\",\"browserUpdateStatus\":\"UpToDate\",\"isDefaultBrowser\":false,\"authMethod\":\"TenantToken\",\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Laptop\",\"storageCapacity\":48,\"tenantId\":\"elastic-testing\",\"id\":\"6341dd5d-6d88-4184-b0ed-292478234a45\",\"createdDate\":\"2053-08-21T08:38:14.478259Z\",\"updatedDate\":\"2053-08-31T04:19:55.345783Z\",\"windowsLicenseStatus\":\"Unlicensed\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"machineId\":\"k7D4yH_9xzA3P62MN8_JSXX1a9Y\",\"machineName\":\"wa50-92-5-545.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Kejer Ppgyhss\",\"userId\":\"auth0|a59a6471-f075-5b6e-7537-2f006eec9675\",\"email\":\"pcldt.osihlkw@example.com\",\"osPlatform\":\"MacOs\",\"islandPlatform\":\"Extension\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.73.40\",\"chromiumVersion\":\"139.0.7258.130\",\"extensionVersion\":\"1.12547.8\",\"lastSeen\":\"2053-09-01T07:45:21.562371Z\",\"policyUpdateTime\":\"2053-08-12T11:28:45.218965Z\",\"diskEncrypted\":true,\"osUserName\":\"adminuser\",\"status\":\"Blocked\",\"internalIpAddress\":\"10.137.207.139\",\"externalIpAddress\":\"192.0.2.110\",\"osDomain\":\"\",\"osFirewallEnabled\":true,\"osScreenLockEnabled\":true,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"88:27:04:07:f6:52 | 08:78:4a:eb:6b:4d | 70:84:24:35:73:bc\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":32,\"syncEnabled\":true,\"chassisType\":\"Desktop\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"United States\",\"countryCode\":\"US\",\"browserUpdateStatus\":\"UpToDate\",\"isDefaultBrowser\":false,\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Desktop\",\"storageCapacity\":64,\"tenantId\":\"elastic-testing\",\"id\":\"6241ff9a-0f47-4976-a8bf-442947339d59\",\"createdDate\":\"2053-08-25T14:27:36.781452Z\",\"updatedDate\":\"2053-09-01T07:45:21.568943Z\",\"windowsLicenseStatus\":\"Licensed\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"machineId\":\"pR8nL2_5bhJ6K74XC3_WZQA4c2P\",\"machineName\":\"pd16-86-2-833.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Nsfnedw Anat\",\"userId\":\"auth0|4ffd1557-d463-9e08-2e96-5ff9716c1138\",\"email\":\"hmawdfw.dmcw@example.com\",\"osPlatform\":\"Windows\",\"islandPlatform\":\"EndpointApp\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.72.28\",\"chromiumVersion\":\"139.0.7258.126\",\"extensionVersion\":\"1.12545.9\",\"lastSeen\":\"2053-08-29T15:33:47.219875Z\",\"policyUpdateTime\":\"2053-07-15T08:42:56.789123Z\",\"diskEncrypted\":true,\"osUserName\":\"techuser\",\"status\":\"BlockedAcknowledged\",\"internalIpAddress\":\"10.122.116.175\",\"externalIpAddress\":\"192.0.2.151\",\"osDomain\":\"\",\"osFirewallEnabled\":true,\"osScreenLockEnabled\":true,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"85:42:84:25:d5:99 | 09:71:9f:ee:2a:3a | 19:86:56:69:69:bd\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":24,\"syncEnabled\":true,\"chassisType\":\"Desktop\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"Germany\",\"countryCode\":\"DE\",\"browserUpdateStatus\":\"UpToDate\",\"isDefaultBrowser\":true,\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Notebook\",\"storageCapacity\":96,\"tenantId\":\"elastic-testing\",\"id\":\"9130cf0f-1c94-4532-b7fe-851443f1b770\",\"createdDate\":\"2053-08-18T11:15:42.562398Z\",\"updatedDate\":\"2053-08-29T15:33:47.223516Z\",\"windowsLicenseStatus\":\"OutofBoxGrace\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"machineId\":\"tV6sQ9_7cdF8G42ZP1_BMXR5e3S\",\"machineName\":\"ma81-33-9-242.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Eplc Jvbwgileg\",\"userId\":\"auth0|66cb9447-6365-3385-a935-af30cb177099\",\"email\":\"fgwa.mpbtryrbv@example.com\",\"osPlatform\":\"Android\",\"islandPlatform\":\"EndpointApp\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.73.35\",\"chromiumVersion\":\"139.0.7258.135\",\"extensionVersion\":\"1.12548.2\",\"lastSeen\":\"2053-09-02T08:17:39.481235Z\",\"policyUpdateTime\":\"2053-08-01T19:53:27.456789Z\",\"diskEncrypted\":false,\"osUserName\":\"devuser\",\"status\":\"BlockedSuspicious\",\"internalIpAddress\":\"10.203.62.244\",\"externalIpAddress\":\"203.0.113.177\",\"osDomain\":\"\",\"osFirewallEnabled\":true,\"osScreenLockEnabled\":false,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"57:78:93:31:c2:2e | 32:78:ee:ef:3a:5c | 22:46:45:49:b8:eb\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":48,\"syncEnabled\":true,\"chassisType\":\"Notebook\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"Brazil\",\"countryCode\":\"BR\",\"browserUpdateStatus\":\"PendingRelaunch\",\"isDefaultBrowser\":false,\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Mobile\",\"storageCapacity\":128,\"tenantId\":\"elastic-testing\",\"id\":\"1278ef9g-4h56-7i89-j0kl-123456789abc\",\"createdDate\":\"2053-08-27T16:58:23.789456Z\",\"updatedDate\":\"2053-09-02T08:17:39.487654Z\",\"windowsLicenseStatus\":\"OutofToleranceGrace\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"machineId\":\"xZ2wT7_3deG4H96VM5_KNYS8f1Q\",\"machineName\":\"lf50-62-3-842.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Aavjc Poi\",\"userId\":\"auth0|56gh7890-1ij2-3kl4-m567-no89pq012345\",\"email\":\"aezod.shy@example.com\",\"osPlatform\":\"ChromeOs\",\"islandPlatform\":\"Other\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.72.32\",\"chromiumVersion\":\"139.0.7258.129\",\"extensionVersion\":\"1.12546.7\",\"lastSeen\":\"2053-08-30T21:42:18.654321Z\",\"policyUpdateTime\":\"2053-07-22T05:36:49.123456Z\",\"diskEncrypted\":true,\"osUserName\":\"qauser\",\"status\":\"Suspicious\",\"internalIpAddress\":\"10.41.177.34\",\"externalIpAddress\":\"192.0.2.218\",\"osDomain\":\"\",\"osFirewallEnabled\":false,\"osScreenLockEnabled\":true,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"44:41:82:72:b5:9e | 45:36:be:ce:6b:2c | 24:84:68:70:d3:de\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":64,\"syncEnabled\":false,\"chassisType\":\"Mobile\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"Japan\",\"countryCode\":\"JP\",\"browserUpdateStatus\":\"PendingRelaunch\",\"isDefaultBrowser\":false,\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Desktop\",\"storageCapacity\":256,\"tenantId\":\"elastic-testing\",\"id\":\"89rst0uv-1w23-4x56-y78z-9ab01cde2345\",\"createdDate\":\"2053-08-15T09:47:31.234567Z\",\"updatedDate\":\"2053-08-30T21:42:18.659876Z\",\"windowsLicenseStatus\":\"NonGenuineGrace\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"machineId\":\"bM3yU8_1efH9I25QR7_LTZA6g4J\",\"machineName\":\"le48-95-2-626.latdrb.local\",\"machineModel\":\"VMware Virtual Platform\",\"serialNumber\":\"\",\"userName\":\"Xmivlb Yfrfm\",\"userId\":\"auth0|fgh3456i-j789-0klm-n123-op45qr678901\",\"email\":\"zpuuwd.odody@example.com\",\"osPlatform\":\"Igel\",\"islandPlatform\":\"Browser\",\"osVersion\":\"22.04\",\"browserVersion\":\"1.73.38\",\"chromiumVersion\":\"139.0.7258.132\",\"extensionVersion\":\"1.12547.5\",\"lastSeen\":\"2053-09-01T12:28:56.987654Z\",\"policyUpdateTime\":\"2053-08-19T22:14:35.654321Z\",\"diskEncrypted\":true,\"osUserName\":\"supportuser\",\"status\":\"Suspicious\",\"internalIpAddress\":\"10.20.127.179\",\"externalIpAddress\":\"198.51.100.74\",\"osDomain\":\"\",\"osFirewallEnabled\":true,\"osScreenLockEnabled\":true,\"isVirtualMachine\":true,\"browserName\":\"Island\",\"isArchived\":false,\"macAddresses\":\"98:25:55:00:d6:8e | 59:00:ac:ee:0f:2c | 32:30:41:91:c6:bb\",\"cpuModel\":\"Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz\",\"architecture\":\"x86_64\",\"ramSize\":96,\"syncEnabled\":true,\"chassisType\":\"Mobile\",\"osCodeName\":\"Ubuntu 22.04.5 LTS\",\"country\":\"Australia\",\"countryCode\":\"AU\",\"browserUpdateStatus\":\"UpToDate\",\"isDefaultBrowser\":true,\"manufacturer\":\"VMware, Inc.\",\"deviceType\":\"Desktop\",\"storageCapacity\":512,\"tenantId\":\"elastic-testing\",\"id\":\"67stu8vw-9x01-2y34-z567-89a01bcd2345\",\"createdDate\":\"2053-08-23T18:39:42.345678Z\",\"updatedDate\":\"2053-09-01T12:28:56.992345Z\",\"windowsLicenseStatus\":\"Notification\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"device-test-multinic-3\",\"machineId\":\"MCHNTEST003\",\"machineName\":\"ZBQQ-TYUP-61\",\"tenantId\":\"elastic-testing\",\"userName\":\"Ibyt Hmfl Rmtfa\",\"email\":\"jasv.ownff@example.com\",\"osPlatform\":\"Windows\",\"browserName\":\"Island\",\"status\":\"Active\",\"lastSeen\":\"2053-09-05T10:00:00.000Z\",\"internalIpAddress\":\"192.0.2.10 | Ethernet0/198.51.100.20 | Wi-Fi/203.0.113.30\",\"externalIpAddress\":\"203.0.113.200\",\"isArchived\":false}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"device-test-multinic-2\",\"machineId\":\"MCHNTEST002\",\"machineName\":\"GCJQ-POUY-80\",\"tenantId\":\"elastic-testing\",\"userName\":\"Salj Xgdm Qhw\",\"email\":\"japt.rzj@example.com\",\"osPlatform\":\"Linux\",\"browserName\":\"Island\",\"status\":\"Active\",\"lastSeen\":\"2053-09-05T10:01:00.000Z\",\"internalIpAddress\":\"192.0.2.11 | Ethernet0/198.51.100.21\",\"externalIpAddress\":\"203.0.113.201\",\"isArchived\":false}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"device-test-singlenic-adapter\",\"machineId\":\"MCHNTEST001\",\"machineName\":\"OEWM-RMVM-65\",\"tenantId\":\"elastic-testing\",\"userName\":\"Nelz Ipfj Sxd\",\"email\":\"ucso.zjc@example.com\",\"osPlatform\":\"MacOs\",\"browserName\":\"Island\",\"status\":\"Active\",\"lastSeen\":\"2053-09-05T10:02:00.000Z\",\"internalIpAddress\":\"192.0.2.12 | Ethernet0\",\"externalIpAddress\":\"203.0.113.202\",\"isArchived\":false}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "device",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-island_browser-device-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "island_browser",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,1030 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-04-03T22:32:14.322+02:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261200929Z",
+        "kind": "event",
+        "original": "2053-04-03 22:32:14.322 CEST [31225] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+        "timezone": "CEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "could not receive data from client: Connection reset by peer",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-03 22:32:14.322 CEST"
+        }
+      },
+      "process": {
+        "pid": 31225
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2053-04-03T22:32:14.322+11:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261204329Z",
+        "kind": "event",
+        "original": "2053-04-03 22:32:14.322 AEST [31225] postgres@mydb LOG:  unexpected EOF on client connection with an open transaction",
+        "timezone": "AEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "unexpected EOF on client connection with an open transaction",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-03 22:32:14.322 AEST"
+        }
+      },
+      "process": {
+        "pid": 31225
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2053-04-03T22:35:22.389-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261205269Z",
+        "kind": "event",
+        "original": "2053-04-03 22:35:22.389 EDT [3474] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+        "timezone": "EDT",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "could not receive data from client: Connection reset by peer",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-03 22:35:22.389 EDT"
+        }
+      },
+      "process": {
+        "pid": 3474
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2053-04-03T22:36:56.464+05:30",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261206029Z",
+        "kind": "event",
+        "original": "2053-04-03 22:36:56.464 IST [3525] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+        "timezone": "IST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "could not receive data from client: Connection reset by peer",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-03 22:36:56.464 IST"
+        }
+      },
+      "process": {
+        "pid": 3525
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2053-04-03T22:37:12.961Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261206889Z",
+        "kind": "event",
+        "original": "2053-04-03 22:37:12.961 UTC [3570] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "could not receive data from client: Connection reset by peer",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-03 22:37:12.961 UTC"
+        }
+      },
+      "process": {
+        "pid": 3570
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2053-04-07T21:05:28.549-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261208149Z",
+        "kind": "event",
+        "original": "2053-04-07 21:05:28.549 EST [21483] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+        "timezone": "EST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "could not receive data from client: Connection reset by peer",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-07 21:05:28.549 EST"
+        }
+      },
+      "process": {
+        "pid": 21483
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2053-04-07T21:09:41.345+05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261208909Z",
+        "kind": "event",
+        "original": "2053-04-07 21:09:41.345 PKT [21597] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+        "timezone": "PKT",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "could not receive data from client: Connection reset by peer",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-07 21:09:41.345 PKT"
+        }
+      },
+      "process": {
+        "pid": 21597
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2053-04-07T22:45:30.218-06:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261209559Z",
+        "kind": "event",
+        "original": "2053-04-07 22:45:30.218 MST [22603] postgres@mydb ERROR:  operator does not exist: jsonb @> at character 49",
+        "timezone": "MST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "ERROR"
+      },
+      "message": "operator does not exist: jsonb @> at character 49",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-07 22:45:30.218 MST"
+        }
+      },
+      "process": {
+        "pid": 22603
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2053-04-07T22:45:30.218-07:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261210259Z",
+        "kind": "event",
+        "original": "2053-04-07 22:45:30.218 PDT [22603] postgres@mydb HINT:  No operator matches the given name and argument type(s). You might need to add explicit type casts.",
+        "timezone": "PDT",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "HINT"
+      },
+      "message": "No operator matches the given name and argument type(s). You might need to add explicit type casts.",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-07 22:45:30.218 PDT"
+        }
+      },
+      "process": {
+        "pid": 22603
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2053-04-07T22:45:30.218+01:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261210849Z",
+        "kind": "event",
+        "original": "2053-04-07 22:45:30.218 WEST [22603] postgres@mydb STATEMENT:  SELECT id, user FROM users WHERE NOT user @> %s",
+        "timezone": "WEST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "STATEMENT"
+      },
+      "message": "SELECT id, user FROM users WHERE NOT user @> %s",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-07 22:45:30.218 WEST"
+        }
+      },
+      "process": {
+        "pid": 22603
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    },
+    {
+      "@timestamp": "2053-04-07T22:46:09.751+08:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.261211929Z",
+        "kind": "event",
+        "original": "2053-04-07 22:46:09.751 SST [22608] postgres@mydb ERROR:  column \"%s\" does not exist at character 52",
+        "timezone": "SST",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "ERROR"
+      },
+      "message": "column \"%s\" does not exist at character 52",
+      "postgresql": {
+        "log": {
+          "database": "mydb",
+          "timestamp": "2053-04-07 22:46:09.751 SST"
+        }
+      },
+      "process": {
+        "pid": 22608
+      },
+      "related": {
+        "user": [
+          "postgres"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "postgres"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-03 22:32:14.322 CEST [31225] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-03 22:32:14.322 AEST [31225] postgres@mydb LOG:  unexpected EOF on client connection with an open transaction",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-03 22:35:22.389 EDT [3474] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-03 22:36:56.464 IST [3525] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-03 22:37:12.961 UTC [3570] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-07 21:05:28.549 EST [21483] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-07 21:09:41.345 PKT [21597] postgres@mydb LOG:  could not receive data from client: Connection reset by peer",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-07 22:45:30.218 MST [22603] postgres@mydb ERROR:  operator does not exist: jsonb @> at character 49",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-07 22:45:30.218 PDT [22603] postgres@mydb HINT:  No operator matches the given name and argument type(s). You might need to add explicit type casts.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-07 22:45:30.218 WEST [22603] postgres@mydb STATEMENT:  SELECT id, user FROM users WHERE NOT user @> %s",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2053-04-07 22:46:09.751 SST [22608] postgres@mydb ERROR:  column \"%s\" does not exist at character 52",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-postgresql-log-default",
+    "event_count": 11,
+    "numeric_keyword_fields": [],
+    "package": "postgresql",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

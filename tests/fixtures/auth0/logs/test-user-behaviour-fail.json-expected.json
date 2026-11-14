@@ -1,0 +1,135 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-03T03:21:19.527Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "User/Behavioral - Failure",
+            "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+            "connection": "Username-Password-Authentication",
+            "date": "2049-11-03T03:21:19.527Z",
+            "description": "To: jfx@xcyx.com",
+            "details": {
+              "email_type": "verify_email",
+              "error": "the domain is blacklisted",
+              "to": "jfx@xcyx.com"
+            },
+            "type": "Failed to send email notification",
+            "type_id": "fn"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "failed-to-send-email-notification",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211103032124567106763774271397546463625120084656210",
+        "kind": "event",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "error"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T05:52:36.722Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "User/Behavioral - Failure",
+            "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+            "connection": "Username-Password-Authentication",
+            "date": "2049-11-03T05:52:36.722Z",
+            "description": "To: ceh@xcyx.com",
+            "details": {
+              "email_type": "verify_email",
+              "error": "the domain is blacklisted",
+              "to": "ceh@xcyx.com"
+            },
+            "type": "Failed to send email notification",
+            "type_id": "fn"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "failed-to-send-email-notification",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211103055241795106765770073734964239792488279179346",
+        "kind": "event",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "error"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "data": {
+          "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "",
+          "date": "2049-11-03T03:21:19.527Z",
+          "description": "To: jfx@xcyx.com",
+          "details": {
+            "email_type": "verify_email",
+            "error": "the domain is blacklisted",
+            "to": "jfx@xcyx.com"
+          },
+          "log_id": "90020211103032124567106763774271397546463625120084656210",
+          "type": "fn"
+        },
+        "log_id": "90020211103032124567106763774271397546463625120084656210"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "",
+          "date": "2049-11-03T05:52:36.722Z",
+          "description": "To: ceh@xcyx.com",
+          "details": {
+            "email_type": "verify_email",
+            "error": "the domain is blacklisted",
+            "to": "ceh@xcyx.com"
+          },
+          "log_id": "90020211103055241795106765770073734964239792488279179346",
+          "type": "fn"
+        },
+        "log_id": "90020211103055241795106765770073734964239792488279179346"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {
+      "event.ingested": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-auth0-logs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "auth0",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

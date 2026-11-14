@@ -1,0 +1,11 @@
+Feb 21 21:54:44 localhost sshd[3402]: Accepted publickey for vazmbnu from 10.169.91.248 port 63673 ssh2: RSA 39:33:99:e9:a0:dc:f2:33:a3:e5:72:3b:7c:3a:56:84
+Feb 23 00:13:35 localhost sshd[7483]: Accepted password for vazmbnu from 192.168.60.62 port 58803 ssh2
+Feb 21 21:56:12 localhost sshd[3430]: Invalid user test from 10.169.91.248
+Feb 20 08:35:22 gwfoa26 sshd[5774]: Failed password for root from 198.51.100.144 port 29160 ssh2
+Feb 21 23:35:33 localhost sudo: vazmbnu : TTY=pts/0 ; PWD=/home/vazmbnu ; USER=root ; COMMAND=/bin/ls
+Feb 19 15:30:04 gwfoa26 sshd[18406]: Did not receive identification string from 198.51.100.144
+Feb 23 00:08:48 localhost sudo: vazmbnu : TTY=pts/1 ; PWD=/home/vazmbnu ; USER=root ; COMMAND=/bin/cat /var/log/secure
+Feb 24 00:13:02 kyeehxb33 sudo:      tsg : user NOT in sudoers ; TTY=pts/1 ; PWD=/home/vazmbnu ; USER=root ; COMMAND=/bin/ls
+Feb 22 11:47:05 localhost groupadd[6991]: new group: name=apache, GID=48
+Feb 22 11:47:05 localhost useradd[6995]: new user: name=apache, UID=48, GID=48, home=/usr/share/httpd, shell=/sbin/nologin
+Feb 22 12:53:50 snbcigznj-mffqqlf sshd[10161]: error: PAM: User not known to the underlying authentication module for illegal user test from test.example.com

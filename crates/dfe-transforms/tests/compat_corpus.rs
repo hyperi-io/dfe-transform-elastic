@@ -3,23 +3,19 @@
 
 //! Compare every transform against what Elastic's own engine produced.
 //!
-//! `scripts/compat.py generate` runs raw source data through the real ingest
-//! pipelines in a throwaway Elasticsearch container and writes the confirmed
-//! documents to `testdata/compat/<source>/<data stream>/<fixture>/`. This test
-//! reads those files. It starts no container and needs no network.
-//!
-//! The corpus derives from Elastic-Licensed pipelines, so it is not committed.
-//! A missing corpus is reported and skipped -- unlike the committed fixtures,
-//! where absence is a failure.
+//! Every fixture under `tests/fixtures/` carries, beside it, the documents the
+//! real Elastic engine produced for it: `<fixture>-expected.json`, holding the
+//! documents sent, the documents returned, and the data stream and engine they
+//! came from. This test reads those files. It starts no container and needs no
+//! network, and a tree with none of them fails rather than passing empty.
 //!
 //! It carries TWO ratchets, and both are skipped under `DFE_COMPAT_ONLY`
 //! because a partial run cannot say whether another source went down:
 //!
-//! Both live in `tests/compat-baseline.json` and are written by
-//! `scripts/raise_baseline.py`: per-source field and event scores, and
-//! `never_ran`, how many scripts bound a pattern and never ran it. The static
-//! census and the coverage floor both count the CLAIM, so this run is the
-//! only thing that sees a pattern which never applies.
+//! Both live in `tests/compat-baseline.json`: per-source field and event
+//! scores, and `never_ran`, how many scripts bound a pattern and never ran it.
+//! The coverage floor counts the CLAIM, so this run is the only thing that
+//! sees a pattern which never applies.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
@@ -33,17 +29,9 @@ use rayon::prelude::*;
 use regex::Regex;
 use serde_json::Value;
 
-/// Where `compat.py` writes by default. `DFE_COMPAT_CORPUS` overrides it, the
-/// same variable the tool reads.
+/// The committed fixtures and their confirmed documents.
 fn corpus_root() -> PathBuf {
-    std::env::var_os("DFE_COMPAT_CORPUS").map_or_else(
-        || {
-            Path::new(env!("CARGO_MANIFEST_DIR"))
-                .join("../../testdata/compat")
-                .to_path_buf()
-        },
-        PathBuf::from,
-    )
+    dfe_runtime::testutil::fixtures()
 }
 
 /// The transform a capture belongs to.
@@ -1387,11 +1375,11 @@ struct Captured {
     data_stream: String,
     fixture: String,
     engine: String,
-    /// The integrations commit the pipelines were taken from. A score is only
-    /// comparable to another measured against the same one.
-    integrations_sha: String,
-    /// The pipeline `compat.py` installed. Anything not prefixed `compat-`
-    /// was written by an earlier tool and the capture is stale.
+    /// The pipeline commit the documents were confirmed against. A score is
+    /// only comparable to another measured against the same one.
+    pipelines_commit: String,
+    /// The pipeline the engine ran. Anything not prefixed `compat-` was
+    /// confirmed by an earlier tool and the capture is stale.
     entry_pipeline: String,
     /// Paths whose VALUE the capture declares nondeterministic, each with the
     /// pattern the observed value has to match instead.
@@ -1424,79 +1412,93 @@ impl Captured {
     }
 }
 
-fn read_ndjson(path: &Path) -> Vec<Value> {
-    let text = std::fs::read_to_string(path).unwrap_or_default();
-    text.lines()
-        .filter(|l| !l.trim().is_empty())
-        .filter_map(|l| serde_json::from_str(l).ok())
-        .collect()
+/// Every `-expected.json` under `dir`, however deep.
+fn expectation_files(dir: &Path, out: &mut Vec<PathBuf>) {
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            expectation_files(&path, out);
+        } else if path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .is_some_and(|n| n.ends_with("-expected.json"))
+        {
+            out.push(path);
+        }
+    }
 }
 
-/// Every captured fixture under the corpus root.
+/// Every confirmed fixture under the corpus root.
 fn captured() -> Vec<Captured> {
-    let root = corpus_root();
+    let mut files = Vec::new();
+    expectation_files(&corpus_root(), &mut files);
     let mut out = Vec::new();
-
-    let Ok(sources) = std::fs::read_dir(&root) else {
-        return out;
-    };
-    for source in sources.flatten().filter(|e| e.path().is_dir()) {
-        let source_name = source.file_name().to_string_lossy().into_owned();
-        let Ok(streams) = std::fs::read_dir(source.path()) else {
+    for path in files {
+        let Some(file) = std::fs::read_to_string(&path)
+            .ok()
+            .and_then(|t| serde_json::from_str::<Value>(&t).ok())
+        else {
             continue;
         };
-        for stream in streams.flatten().filter(|e| e.path().is_dir()) {
-            let stream_name = stream.file_name().to_string_lossy().into_owned();
-            let Ok(fixtures) = std::fs::read_dir(stream.path()) else {
-                continue;
-            };
-            for fixture in fixtures.flatten().filter(|e| e.path().is_dir()) {
-                let dir = fixture.path();
-                let input = read_ndjson(&dir.join("input.ndjson"));
-                let expected = read_ndjson(&dir.join("expected.ndjson"));
-                if input.is_empty() || expected.is_empty() {
-                    continue;
-                }
-                let meta: Value = std::fs::read_to_string(dir.join("meta.json"))
-                    .ok()
-                    .and_then(|t| serde_json::from_str(&t).ok())
-                    .unwrap_or(Value::Null);
-                out.push(Captured {
-                    source: source_name.clone(),
-                    data_stream: stream_name.clone(),
-                    fixture: fixture.file_name().to_string_lossy().into_owned(),
-                    engine: meta
-                        .get("elasticsearch_version")
-                        .and_then(Value::as_str)
-                        .unwrap_or("unknown")
-                        .to_string(),
-                    integrations_sha: meta
-                        .get("integrations_sha")
-                        .and_then(Value::as_str)
-                        .unwrap_or("unknown")
-                        .to_string(),
-                    entry_pipeline: meta
-                        .get("entry_pipeline")
-                        .and_then(Value::as_str)
-                        .unwrap_or_default()
-                        .to_string(),
-                    dynamic_fields: meta
-                        .get("dynamic_fields")
-                        .and_then(Value::as_object)
-                        .map(|declared| {
-                            declared
-                                .iter()
-                                .filter_map(|(path, pattern)| {
-                                    Some((path.clone(), pattern.as_str()?.to_string()))
-                                })
-                                .collect()
-                        })
-                        .unwrap_or_default(),
-                    input,
-                    expected,
-                });
-            }
+        let Some(meta) = file.get("meta") else {
+            continue;
+        };
+        let array = |key: &str| {
+            file.get(key)
+                .and_then(Value::as_array)
+                .cloned()
+                .unwrap_or_default()
+        };
+        let (input, expected) = (array("input"), array("expected"));
+        if input.is_empty() || expected.is_empty() {
+            continue;
         }
+        let text = |key: &str| {
+            meta.get(key)
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_string()
+        };
+        let fixture = path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .and_then(|n| n.strip_suffix("-expected.json"))
+            .and_then(|n| n.rsplit_once('.').map(|(stem, _)| stem))
+            .unwrap_or_default()
+            .to_string();
+        out.push(Captured {
+            source: text("package"),
+            data_stream: text("data_stream"),
+            fixture,
+            engine: meta
+                .get("elasticsearch_version")
+                .and_then(Value::as_str)
+                .unwrap_or("unknown")
+                .to_string(),
+            pipelines_commit: meta
+                .get("pipelines_commit")
+                .and_then(Value::as_str)
+                .unwrap_or("unknown")
+                .to_string(),
+            entry_pipeline: text("entry_pipeline"),
+            dynamic_fields: meta
+                .get("dynamic_fields")
+                .and_then(Value::as_object)
+                .map(|declared| {
+                    declared
+                        .iter()
+                        .filter_map(|(path, pattern)| {
+                            Some((path.clone(), pattern.as_str()?.to_string()))
+                        })
+                        .collect()
+                })
+                .unwrap_or_default(),
+            input,
+            expected,
+        });
     }
     out.sort_by(|a, b| (&a.source, &a.fixture).cmp(&(&b.source, &b.fixture)));
     out
@@ -1631,10 +1633,9 @@ fn events_unlocked(failures: &[BTreeSet<String>], top: usize) -> Vec<Blocker> {
 
 /// Report how each transform compares against Elastic's confirmed output.
 ///
-/// Reporting, not ratcheting: the corpus is regenerated against whichever
-/// engine and integrations commit the operator chose, so a number here is only
-/// comparable to another run over the same corpus. `scripts/compat.py audit`
-/// is where the tracked figures live.
+/// The per-source scores ratchet against `tests/compat-baseline.json`, which
+/// names the pipeline commit and engine version the documents were confirmed
+/// at.
 #[test]
 fn transforms_match_elastics_confirmed_output() {
     dfe_runtime::testutil::on_a_deep_stack(score_the_corpus);
@@ -1642,13 +1643,11 @@ fn transforms_match_elastics_confirmed_output() {
 
 fn score_the_corpus() {
     let fixtures = captured();
-    if fixtures.is_empty() {
-        println!(
-            "no compat corpus at {} -- run `python3 scripts/compat.py generate --all`",
-            corpus_root().display()
-        );
-        return;
-    }
+    assert!(
+        !fixtures.is_empty(),
+        "no confirmed documents under {} -- this test would pass vacuously",
+        corpus_root().display()
+    );
 
     // The corpus was captured with MaxMind's databases and ours are DB-IP
     // Lite, so every geoip-derived field is excluded from the comparison. The
@@ -1965,10 +1964,8 @@ const MATCHES_ANYTHING: [&str; 4] = [".*", "^.*$", "^.*", ".*$"];
 /// Whether a capture's `dynamic_fields` excuses one difference.
 ///
 /// Only a VALUE difference: a field we never wrote is a defect whatever the
-/// capture says about its value. `elastic-package` matches the pattern against
-/// the OBSERVED value alone and leaves it unanchored, which is Go's
-/// `regexp.MatchString` -- `scripts/compat.py` used `re.fullmatch` over both
-/// sides instead, so its three most-cited declarations never once fired.
+/// capture says about its value. The pattern is matched against the OBSERVED
+/// value alone and left unanchored, as Go's `regexp.MatchString` does.
 fn excused_as_dynamic(patterns: &BTreeMap<String, String>, field: &FieldDiff) -> bool {
     let DiffKind::Mismatch { actual, .. } = &field.kind else {
         return false;
@@ -2074,14 +2071,14 @@ fn print_and_check(
     }
 }
 
-/// The integrations commit and engine version the whole corpus was taken at.
+/// The pipeline commit and engine version the whole corpus was confirmed at.
 ///
 /// `None` when the captures disagree, which means the corpus was regenerated
 /// piecemeal and no single baseline describes it.
 fn provenance(fixtures: &[Captured]) -> Option<(String, String)> {
     let mut seen: Option<(String, String)> = None;
     for capture in fixtures {
-        let here = (capture.integrations_sha.clone(), capture.engine.clone());
+        let here = (capture.pipelines_commit.clone(), capture.engine.clone());
         match &seen {
             None => seen = Some(here),
             Some(first) if *first == here => {}
@@ -2094,21 +2091,19 @@ fn provenance(fixtures: &[Captured]) -> Option<(String, String)> {
 /// Per-source scores this corpus is expected to reach.
 #[derive(serde::Deserialize)]
 struct Baseline {
-    integrations_sha: String,
+    pipelines_commit: String,
     elasticsearch_version: String,
     /// Scripts that bound a pattern and never once ran it.
     ///
-    /// A pattern whose runner declines every event still MATCHES, so the static
-    /// census counts it as covered and `painless_coverage.rs` reads 100% --
-    /// both measure the CLAIM. Only this run sees whether it applied.
+    /// A pattern whose runner declines every event still MATCHES, so
+    /// `painless_coverage.rs` reads 100% -- it measures the CLAIM. Only this
+    /// run sees whether it applied.
     ///
     /// Not a defect count: a script can legitimately never run because the
-    /// corpus holds no event carrying its source field. Read alongside
-    /// `scripts/pattern_reach.py`, never on its own.
+    /// corpus holds no event carrying its source field.
     ///
-    /// Lives here rather than in a constant because it moves on every
-    /// improvement, and `scripts/raise_baseline.py` writes it. A number a
-    /// human retypes is a number that grows a changelog beside it.
+    /// Lives in the baseline rather than in a constant because it moves on
+    /// every improvement.
     never_ran: usize,
     sources: BTreeMap<String, Expected>,
 }
@@ -2131,26 +2126,20 @@ fn entry(score: Score) -> String {
 /// Set to acknowledge that this run scores a corpus the baseline cannot
 /// ratchet against, and to let it pass anyway.
 ///
-/// The legitimate case is a regeneration in progress: the corpus is being
-/// recaptured at a new `integrations_sha` and the baseline has not caught up.
-/// Whoever is doing that knows it; nobody else does.
+/// The legitimate case is a regeneration in progress: the documents are being
+/// confirmed at a new `pipelines_commit` and the baseline has not caught up.
+/// Whoever is doing that knows it, and nobody else does.
 const ALLOW_UNRATCHETED: &str = "DFE_COMPAT_ALLOW_UNRATCHETED";
 
 /// Fail if a source scores below what it scored when the baseline was written.
 ///
-/// Only asserted when the corpus on disk was captured at the same integrations
+/// Only asserted when the documents were confirmed at the same pipeline
 /// commit and engine version the baseline names. Anything else is a different
 /// measurement -- ratcheting one against the other would fail for the wrong
 /// reason -- so this REFUSES to run rather than scoring it.
 ///
-/// Refusing loudly is the point. Each of these was a `println!` and a `return`,
-/// which turned the whole parity gate into a printer while the run still
-/// exited 0, among thousands of per-fixture lines. Regenerate the corpus at a
-/// new sha, forget line 4 of the baseline, and parity is unenforced with no
-/// signal for as long as the drift lasts.
-///
-/// The corpus being ABSENT is a different thing and still skips, up in
-/// `score_the_corpus` -- it is gitignored, so a fresh clone has none.
+/// Refusing loudly is the point: a mismatch that only printed would leave
+/// parity unenforced while the run still exited 0.
 fn check_baseline(
     measured: &BTreeMap<String, Score>,
     provenance: &Option<(String, String)>,
@@ -2181,11 +2170,11 @@ fn check_baseline(
         refuse("the corpus mixes provenances, so regenerate it whole".to_string());
         return;
     };
-    if *sha != baseline.integrations_sha || *engine != baseline.elasticsearch_version {
+    if *sha != baseline.pipelines_commit || *engine != baseline.elasticsearch_version {
         refuse(format!(
             "corpus is {}/{engine}, baseline is {}/{}",
             &sha[..12.min(sha.len())],
-            &baseline.integrations_sha[..12.min(baseline.integrations_sha.len())],
+            &baseline.pipelines_commit[..12.min(baseline.pipelines_commit.len())],
             baseline.elasticsearch_version,
         ));
         return;
@@ -2196,8 +2185,7 @@ fn check_baseline(
         "{never} scripts bound a pattern and never ran it, up from {}. A pattern \
          claiming a script it cannot apply reads as covered everywhere except \
          here -- the painless coverage floor counts the CLAIM. Run with \
-         DFE_PAINLESS_UNHANDLED=<path> to see which, and \
-         `scripts/pattern_reach.py` to join them to call sites.",
+         DFE_PAINLESS_UNHANDLED=<path> to see which.",
         baseline.never_ran
     );
 
@@ -2263,13 +2251,11 @@ fn check_baseline(
     }
 
     // Marked rather than paste-ready: rewriting one of these accepts a score
-    // nothing was holding, so it goes through `raise_baseline.py --resize`,
-    // which the plain raise run will not do for you.
+    // nothing was holding, so it is a deliberate rewrite of the entry.
     if !resized.is_empty() {
         println!(
             "\nthese hold a different set of events than the baseline was written \
-             against -- rewrite with scripts/raise_baseline.py --resize once the new \
-             total is the intended one:"
+             against -- rewrite the entry once the new total is the intended one:"
         );
         for line in &resized {
             println!("{line}");
@@ -2281,7 +2267,7 @@ fn check_baseline(
     if !fresh.is_empty() {
         println!(
             "\nthese are scored and unwritten, so nothing holds them -- record \
-             their first score with scripts/raise_baseline.py --new:"
+             their first score in the baseline:"
         );
         for line in &fresh {
             println!("{line}");
@@ -2295,7 +2281,7 @@ fn check_baseline(
     );
 }
 
-/// Every package and data stream `compat.py` captures must reach a transform.
+/// Every package and data stream with confirmed documents must reach a transform.
 #[test]
 fn every_captured_source_is_a_registered_transform() {
     for capture in captured() {
@@ -2308,9 +2294,8 @@ fn every_captured_source_is_a_registered_transform() {
     }
 }
 
-/// The same check with no corpus on disk. The corpus is gitignored, so the
-/// test above is vacuous on a fresh clone and a newly declared source would be
-/// silently skipped rather than scored.
+/// The same check from the declaration side, so a newly declared source with no
+/// confirmed documents is named rather than skipped.
 #[test]
 fn every_declared_source_reaches_a_transform() {
     #[derive(serde::Deserialize)]

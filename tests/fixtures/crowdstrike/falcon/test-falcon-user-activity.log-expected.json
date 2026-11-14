@@ -1,0 +1,86 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-06-15T14:29:38.000Z",
+      "crowdstrike": {
+        "event": {
+          "Attributes": {
+            "detection_id": "DETECTID:ind:TESTID:456-123-654"
+          },
+          "AuditKeyValues": [
+            {
+              "Key": "detection_id",
+              "ValueString": "TESTVALUE:ind:STRING123:456-123-654"
+            }
+          ],
+          "ServiceName": "detections"
+        },
+        "metadata": {
+          "customerIDString": "123123abcd",
+          "eventType": "UserActivityAuditEvent",
+          "offset": 3,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "user_activity_audit_event",
+        "category": [
+          "iam"
+        ],
+        "created": "2051-06-15T16:06:52.400Z",
+        "kind": "event",
+        "original": "{\"metadata\":{\"customerIDString\":\"123123abcd\",\"offset\":3,\"eventType\":\"UserActivityAuditEvent\",\"eventCreationTime\":2570458012400,\"version\":\"1.0\"},\"event\":{\"UserId\":\"TESTUSERID\",\"UserIp\":\"192.0.2.87\",\"OperationName\":\"detection_update\",\"ServiceName\":\"detections\",\"AuditKeyValues\":[{\"Key\":\"detection_id\",\"ValueString\":\"TESTVALUE:ind:STRING123:456-123-654\"}],\"UTCTimestamp\":2570452178,\"Attributes\":{\"detection_id\":\"DETECTID:ind:TESTID:456-123-654\"}}}",
+        "type": [
+          "change"
+        ]
+      },
+      "message": "detection_update",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "TESTUSERID"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "TESTUSERID"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"metadata\":{\"customerIDString\":\"123123abcd\",\"offset\":3,\"eventType\":\"UserActivityAuditEvent\",\"eventCreationTime\":2570458012400,\"version\":\"1.0\"},\"event\":{\"UserId\":\"TESTUSERID\",\"UserIp\":\"192.0.2.87\",\"OperationName\":\"detection_update\",\"ServiceName\":\"detections\",\"AuditKeyValues\":[{\"Key\":\"detection_id\",\"ValueString\":\"TESTVALUE:ind:STRING123:456-123-654\"}],\"UTCTimestamp\":2570452178,\"Attributes\":{\"detection_id\":\"DETECTID:ind:TESTID:456-123-654\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "falcon",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-falcon-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

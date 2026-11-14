@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `darktrace`'s activity periods, transcribed.
+//! `darktrace`'s activity periods, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -40,7 +40,7 @@ fn duration_from_periods(event: &mut Event, params: &Value) {
     let _ = event.set("event.duration", Value::Array(durations));
 }
 
-/// Every darktrace script transcribed here.
+/// Every darktrace script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "b89fb8ee527fb568dad33d03f591aa62f83430cbddf6259dc24b7951d8bd4cdc",
     source: "darktrace",

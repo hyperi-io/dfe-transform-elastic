@@ -273,9 +273,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
-            // Source: def convert(def megabytes){\n    def bytes = (megabytes*1024*1024);\n    return bytes;\n}\nif(ctx.citrix_adc?.system?.memory?.size?.value!=null && ctx.citrix_adc?.system?.memory?.size?.value!=\"\"){\n    ctx.citrix_adc.system.memory.size.value = convert(ctx.citrix_adc.system.memory.size.value);\n}\nif(ctx.citrix_adc?.system?.memory?.usage?.value!=null && ctx.citrix_adc?.system?.memory?.usage?.value!=\"\"){\n    ctx.citrix_adc.system.memory.usage.value = convert(ctx.citrix_adc.system.memory.usage.value);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -283,8 +281,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\nif (o == null || o == \"\") {\n    return true;\n} else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n} else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n}\nreturn false;\n}\ndrop(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

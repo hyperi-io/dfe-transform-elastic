@@ -1,0 +1,57 @@
+{
+    "events": [
+        {
+            "@timestamp": "2051-08-15T14:12:32.6801945Z",
+            "event": {
+                "code": 8023,
+                "kind": "event",
+                "provider": "Microsoft-Windows-AppLocker"
+            },
+            "host": {
+                "name": "PNW2083648VY.local"
+            },
+            "log": {
+                "level": "Information"
+            },
+            "message": "Microsoft.BingNews was allowed to be installed.",
+            "winlog": {
+                "activity_id": "bcb1c4da-eb60-0546-a655-e2ff71ecf620",
+                "channel": "Microsoft-Windows-AppLocker/Packaged app-Deployment",
+                "computer_name": "PNW2083648VY.local",
+                "user_data": {
+                    "PolicyNameLength": "4",
+                    "PolicyName": "APPX",
+                    "RuleId": "{e4d99c78-ec2e-42ad-b8ab-fe30ead444fa}",
+                    "RuleNameLength": "39",
+                    "RuleName": "(Default Rule) All signed packaged apps",
+                    "RuleSddlLength": "81",
+                    "RuleSddl": "D:(XA;;FX;;;S-1-1-0;((Exists APPID://FQBN) \u0026\u0026 ((APPID://FQBN) \u003e= ({\"*\\*\\*\",0}))))",
+                    "TargetUser": "S-1-5-21-1133191089-1850170202-1535859923-200319",
+                    "TargetProcessId": "4584",
+                    "PackageLength": "18",
+                    "Package": "Microsoft.BingNews",
+                    "FqbnLength": "118",
+                    "Fqbn": "CN=MICROSOFT CORPORATION, O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US\\MICROSOFT.BINGNEWS\\APPX\\4.55.62231.00"
+                },
+                "event_id": "8023",
+                "level": "Information",
+                "opcode": "Info",
+                "process": {
+                    "pid": 4584,
+                    "thread": {
+                        "id": 26688
+                    }
+                },
+                "provider_guid": "bdab3bfe-2c0e-4a41-9880-fc98bb628a72",
+                "provider_name": "Microsoft-Windows-AppLocker",
+                "record_id": 6269,
+                "time_created": "2051-08-15T14:12:32.6801945Z",
+                "user": {
+                    "identifier": "S-1-5-21-1133191089-1850170202-1535859923-200319",
+                    "name": "Topsy"
+                },
+                "version": 0
+            }
+        }
+    ]
+}

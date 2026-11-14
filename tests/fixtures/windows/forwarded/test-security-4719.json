@@ -1,0 +1,64 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:05:53.569Z",
+            "agent": {
+                "ephemeral_id": "f2d2cf4a-b1d8-489f-9b6e-a7747207d30a",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "winlog": {
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "level": "information",
+                "time_created": "2047-11-07T15:22:57.655Z",
+                "event_data": {
+                    "SubjectLogonId": "0x3e7",
+                    "CategoryId": "%%8273",
+                    "SubcategoryId": "%%12552",
+                    "SubcategoryGuid": "{0cce9243-69ae-11d9-bed3-505054503030}",
+                    "AuditPolicyChanges": "%%8449, %%8451",
+                    "SubjectUserSid": "S-1-5-18",
+                    "SubjectUserName": "SOV-86VA2XP94FG$",
+                    "SubjectDomainName": "WLBEAT"
+                },
+                "activity_id": "{4cbf4f1b-2629-0694-186b-ac1d1449d742}",
+                "process": {
+                    "thread": {
+                        "id": 2944
+                    },
+                    "pid": 772
+                },
+                "channel": "Security",
+                "event_id": 4719,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "record_id": 17154,
+                "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "outcome": "success"
+            },
+            "event": {
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "kind": "event",
+                "code": 4719
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4719.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG.jwbfen.local"
+            }
+        }
+    ]
+}

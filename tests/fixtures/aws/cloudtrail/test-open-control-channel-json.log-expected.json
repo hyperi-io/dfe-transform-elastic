@@ -1,0 +1,167 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-10-30T14:14:10.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:sts::000000000000:assumed-role/da0-zjyxexad-gmmc/i-021987ab2dbf04585"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_category": "Data",
+          "event_type": "AwsApiCall",
+          "event_version": "1.10",
+          "flattened": {
+            "request_parameters": {
+              "agentVersion": "3.3.1142.0",
+              "messageSchemaVersion": "1.0",
+              "platformType": "linux",
+              "requestId": "303b2d21-e4ab-4c24-b83b-9d1e27467bce",
+              "requireAcknowledgement": false,
+              "targetId": "i-021987ab2dbf04585",
+              "tokenValue": "Value hidden due to security reasons."
+            }
+          },
+          "read_only": false,
+          "recipient_account_id": "000000000000",
+          "request_id": "16a6921f-5452-4cf7-a071-d14647652220",
+          "request_parameters": "{requireAcknowledgement=false, targetId=i-021987ab2dbf04585, requestId=303b2d21-e4ab-4c24-b83b-9d1e27467bce, messageSchemaVersion=1.0, platformType=linux, agentVersion=3.3.1142.0, tokenValue=Value hidden due to security reasons.}",
+          "resources": [
+            {
+              "account_id": "000000000000",
+              "arn": "arn:aws:ssmmessages:us-east-1:000000000000:control-channel/i-021987ab2dbf04585",
+              "type": "AWS::SSMMessages::ControlChannel"
+            }
+          ],
+          "user_identity": {
+            "access_key_id": "ACCESSKEY",
+            "arn": "arn:aws:sts::000000000000:assumed-role/da0-zjyxexad-gmmc/i-021987ab2dbf04585",
+            "session_context": {
+              "creation_date": "2052-10-30T14:08:29.000Z",
+              "mfa_authenticated": "false",
+              "session_issuer": {
+                "account_id": "000000000000",
+                "arn": "arn:aws:iam::000000000000:role/da0-zjyxexad-gmmc",
+                "principal_id": "PRINCIPALID",
+                "type": "Role"
+              }
+            },
+            "type": "AssumedRole"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "000000000000"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entity": {
+        "target": {
+          "id": [
+            "arn:aws:ssmmessages:us-east-1:000000000000:control-channel/i-021987ab2dbf04585"
+          ]
+        }
+      },
+      "event": {
+        "action": "OpenControlChannel",
+        "category": [
+          "session"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "1b6f1ff0-10df-42e4-be8b-37789a8020f1",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.10\",\"userIdentity\":{\"type\":\"AssumedRole\",\"principalId\":\"PRINCIPALID:i-021987ab2dbf04585\",\"arn\":\"arn:aws:sts::000000000000:assumed-role/da0-zjyxexad-gmmc/i-021987ab2dbf04585\",\"accountId\":\"000000000000\",\"accessKeyId\":\"ACCESSKEY\",\"sessionContext\":{\"sessionIssuer\":{\"type\":\"Role\",\"principalId\":\"PRINCIPALID\",\"arn\":\"arn:aws:iam::000000000000:role/da0-zjyxexad-gmmc\",\"accountId\":\"000000000000\",\"userName\":\"da0-zjyxexad-gmmc\"},\"attributes\":{\"creationDate\":\"2052-10-30T14:08:29Z\",\"mfaAuthenticated\":\"false\"},\"ec2RoleDelivery\":\"2.0\"}},\"eventTime\":\"2052-10-30T14:14:10Z\",\"eventSource\":\"ssm.amazonaws.com\",\"eventName\":\"OpenControlChannel\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"198.51.100.124\",\"userAgent\":\"Go-http-client/1.1\",\"requestParameters\":{\"targetId\":\"i-021987ab2dbf04585\",\"messageSchemaVersion\":\"1.0\",\"requestId\":\"303b2d21-e4ab-4c24-b83b-9d1e27467bce\",\"tokenValue\":\"Value hidden due to security reasons.\",\"agentVersion\":\"3.3.1142.0\",\"platformType\":\"linux\",\"requireAcknowledgement\":false},\"responseElements\":null,\"requestID\":\"16a6921f-5452-4cf7-a071-d14647652220\",\"eventID\":\"1b6f1ff0-10df-42e4-be8b-37789a8020f1\",\"readOnly\":false,\"resources\":[{\"accountId\":\"000000000000\",\"type\":\"AWS::SSMMessages::ControlChannel\",\"ARN\":\"arn:aws:ssmmessages:us-east-1:000000000000:control-channel/i-021987ab2dbf04585\"}],\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"000000000000\",\"eventCategory\":\"Data\",\"tlsDetails\":{\"clientProvidedHostHeader\":\"ssmmessages.us-east-1.amazonaws.com\"}}",
+        "outcome": "success",
+        "provider": "ssm.amazonaws.com",
+        "type": [
+          "start"
+        ]
+      },
+      "related": {
+        "entity": [
+          "arn:aws:iam::000000000000:role/da0-zjyxexad-gmmc",
+          "arn:aws:sts::000000000000:assumed-role/da0-zjyxexad-gmmc/i-021987ab2dbf04585",
+          "ACCESSKEY",
+          "arn:aws:ssmmessages:us-east-1:000000000000:control-channel/i-021987ab2dbf04585",
+          "da0-zjyxexad-gmmc"
+        ],
+        "user": [
+          "i-021987ab2dbf04585",
+          "PRINCIPALID:i-021987ab2dbf04585",
+          "da0-zjyxexad-gmmc"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "arn:aws:ssmmessages:us-east-1:000000000000:control-channel/i-021987ab2dbf04585"
+          ]
+        }
+      },
+      "tls": {
+        "client": {
+          "server_name": "ssmmessages.us-east-1.amazonaws.com"
+        }
+      },
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:sts::000000000000:assumed-role/da0-zjyxexad-gmmc/i-021987ab2dbf04585"
+          ]
+        },
+        "id": "PRINCIPALID:i-021987ab2dbf04585",
+        "name": "da0-zjyxexad-gmmc"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/1.1",
+        "version": "1.1"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.10\",\"userIdentity\":{\"type\":\"AssumedRole\",\"principalId\":\"PRINCIPALID:i-021987ab2dbf04585\",\"arn\":\"arn:aws:sts::000000000000:assumed-role/da0-zjyxexad-gmmc/i-021987ab2dbf04585\",\"accountId\":\"000000000000\",\"accessKeyId\":\"ACCESSKEY\",\"sessionContext\":{\"sessionIssuer\":{\"type\":\"Role\",\"principalId\":\"PRINCIPALID\",\"arn\":\"arn:aws:iam::000000000000:role/da0-zjyxexad-gmmc\",\"accountId\":\"000000000000\",\"userName\":\"da0-zjyxexad-gmmc\"},\"attributes\":{\"creationDate\":\"2052-10-30T14:08:29Z\",\"mfaAuthenticated\":\"false\"},\"ec2RoleDelivery\":\"2.0\"}},\"eventTime\":\"2052-10-30T14:14:10Z\",\"eventSource\":\"ssm.amazonaws.com\",\"eventName\":\"OpenControlChannel\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"198.51.100.124\",\"userAgent\":\"Go-http-client/1.1\",\"requestParameters\":{\"targetId\":\"i-021987ab2dbf04585\",\"messageSchemaVersion\":\"1.0\",\"requestId\":\"303b2d21-e4ab-4c24-b83b-9d1e27467bce\",\"tokenValue\":\"Value hidden due to security reasons.\",\"agentVersion\":\"3.3.1142.0\",\"platformType\":\"linux\",\"requireAcknowledgement\":false},\"responseElements\":null,\"requestID\":\"16a6921f-5452-4cf7-a071-d14647652220\",\"eventID\":\"1b6f1ff0-10df-42e4-be8b-37789a8020f1\",\"readOnly\":false,\"resources\":[{\"accountId\":\"000000000000\",\"type\":\"AWS::SSMMessages::ControlChannel\",\"ARN\":\"arn:aws:ssmmessages:us-east-1:000000000000:control-channel/i-021987ab2dbf04585\"}],\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"000000000000\",\"eventCategory\":\"Data\",\"tlsDetails\":{\"clientProvidedHostHeader\":\"ssmmessages.us-east-1.amazonaws.com\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

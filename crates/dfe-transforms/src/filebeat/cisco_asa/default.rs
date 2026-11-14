@@ -66,8 +66,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: if (ctx.log?.syslog?.priority != null) {\n  def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  facility['code'] = ctx.log.syslog.priority>>3;\n  ctx.log.syslog['facility'] = facility;\n}\n
+            // The pipeline's script, emitted as the runtime's equivalent
             syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
 
             let _cond = {
@@ -94,9 +93,7 @@ impl Transform for Default {
                     && event.has_value("_temp_.extracted_message")
             };
             if _cond {
-                // Painless script
-                // Source: ctx._temp_.full_message = ctx._temp_.message_prefix + ctx._temp_.extracted_message;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -142,9 +139,7 @@ impl Transform for Default {
                     && event.has_value("_conf.tz_map")
             };
             if _cond {
-                // Painless script
-                // Source: for (def item : ctx._conf.tz_map) {\n  if (item.tz_short == ctx._temp_.tz) {\n    ctx._temp_.tz = item.tz_long;\n    break;\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -9030,9 +9025,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx._temp_?.cisco?.dn_parts == null) {\n  return;\n}\ndef parts = [:];\nctx._temp_.cisco.dn_parts.forEach((k,v) -> {\n  if (params.containsKey(k)) {\n    parts[params[k]] = (v instanceof List) ? v : [v];   // `[v]` is a Painless list literal\n  } else {\n    return false;\n  }\n});\nctx._temp_.cisco.dn_parts = parts;\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -9116,9 +9109,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp_.orig_security") };
             if _cond {
-                // Painless script
-                // Source: boolean isEmpty(def value) {\n  return (value instanceof AbstractList? value.size() : value.length()) == 0;\n}\ndef appendOrCreate(Map dest, String[] path, def value) {\n for (int i=0; i<path.length-1; i++) {\n  dest = dest.computeIfAbsent(path[i], _ -> new HashMap());\n }\n String key = path[path.length - 1];\n def existing = dest.get(key);\n return existing == null?\n  dest.put(key, value)\n  : existing instanceof AbstractList?\n    existing.add(value)\n    : dest.put(key, new ArrayList([existing, value]));\n}\ndef msg = ctx._temp_.orig_security;\ndef counters = new HashMap();\ndef dest = new HashMap();\nctx._temp_.cisco['security'] = dest;\nfor (entry in msg.entrySet()) {\n def param = params.get(entry.getKey());\n if (param == null) {\n   continue;\n }\n param.getOrDefault('id', []).forEach( id -> counters[id] = 1 + counters.getOrDefault(id, 0) );\n if (!isEmpty(entry.getValue())) {\n  param.getOrDefault('ecs', []).forEach( field -> appendOrCreate(ctx, field.splitOnToken('.'), entry.getValue()) );\n  dest[param.target] = entry.getValue();\n }\n}\nif (ctx._temp_.cisco.message_id != \"\") return;\ndef best;\nfor (entry in counters.entrySet()) {\n if (best == null || best.getValue() < entry.getValue()) best = entry;\n}\nif (best != null) ctx._temp_.cisco.message_id = best.getKey();\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -9130,9 +9121,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: def getField(Map src, String[] path) {\n for (int i=0; i<path.length-1; i++) {\n  src = src.getOrDefault(path[i], null);\n  if (src == null || !(src instanceof Map)) {\n    return null;\n  }\n }\n return src[path[path.length-1]];\n}\ndef setField(Map dest, String[] path, def value) {\n for (int i=0; i<path.length-1; i++) {\n   dest = dest.computeIfAbsent(path[i], _ -> new HashMap());\n }\n dest[path[path.length-1]] = value;\n}\nfor (entry in params.entrySet()) {\n  def srcField = entry.getKey();\n  def param = entry.getValue();\n  String oldVal = getField(ctx, srcField.splitOnToken('.'));\n  if (oldVal == null) continue;\n  def newVal = param.map?.getOrDefault(oldVal.toLowerCase(), null);\n  if (newVal != null) {\n    def dstField = param.getOrDefault('target', srcField);\n    setField(ctx, dstField.splitOnToken('.'), newVal);\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -9185,9 +9174,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp_.duration_hms") };
             if _cond {
-                // Painless script
-                // Source: long parse_hms(String s) {\n    long cur = 0, total = 0;\n    for (char c: s.toCharArray()) {\n        if (c >= (char)'0' && c <= (char)'9') {\n            cur = (cur*10) + (long)c - (char)'0';\n        } else if (c == (char)':') {\n            total = (total + cur) * 60;\n            cur = 0;\n        }\n    }\n    return total + cur;\n}\nif (ctx?.event == null) {\n    ctx['event'] = new HashMap();\n}\nlong nanos = parse_hms(ctx._temp_.duration_hms) * 1000000000L;\nctx.event['duration'] = nanos;\nif (ctx['@timestamp'] != null) {\n    String end = ctx['@timestamp'];\n    ctx.event['end'] = end;\n    try {\n        ctx.event['start'] = ZonedDateTime.ofInstant(\n            Instant.parse(end).minusNanos(nanos),\n            ZoneOffset.UTC);\n    } catch (Exception e) {\n        // If timestamp parsing fails, just set duration\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -9464,9 +9451,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("network.transport") };
             if _cond {
-                // Painless script
-                // Source: def net = ctx.network; def iana = params[net.transport]; if (iana != null) {\n  net['iana_number'] = iana;\n  return;\n} def reverse = new HashMap(); def[] arr = new def[] { null }; for (entry in params.entrySet()) {\n  arr[0] = entry.getValue();\n  reverse.put(String.format(\"%d\", arr), entry.getKey());\n} def trans = reverse[net.transport]; if (trans != null) {\n  net['iana_number'] = net.transport;\n  net['transport'] = trans;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -10240,9 +10225,7 @@ impl Transform for Default {
                 event.rename("cisco.asa.list_id", "cisco.asa.rule_name")?;
             }
 
-            // Painless script
-            // Source: params.get(ctx.event.code)?.get(ctx._temp_.outcome)?.forEach((k, v) -> ctx.event[k] = v);
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -10253,9 +10236,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: params.get(ctx.event.code)?.forEach((k, v) -> ctx.event[k] = v);
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -10568,8 +10549,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

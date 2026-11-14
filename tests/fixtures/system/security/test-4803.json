@@ -1,0 +1,58 @@
+{
+    "events": [
+        {
+            "@timestamp": "2050-12-23T09:22:26.695Z",
+            "ecs": {
+                "version": "1.0.1"
+            },
+            "host": {
+                "name": "Wfmmax1"
+            },
+            "winlog": {
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "api": "wineventlog",
+                "record_id": 570463565,
+                "task": "Other Logon/Logoff Events",
+                "process": {
+                    "thread": {
+                        "id": 7784
+                    },
+                    "pid": 644
+                },
+                "event_data": {
+                    "TargetUserSid": "S-1-5-21-1280187532-2219128962-763009249-500",
+                    "TargetUserName": "administrator",
+                    "TargetDomainName": "TEST1",
+                    "TargetLogonId": "0x34f4b8e0",
+                    "SessionId": "4"
+                },
+                "computer_name": "Wfmmax1.xcyu5.local",
+                "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+                "channel": "Security",
+                "opcode": "Info",
+                "activity_id": "{457CCC6B-001D-0390-8CDB-9C769A12B328}",
+                "event_id": 4803
+            },
+            "event": {
+                "kind": "event",
+                "code": 4803,
+                "action": "Other Logon/Logoff Events",
+                "created": "2050-12-23T09:22:27.502Z"
+            },
+            "log": {
+                "level": "information"
+            },
+            "message": "The screen saver was dismissed.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-21-1280187532-2219128962-763009249-500\n\tAccount Name:\t\tadministrator\n\tAccount Domain:\t\tTEST1\n\tLogon ID:\t\t0x34F4B8E0\n\tSession ID:\t4",
+            "agent": {
+                "ephemeral_id": "c46ee12f-e5d0-42d8-a8d9-26d5314afa39",
+                "hostname": "Wfmmax1",
+                "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+                "version": "7.3.1",
+                "type": "winlogbeat"
+            }
+        }
+    ]
+}

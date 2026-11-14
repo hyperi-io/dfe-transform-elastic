@@ -1,0 +1,325 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-09-11T09:28:29.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_category": "Management",
+          "event_type": "AwsApiCall",
+          "event_version": "1.10",
+          "flattened": {
+            "request_parameters": {
+              "clientToken": "deaaab5f-221c-44c4-b9db-2d4503fddbdf",
+              "disableApiStop": false,
+              "disableApiTermination": false,
+              "instanceType": "t1.micro",
+              "instancesSet": {
+                "items": [
+                  {
+                    "imageId": "ami-00a4cd63f089232e0",
+                    "maxCount": 1,
+                    "minCount": 1
+                  }
+                ]
+              },
+              "monitoring": {
+                "enabled": false
+              },
+              "tagSpecificationSet": {
+                "items": [
+                  {
+                    "resourceType": "instance",
+                    "tags": [
+                      {
+                        "key": "name",
+                        "value": "cloudtrail-event-test"
+                      },
+                      {
+                        "key": "division",
+                        "value": "engineering"
+                      },
+                      {
+                        "key": "org",
+                        "value": "security"
+                      },
+                      {
+                        "key": "team",
+                        "value": "cloud"
+                      },
+                      {
+                        "key": "project",
+                        "value": "testproject"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "response_elements": {
+              "instancesSet": {
+                "items": [
+                  {
+                    "amiLaunchIndex": 0,
+                    "architecture": "x86_64",
+                    "capacityReservationSpecification": {
+                      "capacityReservationPreference": "open"
+                    },
+                    "clientToken": "deaaab5f-221c-44c4-b9db-2d4503fddbdf",
+                    "cpuOptions": {
+                      "coreCount": 1,
+                      "threadsPerCore": 1
+                    },
+                    "currentInstanceBootMode": "legacy-bios",
+                    "ebsOptimized": false,
+                    "enaSupport": true,
+                    "enclaveOptions": {
+                      "enabled": false
+                    },
+                    "groupSet": {
+                      "items": [
+                        {
+                          "groupId": "sg-4e483165",
+                          "groupName": "default"
+                        }
+                      ]
+                    },
+                    "hypervisor": "xen",
+                    "imageId": "ami-00a4cd63f089232e0",
+                    "instanceId": "i-0f2f135de18b555e3",
+                    "instanceState": {
+                      "code": 0,
+                      "name": "pending"
+                    },
+                    "instanceType": "t1.micro",
+                    "launchTime": 2609659708000,
+                    "maintenanceOptions": {
+                      "autoRecovery": "default"
+                    },
+                    "metadataOptions": {
+                      "httpEndpoint": "enabled",
+                      "httpProtocolIpv4": "enabled",
+                      "httpProtocolIpv6": "disabled",
+                      "httpPutResponseHopLimit": 1,
+                      "httpTokens": "optional",
+                      "instanceMetadataTags": "disabled",
+                      "state": "pending"
+                    },
+                    "monitoring": {
+                      "state": "disabled"
+                    },
+                    "networkInterfaceSet": {
+                      "items": [
+                        {
+                          "attachment": {
+                            "attachTime": 2609659708000,
+                            "attachmentId": "eni-attach-0b039fe5f25fca954",
+                            "deleteOnTermination": true,
+                            "deviceIndex": 0,
+                            "networkCardIndex": 0,
+                            "status": "attaching"
+                          },
+                          "groupSet": {
+                            "items": [
+                              {
+                                "groupId": "sg-4e483165",
+                                "groupName": "default"
+                              }
+                            ]
+                          },
+                          "interfaceType": "interface",
+                          "macAddress": "3e:cf:fc:4f:16:68",
+                          "networkInterfaceId": "eni-043138569d4a31e90",
+                          "ownerId": "1010101010101",
+                          "privateDnsName": "ww-547-15-14-00.db5.internal",
+                          "privateIpAddress": "172.24.151.193",
+                          "privateIpAddressesSet": {
+                            "item": [
+                              {
+                                "primary": true,
+                                "privateDnsName": "ww-547-15-14-00.db5.internal",
+                                "privateIpAddress": "172.24.151.193"
+                              }
+                            ]
+                          },
+                          "sourceDestCheck": true,
+                          "status": "in-use",
+                          "subnetId": "subnet-c4bf5e9b",
+                          "vpcId": "vpc-73d2e309"
+                        }
+                      ]
+                    },
+                    "placement": {
+                      "availabilityZone": "us-east-1d",
+                      "tenancy": "default"
+                    },
+                    "privateDnsName": "ww-547-15-14-00.db5.internal",
+                    "privateDnsNameOptions": {
+                      "enableResourceNameDnsAAAARecord": false,
+                      "enableResourceNameDnsARecord": false,
+                      "hostnameType": "ip-name"
+                    },
+                    "privateIpAddress": "172.24.151.193",
+                    "rootDeviceName": "/dev/xvda",
+                    "rootDeviceType": "ebs",
+                    "sourceDestCheck": true,
+                    "stateReason": {
+                      "code": "pending",
+                      "message": "pending"
+                    },
+                    "subnetId": "subnet-c4bf5e9b",
+                    "tagSet": {
+                      "items": [
+                        {
+                          "key": "team",
+                          "value": "cloud"
+                        },
+                        {
+                          "key": "division",
+                          "value": "engineering"
+                        },
+                        {
+                          "key": "org",
+                          "value": "security"
+                        },
+                        {
+                          "key": "name",
+                          "value": "cloudtrail-event-test"
+                        },
+                        {
+                          "key": "project",
+                          "value": "testproject"
+                        }
+                      ]
+                    },
+                    "virtualizationType": "hvm",
+                    "vpcId": "vpc-73d2e309"
+                  }
+                ]
+              },
+              "ownerId": "1010101010101",
+              "requestId": "dbb79a03-aea9-4e2f-9e84-c7aaf5e38906",
+              "reservationId": "r-0dfcd099dcab4e63a"
+            }
+          },
+          "read_only": false,
+          "recipient_account_id": "1010101010101",
+          "request_id": "dbb79a03-aea9-4e2f-9e84-c7aaf5e38906",
+          "request_parameters": "{instancesSet={items=[{imageId=ami-00a4cd63f089232e0, minCount=1, maxCount=1}]}, disableApiTermination=false, tagSpecificationSet={items=[{resourceType=instance, tags=[{value=cloudtrail-event-test, key=name}, {value=engineering, key=division}, {value=security, key=org}, {value=cloud, key=team}, {value=testproject, key=project}]}]}, clientToken=deaaab5f-221c-44c4-b9db-2d4503fddbdf, instanceType=t1.micro, monitoring={enabled=false}, disableApiStop=false}",
+          "response_elements": "{instancesSet={items=[{subnetId=subnet-c4bf5e9b, virtualizationType=hvm, capacityReservationSpecification={capacityReservationPreference=open}, amiLaunchIndex=0, enaSupport=true, currentInstanceBootMode=legacy-bios, sourceDestCheck=true, stateReason={code=pending, message=pending}, groupSet={items=[{groupName=default, groupId=sg-4e483165}]}, tagSet={items=[{value=cloud, key=team}, {value=engineering, key=division}, {value=security, key=org}, {value=cloudtrail-event-test, key=name}, {value=testproject, key=project}]}, instanceId=i-0f2f135de18b555e3, instanceState={code=0, name=pending}, maintenanceOptions={autoRecovery=default}, hypervisor=xen, vpcId=vpc-73d2e309, rootDeviceName=/dev/xvda, architecture=x86_64, ebsOptimized=false, imageId=ami-00a4cd63f089232e0, networkInterfaceSet={items=[{networkInterfaceId=eni-043138569d4a31e90, subnetId=subnet-c4bf5e9b, ownerId=1010101010101, sourceDestCheck=true, groupSet={items=[{groupName=default, groupId=sg-4e483165}]}, privateIpAddress=172.24.151.193, interfaceType=interface, macAddress=3e:cf:fc:4f:16:68, attachment={networkCardIndex=0, attachmentId=eni-attach-0b039fe5f25fca954, deleteOnTermination=true, deviceIndex=0, attachTime=2609659708000, status=attaching}, vpcId=vpc-73d2e309, privateDnsName=ww-547-15-14-00.db5.internal, privateIpAddressesSet={item=[{privateDnsName=ww-547-15-14-00.db5.internal, privateIpAddress=172.24.151.193, primary=true}]}, status=in-use}]}, clientToken=deaaab5f-221c-44c4-b9db-2d4503fddbdf, instanceType=t1.micro, cpuOptions={threadsPerCore=1, coreCount=1}, monitoring={state=disabled}, privateIpAddress=172.24.151.193, privateDnsNameOptions={enableResourceNameDnsAAAARecord=false, enableResourceNameDnsARecord=false, hostnameType=ip-name}, rootDeviceType=ebs, enclaveOptions={enabled=false}, launchTime=2609659708000, metadataOptions={instanceMetadataTags=disabled, httpPutResponseHopLimit=1, httpProtocolIpv4=enabled, httpProtocolIpv6=disabled, httpEndpoint=enabled, state=pending, httpTokens=optional}, privateDnsName=ww-547-15-14-00.db5.internal, placement={tenancy=default, availabilityZone=us-east-1d}}]}, reservationId=r-0dfcd099dcab4e63a, requestId=dbb79a03-aea9-4e2f-9e84-c7aaf5e38906, ownerId=1010101010101}",
+          "user_identity": {
+            "access_key_id": "ACCESS_KEY_EXAMPLE",
+            "arn": "arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "1010101010101"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "RunInstances",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "5e7ca9b5-516b-4672-a941-e273e03c0b9e",
+        "kind": "event",
+        "original": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"5e7ca9b5-516b-4672-a941-e273e03c0b9e\",\"eventName\":\"RunInstances\",\"eventSource\":\"ec2.amazonaws.com\",\"eventTime\":\"2052-09-11T09:28:29Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.10\",\"readOnly\":false,\"recipientAccountId\":\"1010101010101\",\"requestID\":\"dbb79a03-aea9-4e2f-9e84-c7aaf5e38906\",\"requestParameters\":{\"blockDeviceMapping\":{},\"clientToken\":\"deaaab5f-221c-44c4-b9db-2d4503fddbdf\",\"disableApiStop\":false,\"disableApiTermination\":false,\"instanceType\":\"t1.micro\",\"instancesSet\":{\"items\":[{\"imageId\":\"ami-00a4cd63f089232e0\",\"maxCount\":1,\"minCount\":1}]},\"monitoring\":{\"enabled\":false},\"tagSpecificationSet\":{\"items\":[{\"resourceType\":\"instance\",\"tags\":[{\"key\":\"name\",\"value\":\"cloudtrail-event-test\"},{\"key\":\"division\",\"value\":\"engineering\"},{\"key\":\"org\",\"value\":\"security\"},{\"key\":\"team\",\"value\":\"cloud\"},{\"key\":\"project\",\"value\":\"testproject\"}]}]}},\"responseElements\":{\"groupSet\":{},\"instancesSet\":{\"items\":[{\"amiLaunchIndex\":0,\"architecture\":\"x86_64\",\"blockDeviceMapping\":{},\"capacityReservationSpecification\":{\"capacityReservationPreference\":\"open\"},\"clientToken\":\"deaaab5f-221c-44c4-b9db-2d4503fddbdf\",\"cpuOptions\":{\"coreCount\":1,\"threadsPerCore\":1},\"currentInstanceBootMode\":\"legacy-bios\",\"ebsOptimized\":false,\"enaSupport\":true,\"enclaveOptions\":{\"enabled\":false},\"groupSet\":{\"items\":[{\"groupId\":\"sg-4e483165\",\"groupName\":\"default\"}]},\"hypervisor\":\"xen\",\"imageId\":\"ami-00a4cd63f089232e0\",\"instanceId\":\"i-0f2f135de18b555e3\",\"instanceState\":{\"code\":0,\"name\":\"pending\"},\"instanceType\":\"t1.micro\",\"launchTime\":2609659708000,\"maintenanceOptions\":{\"autoRecovery\":\"default\"},\"metadataOptions\":{\"httpEndpoint\":\"enabled\",\"httpProtocolIpv4\":\"enabled\",\"httpProtocolIpv6\":\"disabled\",\"httpPutResponseHopLimit\":1,\"httpTokens\":\"optional\",\"instanceMetadataTags\":\"disabled\",\"state\":\"pending\"},\"monitoring\":{\"state\":\"disabled\"},\"networkInterfaceSet\":{\"items\":[{\"attachment\":{\"attachTime\":2609659708000,\"attachmentId\":\"eni-attach-0b039fe5f25fca954\",\"deleteOnTermination\":true,\"deviceIndex\":0,\"networkCardIndex\":0,\"status\":\"attaching\"},\"groupSet\":{\"items\":[{\"groupId\":\"sg-4e483165\",\"groupName\":\"default\"}]},\"interfaceType\":\"interface\",\"ipv6AddressesSet\":{},\"macAddress\":\"3e:cf:fc:4f:16:68\",\"networkInterfaceId\":\"eni-043138569d4a31e90\",\"ownerId\":\"1010101010101\",\"privateDnsName\":\"ww-547-15-14-00.db5.internal\",\"privateIpAddress\":\"172.24.151.193\",\"privateIpAddressesSet\":{\"item\":[{\"primary\":true,\"privateDnsName\":\"ww-547-15-14-00.db5.internal\",\"privateIpAddress\":\"172.24.151.193\"}]},\"sourceDestCheck\":true,\"status\":\"in-use\",\"subnetId\":\"subnet-c4bf5e9b\",\"tagSet\":{},\"vpcId\":\"vpc-73d2e309\"}]},\"placement\":{\"availabilityZone\":\"us-east-1d\",\"tenancy\":\"default\"},\"privateDnsName\":\"ww-547-15-14-00.db5.internal\",\"privateDnsNameOptions\":{\"enableResourceNameDnsAAAARecord\":false,\"enableResourceNameDnsARecord\":false,\"hostnameType\":\"ip-name\"},\"privateIpAddress\":\"172.24.151.193\",\"productCodes\":{},\"rootDeviceName\":\"/dev/xvda\",\"rootDeviceType\":\"ebs\",\"sourceDestCheck\":true,\"stateReason\":{\"code\":\"pending\",\"message\":\"pending\"},\"subnetId\":\"subnet-c4bf5e9b\",\"tagSet\":{\"items\":[{\"key\":\"team\",\"value\":\"cloud\"},{\"key\":\"division\",\"value\":\"engineering\"},{\"key\":\"org\",\"value\":\"security\"},{\"key\":\"name\",\"value\":\"cloudtrail-event-test\"},{\"key\":\"project\",\"value\":\"testproject\"}]},\"virtualizationType\":\"hvm\",\"vpcId\":\"vpc-73d2e309\"}]},\"ownerId\":\"1010101010101\",\"requestId\":\"dbb79a03-aea9-4e2f-9e84-c7aaf5e38906\",\"reservationId\":\"r-0dfcd099dcab4e63a\"},\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"ec2.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"aws-cli/2.14.5 Python/3.11.6 Darwin/23.6.0 exec-env/grimoire_2ad13116-770a-4b81-8d14-a9422d0e9aed exe/x86_64 prompt/off command/ec2.run-instances\",\"userIdentity\":{\"accessKeyId\":\"ACCESS_KEY_EXAMPLE\",\"accountId\":\"1010101010101\",\"arn\":\"arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co\",\"principalId\":\"AIDA2IBR2EZTJMPOR52WV\",\"type\":\"IAMUser\",\"userName\":\"vdrydpuyfntdvy@apejtlc.co\"}}",
+        "outcome": "success",
+        "provider": "ec2.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "i-0f2f135de18b555e3",
+          "sg-4e483165",
+          "subnet-c4bf5e9b",
+          "vdrydpuyfntdvy@apejtlc.co",
+          "vpc-73d2e309",
+          "arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co",
+          "ACCESS_KEY_EXAMPLE",
+          "r-0dfcd099dcab4e63a",
+          "ami-00a4cd63f089232e0",
+          "eni-043138569d4a31e90"
+        ],
+        "user": [
+          "AIDA2IBR2EZTJMPOR52WV",
+          "vdrydpuyfntdvy@apejtlc.co"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "client": {
+          "server_name": "ec2.us-east-1.amazonaws.com"
+        },
+        "version": "1.3",
+        "version_protocol": "tls"
+      },
+      "user": {
+        "email": "vdrydpuyfntdvy@apejtlc.co",
+        "entity": {
+          "id": [
+            "arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co"
+          ]
+        },
+        "id": "AIDA2IBR2EZTJMPOR52WV",
+        "name": "vdrydpuyfntdvy@apejtlc.co"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/2.14.5 Python/3.11.6 Darwin/23.6.0 exec-env/grimoire_2ad13116-770a-4b81-8d14-a9422d0e9aed exe/x86_64 prompt/off command/ec2.run-instances",
+        "version": "2.14.5"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"5e7ca9b5-516b-4672-a941-e273e03c0b9e\",\"eventName\":\"RunInstances\",\"eventSource\":\"ec2.amazonaws.com\",\"eventTime\":\"2052-09-11T09:28:29Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.10\",\"readOnly\":false,\"recipientAccountId\":\"1010101010101\",\"requestID\":\"dbb79a03-aea9-4e2f-9e84-c7aaf5e38906\",\"requestParameters\":{\"blockDeviceMapping\":{},\"clientToken\":\"deaaab5f-221c-44c4-b9db-2d4503fddbdf\",\"disableApiStop\":false,\"disableApiTermination\":false,\"instanceType\":\"t1.micro\",\"instancesSet\":{\"items\":[{\"imageId\":\"ami-00a4cd63f089232e0\",\"maxCount\":1,\"minCount\":1}]},\"monitoring\":{\"enabled\":false},\"tagSpecificationSet\":{\"items\":[{\"resourceType\":\"instance\",\"tags\":[{\"key\":\"name\",\"value\":\"cloudtrail-event-test\"},{\"key\":\"division\",\"value\":\"engineering\"},{\"key\":\"org\",\"value\":\"security\"},{\"key\":\"team\",\"value\":\"cloud\"},{\"key\":\"project\",\"value\":\"testproject\"}]}]}},\"responseElements\":{\"groupSet\":{},\"instancesSet\":{\"items\":[{\"amiLaunchIndex\":0,\"architecture\":\"x86_64\",\"blockDeviceMapping\":{},\"capacityReservationSpecification\":{\"capacityReservationPreference\":\"open\"},\"clientToken\":\"deaaab5f-221c-44c4-b9db-2d4503fddbdf\",\"cpuOptions\":{\"coreCount\":1,\"threadsPerCore\":1},\"currentInstanceBootMode\":\"legacy-bios\",\"ebsOptimized\":false,\"enaSupport\":true,\"enclaveOptions\":{\"enabled\":false},\"groupSet\":{\"items\":[{\"groupId\":\"sg-4e483165\",\"groupName\":\"default\"}]},\"hypervisor\":\"xen\",\"imageId\":\"ami-00a4cd63f089232e0\",\"instanceId\":\"i-0f2f135de18b555e3\",\"instanceState\":{\"code\":0,\"name\":\"pending\"},\"instanceType\":\"t1.micro\",\"launchTime\":2609659708000,\"maintenanceOptions\":{\"autoRecovery\":\"default\"},\"metadataOptions\":{\"httpEndpoint\":\"enabled\",\"httpProtocolIpv4\":\"enabled\",\"httpProtocolIpv6\":\"disabled\",\"httpPutResponseHopLimit\":1,\"httpTokens\":\"optional\",\"instanceMetadataTags\":\"disabled\",\"state\":\"pending\"},\"monitoring\":{\"state\":\"disabled\"},\"networkInterfaceSet\":{\"items\":[{\"attachment\":{\"attachTime\":2609659708000,\"attachmentId\":\"eni-attach-0b039fe5f25fca954\",\"deleteOnTermination\":true,\"deviceIndex\":0,\"networkCardIndex\":0,\"status\":\"attaching\"},\"groupSet\":{\"items\":[{\"groupId\":\"sg-4e483165\",\"groupName\":\"default\"}]},\"interfaceType\":\"interface\",\"ipv6AddressesSet\":{},\"macAddress\":\"3e:cf:fc:4f:16:68\",\"networkInterfaceId\":\"eni-043138569d4a31e90\",\"ownerId\":\"1010101010101\",\"privateDnsName\":\"ww-547-15-14-00.db5.internal\",\"privateIpAddress\":\"172.24.151.193\",\"privateIpAddressesSet\":{\"item\":[{\"primary\":true,\"privateDnsName\":\"ww-547-15-14-00.db5.internal\",\"privateIpAddress\":\"172.24.151.193\"}]},\"sourceDestCheck\":true,\"status\":\"in-use\",\"subnetId\":\"subnet-c4bf5e9b\",\"tagSet\":{},\"vpcId\":\"vpc-73d2e309\"}]},\"placement\":{\"availabilityZone\":\"us-east-1d\",\"tenancy\":\"default\"},\"privateDnsName\":\"ww-547-15-14-00.db5.internal\",\"privateDnsNameOptions\":{\"enableResourceNameDnsAAAARecord\":false,\"enableResourceNameDnsARecord\":false,\"hostnameType\":\"ip-name\"},\"privateIpAddress\":\"172.24.151.193\",\"productCodes\":{},\"rootDeviceName\":\"/dev/xvda\",\"rootDeviceType\":\"ebs\",\"sourceDestCheck\":true,\"stateReason\":{\"code\":\"pending\",\"message\":\"pending\"},\"subnetId\":\"subnet-c4bf5e9b\",\"tagSet\":{\"items\":[{\"key\":\"team\",\"value\":\"cloud\"},{\"key\":\"division\",\"value\":\"engineering\"},{\"key\":\"org\",\"value\":\"security\"},{\"key\":\"name\",\"value\":\"cloudtrail-event-test\"},{\"key\":\"project\",\"value\":\"testproject\"}]},\"virtualizationType\":\"hvm\",\"vpcId\":\"vpc-73d2e309\"}]},\"ownerId\":\"1010101010101\",\"requestId\":\"dbb79a03-aea9-4e2f-9e84-c7aaf5e38906\",\"reservationId\":\"r-0dfcd099dcab4e63a\"},\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"ec2.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"aws-cli/2.14.5 Python/3.11.6 Darwin/23.6.0 exec-env/grimoire_2ad13116-770a-4b81-8d14-a9422d0e9aed exe/x86_64 prompt/off command/ec2.run-instances\",\"userIdentity\":{\"accessKeyId\":\"ACCESS_KEY_EXAMPLE\",\"accountId\":\"1010101010101\",\"arn\":\"arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co\",\"principalId\":\"AIDA2IBR2EZTJMPOR52WV\",\"type\":\"IAMUser\",\"userName\":\"vdrydpuyfntdvy@apejtlc.co\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

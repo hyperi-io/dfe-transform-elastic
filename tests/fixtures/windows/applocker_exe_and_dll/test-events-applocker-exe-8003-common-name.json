@@ -1,0 +1,185 @@
+{
+    "events": [
+        {
+            "@timestamp": "2054-02-01T21:14:05.1298236Z",
+            "event": {
+                "code": 8003,
+                "kind": "event",
+                "provider": "Microsoft-Windows-AppLocker"
+            },
+            "host": {
+                "name": "puowtdib"
+            },
+            "log": {
+                "level": "Warning"
+            },
+            "message": "%PROGRAMFILES%\\WINDOWSAPPS\\DOLBYLABORATORIES.DOLBYACCESSOEM_3.27.6700.0_X64__RZ1TEBTTYB220\\DAXRPCCLIENT.DLL was allowed to run but would have been prevented from running if the AppLocker policy were enforced.",
+            "winlog": {
+                "channel": "Microsoft-Windows-AppLocker/EXE and DLL",
+                "computer_name": "puowtdib",
+                "user_data": {
+                    "PolicyNameLength": 3,
+                    "PolicyName": "DLL",
+                    "RuleId": "00000000-0000-0000-0000-000000000000",
+                    "RuleNameLength": 1,
+                    "RuleName": "-",
+                    "RuleSddlLength": 1,
+                    "RuleSddl": "-",
+                    "TargetUser": "S-0-00-0-0000000000-0000000000-0000000000-0000000000",
+                    "TargetProcessId": 14596,
+                    "FilePathLength": 107,
+                    "FilePath": "%PROGRAMFILES%\\WINDOWSAPPS\\DOLBYLABORATORIES.DOLBYACCESSOEM_3.27.6700.0_X64__RZ1TEBTTYB220\\DAXRPCCLIENT.DLL",
+                    "FileHashLength": 32,
+                    "FileHash": "8E515D8115E50D14B087679B79FFA848763F1D0C90B9CF8B955B04EED5A6F657",
+                    "FqbnLength": 50,
+                    "Fqbn": "CN=77F33759-0F17-434E-B351-E140133F1E0A\\\\\\0.0.0.00",
+                    "TargetLogonId": "0x1a8cca",
+                    "FullFilePathLength": 109,
+                    "FullFilePath": "C:\\Program Files\\WindowsApps\\DolbyLaboratories.DolbyAccessOEM_3.27.6700.0_x64__rz1tebttyb220\\DAXRPCClient.dll"
+                },
+                "event_id": "8003",
+                "level": "Warning",
+                "opcode": "Info",
+                "process": {
+                    "pid": 14596,
+                    "thread": {
+                        "id": 4824
+                    }
+                },
+                "provider_guid": "bdab3bfe-2c0e-4a41-9880-fc98bb628a72",
+                "provider_name": "Microsoft-Windows-AppLocker",
+                "record_id": 10621268,
+                "time_created": "2054-02-01T21:14:05.1298236Z",
+                "user": {
+                    "domain": "DOMAIN",
+                    "identifier": "S-0-00-0-0000000000-0000000000-0000000000-0000000000",
+                    "type": "User",
+                    "name": "username"
+                },
+                "version": 0
+            }
+        },
+        {
+            "@timestamp": "2054-02-01T21:14:05.1298236Z",
+            "event": {
+                "code": 8003,
+                "kind": "event",
+                "provider": "Microsoft-Windows-AppLocker"
+            },
+            "host": {
+                "name": "puowtdib"
+            },
+            "log": {
+                "level": "Warning"
+            },
+            "message": "%PROGRAMFILES%\\WINDOWSAPPS\\APPUP.INTELARCSOFTWARE_25.50.2012.0_X64__8J3EQ9EME6CTT\\VFS\\PROGRAMFILESX64\\INTEL\\INTEL GRAPHICS SOFTWARE\\INTELGRAPHICSSOFTWARE.SERVICE.API.DLL was allowed to run but would have been prevented from running if the AppLocker policy were enforced.",
+            "winlog": {
+                "channel": "Microsoft-Windows-AppLocker/EXE and DLL",
+                "computer_name": "puowtdib",
+                "user_data": {
+                    "PolicyNameLength": 3,
+                    "PolicyName": "DLL",
+                    "RuleId": "00000000-0000-0000-0000-000000000000",
+                    "RuleNameLength": 1,
+                    "RuleName": "-",
+                    "RuleSddlLength": 1,
+                    "RuleSddl": "-",
+                    "TargetUser": "S-0-00-0-0000000000-0000000000-0000000000-0000000000",
+                    "TargetProcessId": 12004,
+                    "FilePathLength": 169,
+                    "FilePath": "%PROGRAMFILES%\\WINDOWSAPPS\\APPUP.INTELARCSOFTWARE_25.50.2012.0_X64__8J3EQ9EME6CTT\\VFS\\PROGRAMFILESX64\\INTEL\\INTEL GRAPHICS SOFTWARE\\INTELGRAPHICSSOFTWARE.SERVICE.API.DLL",
+                    "FileHashLength": 32,
+                    "FileHash": "10D5F1E4AD33FC14275348190D0554647D9A7D873EE8C0CB62F0CCABA8CB27B9",
+                    "FqbnLength": 50,
+                    "Fqbn": "CN=AC01B6BD-6C58-4653-86F8-AA35A9A0EEB5\\INTEL GRAPHICS SOFTWARE\\INTELGRAPHICSSOFTWARE.SERVICE.API.DLL\\25.50.2012.05",
+                    "TargetLogonId": "0x1a8cca",
+                    "FullFilePathLength": 171,
+                    "FullFilePath": "C:\\Program Files\\WindowsApps\\AppUp.IntelArcSoftware_25.50.2012.0_x64__8j3eq9eme6ctt\\VFS\\ProgramFilesX64\\Intel\\Intel Graphics Software\\IntelGraphicsSoftware.Service.API.dll"
+                },
+                "event_id": "8003",
+                "level": "Warning",
+                "opcode": "Info",
+                "process": {
+                    "pid": 12004,
+                    "thread": {
+                        "id": 12000
+                    }
+                },
+                "provider_guid": "bdab3bfe-2c0e-4a41-9880-fc98bb628a72",
+                "provider_name": "Microsoft-Windows-AppLocker",
+                "record_id": 58191916,
+                "time_created": "2054-02-01T21:14:05.1298236Z",
+                "user": {
+                    "domain": "DOMAIN",
+                    "identifier": "S-0-00-0-0000000000-0000000000-0000000000-0000000000",
+                    "type": "User",
+                    "name": "username"
+                },
+                "version": 0
+            }
+        },
+        {
+            "@timestamp": "2054-02-01T21:14:05.1298236Z",
+            "event": {
+                "code": 8003,
+                "kind": "event",
+                "provider": "Microsoft-Windows-AppLocker"
+            },
+            "host": {
+                "name": "puowtdib"
+            },
+            "user": {
+                "name": "username",
+                "id": "S-0-00-0-0000000000-0000000000-0000000000-0000000000"
+            },
+            "log": {
+                "level": "Warning"
+            },
+            "message": "%PROGRAMFILES%\\WINDOWSAPPS\\DOLBYLABORATORIES.DOLBYACCESSOEM_3.27.6700.0_X64__RZ1TEBTTYB220\\DOLBYACCESSOEM.DLL was allowed to run but would have been prevented from running if the AppLocker policy were enforced.",
+            "winlog": {
+                "channel": "Microsoft-Windows-AppLocker/EXE and DLL",
+                "computer_name": "puowtdib",
+                "user_data": {
+                    "FqbnLength": 82,
+                    "FilePath": "%PROGRAMFILES%\\WINDOWSAPPS\\DOLBYLABORATORIES.DOLBYACCESSOEM_3.27.6700.0_X64__RZ1TEBTTYB220\\DOLBYACCESSOEM.DLL",
+                    "FullFilePathLength": 111,
+                    "FullFilePath": "C:\\Program Files\\WindowsApps\\DolbyLaboratories.DolbyAccessOEM_3.27.6700.0_x64__rz1tebttyb220\\DolbyAccessOEM.dll",
+                    "RuleId": "{00000000-0000-0000-0000-000000000000}",
+                    "PolicyNameLength": 16,
+                    "RuleSddl": "-",
+                    "TargetUser": "S-0-00-0-0000000000-0000000000-0000000000-0000000000",
+                    "TargetLogonId": "0x125208",
+                    "FilePathLength": 109,
+                    "TargetProcessId": 6168,
+                    "Fqbn": "CN=77F33759-0F17-434E-B351-E140133F1E0A\\DOLBYACCESSOEM\\DOLBYACCESSOEM.EXE\\1.0.0.00",
+                    "RuleSddlLength": 1,
+                    "FileHashLength": 32,
+                    "FileHash": "6B98FAEC6F96F9BF82D70C15FCFCE13F9F0499FCFD209B66801AC7B272632A64",
+                    "PolicyName": "MANAGEDINSTALLER",
+                    "RuleNameLength": 1,
+                    "RuleName": "-",
+                    "xml_name": "RuleAndFileData"
+                },
+                "event_id": "8003",
+                "level": "Warning",
+                "opcode": "Info",
+                "process": {
+                    "pid": 6168,
+                    "thread": {
+                        "id": 10152
+                    }
+                },
+                "provider_guid": "bdab3bfe-2c0e-4a41-9880-fc98bb628a72",
+                "provider_name": "Microsoft-Windows-AppLocker",
+                "record_id": 18250961,
+                "time_created": "2054-02-01T21:14:05.1298236Z",
+                "user": {
+                    "identifier": "S-0-00-0-0000000000-0000000000-0000000000-0000000000",
+                    "domain": "DOMAIN",
+                    "type": "User"
+                },
+                "version": 0
+            }
+        }
+    ]
+}

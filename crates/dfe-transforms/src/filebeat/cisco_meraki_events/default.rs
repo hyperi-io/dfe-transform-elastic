@@ -95,9 +95,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.alertTypeId") };
             if _cond {
-                // Painless script
-                // Source: def alertTypeId = ctx.json.alertTypeId;\ndef eventMap = params.get('eventmap');\ndef eventData = eventMap.get(alertTypeId);\nctx.event.action = ctx.json.alertType;\nif (eventData == null) {\n  // Unclassified events\n  // - geofencing_in, critical_temperature\n  // - gateway_to_repeater, mi_alert\n  // - motion_alert, usage_alert\n  // - new_splash_signup, rps_base_supply_up\n  // - rps_backup, vpn_connectivity_change\n  return;\n}\ndef eventCategory = eventData.get('category');\nif (eventCategory != null) {\n  for (def c : eventCategory) {\n    ctx.event.category.add(c);\n  }\n}\ndef eventType = eventData.get('type');\nif (eventType != null) {\n  for (def t : eventType) {\n    ctx.event.type.add(t);\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -124,8 +122,7 @@ impl Transform for Default {
             event.remove("_tmp");
             event.remove("_conf");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -3,8 +3,9 @@
 **Project:** dfe-transform-elastic
 **Purpose:** Rust-optimised transform service for Elastic Stack data (Beats + Elastic Agent) ingested over Kafka or a direct gRPC push
 
-Converts Elastic ingest pipeline logic (Painless scripts + processors) into compiled Rust
-transform functions, one module per source. There is no interpreter, no scripting VM and no
+Each transform reimplements one source's ingest pipeline from the ground up, as optimised parser
+tree objects, with grok and regex kept for the patterns the parsers do not cover. Where a source has fixtures, [compat](compat.md)
+scores its output against the real Elastic engine's. One module per source. There is no interpreter, no scripting VM and no
 plugin system: the service resolves a source name to a compiled transform at startup, and the
 hot path carries no dynamic dispatch per event.
 
@@ -83,7 +84,7 @@ flowchart TD
 | `dfe-transform-elastic` | Binary + Library | The service, module by module in the table below |
 | `dfe-transforms` | Library | Transform modules per data source (`filebeat::<source>::<pipeline>`) |
 | `dfe-runtime` | Library | Grok caching, enrichment, `codegen_api`, the Transform trait, and the prelude |
-| `dfe-painless` | Library | Painless pattern matching: the `known_patterns` ladder, `plan`, `params`, `patterns.lock`, and `bespoke/` -- one module per source holding the scripts transcribed by hand, resolved by script hash ahead of every matcher |
+| `dfe-painless` | Library | Painless pattern matching: the `known_patterns` ladder, `plan`, `params`, `patterns.lock`, and `bespoke/` -- one module per source holding hand-written equivalents of its scripts, resolved by script hash ahead of every matcher |
 | `dfe-core` | Library | `Event`, error types, date formats, syslog priority, the regex cache |
 | `dfe-parse` | Library | Zero-copy parsers replacing grok/regex patterns |
 

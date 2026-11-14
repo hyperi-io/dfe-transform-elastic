@@ -1,0 +1,895 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-06-08T16:54:58.849Z",
+      "azure": {
+        "firewall": {
+          "action": "Deny",
+          "category": "AzureFirewallNetworkRule",
+          "icmp": {
+            "request": {
+              "code": "8"
+            }
+          },
+          "operation_name": "AzureFirewallNetworkRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"ICMP Type=8 request from 192.168.96.209 to 198.51.100.144. Action: Deny. \"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T16:54:58.8492560Z\"}",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "network": {
+        "transport": "icmp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T13:27:16.951Z",
+      "azure": {
+        "firewall": {
+          "action": "Allow",
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallNetworkRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"UDP request from 192.168.96.209:51106 to 198.51.100.144:53. Action: Allow. \"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T13:27:16.9515590Z\"}",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "network": {
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209",
+        "port": 51106
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T16:51:27.869Z",
+      "azure": {
+        "firewall": {
+          "action": "Deny",
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallNetworkRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 1688
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:49680 to 198.51.100.144:1688. Action: Deny. \"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T16:51:27.8692050Z\"}",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209",
+        "port": 49680
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:56.452Z",
+      "azure": {
+        "firewall": {
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallNatRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "nat": {
+          "ip": "10.178.13.239",
+          "port": 3389
+        },
+        "port": 3389
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNatRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:50306 to 198.51.100.144:3389 was DNAT'ed to 10.178.13.239:3389\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "198.51.100.144",
+          "10.178.13.239"
+        ]
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209",
+        "port": 50306
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:56.452Z",
+      "azure": {
+        "firewall": {
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallNatRuleLog",
+          "policy": "policy-01",
+          "rule_collection_group": "DefaultDnatRuleCollectionGroup"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "nat": {
+          "ip": "10.178.13.239",
+          "port": 3389
+        },
+        "port": 3389
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNatRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:50306 to 198.51.100.144:3389 was DNAT'ed to 10.178.13.239:3389. Policy: policy-01. Rule Collection Group: DefaultDnatRuleCollectionGroup. Rule Collection: DNAT. Rule: rule\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "198.51.100.144",
+          "10.178.13.239"
+        ]
+      },
+      "rule": {
+        "name": "rule",
+        "ruleset": "DNAT"
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209",
+        "port": 50306
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:56.452Z",
+      "azure": {
+        "firewall": {
+          "action": "drop",
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallNetworkRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:51890 to 192.0.2.87:443. Action: drop. Signature: 2028816. IDS: JA3 Hash - [Ccnma.ch] Possible Tofsee. Priority: 3. Classification: Unknown Traffic\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+        "risk_score": 3,
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "category": "Unknown Traffic",
+        "id": "2028816",
+        "name": "JA3 Hash - [Ccnma.ch] Possible Tofsee"
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209",
+        "port": 51890
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:56.452Z",
+      "azure": {
+        "firewall": {
+          "action": "alert",
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallNetworkRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 1521
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:54854 to 192.0.2.87:1521. Action: alert. Signature: 2102649. IDS: SQL service_name buffer overflow attempt. Priority: 1. Classification: Attempted User Privilege Gain\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+        "risk_score": 1,
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "category": "Attempted User Privilege Gain",
+        "id": "2102649",
+        "name": "SQL service_name buffer overflow attempt"
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209",
+        "port": 54854
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:56.452Z",
+      "azure": {
+        "firewall": {
+          "action": "Deny",
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallNetworkRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "qcoh.uaf5e.blcymnskwrg.com",
+        "domain": "qcoh.uaf5e.blcymnskwrg.com",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"HTTP request from 192.168.96.209:54314 to qcoh.uaf5e.blcymnskwrg.com:80. Url: qcoh.uaf5e.blcymnskwrg.com. Action: Deny. ThreatIntel: Bot Networks\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "hosts": [
+          "qcoh.uaf5e.blcymnskwrg.com"
+        ],
+        "ip": [
+          "192.168.96.209"
+        ]
+      },
+      "rule": {
+        "name": "Bot Networks"
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209",
+        "port": 54314
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "qcoh.uaf5e.blcymnskwrg.com"
+      }
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:56.452Z",
+      "azure": {
+        "firewall": {
+          "action": "alert",
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallNetworkRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"ICMP request from 192.168.96.209: to 192.0.2.87:. Action: alert. Signature: 2100366. IDS: ICMP_INFO PING *NIX. Priority: 3. Classification: Misc activity\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+        "risk_score": 3,
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "transport": "icmp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "category": "Misc activity",
+        "id": "2100366",
+        "name": "ICMP_INFO PING *NIX"
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-13T07:11:59.992Z",
+      "azure": {
+        "firewall": {
+          "action": "Allow.",
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallNetworkRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:50306 to 198.51.100.144:3389. Action: Allow.. Rule Collection: Permit_RFC1918. Rule: Permit_RFC1918\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2053-03-13T07:11:59.992099+00:00\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "198.51.100.144"
+        ]
+      },
+      "rule": {
+        "name": "Permit_RFC1918",
+        "ruleset": "Permit_RFC1918"
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209",
+        "port": 50306
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:56.452Z",
+      "azure": {
+        "firewall": {
+          "category": "AzureFirewallNetworkRule",
+          "operation_name": "AzureFirewallNatRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "nat": {
+          "ip": "10.178.13.239",
+          "port": 3388
+        },
+        "port": 3388
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNatRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:50306 to 198.51.100.144:3388 was DNAT'ed to 10.178.13.239:3388. Rule Collection: DNAT. Rule: rule\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.168.96.209",
+          "198.51.100.144",
+          "10.178.13.239"
+        ]
+      },
+      "rule": {
+        "name": "rule",
+        "ruleset": "DNAT"
+      },
+      "source": {
+        "address": "192.168.96.209",
+        "ip": "192.168.96.209",
+        "port": 50306
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"ICMP Type=8 request from 192.168.96.209 to 198.51.100.144. Action: Deny. \"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T16:54:58.8492560Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"UDP request from 192.168.96.209:51106 to 198.51.100.144:53. Action: Allow. \"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T13:27:16.9515590Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:49680 to 198.51.100.144:1688. Action: Deny. \"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T16:51:27.8692050Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNatRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:50306 to 198.51.100.144:3389 was DNAT'ed to 10.178.13.239:3389\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNatRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:50306 to 198.51.100.144:3389 was DNAT'ed to 10.178.13.239:3389. Policy: policy-01. Rule Collection Group: DefaultDnatRuleCollectionGroup. Rule Collection: DNAT. Rule: rule\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:51890 to 192.0.2.87:443. Action: drop. Signature: 2028816. IDS: JA3 Hash - [Ccnma.ch] Possible Tofsee. Priority: 3. Classification: Unknown Traffic\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:54854 to 192.0.2.87:1521. Action: alert. Signature: 2102649. IDS: SQL service_name buffer overflow attempt. Priority: 1. Classification: Attempted User Privilege Gain\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"HTTP request from 192.168.96.209:54314 to qcoh.uaf5e.blcymnskwrg.com:80. Url: qcoh.uaf5e.blcymnskwrg.com. Action: Deny. ThreatIntel: Bot Networks\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"ICMP request from 192.168.96.209: to 192.0.2.87:. Action: alert. Signature: 2100366. IDS: ICMP_INFO PING *NIX. Priority: 3. Classification: Misc activity\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNetworkRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:50306 to 198.51.100.144:3389. Action: Allow.. Rule Collection: Permit_RFC1918. Rule: Permit_RFC1918\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2053-03-13T07:11:59.992099+00:00\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallNetworkRule\",\"operationName\":\"AzureFirewallNatRuleLog\",\"properties\":{\"msg\":\"TCP request from 192.168.96.209:50306 to 198.51.100.144:3388 was DNAT'ed to 10.178.13.239:3388. Rule Collection: DNAT. Rule: rule\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:56.4525380Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "firewall_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-firewall_logs-default",
+    "event_count": 11,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:01:06.034213265Z",
+      "cloud": {
+        "provider": "aws"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "2048-02-20T07:01:01.000Z Eae 20 07:01:01 ip-172-31-81-156 systemd: Stopping User Slice of root."
+      },
+      "message": "2048-02-20T07:01:01.000Z Eae 20 07:01:01 ip-172-31-81-156 systemd: Stopping User Slice of root.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-13T23:01:06.034295346Z",
+      "cloud": {
+        "provider": "aws"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "2048-02-20T07:02:18.000Z Eae 20 07:02:18 ip-172-31-81-156 dhclient[3000]: XMT: Solicit on eth0, interval 125240ms."
+      },
+      "message": "2048-02-20T07:02:18.000Z Eae 20 07:02:18 ip-172-31-81-156 dhclient[3000]: XMT: Solicit on eth0, interval 125240ms.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-13T23:01:06.034302296Z",
+      "cloud": {
+        "provider": "aws"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: DHCPREQUEST on eth0 to 172.31.167.169 port 67 (xid=0x4575af22)"
+      },
+      "message": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: DHCPREQUEST on eth0 to 172.31.167.169 port 67 (xid=0x4575af22)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-13T23:01:06.034308206Z",
+      "cloud": {
+        "provider": "aws"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: DHCPACK from 172.31.167.169 (xid=0x4575af22)"
+      },
+      "message": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: DHCPACK from 172.31.167.169 (xid=0x4575af22)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-13T23:01:06.034314086Z",
+      "cloud": {
+        "provider": "aws"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: bound to 172.16.58.189 -- renewal in 1599 seconds."
+      },
+      "message": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: bound to 172.16.58.189 -- renewal in 1599 seconds.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-13T23:01:06.034319416Z",
+      "cloud": {
+        "provider": "aws"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 ec2net: [get_meta] Trying to get http://169.254.169.254/latest/meta-data/network/interfaces/macs/06:b7:e5:09:4b:40/local-ipv4s"
+      },
+      "message": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 ec2net: [get_meta] Trying to get http://169.254.169.254/latest/meta-data/network/interfaces/macs/06:b7:e5:09:4b:40/local-ipv4s",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "2048-02-20T07:01:01.000Z Eae 20 07:01:01 ip-172-31-81-156 systemd: Stopping User Slice of root.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2048-02-20T07:02:18.000Z Eae 20 07:02:18 ip-172-31-81-156 dhclient[3000]: XMT: Solicit on eth0, interval 125240ms.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: DHCPREQUEST on eth0 to 172.31.167.169 port 67 (xid=0x4575af22)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: DHCPACK from 172.31.167.169 (xid=0x4575af22)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: bound to 172.16.58.189 -- renewal in 1599 seconds.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 ec2net: [get_meta] Trying to get http://169.254.169.254/latest/meta-data/network/interfaces/macs/06:b7:e5:09:4b:40/local-ipv4s",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudwatch_logs",
+    "dynamic_fields": {
+      "@timestamp": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudwatch_logs-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

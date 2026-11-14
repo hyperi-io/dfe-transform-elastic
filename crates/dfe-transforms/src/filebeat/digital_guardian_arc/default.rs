@@ -78,8 +78,7 @@ impl Transform for Default {
 
             dot_expand(event, "digital_guardian.arc", "*")?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || ['', '{}', 'NA', 'None', 'null', '-'].contains(object)) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -99,9 +98,7 @@ impl Transform for Default {
                 None,
             );
 
-            // Painless script
-            // Source: long bytesFromStr(String str) {\n  def factors = [\n    \"KB\": 1000L,\n    \"MB\": 1000000L,\n    \"GB\": 1000000000L,\n    \"TB\": 1000000000000L\n  ];\n  def parts = str.splitOnToken(' ');\n  double num = Double.parseDouble(parts[0]);\n  String unit = parts.length > 1 ? parts[1] : null;\n  if (factors.containsKey(unit)) {\n    return (long) (num * factors[unit]);\n  } else {\n    return (long) num;\n  }\n}\nif (ctx.digital_guardian?.arc?.dg_attachments?.dg_file_size instanceof String) {\n  ctx.digital_guardian.arc.dg_attachments.dg_file_size_bytes = bytesFromStr(ctx.digital_guardian.arc.dg_attachments.dg_file_size);\n}\nif (ctx.digital_guardian?.arc?.dg_file_size instanceof String) {\n  ctx.digital_guardian.arc.dg_file_size_bytes = bytesFromStr(ctx.digital_guardian.arc.dg_file_size);\n}\nif (ctx.digital_guardian?.arc?.pi_fs instanceof String) {\n  ctx.digital_guardian.arc.pi_fs_bytes = bytesFromStr(ctx.digital_guardian.arc.pi_fs);\n}\nif (ctx.digital_guardian?.arc?.uad_br instanceof String) {\n  ctx.digital_guardian.arc.uad_br_bytes = bytesFromStr(ctx.digital_guardian.arc.uad_br);\n}\nif (ctx.digital_guardian?.arc?.uad_bw instanceof String) {\n  ctx.digital_guardian.arc.uad_bw_bytes = bytesFromStr(ctx.digital_guardian.arc.uad_bw);\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -124,9 +121,7 @@ impl Transform for Default {
                     && event.has_value("digital_guardian.arc.inc_state")
             };
             if _cond {
-                // Painless script
-                // Source: if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\nctx.event.action = (ctx.digital_guardian.arc.dg_utype + \"-\" + ctx.digital_guardian.arc.inc_state).toLowerCase();
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -137,9 +132,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("digital_guardian.arc.inc_sev") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\ndef sev = ctx.digital_guardian.arc.inc_sev;\nctx.event.severity = params.getOrDefault(sev, params['Unknown']);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -432,8 +425,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

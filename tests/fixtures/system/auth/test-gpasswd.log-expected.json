@@ -1,0 +1,40 @@
+{
+  "expected": [
+    {
+      "event": {
+        "original": "2054-05-17T18:02:03.000000+00:00 kzno71081 gpasswd[3456789]: user alice added by root to group sudo"
+      },
+      "input.type": "log",
+      "message": "2054-05-17T18:02:03.000000+00:00 kzno71081 gpasswd[3456789]: user alice added by root to group sudo"
+    },
+    {
+      "event": {
+        "original": "2054-05-17T18:02:04.000000+00:00 kzno71081 gpasswd[3456789]: user alice removed by root from group sudo"
+      },
+      "input.type": "log",
+      "message": "2054-05-17T18:02:04.000000+00:00 kzno71081 gpasswd[3456789]: user alice removed by root from group sudo"
+    }
+  ],
+  "input": [
+    {
+      "input.type": "log",
+      "message": "2054-05-17T18:02:03.000000+00:00 kzno71081 gpasswd[3456789]: user alice added by root to group sudo"
+    },
+    {
+      "input.type": "log",
+      "message": "2054-05-17T18:02:04.000000+00:00 kzno71081 gpasswd[3456789]: user alice removed by root from group sudo"
+    }
+  ],
+  "meta": {
+    "data_stream": "auth",
+    "dynamic_fields": {
+      "event.ingested": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-auth-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

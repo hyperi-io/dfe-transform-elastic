@@ -1,0 +1,83 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:08:39.068Z",
+            "event": {
+                "kind": "event",
+                "code": 4738,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4738_Account_Changed.xml"
+                },
+                "level": "information"
+            },
+            "agent": {
+                "ephemeral_id": "9337430f-c27c-421c-819b-1695ab4072d0",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "winlog": {
+                "event_id": 4738,
+                "record_id": 2862,
+                "outcome": "success",
+                "level": "information",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "SOV-86VA2XP94FG",
+                "event_data": {
+                    "AccountExpires": "%%1794",
+                    "PrimaryGroupId": "513",
+                    "AllowedToDelegateTo": "-",
+                    "OldUacValue": "0x210",
+                    "UserAccountControl": "-",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "SamAccountName": "avexgxagdln7",
+                    "PrivilegeList": "-",
+                    "PasswordLastSet": "6/9/2019 10:30:28",
+                    "TargetUserName": "avexgxagdln7",
+                    "HomeDirectory": "%%1793",
+                    "UserParameters": "%%1793",
+                    "LogonHours": "%%1797",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1005",
+                    "UserPrincipalName": "-",
+                    "ScriptPath": "%%1793",
+                    "Dummy": "-",
+                    "DisplayName": "avexgxagdln7",
+                    "SidHistory": "-",
+                    "UserWorkstations": "%%1793",
+                    "SubjectDomainName": "SOV-86VA2XP94FG",
+                    "SubjectLogonId": "0x264b2",
+                    "ProfilePath": "%%1793",
+                    "TargetDomainName": "SOV-86VA2XP94FG",
+                    "HomePath": "%%1793",
+                    "NewUacValue": "0x210"
+                },
+                "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+                "channel": "Security",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "time_created": "2047-09-06T13:36:17.566Z",
+                "process": {
+                    "pid": 780,
+                    "thread": {
+                        "id": 1980
+                    }
+                },
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}"
+            }
+        }
+    ]
+}

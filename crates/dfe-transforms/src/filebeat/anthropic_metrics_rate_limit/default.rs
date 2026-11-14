@@ -76,9 +76,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("anthropic.rate_limit.limits") };
             if _cond {
-                // Painless script
-                // Source: for (limit in ctx.anthropic.rate_limit.limits) {\n  ctx.anthropic.rate_limit[limit.type] = limit.value;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

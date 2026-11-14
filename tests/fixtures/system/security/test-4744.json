@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:09:19.113Z",
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "0620994e-8d5e-4d60-9a42-71056c3abc74",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "winlog": {
+                "process": {
+                    "pid": 492,
+                    "thread": {
+                        "id": 664
+                    }
+                },
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "outcome": "success",
+                "record_id": 3699973,
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "time_created": "2047-12-18T16:26:46.874Z",
+                "level": "information",
+                "channel": "Security",
+                "event_id": 4744,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "event_data": {
+                    "TargetUserName": "takvbouqhmcem",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2903",
+                    "SubjectUserName": "ev_aav",
+                    "SubjectDomainName": "TEST",
+                    "SamAccountName": "takvbouqhmcem",
+                    "TargetDomainName": "TEST",
+                    "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+                    "SubjectLogonId": "0x2e67800",
+                    "PrivilegeList": "-",
+                    "SidHistory": "-"
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4744,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4744.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

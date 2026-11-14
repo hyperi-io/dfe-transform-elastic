@@ -1,0 +1,597 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-02-14T00:05:12.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_account_v2 -: {\"version\": \"7.1\", \"account_id\": 53, \"headend_addr\": \"203.0.113.248\", \"account_uid\": \"O365:qqbx@corp.example.com\", \"threat\": 65, \"certainty\": 84, \"quadrant\": \"critical\", \"score_decreases\": false, \"privilege\": 20, \"href\": \"https://x29-1-37.sc.tvec/accounts/22\", \"category\": \"ACCOUNT SCORING\", \"tags\": [], \"host_access_history\": [], \"service_access_history\": [], \"last_detection_type\": \"M365 Internal Spearphishing\", \"vectra_timestamp\": \"2559945912\"}",
+        "reference": "https://x29-1-37.sc.tvec/accounts/22"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.1"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "53",
+          "corp.example.com",
+          "O365:qqbx",
+          "critical",
+          "O365:qqbx@corp.example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "{}"
+      ],
+      "url": {
+        "domain": "x29-1-37.sc.tvec",
+        "original": "https://x29-1-37.sc.tvec/accounts/22",
+        "path": "/accounts/22",
+        "scheme": "https"
+      },
+      "user": {
+        "domain": "corp.example.com",
+        "id": "O365:qqbx",
+        "risk": {
+          "static_level": "critical"
+        },
+        "target": {
+          "domain": "corp.example.com",
+          "email": "O365:qqbx@corp.example.com",
+          "id": "53",
+          "name": "O365:qqbx"
+        }
+      },
+      "vectra_detect": {
+        "log": {
+          "account": {
+            "domain": "corp.example.com",
+            "id": "53",
+            "uid": "O365:qqbx@corp.example.com",
+            "user_id": "O365:qqbx"
+          },
+          "category": "ACCOUNT SCORING",
+          "certainty": 84,
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_account_v2",
+          "headend_addr": "203.0.113.248",
+          "href": "https://x29-1-37.sc.tvec/accounts/22",
+          "last_detection_type": "M365 Internal Spearphishing",
+          "privilege": 20,
+          "quadrant": "critical",
+          "score_decreases": false,
+          "threat": {
+            "score": 65
+          },
+          "user": {
+            "domain": "corp.example.com",
+            "registered_domain": "example.com",
+            "subdomain": "corp",
+            "top_level_domain": "com"
+          },
+          "vectra_timestamp": "2051-02-14T00:05:12.000Z",
+          "version": "7.1"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-03-05T11:05:12.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_account_v2 -: {\"version\": \"7.4\", \"account_id\": 17, \"headend_addr\": \"203.0.113.248\", \"account_uid\": \"cfcfgi@ndb.phe.local\", \"threat\": 70, \"certainty\": 34, \"quadrant\": \"high\", \"score_decreases\": false, \"privilege\": 1, \"href\": \"https://x29-1-13.sc.tvec/accounts/10\", \"category\": \"ACCOUNT SCORING\", \"tags\": \"[]\", \"host_access_history\": \"[{\\\"id\\\": 276, \\\"name\\\": \\\"dc2-aws-us-west-01\\\", \\\"privilege\\\": null, \\\"privilegeCategory\\\": null, \\\"lastSeen\\\": \\\"2051-03-04T21:27:21+00:00\\\"}]\", \"service_access_history\": \"[{\\\"id\\\": 7, \\\"uid\\\": \\\"krbtgt/lab.tme.local.lab@lab\\\", \\\"privilege\\\": 1, \\\"privilegeCategory\\\": \\\"Low\\\", \\\"lastSeen\\\": \\\"2051-03-04T21:27:21+00:00\\\"}, {\\\"id\\\": 16, \\\"uid\\\": \\\"host/dcwqqsm-uou01-6qbrlm4.jcd.yxd.nobcj@ndb.phe.local\\\", \\\"privilege\\\": null, \\\"privilegeCategory\\\": null, \\\"lastSeen\\\": \\\"2051-03-04T21:27:21+00:00\\\"}, {\\\"id\\\": 9, \\\"uid\\\": \\\"krbtgt/ibf.nge.zhdeu@ndb.phe.local\\\", \\\"privilege\\\": 1, \\\"privilegeCategory\\\": \\\"Low\\\", \\\"lastSeen\\\": \\\"2051-03-04T21:27:21+00:00\\\"}, {\\\"id\\\": 8, \\\"uid\\\": \\\"cifs/mot-fz-37.gbf.usd.rvafy@ndb.phe.local\\\", \\\"privilege\\\": 1, \\\"privilegeCategory\\\": \\\"Low\\\", \\\"lastSeen\\\": \\\"2051-03-04T20:50:07+00:00\\\"}]\", \"last_detection_type\": \"Privilege Anomaly: Unusual Service\", \"vectra_timestamp\": \"2561627112\"}",
+        "reference": "https://x29-1-13.sc.tvec/accounts/10"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "17",
+          "ndb.phe.local",
+          "cfcfgi",
+          "high",
+          "krbtgt/lab.tme.local.lab@lab",
+          "host/dcwqqsm-uou01-6qbrlm4.jcd.yxd.nobcj@ndb.phe.local",
+          "krbtgt/ibf.nge.zhdeu@ndb.phe.local",
+          "cifs/mot-fz-37.gbf.usd.rvafy@ndb.phe.local",
+          "cfcfgi@ndb.phe.local"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "[]"
+      ],
+      "url": {
+        "domain": "x29-1-13.sc.tvec",
+        "original": "https://x29-1-13.sc.tvec/accounts/10",
+        "path": "/accounts/10",
+        "scheme": "https"
+      },
+      "user": {
+        "domain": "ndb.phe.local",
+        "id": "cfcfgi",
+        "risk": {
+          "static_level": "high"
+        },
+        "target": {
+          "domain": "ndb.phe.local",
+          "email": "cfcfgi@ndb.phe.local",
+          "id": "17",
+          "name": "cfcfgi"
+        }
+      },
+      "vectra_detect": {
+        "log": {
+          "account": {
+            "domain": "ndb.phe.local",
+            "id": "17",
+            "uid": "cfcfgi@ndb.phe.local",
+            "user_id": "cfcfgi"
+          },
+          "category": "ACCOUNT SCORING",
+          "certainty": 34,
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_account_v2",
+          "headend_addr": "203.0.113.248",
+          "host": {
+            "access_history": [
+              {
+                "id": "276",
+                "last_seen": "2051-03-04T21:27:21.000Z",
+                "name": "dc2-aws-us-west-01"
+              }
+            ]
+          },
+          "href": "https://x29-1-13.sc.tvec/accounts/10",
+          "last_detection_type": "Privilege Anomaly: Unusual Service",
+          "privilege": 1,
+          "quadrant": "high",
+          "score_decreases": false,
+          "service": {
+            "access_history": [
+              {
+                "id": "7",
+                "last_seen": "2051-03-04T21:27:21.000Z",
+                "privilege_category": "Low",
+                "privilege_value": 1,
+                "uid": "krbtgt/lab.tme.local.lab@lab"
+              },
+              {
+                "id": "16",
+                "last_seen": "2051-03-04T21:27:21.000Z",
+                "uid": "host/dcwqqsm-uou01-6qbrlm4.jcd.yxd.nobcj@ndb.phe.local"
+              },
+              {
+                "id": "9",
+                "last_seen": "2051-03-04T21:27:21.000Z",
+                "privilege_category": "Low",
+                "privilege_value": 1,
+                "uid": "krbtgt/ibf.nge.zhdeu@ndb.phe.local"
+              },
+              {
+                "id": "8",
+                "last_seen": "2051-03-04T20:50:07.000Z",
+                "privilege_category": "Low",
+                "privilege_value": 1,
+                "uid": "cifs/mot-fz-37.gbf.usd.rvafy@ndb.phe.local"
+              }
+            ]
+          },
+          "tags": "[]",
+          "threat": {
+            "score": 70
+          },
+          "vectra_timestamp": "2051-03-05T11:05:12.000Z",
+          "version": "7.4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-03-05T23:05:11.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_account_v2 -: {\"version\": \"7.4\", \"account_id\": 44, \"headend_addr\": \"203.0.113.248\", \"account_uid\": \"O365:ydhd@corp.example.com\", \"threat\": 71, \"certainty\": 40, \"quadrant\": \"high\", \"score_decreases\": false, \"privilege\": \"\", \"href\": \"https://x29-1-13.sc.tvec/accounts/21\", \"category\": \"ACCOUNT SCORING\", \"tags\": \"[]\", \"host_access_history\": \"[]\", \"service_access_history\": \"[]\", \"last_detection_type\": \"M365 Suspicious Power Automate Flow Creation\", \"vectra_timestamp\": \"2561670311\"}",
+        "reference": "https://x29-1-13.sc.tvec/accounts/21"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "44",
+          "corp.example.com",
+          "O365:ydhd",
+          "high",
+          "O365:ydhd@corp.example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "[]"
+      ],
+      "url": {
+        "domain": "x29-1-13.sc.tvec",
+        "original": "https://x29-1-13.sc.tvec/accounts/21",
+        "path": "/accounts/21",
+        "scheme": "https"
+      },
+      "user": {
+        "domain": "corp.example.com",
+        "id": "O365:ydhd",
+        "risk": {
+          "static_level": "high"
+        },
+        "target": {
+          "domain": "corp.example.com",
+          "email": "O365:ydhd@corp.example.com",
+          "id": "44",
+          "name": "O365:ydhd"
+        }
+      },
+      "vectra_detect": {
+        "log": {
+          "account": {
+            "domain": "corp.example.com",
+            "id": "44",
+            "uid": "O365:ydhd@corp.example.com",
+            "user_id": "O365:ydhd"
+          },
+          "category": "ACCOUNT SCORING",
+          "certainty": 40,
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_account_v2",
+          "headend_addr": "203.0.113.248",
+          "href": "https://x29-1-13.sc.tvec/accounts/21",
+          "last_detection_type": "M365 Suspicious Power Automate Flow Creation",
+          "quadrant": "high",
+          "score_decreases": false,
+          "tags": "[]",
+          "threat": {
+            "score": 71
+          },
+          "user": {
+            "domain": "corp.example.com",
+            "registered_domain": "example.com",
+            "subdomain": "corp",
+            "top_level_domain": "com"
+          },
+          "vectra_timestamp": "2051-03-05T23:05:11.000Z",
+          "version": "7.4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-03-05T23:05:12.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_account_v2 -: {\"version\": \"7.4\", \"account_id\": 50, \"headend_addr\": \"203.0.113.248\", \"account_uid\": \"O365:qczdD@corp.example.com\", \"threat\": 24, \"certainty\": 89, \"quadrant\": \"medium\", \"score_decreases\": false, \"privilege\": \"\", \"href\": \"https://x29-1-13.sc.tvec/accounts/23\", \"category\": \"ACCOUNT SCORING\", \"tags\": \"[]\", \"host_access_history\": \"[]\", \"service_access_history\": \"[]\", \"last_detection_type\": \"Azure AD Suspicious Sign-On\", \"vectra_timestamp\": \"2561670312\"}",
+        "reference": "https://x29-1-13.sc.tvec/accounts/23"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "50",
+          "corp.example.com",
+          "O365:qczdD",
+          "medium",
+          "O365:qczdD@corp.example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "[]"
+      ],
+      "url": {
+        "domain": "x29-1-13.sc.tvec",
+        "original": "https://x29-1-13.sc.tvec/accounts/23",
+        "path": "/accounts/23",
+        "scheme": "https"
+      },
+      "user": {
+        "domain": "corp.example.com",
+        "id": "O365:qczdD",
+        "risk": {
+          "static_level": "medium"
+        },
+        "target": {
+          "domain": "corp.example.com",
+          "email": "O365:qczdD@corp.example.com",
+          "id": "50",
+          "name": "O365:qczdD"
+        }
+      },
+      "vectra_detect": {
+        "log": {
+          "account": {
+            "domain": "corp.example.com",
+            "id": "50",
+            "uid": "O365:qczdD@corp.example.com",
+            "user_id": "O365:qczdD"
+          },
+          "category": "ACCOUNT SCORING",
+          "certainty": 89,
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_account_v2",
+          "headend_addr": "203.0.113.248",
+          "href": "https://x29-1-13.sc.tvec/accounts/23",
+          "last_detection_type": "Azure AD Suspicious Sign-On",
+          "quadrant": "medium",
+          "score_decreases": false,
+          "tags": "[]",
+          "threat": {
+            "score": 24
+          },
+          "user": {
+            "domain": "corp.example.com",
+            "registered_domain": "example.com",
+            "subdomain": "corp",
+            "top_level_domain": "com"
+          },
+          "vectra_timestamp": "2051-03-05T23:05:12.000Z",
+          "version": "7.4"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-03-05T11:05:12.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_account_v2 -: {\"version\": \"7.4\", \"account_id\": 58, \"headend_addr\": \"203.0.113.248\", \"account_uid\": \"allck@corp.example.com\", \"threat\": 69, \"certainty\": 47, \"quadrant\": \"high\", \"score_decreases\": false, \"privilege\": \"\", \"href\": \"https://x29-1-13.sc.tvec/accounts/27\", \"category\": \"ACCOUNT SCORING\", \"tags\": \"[]\", \"host_access_history\": \"[]\", \"service_access_history\": \"[]\", \"last_detection_type\": \"Privilege Anomaly: Unusual Service\", \"vectra_timestamp\": \"2561627112\"}",
+        "reference": "https://x29-1-13.sc.tvec/accounts/27"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "58",
+          "corp.example.com",
+          "allck",
+          "high",
+          "allck@corp.example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "[]"
+      ],
+      "url": {
+        "domain": "x29-1-13.sc.tvec",
+        "original": "https://x29-1-13.sc.tvec/accounts/27",
+        "path": "/accounts/27",
+        "scheme": "https"
+      },
+      "user": {
+        "domain": "corp.example.com",
+        "id": "allck",
+        "risk": {
+          "static_level": "high"
+        },
+        "target": {
+          "domain": "corp.example.com",
+          "email": "allck@corp.example.com",
+          "id": "58",
+          "name": "allck"
+        }
+      },
+      "vectra_detect": {
+        "log": {
+          "account": {
+            "domain": "corp.example.com",
+            "id": "58",
+            "uid": "allck@corp.example.com",
+            "user_id": "allck"
+          },
+          "category": "ACCOUNT SCORING",
+          "certainty": 47,
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_account_v2",
+          "headend_addr": "203.0.113.248",
+          "href": "https://x29-1-13.sc.tvec/accounts/27",
+          "last_detection_type": "Privilege Anomaly: Unusual Service",
+          "quadrant": "high",
+          "score_decreases": false,
+          "tags": "[]",
+          "threat": {
+            "score": 69
+          },
+          "user": {
+            "domain": "corp.example.com",
+            "registered_domain": "example.com",
+            "subdomain": "corp",
+            "top_level_domain": "com"
+          },
+          "vectra_timestamp": "2051-03-05T11:05:12.000Z",
+          "version": "7.4"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_account_v2 -: {\"version\": \"7.1\", \"account_id\": 53, \"headend_addr\": \"203.0.113.248\", \"account_uid\": \"O365:qqbx@corp.example.com\", \"threat\": 65, \"certainty\": 84, \"quadrant\": \"critical\", \"score_decreases\": false, \"privilege\": 20, \"href\": \"https://x29-1-37.sc.tvec/accounts/22\", \"category\": \"ACCOUNT SCORING\", \"tags\": [], \"host_access_history\": [], \"service_access_history\": [], \"last_detection_type\": \"M365 Internal Spearphishing\", \"vectra_timestamp\": \"2559945912\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_account_v2 -: {\"version\": \"7.4\", \"account_id\": 17, \"headend_addr\": \"203.0.113.248\", \"account_uid\": \"cfcfgi@ndb.phe.local\", \"threat\": 70, \"certainty\": 34, \"quadrant\": \"high\", \"score_decreases\": false, \"privilege\": 1, \"href\": \"https://x29-1-13.sc.tvec/accounts/10\", \"category\": \"ACCOUNT SCORING\", \"tags\": \"[]\", \"host_access_history\": \"[{\\\"id\\\": 276, \\\"name\\\": \\\"dc2-aws-us-west-01\\\", \\\"privilege\\\": null, \\\"privilegeCategory\\\": null, \\\"lastSeen\\\": \\\"2051-03-04T21:27:21+00:00\\\"}]\", \"service_access_history\": \"[{\\\"id\\\": 7, \\\"uid\\\": \\\"krbtgt/lab.tme.local.lab@lab\\\", \\\"privilege\\\": 1, \\\"privilegeCategory\\\": \\\"Low\\\", \\\"lastSeen\\\": \\\"2051-03-04T21:27:21+00:00\\\"}, {\\\"id\\\": 16, \\\"uid\\\": \\\"host/dcwqqsm-uou01-6qbrlm4.jcd.yxd.nobcj@ndb.phe.local\\\", \\\"privilege\\\": null, \\\"privilegeCategory\\\": null, \\\"lastSeen\\\": \\\"2051-03-04T21:27:21+00:00\\\"}, {\\\"id\\\": 9, \\\"uid\\\": \\\"krbtgt/ibf.nge.zhdeu@ndb.phe.local\\\", \\\"privilege\\\": 1, \\\"privilegeCategory\\\": \\\"Low\\\", \\\"lastSeen\\\": \\\"2051-03-04T21:27:21+00:00\\\"}, {\\\"id\\\": 8, \\\"uid\\\": \\\"cifs/mot-fz-37.gbf.usd.rvafy@ndb.phe.local\\\", \\\"privilege\\\": 1, \\\"privilegeCategory\\\": \\\"Low\\\", \\\"lastSeen\\\": \\\"2051-03-04T20:50:07+00:00\\\"}]\", \"last_detection_type\": \"Privilege Anomaly: Unusual Service\", \"vectra_timestamp\": \"2561627112\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_account_v2 -: {\"version\": \"7.4\", \"account_id\": 44, \"headend_addr\": \"203.0.113.248\", \"account_uid\": \"O365:ydhd@corp.example.com\", \"threat\": 71, \"certainty\": 40, \"quadrant\": \"high\", \"score_decreases\": false, \"privilege\": \"\", \"href\": \"https://x29-1-13.sc.tvec/accounts/21\", \"category\": \"ACCOUNT SCORING\", \"tags\": \"[]\", \"host_access_history\": \"[]\", \"service_access_history\": \"[]\", \"last_detection_type\": \"M365 Suspicious Power Automate Flow Creation\", \"vectra_timestamp\": \"2561670311\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_account_v2 -: {\"version\": \"7.4\", \"account_id\": 50, \"headend_addr\": \"203.0.113.248\", \"account_uid\": \"O365:qczdD@corp.example.com\", \"threat\": 24, \"certainty\": 89, \"quadrant\": \"medium\", \"score_decreases\": false, \"privilege\": \"\", \"href\": \"https://x29-1-13.sc.tvec/accounts/23\", \"category\": \"ACCOUNT SCORING\", \"tags\": \"[]\", \"host_access_history\": \"[]\", \"service_access_history\": \"[]\", \"last_detection_type\": \"Azure AD Suspicious Sign-On\", \"vectra_timestamp\": \"2561670312\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_account_v2 -: {\"version\": \"7.4\", \"account_id\": 58, \"headend_addr\": \"203.0.113.248\", \"account_uid\": \"allck@corp.example.com\", \"threat\": 69, \"certainty\": 47, \"quadrant\": \"high\", \"score_decreases\": false, \"privilege\": \"\", \"href\": \"https://x29-1-13.sc.tvec/accounts/27\", \"category\": \"ACCOUNT SCORING\", \"tags\": \"[]\", \"host_access_history\": \"[]\", \"service_access_history\": \"[]\", \"last_detection_type\": \"Privilege Anomaly: Unusual Service\", \"vectra_timestamp\": \"2561627112\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-vectra_detect-log-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [
+      "vectra_detect.log.host.groups.id",
+      "vectra_detect.log.host.groups.triage_filters.id"
+    ],
+    "package": "vectra_detect",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

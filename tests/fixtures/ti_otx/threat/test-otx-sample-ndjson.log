@@ -1,0 +1,83 @@
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":1588938}}
+{"count": 1, "results": {"indicator":"94256f9060e639d23aa37976a02dbf64","description":"MD5 of c4928bd0420b18e120dd9f2bb84f3c123eb414fdad6e3859e39d127ce0f3fc55","title":"Win32:Hoblig-B","content":"","type":"FileHash-MD5","id":9751110}}
+{"count": 1, "results": {"indicator":"xn.fxuwqa.net","description":null,"title":null,"content":"","type":"hostname","id":16782717}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":19901748}}
+{"count": 1, "results": {"indicator":"d8c63fa27eb4598b4209beda8bc5f76e6b614eca87615113f9b7a85c460b0d3e","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":31612067}}
+{"count": 1, "results": {"indicator":"e0b04bd7acfee1335fbb431a08a49af1","description":"MD5 of db7f01055b00359ae1815542e37bc29dd1cb39063de3d437227796e4d1314f89","title":null,"content":"","type":"FileHash-MD5","id":34413770}}
+{"count": 1, "results": {"indicator":"7f74b006a2b3f93f1120b5d9886896f037f5b0262210d8fd2859d56397a81d00","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":111154034}}
+{"count": 1, "results": {"indicator":"1c43f89a4414937b8768731b6587ff50089543da1d1b9123054898fbea52aeac","description":null,"title":"Win64:Malware-gen","content":"","type":"FileHash-SHA256","id":151858953}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":311294364}}
+{"count": 1, "results": {"indicator":"d706ed776e729065188d077e8f910bb39ce0c4e61da11766a148733dbb37924e","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":406540408}}
+{"count": 1, "results": {"indicator":"5fd106ec1783aacf700d02cb393b29d567aed7e2ba04276bab06436b3ba64bb6","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":565556753}}
+{"count": 1, "results": {"indicator":"efc96c6452da2b39cec8c3b3b0f727a6","description":"MD5 of 5fd106ec1783aacf700d02cb393b29d567aed7e2ba04276bab06436b3ba64bb6","title":null,"content":"","type":"FileHash-MD5","id":565556755}}
+{"count": 1, "results": {"indicator":"3ac6b0b527bdd45817a6ec3dd77bcb18593b15506a8da865f7c21d9ca2d01544","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":575672549}}
+{"count": 1, "results": {"indicator":"c51fad2468e16fc104f9401d44c4830041e1ab8a431151cabb76866b767b3685","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":575672550}}
+{"count": 1, "results": {"indicator":"f299dbb5a808a602b7eb37008f511c3e129272a08fd3d95a37f2a9a7ff67093f","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":995160791}}
+{"count": 1, "results": {"indicator":"d4df4f7a42d66cc457cb3a29a3d25ee1071377cfab14d3572dde62d4a3659a0e","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":1011989699}}
+{"count": 1, "results": {"indicator":"73934277078d6c81796f35b2b384a631b03049755fd7b05d972a22e25fbd93ed","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":1011989701}}
+{"count": 1, "results": {"indicator":"77929842ca8e1128e40c4c4da269c285","description":"MD5 of 013cf59e07434fd566512b7317b590b87e27433f6c7a920b87f98c90670c3bbc","title":"Win64:Malware-gen","content":"","type":"FileHash-MD5","id":1472176322}}
+{"count": 1, "results": {"indicator":"41b425cf9ce09af67f4079bcc6961a9e","description":"MD5 of 5f63f03e92eec7da5ac53990f0248aa844a5bd7a43f6b3968f6cc721999d0af5","title":"Win64:Malware-gen","content":"","type":"FileHash-MD5","id":1472457325}}
+{"count": 1, "results": {"indicator":"de7a6545f6224418a764017da0d7d7db","description":"MD5 of 3244690716fdf6eea4ac02fb3b321a9fad9a8ca7646399dbdade308195895a74","title":"Trojan:Win32/Occamy.B","content":"","type":"FileHash-MD5","id":1472457326}}
+{"count": 1, "results": {"indicator":"c627f040e730f42323ca220108c1baa2","description":"MD5 of 4515d928298456c2e2c3eaa14b2ce8f7df4bb473c09d263a6aae7050827f01e6","title":"Win64:Malware-gen","content":"","type":"FileHash-MD5","id":1472457327}}
+{"count": 1, "results": {"indicator":"02fd4055144532b197ab6bc62ffe868edfd8ea8a053662dd24f7088a935ca442","description":null,"title":"vad_contains_network_strings","content":"","type":"FileHash-SHA256","id":1546012751}}
+{"count": 1, "results": {"indicator":"a431411c31a6a4535ccdbb10f0eaffbffd373869ec35adb6cc9b9d15506db086","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":1546012939}}
+{"count": 1, "results": {"indicator":"d1be1993bb9ae314f05172b1ac2e551cd0b00134fa8c7023c873998baba1c0ca","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":1546012967}}
+{"count": 1, "results": {"indicator":"077b8e8b45150823bb0a6065cbb052bd5846a541ad88c27ad9f9f63dcc7b44cb","description":null,"title":"Win.Malware.TrickbotSystemInfo-6335590-0","content":"","type":"FileHash-SHA256","id":1564141498}}
+{"count": 1, "results": {"indicator":"1839302a1fd4e3af2d8b7b489ae13b5db4d107f2e72a798277a6ad64a10e0723","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":1564141523}}
+{"count": 1, "results": {"indicator":"89d55de6ae3efe3ea2cf5138d15ab840","description":"MD5 of 077b8e8b45150823bb0a6065cbb052bd5846a541ad88c27ad9f9f63dcc7b44cb","title":"Win.Malware.TrickbotSystemInfo-6335590-0","content":"","type":"FileHash-MD5","id":1564142109}}
+{"count": 1, "results": {"indicator":"a9c23d5d914e480aeb31c98727cdd546a418d3fb","description":"SHA1 of 077b8e8b45150823bb0a6065cbb052bd5846a541ad88c27ad9f9f63dcc7b44cb","title":"Win.Malware.TrickbotSystemInfo-6335590-0","content":"","type":"FileHash-SHA1","id":1564142964}}
+{"count": 1, "results": {"indicator":"8a2b54d19a9714a113e1d2c7b264083f7a17346c7723dfc8c2bf760ea10c357c","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":1566067095}}
+{"count": 1, "results": {"indicator":"ea0dedf4509f179d883b0ddcec631586","description":"MD5 of 9ba702715f6e3412c1dbc931e3afecd245ce41fefe0cf05505a02906515f605d","title":"vad_contains_network_strings","content":"","type":"FileHash-MD5","id":1566999970}}
+{"count": 1, "results": {"indicator":"7a13c1e6f1a2c6403aeaf36ab8c99e29","description":"MD5 of 02fd4055144532b197ab6bc62ffe868edfd8ea8a053662dd24f7088a935ca442","title":"vad_contains_network_strings","content":"","type":"FileHash-MD5","id":1569290125}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":1592876453}}
+{"count": 1, "results": {"indicator":"c88a99207e4656782eb593734843f1281d207b859dcc9c46882f2e183d07bbb1","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":1597058431}}
+{"count": 1, "results": {"indicator":"4609d127f849447ec676a505327782088fd00c55026f534ae82538e0909416ac","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":1603343478}}
+{"count": 1, "results": {"indicator":"3244690716fdf6eea4ac02fb3b321a9fad9a8ca7646399dbdade308195895a74","description":null,"title":"Trojan:Win32/Occamy.B","content":"","type":"FileHash-SHA256","id":1606260302}}
+{"count": 1, "results": {"indicator":"4515d928298456c2e2c3eaa14b2ce8f7df4bb473c09d263a6aae7050827f01e6","description":null,"title":"Win64:Malware-gen","content":"","type":"FileHash-SHA256","id":1606260304}}
+{"count": 1, "results": {"indicator":"c1f471183c595f01f21e6eff62bbe4e2779bf3dae1ec91778f3be57a60b6e1e6","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":1606260305}}
+{"count": 1, "results": {"indicator":"013cf59e07434fd566512b7317b590b87e27433f6c7a920b87f98c90670c3bbc","description":null,"title":"Win64:Malware-gen","content":"","type":"FileHash-SHA256","id":1606260310}}
+{"count": 1, "results": {"indicator":"5f63f03e92eec7da5ac53990f0248aa844a5bd7a43f6b3968f6cc721999d0af5","description":null,"title":"Win64:Malware-gen","content":"","type":"FileHash-SHA256","id":1606260311}}
+{"count": 1, "results": {"indicator":"f25543ca516412e329e42d110afe1a526aedf384e58b27bf220e46d4eaca219d","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":1606260316}}
+{"count": 1, "results": {"indicator":"cd11b7ddf760d992e31f64a04a3202667dd45317","description":"SHA1 of 5f63f03e92eec7da5ac53990f0248aa844a5bd7a43f6b3968f6cc721999d0af5","title":"Win64:Malware-gen","content":"","type":"FileHash-SHA1","id":1606260341}}
+{"count": 1, "results": {"indicator":"15e27e377c9b2f19092e44290d3cde916dfc1edc","description":"SHA1 of 4515d928298456c2e2c3eaa14b2ce8f7df4bb473c09d263a6aae7050827f01e6","title":"Win64:Malware-gen","content":"","type":"FileHash-SHA1","id":1606260344}}
+{"count": 1, "results": {"indicator":"2698ac15f0e94ff60327cabad82f1aa8b70007f3","description":"SHA1 of 013cf59e07434fd566512b7317b590b87e27433f6c7a920b87f98c90670c3bbc","title":"Win64:Malware-gen","content":"","type":"FileHash-SHA1","id":1606260353}}
+{"count": 1, "results": {"indicator":"e86f32f2c418b21a516c7ce79da2bfaadcc22363","description":"SHA1 of 3244690716fdf6eea4ac02fb3b321a9fad9a8ca7646399dbdade308195895a74","title":"Trojan:Win32/Occamy.B","content":"","type":"FileHash-SHA1","id":1606260364}}
+{"count": 1, "results": {"indicator":"maper.info","description":null,"title":null,"content":"","type":"domain","id":1634015726}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":1635374317}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":1756014820}}
+{"count": 1, "results": {"indicator":"3bf7c40142d61cf57ebc2cad3366e3cd7e47cc9c62e8acaea0d369caa0265bd3","description":null,"title":"xor_0x20_xord_javascript","content":"","type":"FileHash-SHA256","id":2114543412}}
+{"count": 1, "results": {"indicator":"cb0bb542a6c5dbd8806b110e3a505b4bf16c217bae923c14db982ff00a194278","description":null,"title":"xor_0x20_xord_javascript","content":"","type":"FileHash-SHA256","id":2114543416}}
+{"count": 1, "results": {"indicator":"3ffbf159f2206f7e4956dc8ed9bb6b0f6c34efa414d8c1769ad4eb35e456cfc1","description":null,"title":"xor_0x20_xord_javascript","content":"","type":"FileHash-SHA256","id":2114543440}}
+{"count": 1, "results": {"indicator":"aab3b90b2d300ee97f2c5e43eab9b2b996ee935d54b3ed6d65cb0fff627bb5b9","description":null,"title":"xor_0x20_xord_javascript","content":"","type":"FileHash-SHA256","id":2114543441}}
+{"count": 1, "results": {"indicator":"3b0f343e82b430041efc0cfb2539ac9088324bb5935df1236f6906289d69c31c","description":null,"title":"xor_0x20_xord_javascript","content":"","type":"FileHash-SHA256","id":2114543445}}
+{"count": 1, "results": {"indicator":"87ae2304860079cad2018b27f280783da662d7d7269c8fd08afa41e99487fb76","description":null,"title":"xor_0x20_xord_javascript","content":"","type":"FileHash-SHA256","id":2114543456}}
+{"count": 1, "results": {"indicator":"07e38bf3d6b6f50dd7a155f05d916eafdd6efcbeb403454eb6c5dce690b4566a","description":null,"title":"xor_0x20_xord_javascript","content":"","type":"FileHash-SHA256","id":2114543458}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":2114754074}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":2114754077}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":2114754078}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":2114754080}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":2117062744}}
+{"count": 1, "results": {"indicator":"a618a18550249ad5bb1e2ebc817ff39dc3042d8492551bbc494c6fc72054864f","description":null,"title":null,"content":"","type":"FileHash-SHA256","id":2117884668}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":2119746545}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":2129763785}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":2136050161}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":"Trickbot","content":"","type":"IPv4","id":2136079568}}
+{"count": 1, "results": {"indicator":"bsntbzkv.com","description":null,"title":null,"content":"","type":"domain","id":2137741373}}
+{"count": 1, "results": {"indicator":"vkhw89p0oyu5z1.com","description":null,"title":null,"content":"","type":"domain","id":2137741468}}
+{"count": 1, "results": {"indicator":"sebco.co.ke","description":null,"title":null,"content":"","type":"domain","id":2178708355}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":"Trickbot","content":"","type":"IPv4","id":2180669102}}
+{"count": 1, "results": {"indicator":"eqqmxot.com","description":null,"title":null,"content":"","type":"domain","id":2186034800}}
+{"count": 1, "results": {"indicator":"qzgumqlqy.com","description":null,"title":null,"content":"","type":"domain","id":2186034803}}
+{"count": 1, "results": {"indicator":"qajmgbxhjb.com","description":null,"title":null,"content":"","type":"domain","id":2186034805}}
+{"count": 1, "results": {"indicator":"phpgbbgoavy.com","description":null,"title":null,"content":"","type":"domain","id":2186034807}}
+{"count": 1, "results": {"indicator":"eb5ddb191ab415670783f93eae6711f20c1c70fa","description":null,"title":"Win64:Malware-gen","content":"","type":"FileHash-SHA1","id":2186034891}}
+{"count": 1, "results": {"indicator":"30e9daf481e9b789f4591c563b7378fa2d02c58f","description":null,"title":"Sf:ShellCode-DZ\\ [Trj]","content":"","type":"FileHash-SHA1","id":2186034903}}
+{"count": 1, "results": {"indicator":"ae41560be47be8f5a014a7c636f07b37675f57e5","description":null,"title":"Win64:Malware-gen","content":"","type":"FileHash-SHA1","id":2186034912}}
+{"count": 1, "results": {"indicator":"b3eb1e5cff197e57ebf1034c1dbc0f009ec28a0b","description":null,"title":"Win64:Malware-gen","content":"","type":"FileHash-SHA1","id":2186034924}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":"Trickbot","content":"","type":"IPv4","id":2189036445}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":2189036446}}
+{"count": 1, "results": {"indicator":"198.51.100.144","description":null,"title":null,"content":"","type":"IPv4","id":2190596263}}
+{"count": 1, "results": {"indicator":"91aa6826226b41c2036a37f70f55c79b","description":"MD5 of 3bf7c40142d61cf57ebc2cad3366e3cd7e47cc9c62e8acaea0d369caa0265bd3","title":"xor_0x20_xord_javascript","content":"","type":"FileHash-MD5","id":2192837907}}
+{"count": 1, "results": {"id":73,"indicator":"http://www.playboysplus.com","type":"URL","title":null,"description":null,"content":""}}
+{"count": 1, "results": {"id":74,"indicator":"http://join.playboysplus.com/signup/","type":"URL","title":null,"description":null,"content":""}}
+{"count": 1, "results": {"id":970,"indicator":"http://api.vk.com/method/wall.get?count=1&owner_id=-81972386","type":"URL","title":null,"description":null,"content":""}}

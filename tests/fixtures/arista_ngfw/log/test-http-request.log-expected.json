@@ -1,0 +1,1332 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-05-25T09:07:44.093-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "amer.ng.msg.teams.microsoft.com",
+        "ip": "192.0.2.22",
+        "nat": {
+          "ip": "192.0.2.22",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866487132",
+        "kind": "event",
+        "original": "<174>May 25 09:07:44 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:44.093\",\"method\":\"GET\",\"requestId\":110221859354811,\"domain\":\"amer.ng.msg.teams.microsoft.com\",\"host\":\"amer.ng.msg.teams.microsoft.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"B83031I37\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.3388,\"localAddr\":\"192.168.131.221\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.131.221\",\"serverCountry\":\"US\",\"sessionId\":110221866487132,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":59560,\"timeStamp\":\"2051-05-25 09:07:44.062\",\"serverLongitude\":-121.8914,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":13485,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"username\":\"ssjzava\",\"tagsString\":\"\"}}",
+        "provider": "http_request",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "name": "B83031I37"
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "method": "GET"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:18Cw5RvoDPGNVe/KY+0Z+TvSLEs=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "B83031I37",
+          "amer.ng.msg.teams.microsoft.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "192.168.131.221",
+          "203.0.113.75"
+        ],
+        "user": [
+          "ssjzava"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.131.221",
+        "nat": {
+          "ip": "203.0.113.75",
+          "port": 13485
+        },
+        "port": 59560
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      },
+      "user": {
+        "name": "ssjzava"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T09:07:34.395-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "orngonf.buojeepbwf-cii.com",
+        "ip": "203.0.113.138",
+        "nat": {
+          "ip": "203.0.113.138",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866487106",
+        "kind": "event",
+        "original": "<174>May 25 09:07:34 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:34.395\",\"method\":\"GET\",\"requestId\":110221859354809,\"domain\":\"orngonf.buojeepbwf-cii.com\",\"host\":\"orngonf.buojeepbwf-cii.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"GejhlfEhn2\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.114.223\",\"SServerAddr\":\"203.0.113.138\",\"remoteAddr\":\"203.0.113.138\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.223\",\"serverCountry\":\"US\",\"sessionId\":110221866487106,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":16040,\"timeStamp\":\"2051-05-25 09:07:34.386\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":15128,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"203.0.113.138\",\"tagsString\":\"\"}}",
+        "provider": "http_request",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "name": "GejhlfEhn2"
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "method": "GET"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:DZ3wNuI4N0v9nfqrAhq9/Lps/og=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "GejhlfEhn2",
+          "orngonf.buojeepbwf-cii.com"
+        ],
+        "ip": [
+          "203.0.113.138",
+          "192.168.114.223",
+          "203.0.113.75"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.114.223",
+        "nat": {
+          "ip": "203.0.113.75",
+          "port": 15128
+        },
+        "port": 16040
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T09:07:33.314-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "me.hcnufaaxdgfqccscn.com",
+        "ip": "192.0.2.22",
+        "nat": {
+          "ip": "192.0.2.22",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866487103",
+        "kind": "event",
+        "original": "<174>May 25 09:07:33 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:33.314\",\"method\":\"GET\",\"requestId\":110221859354806,\"domain\":\"me.hcnufaaxdgfqccscn.com\",\"host\":\"me.hcnufaaxdgfqccscn.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487103,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":51598,\"timeStamp\":\"2051-05-25 09:07:33.273\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":45333,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+        "provider": "http_request",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "name": "Ociapn-U60"
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "method": "GET"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:tRpJBDWdCM5NSzOP6uKR1OmVRNc=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "Ociapn-U60",
+          "me.hcnufaaxdgfqccscn.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "192.168.130.47",
+          "203.0.113.75"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.130.47",
+        "nat": {
+          "ip": "203.0.113.75",
+          "port": 45333
+        },
+        "port": 51598
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T09:07:30.333-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "www.gstatic.com",
+        "ip": "192.0.2.22",
+        "nat": {
+          "ip": "192.0.2.22",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866487093",
+        "kind": "event",
+        "original": "<174>May 25 09:07:30 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:30.333\",\"method\":\"GET\",\"requestId\":110221859354805,\"domain\":\"www.gstatic.com\",\"host\":\"www.gstatic.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487093,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":50548,\"timeStamp\":\"2051-05-25 09:07:30.316\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":39662,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+        "provider": "http_request",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "name": "Ociapn-U60"
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "method": "GET"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:Vd7JprOBTDVUfs3oLKyiynuJFzQ=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "Ociapn-U60",
+          "www.gstatic.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "192.168.130.47",
+          "203.0.113.75"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.130.47",
+        "nat": {
+          "ip": "203.0.113.75",
+          "port": 39662
+        },
+        "port": 50548
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T09:07:30.118-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "wldypt.elkxcxhfz.com",
+        "ip": "192.0.2.22",
+        "nat": {
+          "ip": "192.0.2.22",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866487086",
+        "kind": "event",
+        "original": "<174>May 25 09:07:30 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:30.118\",\"method\":\"GET\",\"requestId\":110221859354804,\"domain\":\"wldypt.elkxcxhfz.com\",\"host\":\"wldypt.elkxcxhfz.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487086,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":36398,\"timeStamp\":\"2051-05-25 09:07:30.072\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":40425,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+        "provider": "http_request",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "name": "Ociapn-U60"
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "method": "GET"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:WR8iw/8uWJI8bgk9rV569LSyyqs=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "Ociapn-U60",
+          "wldypt.elkxcxhfz.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "192.168.130.47",
+          "203.0.113.75"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.130.47",
+        "nat": {
+          "ip": "203.0.113.75",
+          "port": 40425
+        },
+        "port": 36398
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T09:07:29.775-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "fara.jcwet.io",
+        "ip": "192.0.2.22",
+        "nat": {
+          "ip": "192.0.2.22",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866487071",
+        "kind": "event",
+        "original": "<174>May 25 09:07:29 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:29.775\",\"method\":\"GET\",\"requestId\":110221859354791,\"domain\":\"fara.jcwet.io\",\"host\":\"fara.jcwet.io\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":39.1028,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487071,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":40596,\"timeStamp\":\"2051-05-25 09:07:29.763\",\"serverLongitude\":-94.5778,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":32984,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+        "provider": "http_request",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "name": "Ociapn-U60"
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "method": "GET"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:anwfS5jzG/wJLYxvfyCJY22SOYA=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "Ociapn-U60",
+          "fara.jcwet.io"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "192.168.130.47",
+          "203.0.113.75"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.130.47",
+        "nat": {
+          "ip": "203.0.113.75",
+          "port": 32984
+        },
+        "port": 40596
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T09:07:28.758-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "mfxaxfiwk.apejtlc.co",
+        "ip": "192.0.2.22",
+        "nat": {
+          "ip": "192.0.2.22",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866487052",
+        "kind": "event",
+        "original": "<174>May 25 09:07:28 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:28.758\",\"method\":\"GET\",\"requestId\":110221859354783,\"domain\":\"mfxaxfiwk.apejtlc.co\",\"host\":\"mfxaxfiwk.apejtlc.co\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Apejtlc\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":39.1028,\"localAddr\":\"192.168.114.177\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.177\",\"serverCountry\":\"US\",\"sessionId\":110221866487052,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":52762,\"timeStamp\":\"2051-05-25 09:07:28.754\",\"serverLongitude\":-94.5778,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":30035,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+        "provider": "http_request",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "name": "Apejtlc"
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "method": "GET"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:+oYDR+tgj8/rfgwj/aeuiIpQb+Y=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "Apejtlc",
+          "mfxaxfiwk.apejtlc.co"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "192.168.114.177",
+          "203.0.113.75"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.114.177",
+        "nat": {
+          "ip": "203.0.113.75",
+          "port": 30035
+        },
+        "port": 52762
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T09:07:28.187-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "xm9.lskcqf.com",
+        "ip": "192.0.2.22",
+        "nat": {
+          "ip": "192.0.2.22",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866487028",
+        "kind": "event",
+        "original": "<174>May 25 09:07:28 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:28.187\",\"method\":\"GET\",\"requestId\":110221859354760,\"domain\":\"xm9.lskcqf.com\",\"host\":\"xm9.lskcqf.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"XU\",\"sessionId\":110221866487028,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":57482,\"timeStamp\":\"2051-05-25 09:07:28.157\",\"clientIntf\":2,\"policyId\":1,\"SClientPort\":13556,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+        "provider": "http_request",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "name": "Ociapn-U60"
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "method": "GET"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:okaeKULvG40kheH8wirfl6XF9JU=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "Ociapn-U60",
+          "xm9.lskcqf.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "192.168.130.47",
+          "203.0.113.75"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.130.47",
+        "nat": {
+          "ip": "203.0.113.75",
+          "port": 13556
+        },
+        "port": 57482
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T09:07:27.517-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "play-fe.googleapis.com",
+        "ip": "192.0.2.22",
+        "nat": {
+          "ip": "192.0.2.22",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866487026",
+        "kind": "event",
+        "original": "<174>May 25 09:07:27 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:27.517\",\"method\":\"GET\",\"requestId\":110221859354759,\"domain\":\"play-fe.googleapis.com\",\"host\":\"play-fe.googleapis.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487026,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":60308,\"timeStamp\":\"2051-05-25 09:07:27.498\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":21706,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+        "provider": "http_request",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "name": "Ociapn-U60"
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "method": "GET"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:ROD2YX975oonNo8pzQm+1cYIgJw=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "Ociapn-U60",
+          "play-fe.googleapis.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "192.168.130.47",
+          "203.0.113.75"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.130.47",
+        "nat": {
+          "ip": "203.0.113.75",
+          "port": 21706
+        },
+        "port": 60308
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      }
+    },
+    {
+      "@timestamp": "2051-05-25T09:07:27.295-06:00",
+      "arista": {
+        "bypassed": false,
+        "entitled": true,
+        "policy": {
+          "rule_id": 0
+        }
+      },
+      "destination": {
+        "domain": "api.dfblvbaqpfo.com",
+        "ip": "192.0.2.22",
+        "nat": {
+          "ip": "192.0.2.22",
+          "port": 443
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "id": "110221866487024",
+        "kind": "event",
+        "original": "<174>May 25 09:07:27 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:27.295\",\"method\":\"GET\",\"requestId\":110221859354758,\"domain\":\"api.dfblvbaqpfo.com\",\"host\":\"api.dfblvbaqpfo.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487024,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":48988,\"timeStamp\":\"2051-05-25 09:07:27.284\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":48278,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+        "provider": "http_request",
+        "timezone": "America/Denver",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "name": "Ociapn-U60"
+      },
+      "http": {
+        "request": {
+          "bytes": 0,
+          "method": "GET"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:yAbmcXFzF+VI+5A93vfFCOcmuOw=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "alias": "External",
+            "id": "1",
+            "name": "eth0"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "alias": "Internal",
+            "id": "2",
+            "name": "eth1"
+          }
+        },
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "hosts": [
+          "Ociapn-U60",
+          "api.dfblvbaqpfo.com"
+        ],
+        "ip": [
+          "192.0.2.22",
+          "192.168.130.47",
+          "203.0.113.75"
+        ]
+      },
+      "rule": {
+        "ruleset": "1"
+      },
+      "source": {
+        "ip": "192.168.130.47",
+        "nat": {
+          "ip": "203.0.113.75",
+          "port": 48278
+        },
+        "port": 48988
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:07:44 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:44.093\",\"method\":\"GET\",\"requestId\":110221859354811,\"domain\":\"amer.ng.msg.teams.microsoft.com\",\"host\":\"amer.ng.msg.teams.microsoft.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"B83031I37\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.3388,\"localAddr\":\"192.168.131.221\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.131.221\",\"serverCountry\":\"US\",\"sessionId\":110221866487132,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":59560,\"timeStamp\":\"2051-05-25 09:07:44.062\",\"serverLongitude\":-121.8914,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":13485,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"username\":\"ssjzava\",\"tagsString\":\"\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:07:34 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:34.395\",\"method\":\"GET\",\"requestId\":110221859354809,\"domain\":\"orngonf.buojeepbwf-cii.com\",\"host\":\"orngonf.buojeepbwf-cii.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"GejhlfEhn2\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.114.223\",\"SServerAddr\":\"203.0.113.138\",\"remoteAddr\":\"203.0.113.138\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.223\",\"serverCountry\":\"US\",\"sessionId\":110221866487106,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":16040,\"timeStamp\":\"2051-05-25 09:07:34.386\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":15128,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"203.0.113.138\",\"tagsString\":\"\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:07:33 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:33.314\",\"method\":\"GET\",\"requestId\":110221859354806,\"domain\":\"me.hcnufaaxdgfqccscn.com\",\"host\":\"me.hcnufaaxdgfqccscn.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487103,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":51598,\"timeStamp\":\"2051-05-25 09:07:33.273\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":45333,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:07:30 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:30.333\",\"method\":\"GET\",\"requestId\":110221859354805,\"domain\":\"www.gstatic.com\",\"host\":\"www.gstatic.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487093,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":50548,\"timeStamp\":\"2051-05-25 09:07:30.316\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":39662,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:07:30 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:30.118\",\"method\":\"GET\",\"requestId\":110221859354804,\"domain\":\"wldypt.elkxcxhfz.com\",\"host\":\"wldypt.elkxcxhfz.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487086,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":36398,\"timeStamp\":\"2051-05-25 09:07:30.072\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":40425,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:07:29 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:29.775\",\"method\":\"GET\",\"requestId\":110221859354791,\"domain\":\"fara.jcwet.io\",\"host\":\"fara.jcwet.io\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":39.1028,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487071,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":40596,\"timeStamp\":\"2051-05-25 09:07:29.763\",\"serverLongitude\":-94.5778,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":32984,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:07:28 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:28.758\",\"method\":\"GET\",\"requestId\":110221859354783,\"domain\":\"mfxaxfiwk.apejtlc.co\",\"host\":\"mfxaxfiwk.apejtlc.co\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Apejtlc\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":39.1028,\"localAddr\":\"192.168.114.177\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.114.177\",\"serverCountry\":\"US\",\"sessionId\":110221866487052,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":52762,\"timeStamp\":\"2051-05-25 09:07:28.754\",\"serverLongitude\":-94.5778,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":30035,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:07:28 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:28.187\",\"method\":\"GET\",\"requestId\":110221859354760,\"domain\":\"xm9.lskcqf.com\",\"host\":\"xm9.lskcqf.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"XU\",\"sessionId\":110221866487028,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":57482,\"timeStamp\":\"2051-05-25 09:07:28.157\",\"clientIntf\":2,\"policyId\":1,\"SClientPort\":13556,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:07:27 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:27.517\",\"method\":\"GET\",\"requestId\":110221859354759,\"domain\":\"play-fe.googleapis.com\",\"host\":\"play-fe.googleapis.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487026,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":60308,\"timeStamp\":\"2051-05-25 09:07:27.498\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":21706,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 25 09:07:27 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-25 09:07:27.295\",\"method\":\"GET\",\"requestId\":110221859354758,\"domain\":\"api.dfblvbaqpfo.com\",\"host\":\"api.dfblvbaqpfo.com\",\"contentLength\":0,\"requestUri\":\"/\",\"class\":\"class com.untangle.app.http.HttpRequestEvent\",\"sessionEvent\":{\"entitled\":true,\"protocol\":6,\"hostname\":\"Ociapn-U60\",\"CServerPort\":443,\"protocolName\":\"TCP\",\"serverLatitude\":37.751,\"localAddr\":\"192.168.130.47\",\"SServerAddr\":\"192.0.2.22\",\"remoteAddr\":\"192.0.2.22\",\"serverIntf\":1,\"CClientAddr\":\"192.168.130.47\",\"serverCountry\":\"US\",\"sessionId\":110221866487024,\"SClientAddr\":\"203.0.113.75\",\"clientCountry\":\"XL\",\"policyRuleId\":0,\"CClientPort\":48988,\"timeStamp\":\"2051-05-25 09:07:27.284\",\"serverLongitude\":-97.822,\"clientIntf\":2,\"policyId\":1,\"SClientPort\":48278,\"bypassed\":false,\"SServerPort\":443,\"CServerAddr\":\"192.0.2.22\",\"tagsString\":\"\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-arista_ngfw-log-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "arista_ngfw",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -590,9 +590,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.aws.firewall.tcp_flags_array == null) {\n  ArrayList al = new ArrayList();\n  ctx.aws.firewall.put(\"tcp_flags_array\", al);\n}\n\ndef flags = Integer.parseUnsignedInt(ctx.aws.firewall.tcp_flags);\n\nif ((flags & 0x01) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"fin\");\n}\nif ((flags & 0x02) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"syn\");\n}\nif ((flags & 0x04) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"rst\");\n}\nif ((flags & 0x08) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"psh\");\n}\nif ((flags & 0x10) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"ack\");\n}\nif ((flags & 0x20) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"urg\");\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -698,8 +696,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -445,9 +445,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("json.meta.taskParameters") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.backstage = ctx.backstage == null ? new HashMap() : ctx.backstage;\nctx.backstage.task = ctx.backstage.task == null ? new HashMap() : ctx.backstage.task;\nctx.backstage.task.parameters = ctx.json.meta.taskParameters.toString();\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -468,9 +466,7 @@ impl Transform for Default {
                         })
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.backstage = ctx.backstage == null ? new HashMap() : ctx.backstage;\nctx.backstage.meta = ctx.json.meta.toString();\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

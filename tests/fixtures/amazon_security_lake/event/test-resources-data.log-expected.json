@@ -1,0 +1,107 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"resource\":{\"data\":\"{\\\"key\\\":\\\"value\\\"}\"}}"
+      },
+      "ocsf": {
+        "resources": [
+          {
+            "data": {
+              "key": "value"
+            }
+          }
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"resources\":[{\"data\":\"{\\\"key\\\":\\\"value\\\"}\"}, {\"data\": {\"objkey\": \"objvalue\"}}, {\"data\": \"notjsonstring\"}, {\"data\": [1,2,\"othertypes\"]}] }"
+      },
+      "ocsf": {
+        "resources": [
+          {
+            "data": {
+              "key": "value"
+            }
+          },
+          {
+            "data": {
+              "objkey": "objvalue"
+            }
+          },
+          {
+            "data": {
+              "value": "notjsonstring"
+            }
+          },
+          {
+            "data": {
+              "value": [
+                1,
+                2,
+                "othertypes"
+              ]
+            }
+          }
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"resource\":{\"data\":\"{\\\"key\\\":\\\"value\\\"}\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"resources\":[{\"data\":\"{\\\"key\\\":\\\"value\\\"}\"}, {\"data\": {\"objkey\": \"objvalue\"}}, {\"data\": \"notjsonstring\"}, {\"data\": [1,2,\"othertypes\"]}] }",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-amazon_security_lake-event-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [
+      "ocsf.malware.classification_ids",
+      "ocsf.user.ldap_person.manager.account.type_id",
+      "ocsf.dst_endpoint.type_id",
+      "ocsf.scan.type_id",
+      "ocsf.scan.type_id",
+      "ocsf.src_endpoint.type_id",
+      "ocsf.src_endpoint.type_id",
+      "ocsf.type_id",
+      "ocsf.user.ldap_person.manager.type_id",
+      "ocsf.resources.owner.type_id",
+      "ocsf.resources.owner.type_id",
+      "ocsf.dst_endpoint.type_id",
+      "ocsf.proxy_endpoint.type_id",
+      "ocsf.src_endpoint.type_id",
+      "ocsf.security_states.state_id"
+    ],
+    "package": "amazon_security_lake",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

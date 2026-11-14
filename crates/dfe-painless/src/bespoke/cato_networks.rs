@@ -328,7 +328,7 @@ fn camel_to_snake(key: &str) -> String {
     out
 }
 
-/// Every `cato_networks` script transcribed here.
+/// Every `cato_networks` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "a47ae8f963cfea0c91da8150de9aa6794a09a086a12136eccd1092ef9f122cf6",

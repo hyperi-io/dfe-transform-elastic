@@ -1,0 +1,190 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-04T19:56:35.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:sts::00000000000:assumed-role/DOIOezxpddUpodAoqAibhswXIR/StateManagerService"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_category": "Management",
+          "event_type": "AwsApiCall",
+          "event_version": "1.08",
+          "flattened": {
+            "request_parameters": {
+              "comment": "1a11af2f-cc0c-4869-bf8e-d21dffd6643b:d241b600-fb63-447b-9d65-3c66bff74c05",
+              "documentName": "AWS-RunPatchBaselineAssociation",
+              "documentVersion": "1",
+              "instanceIds": [
+                "*"
+              ],
+              "interactive": false,
+              "maxConcurrency": "100%",
+              "maxErrors": "100%",
+              "parameters": "HIDDEN_DUE_TO_SECURITY_REASONS",
+              "timeoutSeconds": 600
+            },
+            "response_elements": {
+              "command": {
+                "alarmConfiguration": {
+                  "ignorePollAlarmFailure": false
+                },
+                "clientName": "StateManager",
+                "cloudWatchOutputConfig": {
+                  "cloudWatchOutputEnabled": false
+                },
+                "commandId": "5a4de3c4-b5a5-44ca-b24a-a1cf3f1c1341",
+                "comment": "1a11af2f-cc0c-4869-bf8e-d21dffd6643b:d241b600-fb63-447b-9d65-3c66bff74c05",
+                "completedCount": 0,
+                "deliveryTimedOutCount": 0,
+                "documentName": "AWS-RunPatchBaselineAssociation",
+                "documentVersion": "1",
+                "errorCount": 0,
+                "expiresAfter": "Nov 5, 2052, 2:06:35 AM",
+                "hasCancelCommandSignature": false,
+                "hasSendCommandSignature": false,
+                "instanceIds": [
+                  "*"
+                ],
+                "interactive": false,
+                "maxConcurrency": "100%",
+                "maxErrors": "100%",
+                "outputS3Region": "us-east-1",
+                "parameters": "HIDDEN_DUE_TO_SECURITY_REASONS",
+                "requestedDateTime": "Nov 4, 2052, 7:56:35 PM",
+                "status": "Pending",
+                "statusDetails": "Pending",
+                "targetCount": 0,
+                "timeoutSeconds": 600
+              }
+            }
+          },
+          "read_only": false,
+          "recipient_account_id": "00000000000",
+          "request_id": "5ba7ac88-bd29-4986-ae9c-589480c09694",
+          "request_parameters": "{maxErrors=100%, instanceIds=[*], interactive=false, timeoutSeconds=600, comment=1a11af2f-cc0c-4869-bf8e-d21dffd6643b:d241b600-fb63-447b-9d65-3c66bff74c05, documentName=AWS-RunPatchBaselineAssociation, parameters=HIDDEN_DUE_TO_SECURITY_REASONS, documentVersion=1, maxConcurrency=100%}",
+          "response_elements": "{command={clientName=StateManager, interactive=false, alarmConfiguration={ignorePollAlarmFailure=false}, deliveryTimedOutCount=0, targetCount=0, documentVersion=1, maxConcurrency=100%, hasSendCommandSignature=false, expiresAfter=Nov 5, 2052, 2:06:35 AM, instanceIds=[*], hasCancelCommandSignature=false, requestedDateTime=Nov 4, 2052, 7:56:35 PM, errorCount=0, documentName=AWS-RunPatchBaselineAssociation, completedCount=0, commandId=5a4de3c4-b5a5-44ca-b24a-a1cf3f1c1341, outputS3Region=us-east-1, maxErrors=100%, statusDetails=Pending, timeoutSeconds=600, comment=1a11af2f-cc0c-4869-bf8e-d21dffd6643b:d241b600-fb63-447b-9d65-3c66bff74c05, cloudWatchOutputConfig={cloudWatchOutputEnabled=false}, parameters=HIDDEN_DUE_TO_SECURITY_REASONS, status=Pending}}",
+          "user_identity": {
+            "access_key_id": "ACCESSKEY",
+            "arn": "arn:aws:sts::00000000000:assumed-role/DOIOezxpddUpodAoqAibhswXIR/StateManagerService",
+            "invoked_by": "ssm.amazonaws.com",
+            "session_context": {
+              "creation_date": "2052-11-04T19:56:35.000Z",
+              "mfa_authenticated": "false",
+              "session_issuer": {
+                "account_id": "00000000000",
+                "arn": "arn:aws:iam::00000000000:role/aws-service-role/ssm.amazonaws.com/DOIOezxpddUpodAoqAibhswXIR",
+                "principal_id": "PRINCIPAL",
+                "type": "Role"
+              }
+            },
+            "type": "AssumedRole"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "00000000000"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entity": {
+        "target": {
+          "id": [
+            "00000000000"
+          ]
+        }
+      },
+      "event": {
+        "action": "SendCommand",
+        "category": [
+          "process"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "929e5ac6-66b4-48da-b90c-23d538a871e2",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.08\",\"userIdentity\":{\"type\":\"AssumedRole\",\"principalId\":\"PRINCIPAL:StateManagerService\",\"arn\":\"arn:aws:sts::00000000000:assumed-role/DOIOezxpddUpodAoqAibhswXIR/StateManagerService\",\"accountId\":\"00000000000\",\"accessKeyId\":\"ACCESSKEY\",\"sessionContext\":{\"sessionIssuer\":{\"type\":\"Role\",\"principalId\":\"PRINCIPAL\",\"arn\":\"arn:aws:iam::00000000000:role/aws-service-role/ssm.amazonaws.com/DOIOezxpddUpodAoqAibhswXIR\",\"accountId\":\"00000000000\",\"userName\":\"DOIOezxpddUpodAoqAibhswXIR\"},\"webIdFederationData\":{},\"attributes\":{\"creationDate\":\"2052-11-04T19:56:35Z\",\"mfaAuthenticated\":\"false\"}},\"invokedBy\":\"ssm.amazonaws.com\"},\"eventTime\":\"2052-11-04T19:56:35Z\",\"eventSource\":\"ssm.amazonaws.com\",\"eventName\":\"SendCommand\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"ssm.amazonaws.com\",\"userAgent\":\"ssm.amazonaws.com\",\"requestParameters\":{\"instanceIds\":[\"*\"],\"documentName\":\"AWS-RunPatchBaselineAssociation\",\"documentVersion\":\"1\",\"timeoutSeconds\":600,\"comment\":\"1a11af2f-cc0c-4869-bf8e-d21dffd6643b:d241b600-fb63-447b-9d65-3c66bff74c05\",\"parameters\":\"HIDDEN_DUE_TO_SECURITY_REASONS\",\"maxConcurrency\":\"100%\",\"maxErrors\":\"100%\",\"clientName\":\"\",\"interactive\":false},\"responseElements\":{\"command\":{\"commandId\":\"5a4de3c4-b5a5-44ca-b24a-a1cf3f1c1341\",\"documentName\":\"AWS-RunPatchBaselineAssociation\",\"documentVersion\":\"1\",\"comment\":\"1a11af2f-cc0c-4869-bf8e-d21dffd6643b:d241b600-fb63-447b-9d65-3c66bff74c05\",\"expiresAfter\":\"Nov 5, 2052, 2:06:35 AM\",\"parameters\":\"HIDDEN_DUE_TO_SECURITY_REASONS\",\"instanceIds\":[\"*\"],\"targets\":[],\"requestedDateTime\":\"Nov 4, 2052, 7:56:35 PM\",\"status\":\"Pending\",\"statusDetails\":\"Pending\",\"outputS3Region\":\"us-east-1\",\"outputS3BucketName\":\"\",\"outputS3KeyPrefix\":\"\",\"maxConcurrency\":\"100%\",\"maxErrors\":\"100%\",\"targetCount\":0,\"completedCount\":0,\"errorCount\":0,\"deliveryTimedOutCount\":0,\"serviceRole\":\"\",\"notificationConfig\":{\"notificationArn\":\"\",\"notificationEvents\":[],\"notificationType\":\"\"},\"cloudWatchOutputConfig\":{\"cloudWatchLogGroupName\":\"\",\"cloudWatchOutputEnabled\":false},\"interactive\":false,\"timeoutSeconds\":600,\"clientName\":\"StateManager\",\"clientSourceId\":\"\",\"alarmConfiguration\":{\"ignorePollAlarmFailure\":false,\"alarms\":[]},\"triggeredAlarms\":[],\"hasSendCommandSignature\":false,\"hasCancelCommandSignature\":false}},\"requestID\":\"5ba7ac88-bd29-4986-ae9c-589480c09694\",\"eventID\":\"929e5ac6-66b4-48da-b90c-23d538a871e2\",\"readOnly\":false,\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"00000000000\",\"eventCategory\":\"Management\"}",
+        "outcome": "success",
+        "provider": "ssm.amazonaws.com"
+      },
+      "related": {
+        "entity": [
+          "00000000000",
+          "ACCESSKEY",
+          "DOIOezxpddUpodAoqAibhswXIR",
+          "arn:aws:iam::00000000000:role/aws-service-role/ssm.amazonaws.com/DOIOezxpddUpodAoqAibhswXIR",
+          "arn:aws:sts::00000000000:assumed-role/DOIOezxpddUpodAoqAibhswXIR/StateManagerService"
+        ],
+        "user": [
+          "StateManagerService",
+          "PRINCIPAL:StateManagerService",
+          "DOIOezxpddUpodAoqAibhswXIR"
+        ]
+      },
+      "source": {
+        "address": "ssm.amazonaws.com"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "00000000000"
+          ]
+        }
+      },
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:sts::00000000000:assumed-role/DOIOezxpddUpodAoqAibhswXIR/StateManagerService"
+          ]
+        },
+        "id": "PRINCIPAL:StateManagerService",
+        "name": "DOIOezxpddUpodAoqAibhswXIR"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "ssm.amazonaws.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.08\",\"userIdentity\":{\"type\":\"AssumedRole\",\"principalId\":\"PRINCIPAL:StateManagerService\",\"arn\":\"arn:aws:sts::00000000000:assumed-role/DOIOezxpddUpodAoqAibhswXIR/StateManagerService\",\"accountId\":\"00000000000\",\"accessKeyId\":\"ACCESSKEY\",\"sessionContext\":{\"sessionIssuer\":{\"type\":\"Role\",\"principalId\":\"PRINCIPAL\",\"arn\":\"arn:aws:iam::00000000000:role/aws-service-role/ssm.amazonaws.com/DOIOezxpddUpodAoqAibhswXIR\",\"accountId\":\"00000000000\",\"userName\":\"DOIOezxpddUpodAoqAibhswXIR\"},\"webIdFederationData\":{},\"attributes\":{\"creationDate\":\"2052-11-04T19:56:35Z\",\"mfaAuthenticated\":\"false\"}},\"invokedBy\":\"ssm.amazonaws.com\"},\"eventTime\":\"2052-11-04T19:56:35Z\",\"eventSource\":\"ssm.amazonaws.com\",\"eventName\":\"SendCommand\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"ssm.amazonaws.com\",\"userAgent\":\"ssm.amazonaws.com\",\"requestParameters\":{\"instanceIds\":[\"*\"],\"documentName\":\"AWS-RunPatchBaselineAssociation\",\"documentVersion\":\"1\",\"timeoutSeconds\":600,\"comment\":\"1a11af2f-cc0c-4869-bf8e-d21dffd6643b:d241b600-fb63-447b-9d65-3c66bff74c05\",\"parameters\":\"HIDDEN_DUE_TO_SECURITY_REASONS\",\"maxConcurrency\":\"100%\",\"maxErrors\":\"100%\",\"clientName\":\"\",\"interactive\":false},\"responseElements\":{\"command\":{\"commandId\":\"5a4de3c4-b5a5-44ca-b24a-a1cf3f1c1341\",\"documentName\":\"AWS-RunPatchBaselineAssociation\",\"documentVersion\":\"1\",\"comment\":\"1a11af2f-cc0c-4869-bf8e-d21dffd6643b:d241b600-fb63-447b-9d65-3c66bff74c05\",\"expiresAfter\":\"Nov 5, 2052, 2:06:35 AM\",\"parameters\":\"HIDDEN_DUE_TO_SECURITY_REASONS\",\"instanceIds\":[\"*\"],\"targets\":[],\"requestedDateTime\":\"Nov 4, 2052, 7:56:35 PM\",\"status\":\"Pending\",\"statusDetails\":\"Pending\",\"outputS3Region\":\"us-east-1\",\"outputS3BucketName\":\"\",\"outputS3KeyPrefix\":\"\",\"maxConcurrency\":\"100%\",\"maxErrors\":\"100%\",\"targetCount\":0,\"completedCount\":0,\"errorCount\":0,\"deliveryTimedOutCount\":0,\"serviceRole\":\"\",\"notificationConfig\":{\"notificationArn\":\"\",\"notificationEvents\":[],\"notificationType\":\"\"},\"cloudWatchOutputConfig\":{\"cloudWatchLogGroupName\":\"\",\"cloudWatchOutputEnabled\":false},\"interactive\":false,\"timeoutSeconds\":600,\"clientName\":\"StateManager\",\"clientSourceId\":\"\",\"alarmConfiguration\":{\"ignorePollAlarmFailure\":false,\"alarms\":[]},\"triggeredAlarms\":[],\"hasSendCommandSignature\":false,\"hasCancelCommandSignature\":false}},\"requestID\":\"5ba7ac88-bd29-4986-ae9c-589480c09694\",\"eventID\":\"929e5ac6-66b4-48da-b90c-23d538a871e2\",\"readOnly\":false,\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"00000000000\",\"eventCategory\":\"Management\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-12-16",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "o365": {
+        "metrics": {
+          "viva": {
+            "engage": {
+              "device": {
+                "usage": {
+                  "user": {
+                    "counts": {
+                      "android_phone": {
+                        "count": 1
+                      },
+                      "ipad": {
+                        "count": 5
+                      },
+                      "iphone": {
+                        "count": 6
+                      },
+                      "other": {
+                        "count": 2
+                      },
+                      "report": {
+                        "date": "2052-12-16",
+                        "period": {
+                          "day": "7"
+                        },
+                        "refresh_date": "2052-12-22"
+                      },
+                      "web": {
+                        "count": 3
+                      },
+                      "windows_phone": {
+                        "count": 4
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "viva_engage_device_usage_user_counts": "{\"Android Phone\":\"1\",\"Other\":\"2\",\"Report Date\":\"2052-12-16\",\"Report Period\":\"7\",\"Web\":\"3\",\"Windows Phone\":\"4\",\"iPad\":\"5\",\"iPhone\":\"6\",\"Report Refresh Date\":\"2052-12-22\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "viva_engage_device_usage_user_counts",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-viva_engage_device_usage_user_counts-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

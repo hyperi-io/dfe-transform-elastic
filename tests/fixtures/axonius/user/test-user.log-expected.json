@@ -1,0 +1,163 @@
+{
+  "expected": [
+    {
+      "axonius": {
+        "user": {
+          "allowed_scopes_impersonation": [
+            "63622d93d274d9489db6a1cf",
+            "63622d93d274d9489db6a1cc"
+          ],
+          "data_scope_id": "fgreg63622d93d274d9489db6a1cf",
+          "data_scope_name": "example data scope",
+          "department": "example",
+          "first_name": "rvny",
+          "last_login": "2025-03-08T18:53:09.000Z",
+          "last_name": "bod",
+          "last_updated": "2025-03-10T18:53:09.000Z",
+          "role_id": "63622d93d274d9489dbbgresdcv6a1cf",
+          "role_name": "example role",
+          "source": "example source",
+          "title": "Software Engineer"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"role_id\":\"63622d93d274d9489dbbgresdcv6a1cf\",\"data_scope_id\":\"fgreg63622d93d274d9489db6a1cf\",\"allowed_scopes_impersonation\":[\"63622d93d274d9489db6a1cf\",\"63622d93d274d9489db6a1cc\"],\"first_name\":\"rvny\",\"last_name\":\"bod\",\"email\":\"hshg.fqb@example.com\",\"title\":\"Software Engineer\",\"department\":\"example\",\"user_name\":\"hshg.fqb\",\"last_updated\":\"Sat, 10 Mar 2025 18:53:09 GMT\",\"source\":\"example source\",\"uuid\":\"63622d93d274d9489db6a1cf\",\"role_name\":\"example role\",\"data_scope_name\":\"example data scope\",\"last_login\":\"Sat, 08 Mar 2025 18:53:09 GMT\"}"
+      },
+      "related": {
+        "user": [
+          "rvny bod",
+          "hshg.fqb@example.com",
+          "hshg.fqb",
+          "63622d93d274d9489db6a1cf"
+        ]
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "hshg.fqb@example.com",
+        "full_name": "rvny bod",
+        "id": "63622d93d274d9489db6a1cf",
+        "name": "hshg.fqb",
+        "roles": [
+          "example role"
+        ]
+      }
+    },
+    {
+      "axonius": {
+        "user": {
+          "allowed_scopes_impersonation": [
+            "63622d93d27cvdsfa4d9489db6a1cf",
+            "63622d93d2dvfwe74d9489db6a1cc"
+          ],
+          "data_scope_id": "fgreg63622d93d274d9489db6a1cf",
+          "data_scope_name": "test data scope",
+          "department": "test",
+          "first_name": "bgnao",
+          "last_login": "2025-03-09T18:53:09.000Z",
+          "last_name": "bod",
+          "last_updated": "2025-03-11T18:53:09.000Z",
+          "role_id": "63622vfed93d274d9489dbbgresdcv6a1cf",
+          "role_name": "test role",
+          "source": "test source",
+          "title": "Security Analyst"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"role_id\":\"63622vfed93d274d9489dbbgresdcv6a1cf\",\"data_scope_id\":\"fgreg63622d93d274d9489db6a1cf\",\"allowed_scopes_impersonation\":[\"63622d93d27cvdsfa4d9489db6a1cf\",\"63622d93d2dvfwe74d9489db6a1cc\"],\"first_name\":\"bgnao\",\"last_name\":\"bod\",\"email\":\"fiibv.aob@example.com\",\"title\":\"Security Analyst\",\"department\":\"test\",\"user_name\":\"fiibv.aob\",\"last_updated\":\"Sun, 11 Mar 2025 18:53:09 GMT\",\"source\":\"test source\",\"uuid\":\"63622d93d274ihvbngvbhd9489db6a1cf\",\"role_name\":\"test role\",\"data_scope_name\":\"test data scope\",\"last_login\":\"Sun, 09 Mar 2025 18:53:09 GMT\"}"
+      },
+      "related": {
+        "user": [
+          "bgnao bod",
+          "fiibv.aob@example.com",
+          "fiibv.aob",
+          "63622d93d274ihvbngvbhd9489db6a1cf"
+        ]
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "fiibv.aob@example.com",
+        "full_name": "bgnao bod",
+        "id": "63622d93d274ihvbngvbhd9489db6a1cf",
+        "name": "fiibv.aob",
+        "roles": [
+          "test role"
+        ]
+      }
+    },
+    {
+      "axonius": {
+        "user": {
+          "allowed_scopes_impersonation": [
+            "63622d93d27vdfrew4d9489db6a1cf",
+            "63622d93d27fvdwe4d9489db6a1cc"
+          ],
+          "data_scope_id": "fgreghtgrtefdgrt63622d93d274d9489db6a1cf",
+          "data_scope_name": "sample data scope",
+          "department": "sample",
+          "first_name": "fpf",
+          "last_login": "2025-03-08T18:53:09.000Z",
+          "last_name": "bod",
+          "last_updated": "2025-03-12T18:53:09.000Z",
+          "role_id": "63622d93d27xcvdgre4d9489dbbgresdcv6a1cf",
+          "role_name": " role",
+          "source": "sample source",
+          "title": "Cloud Operations Engineer"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"role_id\":\"63622d93d27xcvdgre4d9489dbbgresdcv6a1cf\",\"data_scope_id\":\"fgreghtgrtefdgrt63622d93d274d9489db6a1cf\",\"allowed_scopes_impersonation\":[\"63622d93d27vdfrew4d9489db6a1cf\",\"63622d93d27fvdwe4d9489db6a1cc\"],\"first_name\":\"fpf\",\"last_name\":\"bod\",\"email\":\"avb.ela@example.com\",\"title\":\"Cloud Operations Engineer\",\"department\":\"sample\",\"user_name\":\"avb.ela\",\"last_updated\":\"Mon, 12 Mar 2025 18:53:09 GMT\",\"source\":\"sample source\",\"uuid\":\"78ij63622d93d274d9489db6a1cf\",\"role_name\":\" role\",\"data_scope_name\":\"sample data scope\",\"last_login\":\"Mon, 08 Mar 2025 18:53:09 GMT\"}"
+      },
+      "related": {
+        "user": [
+          "fpf bod",
+          "avb.ela@example.com",
+          "avb.ela",
+          "78ij63622d93d274d9489db6a1cf"
+        ]
+      },
+      "user": {
+        "domain": "example.com",
+        "email": "avb.ela@example.com",
+        "full_name": "fpf bod",
+        "id": "78ij63622d93d274d9489db6a1cf",
+        "name": "avb.ela",
+        "roles": [
+          " role"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"role_id\":\"63622d93d274d9489dbbgresdcv6a1cf\",\"data_scope_id\":\"fgreg63622d93d274d9489db6a1cf\",\"allowed_scopes_impersonation\":[\"63622d93d274d9489db6a1cf\",\"63622d93d274d9489db6a1cc\"],\"first_name\":\"rvny\",\"last_name\":\"bod\",\"email\":\"hshg.fqb@example.com\",\"title\":\"Software Engineer\",\"department\":\"example\",\"user_name\":\"hshg.fqb\",\"last_updated\":\"Sat, 10 Mar 2025 18:53:09 GMT\",\"source\":\"example source\",\"uuid\":\"63622d93d274d9489db6a1cf\",\"role_name\":\"example role\",\"data_scope_name\":\"example data scope\",\"last_login\":\"Sat, 08 Mar 2025 18:53:09 GMT\"}"
+    },
+    {
+      "message": "{\"role_id\":\"63622vfed93d274d9489dbbgresdcv6a1cf\",\"data_scope_id\":\"fgreg63622d93d274d9489db6a1cf\",\"allowed_scopes_impersonation\":[\"63622d93d27cvdsfa4d9489db6a1cf\",\"63622d93d2dvfwe74d9489db6a1cc\"],\"first_name\":\"bgnao\",\"last_name\":\"bod\",\"email\":\"fiibv.aob@example.com\",\"title\":\"Security Analyst\",\"department\":\"test\",\"user_name\":\"fiibv.aob\",\"last_updated\":\"Sun, 11 Mar 2025 18:53:09 GMT\",\"source\":\"test source\",\"uuid\":\"63622d93d274ihvbngvbhd9489db6a1cf\",\"role_name\":\"test role\",\"data_scope_name\":\"test data scope\",\"last_login\":\"Sun, 09 Mar 2025 18:53:09 GMT\"}"
+    },
+    {
+      "message": "{\"role_id\":\"63622d93d27xcvdgre4d9489dbbgresdcv6a1cf\",\"data_scope_id\":\"fgreghtgrtefdgrt63622d93d274d9489db6a1cf\",\"allowed_scopes_impersonation\":[\"63622d93d27vdfrew4d9489db6a1cf\",\"63622d93d27fvdwe4d9489db6a1cc\"],\"first_name\":\"fpf\",\"last_name\":\"bod\",\"email\":\"avb.ela@example.com\",\"title\":\"Cloud Operations Engineer\",\"department\":\"sample\",\"user_name\":\"avb.ela\",\"last_updated\":\"Mon, 12 Mar 2025 18:53:09 GMT\",\"source\":\"sample source\",\"uuid\":\"78ij63622d93d274d9489db6a1cf\",\"role_name\":\" role\",\"data_scope_name\":\"sample data scope\",\"last_login\":\"Mon, 08 Mar 2025 18:53:09 GMT\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "user",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-axonius-user-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "axonius",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

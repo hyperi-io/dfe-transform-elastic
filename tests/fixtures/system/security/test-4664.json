@@ -1,0 +1,70 @@
+{
+    "events": [
+        {
+            "@timestamp": "2050-12-01T08:45:36.100Z",
+            "agent": {
+                "type": "winlogbeat",
+                "ephemeral_id": "7d2caeef-f2bc-439c-96ed-84601bb37a76",
+                "hostname": "Wfmmax1",
+                "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+                "version": "7.3.1"
+            },
+            "ecs": {
+                "version": "1.0.1"
+            },
+            "winlog": {
+                "record_id": 59575749,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+                "process": {
+                    "pid": 4,
+                    "thread": {
+                        "id": 3512
+                    }
+                },
+                "event_data": {
+                    "SubjectLogonId": "0x3e7",
+                    "FileName": "C:\\Windows\\WinSxS\\msil_microsoft.jscript_b03f5f7f11d50a3a_10.0.14393.0_none_892dffbf233e9807\\Microsoft.JScript.dll",
+                    "LinkName": "C:\\Windows\\assembly\\GAC_MSIL\\Microsoft.JScript\\203.0.113.173__b03f5f7f11d50a3a\\Microsoft.JScript.dll",
+                    "TransactionId": "{BF1A7C33-8563-11CC-8AAF-58474757400D}",
+                    "SubjectUserSid": "S-1-5-18",
+                    "SubjectUserName": "WFMMAX1$",
+                    "SubjectDomainName": "TEST1"
+                },
+                "task": "File System",
+                "api": "wineventlog",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "Wfmmax1.xcyu5.local",
+                "channel": "Security",
+                "event_id": 4664,
+                "opcode": "Info"
+            },
+            "event": {
+                "code": 4664,
+                "action": "File System",
+                "created": "2050-12-01T08:46:24.397Z",
+                "kind": "event"
+            },
+            "log": {
+                "level": "information"
+            },
+            "message": "An attempt was made to create a hard link.\n\nSubject:\n\tAccount Name:\t\tS-1-5-18\n\tAccount Name:\t\tSERVER2$\n\tAccount Domain:\t\tTEST1\n\tLogon ID:\t\t0x3E7\n\nLink Information:\n\tFile Name:\tC:\\Windows\\WinSxS\\msil_microsoft.jscript_b03f5f7f11d50a3a_10.0.14393.0_none_892dffbf233e9807\\Microsoft.JScript.dll\n\tLink Name:\tC:\\Windows\\assembly\\GAC_MSIL\\Microsoft.JScript\\203.0.113.173__b03f5f7f11d50a3a\\Microsoft.JScript.dll\n\tTransaction ID:\t{BF1A7C33-8563-11CC-8AAF-58474757400D}",
+            "host": {
+                "id": "9ff0eeec-e913-4a05-990e-50d99b6ea290",
+                "name": "Wfmmax1",
+                "hostname": "Wfmmax1",
+                "architecture": "x86_64",
+                "os": {
+                    "version": "10.0",
+                    "family": "windows",
+                    "name": "Windows Server 2016 Standard Evaluation",
+                    "kernel": "10.0.14393.693 (rs1_release.161220-1747)",
+                    "build": "14393.693",
+                    "platform": "windows"
+                }
+            }
+        }
+    ]
+}

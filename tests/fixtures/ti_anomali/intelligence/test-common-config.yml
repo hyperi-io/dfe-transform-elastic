@@ -1,0 +1,8 @@
+# Test inputs for this directory's fixtures.
+fields:
+  _conf:
+    ioc_duration_before_deletion: 85d
+dynamic_fields:
+  event.ingested: .*
+  '@timestamp': .*
+  anomali.threatstream.deletion_scheduled_at: .*

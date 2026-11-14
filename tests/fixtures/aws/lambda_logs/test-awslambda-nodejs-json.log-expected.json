@@ -1,0 +1,186 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "aws": {
+        "lambda": {
+          "error": {
+            "message": "some reference error",
+            "stack_trace": "ReferenceError: some reference error\\n    at Runtime.handler (file:///var/task/index.mjs:3:12)\\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)",
+            "type": "ReferenceError"
+          },
+          "message": {
+            "stackTrace": [
+              "ReferenceError: some reference error",
+              "    at Runtime.handler (file:///var/task/index.mjs:3:12)",
+              "    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)"
+            ]
+          },
+          "request_id": "874e5431-1951-4178-af12-23491fb2277c"
+        }
+      },
+      "cloud": {
+        "provider": "aws",
+        "service": {
+          "name": "aws_lambda"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\n    \"timestamp\": \"2051-12-08T23:21:04.632Z\",\n    \"level\": \"INFO\",\n    \"requestId\": \"874e5431-1951-4178-af12-23491fb2277c\",\n    \"message\": {\n        \"errorType\": \"ReferenceError\",\n        \"errorMessage\": \"some reference error\",\n        \"stackTrace\": [\n            \"ReferenceError: some reference error\",\n            \"    at Runtime.handler (file:///var/task/index.mjs:3:12)\",\n            \"    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)\"\n        ]\n    }\n}"
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "aws": {
+        "lambda": {
+          "message": {
+            "message": "This is a warning message",
+            "timestamp": "2051-11-01T00:21:51.358Z"
+          },
+          "request_id": "69d22912-1bbe-4908-8c97-903f1fe34d5b"
+        }
+      },
+      "cloud": {
+        "provider": "aws",
+        "service": {
+          "name": "aws_lambda"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\n    \"timestamp\":\"2051-11-01T00:21:51.358Z\",\n    \"level\":\"ERROR\",\n    \"message\":\"This is a warning message\",\n    \"requestId\":\"69d22912-1bbe-4908-8c97-903f1fe34d5b\"\n}"
+      },
+      "log": {
+        "level": "ERROR"
+      },
+      "message": "This is a warning message",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "aws": {
+        "lambda": {
+          "message": {
+            "data": 12.3,
+            "flag": false
+          },
+          "request_id": "874e5431-1951-4178-af12-23491fb2277c"
+        }
+      },
+      "cloud": {
+        "provider": "aws",
+        "service": {
+          "name": "aws_lambda"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\n    \"timestamp\": \"2051-12-08T23:21:04.664Z\",\n    \"level\": \"INFO\",\n    \"requestId\": \"874e5431-1951-4178-af12-23491fb2277c\",\n    \"message\": {\n        \"data\": 12.3,\n        \"flag\": false\n    }\n}"
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "aws": {
+        "lambda": {
+          "error": {
+            "message": "some reference error",
+            "stack_trace": "ReferenceError: some reference error\\n    at Runtime.handler (file:///var/task/index.mjs:3:12)\\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)",
+            "type": "ReferenceError"
+          },
+          "message": {
+            "message": "errors logged -  ReferenceError: some reference error\n    at Runtime.handler (file:///var/task/index.mjs:3:12)\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29) SyntaxError: some syntax error\n    at Runtime.handler (file:///var/task/index.mjs:4:12)\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)",
+            "stackTrace": [
+              "ReferenceError: some reference error",
+              "    at Runtime.handler (file:///var/task/index.mjs:3:12)",
+              "    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)"
+            ],
+            "timestamp": "2051-12-08T23:21:04.646Z"
+          },
+          "request_id": "874e5431-1951-4178-af12-23491fb2277c"
+        }
+      },
+      "cloud": {
+        "provider": "aws",
+        "service": {
+          "name": "aws_lambda"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\n    \"timestamp\": \"2051-12-08T23:21:04.646Z\",\n    \"level\": \"INFO\",\n    \"requestId\": \"874e5431-1951-4178-af12-23491fb2277c\",\n    \"message\": \"errors logged -  ReferenceError: some reference error\\n    at Runtime.handler (file:///var/task/index.mjs:3:12)\\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29) SyntaxError: some syntax error\\n    at Runtime.handler (file:///var/task/index.mjs:4:12)\\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)\",\n    \"errorType\": \"ReferenceError\",\n    \"errorMessage\": \"some reference error\",\n    \"stackTrace\": [\n        \"ReferenceError: some reference error\",\n        \"    at Runtime.handler (file:///var/task/index.mjs:3:12)\",\n        \"    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)\"\n    ]\n}"
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "message": "errors logged -  ReferenceError: some reference error\n    at Runtime.handler (file:///var/task/index.mjs:3:12)\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29) SyntaxError: some syntax error\n    at Runtime.handler (file:///var/task/index.mjs:4:12)\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "message": "{\n    \"timestamp\": \"2051-12-08T23:21:04.632Z\",\n    \"level\": \"INFO\",\n    \"requestId\": \"874e5431-1951-4178-af12-23491fb2277c\",\n    \"message\": {\n        \"errorType\": \"ReferenceError\",\n        \"errorMessage\": \"some reference error\",\n        \"stackTrace\": [\n            \"ReferenceError: some reference error\",\n            \"    at Runtime.handler (file:///var/task/index.mjs:3:12)\",\n            \"    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)\"\n        ]\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "message": "{\n    \"timestamp\":\"2051-11-01T00:21:51.358Z\",\n    \"level\":\"ERROR\",\n    \"message\":\"This is a warning message\",\n    \"requestId\":\"69d22912-1bbe-4908-8c97-903f1fe34d5b\"\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "message": "{\n    \"timestamp\": \"2051-12-08T23:21:04.664Z\",\n    \"level\": \"INFO\",\n    \"requestId\": \"874e5431-1951-4178-af12-23491fb2277c\",\n    \"message\": {\n        \"data\": 12.3,\n        \"flag\": false\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "message": "{\n    \"timestamp\": \"2051-12-08T23:21:04.646Z\",\n    \"level\": \"INFO\",\n    \"requestId\": \"874e5431-1951-4178-af12-23491fb2277c\",\n    \"message\": \"errors logged -  ReferenceError: some reference error\\n    at Runtime.handler (file:///var/task/index.mjs:3:12)\\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29) SyntaxError: some syntax error\\n    at Runtime.handler (file:///var/task/index.mjs:4:12)\\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)\",\n    \"errorType\": \"ReferenceError\",\n    \"errorMessage\": \"some reference error\",\n    \"stackTrace\": [\n        \"ReferenceError: some reference error\",\n        \"    at Runtime.handler (file:///var/task/index.mjs:3:12)\",\n        \"    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)\"\n    ]\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "lambda_logs",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-lambda_logs-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

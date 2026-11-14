@@ -1,0 +1,219 @@
+{
+    "events": [
+        {
+            "event": {
+                "code": "4797",
+                "kind": "event",
+                "outcome": "success",
+                "provider": "Microsoft-Windows-Security-Auditing"
+            },
+            "host": {
+                "name": "PUOWTDIB.egmukjj.com"
+            },
+            "log": {
+                "level": "information"
+            },
+            "winlog": {
+                "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+                "channel": "Security",
+                "computer_name": "PUOWTDIB.egmukjj.com",
+                "event_data": {
+                    "SubjectDomainName": "CONTOSO",
+                    "SubjectLogonId": "0x61ccd940",
+                    "SubjectUserName": "zqay7",
+                    "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+                    "TargetDomainName": "PUOWTDIB",
+                    "TargetUserName": "Guest",
+                    "Workstation": "PUOWTDIB"
+                },
+                "event_id": "4797",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "process": {
+                    "pid": 868,
+                    "thread": {
+                        "id": 12248
+                    }
+                },
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 39956816,
+                "time_created": "2051-01-17T22:10:41.5550438Z"
+            }
+        },
+        {
+            "event": {
+                "code": "4797",
+                "kind": "event",
+                "outcome": "success",
+                "provider": "Microsoft-Windows-Security-Auditing"
+            },
+            "host": {
+                "name": "PUOWTDIB.egmukjj.com"
+            },
+            "log": {
+                "level": "information"
+            },
+            "winlog": {
+                "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+                "channel": "Security",
+                "computer_name": "PUOWTDIB.egmukjj.com",
+                "event_data": {
+                    "SubjectDomainName": "CONTOSO",
+                    "SubjectLogonId": "0x61ccd940",
+                    "SubjectUserName": "zqay7",
+                    "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+                    "TargetDomainName": "PUOWTDIB",
+                    "TargetUserName": "KFCOIvzwqxvAfeowil",
+                    "Workstation": "PUOWTDIB"
+                },
+                "event_id": "4797",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "process": {
+                    "pid": 868,
+                    "thread": {
+                        "id": 12248
+                    }
+                },
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 39956815,
+                "time_created": "2051-01-17T22:10:41.5328919Z"
+            }
+        },
+        {
+            "event": {
+                "code": "4797",
+                "kind": "event",
+                "outcome": "success",
+                "provider": "Microsoft-Windows-Security-Auditing"
+            },
+            "host": {
+                "name": "PUOWTDIB.egmukjj.com"
+            },
+            "log": {
+                "level": "information"
+            },
+            "winlog": {
+                "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+                "channel": "Security",
+                "computer_name": "PUOWTDIB.egmukjj.com",
+                "event_data": {
+                    "SubjectDomainName": "CONTOSO",
+                    "SubjectLogonId": "0x61ccd940",
+                    "SubjectUserName": "zqay7",
+                    "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+                    "TargetDomainName": "PUOWTDIB",
+                    "TargetUserName": "EffdslqEdawywk",
+                    "Workstation": "PUOWTDIB"
+                },
+                "event_id": "4797",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "process": {
+                    "pid": 868,
+                    "thread": {
+                        "id": 65356
+                    }
+                },
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 39956814,
+                "time_created": "2051-01-17T22:10:41.5127873Z"
+            }
+        },
+        {
+            "event": {
+                "code": "4797",
+                "kind": "event",
+                "outcome": "success",
+                "provider": "Microsoft-Windows-Security-Auditing"
+            },
+            "host": {
+                "name": "PUOWTDIB.egmukjj.com"
+            },
+            "log": {
+                "level": "information"
+            },
+            "winlog": {
+                "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+                "channel": "Security",
+                "computer_name": "PUOWTDIB.egmukjj.com",
+                "event_data": {
+                    "SubjectDomainName": "CONTOSO",
+                    "SubjectLogonId": "0x61ccd940",
+                    "SubjectUserName": "zqay7",
+                    "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+                    "TargetDomainName": "PUOWTDIB",
+                    "TargetUserName": "antqojp",
+                    "Workstation": "PUOWTDIB"
+                },
+                "event_id": "4797",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "process": {
+                    "pid": 868,
+                    "thread": {
+                        "id": 12248
+                    }
+                },
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 39956813,
+                "time_created": "2051-01-17T22:10:41.4905578Z"
+            }
+        },
+        {
+            "event": {
+                "code": "4797",
+                "kind": "event",
+                "outcome": "success",
+                "provider": "Microsoft-Windows-Security-Auditing"
+            },
+            "host": {
+                "name": "PUOWTDIB.egmukjj.com"
+            },
+            "log": {
+                "level": "information"
+            },
+            "winlog": {
+                "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+                "channel": "Security",
+                "computer_name": "PUOWTDIB.egmukjj.com",
+                "event_data": {
+                    "SubjectDomainName": "CONTOSO",
+                    "SubjectLogonId": "0x61ccd940",
+                    "SubjectUserName": "zqay7",
+                    "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+                    "TargetDomainName": "PUOWTDIB",
+                    "TargetUserName": "Administrator",
+                    "Workstation": "PUOWTDIB"
+                },
+                "event_id": "4797",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "process": {
+                    "pid": 868,
+                    "thread": {
+                        "id": 12248
+                    }
+                },
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 39956812,
+                "time_created": "2051-01-17T22:10:41.4680297Z"
+            }
+        }
+    ]
+}

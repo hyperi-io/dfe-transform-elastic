@@ -1586,9 +1586,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: def locationList = new ArrayList();\nif (ctx.google_secops?.alert?.event?.principal?.ipGeoArtifact instanceof List) {\n  for (list in ctx.google_secops.alert.event.principal.ipGeoArtifact) {\n    if (list.location.regionCoordinates != null && list.location.regionCoordinates != ''){\n      locationList.add(list.location.regionCoordinates);\n    }\n  }\n}\nif (!(ctx.host instanceof HashMap)) {\n  ctx.host = new HashMap();\n}\nif (!(ctx.host.geo instanceof HashMap)) {\n  ctx.host.geo = new HashMap();\n}\nctx.host.geo.location = locationList;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2484,9 +2482,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.google_secops?.alert?.event?.securityResult instanceof List) {\n  for (list in ctx.google_secops?.alert?.event.securityResult) {\n    if (list[\"severity\"] != null && list[\"severity\"] != '') {\n      if (list[\"severity\"].toUpperCase() == 'CRITICAL') {\n        ctx.event.severity = 99\n      } else if (list[\"severity\"].toUpperCase() == 'ERROR') {\n        ctx.event.severity = 99\n      } else if (list[\"severity\"].toUpperCase() == 'HIGH') {\n        ctx.event.severity = 73\n      } else if (list[\"severity\"].toUpperCase() == 'INFORMATIONAL') {\n        ctx.event.severity = 21\n      }  else if (list[\"severity\"].toUpperCase() == 'LOW') {\n        ctx.event.severity = 21\n      } else if (list[\"severity\"].toUpperCase() == 'MEDIUM') {\n        ctx.event.severity = 47\n      } else if (list[\"severity\"].toUpperCase() == 'NONE') {\n        ctx.event.severity = 21\n      } else if (list[\"severity\"].toUpperCase() == 'UNKNOWN_SEVERITY') {\n        ctx.event.severity = 21\n      }\n    }\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4384,8 +4380,7 @@ impl Transform for Default {
                 event.remove("google_secops.alert.timeWindow.startTime");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -645,9 +645,7 @@ impl Transform for Default {
                 event.get("island_browser.device.internal_ip_address").is_some_and(|v| v.is_array()) && event.get("island_browser.device.internal_ip_address").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } == 1)
             };
             if _cond {
-                // Painless script
-                // Source: ctx.island_browser.device.internal_ip_address = ctx.island_browser.device.internal_ip_address.get(0);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1161,9 +1159,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("island_browser.device.mac_addresses") };
             if _cond {
-                // Painless script
-                // Source: String macAddresses = ctx.island_browser.device.mac_addresses;\nif (macAddresses != null) {\n  String[] macArray = macAddresses.splitOnToken(\"|\");\n  String[] trimmedMacArray = new String[macArray.length];\n  for (int i = 0; i < macArray.length; i++) {\n    trimmedMacArray[i] = macArray[i].trim();\n  }\n  for (String mac: trimmedMacArray) {\n    if (mac.length() > 0) {\n      if (ctx.host?.mac == null) {\n        ctx.host = ctx.host ?: [:];\n        ctx.host.mac = [mac];\n      } else if (!ctx.host.mac.contains(mac)) {\n        ctx.host.mac.add(mac);\n      }\n    }\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1492,9 +1488,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\ndef os_platform = ctx.island_browser.device.os_platform.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -2121,8 +2115,7 @@ impl Transform for Default {
             event.remove("_temp");
             event.remove("_temp1");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1,0 +1,954 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-10-19T09:16:53.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T09:16:53.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 09:16:53 rdn-jzbd7 1 2049-10-19T09:16:53+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:16:53 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[] - Primary authentication successful for user.name/REALM from 198.51.100.144",
+        "timezone": "+02:00"
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "Primary authentication successful for user.name/REALM from 198.51.100.144",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": ""
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T09:10:35.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T09:10:35.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 09:10:35 rdn-jzbd7 1 2049-10-19T09:10:35+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:10:35 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - Agent login succeeded for user.name/REALM (session:sid74fa8e00ca601280318287f67dfaee7cc6da40db0be6ac75) from 198.51.100.144 with Pulse-Secure/9.1.13.11723 (Windows 10) Pulse/9.1.13.11723.",
+        "outcome": "success",
+        "timezone": "+02:00"
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "Agent login succeeded for user.name/REALM (session:sid74fa8e00ca601280318287f67dfaee7cc6da40db0be6ac75) from 198.51.100.144 with Pulse-Secure/9.1.13.11723 (Windows 10) Pulse/9.1.13.11723.",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": "REALM_ROLES",
+        "session": {
+          "id": "sid74fa8e00ca601280318287f67dfaee7cc6da40db0be6ac75"
+        }
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Pulse-Secure/9.1.13.11723 (Windows 10) Pulse/9.1.13.11723",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T09:10:35.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "nat": {
+          "ip": "172.23.128.219"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T09:10:35.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 09:10:35 rdn-jzbd7 1 2049-10-19T09:10:35+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:10:35 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - VPN Tunneling: Session started for user (session: sid74fa8e00ca601280318287f67dfaee7cc6da40db0be6ac75) with IPv4 address 172.23.128.219, hostname Desktop",
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "start"
+        ]
+      },
+      "host": {
+        "hostname": "rdn-jzbd7",
+        "name": "Desktop"
+      },
+      "message": "VPN Tunneling: Session started for user (session: sid74fa8e00ca601280318287f67dfaee7cc6da40db0be6ac75) with IPv4 address 172.23.128.219, hostname Desktop",
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": "REALM_ROLES",
+        "session": {
+          "id": "sid74fa8e00ca601280318287f67dfaee7cc6da40db0be6ac75"
+        }
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "nat": {
+          "ip": "172.23.128.219"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T09:10:35.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T09:10:35.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 09:10:35 rdn-jzbd7 1 2049-10-19T09:10:35+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:10:35 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - VPN Tunneling: User with IP 172.23.128.219 connected with SSL transport mode.",
+        "timezone": "+02:00"
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "VPN Tunneling: User with IP 172.23.128.219 connected with SSL transport mode.",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": "REALM_ROLES"
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T10:12:11.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T10:12:11.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 10:12:11 rdn-jzbd7 1 2049-10-19T10:12:11+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 10:12:11 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[] - User Limit realm restrictions successfully passed for user.name/REALM",
+        "timezone": "+02:00"
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "User Limit realm restrictions successfully passed for user.name/REALM",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": ""
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T10:12:11.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T10:12:11.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 10:12:11 rdn-jzbd7 1 2049-10-19T10:12:11+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 10:12:11 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[] - Login failed. Reason: Wrong Password",
+        "outcome": "failure",
+        "reason": "Wrong Password",
+        "timezone": "+02:00"
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "Login failed. Reason: Wrong Password",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": ""
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T10:12:11.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T10:12:11.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 10:12:11 rdn-jzbd7 1 2049-10-19T10:12:11+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 10:12:11 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[] - Primary authentication failed for user.name/sign-in-page from 198.51.100.144",
+        "timezone": "+02:00"
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "Primary authentication failed for user.name/sign-in-page from 198.51.100.144",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": ""
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T10:12:11.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T10:12:11.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 10:12:11 rdn-jzbd7 1 2049-10-19T10:12:11+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 10:12:11 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[] - Login failed using auth server AuthServer (Local Authentication). Reason: Failed",
+        "outcome": "failure",
+        "reason": "Failed",
+        "timezone": "+02:00"
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "Login failed using auth server AuthServer (Local Authentication). Reason: Failed",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": ""
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T09:49:40.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T09:49:40.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 09:49:40 rdn-jzbd7 1 2049-10-19T09:49:40+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:49:40 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - Closed connection to TUN-VPN port 443 after 9 seconds, with 1308 bytes read (in 1 chunks) and 1131 bytes written (in 1 chunks) (session:sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4)",
+        "timezone": "+02:00"
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "Closed connection to TUN-VPN port 443 after 9 seconds, with 1308 bytes read (in 1 chunks) and 1131 bytes written (in 1 chunks) (session:sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4)",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": "REALM_ROLES",
+        "session": {
+          "id": "sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4"
+        }
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T09:49:40.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "nat": {
+          "ip": "172.23.128.219"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T09:49:40.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 09:49:40 rdn-jzbd7 1 2049-10-19T09:49:40+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:49:40 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - VPN Tunneling: Session ended for user (session: sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4) with IPv4 address 172.23.128.219",
+        "timezone": "+02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "VPN Tunneling: Session ended for user (session: sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4) with IPv4 address 172.23.128.219",
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": "REALM_ROLES",
+        "session": {
+          "id": "sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4"
+        }
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "nat": {
+          "ip": "172.23.128.219"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T09:49:41.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T09:49:41.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 09:49:41 rdn-jzbd7 1 2049-10-19T09:49:41+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:49:41 - rdn-jzbd7 - [198.51.100.144] user.name()[] - Logout from 198.51.100.144 (session:sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4)",
+        "timezone": "+02:00"
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "Logout from 198.51.100.144 (session:sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4)",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "",
+        "role": "",
+        "session": {
+          "id": "sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4"
+        }
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      }
+    },
+    {
+      "@timestamp": "2049-10-19T09:11:19.000+02:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2049-10-19T09:11:19.000+02:00",
+        "kind": "event",
+        "original": "Oct 19 09:11:19 rdn-jzbd7 1 2049-10-19T09:11:19+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:11:19 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - Session resumed from user agent 'Pulse-Secure/9.1.11.6725 (Windows 10) Pulse/9.1.11.6725' (session:sid9734dc3a195205ddb89cc05a9261a271201b4687ab468240).",
+        "timezone": "+02:00"
+      },
+      "host": {
+        "hostname": "rdn-jzbd7"
+      },
+      "message": "Session resumed from user agent 'Pulse-Secure/9.1.11.6725 (Windows 10) Pulse/9.1.11.6725' (session:sid9734dc3a195205ddb89cc05a9261a271201b4687ab468240).",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "rdn-jzbd7",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "REALM",
+        "role": "REALM_ROLES",
+        "session": {
+          "id": "sid9734dc3a195205ddb89cc05a9261a271201b4687ab468240"
+        }
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user.name"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Pulse-Secure/9.1.11.6725 (Windows 10) Pulse/9.1.11.6725",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-03-03T17:21:09.000+01:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2051-03-03T17:21:09.000+01:00",
+        "kind": "event",
+        "original": "<134>1 2051-03-03T17:21:09+01:00 10.217.70.60 PulseSecure: - - - 2051-03-03 17:21:09 - sslvpn02 - [198.51.100.144] umbr.mbrb@lklfcugq.rkfru.com(MembersSAML)[MemberRole] - WebRequest completed, GET to https://some.web.ch:443//sss/sessionPing?unique=0.10846163950738053 from 198.51.100.211 result=200 sent=60 received=4 in 1 seconds",
+        "timezone": "+01:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "WebRequest completed, GET to https://some.web.ch:443//sss/sessionPing?unique=0.10846163950738053 from 198.51.100.211 result=200 sent=60 received=4 in 1 seconds",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "sslvpn02",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "MembersSAML",
+        "role": "MemberRole"
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "lklfcugq.rkfru.com",
+        "name": "umbr.mbrb"
+      }
+    },
+    {
+      "@timestamp": "2052-01-11T14:23:28.000+01:00",
+      "client": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-01-11T14:23:28.000+01:00",
+        "kind": "event",
+        "original": "<134>1 2052-01-11T14:23:28+01:00 10.217.70.60 PulseSecure: - - - 2052-01-11 14:23:28 - ssl-vpn01 - [198.51.100.144] umbr.mbrb@rkfru.mytld(Admin SSO)[.Administrators][64e62c265e] - Session timed out for umbr.mbrb@rkfru.tld/Admin SSO (session:sidbe3ce20a68202d1b91a4be7060b78c4a2825ce9100000000) due to inactivity (last access at 13:51:42 2052/01/11). Idle session identified during routine system scan.",
+        "timezone": "+01:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "Session timed out for umbr.mbrb@rkfru.tld/Admin SSO (session:sidbe3ce20a68202d1b91a4be7060b78c4a2825ce9100000000) due to inactivity (last access at 13:51:42 2052/01/11). Idle session identified during routine system scan.",
+      "observer": {
+        "ip": [
+          "10.217.70.60"
+        ],
+        "name": "ssl-vpn01",
+        "product": "Pulse Secure Connect",
+        "type": "vpn",
+        "vendor": "Pulse Secure"
+      },
+      "pulse_secure": {
+        "realm": "Admin SSO",
+        "role": ".Administrators",
+        "session": {
+          "id": "sidbe3ce20a68202d1b91a4be7060b78c4a2825ce9100000000",
+          "id_short": "64e62c265e"
+        }
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "rkfru.mytld",
+        "name": "umbr.mbrb"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 09:16:53 rdn-jzbd7 1 2049-10-19T09:16:53+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:16:53 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[] - Primary authentication successful for user.name/REALM from 198.51.100.144",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 09:10:35 rdn-jzbd7 1 2049-10-19T09:10:35+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:10:35 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - Agent login succeeded for user.name/REALM (session:sid74fa8e00ca601280318287f67dfaee7cc6da40db0be6ac75) from 198.51.100.144 with Pulse-Secure/9.1.13.11723 (Windows 10) Pulse/9.1.13.11723.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 09:10:35 rdn-jzbd7 1 2049-10-19T09:10:35+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:10:35 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - VPN Tunneling: Session started for user (session: sid74fa8e00ca601280318287f67dfaee7cc6da40db0be6ac75) with IPv4 address 172.23.128.219, hostname Desktop",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 09:10:35 rdn-jzbd7 1 2049-10-19T09:10:35+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:10:35 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - VPN Tunneling: User with IP 172.23.128.219 connected with SSL transport mode.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 10:12:11 rdn-jzbd7 1 2049-10-19T10:12:11+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 10:12:11 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[] - User Limit realm restrictions successfully passed for user.name/REALM",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 10:12:11 rdn-jzbd7 1 2049-10-19T10:12:11+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 10:12:11 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[] - Login failed. Reason: Wrong Password",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 10:12:11 rdn-jzbd7 1 2049-10-19T10:12:11+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 10:12:11 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[] - Primary authentication failed for user.name/sign-in-page from 198.51.100.144",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 10:12:11 rdn-jzbd7 1 2049-10-19T10:12:11+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 10:12:11 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[] - Login failed using auth server AuthServer (Local Authentication). Reason: Failed",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 09:49:40 rdn-jzbd7 1 2049-10-19T09:49:40+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:49:40 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - Closed connection to TUN-VPN port 443 after 9 seconds, with 1308 bytes read (in 1 chunks) and 1131 bytes written (in 1 chunks) (session:sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 09:49:40 rdn-jzbd7 1 2049-10-19T09:49:40+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:49:40 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - VPN Tunneling: Session ended for user (session: sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4) with IPv4 address 172.23.128.219",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 09:49:41 rdn-jzbd7 1 2049-10-19T09:49:41+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:49:41 - rdn-jzbd7 - [198.51.100.144] user.name()[] - Logout from 198.51.100.144 (session:sid085594569c49f5da11e483b49eaaabfc6fede5ce4a227da4)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Oct 19 09:11:19 rdn-jzbd7 1 2049-10-19T09:11:19+02:00 10.217.70.60 PulseSecure: - - - 2049-10-19 09:11:19 - rdn-jzbd7 - [198.51.100.144] user.name(REALM)[REALM_ROLES] - Session resumed from user agent 'Pulse-Secure/9.1.11.6725 (Windows 10) Pulse/9.1.11.6725' (session:sid9734dc3a195205ddb89cc05a9261a271201b4687ab468240).",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "<134>1 2051-03-03T17:21:09+01:00 10.217.70.60 PulseSecure: - - - 2051-03-03 17:21:09 - sslvpn02 - [198.51.100.144] umbr.mbrb@lklfcugq.rkfru.com(MembersSAML)[MemberRole] - WebRequest completed, GET to https://some.web.ch:443//sss/sessionPing?unique=0.10846163950738053 from 198.51.100.211 result=200 sent=60 received=4 in 1 seconds",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "<134>1 2052-01-11T14:23:28+01:00 10.217.70.60 PulseSecure: - - - 2052-01-11 14:23:28 - ssl-vpn01 - [198.51.100.144] umbr.mbrb@rkfru.mytld(Admin SSO)[.Administrators][64e62c265e] - Session timed out for umbr.mbrb@rkfru.tld/Admin SSO (session:sidbe3ce20a68202d1b91a4be7060b78c4a2825ce9100000000) due to inactivity (last access at 13:51:42 2052/01/11). Idle session identified during routine system scan.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-pulse_connect_secure-log-default",
+    "event_count": 14,
+    "numeric_keyword_fields": [],
+    "package": "pulse_connect_secure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-02-03T04:35:38.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Action\":\"login\",\"Date\":\"2052-02-03T04:35:38Z\",\"Details\":\"user_logged in\",\"Module\":\"auth\",\"User IP\":\"10.190.140.226\",\"User Name\":\"saand_rn\",\"User Role\":\"Manager\"}",
+        "provider": "auth",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "user_logged in",
+      "related": {
+        "ip": [
+          "10.190.140.226"
+        ],
+        "user": [
+          "saand_rn"
+        ]
+      },
+      "source": {
+        "ip": "10.190.140.226"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "saand_rn",
+        "roles": [
+          "Manager"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Action\":\"login\",\"Date\":\"2052-02-03T04:35:38Z\",\"Details\":\"user_logged in\",\"Module\":\"auth\",\"User IP\":\"10.190.140.226\",\"User Name\":\"saand_rn\",\"User Role\":\"Manager\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "user_activity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-qualys_vmdr-user_activity-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "qualys_vmdr",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

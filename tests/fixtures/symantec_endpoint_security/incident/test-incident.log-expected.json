@@ -1,0 +1,184 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-04-26T21:46:10.400Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "created": "2051-04-26T21:46:10.400Z",
+        "id": "1d2beab6-88f5-4459-90ae-c3e377463f2f",
+        "kind": "alert",
+        "original": "{\"customer_uid\":\"TEST-JvOsaJktSS-eyL-dXhxOvA\",\"incident_uid\":\"1d2beab6-88f5-4459-90ae-c3e377463f2f\",\"type\":\"INCIDENT_CREATION\",\"resolution_id\":1,\"conclusion\":\"Suspicious Activity\",\"remediation\":\"Investigate further activity at the endpoint by downloading a full dump of the endpoint's recorded data. Give particular attention to activities performed by cmd.exe.\",\"priority_id\":4,\"category_id\":1,\"modified\":\"2051-04-26T22:01:58.648+00:00\",\"state_id\":1,\"id\":4,\"product_uid\":\"62E9A709-1386-47F9-91F0-88F69D9AD0D1\",\"device_time\":2566158370400,\"ref_incident_uid\":102110,\"rule_name\":\"Advanced Attack Technique\",\"created\":\"2051-04-26T21:46:10.400+00:00\",\"type_id\":8075,\"incident_url\":\"https://sep.securitycloud.symantec.com/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details\",\"message\":\"Victim-2:Signed Binary Proxy Execution, Deobfuscate/Decode Files or Information, Command and Scripting Interpreter: PowerShell, System Services: Service Execution\",\"version\":\"1.0\",\"product_name\":\"Symantec Integrated Cyber Defense Manager\",\"event_id\":8075004,\"domain_uid\":\"TEST-ZBg_IqnyTAijNjP2BOOcuw\",\"detection_type\":\"Advanced Analytics\",\"severity_id\":4,\"time\":2566158370400,\"suspected_breach\":\"Yes\"}",
+        "provider": "Symantec Integrated Cyber Defense Manager",
+        "reason": "Suspicious Activity",
+        "severity": 4,
+        "type": [
+          "info"
+        ],
+        "url": "https://sep.securitycloud.symantec.com/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details"
+      },
+      "http": {
+        "version": "1.0"
+      },
+      "message": "Victim-2:Signed Binary Proxy Execution, Deobfuscate/Decode Files or Information, Command and Scripting Interpreter: PowerShell, System Services: Service Execution",
+      "rule": {
+        "name": "Advanced Attack Technique"
+      },
+      "ses": {
+        "incident": {
+          "category": "Security",
+          "category_id": "1",
+          "conclusion": "Suspicious Activity",
+          "created": "2051-04-26T21:46:10.400Z",
+          "customer_uid": "TEST-JvOsaJktSS-eyL-dXhxOvA",
+          "detection_type": "Advanced Analytics",
+          "device_time": "2051-04-26T21:46:10.400Z",
+          "domain_uid": "TEST-ZBg_IqnyTAijNjP2BOOcuw",
+          "event": "Incident Creation: Logged",
+          "event_id": "8075004",
+          "id": "4",
+          "incident_uid": "1d2beab6-88f5-4459-90ae-c3e377463f2f",
+          "incident_url": "https://sep.securitycloud.symantec.com/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details",
+          "message": "Victim-2:Signed Binary Proxy Execution, Deobfuscate/Decode Files or Information, Command and Scripting Interpreter: PowerShell, System Services: Service Execution",
+          "modified": "2051-04-26T22:01:58.648Z",
+          "outcome": "Logged",
+          "priority": "Critical",
+          "priority_id": "4",
+          "product_name": "Symantec Integrated Cyber Defense Manager",
+          "product_uid": "62E9A709-1386-47F9-91F0-88F69D9AD0D1",
+          "ref_incident_uid": "102110",
+          "remediation": "Investigate further activity at the endpoint by downloading a full dump of the endpoint's recorded data. Give particular attention to activities performed by cmd.exe.",
+          "resolution": "Insufficient data",
+          "resolution_id": "1",
+          "rule_name": "Advanced Attack Technique",
+          "severity": "Major",
+          "severity_id": 4,
+          "state": "New",
+          "state_id": "1",
+          "suspected_breach": true,
+          "time": "2051-04-26T21:46:10.400Z",
+          "type": "INCIDENT_CREATION",
+          "type_id": "8075",
+          "version": "1.0"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "domain": "sep.securitycloud.symantec.com",
+        "original": "https://sep.securitycloud.symantec.com/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details",
+        "path": "/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details",
+        "scheme": "https"
+      }
+    },
+    {
+      "@timestamp": "2051-04-26T21:46:10.400Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "created": "2051-04-26T21:46:10.400Z",
+        "id": "1d2beab6-88f5-4459-90ae-c3e377463f2f",
+        "kind": "alert",
+        "original": "{\"customer_uid\":\"TEST-JvOsaJktSS-eyL-dXhxOvA\",\"incident_uid\":\"1d2beab6-88f5-4459-90ae-c3e377463f2f\",\"type\":\"INCIDENT_CREATION\",\"resolution_id\":1,\"conclusion\":\"Suspicious Activity\",\"remediation\":\"Investigate further activity at the endpoint by downloading a full dump of the endpoint's recorded data. Give particular attention to activities performed by cmd.exe.\",\"priority_id\":4,\"category_id\":1,\"modified\":\"2051-04-26T22:01:58.648+00:00\",\"state_id\":1,\"id\":4,\"product_uid\":\"62E9A709-1386-47F9-91F0-88F69D9AD0D1\",\"device_time\":\"2051-04-26T21:46:10.400Z\",\"ref_incident_uid\":102110,\"rule_name\":\"Advanced Attack Technique\",\"created\":\"2051-04-26T21:46:10.400+00:00\",\"type_id\":8075,\"incident_url\":\"https://sep.securitycloud.symantec.com/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details\",\"message\":\"Victim-2:Signed Binary Proxy Execution, Deobfuscate/Decode Files or Information, Command and Scripting Interpreter: PowerShell, System Services: Service Execution\",\"version\":\"1.0\",\"product_name\":\"Symantec Integrated Cyber Defense Manager\",\"event_id\":8075004,\"domain_uid\":\"TEST-ZBg_IqnyTAijNjP2BOOcuw\",\"detection_type\":\"Advanced Analytics\",\"severity_id\":4,\"time\":\"2051-04-26T21:46:10.400Z\",\"suspected_breach\":\"Yes\"}",
+        "provider": "Symantec Integrated Cyber Defense Manager",
+        "reason": "Suspicious Activity",
+        "severity": 4,
+        "type": [
+          "info"
+        ],
+        "url": "https://sep.securitycloud.symantec.com/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details"
+      },
+      "http": {
+        "version": "1.0"
+      },
+      "message": "Victim-2:Signed Binary Proxy Execution, Deobfuscate/Decode Files or Information, Command and Scripting Interpreter: PowerShell, System Services: Service Execution",
+      "rule": {
+        "name": "Advanced Attack Technique"
+      },
+      "ses": {
+        "incident": {
+          "category": "Security",
+          "category_id": "1",
+          "conclusion": "Suspicious Activity",
+          "created": "2051-04-26T21:46:10.400Z",
+          "customer_uid": "TEST-JvOsaJktSS-eyL-dXhxOvA",
+          "detection_type": "Advanced Analytics",
+          "device_time": "2051-04-26T21:46:10.400Z",
+          "domain_uid": "TEST-ZBg_IqnyTAijNjP2BOOcuw",
+          "event": "Incident Creation: Logged",
+          "event_id": "8075004",
+          "id": "4",
+          "incident_uid": "1d2beab6-88f5-4459-90ae-c3e377463f2f",
+          "incident_url": "https://sep.securitycloud.symantec.com/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details",
+          "message": "Victim-2:Signed Binary Proxy Execution, Deobfuscate/Decode Files or Information, Command and Scripting Interpreter: PowerShell, System Services: Service Execution",
+          "modified": "2051-04-26T22:01:58.648Z",
+          "outcome": "Logged",
+          "priority": "Critical",
+          "priority_id": "4",
+          "product_name": "Symantec Integrated Cyber Defense Manager",
+          "product_uid": "62E9A709-1386-47F9-91F0-88F69D9AD0D1",
+          "ref_incident_uid": "102110",
+          "remediation": "Investigate further activity at the endpoint by downloading a full dump of the endpoint's recorded data. Give particular attention to activities performed by cmd.exe.",
+          "resolution": "Insufficient data",
+          "resolution_id": "1",
+          "rule_name": "Advanced Attack Technique",
+          "severity": "Major",
+          "severity_id": 4,
+          "state": "New",
+          "state_id": "1",
+          "suspected_breach": true,
+          "time": "2051-04-26T21:46:10.400Z",
+          "type": "INCIDENT_CREATION",
+          "type_id": "8075",
+          "version": "1.0"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "domain": "sep.securitycloud.symantec.com",
+        "original": "https://sep.securitycloud.symantec.com/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details",
+        "path": "/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details",
+        "scheme": "https"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"customer_uid\":\"TEST-JvOsaJktSS-eyL-dXhxOvA\",\"incident_uid\":\"1d2beab6-88f5-4459-90ae-c3e377463f2f\",\"type\":\"INCIDENT_CREATION\",\"resolution_id\":1,\"conclusion\":\"Suspicious Activity\",\"remediation\":\"Investigate further activity at the endpoint by downloading a full dump of the endpoint's recorded data. Give particular attention to activities performed by cmd.exe.\",\"priority_id\":4,\"category_id\":1,\"modified\":\"2051-04-26T22:01:58.648+00:00\",\"state_id\":1,\"id\":4,\"product_uid\":\"62E9A709-1386-47F9-91F0-88F69D9AD0D1\",\"device_time\":2566158370400,\"ref_incident_uid\":102110,\"rule_name\":\"Advanced Attack Technique\",\"created\":\"2051-04-26T21:46:10.400+00:00\",\"type_id\":8075,\"incident_url\":\"https://sep.securitycloud.symantec.com/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details\",\"message\":\"Victim-2:Signed Binary Proxy Execution, Deobfuscate/Decode Files or Information, Command and Scripting Interpreter: PowerShell, System Services: Service Execution\",\"version\":\"1.0\",\"product_name\":\"Symantec Integrated Cyber Defense Manager\",\"event_id\":8075004,\"domain_uid\":\"TEST-ZBg_IqnyTAijNjP2BOOcuw\",\"detection_type\":\"Advanced Analytics\",\"severity_id\":4,\"time\":2566158370400,\"suspected_breach\":\"Yes\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"customer_uid\":\"TEST-JvOsaJktSS-eyL-dXhxOvA\",\"incident_uid\":\"1d2beab6-88f5-4459-90ae-c3e377463f2f\",\"type\":\"INCIDENT_CREATION\",\"resolution_id\":1,\"conclusion\":\"Suspicious Activity\",\"remediation\":\"Investigate further activity at the endpoint by downloading a full dump of the endpoint's recorded data. Give particular attention to activities performed by cmd.exe.\",\"priority_id\":4,\"category_id\":1,\"modified\":\"2051-04-26T22:01:58.648+00:00\",\"state_id\":1,\"id\":4,\"product_uid\":\"62E9A709-1386-47F9-91F0-88F69D9AD0D1\",\"device_time\":\"2051-04-26T21:46:10.400Z\",\"ref_incident_uid\":102110,\"rule_name\":\"Advanced Attack Technique\",\"created\":\"2051-04-26T21:46:10.400+00:00\",\"type_id\":8075,\"incident_url\":\"https://sep.securitycloud.symantec.com/v2/incidents/incidentListing/1d2beab6-88f5-4459-90ae-c3e377463f2f/details\",\"message\":\"Victim-2:Signed Binary Proxy Execution, Deobfuscate/Decode Files or Information, Command and Scripting Interpreter: PowerShell, System Services: Service Execution\",\"version\":\"1.0\",\"product_name\":\"Symantec Integrated Cyber Defense Manager\",\"event_id\":8075004,\"domain_uid\":\"TEST-ZBg_IqnyTAijNjP2BOOcuw\",\"detection_type\":\"Advanced Analytics\",\"severity_id\":4,\"time\":\"2051-04-26T21:46:10.400Z\",\"suspected_breach\":\"Yes\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "incident",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint_security-incident-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

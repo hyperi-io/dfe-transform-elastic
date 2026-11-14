@@ -1,0 +1,265 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-12-24",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "original": "{\"Exchange Mailbox Storage Used (Byte)\":\"698640\",\"Exchange Mailbox Total Item Count\":\"9\",\"Exchange Received Email Count\":\"\",\"External Member Count\":\"0\",\"Group Display Name\":\"delete-1\",\"Group Id\":\"cbc7ec0d-0304-4b5e-863c-cf15fb1d8ec8\",\"Group Type\":\"Private\",\"Is Deleted\":\"False\",\"Last Activity Date\":\"\",\"Member Count\":\"2\",\"Owner Principal Name\":\"DK@abc.onmicrosoft.com\",\"Report Period\":\"1\",\"SharePoint Active File Count\":\"\",\"SharePoint Site Storage Used (Byte)\":\"2029128\",\"SharePoint Total File Count\":\"6\",\"Yammer Liked Message Count\":\"\",\"Yammer Posted Message Count\":\"\",\"Yammer Read Message Count\":\"\",\"report\":{\"api_path\":\"/reports/getOffice365GroupsActivityDetail\",\"name\":\"Microsoft 365 Groups Activity Group Detail\"},\"﻿Report Refresh Date\":\"2052-12-24\"}"
+      },
+      "group": {
+        "id": "cbc7ec0d-0304-4b5e-863c-cf15fb1d8ec8",
+        "name": "delete-1"
+      },
+      "o365": {
+        "metrics": {
+          "groups": {
+            "activity": {
+              "group": {
+                "detail": {
+                  "exchange_mailbox_storage_used": {
+                    "byte": 698640
+                  },
+                  "exchange_mailbox_total_item": {
+                    "count": 9
+                  },
+                  "external_member": {
+                    "count": 0
+                  },
+                  "group_display_name": "delete-1",
+                  "group_id": "cbc7ec0d-0304-4b5e-863c-cf15fb1d8ec8",
+                  "group_type": "Private",
+                  "is_deleted": false,
+                  "member": {
+                    "count": 2
+                  },
+                  "owner_principal_name": "DK@abc.onmicrosoft.com",
+                  "report": {
+                    "period": {
+                      "day": "1"
+                    },
+                    "refresh_date": "2052-12-24"
+                  },
+                  "sharepoint_site_storage_used": {
+                    "byte": 2029128
+                  },
+                  "sharepoint_total_file": {
+                    "count": 6
+                  }
+                }
+              }
+            }
+          },
+          "report": {
+            "api_path": "/reports/getOffice365GroupsActivityDetail",
+            "name": "Microsoft 365 Groups Activity Group Detail"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "DK",
+          "DK@abc.onmicrosoft.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "abc.onmicrosoft.com",
+        "email": "DK@abc.onmicrosoft.com",
+        "group": {
+          "id": "cbc7ec0d-0304-4b5e-863c-cf15fb1d8ec8",
+          "name": "delete-1"
+        },
+        "name": "DK"
+      }
+    },
+    {
+      "@timestamp": "2052-12-24",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "original": "{\"Exchange Mailbox Storage Used (Byte)\":\"900376\",\"Exchange Mailbox Total Item Count\":\"9\",\"Exchange Received Email Count\":\"\",\"External Member Count\":\"0\",\"Group Display Name\":\"\",\"Group Id\":\"a99bd1fe-3fca-4b07-935c-7a23aba6ce03\",\"Group Type\":\"Private\",\"Is Deleted\":\"False\",\"Last Activity Date\":\"\",\"Member Count\":\"3\",\"Owner Principal Name\":\"IS@abc.onmicrosoft.com\",\"Report Period\":\"1\",\"SharePoint Active File Count\":\"\",\"SharePoint Site Storage Used (Byte)\":\"1667771\",\"SharePoint Total File Count\":\"3\",\"Yammer Liked Message Count\":\"\",\"Yammer Posted Message Count\":\"\",\"Yammer Read Message Count\":\"\",\"report\":{\"api_path\":\"/reports/getOffice365GroupsActivityDetail\",\"name\":\"Microsoft 365 Groups Activity Group Detail\"},\"﻿Report Refresh Date\":\"2052-12-24\"}"
+      },
+      "group": {
+        "id": "a99bd1fe-3fca-4b07-935c-7a23aba6ce03"
+      },
+      "o365": {
+        "metrics": {
+          "groups": {
+            "activity": {
+              "group": {
+                "detail": {
+                  "exchange_mailbox_storage_used": {
+                    "byte": 900376
+                  },
+                  "exchange_mailbox_total_item": {
+                    "count": 9
+                  },
+                  "external_member": {
+                    "count": 0
+                  },
+                  "group_id": "a99bd1fe-3fca-4b07-935c-7a23aba6ce03",
+                  "group_type": "Private",
+                  "is_deleted": false,
+                  "member": {
+                    "count": 3
+                  },
+                  "owner_principal_name": "IS@abc.onmicrosoft.com",
+                  "report": {
+                    "period": {
+                      "day": "1"
+                    },
+                    "refresh_date": "2052-12-24"
+                  },
+                  "sharepoint_site_storage_used": {
+                    "byte": 1667771
+                  },
+                  "sharepoint_total_file": {
+                    "count": 3
+                  }
+                }
+              }
+            }
+          },
+          "report": {
+            "api_path": "/reports/getOffice365GroupsActivityDetail",
+            "name": "Microsoft 365 Groups Activity Group Detail"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "IS",
+          "IS@abc.onmicrosoft.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "abc.onmicrosoft.com",
+        "email": "IS@abc.onmicrosoft.com",
+        "group": {
+          "id": "a99bd1fe-3fca-4b07-935c-7a23aba6ce03"
+        },
+        "name": "IS"
+      }
+    },
+    {
+      "@timestamp": "2052-12-22",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "original": "{\"Exchange Mailbox Storage Used (Byte)\":\"242647\",\"Exchange Mailbox Total Item Count\":\"23\",\"Exchange Received Email Count\":\"\",\"External Member Count\":\"0\",\"Group Display Name\":\"Sales and Marketing\",\"Group Id\":\"d03b602e-803a-4627-a575-c3aa3805295f\",\"Group Type\":\"Public\",\"Is Deleted\":\"False\",\"Last Activity Date\":\"\",\"Member Count\":\"17\",\"Owner Principal Name\":\"UE@abc.onmicrosoft.com\",\"Report Period\":\"1\",\"SharePoint Active File Count\":\"\",\"SharePoint Site Storage Used (Byte)\":\"1437945\",\"SharePoint Total File Count\":\"0\",\"Yammer Liked Message Count\":\"\",\"Yammer Posted Message Count\":\"\",\"Yammer Read Message Count\":\"\",\"report\":{\"api_path\":\"/reports/getOffice365GroupsActivityDetail\",\"name\":\"Microsoft 365 Groups Activity Group Detail\"},\"﻿Report Refresh Date\":\"2052-12-22\"}"
+      },
+      "group": {
+        "id": "d03b602e-803a-4627-a575-c3aa3805295f",
+        "name": "Sales and Marketing"
+      },
+      "o365": {
+        "metrics": {
+          "groups": {
+            "activity": {
+              "group": {
+                "detail": {
+                  "exchange_mailbox_storage_used": {
+                    "byte": 242647
+                  },
+                  "exchange_mailbox_total_item": {
+                    "count": 23
+                  },
+                  "external_member": {
+                    "count": 0
+                  },
+                  "group_display_name": "Sales and Marketing",
+                  "group_id": "d03b602e-803a-4627-a575-c3aa3805295f",
+                  "group_type": "Public",
+                  "is_deleted": false,
+                  "member": {
+                    "count": 17
+                  },
+                  "owner_principal_name": "UE@abc.onmicrosoft.com",
+                  "report": {
+                    "period": {
+                      "day": "1"
+                    },
+                    "refresh_date": "2052-12-22"
+                  },
+                  "sharepoint_site_storage_used": {
+                    "byte": 1437945
+                  },
+                  "sharepoint_total_file": {
+                    "count": 0
+                  }
+                }
+              }
+            }
+          },
+          "report": {
+            "api_path": "/reports/getOffice365GroupsActivityDetail",
+            "name": "Microsoft 365 Groups Activity Group Detail"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "UE",
+          "UE@abc.onmicrosoft.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "abc.onmicrosoft.com",
+        "email": "UE@abc.onmicrosoft.com",
+        "group": {
+          "id": "d03b602e-803a-4627-a575-c3aa3805295f",
+          "name": "Sales and Marketing"
+        },
+        "name": "UE"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Exchange Mailbox Storage Used (Byte)\":\"698640\",\"Exchange Mailbox Total Item Count\":\"9\",\"Exchange Received Email Count\":\"\",\"External Member Count\":\"0\",\"Group Display Name\":\"delete-1\",\"Group Id\":\"cbc7ec0d-0304-4b5e-863c-cf15fb1d8ec8\",\"Group Type\":\"Private\",\"Is Deleted\":\"False\",\"Last Activity Date\":\"\",\"Member Count\":\"2\",\"Owner Principal Name\":\"DK@abc.onmicrosoft.com\",\"Report Period\":\"1\",\"SharePoint Active File Count\":\"\",\"SharePoint Site Storage Used (Byte)\":\"2029128\",\"SharePoint Total File Count\":\"6\",\"Yammer Liked Message Count\":\"\",\"Yammer Posted Message Count\":\"\",\"Yammer Read Message Count\":\"\",\"report\":{\"api_path\":\"/reports/getOffice365GroupsActivityDetail\",\"name\":\"Microsoft 365 Groups Activity Group Detail\"},\"﻿Report Refresh Date\":\"2052-12-24\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Exchange Mailbox Storage Used (Byte)\":\"900376\",\"Exchange Mailbox Total Item Count\":\"9\",\"Exchange Received Email Count\":\"\",\"External Member Count\":\"0\",\"Group Display Name\":\"\",\"Group Id\":\"a99bd1fe-3fca-4b07-935c-7a23aba6ce03\",\"Group Type\":\"Private\",\"Is Deleted\":\"False\",\"Last Activity Date\":\"\",\"Member Count\":\"3\",\"Owner Principal Name\":\"IS@abc.onmicrosoft.com\",\"Report Period\":\"1\",\"SharePoint Active File Count\":\"\",\"SharePoint Site Storage Used (Byte)\":\"1667771\",\"SharePoint Total File Count\":\"3\",\"Yammer Liked Message Count\":\"\",\"Yammer Posted Message Count\":\"\",\"Yammer Read Message Count\":\"\",\"report\":{\"api_path\":\"/reports/getOffice365GroupsActivityDetail\",\"name\":\"Microsoft 365 Groups Activity Group Detail\"},\"﻿Report Refresh Date\":\"2052-12-24\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Exchange Mailbox Storage Used (Byte)\":\"242647\",\"Exchange Mailbox Total Item Count\":\"23\",\"Exchange Received Email Count\":\"\",\"External Member Count\":\"0\",\"Group Display Name\":\"Sales and Marketing\",\"Group Id\":\"d03b602e-803a-4627-a575-c3aa3805295f\",\"Group Type\":\"Public\",\"Is Deleted\":\"False\",\"Last Activity Date\":\"\",\"Member Count\":\"17\",\"Owner Principal Name\":\"UE@abc.onmicrosoft.com\",\"Report Period\":\"1\",\"SharePoint Active File Count\":\"\",\"SharePoint Site Storage Used (Byte)\":\"1437945\",\"SharePoint Total File Count\":\"0\",\"Yammer Liked Message Count\":\"\",\"Yammer Posted Message Count\":\"\",\"Yammer Read Message Count\":\"\",\"report\":{\"api_path\":\"/reports/getOffice365GroupsActivityDetail\",\"name\":\"Microsoft 365 Groups Activity Group Detail\"},\"﻿Report Refresh Date\":\"2052-12-22\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "groups_activity_group_detail",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-groups_activity_group_detail-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

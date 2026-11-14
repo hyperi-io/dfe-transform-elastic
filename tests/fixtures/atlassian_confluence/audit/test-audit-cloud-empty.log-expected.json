@@ -1,0 +1,28 @@
+{
+  "expected": [
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "_config": {
+        "atlassian_cloud": true
+      },
+      "message": "{\"results\":[],\"start\":2,\"limit\":2,\"size\":37,\"_links\":{\"base\":\"https://test.atlassian.net/wiki\",\"context\":\"/wiki\",\"self\":\"https://test.atlassian.net/wiki/rest/api/audit\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_confluence-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_confluence",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

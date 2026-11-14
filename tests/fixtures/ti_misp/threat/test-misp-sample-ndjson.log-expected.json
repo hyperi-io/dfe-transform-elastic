@@ -1,0 +1,1334 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2045-08-28T14:24:36.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"- Xchecked via VT: e202812cb9e047ed3c6244e9d10beeeda846cf89fc817fc1122220662b6bc77c\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"5\",\"first_seen\":null,\"id\":\"351\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2387543072\",\"to_ids\":true,\"type\":\"md5\",\"uuid\":\"16c281e0-f3f6-4204-9f0d-bcd041fe1a21\",\"value\":\"e6995eadbb00a02ccb0046dfa3b748cf\"},\"EventReport\":[],\"Galaxy\":[{\"GalaxyCluster\":[{\"authors\":[\"https://docs.google.com/spreadsheets/d/1TWS238xacAto-fLKh1n5uTsdijWdCEsGIM0Y0Hvmc5g/pubhtml\",\"http://pastebin.com/raw/GHgpWjar\",\"MISP Project\"],\"collection_uuid\":\"65ab346f-2c45-4d1f-bb33-27249b543793\",\"description\":\"It’s directed to English speaking users, therefore is able to infect worldwide.  It is spread using email spam, fake updates, attachments and so on.  It encrypts all your files, including: music, MS Office, Open Office, pictures, videos, shared online files etc.. CrySiS  \\\\u003e Dharma Note: ATTENTION! At the moment, your system is not protected. We can fix it and restore files. To restore the system write to this address: cuxbqki190@yjard.com. CrySiS variant\",\"galaxy_id\":\"43\",\"id\":\"6619\",\"local\":false,\"meta\":{\"date\":[\"November 2016\"],\"encryption\":[\"AES + RSA-512\"],\"extensions\":[\".dharma\",\".wallet\",\".zzzzz\",\".cmb\",\".id-BCBEF350.[tboxdvydod@dnqamapr.cc].cmb\",\".bip\",\".id-BCBEF350.[Deahraln@ig.com].bip\",\".boost\",\".[Bfmmxdj@397cjamc.it].waifu\",\".brrr\",\".adobe\",\".tron\",\".AUDIT\",\".cccmn\",\".fire\",\".myjob\",\".[flfagseun@ig.com].war\",\".risk\",\".RISK\",\".bkpx\",\".[obqudoyafxdrr@dlg.com].santa\"],\"payment-method\":[\"Bitcoin - Email\"],\"ransomnotes\":[\"all your data has been locked us\\\\nYou want to return?\\\\nwrite email tboxdvydod@dnqamapr.cc\",\"All your files have been encrypted!\\\\nAll your files have been encrypted due to a security problem with your PC. If you want to restore them, write us to the e-mail tboxdvydod@dnqamapr.cc\\\\nWrite this ID in the title of your message ACBFF130\\\\nIn case of no answer in 24 hours write us to theese e-mails:tboxdvydod@dnqamapr.cc\\\\nYou have to pay for decryption in Bitcoins. The price depends on how fast you write to us. After payment we will send you the decryption tool that will decrypt all your files.\\\\nFree decryption as guarantee\\\\nBefore paying you can send us up to 1 file for free decryption. The total size of files must be less than 1Mb (non archived), and files should not contain valuable information. (databases,backups, large excel sheets, etc.)\\\\nHow to obtain Bitcoins\\\\nThe easiest way to buy bitcoins is LocalBitcoins site. You have to register, click 'Buy bitcoins', and select the seller by payment method and price.\\\\nhttps://localbitcoins.com/buy_bitcoins\\\\nAlso you can find other places to buy Bitcoins and beginners guide here:\\\\nhttp://www.coindesk.com/information/how-can-i-buy-bitcoins/\\\\nAttention!\\\\nDo not rename encrypted files.\\\\nDo not try to decrypt your data using third party software, it may cause permanent data loss.\\\\nDecryption of your files with the help of third parties may cause increased price (they add their fee to our) or you can become a victim of a scam.\",\"All your files have been encrypted!\\\\nAll your files have been encrypted due to a security problem with your PC. If you want to restore them, write us to the e-mail Deahraln@ig.com\\\\nWrite this ID in the title of your message BCBEF350\\\\nIn case of no answer in 24 hours write us to theese e-mails:Deahraln@ig.com\\\\nYou have to pay for decryption in Bitcoins. The price depends on how fast you write to us. After payment we will send you the decryption tool that will decrypt all your files. \\\\nFree decryption as guarantee\\\\nBefore paying you can send us up to 1 file for free decryption. The total size of files must be less than 1Mb (non archived), and files should not contain valuable information. (databases,backups, large excel sheets, etc.) \\\\nHow to obtain Bitcoins\\\\nThe easiest way to buy bitcoins is LocalBitcoins site. You have to register, click 'Buy bitcoins', and select the seller by payment method and price. \\\\nhttps://localbitcoins.com/buy_bitcoins \\\\nAlso you can find other places to buy Bitcoins and beginners guide here: \\\\nhttp://www.coindesk.com/information/how-can-i-buy-bitcoins/ \\\\nAttention!\\\\nDo not rename encrypted files. \\\\nDo not try to decrypt your data using third party software, it may cause permanent data loss.\\\\nDecryption of your files with the help of third parties may cause increased price (they add their fee to our) or you can become a victim of a scam.\",\"all your data has been locked us\\\\nYou want to return?\\\\nwrite email Deahraln@ig.com\"],\"ransomnotes-filenames\":[\"README.txt\",\"README.jpg\",\"Info.hta\",\"FILES ENCRYPTED.txt\",\"INFO.hta\"],\"ransomnotes-refs\":[\"https://www.bleepstatic.com/images/news/ransomware/d/dharma/cmb/hta-ransom-note.jpg\",\"https://pbs.twimg.com/media/Dmof_FiXsAAAvTN.jpg\",\"https://pbs.twimg.com/media/Dmof_FyXsAEJmgQ.jpg\",\"https://pbs.twimg.com/media/DrWqLWzXgAc4SlG.jpg\",\"https://pbs.twimg.com/media/DuEBIMBW0AANnGW.jpg\"],\"refs\":[\"https://id-ransomware.blogspot.co.il/2016/11/dharma-ransomware.html\",\"https://www.bleepingcomputer.com/news/security/kaspersky-releases-decryptor-for-the-dharma-ransomware/\",\"https://www.bleepingcomputer.com/news/security/new-cmb-dharma-ransomware-variant-released/\",\"https://www.bleepingcomputer.com/news/security/new-bip-dharma-ransomware-variant-released/\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-october-12th-2018-notpetya-gandcrab-and-more/\",\"https://twitter.com/demonslay335/status/1049313390097813504\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-september-14th-2018-kraken-dharma-and-matrix/\",\"https://twitter.com/JakubKroustek/status/1038680437508501504\",\"https://twitter.com/demonslay335/status/1059521042383814657\",\"https://twitter.com/demonslay335/status/1059940414147489792\",\"https://twitter.com/JakubKroustek/status/1060825783197933568\",\"https://twitter.com/JakubKroustek/status/1064061275863425025\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-november-23rd-2018-stop-dharma-and-more/\",\"https://www.youtube.com/watch?v=qjoYtwLx2TI\",\"https://twitter.com/GrujaRS/status/1072139616910757888\"]},\"source\":\"Various\",\"tag_id\":\"23\",\"tag_name\":\"misp-galaxy:ransomware=\\\"Dharma Ransomware\\\"\",\"type\":\"ransomware\",\"uuid\":\"4b111a3b-7c7d-4f81-821f-0e0f3954ac6a\",\"value\":\"Dharma Ransomware\",\"version\":\"86\"}],\"description\":\"Ransomware galaxy based on https://docs.google.com/spreadsheets/d/1TWS238xacAto-fLKh1n5uTsdijWdCEsGIM0Y0Hvmc5g/pubhtml\",\"icon\":\"btc\",\"id\":\"43\",\"name\":\"Ransomware\",\"namespace\":\"misp\",\"type\":\"ransomware\",\"uuid\":\"3c82aa9b-1002-4e4c-9aa7-d1fb09440806\",\"version\":\"4\"}],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"241f5b89-037c-4fa0-8016-cc3d739a414b\"},\"Orgc\":{\"id\":\"2\",\"local\":false,\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"Tag\":[{\"colour\":\"#0088cc\",\"exportable\":true,\"hide_tag\":false,\"id\":\"23\",\"local\":0,\"name\":\"misp-galaxy:ransomware=\\\"Dharma Ransomware\\\"\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#004646\",\"exportable\":true,\"hide_tag\":false,\"id\":\"21\",\"local\":0,\"name\":\"type:OSINT\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#ffffff\",\"exportable\":true,\"hide_tag\":false,\"id\":\"2\",\"local\":0,\"name\":\"tlp:white\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#2c4f00\",\"exportable\":true,\"hide_tag\":false,\"id\":\"24\",\"local\":0,\"name\":\"malware_classification:malware-category=\\\"Ransomware\\\"\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#00223b\",\"exportable\":true,\"hide_tag\":false,\"id\":\"3\",\"local\":0,\"name\":\"osint:source-type=\\\"blog - post\\\"\",\"numerical_value\":null,\"user_id\":\"0\"}],\"analysis\":\"2\",\"attribute_count\":\"7\",\"date\":\"2045-08-25\",\"disable_correlation\":false,\"distribution\":\"3\",\"extends_uuid\":\"\",\"id\":\"5\",\"info\":\"OSINT - New Arena Crysis Ransomware Variant Released\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"2\",\"proposal_email_lock\":false,\"publish_timestamp\":\"2486839131\",\"published\":true,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2387543076\",\"uuid\":\"10f3e67b-2da8-4212-bd8a-717b536d657e\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "- Xchecked via VT: e202812cb9e047ed3c6244e9d10beeeda846cf89fc817fc1122220662b6bc77c",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "5",
+          "id": "351",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2045-08-28T14:24:32.000Z",
+          "to_ids": true,
+          "type": "md5",
+          "uuid": "16c281e0-f3f6-4204-9f0d-bcd041fe1a21"
+        },
+        "event": {
+          "attribute_count": 7,
+          "date": "2045-08-25",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "5",
+          "info": "OSINT - New Arena Crysis Ransomware Variant Released",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "2",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2048-10-20T20:38:51.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 3,
+          "uuid": "10f3e67b-2da8-4212-bd8a-717b536d657e"
+        },
+        "orgc": {
+          "id": "2",
+          "local": false,
+          "name": "CIRCL",
+          "uuid": "12b9bf4e-1a13-48c6-961a-79d9088c108f"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "misp-galaxy:ransomware=Dharma Ransomware",
+        "type:OSINT",
+        "tlp:white",
+        "malware_classification:malware-category=Ransomware",
+        "osint:source-type=blog - post"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "md5": "e6995eadbb00a02ccb0046dfa3b748cf"
+            }
+          },
+          "marking": {
+            "tlp": [
+              "WHITE"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 2,
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2045-08-28T14:24:36.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"id\":\"10794\",\"type\":\"domain|ip\",\"category\":\"Network activity\",\"to_ids\":false,\"uuid\":\"8ed40555-4cf3-4f08-a1f5-3a3d0a458685\",\"event_id\":\"14\",\"distribution\":\"5\",\"timestamp\":\"2426265282\",\"comment\":\"1st stage\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"jnuq-im.ueknyki.com|198.51.100.144\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"EventReport\":[],\"Galaxy\":[{\"GalaxyCluster\":[{\"authors\":[\"https://docs.google.com/spreadsheets/d/1TWS238xacAto-fLKh1n5uTsdijWdCEsGIM0Y0Hvmc5g/pubhtml\",\"http://pastebin.com/raw/GHgpWjar\",\"MISP Project\"],\"collection_uuid\":\"65ab346f-2c45-4d1f-bb33-27249b543793\",\"description\":\"It’s directed to English speaking users, therefore is able to infect worldwide.  It is spread using email spam, fake updates, attachments and so on.  It encrypts all your files, including: music, MS Office, Open Office, pictures, videos, shared online files etc.. CrySiS  \\\\u003e Dharma Note: ATTENTION! At the moment, your system is not protected. We can fix it and restore files. To restore the system write to this address: cuxbqki190@yjard.com. CrySiS variant\",\"galaxy_id\":\"43\",\"id\":\"6619\",\"local\":false,\"meta\":{\"date\":[\"November 2016\"],\"encryption\":[\"AES + RSA-512\"],\"extensions\":[\".dharma\",\".wallet\",\".zzzzz\",\".cmb\",\".id-BCBEF350.[tboxdvydod@dnqamapr.cc].cmb\",\".bip\",\".id-BCBEF350.[Deahraln@ig.com].bip\",\".boost\",\".[Bfmmxdj@397cjamc.it].waifu\",\".brrr\",\".adobe\",\".tron\",\".AUDIT\",\".cccmn\",\".fire\",\".myjob\",\".[flfagseun@ig.com].war\",\".risk\",\".RISK\",\".bkpx\",\".[obqudoyafxdrr@dlg.com].santa\"],\"payment-method\":[\"Bitcoin - Email\"],\"ransomnotes\":[\"all your data has been locked us\\\\nYou want to return?\\\\nwrite email tboxdvydod@dnqamapr.cc\",\"All your files have been encrypted!\\\\nAll your files have been encrypted due to a security problem with your PC. If you want to restore them, write us to the e-mail tboxdvydod@dnqamapr.cc\\\\nWrite this ID in the title of your message ACBFF130\\\\nIn case of no answer in 24 hours write us to theese e-mails:tboxdvydod@dnqamapr.cc\\\\nYou have to pay for decryption in Bitcoins. The price depends on how fast you write to us. After payment we will send you the decryption tool that will decrypt all your files.\\\\nFree decryption as guarantee\\\\nBefore paying you can send us up to 1 file for free decryption. The total size of files must be less than 1Mb (non archived), and files should not contain valuable information. (databases,backups, large excel sheets, etc.)\\\\nHow to obtain Bitcoins\\\\nThe easiest way to buy bitcoins is LocalBitcoins site. You have to register, click 'Buy bitcoins', and select the seller by payment method and price.\\\\nhttps://localbitcoins.com/buy_bitcoins\\\\nAlso you can find other places to buy Bitcoins and beginners guide here:\\\\nhttp://www.coindesk.com/information/how-can-i-buy-bitcoins/\\\\nAttention!\\\\nDo not rename encrypted files.\\\\nDo not try to decrypt your data using third party software, it may cause permanent data loss.\\\\nDecryption of your files with the help of third parties may cause increased price (they add their fee to our) or you can become a victim of a scam.\",\"All your files have been encrypted!\\\\nAll your files have been encrypted due to a security problem with your PC. If you want to restore them, write us to the e-mail Deahraln@ig.com\\\\nWrite this ID in the title of your message BCBEF350\\\\nIn case of no answer in 24 hours write us to theese e-mails:Deahraln@ig.com\\\\nYou have to pay for decryption in Bitcoins. The price depends on how fast you write to us. After payment we will send you the decryption tool that will decrypt all your files. \\\\nFree decryption as guarantee\\\\nBefore paying you can send us up to 1 file for free decryption. The total size of files must be less than 1Mb (non archived), and files should not contain valuable information. (databases,backups, large excel sheets, etc.) \\\\nHow to obtain Bitcoins\\\\nThe easiest way to buy bitcoins is LocalBitcoins site. You have to register, click 'Buy bitcoins', and select the seller by payment method and price. \\\\nhttps://localbitcoins.com/buy_bitcoins \\\\nAlso you can find other places to buy Bitcoins and beginners guide here: \\\\nhttp://www.coindesk.com/information/how-can-i-buy-bitcoins/ \\\\nAttention!\\\\nDo not rename encrypted files. \\\\nDo not try to decrypt your data using third party software, it may cause permanent data loss.\\\\nDecryption of your files with the help of third parties may cause increased price (they add their fee to our) or you can become a victim of a scam.\",\"all your data has been locked us\\\\nYou want to return?\\\\nwrite email Deahraln@ig.com\"],\"ransomnotes-filenames\":[\"README.txt\",\"README.jpg\",\"Info.hta\",\"FILES ENCRYPTED.txt\",\"INFO.hta\"],\"ransomnotes-refs\":[\"https://www.bleepstatic.com/images/news/ransomware/d/dharma/cmb/hta-ransom-note.jpg\",\"https://pbs.twimg.com/media/Dmof_FiXsAAAvTN.jpg\",\"https://pbs.twimg.com/media/Dmof_FyXsAEJmgQ.jpg\",\"https://pbs.twimg.com/media/DrWqLWzXgAc4SlG.jpg\",\"https://pbs.twimg.com/media/DuEBIMBW0AANnGW.jpg\"],\"refs\":[\"https://id-ransomware.blogspot.co.il/2016/11/dharma-ransomware.html\",\"https://www.bleepingcomputer.com/news/security/kaspersky-releases-decryptor-for-the-dharma-ransomware/\",\"https://www.bleepingcomputer.com/news/security/new-cmb-dharma-ransomware-variant-released/\",\"https://www.bleepingcomputer.com/news/security/new-bip-dharma-ransomware-variant-released/\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-october-12th-2018-notpetya-gandcrab-and-more/\",\"https://twitter.com/demonslay335/status/1049313390097813504\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-september-14th-2018-kraken-dharma-and-matrix/\",\"https://twitter.com/JakubKroustek/status/1038680437508501504\",\"https://twitter.com/demonslay335/status/1059521042383814657\",\"https://twitter.com/demonslay335/status/1059940414147489792\",\"https://twitter.com/JakubKroustek/status/1060825783197933568\",\"https://twitter.com/JakubKroustek/status/1064061275863425025\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-november-23rd-2018-stop-dharma-and-more/\",\"https://www.youtube.com/watch?v=qjoYtwLx2TI\",\"https://twitter.com/GrujaRS/status/1072139616910757888\"]},\"source\":\"Various\",\"tag_id\":\"23\",\"tag_name\":\"misp-galaxy:ransomware=\\\"Dharma Ransomware\\\"\",\"type\":\"ransomware\",\"uuid\":\"4b111a3b-7c7d-4f81-821f-0e0f3954ac6a\",\"value\":\"Dharma Ransomware\",\"version\":\"86\"}],\"description\":\"Ransomware galaxy based on https://docs.google.com/spreadsheets/d/1TWS238xacAto-fLKh1n5uTsdijWdCEsGIM0Y0Hvmc5g/pubhtml\",\"icon\":\"btc\",\"id\":\"43\",\"name\":\"Ransomware\",\"namespace\":\"misp\",\"type\":\"ransomware\",\"uuid\":\"3c82aa9b-1002-4e4c-9aa7-d1fb09440806\",\"version\":\"4\"}],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"241f5b89-037c-4fa0-8016-cc3d739a414b\"},\"Orgc\":{\"id\":\"2\",\"local\":false,\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"Tag\":[{\"colour\":\"#0088cc\",\"exportable\":true,\"hide_tag\":false,\"id\":\"23\",\"local\":0,\"name\":\"misp-galaxy:ransomware=\\\"Dharma Ransomware\\\"\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#004646\",\"exportable\":true,\"hide_tag\":false,\"id\":\"21\",\"local\":0,\"name\":\"type:OSINT\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#ffffff\",\"exportable\":true,\"hide_tag\":false,\"id\":\"2\",\"local\":0,\"name\":\"tlp:white\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#2c4f00\",\"exportable\":true,\"hide_tag\":false,\"id\":\"24\",\"local\":0,\"name\":\"malware_classification:malware-category=\\\"Ransomware\\\"\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#00223b\",\"exportable\":true,\"hide_tag\":false,\"id\":\"3\",\"local\":0,\"name\":\"osint:source-type=\\\"blog - post\\\"\",\"numerical_value\":null,\"user_id\":\"0\"}],\"analysis\":\"2\",\"attribute_count\":\"7\",\"date\":\"2045-08-25\",\"disable_correlation\":false,\"distribution\":\"3\",\"extends_uuid\":\"\",\"id\":\"5\",\"info\":\"OSINT - New Arena Crysis Ransomware Variant Released\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"2\",\"proposal_email_lock\":false,\"publish_timestamp\":\"2486839131\",\"published\":true,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2387543076\",\"uuid\":\"10f3e67b-2da8-4212-bd8a-717b536d657e\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Network activity",
+          "comment": "1st stage",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "14",
+          "id": "10794",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2046-11-19T18:34:42.000Z",
+          "to_ids": false,
+          "type": "domain|ip",
+          "uuid": "8ed40555-4cf3-4f08-a1f5-3a3d0a458685"
+        },
+        "event": {
+          "attribute_count": 7,
+          "date": "2045-08-25",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "5",
+          "info": "OSINT - New Arena Crysis Ransomware Variant Released",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "2",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2048-10-20T20:38:51.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 3,
+          "uuid": "10f3e67b-2da8-4212-bd8a-717b536d657e"
+        },
+        "orgc": {
+          "id": "2",
+          "local": false,
+          "name": "CIRCL",
+          "uuid": "12b9bf4e-1a13-48c6-961a-79d9088c108f"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "misp-galaxy:ransomware=Dharma Ransomware",
+        "type:OSINT",
+        "tlp:white",
+        "malware_classification:malware-category=Ransomware",
+        "osint:source-type=blog - post"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "ip": "198.51.100.144",
+          "marking": {
+            "tlp": [
+              "WHITE"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 2,
+          "type": "domain-name",
+          "url": {
+            "domain": "jnuq-im.ueknyki.com"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2045-04-28T18:23:44.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"External analysis\",\"comment\":\"Carbon sample - Xchecked via VT: e12e9921fca4810537e6603d7f73093485a3a5b7\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"4\",\"first_seen\":null,\"id\":\"342\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2374491350\",\"to_ids\":false,\"type\":\"link\",\"uuid\":\"18de1118-9d36-41e3-b89c-508593cb0c24\",\"value\":\"https://www.virustotal.com/file/8aa8491ecbac812fb292e1d257e0456c68f358cd1058125ef9ae549854090394/analysis/1486030116/\"},\"EventReport\":[],\"Galaxy\":[{\"GalaxyCluster\":[{\"authors\":[\"Alexandre Dulaunoy\",\"Florian Roth\",\"Timo Steffens\",\"Christophe Vandeplas\",\"Dennis Rand\",\"raw-data\"],\"collection_uuid\":\"6d604f15-5b35-4b7a-81a9-4854f8c0c14f\",\"description\":\"Family of related sophisticated backdoor software - Name comes from Microsoft detection signature – anagram of Ultra (Ultra3) was a name of the fake driver). A macOS version exists but appears incomplete and lacking features...for now!\",\"galaxy_id\":\"36\",\"id\":\"5828\",\"local\":false,\"meta\":{\"refs\":[\"https://www.first.org/resources/papers/tbilisi2014/turla-operations_and_development.pdf\",\"https://objective-see.com/blog/blog_0x25.html#Snake\"],\"synonyms\":[\"Snake\",\"Uroburos\",\"Urouros\"],\"type\":[\"Backdoor\",\"Rootkit\"]},\"source\":\"MISP Project\",\"tag_id\":\"22\",\"tag_name\":\"misp-galaxy:tool=\\\"Turla\\\"\",\"type\":\"tool\",\"uuid\":\"86866b08-e3b1-452c-9adc-f97a0e87494d\",\"value\":\"Turla\",\"version\":\"138\"}],\"description\":\"Threat actors tools is an enumeration of tools used by adversaries. The list includes malware but also common software regularly used by the adversaries.\",\"icon\":\"optin-monster\",\"id\":\"36\",\"name\":\"Tool\",\"namespace\":\"misp\",\"type\":\"tool\",\"uuid\":\"5e2726a8-ce3b-4dd1-a706-39121682ab6f\",\"version\":\"3\"}],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"241f5b89-037c-4fa0-8016-cc3d739a414b\"},\"Orgc\":{\"id\":\"2\",\"local\":false,\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"241f5b89-037c-4fa0-8016-cc3d739a414b\"},\"Orgc\":{\"id\":\"4\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\"},\"analysis\":\"2\",\"date\":\"2043-01-20\",\"distribution\":\"3\",\"id\":\"369\",\"info\":\"OSINT  Analysis of Project Cobra Another extensible framework used by the Uroburos’ actors from Gdata\",\"org_id\":\"1\",\"orgc_id\":\"4\",\"published\":true,\"threat_level_id\":\"1\",\"timestamp\":\"2381776117\",\"uuid\":\"67db4b0e-de97-4b10-9be3-2271060b820a\"}},{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"241f5b89-037c-4fa0-8016-cc3d739a414b\"},\"Orgc\":{\"id\":\"4\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\"},\"analysis\":\"2\",\"date\":\"2042-11-20\",\"distribution\":\"3\",\"id\":\"621\",\"info\":\"Turla digging using TotalHash\",\"org_id\":\"1\",\"orgc_id\":\"4\",\"published\":true,\"threat_level_id\":\"2\",\"timestamp\":\"2381776404\",\"uuid\":\"626bdcb0-374f-4de2-87f0-e10a663d291a\"}}],\"ShadowAttribute\":[],\"Tag\":[{\"colour\":\"#065100\",\"exportable\":true,\"hide_tag\":false,\"id\":\"22\",\"local\":0,\"name\":\"misp-galaxy:tool=\\\"Turla\\\"\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#ffffff\",\"exportable\":true,\"hide_tag\":false,\"id\":\"2\",\"local\":0,\"name\":\"tlp:white\",\"numerical_value\":null,\"user_id\":\"0\"}],\"analysis\":\"2\",\"attribute_count\":\"100\",\"date\":\"2045-03-30\",\"disable_correlation\":false,\"distribution\":\"3\",\"extends_uuid\":\"\",\"id\":\"4\",\"info\":\"OSINT - Carbon Paper: Peering into Turla’s second stage backdoor\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"2\",\"proposal_email_lock\":false,\"publish_timestamp\":\"2486839130\",\"published\":true,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2377016624\",\"uuid\":\"82deea17-be09-4d5d-b023-2385544f955d\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "External analysis",
+          "comment": "Carbon sample - Xchecked via VT: e12e9921fca4810537e6603d7f73093485a3a5b7",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "4",
+          "id": "342",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2045-03-30T12:55:50.000Z",
+          "to_ids": false,
+          "type": "link",
+          "uuid": "18de1118-9d36-41e3-b89c-508593cb0c24"
+        },
+        "event": {
+          "attribute_count": 100,
+          "date": "2045-03-30",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "4",
+          "info": "OSINT - Carbon Paper: Peering into Turla’s second stage backdoor",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "2",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2048-10-20T20:38:50.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 3,
+          "uuid": "82deea17-be09-4d5d-b023-2385544f955d"
+        },
+        "orgc": {
+          "id": "2",
+          "local": false,
+          "name": "CIRCL",
+          "uuid": "12b9bf4e-1a13-48c6-961a-79d9088c108f"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "misp-galaxy:tool=Turla",
+        "tlp:white"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "marking": {
+            "tlp": [
+              "WHITE"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 2,
+          "type": "url",
+          "url": {
+            "domain": "www.virustotal.com",
+            "full": "https://www.virustotal.com/file/8aa8491ecbac812fb292e1d257e0456c68f358cd1058125ef9ae549854090394/analysis/1486030116/",
+            "original": "https://www.virustotal.com/file/8aa8491ecbac812fb292e1d257e0456c68f358cd1058125ef9ae549854090394/analysis/1486030116/",
+            "path": "/file/8aa8491ecbac812fb292e1d257e0456c68f358cd1058125ef9ae549854090394/analysis/1486030116/",
+            "scheme": "https"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2042-10-06T07:12:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"1077\",\"type\":\"sha256\",\"category\":\"External analysis\",\"to_ids\":true,\"uuid\":\"55601318-53ab-4088-a60e-51df486a348d\",\"event_id\":\"2\",\"distribution\":\"5\",\"timestamp\":\"2296192194\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"5c0615fb73530c6574e353b15d61f78ebea5608c7da7cc028b0c6964a0ff22d8\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "External analysis",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "2",
+          "id": "1077",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2042-10-06T07:09:54.000Z",
+          "to_ids": true,
+          "type": "sha256",
+          "uuid": "55601318-53ab-4088-a60e-51df486a348d"
+        },
+        "event": {
+          "attribute_count": 29,
+          "date": "2042-10-03",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "2",
+          "info": "OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "2",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T11:05:16.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 2,
+          "uuid": "54835d9e-d62e-4507-860e-4602523e525b"
+        },
+        "orgc": {
+          "id": "2",
+          "local": false,
+          "name": "ExpvllmSRQZ.be",
+          "uuid": "19f6be9b-cf63-45c5-ac3e-33cf031d388a"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "type:OSINT",
+        "tlp:green"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "sha256": "5c0615fb73530c6574e353b15d61f78ebea5608c7da7cc028b0c6964a0ff22d8"
+            }
+          },
+          "marking": {
+            "tlp": [
+              "GREEN"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 2,
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2042-10-06T07:12:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"1084\",\"type\":\"ip-dst\",\"category\":\"Network activity\",\"to_ids\":true,\"uuid\":\"15805520-5096-4d9e-8933-3929603e616f\",\"event_id\":\"2\",\"distribution\":\"5\",\"timestamp\":\"2296192257\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"198.51.100.144\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Network activity",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "2",
+          "id": "1084",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2042-10-06T07:10:57.000Z",
+          "to_ids": true,
+          "type": "ip-dst",
+          "uuid": "15805520-5096-4d9e-8933-3929603e616f"
+        },
+        "event": {
+          "attribute_count": 29,
+          "date": "2042-10-03",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "2",
+          "info": "OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "2",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T11:05:16.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 2,
+          "uuid": "54835d9e-d62e-4507-860e-4602523e525b"
+        },
+        "orgc": {
+          "id": "2",
+          "local": false,
+          "name": "ExpvllmSRQZ.be",
+          "uuid": "19f6be9b-cf63-45c5-ac3e-33cf031d388a"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "type:OSINT",
+        "tlp:green"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "ip": "198.51.100.144",
+          "marking": {
+            "tlp": [
+              "GREEN"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 2,
+          "type": "ipv4-addr"
+        }
+      }
+    },
+    {
+      "@timestamp": "2042-10-06T07:12:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"1086\",\"type\":\"hostname\",\"category\":\"Network activity\",\"to_ids\":true,\"uuid\":\"465329db-a455-427a-bcc1-38c0035f411a\",\"event_id\":\"2\",\"distribution\":\"5\",\"timestamp\":\"2296192348\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"sfkkautdo.afzw.net\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Network activity",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "2",
+          "id": "1086",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2042-10-06T07:12:28.000Z",
+          "to_ids": true,
+          "type": "hostname",
+          "uuid": "465329db-a455-427a-bcc1-38c0035f411a"
+        },
+        "event": {
+          "attribute_count": 29,
+          "date": "2042-10-03",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "2",
+          "info": "OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "2",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T11:05:16.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 2,
+          "uuid": "54835d9e-d62e-4507-860e-4602523e525b"
+        },
+        "orgc": {
+          "id": "2",
+          "local": false,
+          "name": "ExpvllmSRQZ.be",
+          "uuid": "19f6be9b-cf63-45c5-ac3e-33cf031d388a"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "type:OSINT",
+        "tlp:green"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "marking": {
+            "tlp": [
+              "GREEN"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 2,
+          "type": "domain-name",
+          "url": {
+            "domain": "sfkkautdo.afzw.net"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2042-10-06T07:12:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"1089\",\"type\":\"text\",\"category\":\"External analysis\",\"to_ids\":false,\"uuid\":\"999030b1-15c0-43c0-955b-4c53840e374f\",\"event_id\":\"2\",\"distribution\":\"5\",\"timestamp\":\"2296192377\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"Nitro\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "External analysis",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "2",
+          "id": "1089",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2042-10-06T07:12:57.000Z",
+          "to_ids": false,
+          "type": "text",
+          "uuid": "999030b1-15c0-43c0-955b-4c53840e374f",
+          "value": "Nitro"
+        },
+        "event": {
+          "attribute_count": 29,
+          "date": "2042-10-03",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "2",
+          "info": "OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "2",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T11:05:16.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 2,
+          "uuid": "54835d9e-d62e-4507-860e-4602523e525b"
+        },
+        "orgc": {
+          "id": "2",
+          "local": false,
+          "name": "ExpvllmSRQZ.be",
+          "uuid": "19f6be9b-cf63-45c5-ac3e-33cf031d388a"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "type:OSINT",
+        "tlp:green"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "marking": {
+            "tlp": [
+              "GREEN"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 2
+        }
+      }
+    },
+    {
+      "@timestamp": "2042-10-06T07:12:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"1090\",\"type\":\"sha1\",\"category\":\"External analysis\",\"to_ids\":true,\"uuid\":\"45b704b9-d28c-426a-9fc5-c910517e125b\",\"event_id\":\"2\",\"distribution\":\"5\",\"timestamp\":\"2339439143\",\"comment\":\"Automatically added (via 5045cebe0e96be07441b7af0dfce0197)\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"7cd77e3186e409332d72a026faba3883a8bcd3bb\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "External analysis",
+          "comment": "Automatically added (via 5045cebe0e96be07441b7af0dfce0197)",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "2",
+          "id": "1090",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2044-02-18T20:12:23.000Z",
+          "to_ids": true,
+          "type": "sha1",
+          "uuid": "45b704b9-d28c-426a-9fc5-c910517e125b"
+        },
+        "event": {
+          "attribute_count": 29,
+          "date": "2042-10-03",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "2",
+          "info": "OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "2",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T11:05:16.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 2,
+          "uuid": "54835d9e-d62e-4507-860e-4602523e525b"
+        },
+        "orgc": {
+          "id": "2",
+          "local": false,
+          "name": "ExpvllmSRQZ.be",
+          "uuid": "19f6be9b-cf63-45c5-ac3e-33cf031d388a"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "type:OSINT",
+        "tlp:green"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "sha1": "7cd77e3186e409332d72a026faba3883a8bcd3bb"
+            }
+          },
+          "marking": {
+            "tlp": [
+              "GREEN"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 2,
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2042-10-06T07:12:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"12394\",\"type\":\"domain\",\"category\":\"Network activity\",\"to_ids\":false,\"uuid\":\"339e0cc2-9dd6-4a73-9de1-51f3c4c4cc03\",\"event_id\":\"22\",\"distribution\":\"5\",\"timestamp\":\"2346067763\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"qpcqkfkk.com\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Network activity",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "22",
+          "id": "12394",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2044-05-05T13:29:23.000Z",
+          "to_ids": false,
+          "type": "domain",
+          "uuid": "339e0cc2-9dd6-4a73-9de1-51f3c4c4cc03"
+        },
+        "event": {
+          "attribute_count": 29,
+          "date": "2042-10-03",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "2",
+          "info": "OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "2",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T11:05:16.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 2,
+          "uuid": "54835d9e-d62e-4507-860e-4602523e525b"
+        },
+        "orgc": {
+          "id": "2",
+          "local": false,
+          "name": "ExpvllmSRQZ.be",
+          "uuid": "19f6be9b-cf63-45c5-ac3e-33cf031d388a"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "type:OSINT",
+        "tlp:green"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "marking": {
+            "tlp": [
+              "GREEN"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 2,
+          "type": "domain-name",
+          "url": {
+            "domain": "qpcqkfkk.com"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2046-08-28T13:20:17.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"158\",\"orgc_id\":\"5\",\"org_id\":\"1\",\"date\":\"2046-01-08\",\"threat_level_id\":\"1\",\"info\":\"Turla: Mosquito Whitepaper\",\"published\":true,\"uuid\":\"9b0080c2-32d6-42ad-b007-421f9c657901\",\"attribute_count\":\"61\",\"analysis\":\"0\",\"timestamp\":\"2419075217\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250753\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\",\"local\":false},\"Attribute\":{\"id\":\"17299\",\"type\":\"url\",\"category\":\"Network activity\",\"to_ids\":false,\"uuid\":\"9e09665d-b7f7-427e-a95a-0fd69e119444\",\"event_id\":\"158\",\"distribution\":\"5\",\"timestamp\":\"2399040492\",\"comment\":\"Fake adobe URL\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"http://get.adobe.com/stats/AbfFcBebD/?q=\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[{\"Event\":{\"id\":\"58\",\"date\":\"2046-08-17\",\"threat_level_id\":\"1\",\"info\":\"Turla Outlook White Paper\",\"published\":true,\"uuid\":\"1d162d74-d936-410d-b07d-80b65c047951\",\"analysis\":\"0\",\"timestamp\":\"2419075183\",\"distribution\":\"3\",\"org_id\":\"1\",\"orgc_id\":\"5\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\"},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\"}}}],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"7\",\"name\":\"misp-galaxy:threat-actor=\\\"Turla Group\\\"\",\"colour\":\"#0088cc\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":true,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"70\",\"name\":\"Turla\",\"colour\":\"#f20f53\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Network activity",
+          "comment": "Fake adobe URL",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "158",
+          "id": "17299",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2046-01-08T16:08:12.000Z",
+          "to_ids": false,
+          "type": "url",
+          "uuid": "9e09665d-b7f7-427e-a95a-0fd69e119444"
+        },
+        "event": {
+          "attribute_count": 61,
+          "date": "2046-01-08",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "158",
+          "info": "Turla: Mosquito Whitepaper",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "5",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T15:25:53.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "9b0080c2-32d6-42ad-b007-421f9c657901"
+        },
+        "orgc": {
+          "id": "5",
+          "local": false,
+          "name": "ESET",
+          "uuid": "25c6ad1e-90eb-4620-bf6c-4509093a506e"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "misp-galaxy:threat-actor=Turla Group",
+        "Turla",
+        "tlp:white"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "marking": {
+            "tlp": [
+              "WHITE"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "url",
+          "url": {
+            "domain": "get.adobe.com",
+            "full": "http://get.adobe.com/stats/AbfFcBebD/?q=",
+            "original": "http://get.adobe.com/stats/AbfFcBebD/?q=",
+            "path": "/stats/AbfFcBebD/",
+            "query": "q=",
+            "scheme": "http"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2046-08-28T13:20:17.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"158\",\"orgc_id\":\"5\",\"org_id\":\"1\",\"date\":\"2046-01-08\",\"threat_level_id\":\"1\",\"info\":\"Turla: Mosquito Whitepaper\",\"published\":true,\"uuid\":\"9b0080c2-32d6-42ad-b007-421f9c657901\",\"attribute_count\":\"61\",\"analysis\":\"0\",\"timestamp\":\"2419075217\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250753\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\",\"local\":false},\"Attribute\":{\"id\":\"17330\",\"type\":\"uri\",\"category\":\"Network activity\",\"to_ids\":false,\"uuid\":\"3e431fb2-4db9-4f21-8ee6-8fd62f055997\",\"event_id\":\"158\",\"distribution\":\"5\",\"timestamp\":\"2399041889\",\"comment\":\"Win32 backdoor C&C URI\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"/scripts/m/query.php?id=\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[{\"Event\":{\"id\":\"58\",\"date\":\"2046-08-17\",\"threat_level_id\":\"1\",\"info\":\"Turla Outlook White Paper\",\"published\":true,\"uuid\":\"1d162d74-d936-410d-b07d-80b65c047951\",\"analysis\":\"0\",\"timestamp\":\"2419075183\",\"distribution\":\"3\",\"org_id\":\"1\",\"orgc_id\":\"5\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\"},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\"}}}],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"7\",\"name\":\"misp-galaxy:threat-actor=\\\"Turla Group\\\"\",\"colour\":\"#0088cc\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":true,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"70\",\"name\":\"Turla\",\"colour\":\"#f20f53\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Network activity",
+          "comment": "Win32 backdoor C&C URI",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "158",
+          "id": "17330",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2046-01-08T16:31:29.000Z",
+          "to_ids": false,
+          "type": "uri",
+          "uuid": "3e431fb2-4db9-4f21-8ee6-8fd62f055997"
+        },
+        "event": {
+          "attribute_count": 61,
+          "date": "2046-01-08",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "158",
+          "info": "Turla: Mosquito Whitepaper",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "5",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T15:25:53.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "9b0080c2-32d6-42ad-b007-421f9c657901"
+        },
+        "orgc": {
+          "id": "5",
+          "local": false,
+          "name": "ESET",
+          "uuid": "25c6ad1e-90eb-4620-bf6c-4509093a506e"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "misp-galaxy:threat-actor=Turla Group",
+        "Turla",
+        "tlp:white"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "marking": {
+            "tlp": [
+              "WHITE"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "url"
+        }
+      }
+    },
+    {
+      "@timestamp": "2046-08-28T13:20:17.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"158\",\"orgc_id\":\"5\",\"org_id\":\"1\",\"date\":\"2046-01-08\",\"threat_level_id\":\"1\",\"info\":\"Turla: Mosquito Whitepaper\",\"published\":true,\"uuid\":\"9b0080c2-32d6-42ad-b007-421f9c657901\",\"attribute_count\":\"61\",\"analysis\":\"0\",\"timestamp\":\"2419075217\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250753\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\",\"local\":false},\"Attribute\":{\"id\":\"17322\",\"type\":\"filename|sha1\",\"category\":\"Artifacts dropped\",\"to_ids\":false,\"uuid\":\"9f811be6-e0b3-418c-937d-0ab88f093141\",\"event_id\":\"158\",\"distribution\":\"5\",\"timestamp\":\"2399041889\",\"comment\":\"JavaScript backdoor\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"google_update_checker.js|a52b866276ab3c74b9eb3db348709e4a228770de\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[{\"Event\":{\"id\":\"58\",\"date\":\"2046-08-17\",\"threat_level_id\":\"1\",\"info\":\"Turla Outlook White Paper\",\"published\":true,\"uuid\":\"1d162d74-d936-410d-b07d-80b65c047951\",\"analysis\":\"0\",\"timestamp\":\"2419075183\",\"distribution\":\"3\",\"org_id\":\"1\",\"orgc_id\":\"5\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\"},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\"}}}],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"7\",\"name\":\"misp-galaxy:threat-actor=\\\"Turla Group\\\"\",\"colour\":\"#0088cc\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":true,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"70\",\"name\":\"Turla\",\"colour\":\"#f20f53\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Artifacts dropped",
+          "comment": "JavaScript backdoor",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "158",
+          "id": "17322",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2046-01-08T16:31:29.000Z",
+          "to_ids": false,
+          "type": "filename|sha1",
+          "uuid": "9f811be6-e0b3-418c-937d-0ab88f093141"
+        },
+        "event": {
+          "attribute_count": 61,
+          "date": "2046-01-08",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "158",
+          "info": "Turla: Mosquito Whitepaper",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "5",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T15:25:53.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "9b0080c2-32d6-42ad-b007-421f9c657901"
+        },
+        "orgc": {
+          "id": "5",
+          "local": false,
+          "name": "ESET",
+          "uuid": "25c6ad1e-90eb-4620-bf6c-4509093a506e"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "misp-galaxy:threat-actor=Turla Group",
+        "Turla",
+        "tlp:white"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "sha1": "a52b866276ab3c74b9eb3db348709e4a228770de"
+            },
+            "name": "google_update_checker.js"
+          },
+          "marking": {
+            "tlp": [
+              "WHITE"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2046-01-23T16:09:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"22\",\"orgc_id\":\"4\",\"org_id\":\"1\",\"date\":\"2043-12-08\",\"threat_level_id\":\"3\",\"info\":\"Packrat: Seven Years of a South American Threat Actor\",\"published\":true,\"uuid\":\"97efefae-e9f5-44a7-bce4-65944143f12e\",\"attribute_count\":\"133\",\"analysis\":\"2\",\"timestamp\":\"2400336596\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250701\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"4\",\"name\":\"CUDESO\",\"uuid\":\"26c24741-eef8-4086-a863-40fec3c7cf95\",\"local\":false},\"Attribute\":{\"id\":\"12268\",\"type\":\"email-src\",\"category\":\"Payload delivery\",\"to_ids\":true,\"uuid\":\"11dfcbc4-7a1c-4e60-b271-83015325b07b\",\"event_id\":\"22\",\"distribution\":\"5\",\"timestamp\":\"2339879222\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"bwdgfmhehgdakp56@gmail.com\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "22",
+          "id": "12268",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2044-02-23T22:27:02.000Z",
+          "to_ids": true,
+          "type": "email-src",
+          "uuid": "11dfcbc4-7a1c-4e60-b271-83015325b07b"
+        },
+        "event": {
+          "attribute_count": 133,
+          "date": "2043-12-08",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "22",
+          "info": "Packrat: Seven Years of a South American Threat Actor",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "4",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T15:25:01.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 3,
+          "uuid": "97efefae-e9f5-44a7-bce4-65944143f12e"
+        },
+        "orgc": {
+          "id": "4",
+          "local": false,
+          "name": "CUDESO",
+          "uuid": "26c24741-eef8-4086-a863-40fec3c7cf95"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "tlp:white"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "email": {
+            "address": "bwdgfmhehgdakp56@gmail.com"
+          },
+          "marking": {
+            "tlp": [
+              "WHITE"
+            ]
+          },
+          "provider": "misp",
+          "scanner_stats": 2,
+          "type": "email-addr"
+        }
+      }
+    },
+    {
+      "@timestamp": "2046-01-23T16:09:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"22\",\"orgc_id\":\"4\",\"org_id\":\"1\",\"date\":\"2043-12-08\",\"threat_level_id\":\"3\",\"info\":\"Packrat: Seven Years of a South American Threat Actor\",\"published\":true,\"uuid\":\"97efefae-e9f5-44a7-bce4-65944143f12e\",\"attribute_count\":\"133\",\"analysis\":\"2\",\"timestamp\":\"2400336596\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250701\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"4\",\"name\":\"CUDESO\",\"uuid\":\"26c24741-eef8-4086-a863-40fec3c7cf95\",\"local\":false},\"Attribute\":{\"id\":\"12298\",\"type\":\"regkey\",\"category\":\"Artifacts dropped\",\"to_ids\":true,\"uuid\":\"94fadfa1-c1a8-4082-9952-57246196c49f\",\"event_id\":\"22\",\"distribution\":\"5\",\"timestamp\":\"2339879254\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"HKLM\\\\SOFTWARE\\\\Microsoft\\\\Active\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Artifacts dropped",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "22",
+          "id": "12298",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2044-02-23T22:27:34.000Z",
+          "to_ids": true,
+          "type": "regkey",
+          "uuid": "94fadfa1-c1a8-4082-9952-57246196c49f"
+        },
+        "event": {
+          "attribute_count": 133,
+          "date": "2043-12-08",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "22",
+          "info": "Packrat: Seven Years of a South American Threat Actor",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "4",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T15:25:01.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 3,
+          "uuid": "97efefae-e9f5-44a7-bce4-65944143f12e"
+        },
+        "orgc": {
+          "id": "4",
+          "local": false,
+          "name": "CUDESO",
+          "uuid": "26c24741-eef8-4086-a863-40fec3c7cf95"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "tlp:white"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "marking": {
+            "tlp": [
+              "WHITE"
+            ]
+          },
+          "provider": "misp",
+          "registry": {
+            "key": "HKLM\\SOFTWARE\\Microsoft\\Active"
+          },
+          "scanner_stats": 2,
+          "type": "windows-registry-key"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-12-13T14:03:16.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"id\":\"10\",\"orgc_id\":\"4\",\"org_id\":\"1\",\"date\":\"2048-12-09\",\"threat_level_id\":\"3\",\"info\":\"Recent Qakbot (Qbot) activity\",\"published\":true,\"uuid\":\"9ca2b325-ef8c-4dd6-a85c-bb7fa9d4cf12\",\"attribute_count\":\"15\",\"analysis\":\"2\",\"timestamp\":\"2491480996\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250688\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"4\",\"name\":\"CUDESO\",\"uuid\":\"26c24741-eef8-4086-a863-40fec3c7cf95\",\"local\":false},\"Attribute\":{\"id\":\"10686\",\"type\":\"ip-dst|port\",\"category\":\"Network activity\",\"to_ids\":true,\"uuid\":\"8de4d721-b279-4cbb-9541-b22ab6e0ff06\",\"event_id\":\"10\",\"distribution\":\"5\",\"timestamp\":\"2491130528\",\"comment\":\"On port 2222\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":\"2052-10-06T16:48:04.000000+00:00\",\"last_seen\":\"2052-10-06T16:48:04.000000+00:00\",\"value\":\"198.51.100.144|2222\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"6\",\"name\":\"misp-galaxy:banker=\\\"Qakbot\\\"\",\"colour\":\"#0088cc\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":true,\"is_custom_galaxy\":false,\"local\":0}]}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Network activity",
+          "comment": "On port 2222",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "10",
+          "id": "10686",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2048-12-09T12:42:08.000Z",
+          "to_ids": true,
+          "type": "ip-dst|port",
+          "uuid": "8de4d721-b279-4cbb-9541-b22ab6e0ff06"
+        },
+        "event": {
+          "attribute_count": 15,
+          "date": "2048-12-09",
+          "disable_correlation": false,
+          "distribution": 3,
+          "extends_uuid": "",
+          "id": "10",
+          "info": "Recent Qakbot (Qbot) activity",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "4",
+          "proposal_email_lock": false,
+          "publish_timestamp": "2049-01-14T15:24:48.000Z",
+          "published": true,
+          "sharing_group_id": "0",
+          "threat_level_id": 3,
+          "uuid": "9ca2b325-ef8c-4dd6-a85c-bb7fa9d4cf12"
+        },
+        "orgc": {
+          "id": "4",
+          "local": false,
+          "name": "CUDESO",
+          "uuid": "26c24741-eef8-4086-a863-40fec3c7cf95"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "tlp:white",
+        "misp-galaxy:banker=Qakbot"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "first_seen": "2052-10-06T16:48:04.000000+00:00",
+          "ip": "198.51.100.144",
+          "last_seen": "2052-10-06T16:48:04.000000+00:00",
+          "marking": {
+            "tlp": [
+              "WHITE"
+            ]
+          },
+          "port": 2222,
+          "provider": "misp",
+          "scanner_stats": 2,
+          "type": "ipv4-addr"
+        }
+      }
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"- Xchecked via VT: e202812cb9e047ed3c6244e9d10beeeda846cf89fc817fc1122220662b6bc77c\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"5\",\"first_seen\":null,\"id\":\"351\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2387543072\",\"to_ids\":true,\"type\":\"md5\",\"uuid\":\"16c281e0-f3f6-4204-9f0d-bcd041fe1a21\",\"value\":\"e6995eadbb00a02ccb0046dfa3b748cf\"},\"EventReport\":[],\"Galaxy\":[{\"GalaxyCluster\":[{\"authors\":[\"https://docs.google.com/spreadsheets/d/1TWS238xacAto-fLKh1n5uTsdijWdCEsGIM0Y0Hvmc5g/pubhtml\",\"http://pastebin.com/raw/GHgpWjar\",\"MISP Project\"],\"collection_uuid\":\"65ab346f-2c45-4d1f-bb33-27249b543793\",\"description\":\"It’s directed to English speaking users, therefore is able to infect worldwide.  It is spread using email spam, fake updates, attachments and so on.  It encrypts all your files, including: music, MS Office, Open Office, pictures, videos, shared online files etc.. CrySiS  \\\\u003e Dharma Note: ATTENTION! At the moment, your system is not protected. We can fix it and restore files. To restore the system write to this address: cuxbqki190@yjard.com. CrySiS variant\",\"galaxy_id\":\"43\",\"id\":\"6619\",\"local\":false,\"meta\":{\"date\":[\"November 2016\"],\"encryption\":[\"AES + RSA-512\"],\"extensions\":[\".dharma\",\".wallet\",\".zzzzz\",\".cmb\",\".id-BCBEF350.[tboxdvydod@dnqamapr.cc].cmb\",\".bip\",\".id-BCBEF350.[Deahraln@ig.com].bip\",\".boost\",\".[Bfmmxdj@397cjamc.it].waifu\",\".brrr\",\".adobe\",\".tron\",\".AUDIT\",\".cccmn\",\".fire\",\".myjob\",\".[flfagseun@ig.com].war\",\".risk\",\".RISK\",\".bkpx\",\".[obqudoyafxdrr@dlg.com].santa\"],\"payment-method\":[\"Bitcoin - Email\"],\"ransomnotes\":[\"all your data has been locked us\\\\nYou want to return?\\\\nwrite email tboxdvydod@dnqamapr.cc\",\"All your files have been encrypted!\\\\nAll your files have been encrypted due to a security problem with your PC. If you want to restore them, write us to the e-mail tboxdvydod@dnqamapr.cc\\\\nWrite this ID in the title of your message ACBFF130\\\\nIn case of no answer in 24 hours write us to theese e-mails:tboxdvydod@dnqamapr.cc\\\\nYou have to pay for decryption in Bitcoins. The price depends on how fast you write to us. After payment we will send you the decryption tool that will decrypt all your files.\\\\nFree decryption as guarantee\\\\nBefore paying you can send us up to 1 file for free decryption. The total size of files must be less than 1Mb (non archived), and files should not contain valuable information. (databases,backups, large excel sheets, etc.)\\\\nHow to obtain Bitcoins\\\\nThe easiest way to buy bitcoins is LocalBitcoins site. You have to register, click 'Buy bitcoins', and select the seller by payment method and price.\\\\nhttps://localbitcoins.com/buy_bitcoins\\\\nAlso you can find other places to buy Bitcoins and beginners guide here:\\\\nhttp://www.coindesk.com/information/how-can-i-buy-bitcoins/\\\\nAttention!\\\\nDo not rename encrypted files.\\\\nDo not try to decrypt your data using third party software, it may cause permanent data loss.\\\\nDecryption of your files with the help of third parties may cause increased price (they add their fee to our) or you can become a victim of a scam.\",\"All your files have been encrypted!\\\\nAll your files have been encrypted due to a security problem with your PC. If you want to restore them, write us to the e-mail Deahraln@ig.com\\\\nWrite this ID in the title of your message BCBEF350\\\\nIn case of no answer in 24 hours write us to theese e-mails:Deahraln@ig.com\\\\nYou have to pay for decryption in Bitcoins. The price depends on how fast you write to us. After payment we will send you the decryption tool that will decrypt all your files. \\\\nFree decryption as guarantee\\\\nBefore paying you can send us up to 1 file for free decryption. The total size of files must be less than 1Mb (non archived), and files should not contain valuable information. (databases,backups, large excel sheets, etc.) \\\\nHow to obtain Bitcoins\\\\nThe easiest way to buy bitcoins is LocalBitcoins site. You have to register, click 'Buy bitcoins', and select the seller by payment method and price. \\\\nhttps://localbitcoins.com/buy_bitcoins \\\\nAlso you can find other places to buy Bitcoins and beginners guide here: \\\\nhttp://www.coindesk.com/information/how-can-i-buy-bitcoins/ \\\\nAttention!\\\\nDo not rename encrypted files. \\\\nDo not try to decrypt your data using third party software, it may cause permanent data loss.\\\\nDecryption of your files with the help of third parties may cause increased price (they add their fee to our) or you can become a victim of a scam.\",\"all your data has been locked us\\\\nYou want to return?\\\\nwrite email Deahraln@ig.com\"],\"ransomnotes-filenames\":[\"README.txt\",\"README.jpg\",\"Info.hta\",\"FILES ENCRYPTED.txt\",\"INFO.hta\"],\"ransomnotes-refs\":[\"https://www.bleepstatic.com/images/news/ransomware/d/dharma/cmb/hta-ransom-note.jpg\",\"https://pbs.twimg.com/media/Dmof_FiXsAAAvTN.jpg\",\"https://pbs.twimg.com/media/Dmof_FyXsAEJmgQ.jpg\",\"https://pbs.twimg.com/media/DrWqLWzXgAc4SlG.jpg\",\"https://pbs.twimg.com/media/DuEBIMBW0AANnGW.jpg\"],\"refs\":[\"https://id-ransomware.blogspot.co.il/2016/11/dharma-ransomware.html\",\"https://www.bleepingcomputer.com/news/security/kaspersky-releases-decryptor-for-the-dharma-ransomware/\",\"https://www.bleepingcomputer.com/news/security/new-cmb-dharma-ransomware-variant-released/\",\"https://www.bleepingcomputer.com/news/security/new-bip-dharma-ransomware-variant-released/\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-october-12th-2018-notpetya-gandcrab-and-more/\",\"https://twitter.com/demonslay335/status/1049313390097813504\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-september-14th-2018-kraken-dharma-and-matrix/\",\"https://twitter.com/JakubKroustek/status/1038680437508501504\",\"https://twitter.com/demonslay335/status/1059521042383814657\",\"https://twitter.com/demonslay335/status/1059940414147489792\",\"https://twitter.com/JakubKroustek/status/1060825783197933568\",\"https://twitter.com/JakubKroustek/status/1064061275863425025\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-november-23rd-2018-stop-dharma-and-more/\",\"https://www.youtube.com/watch?v=qjoYtwLx2TI\",\"https://twitter.com/GrujaRS/status/1072139616910757888\"]},\"source\":\"Various\",\"tag_id\":\"23\",\"tag_name\":\"misp-galaxy:ransomware=\\\"Dharma Ransomware\\\"\",\"type\":\"ransomware\",\"uuid\":\"4b111a3b-7c7d-4f81-821f-0e0f3954ac6a\",\"value\":\"Dharma Ransomware\",\"version\":\"86\"}],\"description\":\"Ransomware galaxy based on https://docs.google.com/spreadsheets/d/1TWS238xacAto-fLKh1n5uTsdijWdCEsGIM0Y0Hvmc5g/pubhtml\",\"icon\":\"btc\",\"id\":\"43\",\"name\":\"Ransomware\",\"namespace\":\"misp\",\"type\":\"ransomware\",\"uuid\":\"3c82aa9b-1002-4e4c-9aa7-d1fb09440806\",\"version\":\"4\"}],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"241f5b89-037c-4fa0-8016-cc3d739a414b\"},\"Orgc\":{\"id\":\"2\",\"local\":false,\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"Tag\":[{\"colour\":\"#0088cc\",\"exportable\":true,\"hide_tag\":false,\"id\":\"23\",\"local\":0,\"name\":\"misp-galaxy:ransomware=\\\"Dharma Ransomware\\\"\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#004646\",\"exportable\":true,\"hide_tag\":false,\"id\":\"21\",\"local\":0,\"name\":\"type:OSINT\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#ffffff\",\"exportable\":true,\"hide_tag\":false,\"id\":\"2\",\"local\":0,\"name\":\"tlp:white\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#2c4f00\",\"exportable\":true,\"hide_tag\":false,\"id\":\"24\",\"local\":0,\"name\":\"malware_classification:malware-category=\\\"Ransomware\\\"\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#00223b\",\"exportable\":true,\"hide_tag\":false,\"id\":\"3\",\"local\":0,\"name\":\"osint:source-type=\\\"blog - post\\\"\",\"numerical_value\":null,\"user_id\":\"0\"}],\"analysis\":\"2\",\"attribute_count\":\"7\",\"date\":\"2045-08-25\",\"disable_correlation\":false,\"distribution\":\"3\",\"extends_uuid\":\"\",\"id\":\"5\",\"info\":\"OSINT - New Arena Crysis Ransomware Variant Released\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"2\",\"proposal_email_lock\":false,\"publish_timestamp\":\"2486839131\",\"published\":true,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2387543076\",\"uuid\":\"10f3e67b-2da8-4212-bd8a-717b536d657e\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"id\":\"10794\",\"type\":\"domain|ip\",\"category\":\"Network activity\",\"to_ids\":false,\"uuid\":\"8ed40555-4cf3-4f08-a1f5-3a3d0a458685\",\"event_id\":\"14\",\"distribution\":\"5\",\"timestamp\":\"2426265282\",\"comment\":\"1st stage\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"jnuq-im.ueknyki.com|198.51.100.144\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"EventReport\":[],\"Galaxy\":[{\"GalaxyCluster\":[{\"authors\":[\"https://docs.google.com/spreadsheets/d/1TWS238xacAto-fLKh1n5uTsdijWdCEsGIM0Y0Hvmc5g/pubhtml\",\"http://pastebin.com/raw/GHgpWjar\",\"MISP Project\"],\"collection_uuid\":\"65ab346f-2c45-4d1f-bb33-27249b543793\",\"description\":\"It’s directed to English speaking users, therefore is able to infect worldwide.  It is spread using email spam, fake updates, attachments and so on.  It encrypts all your files, including: music, MS Office, Open Office, pictures, videos, shared online files etc.. CrySiS  \\\\u003e Dharma Note: ATTENTION! At the moment, your system is not protected. We can fix it and restore files. To restore the system write to this address: cuxbqki190@yjard.com. CrySiS variant\",\"galaxy_id\":\"43\",\"id\":\"6619\",\"local\":false,\"meta\":{\"date\":[\"November 2016\"],\"encryption\":[\"AES + RSA-512\"],\"extensions\":[\".dharma\",\".wallet\",\".zzzzz\",\".cmb\",\".id-BCBEF350.[tboxdvydod@dnqamapr.cc].cmb\",\".bip\",\".id-BCBEF350.[Deahraln@ig.com].bip\",\".boost\",\".[Bfmmxdj@397cjamc.it].waifu\",\".brrr\",\".adobe\",\".tron\",\".AUDIT\",\".cccmn\",\".fire\",\".myjob\",\".[flfagseun@ig.com].war\",\".risk\",\".RISK\",\".bkpx\",\".[obqudoyafxdrr@dlg.com].santa\"],\"payment-method\":[\"Bitcoin - Email\"],\"ransomnotes\":[\"all your data has been locked us\\\\nYou want to return?\\\\nwrite email tboxdvydod@dnqamapr.cc\",\"All your files have been encrypted!\\\\nAll your files have been encrypted due to a security problem with your PC. If you want to restore them, write us to the e-mail tboxdvydod@dnqamapr.cc\\\\nWrite this ID in the title of your message ACBFF130\\\\nIn case of no answer in 24 hours write us to theese e-mails:tboxdvydod@dnqamapr.cc\\\\nYou have to pay for decryption in Bitcoins. The price depends on how fast you write to us. After payment we will send you the decryption tool that will decrypt all your files.\\\\nFree decryption as guarantee\\\\nBefore paying you can send us up to 1 file for free decryption. The total size of files must be less than 1Mb (non archived), and files should not contain valuable information. (databases,backups, large excel sheets, etc.)\\\\nHow to obtain Bitcoins\\\\nThe easiest way to buy bitcoins is LocalBitcoins site. You have to register, click 'Buy bitcoins', and select the seller by payment method and price.\\\\nhttps://localbitcoins.com/buy_bitcoins\\\\nAlso you can find other places to buy Bitcoins and beginners guide here:\\\\nhttp://www.coindesk.com/information/how-can-i-buy-bitcoins/\\\\nAttention!\\\\nDo not rename encrypted files.\\\\nDo not try to decrypt your data using third party software, it may cause permanent data loss.\\\\nDecryption of your files with the help of third parties may cause increased price (they add their fee to our) or you can become a victim of a scam.\",\"All your files have been encrypted!\\\\nAll your files have been encrypted due to a security problem with your PC. If you want to restore them, write us to the e-mail Deahraln@ig.com\\\\nWrite this ID in the title of your message BCBEF350\\\\nIn case of no answer in 24 hours write us to theese e-mails:Deahraln@ig.com\\\\nYou have to pay for decryption in Bitcoins. The price depends on how fast you write to us. After payment we will send you the decryption tool that will decrypt all your files. \\\\nFree decryption as guarantee\\\\nBefore paying you can send us up to 1 file for free decryption. The total size of files must be less than 1Mb (non archived), and files should not contain valuable information. (databases,backups, large excel sheets, etc.) \\\\nHow to obtain Bitcoins\\\\nThe easiest way to buy bitcoins is LocalBitcoins site. You have to register, click 'Buy bitcoins', and select the seller by payment method and price. \\\\nhttps://localbitcoins.com/buy_bitcoins \\\\nAlso you can find other places to buy Bitcoins and beginners guide here: \\\\nhttp://www.coindesk.com/information/how-can-i-buy-bitcoins/ \\\\nAttention!\\\\nDo not rename encrypted files. \\\\nDo not try to decrypt your data using third party software, it may cause permanent data loss.\\\\nDecryption of your files with the help of third parties may cause increased price (they add their fee to our) or you can become a victim of a scam.\",\"all your data has been locked us\\\\nYou want to return?\\\\nwrite email Deahraln@ig.com\"],\"ransomnotes-filenames\":[\"README.txt\",\"README.jpg\",\"Info.hta\",\"FILES ENCRYPTED.txt\",\"INFO.hta\"],\"ransomnotes-refs\":[\"https://www.bleepstatic.com/images/news/ransomware/d/dharma/cmb/hta-ransom-note.jpg\",\"https://pbs.twimg.com/media/Dmof_FiXsAAAvTN.jpg\",\"https://pbs.twimg.com/media/Dmof_FyXsAEJmgQ.jpg\",\"https://pbs.twimg.com/media/DrWqLWzXgAc4SlG.jpg\",\"https://pbs.twimg.com/media/DuEBIMBW0AANnGW.jpg\"],\"refs\":[\"https://id-ransomware.blogspot.co.il/2016/11/dharma-ransomware.html\",\"https://www.bleepingcomputer.com/news/security/kaspersky-releases-decryptor-for-the-dharma-ransomware/\",\"https://www.bleepingcomputer.com/news/security/new-cmb-dharma-ransomware-variant-released/\",\"https://www.bleepingcomputer.com/news/security/new-bip-dharma-ransomware-variant-released/\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-october-12th-2018-notpetya-gandcrab-and-more/\",\"https://twitter.com/demonslay335/status/1049313390097813504\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-september-14th-2018-kraken-dharma-and-matrix/\",\"https://twitter.com/JakubKroustek/status/1038680437508501504\",\"https://twitter.com/demonslay335/status/1059521042383814657\",\"https://twitter.com/demonslay335/status/1059940414147489792\",\"https://twitter.com/JakubKroustek/status/1060825783197933568\",\"https://twitter.com/JakubKroustek/status/1064061275863425025\",\"https://www.bleepingcomputer.com/news/security/the-week-in-ransomware-november-23rd-2018-stop-dharma-and-more/\",\"https://www.youtube.com/watch?v=qjoYtwLx2TI\",\"https://twitter.com/GrujaRS/status/1072139616910757888\"]},\"source\":\"Various\",\"tag_id\":\"23\",\"tag_name\":\"misp-galaxy:ransomware=\\\"Dharma Ransomware\\\"\",\"type\":\"ransomware\",\"uuid\":\"4b111a3b-7c7d-4f81-821f-0e0f3954ac6a\",\"value\":\"Dharma Ransomware\",\"version\":\"86\"}],\"description\":\"Ransomware galaxy based on https://docs.google.com/spreadsheets/d/1TWS238xacAto-fLKh1n5uTsdijWdCEsGIM0Y0Hvmc5g/pubhtml\",\"icon\":\"btc\",\"id\":\"43\",\"name\":\"Ransomware\",\"namespace\":\"misp\",\"type\":\"ransomware\",\"uuid\":\"3c82aa9b-1002-4e4c-9aa7-d1fb09440806\",\"version\":\"4\"}],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"241f5b89-037c-4fa0-8016-cc3d739a414b\"},\"Orgc\":{\"id\":\"2\",\"local\":false,\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"Tag\":[{\"colour\":\"#0088cc\",\"exportable\":true,\"hide_tag\":false,\"id\":\"23\",\"local\":0,\"name\":\"misp-galaxy:ransomware=\\\"Dharma Ransomware\\\"\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#004646\",\"exportable\":true,\"hide_tag\":false,\"id\":\"21\",\"local\":0,\"name\":\"type:OSINT\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#ffffff\",\"exportable\":true,\"hide_tag\":false,\"id\":\"2\",\"local\":0,\"name\":\"tlp:white\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#2c4f00\",\"exportable\":true,\"hide_tag\":false,\"id\":\"24\",\"local\":0,\"name\":\"malware_classification:malware-category=\\\"Ransomware\\\"\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#00223b\",\"exportable\":true,\"hide_tag\":false,\"id\":\"3\",\"local\":0,\"name\":\"osint:source-type=\\\"blog - post\\\"\",\"numerical_value\":null,\"user_id\":\"0\"}],\"analysis\":\"2\",\"attribute_count\":\"7\",\"date\":\"2045-08-25\",\"disable_correlation\":false,\"distribution\":\"3\",\"extends_uuid\":\"\",\"id\":\"5\",\"info\":\"OSINT - New Arena Crysis Ransomware Variant Released\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"2\",\"proposal_email_lock\":false,\"publish_timestamp\":\"2486839131\",\"published\":true,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2387543076\",\"uuid\":\"10f3e67b-2da8-4212-bd8a-717b536d657e\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"External analysis\",\"comment\":\"Carbon sample - Xchecked via VT: e12e9921fca4810537e6603d7f73093485a3a5b7\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"4\",\"first_seen\":null,\"id\":\"342\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2374491350\",\"to_ids\":false,\"type\":\"link\",\"uuid\":\"18de1118-9d36-41e3-b89c-508593cb0c24\",\"value\":\"https://www.virustotal.com/file/8aa8491ecbac812fb292e1d257e0456c68f358cd1058125ef9ae549854090394/analysis/1486030116/\"},\"EventReport\":[],\"Galaxy\":[{\"GalaxyCluster\":[{\"authors\":[\"Alexandre Dulaunoy\",\"Florian Roth\",\"Timo Steffens\",\"Christophe Vandeplas\",\"Dennis Rand\",\"raw-data\"],\"collection_uuid\":\"6d604f15-5b35-4b7a-81a9-4854f8c0c14f\",\"description\":\"Family of related sophisticated backdoor software - Name comes from Microsoft detection signature – anagram of Ultra (Ultra3) was a name of the fake driver). A macOS version exists but appears incomplete and lacking features...for now!\",\"galaxy_id\":\"36\",\"id\":\"5828\",\"local\":false,\"meta\":{\"refs\":[\"https://www.first.org/resources/papers/tbilisi2014/turla-operations_and_development.pdf\",\"https://objective-see.com/blog/blog_0x25.html#Snake\"],\"synonyms\":[\"Snake\",\"Uroburos\",\"Urouros\"],\"type\":[\"Backdoor\",\"Rootkit\"]},\"source\":\"MISP Project\",\"tag_id\":\"22\",\"tag_name\":\"misp-galaxy:tool=\\\"Turla\\\"\",\"type\":\"tool\",\"uuid\":\"86866b08-e3b1-452c-9adc-f97a0e87494d\",\"value\":\"Turla\",\"version\":\"138\"}],\"description\":\"Threat actors tools is an enumeration of tools used by adversaries. The list includes malware but also common software regularly used by the adversaries.\",\"icon\":\"optin-monster\",\"id\":\"36\",\"name\":\"Tool\",\"namespace\":\"misp\",\"type\":\"tool\",\"uuid\":\"5e2726a8-ce3b-4dd1-a706-39121682ab6f\",\"version\":\"3\"}],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"241f5b89-037c-4fa0-8016-cc3d739a414b\"},\"Orgc\":{\"id\":\"2\",\"local\":false,\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"241f5b89-037c-4fa0-8016-cc3d739a414b\"},\"Orgc\":{\"id\":\"4\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\"},\"analysis\":\"2\",\"date\":\"2043-01-20\",\"distribution\":\"3\",\"id\":\"369\",\"info\":\"OSINT  Analysis of Project Cobra Another extensible framework used by the Uroburos’ actors from Gdata\",\"org_id\":\"1\",\"orgc_id\":\"4\",\"published\":true,\"threat_level_id\":\"1\",\"timestamp\":\"2381776117\",\"uuid\":\"67db4b0e-de97-4b10-9be3-2271060b820a\"}},{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"241f5b89-037c-4fa0-8016-cc3d739a414b\"},\"Orgc\":{\"id\":\"4\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\"},\"analysis\":\"2\",\"date\":\"2042-11-20\",\"distribution\":\"3\",\"id\":\"621\",\"info\":\"Turla digging using TotalHash\",\"org_id\":\"1\",\"orgc_id\":\"4\",\"published\":true,\"threat_level_id\":\"2\",\"timestamp\":\"2381776404\",\"uuid\":\"626bdcb0-374f-4de2-87f0-e10a663d291a\"}}],\"ShadowAttribute\":[],\"Tag\":[{\"colour\":\"#065100\",\"exportable\":true,\"hide_tag\":false,\"id\":\"22\",\"local\":0,\"name\":\"misp-galaxy:tool=\\\"Turla\\\"\",\"numerical_value\":null,\"user_id\":\"0\"},{\"colour\":\"#ffffff\",\"exportable\":true,\"hide_tag\":false,\"id\":\"2\",\"local\":0,\"name\":\"tlp:white\",\"numerical_value\":null,\"user_id\":\"0\"}],\"analysis\":\"2\",\"attribute_count\":\"100\",\"date\":\"2045-03-30\",\"disable_correlation\":false,\"distribution\":\"3\",\"extends_uuid\":\"\",\"id\":\"4\",\"info\":\"OSINT - Carbon Paper: Peering into Turla’s second stage backdoor\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"2\",\"proposal_email_lock\":false,\"publish_timestamp\":\"2486839130\",\"published\":true,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2377016624\",\"uuid\":\"82deea17-be09-4d5d-b023-2385544f955d\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"1077\",\"type\":\"sha256\",\"category\":\"External analysis\",\"to_ids\":true,\"uuid\":\"55601318-53ab-4088-a60e-51df486a348d\",\"event_id\":\"2\",\"distribution\":\"5\",\"timestamp\":\"2296192194\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"5c0615fb73530c6574e353b15d61f78ebea5608c7da7cc028b0c6964a0ff22d8\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"1084\",\"type\":\"ip-dst\",\"category\":\"Network activity\",\"to_ids\":true,\"uuid\":\"15805520-5096-4d9e-8933-3929603e616f\",\"event_id\":\"2\",\"distribution\":\"5\",\"timestamp\":\"2296192257\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"198.51.100.144\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"1086\",\"type\":\"hostname\",\"category\":\"Network activity\",\"to_ids\":true,\"uuid\":\"465329db-a455-427a-bcc1-38c0035f411a\",\"event_id\":\"2\",\"distribution\":\"5\",\"timestamp\":\"2296192348\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"sfkkautdo.afzw.net\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"1089\",\"type\":\"text\",\"category\":\"External analysis\",\"to_ids\":false,\"uuid\":\"999030b1-15c0-43c0-955b-4c53840e374f\",\"event_id\":\"2\",\"distribution\":\"5\",\"timestamp\":\"2296192377\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"Nitro\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"1090\",\"type\":\"sha1\",\"category\":\"External analysis\",\"to_ids\":true,\"uuid\":\"45b704b9-d28c-426a-9fc5-c910517e125b\",\"event_id\":\"2\",\"distribution\":\"5\",\"timestamp\":\"2339439143\",\"comment\":\"Automatically added (via 5045cebe0e96be07441b7af0dfce0197)\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"7cd77e3186e409332d72a026faba3883a8bcd3bb\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"2\",\"orgc_id\":\"2\",\"org_id\":\"1\",\"date\":\"2042-10-03\",\"threat_level_id\":\"2\",\"info\":\"OSINT New Indicators of Compromise for APT Group Nitro Uncovered blog post by Palo Alto Networks\",\"published\":true,\"uuid\":\"54835d9e-d62e-4507-860e-4602523e525b\",\"attribute_count\":\"29\",\"analysis\":\"2\",\"timestamp\":\"2296192377\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494235116\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"2\",\"name\":\"ExpvllmSRQZ.be\",\"uuid\":\"19f6be9b-cf63-45c5-ac3e-33cf031d388a\",\"local\":false},\"Attribute\":{\"id\":\"12394\",\"type\":\"domain\",\"category\":\"Network activity\",\"to_ids\":false,\"uuid\":\"339e0cc2-9dd6-4a73-9de1-51f3c4c4cc03\",\"event_id\":\"22\",\"distribution\":\"5\",\"timestamp\":\"2346067763\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"qpcqkfkk.com\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"1\",\"name\":\"type:OSINT\",\"colour\":\"#004646\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"2\",\"name\":\"tlp:green\",\"colour\":\"#339900\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"158\",\"orgc_id\":\"5\",\"org_id\":\"1\",\"date\":\"2046-01-08\",\"threat_level_id\":\"1\",\"info\":\"Turla: Mosquito Whitepaper\",\"published\":true,\"uuid\":\"9b0080c2-32d6-42ad-b007-421f9c657901\",\"attribute_count\":\"61\",\"analysis\":\"0\",\"timestamp\":\"2419075217\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250753\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\",\"local\":false},\"Attribute\":{\"id\":\"17299\",\"type\":\"url\",\"category\":\"Network activity\",\"to_ids\":false,\"uuid\":\"9e09665d-b7f7-427e-a95a-0fd69e119444\",\"event_id\":\"158\",\"distribution\":\"5\",\"timestamp\":\"2399040492\",\"comment\":\"Fake adobe URL\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"http://get.adobe.com/stats/AbfFcBebD/?q=\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[{\"Event\":{\"id\":\"58\",\"date\":\"2046-08-17\",\"threat_level_id\":\"1\",\"info\":\"Turla Outlook White Paper\",\"published\":true,\"uuid\":\"1d162d74-d936-410d-b07d-80b65c047951\",\"analysis\":\"0\",\"timestamp\":\"2419075183\",\"distribution\":\"3\",\"org_id\":\"1\",\"orgc_id\":\"5\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\"},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\"}}}],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"7\",\"name\":\"misp-galaxy:threat-actor=\\\"Turla Group\\\"\",\"colour\":\"#0088cc\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":true,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"70\",\"name\":\"Turla\",\"colour\":\"#f20f53\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"158\",\"orgc_id\":\"5\",\"org_id\":\"1\",\"date\":\"2046-01-08\",\"threat_level_id\":\"1\",\"info\":\"Turla: Mosquito Whitepaper\",\"published\":true,\"uuid\":\"9b0080c2-32d6-42ad-b007-421f9c657901\",\"attribute_count\":\"61\",\"analysis\":\"0\",\"timestamp\":\"2419075217\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250753\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\",\"local\":false},\"Attribute\":{\"id\":\"17330\",\"type\":\"uri\",\"category\":\"Network activity\",\"to_ids\":false,\"uuid\":\"3e431fb2-4db9-4f21-8ee6-8fd62f055997\",\"event_id\":\"158\",\"distribution\":\"5\",\"timestamp\":\"2399041889\",\"comment\":\"Win32 backdoor C&C URI\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"/scripts/m/query.php?id=\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[{\"Event\":{\"id\":\"58\",\"date\":\"2046-08-17\",\"threat_level_id\":\"1\",\"info\":\"Turla Outlook White Paper\",\"published\":true,\"uuid\":\"1d162d74-d936-410d-b07d-80b65c047951\",\"analysis\":\"0\",\"timestamp\":\"2419075183\",\"distribution\":\"3\",\"org_id\":\"1\",\"orgc_id\":\"5\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\"},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\"}}}],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"7\",\"name\":\"misp-galaxy:threat-actor=\\\"Turla Group\\\"\",\"colour\":\"#0088cc\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":true,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"70\",\"name\":\"Turla\",\"colour\":\"#f20f53\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"158\",\"orgc_id\":\"5\",\"org_id\":\"1\",\"date\":\"2046-01-08\",\"threat_level_id\":\"1\",\"info\":\"Turla: Mosquito Whitepaper\",\"published\":true,\"uuid\":\"9b0080c2-32d6-42ad-b007-421f9c657901\",\"attribute_count\":\"61\",\"analysis\":\"0\",\"timestamp\":\"2419075217\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250753\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\",\"local\":false},\"Attribute\":{\"id\":\"17322\",\"type\":\"filename|sha1\",\"category\":\"Artifacts dropped\",\"to_ids\":false,\"uuid\":\"9f811be6-e0b3-418c-937d-0ab88f093141\",\"event_id\":\"158\",\"distribution\":\"5\",\"timestamp\":\"2399041889\",\"comment\":\"JavaScript backdoor\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"google_update_checker.js|a52b866276ab3c74b9eb3db348709e4a228770de\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[{\"Event\":{\"id\":\"58\",\"date\":\"2046-08-17\",\"threat_level_id\":\"1\",\"info\":\"Turla Outlook White Paper\",\"published\":true,\"uuid\":\"1d162d74-d936-410d-b07d-80b65c047951\",\"analysis\":\"0\",\"timestamp\":\"2419075183\",\"distribution\":\"3\",\"org_id\":\"1\",\"orgc_id\":\"5\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\"},\"Orgc\":{\"id\":\"5\",\"name\":\"ESET\",\"uuid\":\"25c6ad1e-90eb-4620-bf6c-4509093a506e\"}}}],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"7\",\"name\":\"misp-galaxy:threat-actor=\\\"Turla Group\\\"\",\"colour\":\"#0088cc\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":true,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"70\",\"name\":\"Turla\",\"colour\":\"#f20f53\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"22\",\"orgc_id\":\"4\",\"org_id\":\"1\",\"date\":\"2043-12-08\",\"threat_level_id\":\"3\",\"info\":\"Packrat: Seven Years of a South American Threat Actor\",\"published\":true,\"uuid\":\"97efefae-e9f5-44a7-bce4-65944143f12e\",\"attribute_count\":\"133\",\"analysis\":\"2\",\"timestamp\":\"2400336596\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250701\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"4\",\"name\":\"CUDESO\",\"uuid\":\"26c24741-eef8-4086-a863-40fec3c7cf95\",\"local\":false},\"Attribute\":{\"id\":\"12268\",\"type\":\"email-src\",\"category\":\"Payload delivery\",\"to_ids\":true,\"uuid\":\"11dfcbc4-7a1c-4e60-b271-83015325b07b\",\"event_id\":\"22\",\"distribution\":\"5\",\"timestamp\":\"2339879222\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"bwdgfmhehgdakp56@gmail.com\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"22\",\"orgc_id\":\"4\",\"org_id\":\"1\",\"date\":\"2043-12-08\",\"threat_level_id\":\"3\",\"info\":\"Packrat: Seven Years of a South American Threat Actor\",\"published\":true,\"uuid\":\"97efefae-e9f5-44a7-bce4-65944143f12e\",\"attribute_count\":\"133\",\"analysis\":\"2\",\"timestamp\":\"2400336596\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250701\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"4\",\"name\":\"CUDESO\",\"uuid\":\"26c24741-eef8-4086-a863-40fec3c7cf95\",\"local\":false},\"Attribute\":{\"id\":\"12298\",\"type\":\"regkey\",\"category\":\"Artifacts dropped\",\"to_ids\":true,\"uuid\":\"94fadfa1-c1a8-4082-9952-57246196c49f\",\"event_id\":\"22\",\"distribution\":\"5\",\"timestamp\":\"2339879254\",\"comment\":\"\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":null,\"last_seen\":null,\"value\":\"HKLM\\\\SOFTWARE\\\\Microsoft\\\\Active\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"id\":\"10\",\"orgc_id\":\"4\",\"org_id\":\"1\",\"date\":\"2048-12-09\",\"threat_level_id\":\"3\",\"info\":\"Recent Qakbot (Qbot) activity\",\"published\":true,\"uuid\":\"9ca2b325-ef8c-4dd6-a85c-bb7fa9d4cf12\",\"attribute_count\":\"15\",\"analysis\":\"2\",\"timestamp\":\"2491480996\",\"distribution\":\"3\",\"proposal_email_lock\":false,\"locked\":false,\"publish_timestamp\":\"2494250688\",\"sharing_group_id\":\"0\",\"disable_correlation\":false,\"extends_uuid\":\"\",\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"8253602e-bc91-4a50-97aa-f42ac336c0c0\",\"local\":true},\"Orgc\":{\"id\":\"4\",\"name\":\"CUDESO\",\"uuid\":\"26c24741-eef8-4086-a863-40fec3c7cf95\",\"local\":false},\"Attribute\":{\"id\":\"10686\",\"type\":\"ip-dst|port\",\"category\":\"Network activity\",\"to_ids\":true,\"uuid\":\"8de4d721-b279-4cbb-9541-b22ab6e0ff06\",\"event_id\":\"10\",\"distribution\":\"5\",\"timestamp\":\"2491130528\",\"comment\":\"On port 2222\",\"sharing_group_id\":\"0\",\"deleted\":false,\"disable_correlation\":false,\"object_id\":\"0\",\"object_relation\":null,\"first_seen\":\"2052-10-06T16:48:04.000000+00:00\",\"last_seen\":\"2052-10-06T16:48:04.000000+00:00\",\"value\":\"198.51.100.144|2222\",\"Galaxy\":[],\"ShadowAttribute\":[]},\"ShadowAttribute\":[],\"RelatedEvent\":[],\"Galaxy\":[],\"Object\":[],\"EventReport\":[],\"Tag\":[{\"id\":\"3\",\"name\":\"tlp:white\",\"colour\":\"#ffffff\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":false,\"is_custom_galaxy\":false,\"local\":0},{\"id\":\"6\",\"name\":\"misp-galaxy:banker=\\\"Qakbot\\\"\",\"colour\":\"#0088cc\",\"exportable\":true,\"user_id\":\"0\",\"hide_tag\":false,\"numerical_value\":null,\"is_galaxy\":true,\"is_custom_galaxy\":false,\"local\":0}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"response\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "threat",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_misp-threat-default",
+    "event_count": 16,
+    "numeric_keyword_fields": [],
+    "package": "ti_misp",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

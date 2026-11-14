@@ -204,9 +204,7 @@ impl Transform for Default {
                 })();
                 let _cond = { event.has_value("temp.duration") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.event.duration = Math.round(ctx.temp.duration * params.scale)
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -651,9 +649,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                // Painless script
-                // Source: Map downstream_headers = new HashMap();\nMap origin_headers = new HashMap();\nMap request_headers = new HashMap();\n\n// Get the headers\nfor (fieldname in ctx?.temp?.keySet()){\n  if (fieldname.startsWith('downstream_')){\n    downstream_headers.put(fieldname.replace('downstream_', '').toLowerCase(), ctx.temp[fieldname]);\n  }\n  else if (fieldname.startsWith('request_')){\n    request_headers.put(fieldname.replace('request_', '').toLowerCase(), ctx.temp[fieldname]);\n  }\n  else if (fieldname.startsWith('origin_')){\n    origin_headers.put(fieldname.replace('origin_', '').toLowerCase(), ctx.temp[fieldname]);\n  }\n}\n\nif (!request_headers.isEmpty()){\n  // Make sure http.request object exists\n  if (ctx.http == null){\n    ctx.put('http', new HashMap());\n  }\n  if (ctx.http.request == null){\n    ctx.http.put('request', new HashMap());\n  }\n\n  // Add headers\n  ctx.http.request.put('headers', request_headers);\n}\n\nif (!downstream_headers.isEmpty()){\n  // Make sure http.response object exists\n  if (ctx.http == null){\n    ctx.put('http', new HashMap());\n  }\n  if (ctx.http.response == null){\n    ctx.http.put('response', new HashMap());\n  }\n  // Add headers\n  ctx.http.response.put('headers', downstream_headers);\n}\n\nif (!origin_headers.isEmpty()){\n  // Make sure traefik.access.origin object exists\n  if (ctx.traefik == null){\n    ctx.put('traefik', new HashMap());\n  }\n  if (ctx.traefik.access == null){\n    ctx.traefik.put('access', new HashMap());\n  }\n  if (ctx.traefik.access.origin == null){\n    ctx.traefik.access.put('origin', new HashMap());\n  }\n  // Add headers\n  ctx.traefik.access.origin.put('headers', origin_headers);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -916,8 +912,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

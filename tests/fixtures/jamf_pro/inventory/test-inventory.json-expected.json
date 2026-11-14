@@ -1,0 +1,1087 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "asset"
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "id": "C1FC4465-F78D-5CE4-B905-12C0CF35A67E",
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "jamf_pro": {
+        "inventory": {
+          "applications": [
+            {
+              "bundle_id": "acme-bundleId",
+              "external_version_id": "0",
+              "mac_app_store": false,
+              "name": "Slack.app",
+              "path": "/Applications/Slack.app",
+              "size_megabytes": 0,
+              "update_available": false,
+              "version": "4.38.125"
+            },
+            {
+              "bundle_id": "acme-bundleId",
+              "external_version_id": "0",
+              "mac_app_store": false,
+              "name": "Siri.app",
+              "path": "/System/Applications/Siri.app",
+              "size_megabytes": 0,
+              "update_available": false,
+              "version": "1.0"
+            }
+          ],
+          "general": {
+            "last_ip_address": "198.51.100.144",
+            "report_date": "2052-06-19T15:54:37.692Z"
+          },
+          "group_memberships": [
+            {
+              "group_id": "1",
+              "group_name": "All Managed Clients",
+              "smart_group": true
+            },
+            {
+              "group_id": "4",
+              "group_name": "Computers with updates",
+              "smart_group": true
+            }
+          ],
+          "id": "6",
+          "purchasing": {
+            "apple_care_id": "acme-appleCareId",
+            "lease_date": "2052-06-19T15:54:37.692Z",
+            "leased": false,
+            "life_expectancy": 0,
+            "po_date": "2052-06-19T15:54:37.692Z",
+            "po_number": "21",
+            "purchase_price": 100,
+            "purchased": true,
+            "purchasing_account": "acme-purchasingAccount",
+            "purchasing_contact": "acme-purchasingContact",
+            "vendor": "acme-vendor",
+            "warranty_date": "2052-06-19T15:54:37.692Z"
+          },
+          "software_updates": [
+            {
+              "name": "macOS Sonoma 14.4.1",
+              "package_name": "macOS Sonoma 14.4.1-23E224",
+              "version": "14.4.1"
+            }
+          ],
+          "udid": "C1FC4465-F78D-5CE4-B905-12C0CF35A67E"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": [
+            "1",
+            "4"
+          ],
+          "name": [
+            "All Managed Clients",
+            "Computers with updates"
+          ]
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "asset",
+        "type": [
+          "user"
+        ]
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "id": "EFCEE4C8-08E3-5422-A220-C473B06E7A72",
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "jamf_pro": {
+        "inventory": {
+          "disk_encryption": {
+            "boot_partition_encryption_details": {
+              "partition_file_vault2percent": 0,
+              "partition_file_vault2state": "UNENCRYPTED",
+              "partition_name": "Macintosh HD (Boot Partition)"
+            },
+            "disk_encryption_configuration_name": "acme",
+            "file_vault2eligibility_message": "acme",
+            "file_vault2enabled_user_names": [
+              "jamfadmin"
+            ],
+            "individual_recovery_key_validity_status": "UNKNOWN",
+            "institutional_recovery_key_present": false
+          },
+          "general": {
+            "last_ip_address": "198.51.100.144",
+            "report_date": "2052-06-19T15:54:37.692Z"
+          },
+          "id": "4",
+          "udid": "EFCEE4C8-08E3-5422-A220-C473B06E7A72",
+          "user_and_location": {
+            "building_id": "1",
+            "department_id": "1",
+            "email": "sbjd.dke@jamf.com",
+            "phone": "+123345827276",
+            "position": "Contractor",
+            "realname": "Jane Doe",
+            "room": "1",
+            "username": "sbjd.dke"
+          }
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "sbjd.dke@jamf.com"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "sbjd.dke@jamf.com",
+        "full_name": "Jane Doe"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "asset"
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "entity": {
+          "attributes": {
+            "managed": true
+          },
+          "lifecycle": {
+            "last_activity": "2052-04-18T14:26:51.514Z"
+          }
+        },
+        "id": "5349DC66-8445-569A-B8C9-DAE7710168CD",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "name": "acme-C07DM3AZQ6NV",
+        "os": {
+          "platform": "Mac"
+        }
+      },
+      "jamf_pro": {
+        "inventory": {
+          "configuration_profiles": [
+            {
+              "display_name": "Kmjo",
+              "removable": false,
+              "username": "Kmjo"
+            }
+          ],
+          "general": {
+            "barcode1": "null",
+            "declarative_device_management_enabled": false,
+            "enrolled_via_automated_device_enrollment": false,
+            "initial_entry_date": "2052-06-19",
+            "itunes_store_account_active": false,
+            "jamf_binary_version": "11.4.1-t1712591696",
+            "last_contact_time": "2052-04-18T14:26:51.514Z",
+            "last_enrolled_date": "2051-02-22T10:46:17.199Z",
+            "last_ip_address": "198.51.100.144",
+            "last_reported_ip": "198.51.100.144",
+            "management_id": "8c85b576-b3b9-45de-8abc-0d5293ac64e0",
+            "mdm_capable": {
+              "capable": false
+            },
+            "name": "acme-C07DM3AZQ6NV",
+            "platform": "Mac",
+            "remote_management": {
+              "managed": true
+            },
+            "report_date": "2052-06-19T15:54:37.692Z",
+            "site": {
+              "id": "-1",
+              "name": "None"
+            },
+            "supervised": false,
+            "user_approved_mdm": false
+          },
+          "id": "3",
+          "udid": "5349DC66-8445-569A-B8C9-DAE7710168CD"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "asset"
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "entity": {
+          "attributes": {
+            "managed": true
+          },
+          "lifecycle": {
+            "last_activity": "2052-04-18T14:26:51.514Z"
+          }
+        },
+        "id": "5349DC66-8445-569A-B8C9-DAE7710168CD",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "name": "acme-C07DM3AZQ6NV",
+        "os": {
+          "platform": "Mac"
+        }
+      },
+      "jamf_pro": {
+        "inventory": {
+          "configuration_profiles": [
+            {
+              "display_name": "Kmjo",
+              "removable": false,
+              "username": "Kmjo"
+            }
+          ],
+          "general": {
+            "barcode1": "null",
+            "declarative_device_management_enabled": false,
+            "enrolled_via_automated_device_enrollment": false,
+            "enrollment_method": {
+              "id": "7",
+              "object_name": "Corp Div 1.20.0",
+              "object_type": "PreStage enrollment"
+            },
+            "initial_entry_date": "2052-06-19",
+            "itunes_store_account_active": false,
+            "jamf_binary_version": "11.4.1-t1712591696",
+            "last_contact_time": "2052-04-18T14:26:51.514Z",
+            "last_enrolled_date": "2051-02-22T10:46:17.199Z",
+            "last_ip_address": "198.51.100.144",
+            "last_reported_ip": "198.51.100.144",
+            "management_id": "8c85b576-b3b9-45de-8abc-0d5293ac64e0",
+            "mdm_capable": {
+              "capable": false,
+              "capable_users": [
+                "jgcy.retydjafae@djxlbxr.com"
+              ]
+            },
+            "name": "acme-C07DM3AZQ6NV",
+            "platform": "Mac",
+            "remote_management": {
+              "managed": true
+            },
+            "report_date": "2052-06-19T15:54:37.692Z",
+            "site": {
+              "id": "-1",
+              "name": "None"
+            },
+            "supervised": false,
+            "user_approved_mdm": false
+          },
+          "id": "3",
+          "udid": "5349DC66-8445-569A-B8C9-DAE7710168CD"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "asset",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "id": "42CA89C9-BB3C-58CF-A32D-04F97852704A",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "mac": [
+          "76-3D-9A-62-2A-42"
+        ],
+        "os": {
+          "full": "sonoma",
+          "name": "macOS",
+          "version": "14.7.2"
+        }
+      },
+      "jamf_pro": {
+        "inventory": {
+          "applications": [
+            {
+              "bundle_id": "com.apple.podcasts",
+              "external_version_id": "0",
+              "mac_app_store": false,
+              "name": "Podcasts.app",
+              "path": "/System/Applications/Podcasts.app",
+              "size_megabytes": 49,
+              "update_available": false,
+              "version": "1.1.0"
+            },
+            {
+              "bundle_id": "com.apple.freeform",
+              "external_version_id": "0",
+              "mac_app_store": false,
+              "name": "Freeform.app",
+              "path": "/System/Applications/Freeform.app",
+              "size_megabytes": 57,
+              "update_available": false,
+              "version": "2.4"
+            }
+          ],
+          "configuration_profiles": [
+            {
+              "display_name": "Restriction/Passcode",
+              "id": "5",
+              "last_installed": "2053-02-13T13:10:14.549Z",
+              "profile_identifier": "719CAEFF-34E2-43C2-AEFA-FF71A9268665",
+              "removable": false
+            },
+            {
+              "display_name": "TBO Njrflke",
+              "id": "-27",
+              "profile_identifier": "20525158-1292-0010-A712-9B789D742792",
+              "removable": false
+            }
+          ],
+          "general": {
+            "last_ip_address": "198.51.100.144",
+            "report_date": "2052-06-19T15:54:37.692Z"
+          },
+          "group_memberships": [
+            {
+              "group_id": "1",
+              "group_name": "All Managed Clients",
+              "smart_group": true
+            },
+            {
+              "group_id": "5",
+              "group_name": "Zero Touch Devices",
+              "smart_group": true
+            }
+          ],
+          "hardware": {
+            "alt_mac_address": "67:D1:88:1E:1C:45",
+            "alt_network_adapter_type": "Ethernet",
+            "apple_silicon": true,
+            "battery_capacity_percent": 83,
+            "ble_capable": false,
+            "boot_rom": "11881.61.3",
+            "bus_speed_mhz": 0,
+            "cache_size_kilobytes": 0,
+            "core_count": 10,
+            "mac_address": "76:3D:9A:62:2A:42",
+            "make": "Apple",
+            "model": "MacBook Pro (14-inch, 2021)",
+            "model_identifier": "MacBookPro18,4",
+            "network_adapter_type": "IEEE80211",
+            "nic_speed": "n/a",
+            "open_ram_slots": 0,
+            "processor_architecture": "arm64",
+            "processor_count": 1,
+            "processor_speed_mhz": 0,
+            "processor_type": "Apple M1 Max",
+            "serial_number": "XXXXXXXXXXX",
+            "supports_ios_app_installs": true,
+            "total_ram_megabytes": 32768
+          },
+          "id": "288",
+          "operating_system": {
+            "active_directory_status": "Not Bound",
+            "build": "23H311",
+            "file_vault2status": "NOT_ENCRYPTED",
+            "name": "macOS",
+            "software_update_device_id": "J314cAP",
+            "supplemental_build_version": "23H311",
+            "version": "14.7.2"
+          },
+          "udid": "42CA89C9-BB3C-58CF-A32D-04F97852704A"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": [
+            "1",
+            "5"
+          ],
+          "name": [
+            "All Managed Clients",
+            "Zero Touch Devices"
+          ]
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "asset"
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "id": "42CA89C9-BB3C-58CF-A32D-04F97852704A",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "os": {
+          "full": "sonoma",
+          "name": "macOS",
+          "version": "14.7.0"
+        }
+      },
+      "jamf_pro": {
+        "inventory": {
+          "applications": [
+            {
+              "bundle_id": "com.apple.freeform",
+              "external_version_id": "0",
+              "mac_app_store": false,
+              "name": "Freeform.app",
+              "path": "/System/Applications/Freeform.app",
+              "size_megabytes": 57,
+              "update_available": false,
+              "version": "2.4"
+            }
+          ],
+          "general": {
+            "last_ip_address": "198.51.100.144",
+            "report_date": "2052-06-19T15:54:37.692Z"
+          },
+          "operating_system": {
+            "active_directory_status": "Not Bound",
+            "build": "23H311",
+            "file_vault2status": "NOT_ENCRYPTED",
+            "name": "macOS",
+            "software_update_device_id": "J314cAP",
+            "supplemental_build_version": "23H311",
+            "version": "14.7.0"
+          },
+          "udid": "42CA89C9-BB3C-58CF-A32D-04F97852704A"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "asset"
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "id": "42CA89C9-BB3C-58CF-A32D-04F97852704A",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "os": {
+          "full": "sonoma",
+          "name": "macOS",
+          "version": "14.0.0"
+        }
+      },
+      "jamf_pro": {
+        "inventory": {
+          "applications": [
+            {
+              "bundle_id": "com.apple.freeform",
+              "external_version_id": "0",
+              "mac_app_store": false,
+              "name": "Freeform.app",
+              "path": "/System/Applications/Freeform.app",
+              "size_megabytes": 57,
+              "update_available": false,
+              "version": "2.4"
+            }
+          ],
+          "general": {
+            "last_ip_address": "198.51.100.144",
+            "report_date": "2052-06-19T15:54:37.692Z"
+          },
+          "operating_system": {
+            "active_directory_status": "Not Bound",
+            "build": "23H311",
+            "file_vault2status": "NOT_ENCRYPTED",
+            "name": "macOS",
+            "software_update_device_id": "J314cAP",
+            "supplemental_build_version": "23H311",
+            "version": "14.0.0"
+          },
+          "udid": "42CA89C9-BB3C-58CF-A32D-04F97852704A"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": {
+        "applications": [
+          {
+            "bundleId": "acme-bundleId",
+            "externalVersionId": "0",
+            "macAppStore": false,
+            "name": "Slack.app",
+            "path": "/Applications/Slack.app",
+            "sizeMegabytes": 0,
+            "updateAvailable": false,
+            "version": "4.38.125"
+          },
+          {
+            "bundleId": "acme-bundleId",
+            "externalVersionId": "0",
+            "macAppStore": false,
+            "name": "Siri.app",
+            "path": "/System/Applications/Siri.app",
+            "sizeMegabytes": 0,
+            "updateAvailable": false,
+            "version": "1.0"
+          }
+        ],
+        "attachments": null,
+        "certificates": null,
+        "configurationProfiles": null,
+        "contentCaching": null,
+        "diskEncryption": null,
+        "extensionAttributes": [],
+        "fonts": [],
+        "general": {
+          "lastIpAddress": "198.51.100.144",
+          "reportDate": "2052-06-19T15:54:37.692Z"
+        },
+        "groupMemberships": [
+          {
+            "groupId": "1",
+            "groupName": "All Managed Clients",
+            "smartGroup": true
+          },
+          {
+            "groupId": "4",
+            "groupName": "Computers with updates",
+            "smartGroup": true
+          }
+        ],
+        "hardware": null,
+        "ibeacons": null,
+        "id": "6",
+        "licensedSoftware": null,
+        "localUserAccounts": null,
+        "operatingSystem": null,
+        "packageReceipts": {
+          "cached": [],
+          "installedByInstallerSwu": [],
+          "installedByJamfPro": []
+        },
+        "plugins": [],
+        "printers": null,
+        "purchasing": {
+          "appleCareId": "acme-appleCareId",
+          "extensionAttributes": [],
+          "leaseDate": "2052-06-19T15:54:37.692Z",
+          "leased": false,
+          "lifeExpectancy": 0,
+          "poDate": "2052-06-19T15:54:37.692Z",
+          "poNumber": "21",
+          "purchasePrice": 100,
+          "purchased": true,
+          "purchasingAccount": "acme-purchasingAccount",
+          "purchasingContact": "acme-purchasingContact",
+          "vendor": "acme-vendor",
+          "warrantyDate": "2052-06-19T15:54:37.692Z"
+        },
+        "security": null,
+        "services": null,
+        "softwareUpdates": [
+          {
+            "name": "macOS Sonoma 14.4.1",
+            "packageName": "macOS Sonoma 14.4.1-23E224",
+            "version": "14.4.1"
+          }
+        ],
+        "storage": null,
+        "udid": "C1FC4465-F78D-5CE4-B905-12C0CF35A67E",
+        "userAndLocation": null
+      }
+    },
+    {
+      "message": {
+        "applications": null,
+        "attachments": null,
+        "certificates": null,
+        "configurationProfiles": null,
+        "contentCaching": null,
+        "diskEncryption": {
+          "bootPartitionEncryptionDetails": {
+            "partitionFileVault2Percent": 0,
+            "partitionFileVault2State": "UNENCRYPTED",
+            "partitionName": "Macintosh HD (Boot Partition)"
+          },
+          "diskEncryptionConfigurationName": "acme",
+          "fileVault2EligibilityMessage": "acme",
+          "fileVault2EnabledUserNames": [
+            "jamfadmin"
+          ],
+          "individualRecoveryKeyValidityStatus": "UNKNOWN",
+          "institutionalRecoveryKeyPresent": false
+        },
+        "extensionAttributes": null,
+        "fonts": null,
+        "general": {
+          "lastIpAddress": "198.51.100.144",
+          "reportDate": "2052-06-19T15:54:37.692Z"
+        },
+        "groupMemberships": null,
+        "hardware": null,
+        "ibeacons": null,
+        "id": "4",
+        "licensedSoftware": null,
+        "localUserAccounts": null,
+        "operatingSystem": null,
+        "packageReceipts": null,
+        "plugins": null,
+        "printers": [],
+        "purchasing": null,
+        "security": null,
+        "services": [],
+        "softwareUpdates": null,
+        "storage": null,
+        "udid": "EFCEE4C8-08E3-5422-A220-C473B06E7A72",
+        "userAndLocation": {
+          "buildingId": "1",
+          "departmentId": "1",
+          "email": "sbjd.dke@jamf.com",
+          "extensionAttributes": [],
+          "phone": "+123345827276",
+          "position": "Contractor",
+          "realname": "Jane Doe",
+          "room": "1",
+          "username": "sbjd.dke"
+        }
+      }
+    },
+    {
+      "message": {
+        "applications": null,
+        "attachments": null,
+        "certificates": null,
+        "configurationProfiles": [
+          {
+            "displayName": "Kmjo",
+            "id": "",
+            "lastInstalled": "",
+            "profileIdentifier": "",
+            "removable": false,
+            "username": "Kmjo"
+          }
+        ],
+        "contentCaching": null,
+        "diskEncryption": null,
+        "extensionAttributes": null,
+        "fonts": null,
+        "general": {
+          "barcode1": "null",
+          "declarativeDeviceManagementEnabled": false,
+          "enrolledViaAutomatedDeviceEnrollment": false,
+          "extensionAttributes": [],
+          "initialEntryDate": "2052-06-19",
+          "itunesStoreAccountActive": false,
+          "jamfBinaryVersion": "11.4.1-t1712591696",
+          "lastContactTime": "2052-04-18T14:26:51.514Z",
+          "lastEnrolledDate": "2051-02-22T10:46:17.199Z",
+          "lastIpAddress": "198.51.100.144",
+          "lastReportedIp": "198.51.100.144",
+          "managementId": "8c85b576-b3b9-45de-8abc-0d5293ac64e0",
+          "mdmCapable": {
+            "capable": false,
+            "capableUsers": []
+          },
+          "name": "acme-C07DM3AZQ6NV",
+          "platform": "Mac",
+          "remoteManagement": {
+            "managed": true
+          },
+          "reportDate": "2052-06-19T15:54:37.692Z",
+          "site": {
+            "id": "-1",
+            "name": "None"
+          },
+          "supervised": false,
+          "userApprovedMdm": false
+        },
+        "groupMemberships": null,
+        "hardware": null,
+        "ibeacons": null,
+        "id": "3",
+        "licensedSoftware": null,
+        "localUserAccounts": null,
+        "operatingSystem": null,
+        "packageReceipts": null,
+        "plugins": null,
+        "printers": null,
+        "purchasing": null,
+        "security": null,
+        "services": null,
+        "softwareUpdates": null,
+        "storage": null,
+        "udid": "5349DC66-8445-569A-B8C9-DAE7710168CD",
+        "userAndLocation": null
+      }
+    },
+    {
+      "message": {
+        "applications": null,
+        "attachments": null,
+        "certificates": null,
+        "configurationProfiles": [
+          {
+            "displayName": "Kmjo",
+            "id": "",
+            "lastInstalled": "",
+            "profileIdentifier": "",
+            "removable": false,
+            "username": "Kmjo"
+          }
+        ],
+        "contentCaching": null,
+        "diskEncryption": null,
+        "extensionAttributes": null,
+        "fonts": null,
+        "general": {
+          "barcode1": "null",
+          "declarativeDeviceManagementEnabled": false,
+          "enrolledViaAutomatedDeviceEnrollment": false,
+          "enrollmentMethod": {
+            "id": "7",
+            "objectName": "Corp Div 1.20.0",
+            "objectType": "PreStage enrollment"
+          },
+          "extensionAttributes": [],
+          "initialEntryDate": "2052-06-19",
+          "itunesStoreAccountActive": false,
+          "jamfBinaryVersion": "11.4.1-t1712591696",
+          "lastContactTime": "2052-04-18T14:26:51.514Z",
+          "lastEnrolledDate": "2051-02-22T10:46:17.199Z",
+          "lastIpAddress": "198.51.100.144",
+          "lastReportedIp": "198.51.100.144",
+          "managementId": "8c85b576-b3b9-45de-8abc-0d5293ac64e0",
+          "mdmCapable": {
+            "capable": false,
+            "capableUsers": [
+              "jgcy.retydjafae@djxlbxr.com"
+            ]
+          },
+          "name": "acme-C07DM3AZQ6NV",
+          "platform": "Mac",
+          "remoteManagement": {
+            "managed": true
+          },
+          "reportDate": "2052-06-19T15:54:37.692Z",
+          "site": {
+            "id": "-1",
+            "name": "None"
+          },
+          "supervised": false,
+          "userApprovedMdm": false
+        },
+        "groupMemberships": null,
+        "hardware": null,
+        "ibeacons": null,
+        "id": "3",
+        "licensedSoftware": null,
+        "localUserAccounts": null,
+        "operatingSystem": null,
+        "packageReceipts": null,
+        "plugins": null,
+        "printers": null,
+        "purchasing": null,
+        "security": null,
+        "services": null,
+        "softwareUpdates": null,
+        "storage": null,
+        "udid": "5349DC66-8445-569A-B8C9-DAE7710168CD",
+        "userAndLocation": null
+      }
+    },
+    {
+      "message": {
+        "applications": [
+          {
+            "bundleId": "com.apple.podcasts",
+            "externalVersionId": "0",
+            "macAppStore": false,
+            "name": "Podcasts.app",
+            "path": "/System/Applications/Podcasts.app",
+            "sizeMegabytes": 49,
+            "updateAvailable": false,
+            "version": "1.1.0"
+          },
+          {
+            "bundleId": "com.apple.freeform",
+            "externalVersionId": "0",
+            "macAppStore": false,
+            "name": "Freeform.app",
+            "path": "/System/Applications/Freeform.app",
+            "sizeMegabytes": 57,
+            "updateAvailable": false,
+            "version": "2.4"
+          }
+        ],
+        "attachments": null,
+        "certificates": null,
+        "configurationProfiles": [
+          {
+            "displayName": "Restriction/Passcode",
+            "id": "5",
+            "lastInstalled": "2053-02-13T13:10:14.549Z",
+            "profileIdentifier": "719CAEFF-34E2-43C2-AEFA-FF71A9268665",
+            "removable": false,
+            "username": null
+          },
+          {
+            "displayName": "TBO Njrflke",
+            "id": "-27",
+            "lastInstalled": null,
+            "profileIdentifier": "20525158-1292-0010-A712-9B789D742792",
+            "removable": false,
+            "username": null
+          }
+        ],
+        "contentCaching": null,
+        "extensionAttributes": null,
+        "fonts": null,
+        "general": {
+          "lastIpAddress": "198.51.100.144",
+          "reportDate": "2052-06-19T15:54:37.692Z"
+        },
+        "groupMemberships": [
+          {
+            "groupId": "1",
+            "groupName": "All Managed Clients",
+            "smartGroup": true
+          },
+          {
+            "groupId": "5",
+            "groupName": "Zero Touch Devices",
+            "smartGroup": true
+          }
+        ],
+        "hardware": {
+          "altMacAddress": "67:D1:88:1E:1C:45",
+          "altNetworkAdapterType": "Ethernet",
+          "appleSilicon": true,
+          "batteryCapacityPercent": 83,
+          "bleCapable": false,
+          "bootRom": "11881.61.3",
+          "busSpeedMhz": 0,
+          "cacheSizeKilobytes": 0,
+          "coreCount": 10,
+          "extensionAttributes": [],
+          "macAddress": "76:3D:9A:62:2A:42",
+          "make": "Apple",
+          "model": "MacBook Pro (14-inch, 2021)",
+          "modelIdentifier": "MacBookPro18,4",
+          "networkAdapterType": "IEEE80211",
+          "nicSpeed": "n/a",
+          "openRamSlots": 0,
+          "opticalDrive": null,
+          "processorArchitecture": "arm64",
+          "processorCount": 1,
+          "processorSpeedMhz": 0,
+          "processorType": "Apple M1 Max",
+          "serialNumber": "XXXXXXXXXXX",
+          "smcVersion": null,
+          "supportsIosAppInstalls": true,
+          "totalRamMegabytes": 32768
+        },
+        "ibeacons": null,
+        "id": "288",
+        "licensedSoftware": [],
+        "localUserAccounts": [],
+        "operatingSystem": {
+          "activeDirectoryStatus": "Not Bound",
+          "build": "23H311",
+          "extensionAttributes": [],
+          "fileVault2Status": "NOT_ENCRYPTED",
+          "name": "macOS",
+          "rapidSecurityResponse": null,
+          "softwareUpdateDeviceId": "J314cAP",
+          "supplementalBuildVersion": "23H311",
+          "version": "14.7.2"
+        },
+        "packageReceipts": null,
+        "plugins": null,
+        "printers": null,
+        "purchasing": null,
+        "udid": "42CA89C9-BB3C-58CF-A32D-04F97852704A"
+      }
+    },
+    {
+      "message": {
+        "applications": [
+          {
+            "bundleId": "com.apple.freeform",
+            "externalVersionId": "0",
+            "macAppStore": false,
+            "name": "Freeform.app",
+            "path": "/System/Applications/Freeform.app",
+            "sizeMegabytes": 57,
+            "updateAvailable": false,
+            "version": "2.4"
+          }
+        ],
+        "general": {
+          "lastIpAddress": "198.51.100.144",
+          "reportDate": "2052-06-19T15:54:37.692Z"
+        },
+        "operatingSystem": {
+          "activeDirectoryStatus": "Not Bound",
+          "build": "23H311",
+          "extensionAttributes": [],
+          "fileVault2Status": "NOT_ENCRYPTED",
+          "name": "macOS",
+          "rapidSecurityResponse": null,
+          "softwareUpdateDeviceId": "J314cAP",
+          "supplementalBuildVersion": "23H311",
+          "version": "14.7"
+        },
+        "packageReceipts": null,
+        "plugins": null,
+        "printers": null,
+        "purchasing": null,
+        "udid": "42CA89C9-BB3C-58CF-A32D-04F97852704A"
+      }
+    },
+    {
+      "message": {
+        "applications": [
+          {
+            "bundleId": "com.apple.freeform",
+            "externalVersionId": "0",
+            "macAppStore": false,
+            "name": "Freeform.app",
+            "path": "/System/Applications/Freeform.app",
+            "sizeMegabytes": 57,
+            "updateAvailable": false,
+            "version": "2.4"
+          }
+        ],
+        "general": {
+          "lastIpAddress": "198.51.100.144",
+          "reportDate": "2052-06-19T15:54:37.692Z"
+        },
+        "operatingSystem": {
+          "activeDirectoryStatus": "Not Bound",
+          "build": "23H311",
+          "extensionAttributes": [],
+          "fileVault2Status": "NOT_ENCRYPTED",
+          "name": "macOS",
+          "rapidSecurityResponse": null,
+          "softwareUpdateDeviceId": "J314cAP",
+          "supplementalBuildVersion": "23H311",
+          "version": "14"
+        },
+        "packageReceipts": null,
+        "plugins": null,
+        "printers": null,
+        "purchasing": null,
+        "udid": "42CA89C9-BB3C-58CF-A32D-04F97852704A"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "inventory",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-inventory-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

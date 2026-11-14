@@ -1,0 +1,196 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-activitylogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2043-01-21T22:14:26.979Z",
+      "agent": {
+        "ephemeral_id": "fef8b86e-783e-4ce4-8a27-20d3ba5ed5a8",
+        "id": "63853503-2e09-4dca-8320-07b0fd2f1bf9",
+        "name": "7e4448661dde",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "azure": {
+        "activitylogs": {
+          "category": "Write",
+          "event_category": "Administrative",
+          "identity": {
+            "authorization": {
+              "action": "microsoft.support/supporttickets/write",
+              "evidence": {
+                "role": "Subscription Admin"
+              },
+              "scope": "/subscriptions/s1/resourceGroups/MSSupportGroup/providers/microsoft.support/supporttickets/115012112305841"
+            },
+            "claims": {
+              "appid": "c44b4083-3bq0-49c1-b47d-974e53cbdf3c",
+              "appidacr": "2",
+              "aud": "https://management.core.windows.net/",
+              "exp": "1421880271",
+              "groups": "cacfe77c-e058-4712-83qw-f9b08849fd60,0a91a89c-7b13-4c12-91e5-d61ae7fc159f,31522864-0578-4ea0-9gdc-e66cc564d18c",
+              "http://schemas_microsoft_com/claims/authnclassreference": "1",
+              "http://schemas_microsoft_com/claims/authnmethodsreferences": "pwd",
+              "http://schemas_microsoft_com/identity/claims/objectidentifier": "2468adf0-8211-44e3-95xq-85137af64708",
+              "http://schemas_microsoft_com/identity/claims/scope": "user_impersonation",
+              "http://schemas_microsoft_com/identity/claims/tenantid": "7c7c5011-f5c9-4214-9cae-6bffd0c13398 ",
+              "http://schemas_xmlsoap_org/ws/2005/05/identity/claims/givenname": "John",
+              "http://schemas_xmlsoap_org/ws/2005/05/identity/claims/name": " admin@egmukjj.com",
+              "http://schemas_xmlsoap_org/ws/2005/05/identity/claims/nameidentifier": "9vckmEGF7zDKk1YzIY8k0t1_EAPaXoeHyPRn6f413zM",
+              "http://schemas_xmlsoap_org/ws/2005/05/identity/claims/surname": "Smith",
+              "http://schemas_xmlsoap_org/ws/2005/05/identity/claims/upn": "admin@egmukjj.com",
+              "iat": "1421876371",
+              "iss": "https://sts.windows.net/07d783fe-30e4-40bc-91df-6c4cd468ff15/",
+              "nbf": "1421876371",
+              "puid": "20030000801A118C",
+              "ver": "1.0"
+            },
+            "claims_initiated_by_user": {
+              "fullname": "John Smith",
+              "givenname": "John",
+              "name": " admin@egmukjj.com",
+              "schema": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims",
+              "surname": "Smith"
+            }
+          },
+          "operation_name": "microsoft.support/supporttickets/write",
+          "properties": {
+            "service_request_id": "53c6aebb-8dc1-41aa-9e49-6adc9623b47d",
+            "status_code": "Created"
+          },
+          "result_signature": "Succeeded.Created",
+          "result_type": "Success"
+        },
+        "correlation_id": "f592c5b3-20e5-4a9e-855f-f4e0c8ce16c1",
+        "resource": {
+          "id": "/subscriptions/s1/resourceGroups/MSSupportGroup/providers/microsoft.support/supporttickets/115012112305841",
+          "provider": "microsoft.support/supporttickets/115012112305841"
+        }
+      },
+      "client": {
+        "ip": "198.51.100.111"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "microsoft.support/supporttickets/write",
+        "dataset": "azure.activitylogs",
+        "duration": -1468967296,
+        "kind": "event",
+        "module": "azure",
+        "original": "{\"time\":\"2043-01-21T22:14:26.9792776Z\",\"resourceId\":\"/subscriptions/s1/resourceGroups/MSSupportGroup/providers/microsoft.support/supporttickets/115012112305841\",\"operationName\":\"microsoft.support/supporttickets/write\",\"category\":\"Write\",\"resultType\":\"Success\",\"resultSignature\":\"Succeeded.Created\",\"durationMs\":2826,\"callerIpAddress\":\"198.51.100.111\",\"correlationId\":\"f592c5b3-20e5-4a9e-855f-f4e0c8ce16c1\",\"identity\":{\"authorization\":{\"scope\":\"/subscriptions/s1/resourceGroups/MSSupportGroup/providers/microsoft.support/supporttickets/115012112305841\",\"action\":\"microsoft.support/supporttickets/write\",\"evidence\":{\"role\":\"Subscription Admin\"}},\"claims\":{\"aud\":\"https://management.core.windows.net/\",\"iss\":\"https://sts.windows.net/07d783fe-30e4-40bc-91df-6c4cd468ff15/\",\"iat\":\"1421876371\",\"nbf\":\"1421876371\",\"exp\":\"1421880271\",\"ver\":\"1.0\",\"http://schemas.microsoft.com/identity/claims/tenantid\":\"7c7c5011-f5c9-4214-9cae-6bffd0c13398 \",\"http://schemas.microsoft.com/claims/authnmethodsreferences\":\"pwd\",\"http://schemas.microsoft.com/identity/claims/objectidentifier\":\"2468adf0-8211-44e3-95xq-85137af64708\",\"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn\":\"admin@egmukjj.com\",\"puid\":\"20030000801A118C\",\"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier\":\"9vckmEGF7zDKk1YzIY8k0t1_EAPaXoeHyPRn6f413zM\",\"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname\":\"John\",\"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname\":\"Smith\",\"name\":\"John Smith\",\"groups\":\"cacfe77c-e058-4712-83qw-f9b08849fd60,0a91a89c-7b13-4c12-91e5-d61ae7fc159f,31522864-0578-4ea0-9gdc-e66cc564d18c\",\"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name\":\" admin@egmukjj.com\",\"appid\":\"c44b4083-3bq0-49c1-b47d-974e53cbdf3c\",\"appidacr\":\"2\",\"http://schemas.microsoft.com/identity/claims/scope\":\"user_impersonation\",\"http://schemas.microsoft.com/claims/authnclassreference\":\"1\"}},\"level\":\"Information\",\"location\":\"global\",\"properties\":{\"statusCode\":\"Created\",\"serviceRequestId\":\"53c6aebb-8dc1-41aa-9e49-6adc9623b47d\"}}",
+        "outcome": "success",
+        "type": [
+          "change"
+        ]
+      },
+      "fileset": {
+        "name": "activitylogs"
+      },
+      "geo": {
+        "name": "global"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "Information",
+        "offset": 0
+      },
+      "related": {
+        "entity": [
+          "/subscriptions/s1/resourceGroups/MSSupportGroup/providers/microsoft.support/supporttickets/115012112305841"
+        ],
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "service": {
+        "type": "azure"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "egmukjj.com",
+        "email": " admin@egmukjj.com",
+        "full_name": "John Smith",
+        "name": "admin"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-activitylogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-24T02:51:14.159Z",
+      "agent": {
+        "ephemeral_id": "fef8b86e-783e-4ce4-8a27-20d3ba5ed5a8",
+        "id": "63853503-2e09-4dca-8320-07b0fd2f1bf9",
+        "name": "7e4448661dde",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "azure.activitylogs",
+        "module": "azure"
+      },
+      "fileset": {
+        "name": "activitylogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "{\"time\":\"2043-01-21T22:14:26.9792776Z\",\"resourceId\":\"/subscriptions/s1/resourceGroups/MSSupportGroup/providers/microsoft.support/supporttickets/115012112305841\",\"operationName\":\"microsoft.support/supporttickets/write\",\"category\":\"Write\",\"resultType\":\"Success\",\"resultSignature\":\"Succeeded.Created\",\"durationMs\":2826,\"callerIpAddress\":\"198.51.100.111\",\"correlationId\":\"f592c5b3-20e5-4a9e-855f-f4e0c8ce16c1\",\"identity\":{\"authorization\":{\"scope\":\"/subscriptions/s1/resourceGroups/MSSupportGroup/providers/microsoft.support/supporttickets/115012112305841\",\"action\":\"microsoft.support/supporttickets/write\",\"evidence\":{\"role\":\"Subscription Admin\"}},\"claims\":{\"aud\":\"https://management.core.windows.net/\",\"iss\":\"https://sts.windows.net/07d783fe-30e4-40bc-91df-6c4cd468ff15/\",\"iat\":\"1421876371\",\"nbf\":\"1421876371\",\"exp\":\"1421880271\",\"ver\":\"1.0\",\"http://schemas.microsoft.com/identity/claims/tenantid\":\"7c7c5011-f5c9-4214-9cae-6bffd0c13398 \",\"http://schemas.microsoft.com/claims/authnmethodsreferences\":\"pwd\",\"http://schemas.microsoft.com/identity/claims/objectidentifier\":\"2468adf0-8211-44e3-95xq-85137af64708\",\"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn\":\"admin@egmukjj.com\",\"puid\":\"20030000801A118C\",\"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier\":\"9vckmEGF7zDKk1YzIY8k0t1_EAPaXoeHyPRn6f413zM\",\"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname\":\"John\",\"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname\":\"Smith\",\"name\":\"John Smith\",\"groups\":\"cacfe77c-e058-4712-83qw-f9b08849fd60,0a91a89c-7b13-4c12-91e5-d61ae7fc159f,31522864-0578-4ea0-9gdc-e66cc564d18c\",\"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name\":\" admin@egmukjj.com\",\"appid\":\"c44b4083-3bq0-49c1-b47d-974e53cbdf3c\",\"appidacr\":\"2\",\"http://schemas.microsoft.com/identity/claims/scope\":\"user_impersonation\",\"http://schemas.microsoft.com/claims/authnclassreference\":\"1\"}},\"level\":\"Information\",\"location\":\"global\",\"properties\":{\"statusCode\":\"Created\",\"serviceRequestId\":\"53c6aebb-8dc1-41aa-9e49-6adc9623b47d\"}}",
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "activitylogs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-activitylogs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

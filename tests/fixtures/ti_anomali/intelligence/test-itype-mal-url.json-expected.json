@@ -1,0 +1,132 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:47.027259876Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": 77,
+          "deletion_scheduled_at": "2027-02-06T23:07:47.027259876Z",
+          "expiration_ts": "2048-05-27T06:03:43.658Z",
+          "feed_id": 0,
+          "id": "180654566",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": true,
+          "itype": "mal_url",
+          "meta": {
+            "severity": "very-high"
+          },
+          "owner_organization_id": 67,
+          "retina_confidence": -1,
+          "source_reported_confidence": 77,
+          "status": "inactive",
+          "threat_type": "malware",
+          "type": "url",
+          "update_id": "367733906",
+          "uuid": "9038cf77-c3a4-473c-b5c1-4a65fea295ac",
+          "value": "http://authibnab.com/"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2048-02-27T06:03:43.707Z",
+        "kind": "enrichment",
+        "severity": 99,
+        "type": [
+          "indicator"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "marking": {
+            "tlp": "WHITE"
+          },
+          "modified_at": "2048-06-03T18:17:05.603Z",
+          "name": "http://authibnab.com/",
+          "provider": "Analyst",
+          "type": "url",
+          "url": {
+            "domain": "authibnab.com",
+            "full": "http://authibnab.com/",
+            "original": "http://authibnab.com/",
+            "path": "/",
+            "scheme": "http"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": 77,
+        "created_by": null,
+        "created_ts": "2048-02-27T06:03:43.707Z",
+        "description": null,
+        "expiration_ts": "2048-05-27T06:03:43.658Z",
+        "feed_id": 0,
+        "id": 180654566,
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": true,
+        "itype": "mal_url",
+        "locations": [],
+        "meta": {
+          "detail2": "bifocals_deactivated_on_2048-06-03_18:14:47.561244",
+          "severity": "very-high"
+        },
+        "modified_ts": "2048-06-03T18:17:05.603Z",
+        "org": "",
+        "owner_organization_id": 67,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/180654566/",
+        "retina_confidence": -1,
+        "sort": [
+          367733906
+        ],
+        "source": "Analyst",
+        "source_locations": [],
+        "source_reported_confidence": 77,
+        "status": "inactive",
+        "subtype": null,
+        "tags": null,
+        "target_industry": [],
+        "threat_type": "malware",
+        "threatscore": 62,
+        "tlp": null,
+        "trusted_circle_ids": null,
+        "type": "url",
+        "update_id": 367733906,
+        "uuid": "9038cf77-c3a4-473c-b5c1-4a65fea295ac",
+        "value": "http://authibnab.com/",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

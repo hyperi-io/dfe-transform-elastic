@@ -1,0 +1,100 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "intrusion_detection",
+          "network"
+        ],
+        "created": "2048-03-09T17:16:22.227Z",
+        "id": "e3f4783b5c36d401cc39c9f888f52d8a42afc1fe275eb180f4b32671209447cd",
+        "kind": "alert",
+        "original": "{\"event\":{\"dst_url\":\"http://tinyupload.com/\",\"user_input\":\"false\",\"protocol\":\"http\",\"file_type\":\"CSV\",\"domain\":\"rhokmhtmff.com\",\"alerted\":\"false\",\"ccl_ids\":\"CreditordebitcardnumbersGlobal\",\"severity\":\"5\",\"event_time\":\"2048-03-09T17:16:22.227000\",\"event_id\":\"e3f4783b5c36d401cc39c9f888f52d8a42afc1fe275eb180f4b32671209447cd\",\"filename\":\"credit_cards.csv\",\"version\":\"2.0\",\"sha256\":\"dc9dfb900b76fea4c0f1b0d6c3c8f003e72a5720ada9ca44b15e25239d3c7a5e\",\"status\":\"dirty\",\"product\":\"MSIP\",\"ccl_match_counts\":\"1\",\"vendor\":\"Menlo Security\",\"ccl_scores\":\"1\",\"rule_name\":\"Credit card block rule\",\"request_type\":\"GET\",\"src_url\":\"http://tinyupload.com/\",\"categories\":\"Download Sites\",\"stream_name\":\"/safefile-input/working_file\",\"name\":\"file_upload\",\"userid\":\"admin@qfollvacmvxmg.com\",\"action\":\"block\",\"rule_id\":\"1e4af23b-cf73-40ad-8fcd-d6ccf8101894\"}}",
+        "outcome": "success",
+        "severity": 5
+      },
+      "file": {
+        "hash": {
+          "sha256": "dc9dfb900b76fea4c0f1b0d6c3c8f003e72a5720ada9ca44b15e25239d3c7a5e"
+        },
+        "name": "credit_cards.csv"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "menlo": {
+        "dlp": {
+          "alerted": "false",
+          "category": "Download Sites",
+          "ccl": {
+            "id": "CreditordebitcardnumbersGlobal",
+            "match_counts": 1,
+            "score": 1
+          },
+          "status": "dirty",
+          "stream_name": "/safefile-input/working_file",
+          "user_input": "false"
+        }
+      },
+      "observer": {
+        "product": "MSIP",
+        "vendor": "Menlo Security",
+        "version": "2.0"
+      },
+      "related": {
+        "hash": [
+          "dc9dfb900b76fea4c0f1b0d6c3c8f003e72a5720ada9ca44b15e25239d3c7a5e"
+        ],
+        "user": [
+          "admin",
+          "admin@qfollvacmvxmg.com"
+        ]
+      },
+      "rule": {
+        "id": "1e4af23b-cf73-40ad-8fcd-d6ccf8101894",
+        "name": "Credit card block rule"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "domain": "tinyupload.com",
+        "original": "http://tinyupload.com/",
+        "path": "/",
+        "registered_domain": "tinyupload.com",
+        "scheme": "http",
+        "top_level_domain": "com"
+      },
+      "user": {
+        "domain": "qfollvacmvxmg.com",
+        "email": "admin@qfollvacmvxmg.com",
+        "id": "admin@qfollvacmvxmg.com",
+        "name": "admin"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"event\":{\"dst_url\":\"http://tinyupload.com/\",\"user_input\":\"false\",\"protocol\":\"http\",\"file_type\":\"CSV\",\"domain\":\"rhokmhtmff.com\",\"alerted\":\"false\",\"ccl_ids\":\"CreditordebitcardnumbersGlobal\",\"severity\":\"5\",\"event_time\":\"2048-03-09T17:16:22.227000\",\"event_id\":\"e3f4783b5c36d401cc39c9f888f52d8a42afc1fe275eb180f4b32671209447cd\",\"filename\":\"credit_cards.csv\",\"version\":\"2.0\",\"sha256\":\"dc9dfb900b76fea4c0f1b0d6c3c8f003e72a5720ada9ca44b15e25239d3c7a5e\",\"status\":\"dirty\",\"product\":\"MSIP\",\"ccl_match_counts\":\"1\",\"vendor\":\"Menlo Security\",\"ccl_scores\":\"1\",\"rule_name\":\"Credit card block rule\",\"request_type\":\"GET\",\"src_url\":\"http://tinyupload.com/\",\"categories\":\"Download Sites\",\"stream_name\":\"/safefile-input/working_file\",\"name\":\"file_upload\",\"userid\":\"admin@qfollvacmvxmg.com\",\"action\":\"block\",\"rule_id\":\"1e4af23b-cf73-40ad-8fcd-d6ccf8101894\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "dlp",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-menlo-dlp-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "menlo",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

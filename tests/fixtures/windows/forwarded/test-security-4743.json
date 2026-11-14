@@ -1,0 +1,63 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:09:49.144Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "147e31f4-a894-47d9-9a25-1db5b0425f54",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain"
+            },
+            "winlog": {
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "outcome": "success",
+                "level": "information",
+                "event_data": {
+                    "TargetUserName": "GCUKAYKHYJDOYFT$",
+                    "TargetDomainName": "TEST",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2902",
+                    "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+                    "SubjectUserName": "ev_aav",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x2e67800",
+                    "PrivilegeList": "-"
+                },
+                "event_id": 4743,
+                "record_id": 3699966,
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "opcode": "Info",
+                "process": {
+                    "pid": 492,
+                    "thread": {
+                        "id": 664
+                    }
+                },
+                "channel": "Security",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "time_created": "2047-12-18T16:25:21.578Z"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4743,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "level": "information",
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4743.xml"
+                }
+            }
+        }
+    ]
+}

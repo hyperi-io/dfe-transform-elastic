@@ -118,7 +118,7 @@ fn set_email_attachments(event: &mut Event, _params: &Value) {
     let _ = event.set("email.attachments", Value::Array(attachments));
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "886d9ee266a20993ef5c72dcfbf358357f54693dd1d886bd73218cf9c2f08e94",

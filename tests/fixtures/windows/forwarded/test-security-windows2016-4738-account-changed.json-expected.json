@@ -1,0 +1,207 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-09-06T13:36:17.566Z",
+      "agent": {
+        "ephemeral_id": "9337430f-c27c-421c-819b-1695ab4072d0",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "modified-user-account",
+        "category": [
+          "iam"
+        ],
+        "code": "4738",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4738_Account_Changed.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "Administrator",
+          "avexgxagdln7"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "SOV-86VA2XP94FG",
+        "id": "S-1-5-21-101361758-2486510592-3018839910-500",
+        "name": "Administrator",
+        "target": {
+          "domain": "SOV-86VA2XP94FG",
+          "id": "S-1-5-21-101361758-2486510592-3018839910-1005",
+          "name": "avexgxagdln7"
+        }
+      },
+      "winlog": {
+        "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "AccountExpires": "%%1794",
+          "DisplayName": "avexgxagdln7",
+          "HomeDirectory": "%%1793",
+          "HomePath": "%%1793",
+          "LogonHours": "%%1797",
+          "NewUACList": [
+            "USER_NORMAL_ACCOUNT",
+            "USER_DONT_EXPIRE_PASSWORD"
+          ],
+          "NewUacValue": "0x210",
+          "OldUacValue": "0x210",
+          "PasswordLastSet": "6/9/2019 10:30:28",
+          "PrimaryGroupId": "513",
+          "ProfilePath": "%%1793",
+          "SamAccountName": "avexgxagdln7",
+          "ScriptPath": "%%1793",
+          "SubjectDomainName": "SOV-86VA2XP94FG",
+          "SubjectLogonId": "0x264b2",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1005",
+          "TargetUserName": "avexgxagdln7",
+          "UserParameters": "%%1793",
+          "UserWorkstations": "%%1793"
+        },
+        "event_id": "4738",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x264b2"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 1980
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "2862",
+        "time_created": "2047-09-06T13:36:17.566Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:08:39.068Z",
+      "agent": {
+        "ephemeral_id": "9337430f-c27c-421c-819b-1695ab4072d0",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4738,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4738_Account_Changed.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "AccountExpires": "%%1794",
+          "AllowedToDelegateTo": "-",
+          "DisplayName": "avexgxagdln7",
+          "Dummy": "-",
+          "HomeDirectory": "%%1793",
+          "HomePath": "%%1793",
+          "LogonHours": "%%1797",
+          "NewUacValue": "0x210",
+          "OldUacValue": "0x210",
+          "PasswordLastSet": "6/9/2019 10:30:28",
+          "PrimaryGroupId": "513",
+          "PrivilegeList": "-",
+          "ProfilePath": "%%1793",
+          "SamAccountName": "avexgxagdln7",
+          "ScriptPath": "%%1793",
+          "SidHistory": "-",
+          "SubjectDomainName": "SOV-86VA2XP94FG",
+          "SubjectLogonId": "0x264b2",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1005",
+          "TargetUserName": "avexgxagdln7",
+          "UserAccountControl": "-",
+          "UserParameters": "%%1793",
+          "UserPrincipalName": "-",
+          "UserWorkstations": "%%1793"
+        },
+        "event_id": 4738,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 1980
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 2862,
+        "time_created": "2047-09-06T13:36:17.566Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

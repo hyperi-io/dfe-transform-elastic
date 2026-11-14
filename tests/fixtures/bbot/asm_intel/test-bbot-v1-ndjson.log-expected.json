@@ -1,0 +1,433 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-02-29T01:41:59.403Z",
+      "bbot": {
+        "data": {
+          "scan": "heinous_hermione (SCAN:906280152b6b251e348926761a21736d3b7aaf1a)"
+        },
+        "id": "SCAN:906280152b6b251e348926761a21736d3b7aaf1a",
+        "module": "TARGET",
+        "module_sequence": "TARGET",
+        "scan": "SCAN:906280152b6b251e348926761a21736d3b7aaf1a",
+        "scope_distance": 0,
+        "source": "SCAN:906280152b6b251e348926761a21736d3b7aaf1a",
+        "tags": [
+          "in-scope"
+        ],
+        "timestamp": "2.592783719403808E9",
+        "type": "SCAN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "asset",
+        "original": "{\"type\": \"SCAN\", \"id\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"data\": {\"SCAN\": \"heinous_hermione (SCAN:906280152b6b251e348926761a21736d3b7aaf1a)\"}, \"scope_distance\": 0, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783719.403808, \"source\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"tags\": [\"in-scope\"], \"module\": \"TARGET\", \"module_sequence\": \"TARGET\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-02-29T01:41:47.779Z",
+      "bbot": {
+        "data": {
+          "dns_name": "example.com"
+        },
+        "id": "DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d",
+        "module": "TARGET",
+        "module_sequence": "TARGET",
+        "resolved_hosts": [
+          "192.0.2.134"
+        ],
+        "scan": "SCAN:906280152b6b251e348926761a21736d3b7aaf1a",
+        "scope_distance": 0,
+        "source": "SCAN:906280152b6b251e348926761a21736d3b7aaf1a",
+        "tags": [
+          "resolved",
+          "a-record",
+          "target",
+          "in-scope",
+          "subdomain"
+        ],
+        "timestamp": "2.592783707779394E9",
+        "type": "DNS_NAME"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "asset",
+        "original": "{\"type\": \"DNS_NAME\", \"id\": \"DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d\", \"data\": {\"DNS_NAME\": \"example.com\"}, \"scope_distance\": 0, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783707.779394, \"resolved_hosts\": [\"192.0.2.134\"], \"source\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"tags\": [\"resolved\", \"a-record\", \"target\", \"in-scope\", \"subdomain\"], \"module\": \"TARGET\", \"module_sequence\": \"TARGET\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "example.com"
+      },
+      "related": {
+        "hosts": [
+          "192.0.2.134",
+          "example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "registered_domain": "example.com",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-02-29T01:42:12.070Z",
+      "bbot": {
+        "data": {
+          "org_stub": "ex"
+        },
+        "id": "ORG_STUB:5450d96702c0ba6a1897d0486bae45bed90c890b",
+        "module": "speculate",
+        "module_sequence": "speculate",
+        "scan": "SCAN:906280152b6b251e348926761a21736d3b7aaf1a",
+        "scope_distance": 1,
+        "source": "DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d",
+        "tags": [
+          "distance-1"
+        ],
+        "timestamp": "2.592783732070682E9",
+        "type": "ORG_STUB"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "asset",
+        "original": "{\"type\": \"ORG_STUB\", \"id\": \"ORG_STUB:5450d96702c0ba6a1897d0486bae45bed90c890b\", \"data\": {\"ORG_STUB\": \"ex\"}, \"scope_distance\": 1, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783732.070682, \"source\": \"DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d\", \"tags\": [\"distance-1\"], \"module\": \"speculate\", \"module_sequence\": \"speculate\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-02-29T01:42:12.404Z",
+      "bbot": {
+        "data": {
+          "dns_name": "example.com"
+        },
+        "id": "DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d",
+        "module": "PTR",
+        "module_sequence": "PTR",
+        "resolved_hosts": [
+          "192.0.2.134"
+        ],
+        "scan": "SCAN:906280152b6b251e348926761a21736d3b7aaf1a",
+        "scope_distance": 0,
+        "source": "IP_ADDRESS:526fd6ad5458aff7ea61dd9c457faa57cc3a1456",
+        "tags": [
+          "resolved",
+          "a-record",
+          "in-scope",
+          "subdomain"
+        ],
+        "timestamp": "2.59278373240485E9",
+        "type": "DNS_NAME"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "asset",
+        "original": "{\"type\": \"DNS_NAME\", \"id\": \"DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d\", \"data\": {\"DNS_NAME\": \"example.com\"}, \"scope_distance\": 0, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783732.40485, \"resolved_hosts\": [\"192.0.2.134\"], \"source\": \"IP_ADDRESS:526fd6ad5458aff7ea61dd9c457faa57cc3a1456\", \"tags\": [\"resolved\", \"a-record\", \"in-scope\", \"subdomain\"], \"module\": \"PTR\", \"module_sequence\": \"PTR\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "example.com"
+      },
+      "related": {
+        "hosts": [
+          "192.0.2.134",
+          "example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "registered_domain": "example.com",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-02-29T01:42:12.033Z",
+      "bbot": {
+        "data": {
+          "ip_address": "192.0.2.134"
+        },
+        "id": "IP_ADDRESS:526fd6ad5458aff7ea61dd9c457faa57cc3a1456",
+        "module": "A",
+        "module_sequence": "A",
+        "resolved_hosts": [
+          "192.0.2.134"
+        ],
+        "scan": "SCAN:906280152b6b251e348926761a21736d3b7aaf1a",
+        "scope_distance": 1,
+        "source": "DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d",
+        "tags": [
+          "ipv4",
+          "resolved",
+          "distance-1",
+          "internal",
+          "ptr-record"
+        ],
+        "timestamp": "2.592783732033501E9",
+        "type": "IP_ADDRESS"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "asset",
+        "original": "{\"type\": \"IP_ADDRESS\", \"id\": \"IP_ADDRESS:526fd6ad5458aff7ea61dd9c457faa57cc3a1456\", \"data\": {\"IP_ADDRESS\": \"192.0.2.134\"}, \"scope_distance\": 1, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783732.033501, \"resolved_hosts\": [\"192.0.2.134\"], \"source\": \"DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d\", \"tags\": [\"ipv4\", \"resolved\", \"distance-1\", \"internal\", \"ptr-record\"], \"module\": \"A\", \"module_sequence\": \"A\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.134"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "192.0.2.134"
+        ],
+        "ip": [
+          "192.0.2.134"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-02-29T01:42:13.584Z",
+      "bbot": {
+        "data": {
+          "dns_name": "example.com"
+        },
+        "id": "DNS_NAME:83809eb2c443238f17296aeea9b7c90687bc0be2",
+        "module": "sslcert",
+        "module_sequence": "sslcert",
+        "resolved_hosts": [
+          "192.0.2.134"
+        ],
+        "scan": "SCAN:906280152b6b251e348926761a21736d3b7aaf1a",
+        "scope_distance": 1,
+        "source": "OPEN_TCP_PORT:87227732f9ffcc67cc45d6cbe5eea3f5d067048a",
+        "tags": [
+          "soa-record",
+          "affiliate",
+          "resolved",
+          "distance-1",
+          "domain",
+          "a-record",
+          "txt-record",
+          "mx-record",
+          "ns-record"
+        ],
+        "timestamp": "2.592783733584077E9",
+        "type": "DNS_NAME"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "asset",
+        "original": "{\"type\": \"DNS_NAME\", \"id\": \"DNS_NAME:83809eb2c443238f17296aeea9b7c90687bc0be2\", \"data\": {\"DNS_NAME\": \"example.com\"}, \"scope_distance\": 1, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783733.584077, \"resolved_hosts\": [\"192.0.2.134\"], \"source\": \"OPEN_TCP_PORT:87227732f9ffcc67cc45d6cbe5eea3f5d067048a\", \"tags\": [\"soa-record\", \"affiliate\", \"resolved\", \"distance-1\", \"domain\", \"a-record\", \"txt-record\", \"mx-record\", \"ns-record\"], \"module\": \"sslcert\", \"module_sequence\": \"sslcert\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "example.com"
+      },
+      "related": {
+        "hosts": [
+          "192.0.2.134",
+          "example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "registered_domain": "example.com",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-02-29T01:42:12.947Z",
+      "bbot": {
+        "data": {
+          "azure_tenant": {
+            "domains": [
+              "example.smtp.online",
+              "example.com",
+              "ekazvrc9.com",
+              "example.org",
+              "bidorjf3.com",
+              "areggve.gov",
+              "bsfumqc5.com"
+            ],
+            "tenant-id": "08ab474c-86db-418f-b2c0-877c7ac85a05",
+            "tenant-names": [
+              "exampletenant"
+            ]
+          }
+        },
+        "id": "AZURE_TENANT:ca08d249b7c71772a5dac167afa266eddbbfcb31",
+        "module": "azure_tenant",
+        "module_sequence": "azure_tenant",
+        "scan": "SCAN:906280152b6b251e348926761a21736d3b7aaf1a",
+        "scope_distance": 1,
+        "source": "DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d",
+        "tags": [
+          "distance-1"
+        ],
+        "timestamp": "2.592783732947014E9",
+        "type": "AZURE_TENANT"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "asset",
+        "original": "{\"type\": \"AZURE_TENANT\", \"id\": \"AZURE_TENANT:ca08d249b7c71772a5dac167afa266eddbbfcb31\", \"data\": {\"AZURE_TENANT\": {\"tenant-names\": [\"exampletenant\"], \"domains\": [\"example.smtp.online\", \"example.com\", \"ekazvrc9.com\", \"example.org\", \"bidorjf3.com\", \"areggve.gov\", \"bsfumqc5.com\"], \"tenant-id\": \"08ab474c-86db-418f-b2c0-877c7ac85a05\"}}, \"scope_distance\": 1, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783732.947014, \"source\": \"DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d\", \"tags\": [\"distance-1\"], \"module\": \"azure_tenant\", \"module_sequence\": \"azure_tenant\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"type\": \"SCAN\", \"id\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"data\": {\"SCAN\": \"heinous_hermione (SCAN:906280152b6b251e348926761a21736d3b7aaf1a)\"}, \"scope_distance\": 0, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783719.403808, \"source\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"tags\": [\"in-scope\"], \"module\": \"TARGET\", \"module_sequence\": \"TARGET\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"type\": \"DNS_NAME\", \"id\": \"DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d\", \"data\": {\"DNS_NAME\": \"example.com\"}, \"scope_distance\": 0, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783707.779394, \"resolved_hosts\": [\"192.0.2.134\"], \"source\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"tags\": [\"resolved\", \"a-record\", \"target\", \"in-scope\", \"subdomain\"], \"module\": \"TARGET\", \"module_sequence\": \"TARGET\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"type\": \"ORG_STUB\", \"id\": \"ORG_STUB:5450d96702c0ba6a1897d0486bae45bed90c890b\", \"data\": {\"ORG_STUB\": \"ex\"}, \"scope_distance\": 1, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783732.070682, \"source\": \"DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d\", \"tags\": [\"distance-1\"], \"module\": \"speculate\", \"module_sequence\": \"speculate\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"type\": \"DNS_NAME\", \"id\": \"DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d\", \"data\": {\"DNS_NAME\": \"example.com\"}, \"scope_distance\": 0, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783732.40485, \"resolved_hosts\": [\"192.0.2.134\"], \"source\": \"IP_ADDRESS:526fd6ad5458aff7ea61dd9c457faa57cc3a1456\", \"tags\": [\"resolved\", \"a-record\", \"in-scope\", \"subdomain\"], \"module\": \"PTR\", \"module_sequence\": \"PTR\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"type\": \"IP_ADDRESS\", \"id\": \"IP_ADDRESS:526fd6ad5458aff7ea61dd9c457faa57cc3a1456\", \"data\": {\"IP_ADDRESS\": \"192.0.2.134\"}, \"scope_distance\": 1, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783732.033501, \"resolved_hosts\": [\"192.0.2.134\"], \"source\": \"DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d\", \"tags\": [\"ipv4\", \"resolved\", \"distance-1\", \"internal\", \"ptr-record\"], \"module\": \"A\", \"module_sequence\": \"A\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"type\": \"DNS_NAME\", \"id\": \"DNS_NAME:83809eb2c443238f17296aeea9b7c90687bc0be2\", \"data\": {\"DNS_NAME\": \"example.com\"}, \"scope_distance\": 1, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783733.584077, \"resolved_hosts\": [\"192.0.2.134\"], \"source\": \"OPEN_TCP_PORT:87227732f9ffcc67cc45d6cbe5eea3f5d067048a\", \"tags\": [\"soa-record\", \"affiliate\", \"resolved\", \"distance-1\", \"domain\", \"a-record\", \"txt-record\", \"mx-record\", \"ns-record\"], \"module\": \"sslcert\", \"module_sequence\": \"sslcert\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"type\": \"AZURE_TENANT\", \"id\": \"AZURE_TENANT:ca08d249b7c71772a5dac167afa266eddbbfcb31\", \"data\": {\"AZURE_TENANT\": {\"tenant-names\": [\"exampletenant\"], \"domains\": [\"example.smtp.online\", \"example.com\", \"ekazvrc9.com\", \"example.org\", \"bidorjf3.com\", \"areggve.gov\", \"bsfumqc5.com\"], \"tenant-id\": \"08ab474c-86db-418f-b2c0-877c7ac85a05\"}}, \"scope_distance\": 1, \"scan\": \"SCAN:906280152b6b251e348926761a21736d3b7aaf1a\", \"timestamp\": 2592783732.947014, \"source\": \"DNS_NAME:b00aa7392dadc6ee50fcd338ce280eb44d31ae1d\", \"tags\": [\"distance-1\"], \"module\": \"azure_tenant\", \"module_sequence\": \"azure_tenant\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "asm_intel",
+    "dynamic_fields": {
+      "url.extension": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-bbot-asm_intel-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "bbot",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

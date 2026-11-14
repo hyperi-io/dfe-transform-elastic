@@ -1,0 +1,1238 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547105-05:00 pfSense.example.com charon 18610 - - 08[CFG]   ppk_id = (null)",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   ppk_id = (null)",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547109-05:00 pfSense.example.com charon 18610 - - 08[CFG]   ppk_required = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   ppk_required = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547113-05:00 pfSense.example.com charon 18610 - - 08[CFG]   mobike = 1",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   mobike = 1",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547117-05:00 pfSense.example.com charon 18610 - - 08[CFG]   aggressive = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   aggressive = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547122-05:00 pfSense.example.com charon 18610 - - 08[CFG]   dscp = 0x00",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   dscp = 0x00",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547126-05:00 pfSense.example.com charon 18610 - - 08[CFG]   encap = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   encap = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547130-05:00 pfSense.example.com charon 18610 - - 08[CFG]   dpd_delay = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   dpd_delay = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547207-05:00 pfSense.example.com charon 18610 - - 08[CFG]   if_id_in = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   if_id_in = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547211-05:00 pfSense.example.com charon 18610 - - 08[CFG]   if_id_out = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   if_id_out = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547215-05:00 pfSense.example.com charon 18610 - - 08[CFG]   local:",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   local:",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547220-05:00 pfSense.example.com charon 18610 - - 08[CFG]   remote:",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG]   remote:",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547245-05:00 pfSense.example.com charon 18610 - - 08[CFG] updated vici connection: bypass",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "08[CFG] updated vici connection: bypass",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547376-05:00 pfSense.example.com charon 18610 - - 07[CFG] vici client 84 requests: load-conn",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG] vici client 84 requests: load-conn",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547385-05:00 pfSense.example.com charon 18610 - - 07[CFG]  conn con1000:",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]  conn con1000:",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547451-05:00 pfSense.example.com charon 18610 - - 07[CFG]   child con1000:",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]   child con1000:",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547457-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rekey_time = 3240",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]    rekey_time = 3240",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547461-05:00 pfSense.example.com charon 18610 - - 07[CFG]    life_time = 3600",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]    life_time = 3600",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547465-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rand_time = 360",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]    rand_time = 360",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547469-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rekey_bytes = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]    rekey_bytes = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547473-05:00 pfSense.example.com charon 18610 - - 07[CFG]    life_bytes = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]    life_bytes = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547477-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rand_bytes = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]    rand_bytes = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547481-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rekey_packets = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]    rekey_packets = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547485-05:00 pfSense.example.com charon 18610 - - 07[CFG]    life_packets = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]    life_packets = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:01:56.547Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:01:56.547489-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rand_packets = 0",
+        "provider": "charon",
+        "timezone": "-05:00"
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07[CFG]    rand_packets = 0",
+      "network": {
+        "protocol": "ipsec"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T04:08:00.777Z",
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 500
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<30>1 2049-07-03T23:08:00.777042-05:00 pfSense.example.com charon 18610 - - 14[NET] <con1000|11> sending packet: from 192.0.2.87[500] to 192.0.2.87[500] (464 bytes)",
+        "provider": "charon",
+        "timezone": "-05:00",
+        "type": [
+          "connection"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "14[NET] <con1000|11> sending packet: from 192.0.2.87[500] to 192.0.2.87[500] (464 bytes)",
+      "network": {
+        "bytes": 464,
+        "protocol": "ipsec",
+        "type": "ipv4"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "charon",
+        "pid": 18610
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 500
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547105-05:00 pfSense.example.com charon 18610 - - 08[CFG]   ppk_id = (null)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547109-05:00 pfSense.example.com charon 18610 - - 08[CFG]   ppk_required = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547113-05:00 pfSense.example.com charon 18610 - - 08[CFG]   mobike = 1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547117-05:00 pfSense.example.com charon 18610 - - 08[CFG]   aggressive = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547122-05:00 pfSense.example.com charon 18610 - - 08[CFG]   dscp = 0x00",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547126-05:00 pfSense.example.com charon 18610 - - 08[CFG]   encap = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547130-05:00 pfSense.example.com charon 18610 - - 08[CFG]   dpd_delay = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547207-05:00 pfSense.example.com charon 18610 - - 08[CFG]   if_id_in = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547211-05:00 pfSense.example.com charon 18610 - - 08[CFG]   if_id_out = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547215-05:00 pfSense.example.com charon 18610 - - 08[CFG]   local:",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547220-05:00 pfSense.example.com charon 18610 - - 08[CFG]   remote:",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547245-05:00 pfSense.example.com charon 18610 - - 08[CFG] updated vici connection: bypass",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547376-05:00 pfSense.example.com charon 18610 - - 07[CFG] vici client 84 requests: load-conn",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547385-05:00 pfSense.example.com charon 18610 - - 07[CFG]  conn con1000:",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547451-05:00 pfSense.example.com charon 18610 - - 07[CFG]   child con1000:",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547457-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rekey_time = 3240",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547461-05:00 pfSense.example.com charon 18610 - - 07[CFG]    life_time = 3600",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547465-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rand_time = 360",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547469-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rekey_bytes = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547473-05:00 pfSense.example.com charon 18610 - - 07[CFG]    life_bytes = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547477-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rand_bytes = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547481-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rekey_packets = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547485-05:00 pfSense.example.com charon 18610 - - 07[CFG]    life_packets = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:01:56.547489-05:00 pfSense.example.com charon 18610 - - 07[CFG]    rand_packets = 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<30>1 2049-07-03T23:08:00.777042-05:00 pfSense.example.com charon 18610 - - 14[NET] <con1000|11> sending packet: from 192.0.2.87[500] to 192.0.2.87[500] (464 bytes)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-pfsense-log-default",
+    "event_count": 25,
+    "numeric_keyword_fields": [],
+    "package": "pfsense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

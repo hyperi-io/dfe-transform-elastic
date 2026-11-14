@@ -67,8 +67,7 @@ impl Transform for Default {
 
             let _cond = { event.get("workday.sign_on").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def signon = ctx.workday.sign_on;\nfor (def key : new ArrayList(signon.keySet())) {\n  if (key.contains('-')) {\n    signon.put(key.replace('-', '_'), signon.remove(key));\n  }\n}
+                // The pipeline's script, emitted as the runtime's equivalent
                 rename_map_keys(
                     event,
                     &RenameMapKeys::new("workday.sign_on".into(), '-', '_'),
@@ -77,8 +76,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("workday.sign_on") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def flags = [\n  'Account_Locked__Disabled_or_Expired',\n  'Active_Session',\n  'Device_is_Trusted',\n  'Failed_Signon',\n  'Forgotten_Password_Reset_Request',\n  'Invalid_Credentials',\n  'Invalid_Password',\n  'Is_Device_Managed',\n  'Password_Changed',\n  'Signon',\n  'Successful'\n];\ndef signon = ctx.workday.sign_on;\nfor (def flag : flags) {\n  if (signon.containsKey(flag) && signon.get(flag) instanceof String) {\n    signon.put(flag, signon.get(flag) == '1');\n  }\n}
+                // The pipeline's script, emitted as the runtime's equivalent
                 coerce_boolean(
                     event,
                     &CoerceBoolean::new(
@@ -950,8 +948,7 @@ impl Transform for Default {
             event.remove("workday.sign_on.Signoff_DateTime");
             event.remove("workday.sign_on.Signoff_Time");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

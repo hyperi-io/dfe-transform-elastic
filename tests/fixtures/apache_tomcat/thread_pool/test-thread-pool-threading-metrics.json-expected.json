@@ -1,0 +1,112 @@
+{
+  "expected": [
+    {
+      "apache_tomcat": {
+        "thread_pool": {
+          "contention": {
+            "monitoring_enabled": false
+          },
+          "nio_connector": "http-nio-8080",
+          "thread": {
+            "active": {
+              "count": 25
+            },
+            "allocated_memory": {
+              "enabled": true,
+              "supported": true
+            },
+            "current": {
+              "allocated": {
+                "bytes": 2159124728832.0
+              },
+              "cpu": {
+                "time": {
+                  "enabled": true,
+                  "ms": 3048293149766.0
+                }
+              },
+              "user": {
+                "time": {
+                  "ms": 2977630000000.0
+                }
+              }
+            },
+            "daemon": {
+              "count": 22
+            },
+            "peak": {
+              "count": 26
+            },
+            "supported": {
+              "contention_monitoring": true,
+              "cpu": {
+                "current": {
+                  "time": true
+                }
+              },
+              "usage": {
+                "object_monitor": true,
+                "synchronizer": true
+              }
+            },
+            "total": 50
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "metric",
+        "module": "apache_tomcat",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "127.0.0.1:9090",
+          "job": "prometheus",
+          "name": "\"http-nio-8080\""
+        },
+        "metrics": {
+          "java_lang_Threading_CurrentThreadAllocatedBytes": 2159124728832.0,
+          "java_lang_Threading_CurrentThreadCpuTime": 3048293149766.0,
+          "java_lang_Threading_CurrentThreadCpuTimeSupported": 1,
+          "java_lang_Threading_CurrentThreadUserTime": 2977630000000.0,
+          "java_lang_Threading_DaemonThreadCount": 22,
+          "java_lang_Threading_ObjectMonitorUsageSupported": 1,
+          "java_lang_Threading_PeakThreadCount": 26,
+          "java_lang_Threading_SynchronizerUsageSupported": 1,
+          "java_lang_Threading_ThreadAllocatedMemoryEnabled": 1,
+          "java_lang_Threading_ThreadAllocatedMemorySupported": 1,
+          "java_lang_Threading_ThreadContentionMonitoringEnabled": 0,
+          "java_lang_Threading_ThreadContentionMonitoringSupported": 1,
+          "java_lang_Threading_ThreadCount": 25,
+          "java_lang_Threading_ThreadCpuTimeEnabled": 1,
+          "java_lang_Threading_ThreadCpuTimeSupported": 1,
+          "java_lang_Threading_TotalStartedThreadCount": 50
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "thread_pool",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache_tomcat-thread_pool-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "apache_tomcat",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

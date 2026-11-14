@@ -1,0 +1,57 @@
+{
+    "events": [
+        {
+            "@timestamp": "2051-08-13T13:53:33.7067781Z",
+            "event": {
+                "code": "8020",
+                "kind": "event",
+                "provider": "Microsoft-Windows-AppLocker"
+            },
+            "host": {
+                "name": "eg18s-c22k-5"
+            },
+            "log": {
+                "level": "Information"
+            },
+            "message": "MICROSOFT.TODOS was allowed to run.",
+            "winlog": {
+                "activity_id": "",
+                "channel": "Microsoft-Windows-AppLocker/Packaged app-Execution",
+                "computer_name": "eg18s-c22k-5",
+                "user_data": {
+                    "PolicyNameLength": "4",
+                    "PolicyName": "APPX",
+                    "RuleId": "{e4d99c78-ec2e-42ad-b8ab-fe30ead444fa}",
+                    "RuleNameLength": "39",
+                    "RuleName": "(Default Rule) All signed packaged apps",
+                    "RuleSddlLength": "81",
+                    "RuleSddl": "D:(XA;;FX;;;S-1-1-0;((Exists APPID://FQBN) \u0026\u0026 ((APPID://FQBN) \u003e= ({\"*\\*\\*\",0}))))",
+                    "TargetUser": "S-1-5-21-2707992022-4034939591-3454028951-1001",
+                    "TargetProcessId": "41864",
+                    "PackageLength": "15",
+                    "Package": "MICROSOFT.TODOS",
+                    "FqbnLength": "116",
+                    "Fqbn": "CN=MICROSOFT CORPORATION, O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US\\MICROSOFT.TODOS\\APPX\\2.100.61791.00"
+                },
+                "event_id": "8020",
+                "level": "Information",
+                "opcode": "Info",
+                "process": {
+                    "pid": 1672,
+                    "thread": {
+                        "id": 8384
+                    }
+                },
+                "provider_guid": "bdab3bfe-2c0e-4a41-9880-fc98bb628a72",
+                "provider_name": "Microsoft-Windows-AppLocker",
+                "record_id": "2986",
+                "time_created": "2051-08-13T13:53:33.7067781Z",
+                "user": {
+                    "identifier": "S-1-5-21-2707992022-4034939591-3454028951-1001",
+                    "name": "Topsy"
+                },
+                "version": 0
+            }
+        }
+    ]
+}

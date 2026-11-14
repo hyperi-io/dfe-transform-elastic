@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `salesforce`'s apex scripts, transcribed.
+//! `salesforce`'s apex scripts, as the runtime runs them.
 //!
 //! An Apex event log line arrives as one flat object of upper-case column
 //! names, and the whole data stream hangs off lifting those columns onto
@@ -256,7 +256,7 @@ fn path(prefix: &str, field: &str) -> String {
     format!("{prefix}.{field}")
 }
 
-/// Every `salesforce` script transcribed here.
+/// Every `salesforce` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "8100a79a487f11754491a15b0585a9f2730f72567e03d9c44467412121247832",

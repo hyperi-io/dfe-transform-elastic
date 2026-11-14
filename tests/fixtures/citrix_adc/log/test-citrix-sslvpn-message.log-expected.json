@@ -1,0 +1,1124 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-09-09T14:13:39.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> 09/09/2052:14:13:39 PRODSY3VPX01 0-PPE-0 : default SSLVPN Message 30461998 0 : \"[Remote ip = 203.0.113.138:5019] {ns_handle_free_resources:13910} freeing sta resource for pcb:{src-ip:port=203.0.113.138:5019} <-> {dst-ip:port=198.51.100.211:443} pcbdevno=0xa14452, user_domain=(, ns_aaa->csg_flags=0x400\"",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "[Remote ip = 203.0.113.138:5019] {ns_handle_free_resources:13910} freeing sta resource for pcb:{src-ip:port=203.0.113.138:5019} <-> {dst-ip:port=198.51.100.211:443} pcbdevno=0xa14452, user_domain=(, ns_aaa->csg_flags=0x400"
+        },
+        "host": "PRODSY3VPX01",
+        "name": "Message"
+      },
+      "citrix_adc": {
+        "log": {
+          "message": "[Remote ip = 203.0.113.138:5019] {ns_handle_free_resources:13910} freeing sta resource for pcb:{src-ip:port=203.0.113.138:5019} <-> {dst-ip:port=198.51.100.211:443} pcbdevno=0xa14452, user_domain=(, ns_aaa->csg_flags=0x400"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "30461998",
+        "kind": "event",
+        "original": "<135> 09/09/2052:14:13:39 PRODSY3VPX01 0-PPE-0 : default SSLVPN Message 30461998 0 : \"[Remote ip = 203.0.113.138:5019] {ns_handle_free_resources:13910} freeing sta resource for pcb:{src-ip:port=203.0.113.138:5019} <-> {dst-ip:port=198.51.100.211:443} pcbdevno=0xa14452, user_domain=(, ns_aaa->csg_flags=0x400\"",
+        "severity": 0,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "hostname": "PRODSY3VPX01",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-09-09T20:46:07.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<134> 09/09/2052:20:46:07 GMT PRODSY3VPX01 0-PPE-1 : default SSLVPN UDPFLOWSTAT 4783495 0 : Context testhost.example.com@198.51.100.135 - SessionId: 1234 - [TECHSUPPORT] User username.example.com - Client_ip 192.0.2.87 - Nat_ip 203.0.113.88 - Vserver 198.51.100.166:443 - Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - Start_time \"09/09/2052:20:44:03 GMT\" - End_time \"09/09/2052:20:46:06 GMT\" - Duration 00:02:03  - Total_bytes_send 49 - Total_bytes_recv 168 - Access Allowed - Group(s) \"TEST_GROUP\"",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "Context testhost.example.com@198.51.100.135 - SessionId: 1234 - [TECHSUPPORT] User username.example.com - Client_ip 192.0.2.87 - Nat_ip 203.0.113.88 - Vserver 198.51.100.166:443 - Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - Start_time \"09/09/2052:20:44:03 GMT\" - End_time \"09/09/2052:20:46:06 GMT\" - Duration 00:02:03  - Total_bytes_send 49 - Total_bytes_recv 168 - Access Allowed - Group(s) \"TEST_GROUP\""
+        },
+        "host": "PRODSY3VPX01",
+        "name": "UDPFLOWSTAT"
+      },
+      "citrix_adc": {
+        "log": {
+          "access": "Allowed",
+          "client_ip": "192.0.2.87",
+          "destination": {
+            "ip": "203.0.113.75",
+            "port": 53
+          },
+          "duration": "00:02:03 ",
+          "end_time": "2052-09-09T20:46:06.000Z",
+          "groups": "TEST_GROUP",
+          "message": "Context testhost.example.com@198.51.100.135 - SessionId: 1234 - [TECHSUPPORT] User username.example.com - Client_ip 192.0.2.87 - Nat_ip 203.0.113.88 - Vserver 198.51.100.166:443 - Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - Start_time \"09/09/2052:20:44:03 GMT\" - End_time \"09/09/2052:20:46:06 GMT\" - Duration 00:02:03  - Total_bytes_send 49 - Total_bytes_recv 168 - Access Allowed - Group(s) \"TEST_GROUP\"",
+          "nat": {
+            "ip": "203.0.113.88"
+          },
+          "session_id": "1234",
+          "source": {
+            "ip": "198.51.100.102",
+            "port": 63685
+          },
+          "start_time": "2052-09-09T20:44:03.000Z",
+          "total_bytes_received": 168,
+          "total_bytes_send": 49,
+          "user": "username.example.com",
+          "username": "testhost.example.com",
+          "vserver": {
+            "ip": "198.51.100.166",
+            "port": 443
+          }
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87"
+      },
+      "destination": {
+        "bytes": 168,
+        "ip": "203.0.113.75",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "duration": 123000000000,
+        "end": "2052-09-09T20:46:06.000Z",
+        "id": "4783495",
+        "kind": "event",
+        "original": "<134> 09/09/2052:20:46:07 GMT PRODSY3VPX01 0-PPE-1 : default SSLVPN UDPFLOWSTAT 4783495 0 : Context testhost.example.com@198.51.100.135 - SessionId: 1234 - [TECHSUPPORT] User username.example.com - Client_ip 192.0.2.87 - Nat_ip 203.0.113.88 - Vserver 198.51.100.166:443 - Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - Start_time \"09/09/2052:20:44:03 GMT\" - End_time \"09/09/2052:20:46:06 GMT\" - Duration 00:02:03  - Total_bytes_send 49 - Total_bytes_recv 168 - Access Allowed - Group(s) \"TEST_GROUP\"",
+        "severity": 0,
+        "start": "2052-09-09T20:44:03.000Z",
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "TEST_GROUP"
+      },
+      "observer": {
+        "hostname": "PRODSY3VPX01",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.102",
+          "203.0.113.75",
+          "203.0.113.88",
+          "198.51.100.166",
+          "192.0.2.87"
+        ],
+        "user": [
+          "testhost.example.com"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.166",
+        "port": 443
+      },
+      "source": {
+        "bytes": 49,
+        "ip": "198.51.100.102",
+        "nat": {
+          "ip": "203.0.113.88"
+        },
+        "port": 63685
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "testhost.example.com"
+      }
+    },
+    {
+      "@timestamp": "2053-02-06T17:50:13.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<134> 02/06/2053:17:50:13 GMT PRODSYVPX01 0-PPE-1 : default AAATM LOGOUT 12956311 0 :  User uudozdhe.areggve.com.au - Client_ip  - Nat_ip \"Mapped Ip\" - Vserver 0.0.0.0:0 - Start_time \"02/06/2053:17:50:13 GMT\" - End_time \"02/06/2053:17:50:13 GMT\" - Duration 00:00:00  - Http_resources_accessed 0 - Total_TCP_connections 0 - Total_policies_allowed 0 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 0 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+        "device_event_class_id": "AAATM",
+        "extended": {
+          "message": "User uudozdhe.areggve.com.au - Client_ip  - Nat_ip \"Mapped Ip\" - Vserver 0.0.0.0:0 - Start_time \"02/06/2053:17:50:13 GMT\" - End_time \"02/06/2053:17:50:13 GMT\" - Duration 00:00:00  - Http_resources_accessed 0 - Total_TCP_connections 0 - Total_policies_allowed 0 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 0 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\""
+        },
+        "host": "PRODSYVPX01",
+        "name": "LOGOUT"
+      },
+      "citrix_adc": {
+        "log": {
+          "compression_ratio_recieved": 0.0,
+          "compression_ratio_send": 0.0,
+          "duration": "00:00:00",
+          "end_time": "2053-02-06T17:50:13.000Z",
+          "groups": "N/A",
+          "http_resources_accessed": "0",
+          "logout_method": "TimedOut",
+          "message": "User uudozdhe.areggve.com.au - Client_ip  - Nat_ip \"Mapped Ip\" - Vserver 0.0.0.0:0 - Start_time \"02/06/2053:17:50:13 GMT\" - End_time \"02/06/2053:17:50:13 GMT\" - Duration 00:00:00  - Http_resources_accessed 0 - Total_TCP_connections 0 - Total_policies_allowed 0 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 0 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+          "start_time": "2053-02-06T17:50:13.000Z",
+          "total_bytes_received": 0,
+          "total_bytes_send": 0,
+          "total_compressed_bytes_recieved": 0,
+          "total_compressed_bytes_send": 0,
+          "total_policies_allowed": 0,
+          "total_policies_denied": 0,
+          "total_tcp_connections": 0,
+          "user": "uudozdhe.areggve.com.au",
+          "vserver": {
+            "ip": "0.0.0.0",
+            "port": 0
+          }
+        }
+      },
+      "destination": {
+        "bytes": 0
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "duration": 0,
+        "end": "2053-02-06T17:50:13.000Z",
+        "id": "12956311",
+        "kind": "event",
+        "original": "<134> 02/06/2053:17:50:13 GMT PRODSYVPX01 0-PPE-1 : default AAATM LOGOUT 12956311 0 :  User uudozdhe.areggve.com.au - Client_ip  - Nat_ip \"Mapped Ip\" - Vserver 0.0.0.0:0 - Start_time \"02/06/2053:17:50:13 GMT\" - End_time \"02/06/2053:17:50:13 GMT\" - Duration 00:00:00  - Http_resources_accessed 0 - Total_TCP_connections 0 - Total_policies_allowed 0 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 0 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+        "severity": 0,
+        "start": "2053-02-06T17:50:13.000Z",
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "N/A"
+      },
+      "observer": {
+        "hostname": "PRODSYVPX01",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "0.0.0.0"
+        ],
+        "user": [
+          "uudozdhe.areggve.com.au"
+        ]
+      },
+      "server": {
+        "ip": "0.0.0.0",
+        "port": 0
+      },
+      "source": {
+        "bytes": 0
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "uudozdhe.areggve.com.au"
+      }
+    },
+    {
+      "@timestamp": "2053-07-09T19:04:20.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<134> 07/09/2053:19:04:20 GMT test-ns-internal-b 0-PPE-0 : default AAATM LOGOUT 316696334 0 : Context cztigv7823@qx.uretoegr.com@192.0.2.87 - SessionId: 40982902 - User cztigv7823@qx.uretoegr.com - Client_ip 192.0.2.87 - Nat_ip \\\"Mapped Ip\\\" - Vserver 0.0.0.0:0 - Start_time \\\"07/09/2053:18:28:20 GMT\\\" - End_time \\\"07/09/2053:19:04:20 GMT\\\" - Duration 00:36:00  - Http_resources_accessed 0 - Total_TCP_connections 0 - Total_policies_allowed 2 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 0 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \\\"TimedOut\\\" - Group(s) \\\"N/A\\\"",
+        "device_event_class_id": "AAATM",
+        "extended": {
+          "message": "Context cztigv7823@qx.uretoegr.com@192.0.2.87 - SessionId: 40982902 - User cztigv7823@qx.uretoegr.com - Client_ip 192.0.2.87 - Nat_ip \\\"Mapped Ip\\\" - Vserver 0.0.0.0:0 - Start_time \\\"07/09/2053:18:28:20 GMT\\\" - End_time \\\"07/09/2053:19:04:20 GMT\\\" - Duration 00:36:00  - Http_resources_accessed 0 - Total_TCP_connections 0 - Total_policies_allowed 2 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 0 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \\\"TimedOut\\\" - Group(s) \\\"N/A\\\""
+        },
+        "host": "test-ns-internal-b",
+        "name": "LOGOUT"
+      },
+      "citrix_adc": {
+        "log": {
+          "client_ip": "192.0.2.87",
+          "compression_ratio_recieved": 0.0,
+          "compression_ratio_send": 0.0,
+          "duration": "00:36:00",
+          "end_time": "2053-07-09T19:04:20.000Z",
+          "groups": "N/A",
+          "http_resources_accessed": "0",
+          "logout_method": "TimedOut",
+          "message": "Context cztigv7823@qx.uretoegr.com@192.0.2.87 - SessionId: 40982902 - User cztigv7823@qx.uretoegr.com - Client_ip 192.0.2.87 - Nat_ip \\\"Mapped Ip\\\" - Vserver 0.0.0.0:0 - Start_time \\\"07/09/2053:18:28:20 GMT\\\" - End_time \\\"07/09/2053:19:04:20 GMT\\\" - Duration 00:36:00  - Http_resources_accessed 0 - Total_TCP_connections 0 - Total_policies_allowed 2 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 0 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \\\"TimedOut\\\" - Group(s) \\\"N/A\\\"",
+          "session_id": "40982902",
+          "start_time": "2053-07-09T18:28:20.000Z",
+          "total_bytes_received": 0,
+          "total_bytes_send": 0,
+          "total_compressed_bytes_recieved": 0,
+          "total_compressed_bytes_send": 0,
+          "total_policies_allowed": 2,
+          "total_policies_denied": 0,
+          "total_tcp_connections": 0,
+          "user": "cztigv7823@qx.uretoegr.com",
+          "username": "cztigv7823@qx.uretoegr.com",
+          "vserver": {
+            "ip": "0.0.0.0",
+            "port": 0
+          }
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87"
+      },
+      "destination": {
+        "bytes": 0
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "duration": 2160000000000,
+        "end": "2053-07-09T19:04:20.000Z",
+        "id": "316696334",
+        "kind": "event",
+        "original": "<134> 07/09/2053:19:04:20 GMT test-ns-internal-b 0-PPE-0 : default AAATM LOGOUT 316696334 0 : Context cztigv7823@qx.uretoegr.com@192.0.2.87 - SessionId: 40982902 - User cztigv7823@qx.uretoegr.com - Client_ip 192.0.2.87 - Nat_ip \\\"Mapped Ip\\\" - Vserver 0.0.0.0:0 - Start_time \\\"07/09/2053:18:28:20 GMT\\\" - End_time \\\"07/09/2053:19:04:20 GMT\\\" - Duration 00:36:00  - Http_resources_accessed 0 - Total_TCP_connections 0 - Total_policies_allowed 2 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 0 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \\\"TimedOut\\\" - Group(s) \\\"N/A\\\"",
+        "severity": 0,
+        "start": "2053-07-09T18:28:20.000Z",
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "N/A"
+      },
+      "observer": {
+        "hostname": "test-ns-internal-b",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "0.0.0.0",
+          "192.0.2.87"
+        ],
+        "user": [
+          "cztigv7823",
+          "cztigv7823@qx.uretoegr.com"
+        ]
+      },
+      "server": {
+        "ip": "0.0.0.0",
+        "port": 0
+      },
+      "source": {
+        "bytes": 0
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "qx.uretoegr.com",
+        "email": "cztigv7823@qx.uretoegr.com",
+        "name": "cztigv7823"
+      }
+    },
+    {
+      "@timestamp": "2053-07-09T19:04:21.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> 07/09/2053:19:04:21 GMT test-ns-internal-b 0-PPE-0 : default AAATM HTTPREQUEST 318039900 0 : Context 06q2319@qx.uretoegr.com@192.0.2.87 - SessionId: 39526570 - xcyx.dojvvmblxaog.com User 06q2319@qx.uretoegr.com : Group(s) N/A : Vserver 198.51.100.166:8085 - 07/09/2053:19:48:23 GMT : SSO is OFF : CONNECT xcyx.dojvvmblxaog.com:443 - -",
+        "device_event_class_id": "AAATM",
+        "extended": {
+          "message": "Context 06q2319@qx.uretoegr.com@192.0.2.87 - SessionId: 39526570 - xcyx.dojvvmblxaog.com User 06q2319@qx.uretoegr.com : Group(s) N/A : Vserver 198.51.100.166:8085 - 07/09/2053:19:48:23 GMT : SSO is OFF : CONNECT xcyx.dojvvmblxaog.com:443 - -"
+        },
+        "host": "test-ns-internal-b",
+        "name": "HTTPREQUEST"
+      },
+      "citrix_adc": {
+        "log": {
+          "client_ip": "192.0.2.87",
+          "groups": "N/A",
+          "hostname": "xcyx.dojvvmblxaog.com",
+          "message": "Context 06q2319@qx.uretoegr.com@192.0.2.87 - SessionId: 39526570 - xcyx.dojvvmblxaog.com User 06q2319@qx.uretoegr.com : Group(s) N/A : Vserver 198.51.100.166:8085 - 07/09/2053:19:48:23 GMT : SSO is OFF : CONNECT xcyx.dojvvmblxaog.com:443 - -",
+          "method": "CONNECT",
+          "request": {
+            "path": "xcyx.dojvvmblxaog.com:443"
+          },
+          "session_id": "39526570",
+          "sso_status": "OFF",
+          "timestamp": "2053-07-09T19:48:23.000Z",
+          "timezone": "GMT",
+          "user": "06q2319@qx.uretoegr.com",
+          "username": "06q2319@qx.uretoegr.com",
+          "vserver": {
+            "ip": "198.51.100.166",
+            "port": 8085
+          }
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "318039900",
+        "kind": "event",
+        "original": "<135> 07/09/2053:19:04:21 GMT test-ns-internal-b 0-PPE-0 : default AAATM HTTPREQUEST 318039900 0 : Context 06q2319@qx.uretoegr.com@192.0.2.87 - SessionId: 39526570 - xcyx.dojvvmblxaog.com User 06q2319@qx.uretoegr.com : Group(s) N/A : Vserver 198.51.100.166:8085 - 07/09/2053:19:48:23 GMT : SSO is OFF : CONNECT xcyx.dojvvmblxaog.com:443 - -",
+        "severity": 0,
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "N/A"
+      },
+      "observer": {
+        "hostname": "test-ns-internal-b",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.166",
+          "192.0.2.87"
+        ],
+        "user": [
+          "06q2319",
+          "06q2319@qx.uretoegr.com"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.166",
+        "port": 8085
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "xcyx.dojvvmblxaog.com"
+      },
+      "user": {
+        "domain": "qx.uretoegr.com",
+        "email": "06q2319@qx.uretoegr.com",
+        "name": "06q2319"
+      }
+    },
+    {
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> default CMD_EXECUTED 4123456 0 :  User nsroot - ADM_User NONE - Remote_ip 192.0.2.87 - Command \"show ns capacity\" - Status \"Success\"",
+        "device_event_class_id": "CLI",
+        "extended": {
+          "message": "User nsroot - ADM_User NONE - Remote_ip 192.0.2.87 - Command \"show ns capacity\" - Status \"Success\""
+        },
+        "name": "CMD_EXECUTED"
+      },
+      "citrix_adc": {
+        "log": {
+          "adm_user": "NONE",
+          "command": "show ns capacity",
+          "remote_ip": "192.0.2.87",
+          "status": "Success",
+          "user": "nsroot"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "process"
+        ],
+        "id": "4123456",
+        "kind": "event",
+        "original": "<135> default CMD_EXECUTED 4123456 0 :  User nsroot - ADM_User NONE - Remote_ip 192.0.2.87 - Command \"show ns capacity\" - Status \"Success\"",
+        "outcome": "success",
+        "severity": 0,
+        "timezone": "UTC",
+        "type": [
+          "start"
+        ]
+      },
+      "observer": {
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "process": {
+        "command_line": "show ns capacity"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "nsroot"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "nsroot"
+      }
+    },
+    {
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> default ICAEND_CONNSTAT 1234567 0 :  [TECHSUPPORT][LAUNCH][TCP][CGP][ICAUUID=06975a8a-5d44-149a-9048-25128344561a] Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - customername  - username:domainname dkesecs:kgnz.org - startTime \"01/16/2054:13:11:11 GMT\" - endTime \"01/16/2054:14:12:12 GMT\" - Duration 00:45:11  - Total_bytes_send 232200 - Total_bytes_recv 232200 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - connectionId 12345678",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "[TECHSUPPORT][LAUNCH][TCP][CGP][ICAUUID=06975a8a-5d44-149a-9048-25128344561a] Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - customername  - username:domainname dkesecs:kgnz.org - startTime \"01/16/2054:13:11:11 GMT\" - endTime \"01/16/2054:14:12:12 GMT\" - Duration 00:45:11  - Total_bytes_send 232200 - Total_bytes_recv 232200 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - connectionId 12345678"
+        },
+        "name": "ICAEND_CONNSTAT"
+      },
+      "citrix_adc": {
+        "log": {
+          "compression_ratio_recieved": 0.0,
+          "compression_ratio_send": 0.0,
+          "connection_id": "12345678",
+          "destination": {
+            "ip": "203.0.113.75",
+            "port": 53
+          },
+          "domain_name": "kgnz.org",
+          "duration": "00:45:11",
+          "end_time": "2054-01-16T14:12:12.000Z",
+          "message": "[TECHSUPPORT][LAUNCH][TCP][CGP][ICAUUID=06975a8a-5d44-149a-9048-25128344561a] Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - customername  - username:domainname dkesecs:kgnz.org - startTime \"01/16/2054:13:11:11 GMT\" - endTime \"01/16/2054:14:12:12 GMT\" - Duration 00:45:11  - Total_bytes_send 232200 - Total_bytes_recv 232200 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - connectionId 12345678",
+          "source": {
+            "ip": "198.51.100.102",
+            "port": 63685
+          },
+          "start_time": "2054-01-16T13:11:11.000Z",
+          "total_bytes_received": 232200,
+          "total_bytes_send": 232200,
+          "total_compressed_bytes_recieved": 0,
+          "total_compressed_bytes_send": 0,
+          "username": "dkesecs"
+        }
+      },
+      "destination": {
+        "bytes": 232200,
+        "ip": "203.0.113.75",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "duration": 3661000000000,
+        "end": "2054-01-16T14:12:12.000Z",
+        "id": "1234567",
+        "kind": "event",
+        "original": "<135> default ICAEND_CONNSTAT 1234567 0 :  [TECHSUPPORT][LAUNCH][TCP][CGP][ICAUUID=06975a8a-5d44-149a-9048-25128344561a] Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - customername  - username:domainname dkesecs:kgnz.org - startTime \"01/16/2054:13:11:11 GMT\" - endTime \"01/16/2054:14:12:12 GMT\" - Duration 00:45:11  - Total_bytes_send 232200 - Total_bytes_recv 232200 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - connectionId 12345678",
+        "severity": 0,
+        "start": "2054-01-16T13:11:11.000Z",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.102",
+          "203.0.113.75"
+        ],
+        "user": [
+          "dkesecs"
+        ]
+      },
+      "source": {
+        "bytes": 232200,
+        "ip": "198.51.100.102",
+        "port": 63685
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "kgnz.org",
+        "name": "dkesecs"
+      }
+    },
+    {
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> default Message 1234567 0 :  \"ns_vpn_csg.c:9323 [TECHSUPPORT][LAUNCH][Remote ip = 203.0.113.138:5019] [TCP][CGP] [ICAUUID=00012345-444c-999s-9678-00505127517d] Message = Received response from STA server {sta-server=198.51.100.166:113,type=ResponseData}\"",
+        "extended": {
+          "message": "ns_vpn_csg.c:9323 [TECHSUPPORT][LAUNCH][Remote ip = 203.0.113.138:5019] [TCP][CGP] [ICAUUID=00012345-444c-999s-9678-00505127517d] Message = Received response from STA server {sta-server=198.51.100.166:113,type=ResponseData}"
+        },
+        "name": "Message"
+      },
+      "citrix_adc": {
+        "log": {
+          "message": "ns_vpn_csg.c:9323 [TECHSUPPORT][LAUNCH][Remote ip = 203.0.113.138:5019] [TCP][CGP] [ICAUUID=00012345-444c-999s-9678-00505127517d] Message = Received response from STA server {sta-server=198.51.100.166:113,type=ResponseData}"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "1234567",
+        "kind": "event",
+        "original": "<135> default Message 1234567 0 :  \"ns_vpn_csg.c:9323 [TECHSUPPORT][LAUNCH][Remote ip = 203.0.113.138:5019] [TCP][CGP] [ICAUUID=00012345-444c-999s-9678-00505127517d] Message = Received response from STA server {sta-server=198.51.100.166:113,type=ResponseData}\"",
+        "severity": 0,
+        "timezone": "UTC"
+      },
+      "observer": {
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> default HTTPREQUEST 1234567 0 :  [TECHSUPPORT][ENUMERATION] qgxfribtj.jhokojriu-iukuuh.org User dkesecs : Group(s) N/A : Vserver 198.51.100.166:113 - 01/16/2054:14:11:55 GMT : Message = SSO is ON : POST /Citrix/StoreWeb/Resources/GetStartStatus/Tk91234679NIIE1lZGl0KLWoIFByb2W- - -",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "[TECHSUPPORT][ENUMERATION] qgxfribtj.jhokojriu-iukuuh.org User dkesecs : Group(s) N/A : Vserver 198.51.100.166:113 - 01/16/2054:14:11:55 GMT : Message = SSO is ON : POST /Citrix/StoreWeb/Resources/GetStartStatus/Tk91234679NIIE1lZGl0KLWoIFByb2W- - -"
+        },
+        "name": "HTTPREQUEST"
+      },
+      "citrix_adc": {
+        "log": {
+          "groups": "N/A",
+          "hostname": "qgxfribtj.jhokojriu-iukuuh.org",
+          "message": "[TECHSUPPORT][ENUMERATION] qgxfribtj.jhokojriu-iukuuh.org User dkesecs : Group(s) N/A : Vserver 198.51.100.166:113 - 01/16/2054:14:11:55 GMT : Message = SSO is ON : POST /Citrix/StoreWeb/Resources/GetStartStatus/Tk91234679NIIE1lZGl0KLWoIFByb2W- - -",
+          "method": "POST",
+          "request": {
+            "path": "/Citrix/StoreWeb/Resources/GetStartStatus/Tk91234679NIIE1lZGl0KLWoIFByb2W-"
+          },
+          "sso_status": "ON",
+          "timestamp": "2054-01-16T14:11:55.000Z",
+          "timezone": "GMT",
+          "user": "dkesecs",
+          "vserver": {
+            "ip": "198.51.100.166",
+            "port": 113
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "1234567",
+        "kind": "event",
+        "original": "<135> default HTTPREQUEST 1234567 0 :  [TECHSUPPORT][ENUMERATION] qgxfribtj.jhokojriu-iukuuh.org User dkesecs : Group(s) N/A : Vserver 198.51.100.166:113 - 01/16/2054:14:11:55 GMT : Message = SSO is ON : POST /Citrix/StoreWeb/Resources/GetStartStatus/Tk91234679NIIE1lZGl0KLWoIFByb2W- - -",
+        "severity": 0,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "N/A"
+      },
+      "observer": {
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.166"
+        ],
+        "user": [
+          "dkesecs"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.166",
+        "port": 113
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "qgxfribtj.jhokojriu-iukuuh.org"
+      },
+      "user": {
+        "name": "dkesecs"
+      }
+    },
+    {
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> default LOGOUT 1234567 0 :  User cerry - Client_ip 198.51.100.211 - Nat_ip \"Mapped Ip\" - Vserver 198.51.100.166:113 - Start_time \"01/15/2054:11:36:00 GMT\" - End_time \"01/16/2054:14:11:48GMT\" - Duration 15:05:35  - Http_resources_accessed 0 - NonHttp_services_accessed 0 - Total_TCP_connections 25 - Total_UDP_flows 0 - Total_policies_allowed 64 - Total_policies_denied 0 - Total_bytes_send 810 - Total_bytes_recv 1404987 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "User cerry - Client_ip 198.51.100.211 - Nat_ip \"Mapped Ip\" - Vserver 198.51.100.166:113 - Start_time \"01/15/2054:11:36:00 GMT\" - End_time \"01/16/2054:14:11:48GMT\" - Duration 15:05:35  - Http_resources_accessed 0 - NonHttp_services_accessed 0 - Total_TCP_connections 25 - Total_UDP_flows 0 - Total_policies_allowed 64 - Total_policies_denied 0 - Total_bytes_send 810 - Total_bytes_recv 1404987 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\""
+        },
+        "name": "LOGOUT"
+      },
+      "citrix_adc": {
+        "log": {
+          "client_ip": "198.51.100.211",
+          "compression_ratio_recieved": 0.0,
+          "compression_ratio_send": 0.0,
+          "duration": "15:05:35",
+          "end_time": "2054-01-16T14:11:48.000Z",
+          "groups": "N/A",
+          "http_resources_accessed": "0",
+          "logout_method": "TimedOut",
+          "message": "User cerry - Client_ip 198.51.100.211 - Nat_ip \"Mapped Ip\" - Vserver 198.51.100.166:113 - Start_time \"01/15/2054:11:36:00 GMT\" - End_time \"01/16/2054:14:11:48GMT\" - Duration 15:05:35  - Http_resources_accessed 0 - NonHttp_services_accessed 0 - Total_TCP_connections 25 - Total_UDP_flows 0 - Total_policies_allowed 64 - Total_policies_denied 0 - Total_bytes_send 810 - Total_bytes_recv 1404987 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+          "non_http_services_accessed": "0",
+          "start_time": "2054-01-15T11:36:00.000Z",
+          "total_bytes_received": 1404987,
+          "total_bytes_send": 810,
+          "total_compressed_bytes_recieved": 0,
+          "total_compressed_bytes_send": 0,
+          "total_policies_allowed": 64,
+          "total_policies_denied": 0,
+          "total_tcp_connections": 25,
+          "total_udp_flows": 0,
+          "user": "cerry",
+          "vserver": {
+            "ip": "198.51.100.166",
+            "port": 113
+          }
+        }
+      },
+      "client": {
+        "ip": "198.51.100.211"
+      },
+      "destination": {
+        "bytes": 1404987
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "duration": 95748000000000,
+        "end": "2054-01-16T14:11:48.000Z",
+        "id": "1234567",
+        "kind": "event",
+        "original": "<135> default LOGOUT 1234567 0 :  User cerry - Client_ip 198.51.100.211 - Nat_ip \"Mapped Ip\" - Vserver 198.51.100.166:113 - Start_time \"01/15/2054:11:36:00 GMT\" - End_time \"01/16/2054:14:11:48GMT\" - Duration 15:05:35  - Http_resources_accessed 0 - NonHttp_services_accessed 0 - Total_TCP_connections 25 - Total_UDP_flows 0 - Total_policies_allowed 64 - Total_policies_denied 0 - Total_bytes_send 810 - Total_bytes_recv 1404987 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+        "severity": 0,
+        "start": "2054-01-15T11:36:00.000Z",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "N/A"
+      },
+      "observer": {
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.166",
+          "198.51.100.211"
+        ],
+        "user": [
+          "cerry"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.166",
+        "port": 113
+      },
+      "source": {
+        "bytes": 810
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "cerry"
+      }
+    },
+    {
+      "@timestamp": "2053-07-09T19:05:23.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> 07/09/2053:19:05:23 GMT  0-PPE-6 : default AAA Message 12345678 0 :  \"(6-9876543) send_authenticate_pdu: Sending Ensemble\"",
+        "device_event_class_id": "AAA",
+        "extended": {
+          "message": "(6-9876543) send_authenticate_pdu: Sending Ensemble"
+        },
+        "name": "Message"
+      },
+      "citrix_adc": {
+        "log": {
+          "message": "(6-9876543) send_authenticate_pdu: Sending Ensemble"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "12345678",
+        "kind": "event",
+        "original": "<135> 07/09/2053:19:05:23 GMT  0-PPE-6 : default AAA Message 12345678 0 :  \"(6-9876543) send_authenticate_pdu: Sending Ensemble\"",
+        "severity": 0,
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-07-09T19:06:25.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> 07/09/2053:19:06:25 GMT  0-PPE-12 : default AAA Message 12345678 0 :  \"core 12: ns_aaa_dialogue_handler: dialogue resp came to user, c2c for dial, trans id 12345678\"",
+        "device_event_class_id": "AAA",
+        "extended": {
+          "message": "core 12: ns_aaa_dialogue_handler: dialogue resp came to user, c2c for dial, trans id 12345678"
+        },
+        "name": "Message"
+      },
+      "citrix_adc": {
+        "log": {
+          "message": "core 12: ns_aaa_dialogue_handler: dialogue resp came to user, c2c for dial, trans id 12345678"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "12345678",
+        "kind": "event",
+        "original": "<135> 07/09/2053:19:06:25 GMT  0-PPE-12 : default AAA Message 12345678 0 :  \"core 12: ns_aaa_dialogue_handler: dialogue resp came to user, c2c for dial, trans id 12345678\"",
+        "severity": 0,
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-07-09T19:07:26.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> 07/09/2053:19:07:26 GMT  0-PPE-5 : default SSLVPN LOGIN 12345678 0 : Context user@203.0.113.138 - SessionId: 9876543 - User user - Client_ip 203.0.113.138 - Nat_ip \"Mapped Ip\" - Vserver 198.51.100.166:443 - Browser_type \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/133.42 (KHTML, like Gecko) Chrome/89.160.20.112 Safari/537.36 Edg/89.160.20.112\" - SSLVPN_client_type ICA - Group(s) \"ICA_Only_QG\"",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "Context user@203.0.113.138 - SessionId: 9876543 - User user - Client_ip 203.0.113.138 - Nat_ip \"Mapped Ip\" - Vserver 198.51.100.166:443 - Browser_type \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/133.42 (KHTML, like Gecko) Chrome/89.160.20.112 Safari/537.36 Edg/89.160.20.112\" - SSLVPN_client_type ICA - Group(s) \"ICA_Only_QG\""
+        },
+        "name": "LOGIN"
+      },
+      "citrix_adc": {
+        "log": {
+          "browser_type": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/133.42 (KHTML, like Gecko) Chrome/89.160.20.112 Safari/537.36 Edg/89.160.20.112",
+          "client_ip": "203.0.113.138",
+          "groups": "ICA_Only_QG",
+          "message": "Context user@203.0.113.138 - SessionId: 9876543 - User user - Client_ip 203.0.113.138 - Nat_ip \"Mapped Ip\" - Vserver 198.51.100.166:443 - Browser_type \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/133.42 (KHTML, like Gecko) Chrome/89.160.20.112 Safari/537.36 Edg/89.160.20.112\" - SSLVPN_client_type ICA - Group(s) \"ICA_Only_QG\"",
+          "session_id": "9876543",
+          "sslvpn_client_type": "ICA",
+          "user": "user",
+          "username": "user",
+          "vserver": {
+            "ip": "198.51.100.166",
+            "port": 443
+          }
+        }
+      },
+      "client": {
+        "ip": "203.0.113.138"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "12345678",
+        "kind": "event",
+        "original": "<135> 07/09/2053:19:07:26 GMT  0-PPE-5 : default SSLVPN LOGIN 12345678 0 : Context user@203.0.113.138 - SessionId: 9876543 - User user - Client_ip 203.0.113.138 - Nat_ip \"Mapped Ip\" - Vserver 198.51.100.166:443 - Browser_type \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/133.42 (KHTML, like Gecko) Chrome/89.160.20.112 Safari/537.36 Edg/89.160.20.112\" - SSLVPN_client_type ICA - Group(s) \"ICA_Only_QG\"",
+        "severity": 0,
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "ICA_Only_QG"
+      },
+      "observer": {
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.166",
+          "203.0.113.138"
+        ],
+        "user": [
+          "user"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.166",
+        "port": 443
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "<135> 09/09/2052:14:13:39 PRODSY3VPX01 0-PPE-0 : default SSLVPN Message 30461998 0 : \"[Remote ip = 203.0.113.138:5019] {ns_handle_free_resources:13910} freeing sta resource for pcb:{src-ip:port=203.0.113.138:5019} <-> {dst-ip:port=198.51.100.211:443} pcbdevno=0xa14452, user_domain=(, ns_aaa->csg_flags=0x400\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<134> 09/09/2052:20:46:07 GMT PRODSY3VPX01 0-PPE-1 : default SSLVPN UDPFLOWSTAT 4783495 0 : Context testhost.example.com@198.51.100.135 - SessionId: 1234 - [TECHSUPPORT] User username.example.com - Client_ip 192.0.2.87 - Nat_ip 203.0.113.88 - Vserver 198.51.100.166:443 - Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - Start_time \"09/09/2052:20:44:03 GMT\" - End_time \"09/09/2052:20:46:06 GMT\" - Duration 00:02:03  - Total_bytes_send 49 - Total_bytes_recv 168 - Access Allowed - Group(s) \"TEST_GROUP\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<134> 02/06/2053:17:50:13 GMT PRODSYVPX01 0-PPE-1 : default AAATM LOGOUT 12956311 0 :  User uudozdhe.areggve.com.au - Client_ip  - Nat_ip \"Mapped Ip\" - Vserver 0.0.0.0:0 - Start_time \"02/06/2053:17:50:13 GMT\" - End_time \"02/06/2053:17:50:13 GMT\" - Duration 00:00:00  - Http_resources_accessed 0 - Total_TCP_connections 0 - Total_policies_allowed 0 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 0 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<134> 07/09/2053:19:04:20 GMT test-ns-internal-b 0-PPE-0 : default AAATM LOGOUT 316696334 0 : Context cztigv7823@qx.uretoegr.com@192.0.2.87 - SessionId: 40982902 - User cztigv7823@qx.uretoegr.com - Client_ip 192.0.2.87 - Nat_ip \\\"Mapped Ip\\\" - Vserver 0.0.0.0:0 - Start_time \\\"07/09/2053:18:28:20 GMT\\\" - End_time \\\"07/09/2053:19:04:20 GMT\\\" - Duration 00:36:00  - Http_resources_accessed 0 - Total_TCP_connections 0 - Total_policies_allowed 2 - Total_policies_denied 0 - Total_bytes_send 0 - Total_bytes_recv 0 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \\\"TimedOut\\\" - Group(s) \\\"N/A\\\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> 07/09/2053:19:04:21 GMT test-ns-internal-b 0-PPE-0 : default AAATM HTTPREQUEST 318039900 0 : Context 06q2319@qx.uretoegr.com@192.0.2.87 - SessionId: 39526570 - xcyx.dojvvmblxaog.com User 06q2319@qx.uretoegr.com : Group(s) N/A : Vserver 198.51.100.166:8085 - 07/09/2053:19:48:23 GMT : SSO is OFF : CONNECT xcyx.dojvvmblxaog.com:443 - -",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> default CMD_EXECUTED 4123456 0 :  User nsroot - ADM_User NONE - Remote_ip 192.0.2.87 - Command \"show ns capacity\" - Status \"Success\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> default ICAEND_CONNSTAT 1234567 0 :  [TECHSUPPORT][LAUNCH][TCP][CGP][ICAUUID=06975a8a-5d44-149a-9048-25128344561a] Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - customername  - username:domainname dkesecs:kgnz.org - startTime \"01/16/2054:13:11:11 GMT\" - endTime \"01/16/2054:14:12:12 GMT\" - Duration 00:45:11  - Total_bytes_send 232200 - Total_bytes_recv 232200 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - connectionId 12345678",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> default Message 1234567 0 :  \"ns_vpn_csg.c:9323 [TECHSUPPORT][LAUNCH][Remote ip = 203.0.113.138:5019] [TCP][CGP] [ICAUUID=00012345-444c-999s-9678-00505127517d] Message = Received response from STA server {sta-server=198.51.100.166:113,type=ResponseData}\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> default HTTPREQUEST 1234567 0 :  [TECHSUPPORT][ENUMERATION] qgxfribtj.jhokojriu-iukuuh.org User dkesecs : Group(s) N/A : Vserver 198.51.100.166:113 - 01/16/2054:14:11:55 GMT : Message = SSO is ON : POST /Citrix/StoreWeb/Resources/GetStartStatus/Tk91234679NIIE1lZGl0KLWoIFByb2W- - -",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> default LOGOUT 1234567 0 :  User cerry - Client_ip 198.51.100.211 - Nat_ip \"Mapped Ip\" - Vserver 198.51.100.166:113 - Start_time \"01/15/2054:11:36:00 GMT\" - End_time \"01/16/2054:14:11:48GMT\" - Duration 15:05:35  - Http_resources_accessed 0 - NonHttp_services_accessed 0 - Total_TCP_connections 25 - Total_UDP_flows 0 - Total_policies_allowed 64 - Total_policies_denied 0 - Total_bytes_send 810 - Total_bytes_recv 1404987 - Total_compressedbytes_send 0 - Total_compressedbytes_recv 0 - Compression_ratio_send 0.00% - Compression_ratio_recv 0.00% - LogoutMethod \"TimedOut\" - Group(s) \"N/A\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> 07/09/2053:19:05:23 GMT  0-PPE-6 : default AAA Message 12345678 0 :  \"(6-9876543) send_authenticate_pdu: Sending Ensemble\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> 07/09/2053:19:06:25 GMT  0-PPE-12 : default AAA Message 12345678 0 :  \"core 12: ns_aaa_dialogue_handler: dialogue resp came to user, c2c for dial, trans id 12345678\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> 07/09/2053:19:07:26 GMT  0-PPE-5 : default SSLVPN LOGIN 12345678 0 : Context user@203.0.113.138 - SessionId: 9876543 - User user - Client_ip 203.0.113.138 - Nat_ip \"Mapped Ip\" - Vserver 198.51.100.166:443 - Browser_type \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/133.42 (KHTML, like Gecko) Chrome/89.160.20.112 Safari/537.36 Edg/89.160.20.112\" - SSLVPN_client_type ICA - Group(s) \"ICA_Only_QG\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "url.extension": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-citrix_adc-log-default",
+    "event_count": 13,
+    "numeric_keyword_fields": [],
+    "package": "citrix_adc",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

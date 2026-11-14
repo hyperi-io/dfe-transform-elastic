@@ -1,0 +1,405 @@
+{
+    "events": [
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "uMOyRkhx4h25jtmjJbQKY94t",
+                "type": "enclave.project.config.secrets.update",
+                "title": "Activity Log: uMOyRkhx4h25jtmjJbQKY94t",
+                "text": "Modified secrets in <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-1/configs/example-config-1\">example-config-1</a> of <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-1\">example-project-1</a> project with <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-1/configs/example-config-1/logs?id=XiWsmIbyIKeapF0cnElFfP2H\">3 added</a>:<br>\u2022 EXAMPLE_SECRET_1<br>\u2022 EXAMPLE_SECRET_2<br>\u2022 EXAMPLE_SECRET_3",
+                "user": {
+                    "kind": "serviceAccount",
+                    "slug": "48524b82-5f01-4984-8dd7-44f4c8305996",
+                    "name": "Xena Harris"
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=ge0qFMRJ2gL2QgTIuDbbM6XB",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-20T09:03:27.214Z",
+                "metadata": {
+                    "projectId": "example-project-1",
+                    "projectName": "example-project-1",
+                    "projectUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-1",
+                    "projectDescription": "",
+                    "configName": "example-config-1",
+                    "configUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-1/configs/example-config-1",
+                    "changeRequest": null,
+                    "pullRequest": null,
+                    "diff": {
+                        "added": [
+                            "EXAMPLE_SECRET_1",
+                            "EXAMPLE_SECRET_2",
+                            "EXAMPLE_SECRET_3"
+                        ],
+                        "removed": [],
+                        "updated": []
+                    },
+                    "diffUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-1/configs/example-config-1/logs?id=XiWsmIbyIKeapF0cnElFfP2H",
+                    "importedSecretFrom": null
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "ymKEu5y627YKwhfkXYLjokrb",
+                "type": "enclave.project.config.secrets.update",
+                "title": "Activity Log: ymKEu5y627YKwhfkXYLjokrb",
+                "text": "Modified secrets in <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-8/configs/example-config-7\">example-config-7</a> of <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-8\">example-project-8</a> project with <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-8/configs/example-config-7/logs?id=hiHH6ovtnlZI7S2JGdMbr2ds\">1 updated</a>:<br>\u2022 EXAMPLE_SECRET_14",
+                "user": {
+                    "kind": "apiToken",
+                    "slug": "9ef73be7-3dfd-44b7-843f-2c8ad144aaad",
+                    "name": "Frank Taylor",
+                    "type": {
+                        "id": "stJItIWrxibLrjlWQjdkA",
+                        "name": "Yusuf Harris"
+                    }
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=gn6X9XpCQ9d683ZPjhzLKugo",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-20T16:00:05.311Z",
+                "metadata": {
+                    "projectId": "example-project-8",
+                    "projectName": "example-project-8",
+                    "projectUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-8",
+                    "projectDescription": "example text 3",
+                    "configName": "example-config-7",
+                    "configUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-8/configs/example-config-7",
+                    "changeRequest": null,
+                    "pullRequest": null,
+                    "diff": {
+                        "added": [],
+                        "removed": [],
+                        "updated": [
+                            "EXAMPLE_SECRET_14"
+                        ]
+                    },
+                    "diffUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-8/configs/example-config-7/logs?id=hiHH6ovtnlZI7S2JGdMbr2ds",
+                    "importedSecretFrom": null
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "jtrWDMoofneJgrzyMJd3Onok",
+                "type": "enclave.project.access.create",
+                "title": "Activity Log: jtrWDMoofneJgrzyMJd3Onok",
+                "text": "Added <a class=\"text-purple-500 hover:underline\" title=\"oseec.pnzxar@example.com\" data-side=\"bottom\" rel=\"noopener\" href=\"mailto:oseec.pnzxar@example.com\">vgpns.rbkqxg</a> to <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-13\">example-project-13</a> project with <strong>admin</strong> access",
+                "user": {
+                    "kind": "bot",
+                    "slug": "doppler",
+                    "type": "doppler",
+                    "name": "Olivia Johnson",
+                    "username": "qwdto.mfvupn",
+                    "profile_image_url": "https://dashboard.doppler.com/imgs/logo_color.png",
+                    "is_bot": true
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=bKMBE20WL0kCzOKlaqnwJrG7",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-20T03:08:36.001Z",
+                "metadata": {
+                    "projectId": "example-project-13",
+                    "projectName": "example-project-13",
+                    "projectUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-13",
+                    "projectDescription": "",
+                    "userName": "vgpns.rbkqxg",
+                    "userEmail": "oseec.pnzxar@example.com",
+                    "role": "admin"
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "PDUoSw7rJT9Y7B4vhincagNw",
+                "type": "enclave.project.access.role.update",
+                "title": "Activity Log: PDUoSw7rJT9Y7B4vhincagNw",
+                "text": "Changed <a class=\"text-purple-500 hover:underline\" title=\"drc.zsgwr@example.com\" data-side=\"bottom\" rel=\"noopener\" href=\"mailto:drc.zsgwr@example.com\">oljgk.wcskuw</a> role in <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-10\">example-project-10</a> project from <strong>no_access</strong> to <strong>admin</strong>",
+                "user": {
+                    "kind": "user",
+                    "slug": "17696727-7136-41bc-88e8-865b4f75733b",
+                    "email": "apa.lbswep@example.com",
+                    "name": "Heidi Wilson",
+                    "username": "wbjts.pvshuo",
+                    "profile_image_url": "https://www.gravatar.com/avatar/09bb4b4d80df2562fb61b85c95780069?s=500&d=retro"
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=iOzgYTxgtXRQC3XgMZ32vBLQ",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-20T02:29:10.447Z",
+                "metadata": {
+                    "projectId": "example-project-10",
+                    "projectName": "example-project-10",
+                    "projectUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-10",
+                    "projectDescription": "",
+                    "userName": "oljgk.wcskuw",
+                    "userEmail": "drc.zsgwr@example.com",
+                    "oldRole": "no_access",
+                    "newRole": "admin"
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "kBJePOdb1f9kEkrUCavVA7pq",
+                "type": "enclave.project.access.group.create",
+                "title": "Activity Log: kBJePOdb1f9kEkrUCavVA7pq",
+                "text": "Added group <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/team/groups/42770628-a5a8-405f-86f8-2c6f0879f2bf\">example-group-4</a> to <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-18\">example-project-18</a> project with <strong>admin</strong> access",
+                "user": {
+                    "kind": "user",
+                    "slug": "5b65e514-9687-4cbc-8248-10388a7c634a",
+                    "email": "ghplqc.tcqxso@example.com",
+                    "name": "Olivia Walker",
+                    "username": "mpgxl.vzrqtt",
+                    "profile_image_url": "https://www.gravatar.com/avatar/05289ddbef9091bbcc3efcc17ec1518d?s=500&d=retro"
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=koxOkyhtgyM34vn0gTFruGGc",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-20T19:39:40.808Z",
+                "metadata": {
+                    "projectId": "example-project-18",
+                    "projectName": "example-project-18",
+                    "projectUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-18",
+                    "projectDescription": "example text 7",
+                    "groupId": "42770628-a5a8-405f-86f8-2c6f0879f2bf",
+                    "groupName": "example-group-4",
+                    "groupUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/team/groups/42770628-a5a8-405f-86f8-2c6f0879f2bf",
+                    "role": "admin"
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "m7W7E3ftwaedW8jHOJIMbtPT",
+                "type": "team.group.members.add",
+                "title": "Activity Log: m7W7E3ftwaedW8jHOJIMbtPT",
+                "text": "Added 1 member to the <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/team/groups/68e07718-1c9a-4d0a-833b-fb3966a2714e\">example-group-2</a> group<br>\u2022 <a class=\"text-purple-500 hover:underline\" title=\"cvmm.ywqgonv@example.com\" data-side=\"bottom\" rel=\"noopener\" href=\"mailto:cvmm.ywqgonv@example.com\">Sybil Miller</a>",
+                "user": {
+                    "kind": "apiToken",
+                    "slug": "c915d39e-f4ca-479b-843e-3f1199024ce8",
+                    "name": null,
+                    "type": {
+                        "id": "ngIMtcvKWzFWvMsVluzh",
+                        "name": "Dave Wilson"
+                    }
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=97Xa5D6RBDM09bLwVawIfGbf",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-20T17:01:48.497Z",
+                "metadata": {
+                    "groupId": "68e07718-1c9a-4d0a-833b-fb3966a2714e",
+                    "groupName": "example-group-2",
+                    "groupUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/team/groups/68e07718-1c9a-4d0a-833b-fb3966a2714e",
+                    "addedMembers": [
+                        {
+                            "name": "Sybil Miller",
+                            "email": "cvmm.ywqgonv@example.com"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "nzXovfNKOK837wck9ngWJjb5",
+                "type": "team.service_account.token.create",
+                "title": "Activity Log: nzXovfNKOK837wck9ngWJjb5",
+                "text": "Created token <strong>example-service-account-4</strong> for service account <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/team/service_accounts/93a82078-f0f9-4c2c-8e04-d2aec7ddece7\">Yusuf Thomas</a>",
+                "user": {
+                    "kind": "user",
+                    "slug": "ddd4d3ef-3951-48d9-8a8d-5f69aa34e9cb",
+                    "email": "lgffd.xqsjc@example.com",
+                    "name": "Ivan Anderson",
+                    "username": "lwbuuo.tlqoa",
+                    "profile_image_url": "https://www.gravatar.com/avatar/30d063df433305346af9e5020669319e?s=500&d=retro"
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=MwtgYglYXJ3uDpv4YkyjHKCG",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-11T20:12:43.104Z",
+                "metadata": {
+                    "serviceAccountId": "93a82078-f0f9-4c2c-8e04-d2aec7ddece7",
+                    "serviceAccountName": "example-service-account-3",
+                    "serviceAccountUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/team/service_accounts/93a82078-f0f9-4c2c-8e04-d2aec7ddece7",
+                    "serviceAccountTokenId": "f792413f-dc77-43cc-81f7-3ec28a64acf5",
+                    "serviceAccountTokenName": "example-service-account-4",
+                    "serviceAccountTokenApiKeyPreview": "b540be76b8cf"
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "AtJp92tfUiWoTR4GSf2icY0q",
+                "type": "custom_roles.create",
+                "title": "Activity Log: AtJp92tfUiWoTR4GSf2icY0q",
+                "text": "Created custom Workplace role \"Ivan Moore\" with 10 added:<br><br>\u2022 team<br>\u2022 service_accounts<br>\u2022 service_accounts_manage<br>\u2022 service_account_api_tokens<br>\u2022 service_account_api_tokens_manage<br>\u2022 service_account_identities<br>\u2022 service_account_identities_manage<br>\u2022 workplace_integrations_read<br>\u2022 workplace_integrations_list<br>\u2022 logs",
+                "user": {
+                    "kind": "user",
+                    "slug": "ddd4d3ef-3951-48d9-8a8d-5f69aa34e9cb",
+                    "email": "lgffd.xqsjc@example.com",
+                    "name": "Ivan Anderson",
+                    "username": "lwbuuo.tlqoa",
+                    "profile_image_url": "https://www.gravatar.com/avatar/30d063df433305346af9e5020669319e?s=500&d=retro"
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=JnPxIH35IhuaHWYcBeh30u7l",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-10T00:51:09.379Z",
+                "metadata": {
+                    "type": "workplace",
+                    "name": "Ivan Moore"
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "XXNFYIlNMK9CFWiDjOM3F6BG",
+                "type": "enclave.project.config.service_token.create",
+                "title": "Activity Log: XXNFYIlNMK9CFWiDjOM3F6BG",
+                "text": "Created read-only service token <strong>Peggy Brown</strong> for <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-4/configs/example-config-5/access\">example-config-5</a> config in <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-4\">example-project-4</a> project",
+                "user": {
+                    "kind": "user",
+                    "slug": "114caf52-672f-42e3-8bbc-b449cb77230e",
+                    "email": "jsyfhh.epfeniyl@example.com",
+                    "name": "Olivia Wilson",
+                    "username": "vtnjn.dyecyhqy",
+                    "profile_image_url": "https://www.gravatar.com/avatar/7565a917dabf5768a9078de19aa86dd8?s=500&d=retro"
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=YuBiphGENmSBCkd6jU2htOXU",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-20T22:55:20.404Z",
+                "metadata": {
+                    "projectId": "example-project-4",
+                    "projectName": "example-project-4",
+                    "projectUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-4",
+                    "projectDescription": "",
+                    "configName": "example-config-5",
+                    "configUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-4/configs/example-config-5",
+                    "readAccess": true,
+                    "writeAccess": false,
+                    "serviceTokenName": "Peggy Brown",
+                    "autoExpires": false
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "4cvRlbfAiCb9y90hudwltgf5",
+                "type": "team.seat.update",
+                "title": "Activity Log: 4cvRlbfAiCb9y90hudwltgf5",
+                "text": "Changed <a class=\"text-purple-500 hover:underline\" title=\"dhdot.kaf@example.com\" data-side=\"bottom\" rel=\"noopener\" href=\"mailto:dhdot.kaf@example.com\">Sybil Harris</a> access from <strong>colexample-config-14orator</strong> to <strong>create-projects</strong>",
+                "user": {
+                    "kind": "user",
+                    "slug": "ddd4d3ef-3951-48d9-8a8d-5f69aa34e9cb",
+                    "email": "lgffd.xqsjc@example.com",
+                    "name": "Ivan Anderson",
+                    "username": "lwbuuo.tlqoa",
+                    "profile_image_url": "https://www.gravatar.com/avatar/30d063df433305346af9e5020669319e?s=500&d=retro"
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=YuPCEz994R9aCYzZ5jCQsHbc",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-12T00:24:53.465Z",
+                "metadata": {
+                    "name": "Sybil Harris",
+                    "email": "dhdot.kaf@example.com",
+                    "oldWorkplaceRole": "collaborator",
+                    "newWorkplaceRole": "create-projects"
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "w0E1S3sJNIx5HuViRpEHDHCk",
+                "type": "billing.standing.update",
+                "title": "Activity Log: w0E1S3sJNIx5HuViRpEHDHCk",
+                "text": "Workplace example-project-38 is past due",
+                "user": {
+                    "kind": "bot",
+                    "slug": "doppler",
+                    "type": "doppler",
+                    "name": "Olivia Johnson",
+                    "username": "qwdto.mfvupn",
+                    "profile_image_url": "https://dashboard.doppler.com/imgs/logo_color.png",
+                    "is_bot": true
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=LrIdv09EcxDtYZkPsaHThmMi",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-21T19:14:16.249Z",
+                "metadata": {
+                    "oldBillingStanding": "Active",
+                    "newBillingStanding": "Past due"
+                }
+            }
+        },
+        {
+            "doppler": {
+                "source": "doppler",
+                "slug": "Impor4krcUWYrJYkKOxJQmxH",
+                "type": "enclave.project.environment.rename",
+                "title": "Activity Log: Impor4krcUWYrJYkKOxJQmxH",
+                "text": "Renamed environment from <strong>example-config-25 (example-config-6)</strong> to <strong>example-config-26 (example-config-24)</strong> in project <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" href=\"https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-10\">example-project-10</a>",
+                "user": {
+                    "kind": "user",
+                    "slug": "17696727-7136-41bc-88e8-865b4f75733b",
+                    "email": "apa.lbswep@example.com",
+                    "name": "Heidi Wilson",
+                    "username": "wbjts.pvshuo",
+                    "profile_image_url": "https://www.gravatar.com/avatar/09bb4b4d80df2562fb61b85c95780069?s=500&d=retro"
+                },
+                "link": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/logs?id=AmoEmLGuPthFOCb92E6j3YV7",
+                "workplace": {
+                    "id": "efbd98ca78c68ffdced3",
+                    "name": "Example Corp"
+                },
+                "createdAt": "2054-05-19T13:44:40.769Z",
+                "metadata": {
+                    "projectId": "example-project-10",
+                    "projectName": "example-project-10",
+                    "projectUrl": "https://dashboard.doppler.com/workplace/efbd98ca78c68ffdced3/projects/example-project-10",
+                    "projectDescription": "",
+                    "oldEnvironmentId": "prod",
+                    "newEnvironmentId": "example-config-24",
+                    "oldEnvironmentName": "example-config-25",
+                    "newEnvironmentName": "example-config-26"
+                }
+            }
+        }
+    ]
+}

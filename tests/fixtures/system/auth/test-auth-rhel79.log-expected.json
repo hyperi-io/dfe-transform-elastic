@@ -1,0 +1,51 @@
+{
+  "expected": [
+    {
+      "event": {
+        "original": "Oct 11 09:10:48 onnqnce useradd[25494]: failed adding user 'aol', exit code: 4"
+      },
+      "input.type": "log",
+      "message": "Oct 11 09:10:48 onnqnce useradd[25494]: failed adding user 'aol', exit code: 4"
+    },
+    {
+      "event": {
+        "original": "Oct 14 16:49:59 doyu userdel[1619336]: delete user 'jce'"
+      },
+      "input.type": "log",
+      "message": "Oct 14 16:49:59 doyu userdel[1619336]: delete user 'jce'"
+    },
+    {
+      "event": {
+        "original": "Oct 19 12:54:40 jlnfrg0 usermod[7730]: change user 'acris' expiration from '2029-01-01' to '2243-10-16'"
+      },
+      "input.type": "log",
+      "message": "Oct 19 12:54:40 jlnfrg0 usermod[7730]: change user 'acris' expiration from '2029-01-01' to '2243-10-16'"
+    }
+  ],
+  "input": [
+    {
+      "input.type": "log",
+      "message": "Oct 11 09:10:48 onnqnce useradd[25494]: failed adding user 'aol', exit code: 4"
+    },
+    {
+      "input.type": "log",
+      "message": "Oct 14 16:49:59 doyu userdel[1619336]: delete user 'jce'"
+    },
+    {
+      "input.type": "log",
+      "message": "Oct 19 12:54:40 jlnfrg0 usermod[7730]: change user 'acris' expiration from '2029-01-01' to '2243-10-16'"
+    }
+  ],
+  "meta": {
+    "data_stream": "auth",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}Z$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-auth-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

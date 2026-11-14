@@ -1,0 +1,63 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:08:03.991Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "ephemeral_id": "ad692b7c-3b66-4c65-8421-a7a4d5f08bbd",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "winlog": {
+                "event_data": {
+                    "TicketOptions": "0x40810010",
+                    "Status": "0x12",
+                    "PreAuthType": "0",
+                    "IpAddress": "::ffff:192.168.120.216",
+                    "IpPort": "53366",
+                    "TargetUserName": "RJKHT",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-3057",
+                    "ServiceName": "krbtgt/test.saas"
+                },
+                "channel": "Security",
+                "event_id": 4771,
+                "record_id": 5027836,
+                "outcome": "failure",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2048-03-31T07:50:27.168Z",
+                "level": "information",
+                "process": {
+                    "pid": 496,
+                    "thread": {
+                        "id": 4552
+                    }
+                },
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "keywords": [
+                    "Audit Failure"
+                ],
+                "opcode": "Info"
+            },
+            "event": {
+                "code": 4771,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "failure",
+                "kind": "event"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4771.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

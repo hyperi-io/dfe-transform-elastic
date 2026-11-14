@@ -1,0 +1,535 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-18T11:11:00.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<134> 11/18/2052:11:11:00 GMT DCLVNSGP001 0-PPE-1 : default SSLVPN HTTPREQUEST 12345678 0 : [TECHSUPPORT][ENUMERATION] mqyf.gyg.com User xnhd@gyg.com : Group(s) N/A : Vserver 0.0.0.0:300 - 09/04/2053:18:24:45 GMT : Message = SSO is OFF : GET /path/path.xml - -",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "[TECHSUPPORT][ENUMERATION] mqyf.gyg.com User xnhd@gyg.com : Group(s) N/A : Vserver 0.0.0.0:300 - 09/04/2053:18:24:45 GMT : Message = SSO is OFF : GET /path/path.xml - -"
+        },
+        "host": "DCLVNSGP001",
+        "name": "HTTPREQUEST"
+      },
+      "citrix_adc": {
+        "log": {
+          "groups": "N/A",
+          "hostname": "mqyf.gyg.com",
+          "message": "[TECHSUPPORT][ENUMERATION] mqyf.gyg.com User xnhd@gyg.com : Group(s) N/A : Vserver 0.0.0.0:300 - 09/04/2053:18:24:45 GMT : Message = SSO is OFF : GET /path/path.xml - -",
+          "method": "GET",
+          "request": {
+            "path": "/path/path.xml"
+          },
+          "sso_status": "OFF",
+          "timestamp": "2053-09-04T18:24:45.000Z",
+          "timezone": "GMT",
+          "user": "xnhd@gyg.com",
+          "vserver": {
+            "ip": "0.0.0.0",
+            "port": 300
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "12345678",
+        "kind": "event",
+        "original": "<134> 11/18/2052:11:11:00 GMT DCLVNSGP001 0-PPE-1 : default SSLVPN HTTPREQUEST 12345678 0 : [TECHSUPPORT][ENUMERATION] mqyf.gyg.com User xnhd@gyg.com : Group(s) N/A : Vserver 0.0.0.0:300 - 09/04/2053:18:24:45 GMT : Message = SSO is OFF : GET /path/path.xml - -",
+        "severity": 0,
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "N/A"
+      },
+      "observer": {
+        "hostname": "DCLVNSGP001",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "0.0.0.0"
+        ],
+        "user": [
+          "xnhd",
+          "xnhd@gyg.com"
+        ]
+      },
+      "server": {
+        "ip": "0.0.0.0",
+        "port": 300
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "mqyf.gyg.com"
+      },
+      "user": {
+        "domain": "gyg.com",
+        "email": "xnhd@gyg.com",
+        "name": "xnhd"
+      }
+    },
+    {
+      "@timestamp": "2053-09-04T18:24:36.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<134> 09/04/2053:18:24:36 GMT DCLVNSGP001 0-PPE-6 : default SSLVPN UDPFLOWSTAT 58680561 0 : [TECHSUPPORT] User username.example.com - Client_ip 192.0.2.87 - Nat_ip 203.0.113.88 - Vserver 198.51.100.166:443 - Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - Start_time \"09/09/2052:20:44:03 GMT\" - End_time \"09/09/2052:20:46:06 GMT\" - Duration 00:05:53  - Total_bytes_send 656 - Total_bytes_recv 2456 - Access Allowed - Group(s) \"N/A\"",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "[TECHSUPPORT] User username.example.com - Client_ip 192.0.2.87 - Nat_ip 203.0.113.88 - Vserver 198.51.100.166:443 - Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - Start_time \"09/09/2052:20:44:03 GMT\" - End_time \"09/09/2052:20:46:06 GMT\" - Duration 00:05:53  - Total_bytes_send 656 - Total_bytes_recv 2456 - Access Allowed - Group(s) \"N/A\""
+        },
+        "host": "DCLVNSGP001",
+        "name": "UDPFLOWSTAT"
+      },
+      "citrix_adc": {
+        "log": {
+          "access": "Allowed",
+          "client_ip": "192.0.2.87",
+          "destination": {
+            "ip": "203.0.113.75",
+            "port": 53
+          },
+          "duration": "00:05:53 ",
+          "end_time": "2052-09-09T20:46:06.000Z",
+          "groups": "N/A",
+          "message": "[TECHSUPPORT] User username.example.com - Client_ip 192.0.2.87 - Nat_ip 203.0.113.88 - Vserver 198.51.100.166:443 - Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - Start_time \"09/09/2052:20:44:03 GMT\" - End_time \"09/09/2052:20:46:06 GMT\" - Duration 00:05:53  - Total_bytes_send 656 - Total_bytes_recv 2456 - Access Allowed - Group(s) \"N/A\"",
+          "nat": {
+            "ip": "203.0.113.88"
+          },
+          "source": {
+            "ip": "198.51.100.102",
+            "port": 63685
+          },
+          "start_time": "2052-09-09T20:44:03.000Z",
+          "total_bytes_received": 2456,
+          "total_bytes_send": 656,
+          "user": "username.example.com",
+          "vserver": {
+            "ip": "198.51.100.166",
+            "port": 443
+          }
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87"
+      },
+      "destination": {
+        "bytes": 2456,
+        "ip": "203.0.113.75",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "duration": 123000000000,
+        "end": "2052-09-09T20:46:06.000Z",
+        "id": "58680561",
+        "kind": "event",
+        "original": "<134> 09/04/2053:18:24:36 GMT DCLVNSGP001 0-PPE-6 : default SSLVPN UDPFLOWSTAT 58680561 0 : [TECHSUPPORT] User username.example.com - Client_ip 192.0.2.87 - Nat_ip 203.0.113.88 - Vserver 198.51.100.166:443 - Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - Start_time \"09/09/2052:20:44:03 GMT\" - End_time \"09/09/2052:20:46:06 GMT\" - Duration 00:05:53  - Total_bytes_send 656 - Total_bytes_recv 2456 - Access Allowed - Group(s) \"N/A\"",
+        "severity": 0,
+        "start": "2052-09-09T20:44:03.000Z",
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "name": "N/A"
+      },
+      "observer": {
+        "hostname": "DCLVNSGP001",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.102",
+          "203.0.113.75",
+          "203.0.113.88",
+          "198.51.100.166",
+          "192.0.2.87"
+        ],
+        "user": [
+          "username.example.com"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.166",
+        "port": 443
+      },
+      "source": {
+        "bytes": 656,
+        "ip": "198.51.100.102",
+        "nat": {
+          "ip": "203.0.113.88"
+        },
+        "port": 63685
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "username.example.com"
+      }
+    },
+    {
+      "@timestamp": "2053-10-03T14:06:57.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> 10/03/2053:14:06:57 GMT PRODSYST001 0-PPE-4 : default SSLVPN CLISEC_EXP_EVAL 249891628 0 : CaseID cbed1: - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client security check CLIENT.APPLICATION('ANTIVIR_9398_3882_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS PASSED(0) on the client machine",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "CaseID cbed1: - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client security check CLIENT.APPLICATION('ANTIVIR_9398_3882_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS PASSED(0) on the client machine"
+        },
+        "host": "PRODSYST001",
+        "name": "CLISEC_EXP_EVAL"
+      },
+      "citrix_adc": {
+        "log": {
+          "client_ip": "192.0.2.0",
+          "client_security_check_status": "PASSED(0)",
+          "message": "CaseID cbed1: - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client security check CLIENT.APPLICATION('ANTIVIR_9398_3882_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS PASSED(0) on the client machine",
+          "vserver": {
+            "ip": "198.51.100.2",
+            "port": 443
+          }
+        }
+      },
+      "client": {
+        "ip": "192.0.2.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "249891628",
+        "kind": "event",
+        "original": "<135> 10/03/2053:14:06:57 GMT PRODSYST001 0-PPE-4 : default SSLVPN CLISEC_EXP_EVAL 249891628 0 : CaseID cbed1: - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client security check CLIENT.APPLICATION('ANTIVIR_9398_3882_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS PASSED(0) on the client machine",
+        "severity": 0,
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "hostname": "PRODSYST001",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.2",
+          "192.0.2.0"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.2",
+        "port": 443
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-10-03T14:06:57.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> 10/03/2053:14:06:57 GMT PRODSYST001 0-PPE-4 : default SSLVPN CLISEC_EXP_EVAL 249891629 0 :  CaseID cbed1: - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client security check CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS PASSED(0) on the client machine",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "CaseID cbed1: - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client security check CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS PASSED(0) on the client machine"
+        },
+        "host": "PRODSYST001",
+        "name": "CLISEC_EXP_EVAL"
+      },
+      "citrix_adc": {
+        "log": {
+          "client_ip": "192.0.2.0",
+          "client_security_check_status": "PASSED(0)",
+          "message": "CaseID cbed1: - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client security check CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS PASSED(0) on the client machine",
+          "vserver": {
+            "ip": "198.51.100.2",
+            "port": 443
+          }
+        }
+      },
+      "client": {
+        "ip": "192.0.2.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "249891629",
+        "kind": "event",
+        "original": "<135> 10/03/2053:14:06:57 GMT PRODSYST001 0-PPE-4 : default SSLVPN CLISEC_EXP_EVAL 249891629 0 :  CaseID cbed1: - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client security check CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS PASSED(0) on the client machine",
+        "severity": 0,
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "hostname": "PRODSYST001",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.2",
+          "192.0.2.0"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.2",
+        "port": 443
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-10-03T13:52:23.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<135> 10/03/2053:13:52:23 GMT PRODSYST001 0-PPE-7 : default SSLVPN CLISEC_CHECK 248708109 0 :  CaseID: f0ce9 - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client_security_expression \"CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS\" - Client_security_check passed",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "CaseID: f0ce9 - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client_security_expression \"CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS\" - Client_security_check passed"
+        },
+        "host": "PRODSYST001",
+        "name": "CLISEC_CHECK"
+      },
+      "citrix_adc": {
+        "log": {
+          "client_ip": "192.0.2.0",
+          "client_security_check_status": "passed",
+          "client_security_expression": "CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS",
+          "message": "CaseID: f0ce9 - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client_security_expression \"CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS\" - Client_security_check passed",
+          "vserver": {
+            "ip": "198.51.100.2",
+            "port": 443
+          }
+        }
+      },
+      "client": {
+        "ip": "192.0.2.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "248708109",
+        "kind": "event",
+        "original": "<135> 10/03/2053:13:52:23 GMT PRODSYST001 0-PPE-7 : default SSLVPN CLISEC_CHECK 248708109 0 :  CaseID: f0ce9 - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client_security_expression \"CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS\" - Client_security_check passed",
+        "severity": 0,
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "hostname": "PRODSYST001",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.2",
+          "192.0.2.0"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.2",
+        "port": 443
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-10-16T18:14:20.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<131> 10/16/2053:18:14:20 GMT PRODSYST001 0-PPE-7 : default SSLVPN CLISEC_CHECK 71780673 0 :  CaseID: 847e8 - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client_security_expression \"CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS\" - Client_security_check \"Failed - User not allowed to login\"",
+        "device_event_class_id": "SSLVPN",
+        "extended": {
+          "message": "CaseID: 847e8 - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client_security_expression \"CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS\" - Client_security_check \"Failed - User not allowed to login\""
+        },
+        "host": "PRODSYST001",
+        "name": "CLISEC_CHECK"
+      },
+      "citrix_adc": {
+        "log": {
+          "client_ip": "192.0.2.0",
+          "client_security_check_status": "Failed - User not allowed to login",
+          "client_security_expression": "CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS",
+          "message": "CaseID: 847e8 - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client_security_expression \"CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS\" - Client_security_check \"Failed - User not allowed to login\"",
+          "vserver": {
+            "ip": "198.51.100.2",
+            "port": 443
+          }
+        }
+      },
+      "client": {
+        "ip": "192.0.2.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "71780673",
+        "kind": "event",
+        "original": "<131> 10/16/2053:18:14:20 GMT PRODSYST001 0-PPE-7 : default SSLVPN CLISEC_CHECK 71780673 0 :  CaseID: 847e8 - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client_security_expression \"CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS\" - Client_security_check \"Failed - User not allowed to login\"",
+        "severity": 0,
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "hostname": "PRODSYST001",
+        "product": "Netscaler",
+        "type": "firewall",
+        "vendor": "Citrix"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.2",
+          "192.0.2.0"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.2",
+        "port": 443
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<134> 11/18/2052:11:11:00 GMT DCLVNSGP001 0-PPE-1 : default SSLVPN HTTPREQUEST 12345678 0 : [TECHSUPPORT][ENUMERATION] mqyf.gyg.com User xnhd@gyg.com : Group(s) N/A : Vserver 0.0.0.0:300 - 09/04/2053:18:24:45 GMT : Message = SSO is OFF : GET /path/path.xml - -",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<134> 09/04/2053:18:24:36 GMT DCLVNSGP001 0-PPE-6 : default SSLVPN UDPFLOWSTAT 58680561 0 : [TECHSUPPORT] User username.example.com - Client_ip 192.0.2.87 - Nat_ip 203.0.113.88 - Vserver 198.51.100.166:443 - Source 198.51.100.102:63685 - Destination 203.0.113.75:53 - Start_time \"09/09/2052:20:44:03 GMT\" - End_time \"09/09/2052:20:46:06 GMT\" - Duration 00:05:53  - Total_bytes_send 656 - Total_bytes_recv 2456 - Access Allowed - Group(s) \"N/A\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> 10/03/2053:14:06:57 GMT PRODSYST001 0-PPE-4 : default SSLVPN CLISEC_EXP_EVAL 249891628 0 : CaseID cbed1: - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client security check CLIENT.APPLICATION('ANTIVIR_9398_3882_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS PASSED(0) on the client machine",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> 10/03/2053:14:06:57 GMT PRODSYST001 0-PPE-4 : default SSLVPN CLISEC_EXP_EVAL 249891629 0 :  CaseID cbed1: - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client security check CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS PASSED(0) on the client machine",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<135> 10/03/2053:13:52:23 GMT PRODSYST001 0-PPE-7 : default SSLVPN CLISEC_CHECK 248708109 0 :  CaseID: f0ce9 - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client_security_expression \"CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS\" - Client_security_check passed",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<131> 10/16/2053:18:14:20 GMT PRODSYST001 0-PPE-7 : default SSLVPN CLISEC_CHECK 71780673 0 :  CaseID: 847e8 - Client IP 192.0.2.0 - Vserver 198.51.100.2:443 - Client_security_expression \"CLIENT.SYSTEM('DOMAIN_SUFFIX_anyof_example.com.jp[COMMENT: Domain check]') EXISTS && CLIENT.APPLICATION('ANTIVIR_1346_3064_RTP_==_TRUE[COMMENT: Cortex XDR]') EXISTS\" - Client_security_check \"Failed - User not allowed to login\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "url.extension": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-citrix_adc-log-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "citrix_adc",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"category_id\":1,\"cybox\":{\"files\":[{\"attribute_ids\":[1,2,3,4,5,6,7,8,9,10],\"attributes\":12345678901,\"signature_value_ids\":[0],\"size\":12345678901,\"type_id\":1},{\"attributes\":12345678902,\"attribute_ids\":[10],\"signature_value_ids\":[1,2],\"size\":12345678902}]},\"is_user_present\":false,\"type_id\":8020}"
+      },
+      "file": {
+        "attributes": [
+          "encrypted",
+          "hidden",
+          "readonly",
+          "archive",
+          "compressed",
+          "directory"
+        ],
+        "size": [
+          12345678901,
+          12345678902
+        ],
+        "type": [
+          "file"
+        ]
+      },
+      "ses": {
+        "category_id": "1",
+        "category_name": "Security",
+        "cybox": {
+          "files": [
+            {
+              "attribute_ids": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10"
+              ],
+              "attributes": 12345678901,
+              "signature_value_ids": [
+                "0"
+              ],
+              "size": 12345678901,
+              "type_id": "1"
+            },
+            {
+              "attribute_ids": [
+                "10"
+              ],
+              "attributes": 12345678902,
+              "signature_value_ids": [
+                "1",
+                "2"
+              ],
+              "size": 12345678902
+            }
+          ]
+        },
+        "is_user_present": false,
+        "type_id": "8020"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category_id\":1,\"cybox\":{\"files\":[{\"attribute_ids\":[1,2,3,4,5,6,7,8,9,10],\"attributes\":12345678901,\"signature_value_ids\":[0],\"size\":12345678901,\"type_id\":1},{\"attributes\":12345678902,\"attribute_ids\":[10],\"signature_value_ids\":[1,2],\"size\":12345678902}]},\"is_user_present\":false,\"type_id\":8020}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint_security-event-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [
+      "winlog.event_id"
+    ],
+    "package": "symantec_endpoint_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

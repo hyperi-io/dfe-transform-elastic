@@ -1,0 +1,227 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2025-03-11T00:51:41.000Z",
+      "axonius": {
+        "ticket": {
+          "accurate_for_datetime": "2025-11-12T00:02:19.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "axonius_findings_adapter"
+          ],
+          "application_and_account_name": "chef/chef-demo",
+          "category": "Hardware",
+          "display_id": "INC5904384",
+          "event": {
+            "accurate_for_datetime": "2025-11-12T00:02:19.000Z",
+            "adapter_categories": [
+              "Cloud Infra",
+              "Containers",
+              "Virtualization"
+            ],
+            "client_used": "67fd09bdfe1c8e812a176bbd",
+            "initial_plugin_unique_name": "chef_adapter_0",
+            "plugin_name": "chef_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "chef_adapter_0",
+            "quick_id": "chef_adapter_0!fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-11-12T00:02:18.000Z",
+          "first_fetch_time": "2025-11-12T00:02:18.000Z",
+          "from_last_fetch": true,
+          "id": "fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com",
+          "internal_axon_id": "161123c1974e19e60d0b32bcc4c401af",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09bdfe1c8e812a176bbd",
+          "last_fetch_connection_label": "chef-demo",
+          "not_fetched_count": 0,
+          "priority": "4 - Low",
+          "reporter": "Glenda Wilgus",
+          "source_application": "Chef",
+          "status": "closed",
+          "summary": "Access Reviewer",
+          "sys_class_name": "incident",
+          "tenant_number": [
+            3
+          ],
+          "ticket_id": "ef7531ea-0590-4a50-9276-2e09e81726c0",
+          "transform_unique_id": "WIvIO10YbDeF1XGVdSQtIixL5NY=",
+          "type": "SaasApplications"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "created": "2018-12-06T19:11:27.000Z",
+        "end": "2018-12-06T19:11:27.000Z",
+        "kind": "event",
+        "original": "{\"adapter_list_length\":1,\"adapters\":[\"axonius_findings_adapter\"],\"internal_axon_id\":\"161123c1974e19e60d0b32bcc4c401af\",\"event\":{\"accurate_for_datetime\":\"Wed, 12 Nov 2025 00:02:19 GMT\",\"adapter_categories\":[\"Cloud Infra\",\"Containers\",\"Virtualization\"],\"client_used\":\"67fd09bdfe1c8e812a176bbd\",\"data\":{\"accurate_for_datetime\":\"Wed, 12 Nov 2025 00:02:19 GMT\",\"application_and_account_name\":\"chef\\/chef-demo\",\"category\":\"Hardware\",\"closed\":\"Mon,06 Dec 2018 19:11:27 GMT\",\"created\":\"Mon,06 Dec 2018 19:11:27 GMT\",\"description\":\"Zoom is a software company that offers a communications platform that connects people through video, voice, chat, and content sharing.)\",\"display_id\":\"INC5904384\",\"fetch_time\":\"Wed, 12 Nov 2025 00:02:18 GMT\",\"first_fetch_time\":\"Wed, 12 Nov 2025 00:02:18 GMT\",\"from_last_fetch\":true,\"id\":\"fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09bdfe1c8e812a176bbd\",\"last_fetch_connection_label\":\"chef-demo\",\"not_fetched_count\":0,\"priority\":\"4 - Low\",\"reporter\":\"Glenda Wilgus\",\"source_application\":\"Chef\",\"status\":\"closed\",\"summary\":\"Access Reviewer\",\"sys_class_name\":\"incident\",\"tenant_number\":[\"3\"],\"ticket_id\":\"ef7531ea-0590-4a50-9276-2e09e81726c0\",\"type\":\"SaasApplications\",\"updated\":\"Tue, 11 Mar 2025 00:51:41 GMT\"},\"initial_plugin_unique_name\":\"chef_adapter_0\",\"plugin_name\":\"chef_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"chef_adapter_0\",\"quick_id\":\"chef_adapter_0!fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com\",\"type\":\"entitydata\"}}"
+      },
+      "message": "Zoom is a software company that offers a communications platform that connects people through video, voice, chat, and content sharing.)",
+      "related": {
+        "user": [
+          "Glenda Wilgus"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2025-04-14T03:04:11.000Z",
+      "axonius": {
+        "ticket": {
+          "accurate_for_datetime": "2025-12-03T12:03:13.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "service_now_adapter"
+          ],
+          "application_and_account_name": "servicenow/servicenow-dev",
+          "asset_type": "tickets",
+          "category": "Access Reviewer",
+          "display_id": "INC5904384",
+          "event": {
+            "accurate_for_datetime": "2025-12-03T12:03:13.000Z",
+            "adapter_categories": [
+              "CMDB",
+              "ITAM/ITSM",
+              "Ticketing",
+              "SaaS Management"
+            ],
+            "client_used": "67fd0999fe1c8e812a176ba2",
+            "initial_plugin_unique_name": "service_now_adapter_0",
+            "plugin_name": "service_now_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "service_now_adapter_0",
+            "quick_id": "service_now_adapter_0!ef7531ea-0590-4a50-9276-2e09e81726c0",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-12-03T12:03:06.000Z",
+          "first_fetch_time": "2025-08-30T12:00:42.000Z",
+          "from_last_fetch": true,
+          "id": "ef7531ea-0590-4a50-9276-2e09e81726c0",
+          "internal_axon_id": "43b322c66b06d134b0d4ad209c12f0c5",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd0999fe1c8e812a176ba2",
+          "last_fetch_connection_label": "servicenow-dev",
+          "not_fetched_count": 0,
+          "priority": "2 - High",
+          "reporter": "Glenda Wilgus",
+          "source_application": "ServiceNow",
+          "status": "Resolved",
+          "summary": "Access Reviewer",
+          "sys_class_name": "incident",
+          "tenant_number": [
+            2
+          ],
+          "ticket_id": "ef7531ea-0590-4a50-9276-2e09e81726c0",
+          "transform_unique_id": "DU+ijpGsx6eF2hiElEchYLOgp3M=",
+          "type": "Tickets"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "created": "2025-04-06T08:04:11.000Z",
+        "end": "2025-04-14T03:04:11.000Z",
+        "kind": "event",
+        "original": "{\"internal_axon_id\":\"43b322c66b06d134b0d4ad209c12f0c5\",\"adapters\":[\"service_now_adapter\"],\"asset_type\":\"tickets\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Wed, 03 Dec 2025 12:03:13 GMT\",\"adapter_categories\":[\"CMDB\",\"ITAM\\/ITSM\",\"Ticketing\",\"SaaS Management\"],\"client_used\":\"67fd0999fe1c8e812a176ba2\",\"data\":{\"accurate_for_datetime\":\"Wed, 03 Dec 2025 12:03:13 GMT\",\"application_and_account_name\":\"servicenow\\/servicenow-dev\",\"category\":\"Access Reviewer\",\"closed\":\"Mon, 14 Apr 2025 03:04:11 GMT\",\"created\":\"Sun, 06 Apr 2025 08:04:11 GMT\",\"description\":\"Access Reviewer - Needs handling\",\"display_id\":\"INC5904384\",\"fetch_time\":\"Wed, 03 Dec 2025 12:03:06 GMT\",\"first_fetch_time\":\"Sat, 30 Aug 2025 12:00:42 GMT\",\"from_last_fetch\":true,\"id\":\"ef7531ea-0590-4a50-9276-2e09e81726c0\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd0999fe1c8e812a176ba2\",\"last_fetch_connection_label\":\"servicenow-dev\",\"not_fetched_count\":0,\"priority\":\"2 - High\",\"reporter\":\"Glenda Wilgus\",\"source_application\":\"ServiceNow\",\"status\":\"Resolved\",\"summary\":\"Access Reviewer\",\"sys_class_name\":\"incident\",\"tenant_number\":[\"2\"],\"ticket_id\":\"ef7531ea-0590-4a50-9276-2e09e81726c0\",\"type\":\"Tickets\",\"updated\":\"Mon, 14 Apr 2025 03:04:11 GMT\"},\"initial_plugin_unique_name\":\"service_now_adapter_0\",\"plugin_name\":\"service_now_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"service_now_adapter_0\",\"quick_id\":\"service_now_adapter_0!ef7531ea-0590-4a50-9276-2e09e81726c0\",\"type\":\"entitydata\"}}"
+      },
+      "message": "Access Reviewer - Needs handling",
+      "related": {
+        "user": [
+          "Glenda Wilgus"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2025-04-11T13:06:24.000Z",
+      "axonius": {
+        "ticket": {
+          "accurate_for_datetime": "2025-12-03T12:03:13.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "service_now_adapter"
+          ],
+          "application_and_account_name": "servicenow/servicenow-dev",
+          "asset_type": "tickets",
+          "category": "Access Reviewer",
+          "display_id": "INC4345511",
+          "event": {
+            "accurate_for_datetime": "2025-12-03T12:03:13.000Z",
+            "adapter_categories": [
+              "CMDB",
+              "ITAM/ITSM",
+              "Ticketing",
+              "SaaS Management"
+            ],
+            "client_used": "67fd0999fe1c8e812a176ba2",
+            "initial_plugin_unique_name": "service_now_adapter_0",
+            "plugin_name": "service_now_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "service_now_adapter_0",
+            "quick_id": "service_now_adapter_0!bdf68eb6-c303-4209-9390-fbe2eb2f6489",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-12-03T12:03:06.000Z",
+          "first_fetch_time": "2025-08-30T12:00:42.000Z",
+          "from_last_fetch": true,
+          "id": "bdf68eb6-c303-4209-9390-fbe2eb2f6489",
+          "internal_axon_id": "1dc2256852c5d5b1117606b198479a1a",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd0999fe1c8e812a176ba2",
+          "last_fetch_connection_label": "servicenow-dev",
+          "not_fetched_count": 0,
+          "priority": "3 - Moderate",
+          "reporter": "Julie Donohue",
+          "source_application": "ServiceNow",
+          "status": "Resolved",
+          "summary": "Access Reviewer",
+          "sys_class_name": "incident",
+          "tenant_number": [
+            2
+          ],
+          "ticket_id": "bdf68eb6-c303-4209-9390-fbe2eb2f6489",
+          "transform_unique_id": "ZRDPI4t9n4nuLYs4RHfJITUXGXY=",
+          "type": "Tickets"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "created": "2025-02-10T08:06:24.000Z",
+        "end": "2025-04-11T13:06:24.000Z",
+        "kind": "event",
+        "original": "{\"internal_axon_id\":\"1dc2256852c5d5b1117606b198479a1a\",\"adapters\":[\"service_now_adapter\"],\"asset_type\":\"tickets\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Wed, 03 Dec 2025 12:03:13 GMT\",\"adapter_categories\":[\"CMDB\",\"ITAM\\/ITSM\",\"Ticketing\",\"SaaS Management\"],\"client_used\":\"67fd0999fe1c8e812a176ba2\",\"data\":{\"accurate_for_datetime\":\"Wed, 03 Dec 2025 12:03:13 GMT\",\"application_and_account_name\":\"servicenow\\/servicenow-dev\",\"category\":\"Access Reviewer\",\"closed\":\"Fri, 11 Apr 2025 13:06:24 GMT\",\"created\":\"Mon, 10 Feb 2025 08:06:24 GMT\",\"description\":\"Access Reviewer - Please address\",\"display_id\":\"INC4345511\",\"fetch_time\":\"Wed, 03 Dec 2025 12:03:06 GMT\",\"first_fetch_time\":\"Sat, 30 Aug 2025 12:00:42 GMT\",\"from_last_fetch\":true,\"id\":\"bdf68eb6-c303-4209-9390-fbe2eb2f6489\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd0999fe1c8e812a176ba2\",\"last_fetch_connection_label\":\"servicenow-dev\",\"not_fetched_count\":0,\"priority\":\"3 - Moderate\",\"reporter\":\"Julie Donohue\",\"source_application\":\"ServiceNow\",\"status\":\"Resolved\",\"summary\":\"Access Reviewer\",\"sys_class_name\":\"incident\",\"tenant_number\":[\"2\"],\"ticket_id\":\"bdf68eb6-c303-4209-9390-fbe2eb2f6489\",\"type\":\"Tickets\",\"updated\":\"Fri, 11 Apr 2025 13:06:24 GMT\"},\"initial_plugin_unique_name\":\"service_now_adapter_0\",\"plugin_name\":\"service_now_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"service_now_adapter_0\",\"quick_id\":\"service_now_adapter_0!bdf68eb6-c303-4209-9390-fbe2eb2f6489\",\"type\":\"entitydata\"}}"
+      },
+      "message": "Access Reviewer - Please address",
+      "related": {
+        "user": [
+          "Julie Donohue"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"adapter_list_length\":1,\"adapters\":[\"axonius_findings_adapter\"],\"internal_axon_id\":\"161123c1974e19e60d0b32bcc4c401af\",\"event\":{\"accurate_for_datetime\":\"Wed, 12 Nov 2025 00:02:19 GMT\",\"adapter_categories\":[\"Cloud Infra\",\"Containers\",\"Virtualization\"],\"client_used\":\"67fd09bdfe1c8e812a176bbd\",\"data\":{\"accurate_for_datetime\":\"Wed, 12 Nov 2025 00:02:19 GMT\",\"application_and_account_name\":\"chef\\/chef-demo\",\"category\":\"Hardware\",\"closed\":\"Mon,06 Dec 2018 19:11:27 GMT\",\"created\":\"Mon,06 Dec 2018 19:11:27 GMT\",\"description\":\"Zoom is a software company that offers a communications platform that connects people through video, voice, chat, and content sharing.)\",\"display_id\":\"INC5904384\",\"fetch_time\":\"Wed, 12 Nov 2025 00:02:18 GMT\",\"first_fetch_time\":\"Wed, 12 Nov 2025 00:02:18 GMT\",\"from_last_fetch\":true,\"id\":\"fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09bdfe1c8e812a176bbd\",\"last_fetch_connection_label\":\"chef-demo\",\"not_fetched_count\":0,\"priority\":\"4 - Low\",\"reporter\":\"Glenda Wilgus\",\"source_application\":\"Chef\",\"status\":\"closed\",\"summary\":\"Access Reviewer\",\"sys_class_name\":\"incident\",\"tenant_number\":[\"3\"],\"ticket_id\":\"ef7531ea-0590-4a50-9276-2e09e81726c0\",\"type\":\"SaasApplications\",\"updated\":\"Tue, 11 Mar 2025 00:51:41 GMT\"},\"initial_plugin_unique_name\":\"chef_adapter_0\",\"plugin_name\":\"chef_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"chef_adapter_0\",\"quick_id\":\"chef_adapter_0!fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com\",\"type\":\"entitydata\"}}"
+    },
+    {
+      "message": "{\"internal_axon_id\":\"43b322c66b06d134b0d4ad209c12f0c5\",\"adapters\":[\"service_now_adapter\"],\"asset_type\":\"tickets\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Wed, 03 Dec 2025 12:03:13 GMT\",\"adapter_categories\":[\"CMDB\",\"ITAM\\/ITSM\",\"Ticketing\",\"SaaS Management\"],\"client_used\":\"67fd0999fe1c8e812a176ba2\",\"data\":{\"accurate_for_datetime\":\"Wed, 03 Dec 2025 12:03:13 GMT\",\"application_and_account_name\":\"servicenow\\/servicenow-dev\",\"category\":\"Access Reviewer\",\"closed\":\"Mon, 14 Apr 2025 03:04:11 GMT\",\"created\":\"Sun, 06 Apr 2025 08:04:11 GMT\",\"description\":\"Access Reviewer - Needs handling\",\"display_id\":\"INC5904384\",\"fetch_time\":\"Wed, 03 Dec 2025 12:03:06 GMT\",\"first_fetch_time\":\"Sat, 30 Aug 2025 12:00:42 GMT\",\"from_last_fetch\":true,\"id\":\"ef7531ea-0590-4a50-9276-2e09e81726c0\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd0999fe1c8e812a176ba2\",\"last_fetch_connection_label\":\"servicenow-dev\",\"not_fetched_count\":0,\"priority\":\"2 - High\",\"reporter\":\"Glenda Wilgus\",\"source_application\":\"ServiceNow\",\"status\":\"Resolved\",\"summary\":\"Access Reviewer\",\"sys_class_name\":\"incident\",\"tenant_number\":[\"2\"],\"ticket_id\":\"ef7531ea-0590-4a50-9276-2e09e81726c0\",\"type\":\"Tickets\",\"updated\":\"Mon, 14 Apr 2025 03:04:11 GMT\"},\"initial_plugin_unique_name\":\"service_now_adapter_0\",\"plugin_name\":\"service_now_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"service_now_adapter_0\",\"quick_id\":\"service_now_adapter_0!ef7531ea-0590-4a50-9276-2e09e81726c0\",\"type\":\"entitydata\"}}"
+    },
+    {
+      "message": "{\"internal_axon_id\":\"1dc2256852c5d5b1117606b198479a1a\",\"adapters\":[\"service_now_adapter\"],\"asset_type\":\"tickets\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Wed, 03 Dec 2025 12:03:13 GMT\",\"adapter_categories\":[\"CMDB\",\"ITAM\\/ITSM\",\"Ticketing\",\"SaaS Management\"],\"client_used\":\"67fd0999fe1c8e812a176ba2\",\"data\":{\"accurate_for_datetime\":\"Wed, 03 Dec 2025 12:03:13 GMT\",\"application_and_account_name\":\"servicenow\\/servicenow-dev\",\"category\":\"Access Reviewer\",\"closed\":\"Fri, 11 Apr 2025 13:06:24 GMT\",\"created\":\"Mon, 10 Feb 2025 08:06:24 GMT\",\"description\":\"Access Reviewer - Please address\",\"display_id\":\"INC4345511\",\"fetch_time\":\"Wed, 03 Dec 2025 12:03:06 GMT\",\"first_fetch_time\":\"Sat, 30 Aug 2025 12:00:42 GMT\",\"from_last_fetch\":true,\"id\":\"bdf68eb6-c303-4209-9390-fbe2eb2f6489\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd0999fe1c8e812a176ba2\",\"last_fetch_connection_label\":\"servicenow-dev\",\"not_fetched_count\":0,\"priority\":\"3 - Moderate\",\"reporter\":\"Julie Donohue\",\"source_application\":\"ServiceNow\",\"status\":\"Resolved\",\"summary\":\"Access Reviewer\",\"sys_class_name\":\"incident\",\"tenant_number\":[\"2\"],\"ticket_id\":\"bdf68eb6-c303-4209-9390-fbe2eb2f6489\",\"type\":\"Tickets\",\"updated\":\"Fri, 11 Apr 2025 13:06:24 GMT\"},\"initial_plugin_unique_name\":\"service_now_adapter_0\",\"plugin_name\":\"service_now_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"service_now_adapter_0\",\"quick_id\":\"service_now_adapter_0!bdf68eb6-c303-4209-9390-fbe2eb2f6489\",\"type\":\"entitydata\"}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "ticket",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-axonius-ticket-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "axonius",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

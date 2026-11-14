@@ -1,0 +1,2135 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-04-01T07:13:50.971Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "restore-event",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:13:50.971Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"restore_event\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "client_side_encrypted": "no",
+            "id": "abc123",
+            "organizer_calendar_id": "cnk@dau.com",
+            "recurring": "no",
+            "title": "Test Event"
+          },
+          "id": "cnk@dau.com",
+          "name": "restore_event",
+          "type": "event_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:13:50.971Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:13:46.662Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "delete-event",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:13:46.662Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"delete_event\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"start_time\", \"intValue\": \"63879175800\"}, {\"name\": \"end_time\", \"intValue\": \"63879177600\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "deletion"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "client_side_encrypted": "no",
+            "end_time": "2025-04-01T08:00:00.000Z",
+            "id": "abc123",
+            "organizer_calendar_id": "cnk@dau.com",
+            "recurring": "no",
+            "start_time": "2025-04-01T07:30:00.000Z",
+            "title": "Test Event"
+          },
+          "id": "cnk@dau.com",
+          "name": "delete_event",
+          "type": "event_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:13:46.662Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:13:39.639Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "change-event-guest-response",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:13:39.639Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"change_event_guest_response\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"event_guest\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_response_status\", \"value\": \"declined\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "client_side_encrypted": "no",
+            "guest": "cnk@dau.com",
+            "id": "abc123",
+            "organizer_calendar_id": "cnk@dau.com",
+            "recurring": "no",
+            "response_status": "declined",
+            "title": "Test Event"
+          },
+          "id": "cnk@dau.com",
+          "name": "change_event_guest_response",
+          "type": "event_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:13:39.639Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:13:18.495Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "print-preview-event",
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:13:18.495Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"print_preview_event\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "client_side_encrypted": "no",
+            "id": "abc123",
+            "recurring": "no",
+            "title": "Test Event"
+          },
+          "id": "cnk@dau.com",
+          "name": "print_preview_event",
+          "type": "event_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:13:18.495Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:13:11.074Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "change-event-start-time",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:13:11.074Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"change_event_start_time\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"start_time\", \"intValue\": \"63879175800\"}, {\"name\": \"end_time\", \"intValue\": \"63879177600\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "client_side_encrypted": "no",
+            "end_time": "2025-04-01T08:00:00.000Z",
+            "id": "abc123",
+            "organizer_calendar_id": "cnk@dau.com",
+            "recurring": "no",
+            "start_time": "2025-04-01T07:30:00.000Z",
+            "title": "Test Event"
+          },
+          "id": "cnk@dau.com",
+          "name": "change_event_start_time",
+          "type": "event_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:13:11.074Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:10:14.651Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "transfer-event-requested",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:10:14.651Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"transfer_event_requested\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"grantee_email\", \"value\": \"djt.eco@apejtlc.com\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "client_side_encrypted": "no",
+            "grantee_email": "djt.eco@apejtlc.com",
+            "id": "abc123",
+            "organizer_calendar_id": "cnk@dau.com",
+            "recurring": "no",
+            "title": "Test Event"
+          },
+          "id": "cnk@dau.com",
+          "name": "transfer_event_requested",
+          "type": "event_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:10:14.651Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com",
+          "djt.eco@apejtlc.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com",
+        "target": {
+          "email": "djt.eco@apejtlc.com"
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:09:41.037Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "remove-event-guest",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:09:41.037Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"remove_event_guest\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"event_guest\", \"value\": \"sbgq@apejtlc.com\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "client_side_encrypted": "no",
+            "guest": "sbgq@apejtlc.com",
+            "id": "abc123",
+            "organizer_calendar_id": "cnk@dau.com",
+            "recurring": "no",
+            "title": "Test Event"
+          },
+          "id": "cnk@dau.com",
+          "name": "remove_event_guest",
+          "type": "event_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:09:41.037Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com",
+          "sbgq@apejtlc.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:08:59.223Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "change-event-title",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:08:59.223Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"change_event_title\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"old_event_title\", \"value\": \"Sample Event\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "client_side_encrypted": "no",
+            "id": "abc123",
+            "old_title": "Sample Event",
+            "organizer_calendar_id": "cnk@dau.com",
+            "recurring": "no",
+            "title": "Test Event"
+          },
+          "id": "cnk@dau.com",
+          "name": "change_event_title",
+          "type": "event_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:08:59.223Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:07:56.464Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "change-appointment-schedule",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:07:56.464Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"appointment_schedule_change\", \"name\": \"change_appointment_schedule\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"appointment_schedule_title\", \"value\": \"Sample Schedule\"}, {\"name\": \"recurring\", \"value\": \"yes\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "appointment_schedule_title": "Sample Schedule",
+            "recurring": "yes"
+          },
+          "id": "cnk@dau.com",
+          "name": "change_appointment_schedule",
+          "type": "appointment_schedule_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:07:56.464Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:07:34.515Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "create-appointment-schedule",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:07:34.515Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"appointment_schedule_change\", \"name\": \"create_appointment_schedule\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"appointment_schedule_title\", \"value\": \"Sample Schedule\"}, {\"name\": \"recurring\", \"value\": \"yes\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "creation"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "appointment_schedule_title": "Sample Schedule",
+            "recurring": "yes"
+          },
+          "id": "cnk@dau.com",
+          "name": "create_appointment_schedule",
+          "type": "appointment_schedule_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:07:34.515Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:03:53.420Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "notification-triggered",
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:03:53.420Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"notification\", \"name\": \"notification_triggered\", \"parameters\": [{\"name\": \"notification_type\", \"value\": \"new_event\"}, {\"name\": \"notification_method\", \"value\": \"email\"}, {\"name\": \"recipient_email\", \"value\": \"sbgq@apejtlc.com\"}, {\"name\": \"calendar_id\", \"value\": \"sbgq@apejtlc.com\"}, {\"name\": \"notification_message_id\", \"value\": \"<edsdpdfi-bdc568@google.com>\"}, {\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "id": "abc123"
+          },
+          "id": "sbgq@apejtlc.com",
+          "name": "notification_triggered",
+          "notification": {
+            "message_id": "<edsdpdfi-bdc568@google.com>",
+            "method": "email",
+            "recipient_email": "sbgq@apejtlc.com",
+            "type": "new_event"
+          },
+          "type": "notification",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:03:53.420Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com",
+          "sbgq@apejtlc.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com",
+        "target": {
+          "email": "sbgq@apejtlc.com"
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:03:52.819Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "create-event",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:03:52.819Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"create_event\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Sample Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"start_time\", \"intValue\": \"63879174900\"}, {\"name\": \"end_time\", \"intValue\": \"63879176700\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "creation"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "event": {
+            "client_side_encrypted": "no",
+            "end_time": "2025-04-01T07:45:00.000Z",
+            "id": "abc123",
+            "organizer_calendar_id": "cnk@dau.com",
+            "recurring": "no",
+            "start_time": "2025-04-01T07:15:00.000Z",
+            "title": "Sample Event"
+          },
+          "id": "cnk@dau.com",
+          "name": "create_event",
+          "type": "event_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:03:52.819Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:00:40.262Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "delete-calendar",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:00:40.262Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"delete_calendar\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "deletion"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "id": "f_cae101@group.calendar.google.com",
+          "name": "delete_calendar",
+          "type": "calendar_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:00:40.262Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T07:00:39.740Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "delete-subscription",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:00:39.740Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"subscription_change\", \"name\": \"delete_subscription\", \"parameters\": [{\"name\": \"subscriber_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"notification_type\", \"value\": \"event_reminder\"}, {\"name\": \"notification_method\", \"value\": \"email\"}, {\"name\": \"secs_in_advance\", \"intValue\": \"600\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "id": "f_cae101@group.calendar.google.com",
+          "name": "delete_subscription",
+          "notification": {
+            "method": "email",
+            "type": "event_reminder"
+          },
+          "secs_in_advance": 600,
+          "subscriber_calendar_id": "cnk@dau.com",
+          "type": "subscription_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T07:00:39.740Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T06:59:21.158Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "change-calendar-title",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:59:21.158Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"change_calendar_title\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"calendar_title\", \"value\": \"Sample Cale\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "id": "f_cae101@group.calendar.google.com",
+          "name": "change_calendar_title",
+          "title": "Sample Cale",
+          "type": "calendar_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T06:59:21.158Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T06:58:04.206Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "export-calendar",
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:58:04.206Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"export_calendar\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "id": "f_cae101@group.calendar.google.com",
+          "name": "export_calendar",
+          "type": "calendar_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T06:58:04.206Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T06:56:46.603Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "change-calendar-description",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:56:46.603Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"change_calendar_description\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"calendar_description\", \"value\": \"This is a \"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "description": "This is a ",
+          "id": "f_cae101@group.calendar.google.com",
+          "name": "change_calendar_description",
+          "type": "calendar_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T06:56:46.603Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T06:56:21.932Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "change-calendar-timezone",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:56:21.932Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"change_calendar_timezone\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"calendar_timezone\", \"value\": \"Asia/Kolkata\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "id": "f_cae101@group.calendar.google.com",
+          "name": "change_calendar_timezone",
+          "timezone": "Asia/Kolkata",
+          "type": "calendar_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T06:56:21.932Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T06:56:21.901Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "change-calendar-acls",
+        "category": [
+          "iam"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:56:21.901Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"change_calendar_acls\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"grantee_email\", \"value\": \"fqdnjxa.etg@allusers.d.calendar.google.com\"}, {\"name\": \"access_level\", \"value\": \"read\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "access_level": "read",
+          "api_kind": "web",
+          "event": {
+            "grantee_email": "fqdnjxa.etg@allusers.d.calendar.google.com"
+          },
+          "id": "f_cae101@group.calendar.google.com",
+          "name": "change_calendar_acls",
+          "type": "calendar_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T06:56:21.901Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com",
+          "fqdnjxa.etg@allusers.d.calendar.google.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com",
+        "target": {
+          "email": "fqdnjxa.etg@allusers.d.calendar.google.com"
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-01T06:56:19.002Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "create-calendar",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:56:19.002Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"create_calendar\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "creation"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "id": "f_cae101@group.calendar.google.com",
+          "name": "create_calendar",
+          "type": "calendar_change",
+          "user_agent": "Mozilla/5.0"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-04-01T06:56:19.002Z",
+          "unique_qualifier": "1"
+        },
+        "ip_address": "192.0.2.97",
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ],
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2053-03-28T07:41:12.671Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "add-subscription",
+        "category": [
+          "configuration"
+        ],
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-28T07:41:12.671Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"events\": {\"type\": \"subscription_change\", \"name\": \"add_subscription\", \"parameters\": [{\"name\": \"subscriber_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"notification_type\", \"value\": \"event_reminder\"}, {\"name\": \"notification_method\", \"value\": \"alert\"}, {\"name\": \"secs_in_advance\", \"intValue\": \"572400\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "change"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "id": "cnk@dau.com",
+          "name": "add_subscription",
+          "notification": {
+            "method": "alert",
+            "type": "event_reminder"
+          },
+          "secs_in_advance": 572400,
+          "subscriber_calendar_id": "cnk@dau.com",
+          "type": "subscription_change"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-03-28T07:41:12.671Z",
+          "unique_qualifier": "1"
+        },
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      }
+    },
+    {
+      "@timestamp": "2053-03-28T07:41:12.671Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "interop-freebusy-lookup-outbound-successful",
+        "id": "1",
+        "kind": "event",
+        "original": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-28T07:41:12.671Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"events\": {\"type\": \"interop\", \"name\": \"interop_freebusy_lookup_outbound_successful\", \"parameters\": [{\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"remote_ews_url\", \"value\": \"https://exchange.example.com/EWS/Exchange.asmx\"}, {\"name\": \"requested_period_start\", \"intValue\": \"1743748267\"}, {\"name\": \"requested_period_end\", \"intValue\": \"1743748267\"}]}}",
+        "provider": "calendar",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile_id": "1"
+        },
+        "calendar": {
+          "api_kind": "web",
+          "id": "cnk@dau.com",
+          "interop": {
+            "remote_ews_url": "https://exchange.example.com/EWS/Exchange.asmx"
+          },
+          "name": "interop_freebusy_lookup_outbound_successful",
+          "requested_period_end": "1970-01-21T04:22:28.267Z",
+          "requested_period_start": "1970-01-21T04:22:28.267Z",
+          "type": "interop"
+        },
+        "etag": "abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A",
+        "id": {
+          "application_name": "calendar",
+          "customer_id": "1",
+          "time": "2053-03-28T07:41:12.671Z",
+          "unique_qualifier": "1"
+        },
+        "kind": "admin#reports#activity",
+        "organization": {
+          "domain": "apejtlc.com"
+        }
+      },
+      "observer": {
+        "product": "Calendar",
+        "vendor": "Google Workspace"
+      },
+      "organization": {
+        "id": "1"
+      },
+      "related": {
+        "user": [
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk@dau.com"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "exchange.example.com",
+        "extension": "asmx",
+        "original": "https://exchange.example.com/EWS/Exchange.asmx",
+        "path": "/EWS/Exchange.asmx",
+        "scheme": "https"
+      },
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk@dau.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:13:50.971Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"restore_event\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:13:46.662Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"delete_event\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"start_time\", \"intValue\": \"63879175800\"}, {\"name\": \"end_time\", \"intValue\": \"63879177600\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:13:39.639Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"change_event_guest_response\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"event_guest\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_response_status\", \"value\": \"declined\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:13:18.495Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"print_preview_event\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:13:11.074Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"change_event_start_time\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"start_time\", \"intValue\": \"63879175800\"}, {\"name\": \"end_time\", \"intValue\": \"63879177600\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:10:14.651Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"transfer_event_requested\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"grantee_email\", \"value\": \"djt.eco@apejtlc.com\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:09:41.037Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"remove_event_guest\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"event_guest\", \"value\": \"sbgq@apejtlc.com\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:08:59.223Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"change_event_title\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Test Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"old_event_title\", \"value\": \"Sample Event\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:07:56.464Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"appointment_schedule_change\", \"name\": \"change_appointment_schedule\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"appointment_schedule_title\", \"value\": \"Sample Schedule\"}, {\"name\": \"recurring\", \"value\": \"yes\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:07:34.515Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"appointment_schedule_change\", \"name\": \"create_appointment_schedule\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"appointment_schedule_title\", \"value\": \"Sample Schedule\"}, {\"name\": \"recurring\", \"value\": \"yes\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:03:53.420Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"notification\", \"name\": \"notification_triggered\", \"parameters\": [{\"name\": \"notification_type\", \"value\": \"new_event\"}, {\"name\": \"notification_method\", \"value\": \"email\"}, {\"name\": \"recipient_email\", \"value\": \"sbgq@apejtlc.com\"}, {\"name\": \"calendar_id\", \"value\": \"sbgq@apejtlc.com\"}, {\"name\": \"notification_message_id\", \"value\": \"<edsdpdfi-bdc568@google.com>\"}, {\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:03:52.819Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"event_change\", \"name\": \"create_event\", \"parameters\": [{\"name\": \"event_id\", \"value\": \"abc123\"}, {\"name\": \"organizer_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"event_title\", \"value\": \"Sample Event\"}, {\"name\": \"recurring\", \"value\": \"no\"}, {\"name\": \"client_side_encrypted\", \"value\": \"no\"}, {\"name\": \"start_time\", \"intValue\": \"63879174900\"}, {\"name\": \"end_time\", \"intValue\": \"63879176700\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:00:40.262Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"delete_calendar\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T07:00:39.740Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"subscription_change\", \"name\": \"delete_subscription\", \"parameters\": [{\"name\": \"subscriber_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"notification_type\", \"value\": \"event_reminder\"}, {\"name\": \"notification_method\", \"value\": \"email\"}, {\"name\": \"secs_in_advance\", \"intValue\": \"600\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:59:21.158Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"change_calendar_title\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"calendar_title\", \"value\": \"Sample Cale\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:58:04.206Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"export_calendar\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:56:46.603Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"change_calendar_description\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"calendar_description\", \"value\": \"This is a \"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:56:21.932Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"change_calendar_timezone\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"calendar_timezone\", \"value\": \"Asia/Kolkata\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:56:21.901Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"change_calendar_acls\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"grantee_email\", \"value\": \"fqdnjxa.etg@allusers.d.calendar.google.com\"}, {\"name\": \"access_level\", \"value\": \"read\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-04-01T06:56:19.002Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"ipAddress\": \"192.0.2.97\", \"events\": {\"type\": \"calendar_change\", \"name\": \"create_calendar\", \"parameters\": [{\"name\": \"calendar_id\", \"value\": \"f_cae101@group.calendar.google.com\"}, {\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"user_agent\", \"value\": \"Mozilla/5.0\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-28T07:41:12.671Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"events\": {\"type\": \"subscription_change\", \"name\": \"add_subscription\", \"parameters\": [{\"name\": \"subscriber_calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"notification_type\", \"value\": \"event_reminder\"}, {\"name\": \"notification_method\", \"value\": \"alert\"}, {\"name\": \"secs_in_advance\", \"intValue\": \"572400\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"kind\": \"admin#reports#activity\", \"id\": {\"time\": \"2053-03-28T07:41:12.671Z\", \"uniqueQualifier\": \"1\", \"applicationName\": \"calendar\", \"customerId\": \"1\"}, \"etag\": \"abcdefgh/cBsNSJx2A9Lg8kiQCGLddmq827A\", \"actor\": {\"email\": \"cnk@dau.com\", \"profileId\": \"1\"}, \"ownerDomain\": \"apejtlc.com\", \"events\": {\"type\": \"interop\", \"name\": \"interop_freebusy_lookup_outbound_successful\", \"parameters\": [{\"name\": \"api_kind\", \"value\": \"web\"}, {\"name\": \"calendar_id\", \"value\": \"cnk@dau.com\"}, {\"name\": \"remote_ews_url\", \"value\": \"https://exchange.example.com/EWS/Exchange.asmx\"}, {\"name\": \"requested_period_start\", \"intValue\": \"1743748267\"}, {\"name\": \"requested_period_end\", \"intValue\": \"1743748267\"}]}}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "calendar",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-google_workspace-calendar-default",
+    "event_count": 22,
+    "numeric_keyword_fields": [],
+    "package": "google_workspace",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

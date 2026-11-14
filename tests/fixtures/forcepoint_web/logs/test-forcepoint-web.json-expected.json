@@ -1,0 +1,143 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2022-12-16T07:05:25.000Z",
+      "data_stream": {
+        "dataset": "forcepoint_web.logs",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "destination": {
+        "ip": "203.0.113.123"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "allowed",
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "original": "\"16/12/2022\",\"07:05:25\",\"anonymous\",\"Not available\",\"Reference Materials,Trusted Server Downloads\",\"Allowed\",\"Business Usage,None\",\"Org Internal Server Policy\",\"cgx-ah.idfylaz.com:443/\",\"203.0.113.193\",\"203.0.113.123\",\"Not available\",\"None\",\"None\",\"Java/11.0.6\",\"200\",\"Connect\"",
+        "type": [
+          "info"
+        ]
+      },
+      "forcepoint_web": {
+        "action": "Allowed",
+        "category": [
+          "Reference Materials",
+          "Trusted Server Downloads"
+        ],
+        "connection_ip": "203.0.113.193",
+        "date": "16/12/2022",
+        "destination_ip": "203.0.113.123",
+        "http_request_method": "Connect",
+        "http_status_code": "200",
+        "policy_name": "Org Internal Server Policy",
+        "risk_class": [
+          "Business Usage",
+          "None"
+        ],
+        "time": "07:05:25",
+        "user": "anonymous",
+        "user_agent_string": "Java/11.0.6"
+      },
+      "http": {
+        "request": {
+          "method": "CONNECT"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.123",
+          "203.0.113.193"
+        ],
+        "user": [
+          "anonymous"
+        ]
+      },
+      "rule": {
+        "name": "Org Internal Server Policy"
+      },
+      "source": {
+        "nat": {
+          "ip": "203.0.113.193"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "cgx-ah.idfylaz.com",
+        "original": "https://cgx-ah.idfylaz.com:443/",
+        "path": "/",
+        "port": 443,
+        "registered_domain": "idfylaz.com",
+        "scheme": "https",
+        "subdomain": "cgx-ah",
+        "top_level_domain": "com"
+      },
+      "user": {
+        "id": "anonymous",
+        "name": "anonymous"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Spider"
+        },
+        "name": "Java",
+        "original": "Java/11.0.6",
+        "version": "0.6"
+      }
+    }
+  ],
+  "input": [
+    {
+      "data_stream": {
+        "dataset": "forcepoint_web.logs",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "forcepoint_web": {
+        "action": "Allowed",
+        "category": "Reference Materials,Trusted Server Downloads",
+        "connection_ip": "203.0.113.193",
+        "date": "16/12/2022",
+        "destination_ip": "203.0.113.123",
+        "http_request_method": "Connect",
+        "http_status_code": "200",
+        "policy_name": "Org Internal Server Policy",
+        "risk_class": "Business Usage,None",
+        "time": "07:05:25",
+        "url": "cgx-ah.idfylaz.com:443/",
+        "user": "anonymous",
+        "user_agent_string": "Java/11.0.6"
+      },
+      "message": "\"16/12/2022\",\"07:05:25\",\"anonymous\",\"Not available\",\"Reference Materials,Trusted Server Downloads\",\"Allowed\",\"Business Usage,None\",\"Org Internal Server Policy\",\"cgx-ah.idfylaz.com:443/\",\"203.0.113.193\",\"203.0.113.123\",\"Not available\",\"None\",\"None\",\"Java/11.0.6\",\"200\",\"Connect\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-forcepoint_web-logs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "forcepoint_web",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

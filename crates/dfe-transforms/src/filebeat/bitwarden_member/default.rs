@@ -100,9 +100,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def OrganizationUserTypeValue = Integer.parseInt(ctx.bitwarden.member.type.value);\nif (OrganizationUserTypeValue >= 0 && OrganizationUserTypeValue < params.OrganizationUserType.length) {\n  ctx.bitwarden.member.type.put('name', params['OrganizationUserType'][OrganizationUserTypeValue]);\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -376,9 +374,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def OrganizationUserStatusTypeValue = Integer.parseInt(ctx.bitwarden.member.status.value)+1;\nif (OrganizationUserStatusTypeValue >= 0 && OrganizationUserStatusTypeValue < params.OrganizationUserStatusType.length) {\n  ctx.bitwarden.member.status.put('name', params['OrganizationUserStatusType'][OrganizationUserStatusTypeValue]);\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -538,8 +534,7 @@ impl Transform for Default {
                 event.remove("bitwarden.member.email");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

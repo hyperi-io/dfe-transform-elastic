@@ -10,10 +10,9 @@
 //! Raising the floor here is the point: every script the runtime learns to
 //! execute moves it up, and the assertion stops it sliding back.
 //!
-//! The fixtures are Elastic-licensed and kept outside this repository. Run
-//! `DFE_ELASTIC_FIXTURES=<their fixtures/elastic directory> cargo test -p
-//! dfe-transforms --test painless_coverage -- --ignored --nocapture` to see
-//! which scripts are still unhandled, most frequent first.
+//! It reads the fixtures under `tests/fixtures/`. Run `cargo test -p
+//! dfe-transforms --test painless_coverage -- --nocapture` to see which
+//! scripts are still unhandled, most frequent first.
 
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
@@ -24,14 +23,7 @@ use dfe_runtime::{Transform, painless_stats};
 use dfe_transforms::filebeat;
 use serde_json::{Map, Value, json};
 
-/// The measured floor: ALL 4,244 scripts across 80 fixture files run. It
-/// started at 5.9%, reached 100% against the previous generation of Elastic's
-/// pipelines, fell to 64.7% when they were re-vendored from the current
-/// integrations commit, and is back at 100%.
-///
-/// The last four patterns were o365's `splitTrimAdd` (1,483 uses on its own),
-/// fortinet's `tlsver` split, azure's quote rewrite and azure's target-resource
-/// collect.
+/// The floor: every script across the fixture files runs.
 ///
 /// Running is not the same as running CORRECTLY -- `tests/compat_corpus.rs`
 /// is what measures that. This one only says no script is silently skipped.
@@ -117,9 +109,8 @@ fn drive_corpus(root: &Path) -> usize {
 
 /// Drive the corpus and report what fraction of Painless actually executed.
 #[test]
-#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
 fn painless_coverage_does_not_regress() {
-    let root = dfe_runtime::testutil::elastic_fixtures();
+    let root = dfe_runtime::testutil::fixtures();
     painless_stats::reset();
     painless_stats::enable_catalogue(true);
     let files = drive_corpus(&root);

@@ -1,0 +1,7 @@
+# Test inputs for this directory's fixtures.
+fields:
+  event.timezone: GMT+2
+  tags:
+  - preserve_original_event
+dynamic_fields:
+  event.ingested: .*

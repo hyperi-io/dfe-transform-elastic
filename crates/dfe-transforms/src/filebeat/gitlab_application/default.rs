@@ -135,8 +135,7 @@ impl Transform for Default {
                 event.rename("gitlab.application.pid", "process.pid")?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: if (ctx.gitlab?.application != null) {\n  def fieldsToRename = new ArrayList(ctx.gitlab.application.keySet());\n  for (fieldName in fieldsToRename) {\n    if (fieldName.endsWith('values')) {\n      def newField = fieldName.substring(0, fieldName.length() - 7);\n      def value = ctx.gitlab.application[fieldName];\n      if (value.size() > 1) {\n        ctx.gitlab.application[newField] = value;\n      } else {\n        ctx.gitlab.application[newField] = value[0]\n      }\n      ctx.gitlab.application.remove(fieldName);\n    }\n  }\n}\n
+            // The pipeline's script, emitted as the runtime's equivalent
             unwrap_suffixed_keys(
                 event,
                 &UnwrapSuffixedKeys::new("gitlab.application".into(), "values".into(), 7),
@@ -146,9 +145,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gitlab.application.params") };
             if _cond {
-                // Painless script
-                // Source: def keyValuePairs = [];\nfor (item in ctx.gitlab.application.params) {\n  def key = item.key;\n  def value = item.value;\n  def keyValueObject = [key: value];\n  keyValuePairs.add(keyValueObject)\n}\nctx.gitlab.application.params = keyValuePairs;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -807,8 +804,7 @@ impl Transform for Default {
                 event.append("event.category", json!("configuration"))?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

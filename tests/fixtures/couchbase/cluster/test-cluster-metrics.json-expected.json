@@ -1,0 +1,320 @@
+{
+  "expected": [
+    {
+      "couchbase": {
+        "cluster": {
+          "buckets": {
+            "max": {
+              "count": 30
+            }
+          },
+          "hdd": {
+            "free": {
+              "bytes": 18593717945
+            },
+            "quota": {
+              "total": {
+                "bytes": 51649216512
+              }
+            },
+            "total": {
+              "bytes": 51649216512
+            },
+            "used": {
+              "data": {
+                "bytes": 130085597
+              },
+              "value": {
+                "bytes": 33055498567
+              }
+            }
+          },
+          "memory": {
+            "quota": {
+              "index": {
+                "mb": 1124
+              },
+              "mb": 3801
+            }
+          },
+          "ram": {
+            "quota": {
+              "total": {
+                "per_node": {
+                  "bytes": 3985637376
+                },
+                "value": {
+                  "bytes": 3985637376
+                }
+              },
+              "used": {
+                "per_node": {
+                  "bytes": 629145600
+                },
+                "value": {
+                  "bytes": 629145600
+                }
+              }
+            },
+            "total": {
+              "bytes": 8343732224
+            },
+            "used": {
+              "data": {
+                "bytes": 141783216
+              },
+              "value": {
+                "bytes": 8064348160
+              }
+            }
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "kind": "metric",
+        "module": "couchbase",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "http": {
+        "cluster": {
+          "alerts": [],
+          "alertsSilenceURL": "/controller/resetAlerts?uuid=1314e517dad93f0f978d9c8837eb5d1f&token=0",
+          "autoCompactionSettings": {
+            "databaseFragmentationThreshold": {
+              "percentage": 30,
+              "size": "undefined"
+            },
+            "indexCircularCompaction": {
+              "daysOfWeek": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday",
+              "interval": {
+                "abortOutside": false,
+                "fromHour": 0,
+                "fromMinute": 0,
+                "toHour": 0,
+                "toMinute": 0
+              }
+            },
+            "indexCompactionMode": "circular",
+            "indexFragmentationThreshold": {
+              "percentage": 30
+            },
+            "magmaFragmentationPercentage": 50,
+            "parallelDBAndViewCompaction": false,
+            "viewFragmentationThreshold": {
+              "percentage": 30,
+              "size": "undefined"
+            }
+          },
+          "balanced": true,
+          "bucketNames": [
+            {
+              "bucketName": "beer-sample",
+              "uuid": "291861fb3ebd54d450f07a52fa687229"
+            },
+            {
+              "bucketName": "gamesim-sample",
+              "uuid": "5191144e6d41384583a5fb0cb5968128"
+            },
+            {
+              "bucketName": "travel-sample",
+              "uuid": "c135dbfc2d4f9b657d7614aa610ef7d3"
+            }
+          ],
+          "buckets": {
+            "terseBucketsBase": "/pools/default/b/",
+            "terseStreamingBucketsBase": "/pools/default/bs/",
+            "uri": "/pools/default/buckets?v=122731406&uuid=1314e517dad93f0f978d9c8837eb5d1f"
+          },
+          "cbasMemoryQuota": 1496,
+          "checkPermissionsURI": "/pools/default/checkPermissions?v=tYv0TZ7vNxXuvR5DTPJaUsBSY14%3D",
+          "clusterEncryptionLevel": "none",
+          "clusterName": "cluster",
+          "controllers": {
+            "addNode": {
+              "uri": "/controller/addNodeV2?uuid=1314e517dad93f0f978d9c8837eb5d1f"
+            },
+            "clusterLogsCollection": {
+              "cancelURI": "/controller/cancelLogsCollection?uuid=1314e517dad93f0f978d9c8837eb5d1f",
+              "startURI": "/controller/startLogsCollection?uuid=1314e517dad93f0f978d9c8837eb5d1f"
+            },
+            "ejectNode": {
+              "uri": "/controller/ejectNode?uuid=1314e517dad93f0f978d9c8837eb5d1f"
+            },
+            "failOver": {
+              "uri": "/controller/failOver?uuid=1314e517dad93f0f978d9c8837eb5d1f"
+            },
+            "reAddNode": {
+              "uri": "/controller/reAddNode?uuid=1314e517dad93f0f978d9c8837eb5d1f"
+            },
+            "reFailOver": {
+              "uri": "/controller/reFailOver?uuid=1314e517dad93f0f978d9c8837eb5d1f"
+            },
+            "rebalance": {
+              "uri": "/controller/rebalance?uuid=1314e517dad93f0f978d9c8837eb5d1f"
+            },
+            "replication": {
+              "createURI": "/controller/createReplication?uuid=1314e517dad93f0f978d9c8837eb5d1f",
+              "validateURI": "/controller/createReplication?just_validate=1"
+            },
+            "setAutoCompaction": {
+              "uri": "/controller/setAutoCompaction?uuid=1314e517dad93f0f978d9c8837eb5d1f",
+              "validateURI": "/controller/setAutoCompaction?just_validate=1"
+            },
+            "setRecoveryType": {
+              "uri": "/controller/setRecoveryType?uuid=1314e517dad93f0f978d9c8837eb5d1f"
+            },
+            "startGracefulFailover": {
+              "uri": "/controller/startGracefulFailover?uuid=1314e517dad93f0f978d9c8837eb5d1f"
+            }
+          },
+          "counters": {},
+          "eventingMemoryQuota": 256,
+          "ftsMemoryQuota": 256,
+          "indexMemoryQuota": 1124,
+          "indexStatusURI": "/indexStatus?v=24871099",
+          "maxBucketCount": 30,
+          "maxCollectionCount": 1200,
+          "maxScopeCount": 1200,
+          "memoryQuota": 3801,
+          "name": "default",
+          "nodeServicesUri": "/pools/default/nodeServices?v=69993307",
+          "nodeStatusesUri": "/nodeStatuses",
+          "nodes": [
+            {
+              "addressFamily": "inet",
+              "addressFamilyOnly": false,
+              "clusterCompatibility": 458753,
+              "clusterMembership": "active",
+              "configuredHostname": "127.0.0.1:8091",
+              "couchApiBase": "http://172.30.168.35:8092/",
+              "couchApiBaseHTTPS": "https://172.30.168.35:18092/",
+              "cpuCount": 4,
+              "externalListeners": [
+                {
+                  "afamily": "inet",
+                  "nodeEncryption": false
+                }
+              ],
+              "hostname": "172.30.168.35:8091",
+              "interestingStats": {
+                "cmd_get": 0,
+                "couch_docs_actual_disk_size": 129949299,
+                "couch_docs_data_size": 52829509,
+                "couch_spatial_data_size": 0,
+                "couch_spatial_disk_size": 0,
+                "couch_views_actual_disk_size": 136298,
+                "couch_views_data_size": 118122,
+                "curr_items": 71177,
+                "curr_items_tot": 71177,
+                "ep_bg_fetched": 0,
+                "get_hits": 0,
+                "index_data_size": 304697,
+                "index_disk_size": 45152967,
+                "mem_used": 141783216,
+                "ops": 0,
+                "vb_active_num_non_resident": 63288,
+                "vb_replica_curr_items": 0
+              },
+              "mcdMemoryAllocated": 6365,
+              "mcdMemoryReserved": 6365,
+              "memoryFree": 2972897280,
+              "memoryTotal": 8343732224,
+              "nodeEncryption": false,
+              "nodeHash": 107846084,
+              "nodeUUID": "867cc0d33ee5f282643532eab381ddfa",
+              "os": "x86_64-pc-linux-gnu",
+              "otpNode": "ns_1@127.0.0.1",
+              "ports": {
+                "direct": 11210,
+                "distTCP": 21100,
+                "distTLS": 21150,
+                "httpsCAPI": 18092,
+                "httpsMgmt": 18091
+              },
+              "recoveryType": "none",
+              "serverGroup": "Group 1",
+              "services": [
+                "backup",
+                "cbas",
+                "eventing",
+                "fts",
+                "index",
+                "kv",
+                "n1ql"
+              ],
+              "status": "healthy",
+              "systemStats": {
+                "allocstall": 46,
+                "cpu_cores_available": 4,
+                "cpu_stolen_rate": 0,
+                "cpu_utilization_rate": 21.06720362446514,
+                "mem_free": 2972897280,
+                "mem_limit": 8343732224,
+                "mem_total": 8343732224,
+                "swap_total": 4126142464,
+                "swap_used": 20566016
+              },
+              "thisNode": true,
+              "uptime": "95341",
+              "version": "7.1.0-2556-enterprise"
+            }
+          ],
+          "rebalanceProgressUri": "/pools/default/rebalanceProgress",
+          "rebalanceStatus": "none",
+          "remoteClusters": {
+            "uri": "/pools/default/remoteClusters?uuid=1314e517dad93f0f978d9c8837eb5d1f",
+            "validateURI": "/pools/default/remoteClusters?just_validate=1"
+          },
+          "serverGroupsUri": "/pools/default/serverGroups?v=82035680",
+          "stopRebalanceUri": "/controller/stopRebalance?uuid=1314e517dad93f0f978d9c8837eb5d1f",
+          "storageTotals": {
+            "hdd": {
+              "free": 18593717945,
+              "quotaTotal": 51649216512,
+              "total": 51649216512,
+              "used": 33055498567,
+              "usedByData": 130085597
+            },
+            "ram": {
+              "quotaTotal": 3985637376,
+              "quotaTotalPerNode": 3985637376,
+              "quotaUsed": 629145600,
+              "quotaUsedPerNode": 629145600,
+              "total": 8343732224,
+              "used": 8064348160,
+              "usedByData": 141783216
+            }
+          },
+          "tasks": {
+            "uri": "/pools/default/tasks?v=36019180"
+          },
+          "trustedCAsURI": "/pools/default/trustedCAs?v=14938900"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "cluster",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-couchbase-cluster-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "couchbase",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

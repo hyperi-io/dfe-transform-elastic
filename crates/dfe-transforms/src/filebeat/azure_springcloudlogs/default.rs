@@ -26,9 +26,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: ctx.message = ctx.message.replace(params.empty_field_name, '')
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -386,9 +384,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -405,9 +401,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx?.azure?.springcloudlogs?.properties?.eventCategory != null) {\n  ctx.azure.springcloudlogs.event_category = ctx.azure.springcloudlogs.properties.eventCategory;\n} else if (ctx?.azure?.springcloudlogs?.properties?.policies != null)  {\n  ctx.azure.springcloudlogs.event_category = 'Policy';\n} else {\n  ctx.azure.springcloudlogs.event_category = 'Administrative';\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -573,9 +567,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx?.azure?.springcloudlogs?.category == null) {\n  return;\n} def category = ctx.azure.springcloudlogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(

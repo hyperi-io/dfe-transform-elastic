@@ -122,9 +122,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("mssql.metrics.log_since_last_checkpoint") };
             if _cond {
-                // Painless script
-                // Source: ctx.mssql.metrics.log_since_last_checkpoint = Math.round(ctx.mssql.metrics.log_since_last_checkpoint * params.scale)
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -136,9 +134,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("mssql.metrics.log_recovery_size") };
             if _cond {
-                // Painless script
-                // Source: ctx.mssql.metrics.log_recovery_size = Math.round(ctx.mssql.metrics.log_recovery_size * params.scale)
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -150,9 +146,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("mssql.metrics.total_log_size") };
             if _cond {
-                // Painless script
-                // Source: ctx.mssql.metrics.total_log_size = Math.round(ctx.mssql.metrics.total_log_size * params.scale)
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -164,9 +158,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("mssql.metrics.active_log_size") };
             if _cond {
-                // Painless script
-                // Source: ctx.mssql.metrics.active_log_size = Math.round(ctx.mssql.metrics.active_log_size * params.scale)
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -178,9 +170,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("mssql.metrics.log_since_last_log_backup") };
             if _cond {
-                // Painless script
-                // Source: ctx.mssql.metrics.log_since_last_log_backup = Math.round(ctx.mssql.metrics.log_since_last_log_backup * params.scale)
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

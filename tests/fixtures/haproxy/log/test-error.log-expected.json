@@ -1,0 +1,58 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2040-12-03T17:35:10.380Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "Dec  3 18:27:14 localhost haproxy[6103]: 127.0.0.1:56059 [03/Dec/2040:17:35:10.380] frt/f1: Connection error during SSL handshake"
+      },
+      "haproxy": {
+        "bind_name": "f1:",
+        "error_message": "Connection error during SSL handshake",
+        "frontend_name": "frt"
+      },
+      "process": {
+        "name": "haproxy",
+        "pid": 6103
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1"
+        ]
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1",
+        "port": 56059
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "Dec  3 18:27:14 localhost haproxy[6103]: 127.0.0.1:56059 [03/Dec/2040:17:35:10.380] frt/f1: Connection error during SSL handshake",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-haproxy-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "haproxy",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

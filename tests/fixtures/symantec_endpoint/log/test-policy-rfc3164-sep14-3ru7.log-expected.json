@@ -1,0 +1,66 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-06-07T09:09:54.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<54>Jun 7 09:16:10 SERVER SymantecServer: DESKTOP,Category: 0,Smc,Event Description: Received a new policy with serial number AB13-05/30/2051 23:01:52 031 from Symantec Endpoint Protection Manager.,Event time: 2051-06-07 09:09:54,Group Name: My Group"
+      },
+      "host": {
+        "hostname": "DESKTOP",
+        "name": "DESKTOP"
+      },
+      "log": {
+        "syslog": {
+          "appname": "SymantecServer",
+          "hostname": "SERVER",
+          "priority": 54
+        }
+      },
+      "message": "Received a new policy with serial number AB13-05/30/2051 23:01:52 031 from Symantec Endpoint Protection Manager.",
+      "symantec_endpoint": {
+        "log": {
+          "category": "0",
+          "event_description": "Received a new policy with serial number AB13-05/30/2051 23:01:52 031 from Symantec Endpoint Protection Manager.",
+          "event_time": "2051-06-07T09:09:54.000Z",
+          "group": "My Group"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "<54>Jun 7 09:16:10 SERVER SymantecServer: DESKTOP,Category: 0,Smc,Event Description: Received a new policy with serial number AB13-05/30/2051 23:01:52 031 from Symantec Endpoint Protection Manager.,Event time: 2051-06-07 09:09:54,Group Name: My Group",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

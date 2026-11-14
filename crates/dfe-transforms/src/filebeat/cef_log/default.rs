@@ -311,9 +311,7 @@ impl Transform for Default {
             let _cond = { event.get_str("cef.device.vendor") == Some("Check Point") };
             if _cond {
                 // Begin nested pipeline: "cp-pipeline"
-                // Painless script
-                // Source: def actions = new ArrayList();\ndef exts = ctx.cef?.extensions;\nif (exts == null) return;\nfor (entry in params.extensions) {\n  def value = exts[entry.name];\n  if (value == null ||\n    (entry.convert != null &&\n      (value=entry.convert[value.toLowerCase()]) == null))\n    continue;\n  if (entry.to != null) {\n    actions.add([\n      \"value\": value,\n      \"to\": entry.to\n    ]);\n    continue;\n  }\n  def label = exts[entry.name + \"Label\"];\n  if (label == null) continue;\n  def dest = entry.labels[label.toLowerCase()];\n  if (dest == null) continue;\n  actions.add([\n    \"value\": value,\n    \"to\": dest\n  ]);\n}\nctx[\"_tmp_copy\"] = actions;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -436,9 +434,7 @@ impl Transform for Default {
                 }
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def duration = ctx.event?.duration;\nif (duration == null) return;\nctx.event.duration = Long.parseLong(duration) * params.second_to_nanos;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(

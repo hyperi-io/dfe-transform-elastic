@@ -1,0 +1,49 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "kind": "metric",
+        "original": "{\"slaDomainId\":\"7e51a3ee-6bdb-4430-802e-74dd3b8c1759\",\"slaDomainName\":\"mssql-1\",\"succeededTasksValue\":1,\"failedTasksValue\":2,\"canceledTasksValue\":3,\"missedTasksValue\":4,\"metricType\":\"succeeded_tasks\"}"
+      },
+      "rubrik": {
+        "sla_domain": {
+          "id": "7e51a3ee-6bdb-4430-802e-74dd3b8c1759",
+          "name": "mssql-1"
+        },
+        "tasks": {
+          "canceled": {
+            "count": 3
+          },
+          "failed": {
+            "count": 2
+          },
+          "metric_type": "succeeded_tasks",
+          "missed": {
+            "count": 4
+          },
+          "succeeded": {
+            "count": 1
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"slaDomainId\":\"7e51a3ee-6bdb-4430-802e-74dd3b8c1759\",\"slaDomainName\":\"mssql-1\",\"succeededTasksValue\":1,\"failedTasksValue\":2,\"canceledTasksValue\":3,\"missedTasksValue\":4,\"metricType\":\"succeeded_tasks\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "tasks",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-rubrik-tasks-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "rubrik",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

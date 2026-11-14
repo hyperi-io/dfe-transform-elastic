@@ -1,0 +1,88 @@
+{
+    "events": [
+      {
+        "@timestamp": "2053-04-08T05:41:24.414Z",
+        "o365": {
+          "metrics": {
+            "subscriptions": {
+              "subscription_ids": [
+                "36802cad-1ef9-468f-90b3-06e8de3b6444"
+              ],
+              "subscription_details": [
+                {
+                  "is_trial": false,
+                  "id": "36802cad-1ef9-468f-90b3-06e8de3b6444",
+                  "status": "Enabled",
+                  "total_licenses": 10000,
+                  "created_date_time": "2053-03-17T14:34:59Z"
+                }
+              ],
+              "id": "3f32c-bce5-42b7-8a68-14355af_f2-07e9-47e9-837c-8073d",
+              "sku_part_number": "FLOW_FREE",
+              "account_id": "3f2c-bce5-42b7-8a68-14355af",
+              "service_plans": [
+                {
+                  "service_plan_id": "634ecb4e-3ec1-4682-bbab-45a110fb9060",
+                  "service_plan_name": "EXCHANGE_S_FOUNDATION",
+                  "provisioning_status": "Success",
+                  "applies_to": "Company"
+                },
+                {
+                  "service_plan_name": "DYN365_CDS_VIRAL",
+                  "provisioning_status": "Success",
+                  "applies_to": "User",
+                  "service_plan_id": "12ab56ee-c1e6-4132-984a-af1be23531b8"
+                },
+                {
+                  "service_plan_name": "FLOW_P2_VIRAL",
+                  "provisioning_status": "Success",
+                  "applies_to": "User",
+                  "service_plan_id": "65c82c00-30e5-4167-82f0-72242517b889"
+                }
+              ],
+              "applies_to": "User",
+              "prepaid_units": {
+                "locked_out": {
+                  "count": 0
+                },
+                "enabled": {
+                  "count": 10000
+                },
+                "suspended": {
+                  "count": 0
+                },
+                "warning": {
+                  "count": 0
+                }
+              },
+              "sku_id": "c63cf762-34a2-48f2-875a-32587d16ca9b",
+              "consumed_units": {
+                "count": 1
+              },
+              "account_name": "K378213",
+              "surplus_units": {
+                "count": 9999
+              },
+              "capability_status": "Enabled"
+            }
+          }
+        },
+        "input": {
+          "type": "cel"
+        },
+        "ecs": {
+          "version": "8.0.0"
+        },
+        "host": {
+          "name": "Ilficj-UebCtlx-Ktl.local"
+        },
+        "agent": {
+          "version": "9.0.0",
+          "ephemeral_id": "73f9294f-f104-43f8-a0c7-509b48ed3d2d",
+          "id": "6f3e0bfc-b70c-44bf-a3bb-9379d0acd1d9",
+          "name": "Ilficj-UebCtlx-Ktl.local",
+          "type": "filebeat"
+        }
+      }
+    ]
+}

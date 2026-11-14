@@ -1,0 +1,123 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "kind": "metric",
+        "module": "mongodb_atlas",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "id": "group-1"
+      },
+      "mongodb_atlas": {
+        "disk": {
+          "read": {
+            "iops": {
+              "max": {
+                "throughput": 0.3422309
+              },
+              "throughput": 0.33244343545
+            },
+            "latency": {
+              "max": {
+                "ms": 1.321539
+              },
+              "ms": 1.500023
+            }
+          },
+          "space": {
+            "free": {
+              "bytes": 6.33455633344,
+              "max": {
+                "bytes": 6.182233244,
+                "pct": 73.2324
+              },
+              "pct": 71.23445789
+            },
+            "used": {
+              "bytes": 1.27898776,
+              "max": {
+                "bytes": 25.127876554,
+                "pct": 25.197166
+              },
+              "pct": 25.23388449
+            }
+          },
+          "total": {
+            "iops": {
+              "max": {
+                "throughput": 0.2138048
+              },
+              "throughput": 7.38912
+            }
+          },
+          "write": {
+            "iops": {
+              "max": {
+                "throughput": 44.125672
+              },
+              "throughput": 5.2244123
+            },
+            "latency": {
+              "max": {
+                "ms": 1.2394742
+              },
+              "ms": 0.5678899
+            }
+          }
+        },
+        "host_id": "host-1",
+        "partition_name": "data",
+        "process_id": "hostname-1"
+      }
+    }
+  ],
+  "input": [
+    {
+      "groupId": "group-1",
+      "hostId": "host-1",
+      "partitionName": "data",
+      "processId": "hostname-1",
+      "response": {
+        "DISK_PARTITION_IOPS_READ": 0.33244343545,
+        "DISK_PARTITION_IOPS_TOTAL": 7.38912,
+        "DISK_PARTITION_IOPS_WRITE": 5.2244123,
+        "DISK_PARTITION_LATENCY_READ": 1.500023,
+        "DISK_PARTITION_LATENCY_WRITE": 0.5678899,
+        "DISK_PARTITION_SPACE_FREE": 6.33455633344,
+        "DISK_PARTITION_SPACE_PERCENT_FREE": 71.23445789,
+        "DISK_PARTITION_SPACE_PERCENT_USED": 25.23388449,
+        "DISK_PARTITION_SPACE_USED": 1.27898776,
+        "MAX_DISK_PARTITION_IOPS_READ": 0.3422309,
+        "MAX_DISK_PARTITION_IOPS_TOTAL": 0.2138048,
+        "MAX_DISK_PARTITION_IOPS_WRITE": 44.125672,
+        "MAX_DISK_PARTITION_LATENCY_READ": 1.321539,
+        "MAX_DISK_PARTITION_LATENCY_WRITE": 1.2394742,
+        "MAX_DISK_PARTITION_SPACE_FREE": 6.182233244,
+        "MAX_DISK_PARTITION_SPACE_PERCENT_FREE": 73.2324,
+        "MAX_DISK_PARTITION_SPACE_PERCENT_USED": 25.197166,
+        "MAX_DISK_PARTITION_SPACE_USED": 25.127876554
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "disk",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-mongodb_atlas-disk-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "mongodb_atlas",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

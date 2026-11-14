@@ -1,0 +1,124 @@
+{
+    "events": [
+        {
+            "confidence": 0,
+            "created": "2051-11-02T00:17:00.295Z",
+            "createdBy": {
+                "identity_class": "organization",
+                "name": "Stopforumspam"
+            },
+            "description": "Stopforumspam",
+            "externalReferences": {
+                "edges": [
+                    {
+                        "node": {
+                            "description": "Stopforumspam feed URL",
+                            "source_name": "stopforumspam",
+                            "url": "https://www.stopforumspam.com/downloads/toxic_domains_whole_filtered_50000.txt"
+                        }
+                    },
+                    {
+                        "node": {
+                            "external_id": null,
+                            "source_name": "MISC",
+                            "url": "https://example.com/CVE-0079-1234",
+                            "description": null
+                        }
+                    }
+                ]
+            },
+            "id": "acee478f-a4c9-4942-888b-c2a753a52054",
+            "is_inferred": false,
+            "killChainPhases": [],
+            "lang": "en",
+            "modified": "2051-11-09T23:22:20.586Z",
+            "name": "etfaqscaunzahwgccico.com",
+            "objectLabel": [
+                {
+                    "value": "spam"
+                }
+            ],
+            "objectMarking": [],
+            "observables": {
+                "edges": [
+                    {
+                        "node": {
+                            "entity_type": "Domain-Name",
+                            "id": "ab77505c-7e5b-4928-aece-d9ae23a48b7d",
+                            "observable_value": "etfaqscaunzahwgccico.com",
+                            "standard_id": "domain-name--726e8863-8941-5a1b-b345-1f0131902233",
+                            "value": "etfaqscaunzahwgccico.com"
+                        }
+                    }
+                ],
+                "pageInfo": {
+                    "globalCount": 1
+                }
+            },
+            "pattern": "[domain-name:value = 'etfaqscaunzahwgccico.com']",
+            "pattern_type": "stix",
+            "revoked": false,
+            "standard_id": "indicator--08a7e875-2ce4-50ab-a8de-2915addd93c4",
+            "valid_from": "2051-11-09T23:22:19.426Z",
+            "valid_until": "2052-11-08T23:22:19.426Z",
+            "x_opencti_detection": false,
+            "x_opencti_main_observable_type": "Domain-Name",
+            "x_opencti_score": 60
+        },
+        {
+            "confidence": 0,
+            "created": "2051-11-02T00:17:00.295Z",
+            "createdBy": {
+                "identity_class": "organization",
+                "name": "Stopforumspam"
+            },
+            "description": "Stopforumspam",
+            "externalReferences": {
+                "edges": [
+                    {
+                        "node": {
+                            "description": "Stopforumspam feed URL",
+                            "source_name": "stopforumspam",
+                            "url": "https://www.stopforumspam.com/downloads/toxic_domains_whole_filtered_50000.txt"
+                        }
+                    },
+                    {
+                        "node": {
+                            "external_id": null,
+                            "source_name": "MISC",
+                            "url": "https://example.com/CVE-0079-1234",
+                            "description": null
+                        }
+                    }
+                ]
+            },
+            "id": "acee478f-a4c9-4942-888b-c2a753a52054",
+            "is_inferred": false,
+            "killChainPhases": [],
+            "lang": "en",
+            "modified": "2051-11-09T23:22:20.586Z",
+            "name": "etfaqscaunzahwgccico.com",
+            "objectLabel": [
+                {
+                    "value": "spam"
+                }
+            ],
+            "objectMarking": [],
+            "observables": {
+                "edges": [],
+                "pageInfo": {
+                    "globalCount": 0
+                }
+            },
+            "pattern": "[domain-name:value = 'etfaqscaunzahwgccico.com']",
+            "pattern_type": "stix",
+            "revoked": false,
+            "standard_id": "indicator--08a7e875-2ce4-50ab-a8de-2915addd93c4",
+            "valid_from": "2051-11-09T23:22:19.426Z",
+            "valid_until": "2052-11-08T23:22:19.426Z",
+            "x_opencti_detection": false,
+            "x_opencti_main_observable_type": "Domain-Name",
+            "x_opencti_score": 60
+        }
+    ]
+}

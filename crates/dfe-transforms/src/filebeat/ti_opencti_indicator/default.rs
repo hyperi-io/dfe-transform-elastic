@@ -73,9 +73,7 @@ impl Transform for Default {
 
             event.set("threat.indicator.confidence", json!("Not Specified"))?;
 
-            // Painless script
-            // Source: if (ctx.confidence == null) {\n  ctx.threat.indicator.confidence = 'Not Specified';\n} else if (ctx.confidence == 0) {\n  ctx.threat.indicator.confidence = 'None';\n} else if (1 <= ctx.confidence && ctx.confidence <= 29) {\n  ctx.threat.indicator.confidence = 'Low';\n} else if (30 <= ctx.confidence && ctx.confidence <= 69) {\n  ctx.threat.indicator.confidence = 'Medium';\n} else if (70 <= ctx.confidence && ctx.confidence <= 100) {\n  ctx.threat.indicator.confidence = 'High';\n} else {\n  ctx.threat.indicator.confidence = 'Not Specified';\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -138,9 +136,7 @@ impl Transform for Default {
 
             event.rename("valid_until", "opencti.indicator.valid_until")?;
 
-            // Painless script
-            // Source: if (ctx.opencti.indicator.revoked == true &&\n    ctx.threat.indicator.modified_at.compareTo(ctx.opencti.indicator.valid_until) < 0) {\n    ctx.opencti.indicator.invalid_or_revoked_from = ctx.threat.indicator.modified_at;\n} else {\n    // valid_until always has a value, will be epoch + 10^14 ms if no other value\n    ctx.opencti.indicator.invalid_or_revoked_from = ctx.opencti.indicator.valid_until;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -154,8 +150,7 @@ impl Transform for Default {
 
             event.rename("x_opencti_main_observable_type", "threat.indicator.type")?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: String type = ctx.threat.indicator.type;\ntype = type.toLowerCase();\ntype = type.replace('stixfile', 'file');\nctx.threat.indicator.type = type;\n
+            // The pipeline's script, emitted as the runtime's equivalent
             string_ops(
                 event,
                 &StringOps::new(
@@ -255,9 +250,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script
-            // Source: ArrayList edges = ctx.externalReferences.edges;\nif (edges == null) {\n  return;\n}\nfor (int i = 0; i < edges.length; i++) {\n  if (!ctx.opencti?.indicator?.containsKey('external_reference') == true) {\n    if (!ctx.containsKey('opencti')) {\n      ctx.opencti = [:];\n    }\n    if (!ctx.opencti.containsKey('indicator')) {\n      ctx.opencti.indicator = [:];\n    }\n    if (!ctx.opencti.indicator.containsKey('external_reference')) {\n      ctx.opencti.indicator.external_reference = [];\n    }\n  }\n  def newNode = [:];\n  for (def key : edges[i]['node'].keySet()) {\n    if (edges[i]['node'][key] != null) {\n      newNode[key] = edges[i]['node'][key];\n    }\n  }\n  ctx.opencti.indicator.external_reference.add(newNode);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -385,9 +378,7 @@ impl Transform for Default {
                 })?;
             }
 
-            // Painless script
-            // Source: if (ctx.observables?.edges instanceof List) {\n  for (def edge : ctx.observables.edges) {\n    if (edge.node?.startup_info instanceof List) {\n      def result = [:];\n      for (def kv : edge.node.startup_info) {\n        result[kv.key] = kv.value;\n      }\n      edge.node.startup_info = result;\n    }\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -395,9 +386,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: Map hashesToECS(ArrayList hashes) {\n  Map hash = [:];\n  for (int i = 0; i < hashes.length; i++) {\n    String algorithm = hashes[i].algorithm;\n    algorithm = algorithm.toLowerCase();\n    algorithm = algorithm.replace('sha-', 'sha');\n    algorithm = algorithm.replace('sha3-', 'sha3_');\n    hash[algorithm] = hashes[i].hash;\n  }\n  return hash;\n}\nArrayList observables = ctx.observables.edges;\nfor (int i = 0; i < observables.length; i++) {\n  Map observable = observables[i].node;\n  if (observable.containsKey('hashes')) {\n    def ecsHash = hashesToECS(observable.hashes);\n    if (ecsHash.size() > 0) {\n      observable.hash = ecsHash;\n    }\n    observable.remove('hashes');\n  }\n  if (observable.containsKey('service_dlls')) {\n    for (int ii = 0; ii < observable.service_dlls.length; ii++) {\n      Map serviceDll = observable.service_dlls[ii];\n      if (serviceDll.containsKey('hashes')) {\n        def ecsHash = hashesToECS(serviceDll.hashes);\n        if (ecsHash.size() > 0) {\n          serviceDll.hash = ecsHash;\n        }\n        serviceDll.remove('hashes');\n      }\n    }\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -405,9 +394,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: if (!ctx.containsKey('opencti')) {\n  ctx.opencti = [:];\n}\nif (!ctx.opencti.containsKey('observable')) {\n  ctx.opencti.observable = [:];\n}\nArrayList observables = ctx.observables.edges;\nfor (int i = 0; i < observables.length; i++) {\n  String entity = observables[i]['node']['entity_type'];\n  entity = entity.replace('StixFile', 'file');\n  entity = entity.toLowerCase();\n  entity = entity.replace('-', '_');\n  if (!ctx.opencti.observable.containsKey(entity)) {\n    ctx.opencti.observable[entity] = [];\n  }\n  ctx.opencti.observable[entity].add(observables[i]['node']);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -417,9 +404,7 @@ impl Transform for Default {
 
             event.remove("observables");
 
-            // Painless script
-            // Source: def dropNulls(Object obj) {\n  if (obj instanceof Map) {\n    def map = (Map) obj;\n    Map result = [:];\n    for (def key : map.keySet()) {\n      if (map[key] instanceof Map || map[key] instanceof List) {\n        result[key] = dropNulls(map[key]);\n      } else if (map[key] != null) {\n        result[key] = map[key];\n      }\n    }\n    return result;\n  } else if (obj instanceof List) {\n    def list = (List) obj;\n    List result = [];\n    for (def item : list) {\n      if (item instanceof Map || item instanceof List) {\n        result.add(dropNulls(item));\n      } else if (item != null) {\n        result.add(item);\n      }\n    }\n    return result;\n  } else {\n    return obj;\n  }\n}\nif (ctx.opencti?.containsKey('observable') == true) {\n  ctx.opencti.observable = dropNulls(ctx.opencti.observable);\n  for (def key : ctx.opencti.observable.keySet()) {\n    if (ctx.opencti.observable[key].size() == 0) {\n      ctx.opencti.observable.remove(key);\n    }\n  }\n  if (ctx.opencti.observable.size() == 0) {\n    ctx.opencti.remove('observable');\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -553,8 +538,7 @@ impl Transform for Default {
                                         .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
-                            // Painless script, resolved to its runners at generation time
-                            // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.as = ctx.threat.indicator.as ?: [];\nctx.threat.indicator.as.add(ctx._tmp_as);\n
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_as", "threat.indicator.as"),
@@ -637,9 +621,7 @@ impl Transform for Default {
                             }
                             let _cond = { event.has_value("_tmp_registry.hive") };
                             if _cond {
-                                // Painless script
-                                // Source: def name = ctx._tmp_registry.hive.toUpperCase();\nctx._tmp_registry.hive = params.getOrDefault(name, name);\n
-                                // TODO: Transpile Painless to Rust (2.2.3)
+                                // The pipeline's script, run by the runtime's equivalent
                                 painless_exec_plan_params(
                                     event,
                                     cached_painless!(
@@ -650,8 +632,7 @@ impl Transform for Default {
                                     ),
                                 )?;
                             }
-                            // Painless script, resolved to its runners at generation time
-                            // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.registry = ctx.threat.indicator.registry ?: [];\nctx.threat.indicator.registry.add(ctx._tmp_registry);\n
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_registry", "threat.indicator.registry"),
@@ -750,8 +731,7 @@ impl Transform for Default {
                                         .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
-                            // Painless script, resolved to its runners at generation time
-                            // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.registry = ctx.threat.indicator.registry ?: [];\nctx.threat.indicator.registry.add(ctx._tmp_registry);\n
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_registry", "threat.indicator.registry"),
@@ -904,8 +884,7 @@ impl Transform for Default {
                                         .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
-                            // Painless script, resolved to its runners at generation time
-                            // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.x509 = ctx.threat.indicator.x509 ?: [];\nctx.threat.indicator.x509.add(ctx._tmp_x509);\n
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_x509", "threat.indicator.x509"),
@@ -1026,9 +1005,7 @@ impl Transform for Default {
                 })?;
             }
 
-            // Painless script
-            // Source: if (ctx._tmp_found_urls != null) {\n  def result = [];\n  for (item in ctx._tmp_found_urls) {\n      if (item != null && item != '') {\n          result.add(item);\n      }\n  }\n  ctx._tmp_found_urls = result;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -1096,8 +1073,7 @@ impl Transform for Default {
                             if let Some(v) = event.get("_tmp_url.original").cloned() {
                                 event.set("_tmp_url.full", v)?;
                             }
-                            // Painless script, resolved to its runners at generation time
-                            // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.url = ctx.threat.indicator.url ?: [];\nctx.threat.indicator.url.add(ctx._tmp_url);\n
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_url", "threat.indicator.url"),
@@ -1224,8 +1200,7 @@ impl Transform for Default {
                                     }
                                 }
                             }
-                            // Painless script, resolved to its runners at generation time
-                            // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.url = ctx.threat.indicator.url ?: [];\nctx.threat.indicator.url.add(ctx._tmp_url);\n
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_url", "threat.indicator.url"),
@@ -1345,18 +1320,14 @@ impl Transform for Default {
                                     Ok(())
                                 })?;
                             }
-                            // Painless script
-                            // Source: if (ctx._tmp_file?.name != null) {\n  def result = [];\n  for (name in ctx._tmp_file.name) {\n      if (name != null && name != '') {\n          result.add(name);\n      }\n  }\n  if (result.length == 0) {\n    ctx._tmp_file.remove(\"name\");\n  } else {\n    ctx._tmp_file.name = result;\n  }\n}\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
                                     r#"if (ctx._tmp_file?.name != null) {\n  def result = [];\n  for (name in ctx._tmp_file.name) {\n      if (name != null && name != '') {\n          result.add(name);\n      }\n  }\n  if (result.length == 0) {\n    ctx._tmp_file.remove(\"name\");\n  } else {\n    ctx._tmp_file.name = result;\n  }\n}\n"#
                                 ),
                             )?;
-                            // Painless script
-                            // Source: if (ctx._tmp_file.name != null) {\n  def result = [];\n  for (fullname in ctx._tmp_file.name) {\n    // name shouldn't have a directory, but do strip it if it's there\n    def parts = /[\\/\\\\]/.split(fullname);\n    def name = parts[parts.length - 1];\n    if (name.contains(\".\")) {\n      def nameParts = /\\./.split(name);\n      def extension = nameParts[nameParts.length - 1];\n      if (extension.length() > 0) {\n        result.add(extension);\n      }\n    }\n  }\n  if (result.length > 0) {\n    ctx._tmp_file.extension = result;\n  }\n}\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -1390,8 +1361,7 @@ impl Transform for Default {
                             {
                                 event.set("_tmp_file.hash", v)?;
                             }
-                            // Painless script, resolved to its runners at generation time
-                            // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_file", "threat.indicator.file"),
@@ -1548,18 +1518,14 @@ impl Transform for Default {
                                                     },
                                                 )?;
                                             }
-                                            // Painless script
-                                            // Source: if (ctx._tmp_file?.name != null) {\n  def result = [];\n  for (name in ctx._tmp_file.name) {\n      if (name != null && name != '') {\n          result.add(name);\n      }\n  }\n  if (result.length == 0) {\n    ctx._tmp_file.remove(\"name\");\n  } else {\n    ctx._tmp_file.name = result;\n  }\n}\n
-                                            // TODO: Transpile Painless to Rust (2.2.3)
+                                            // The pipeline's script, run by the runtime's equivalent
                                             painless_exec_plan(
                                                 event,
                                                 cached_painless!(
                                                     r#"if (ctx._tmp_file?.name != null) {\n  def result = [];\n  for (name in ctx._tmp_file.name) {\n      if (name != null && name != '') {\n          result.add(name);\n      }\n  }\n  if (result.length == 0) {\n    ctx._tmp_file.remove(\"name\");\n  } else {\n    ctx._tmp_file.name = result;\n  }\n}\n"#
                                                 ),
                                             )?;
-                                            // Painless script
-                                            // Source: if (ctx._tmp_file.name != null) {\n  def result = [];\n  for (fullname in ctx._tmp_file.name) {\n    // name shouldn't have a directory, but do strip it if it's there\n    def parts = /[\\/\\\\]/.split(fullname);\n    def name = parts[parts.length - 1];\n    if (name.contains(\".\")) {\n      def nameParts = /\\./.split(name);\n      def extension = nameParts[nameParts.length - 1];\n      if (extension.length() > 0) {\n        result.add(extension);\n      }\n    }\n  }\n  if (result.length > 0) {\n    ctx._tmp_file.extension = result;\n  }\n}\n
-                                            // TODO: Transpile Painless to Rust (2.2.3)
+                                            // The pipeline's script, run by the runtime's equivalent
                                             painless_exec_plan(
                                                 event,
                                                 cached_painless!(
@@ -1593,8 +1559,7 @@ impl Transform for Default {
                                             {
                                                 event.set("_tmp_file.hash", v)?;
                                             }
-                                            // Painless script, resolved to its runners at generation time
-                                            // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n
+                                            // The pipeline's script, emitted as the runtime's equivalent
                                             ensure_append(
                                                 event,
                                                 &EnsureAppend::new(
@@ -1740,8 +1705,7 @@ impl Transform for Default {
                             if !painless_is_empty_value(&v) {
                                 event.set("_tmp_file.type", v)?;
                             }
-                            // Painless script, resolved to its runners at generation time
-                            // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_file", "threat.indicator.file"),
@@ -1827,9 +1791,7 @@ impl Transform for Default {
                                     Ok(())
                                 })?;
                             }
-                            // Painless script
-                            // Source: if (ctx._tmp_file?.name != null) {\n  def result = [];\n  for (name in ctx._tmp_file.name) {\n      if (name != null && name != '') {\n          result.add(name);\n      }\n  }\n  if (result.length == 0) {\n    ctx._tmp_file.remove(\"name\");\n  } else if (result.length == 1) {\n    ctx._tmp_file.name = result[0];\n  } else {\n    ctx._tmp_file.name = result;\n  }\n}\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -1855,8 +1817,7 @@ impl Transform for Default {
                             {
                                 event.set("_tmp_file.hash", v)?;
                             }
-                            // Painless script, resolved to its runners at generation time
-                            // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_file", "threat.indicator.file"),
@@ -2018,9 +1979,7 @@ impl Transform for Default {
                             }
                             let _cond = { event.has_value("threat.indicator.file.name") };
                             if _cond {
-                                // Painless script
-                                // Source: def tmp_file_name = ctx.threat.indicator.file.name;\nif (tmp_file_name != null) {\n  def parts = /[\\/\\\\]/.split(tmp_file_name);\n  def name = parts[parts.length - 1];\n  if (name.contains(\".\")) {\n    def nameParts = /\\./.split(name);\n    def extension = nameParts[nameParts.length - 1];\n    if (extension.length() > 0) {\n      ctx.threat.indicator.file.extension = extension;\n    }\n  }\n}\n
-                                // TODO: Transpile Painless to Rust (2.2.3)
+                                // The pipeline's script, run by the runtime's equivalent
                                 painless_exec_plan(
                                     event,
                                     cached_painless!(
@@ -2102,9 +2061,7 @@ impl Transform for Default {
                             }
                             let _cond = { event.has_value("tmp_registry.hive") };
                             if _cond {
-                                // Painless script
-                                // Source: def name = ctx.tmp_registry.hive.toUpperCase();\nctx.tmp_registry.hive = params.getOrDefault(name, name);\n
-                                // TODO: Transpile Painless to Rust (2.2.3)
+                                // The pipeline's script, run by the runtime's equivalent
                                 painless_exec_plan_params(
                                     event,
                                     cached_painless!(
@@ -2119,9 +2076,7 @@ impl Transform for Default {
                                 event.rename("tmp_registry", "threat.indicator.registry")?;
                             }
                             event.remove("_tmp_registry");
-                            // Painless script
-                            // Source: if (ctx.threat?.indicator?.file?.name != null && !(ctx.threat.indicator.file.name instanceof List)) {\n  ctx.threat.indicator.file.name = [ctx.threat.indicator.file.name];\n}\nif (ctx.threat?.indicator?.file?.extension != null && !(ctx.threat.indicator.file.extension instanceof List)) {\n  ctx.threat.indicator.file.extension = [ctx.threat.indicator.file.extension];\n}\nif (ctx.threat?.indicator?.email?.address != null && !(ctx.threat.indicator.email.address instanceof List)) {\n  ctx.threat.indicator.email.address = [ctx.threat.indicator.email.address];\n}\nif (ctx.threat?.indicator?.ip != null && !(ctx.threat.indicator.ip instanceof List)) {\n  ctx.threat.indicator.ip = [ctx.threat.indicator.ip];\n}\nif (ctx.threat?.indicator?.url != null && !(ctx.threat.indicator.url instanceof List)) {\n  ctx.threat.indicator.url = [ctx.threat.indicator.url];\n}\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -2185,9 +2140,7 @@ impl Transform for Default {
                 })?;
             }
 
-            // Painless script
-            // Source: if (ctx.threat?.indicator?.file != null) {\n  def files = ctx.threat.indicator.file instanceof List ? ctx.threat.indicator.file : [ctx.threat.indicator.file];\n  ctx.related = ctx.related ?: [:];\n  ctx.related.hash = ctx.related.hash ?: [];\n  def hashSet = new HashSet(ctx.related.hash);\n  for (def file : files) {\n    if (file?.hash != null) {\n      if (file.hash.md5 != null) {\n        hashSet.add(file.hash.md5);\n      }\n      if (file.hash.sha1 != null) {\n        hashSet.add(file.hash.sha1);\n      }\n      if (file.hash.sha256 != null) {\n        hashSet.add(file.hash.sha256);\n      }\n    }\n  }\n  if (hashSet.size() > 0) {\n    ctx.related.hash = new ArrayList(hashSet);\n  } else {\n    ctx.related.remove('hash');\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -2333,9 +2286,7 @@ impl Transform for Default {
                 })?;
             }
 
-            // Painless script
-            // Source: def cleanUp(Map obj, String key) {\n  if (obj.containsKey(key) && obj[key] instanceof List) {\n    def result = [];\n    for (item in obj[key]) {\n        if (item != null && item != '') {\n            result.add(item);\n        }\n    }\n    if (result.isEmpty()) {\n      obj.remove(key);\n    } else {\n      obj[key] = result;\n    }\n  }\n  return obj;\n}\nif (ctx.containsKey('related') && ctx.related != null) {\n  cleanUp(ctx.related, 'hash');\n  cleanUp(ctx.related, 'hosts');\n  cleanUp(ctx.related, 'ip');\n  cleanUp(ctx.related, 'user');\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -2343,9 +2294,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: def mergeMaps(Map map1, Map map2) {\n  for (def key : map2.keySet()) {\n    if (map1.containsKey(key) && map1[key] != map2[key]) {\n      if (map1[key] instanceof Map && map2[key] instanceof Map) {\n        map1[key] = mergeMaps(map1[key], map2[key]);\n      } else {\n        if (!(map1[key] instanceof List)) {\n          map1[key] = [map1[key]];\n        }\n        def combined = new HashSet(map1[key]);\n        if (map2[key] instanceof List) {\n          combined.addAll(map2[key]);\n        } else {\n          combined.add(map2[key]);\n        }\n        map1[key] = new ArrayList(combined);\n      }\n    } else {\n      map1[key] = map2[key];\n    }\n  }\n  return map1;\n}\ndef mergeListOfMaps(List list) {\n  def merged = new HashMap();\n  for (def map : list) {\n    merged = mergeMaps(merged, map);\n  }\n  return merged;\n}\nif (ctx.opencti?.containsKey('observable') == true) {\n  for (def key : ctx.opencti.observable.keySet()) {\n    if (ctx.opencti.observable[key] instanceof List) {\n      ctx.opencti.observable[key] = mergeListOfMaps(ctx.opencti.observable[key]);\n    }\n  }\n}\nif (ctx.opencti?.indicator?.containsKey('external_reference') == true && ctx.opencti.indicator.external_reference instanceof List) {\n  ctx.opencti.indicator.external_reference = mergeListOfMaps(ctx.opencti.indicator.external_reference);\n}\nif (ctx.threat.indicator.containsKey('file') && ctx.threat.indicator.file instanceof List) {\n  ctx.threat.indicator.file = mergeListOfMaps(ctx.threat.indicator.file);\n}\nif (ctx.threat.indicator.containsKey('as') && ctx.threat.indicator.as instanceof List) {\n  ctx.threat.indicator.as = mergeListOfMaps(ctx.threat.indicator.as);\n}\nif (ctx.threat.indicator.containsKey('url') && ctx.threat.indicator.url instanceof List) {\n  ctx.threat.indicator.url = mergeListOfMaps(ctx.threat.indicator.url);\n}\nif (ctx.threat.indicator.containsKey('registry') && ctx.threat.indicator.registry instanceof List) {\n  ctx.threat.indicator.registry = mergeListOfMaps(ctx.threat.indicator.registry);\n}\nif (ctx.threat.indicator.containsKey('x509') && ctx.threat.indicator.x509 instanceof List) {\n  ctx.threat.indicator.x509 = mergeListOfMaps(ctx.threat.indicator.x509);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -2426,8 +2375,7 @@ impl Transform for Default {
                 event.append_unique("tags", json!("ecs-indicator-detail"))?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '-' || v == 'none' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '-' || v == 'none' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

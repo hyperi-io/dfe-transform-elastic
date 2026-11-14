@@ -1,0 +1,38 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "state",
+        "module": "tychon",
+        "original": "{\"managed_asset\":\"\",\"op_attr\":\"\",\"output_type\":\"asset\",\"software_inventory\":\"\",\"vulnerability\":\"\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "tychon": {
+        "output_type": "asset"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"managed_asset\":\"\",\"op_attr\":\"\",\"output_type\":\"asset\",\"software_inventory\":\"\",\"vulnerability\":\"\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "cmrs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tychon-cmrs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "tychon",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

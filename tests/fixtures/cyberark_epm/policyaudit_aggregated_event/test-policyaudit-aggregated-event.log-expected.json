@@ -1,0 +1,212 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-12-19T05:51:06.024Z",
+      "cyberark_epm": {
+        "policyaudit_aggregated_event": {
+          "affected_computers": 1,
+          "affected_users": 1,
+          "aggregated_by": "C220BECBAAA717F7C6EAC3E1561767FB0AC3C88A,QQQ",
+          "application_type": "Executable",
+          "arrival_time": "2050-12-19T05:51:06.024Z",
+          "authorization_right": "com.apple.AOSNotification.FindMyMac.modify",
+          "file_location": "C:\\Program Files (x86)\\Google\\Update\\203.0.113.165\\",
+          "file_qualifier": "-5566271857083130002",
+          "file_size": 408536,
+          "first_event_agent_id": "e742a3f0-425d-43a7-b371-82d57bef020e",
+          "first_event_date": "2050-12-14T21:06:44.756Z",
+          "first_event_user_domain": "NT AUTHORITY",
+          "first_event_user_name": "SYSTEM",
+          "hash": "SHA1##C220BECBAAA717F7C6EAC3E1561767FB0AC3C88A",
+          "last_event_access_target_type": "Registry",
+          "last_event_agent_id": "e742a3f0-425d-43a7-b371-82d57bef020e",
+          "last_event_date": "2050-12-19T01:04:47.284Z",
+          "last_event_display_name": "Google Crash Handler (GoogleCrashHandler64.exe)",
+          "last_event_file_name": "GoogleCrashHandler64.exe",
+          "last_event_id": "QtvvKIUB8k35oa3KjVf7",
+          "last_event_package_name": "Google Update (GoogleUpdate.exe)",
+          "last_event_source_name": "Updater (Google Updater)",
+          "last_event_source_type": "Updater",
+          "last_event_user_domain": "NT AUTHORITY",
+          "last_event_user_name": "SYSTEM",
+          "operating_system_type": "Windows",
+          "policy_id": "11161",
+          "policy_name": "QQQ",
+          "publisher": "Google LLC",
+          "skipped": false,
+          "skipped_count": 0,
+          "total_events": 8,
+          "type": "Launch"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "process"
+        ],
+        "end": "2050-12-19T01:04:47.284Z",
+        "kind": "event",
+        "original": "{\"fileQualifier\":\"-5566271857083130002\",\"lastEventDisplayName\":\"Google Crash Handler (GoogleCrashHandler64.exe)\",\"hash\":\"SHA1##C220BECBAAA717F7C6EAC3E1561767FB0AC3C88A\",\"publisher\":\"Google LLC\",\"totalEvents\":8,\"applicationType\":\"Executable\",\"eventType\":\"Launch\",\"lastEventSourceType\":\"Updater\",\"lastEventSourceName\":\"Updater (Google Updater)\",\"lastEventDate\":\"2050-12-19T01:04:47.284Z\",\"lastEventUserName\":\"NT AUTHORITY\\\\SYSTEM\",\"lastEventId\":\"QtvvKIUB8k35oa3KjVf7\",\"lastEventJustification\":\"\",\"policyId\":11161,\"policyName\":\"QQQ\",\"lastEventFileName\":\"GoogleCrashHandler64.exe\",\"affectedComputers\":1,\"affectedUsers\":1,\"firstEventDate\":\"2050-12-14T21:06:44.756Z\",\"firstEventUserName\":\"NT AUTHORITY\\\\SYSTEM\",\"fileSize\":408536,\"CLSID\":\"\",\"adminTaskId\":\"\",\"appPackageDisplayName\":\"\",\"firstEventAgentId\":\"e742a3f0-425d-43a7-b371-82d57bef020e\",\"lastEventAgentId\":\"e742a3f0-425d-43a7-b371-82d57bef020e\",\"fileLocation\":\"C:\\\\Program Files (x86)\\\\Google\\\\Update\\\\203.0.113.165\\\\\",\"aggregatedBy\":\"C220BECBAAA717F7C6EAC3E1561767FB0AC3C88A,QQQ\",\"operatingSystemType\":\"Windows\",\"arrivalTime\":\"2050-12-19T05:51:06.024Z\",\"skippedCount\":0,\"skipped\":false,\"lastEventPackageName\":\"Google Update (GoogleUpdate.exe)\",\"lastEventAccessTargetType\":\"Registry\",\"lastEventAccessTarget\":null,\"policyAction\":null,\"productCode\":null,\"upgradeCode\":null,\"mimeType\":\"\",\"url\":\"\",\"lastEventSymlink\":\"\",\"authorizationRight\":\"com.apple.AOSNotification.FindMyMac.modify\"}",
+        "start": "2050-12-14T21:06:44.756Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "directory": "C:\\Program Files (x86)\\Google\\Update\\203.0.113.165\\",
+        "hash": {
+          "sha1": "C220BECBAAA717F7C6EAC3E1561767FB0AC3C88A"
+        },
+        "name": "GoogleCrashHandler64.exe",
+        "size": 408536
+      },
+      "host": {
+        "os": {
+          "type": "windows"
+        }
+      },
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "package": {
+        "checksum": "C220BECBAAA717F7C6EAC3E1561767FB0AC3C88A",
+        "name": "Google Update (GoogleUpdate.exe)",
+        "size": 408536
+      },
+      "related": {
+        "hash": [
+          "C220BECBAAA717F7C6EAC3E1561767FB0AC3C88A"
+        ],
+        "user": [
+          "SYSTEM"
+        ]
+      },
+      "rule": {
+        "id": "11161",
+        "name": "QQQ"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-25T14:27:54.967Z",
+      "cyberark_epm": {
+        "policyaudit_aggregated_event": {
+          "affected_computers": 1,
+          "affected_users": 2,
+          "aggregated_by": "7c478610620c36362a1bd744841028d1b9ac0d77,Test-rule",
+          "application_type": "LinuxCommand",
+          "arrival_time": "2052-11-25T14:27:54.967Z",
+          "file_location": "/usr/bin/",
+          "file_qualifier": "2375697114193346955",
+          "file_size": 1115760,
+          "first_event_agent_id": "51f5ba96-6487-5498-aadc-1ebcbeaafcd7",
+          "first_event_date": "2052-11-25T10:27:47.420Z",
+          "first_event_user_name": "serviceuser",
+          "hash": "sha1##7c478610620c36362a1bd744841028d1b9ac0d77",
+          "last_event_agent_id": "51f5ba96-6487-5498-aadc-1ebcbeaafcd7",
+          "last_event_date": "2052-11-25T10:38:05.096Z",
+          "last_event_display_name": "systemctl",
+          "last_event_file_name": "systemctl",
+          "last_event_id": "1aS4Y5MBWKRe9qjDzYAN",
+          "last_event_package_name": "systemctl",
+          "last_event_source_name": "/usr/bin/systemctl",
+          "last_event_source_type": "LocalDisk",
+          "last_event_user_name": "serviceuser",
+          "operating_system_type": "Linux",
+          "policy_action": "Elevate",
+          "policy_id": "23470",
+          "policy_name": "Test-rule",
+          "skipped": false,
+          "skipped_count": 0,
+          "total_events": 9,
+          "type": "StartElevated"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "end": "2052-11-25T10:38:05.096Z",
+        "kind": "event",
+        "original": "{\"fileQualifier\":\"2375697114193346955\",\"lastEventDisplayName\":\"systemctl\",\"hash\":\"sha1##7c478610620c36362a1bd744841028d1b9ac0d77\",\"publisher\":\"\",\"totalEvents\":9,\"applicationType\":\"LinuxCommand\",\"eventType\":\"StartElevated\",\"lastEventSourceType\":\"LocalDisk\",\"lastEventSourceName\":\"/usr/bin/systemctl\",\"lastEventDate\":\"2052-11-25T10:38:05.096Z\",\"lastEventUserName\":\"serviceuser\",\"lastEventId\":\"1aS4Y5MBWKRe9qjDzYAN\",\"lastEventJustification\":\"\",\"policyId\":23470,\"policyName\":\"Test-rule\",\"lastEventFileName\":\"systemctl\",\"lastEventOriginalFileName\":\"\",\"affectedComputers\":1,\"affectedUsers\":2,\"firstEventDate\":\"2052-11-25T10:27:47.42Z\",\"firstEventUserName\":\"serviceuser\",\"fileSize\":1115760,\"CLSID\":\"\",\"adminTaskId\":\"\",\"appPackageDisplayName\":\"\",\"firstEventAgentId\":\"51f5ba96-6487-5498-aadc-1ebcbeaafcd7\",\"lastEventAgentId\":\"51f5ba96-6487-5498-aadc-1ebcbeaafcd7\",\"fileLocation\":\"/usr/bin/\",\"aggregatedBy\":\"7c478610620c36362a1bd744841028d1b9ac0d77,Test-rule\",\"operatingSystemType\":\"Linux\",\"arrivalTime\":\"2052-11-25T14:27:54.967Z\",\"skippedCount\":0,\"skipped\":false,\"lastEventPackageName\":\"systemctl\",\"lastEventAccessTargetType\":null,\"lastEventAccessTargetName\":\"\",\"policyAction\":\"Elevate\",\"productCode\":\"\",\"upgradeCode\":\"\",\"productVersion\":\"\",\"mimeType\":\"\",\"url\":\"\",\"parentProcess\":\"\",\"interpreter\":\"\",\"lastEventAuthorizationRights\":\"\"}",
+        "start": "2052-11-25T10:27:47.420Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "directory": "/usr/bin/",
+        "hash": {
+          "sha1": "7c478610620c36362a1bd744841028d1b9ac0d77"
+        },
+        "name": "systemctl",
+        "size": 1115760
+      },
+      "host": {
+        "os": {
+          "type": "linux"
+        }
+      },
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "package": {
+        "checksum": "7c478610620c36362a1bd744841028d1b9ac0d77",
+        "name": "systemctl",
+        "size": 1115760
+      },
+      "related": {
+        "hash": [
+          "7c478610620c36362a1bd744841028d1b9ac0d77"
+        ],
+        "user": [
+          "serviceuser"
+        ]
+      },
+      "rule": {
+        "id": "23470",
+        "name": "Test-rule"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"fileQualifier\":\"-5566271857083130002\",\"lastEventDisplayName\":\"Google Crash Handler (GoogleCrashHandler64.exe)\",\"hash\":\"SHA1##C220BECBAAA717F7C6EAC3E1561767FB0AC3C88A\",\"publisher\":\"Google LLC\",\"totalEvents\":8,\"applicationType\":\"Executable\",\"eventType\":\"Launch\",\"lastEventSourceType\":\"Updater\",\"lastEventSourceName\":\"Updater (Google Updater)\",\"lastEventDate\":\"2050-12-19T01:04:47.284Z\",\"lastEventUserName\":\"NT AUTHORITY\\\\SYSTEM\",\"lastEventId\":\"QtvvKIUB8k35oa3KjVf7\",\"lastEventJustification\":\"\",\"policyId\":11161,\"policyName\":\"QQQ\",\"lastEventFileName\":\"GoogleCrashHandler64.exe\",\"affectedComputers\":1,\"affectedUsers\":1,\"firstEventDate\":\"2050-12-14T21:06:44.756Z\",\"firstEventUserName\":\"NT AUTHORITY\\\\SYSTEM\",\"fileSize\":408536,\"CLSID\":\"\",\"adminTaskId\":\"\",\"appPackageDisplayName\":\"\",\"firstEventAgentId\":\"e742a3f0-425d-43a7-b371-82d57bef020e\",\"lastEventAgentId\":\"e742a3f0-425d-43a7-b371-82d57bef020e\",\"fileLocation\":\"C:\\\\Program Files (x86)\\\\Google\\\\Update\\\\203.0.113.165\\\\\",\"aggregatedBy\":\"C220BECBAAA717F7C6EAC3E1561767FB0AC3C88A,QQQ\",\"operatingSystemType\":\"Windows\",\"arrivalTime\":\"2050-12-19T05:51:06.024Z\",\"skippedCount\":0,\"skipped\":false,\"lastEventPackageName\":\"Google Update (GoogleUpdate.exe)\",\"lastEventAccessTargetType\":\"Registry\",\"lastEventAccessTarget\":null,\"policyAction\":null,\"productCode\":null,\"upgradeCode\":null,\"mimeType\":\"\",\"url\":\"\",\"lastEventSymlink\":\"\",\"authorizationRight\":\"com.apple.AOSNotification.FindMyMac.modify\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"fileQualifier\":\"2375697114193346955\",\"lastEventDisplayName\":\"systemctl\",\"hash\":\"sha1##7c478610620c36362a1bd744841028d1b9ac0d77\",\"publisher\":\"\",\"totalEvents\":9,\"applicationType\":\"LinuxCommand\",\"eventType\":\"StartElevated\",\"lastEventSourceType\":\"LocalDisk\",\"lastEventSourceName\":\"/usr/bin/systemctl\",\"lastEventDate\":\"2052-11-25T10:38:05.096Z\",\"lastEventUserName\":\"serviceuser\",\"lastEventId\":\"1aS4Y5MBWKRe9qjDzYAN\",\"lastEventJustification\":\"\",\"policyId\":23470,\"policyName\":\"Test-rule\",\"lastEventFileName\":\"systemctl\",\"lastEventOriginalFileName\":\"\",\"affectedComputers\":1,\"affectedUsers\":2,\"firstEventDate\":\"2052-11-25T10:27:47.42Z\",\"firstEventUserName\":\"serviceuser\",\"fileSize\":1115760,\"CLSID\":\"\",\"adminTaskId\":\"\",\"appPackageDisplayName\":\"\",\"firstEventAgentId\":\"51f5ba96-6487-5498-aadc-1ebcbeaafcd7\",\"lastEventAgentId\":\"51f5ba96-6487-5498-aadc-1ebcbeaafcd7\",\"fileLocation\":\"/usr/bin/\",\"aggregatedBy\":\"7c478610620c36362a1bd744841028d1b9ac0d77,Test-rule\",\"operatingSystemType\":\"Linux\",\"arrivalTime\":\"2052-11-25T14:27:54.967Z\",\"skippedCount\":0,\"skipped\":false,\"lastEventPackageName\":\"systemctl\",\"lastEventAccessTargetType\":null,\"lastEventAccessTargetName\":\"\",\"policyAction\":\"Elevate\",\"productCode\":\"\",\"upgradeCode\":\"\",\"productVersion\":\"\",\"mimeType\":\"\",\"url\":\"\",\"parentProcess\":\"\",\"interpreter\":\"\",\"lastEventAuthorizationRights\":\"\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "policyaudit_aggregated_event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cyberark_epm-policyaudit_aggregated_event-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "cyberark_epm",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

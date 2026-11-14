@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `dataminr_pulse`'s alert scripts, transcribed.
+//! `dataminr_pulse`'s alert scripts, as the runtime runs them.
 //!
 //! The vendor puts everything an alert found into one `intelAgents` list of
 //! discovered entities, and one script sorts that into threat actors,
@@ -52,7 +52,7 @@ const OS_MAPPING: &[(&str, &[&str])] = &[
 
 /// `dataminr_pulse/alerts`, `extract_entities_and_map_ecs`: every discovered
 /// entity sorted onto the vendor's own namespace and onto ECS.
-#[allow(clippy::too_many_lines)] // One script, transcribed whole.
+#[allow(clippy::too_many_lines)] // One script, written whole.
 fn extract_entities(event: &mut Event, _params: &Value) {
     let Some(agents) = event.get_array(INTEL_AGENTS).cloned() else {
         return;
@@ -467,7 +467,7 @@ fn map_alert_severity(event: &mut Event, _params: &Value) {
     let _ = event.set("event.severity", severity);
 }
 
-/// Every `dataminr_pulse` script transcribed here.
+/// Every `dataminr_pulse` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "e5327e43b17eb33e6a016d3e815073d4239330cbe3191e05439eb938ad2e069e",

@@ -1,0 +1,400 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2053-08-15T10:30:00.000Z",
+        "id": "d0d4f5f9-10c6-4d42-9e40-2c7a69e9f000",
+        "kind": "event",
+        "original": "{\"id\":\"d0d4f5f9-10c6-4d42-9e40-2c7a69e9f000\",\"createdDate\":\"2053-08-15T10:30:00Z\",\"updatedDate\":\"2053-08-18T14:45:00Z\",\"tenantId\":\"acme-tenant-001\",\"userId\":\"user-12345\",\"userType\":\"Management\",\"userStatus\":\"Active\",\"groups\":[\"Admins\",\"Security\"],\"connectionName\":\"AzureAD\",\"allowedTenantsIds\":[\"acme-tenant-001\",\"partner-tenant-002\"],\"firstName\":\"Kmjo\",\"lastName\":\"Cse\",\"email\":\"hshg.fqb@example.com\",\"lastLogin\":\"2053-08-18T14:40:10Z\",\"lastSeen\":\"2053-08-18T14:41:55Z\",\"invitationDate\":\"2053-08-10T09:00:00Z\",\"expirationDate\":null,\"emailVerified\":true,\"userSource\":\"Email\",\"claims\":{},\"scimId\":null}",
+        "type": [
+          "user"
+        ]
+      },
+      "island_browser": {
+        "user": {
+          "allowed_tenants_ids": [
+            "acme-tenant-001",
+            "partner-tenant-002"
+          ],
+          "connection_name": "AzureAD",
+          "created_date": "2053-08-15T10:30:00.000Z",
+          "email": "hshg.fqb@example.com",
+          "email_verified": true,
+          "first_name": "Kmjo",
+          "groups": [
+            "Admins",
+            "Security"
+          ],
+          "id": "d0d4f5f9-10c6-4d42-9e40-2c7a69e9f000",
+          "invitation_date": "2053-08-10T09:00:00.000Z",
+          "last_login": "2053-08-18T14:40:10.000Z",
+          "last_name": "Cse",
+          "last_seen": "2053-08-18T14:41:55.000Z",
+          "tenant_id": "acme-tenant-001",
+          "updated_date": "2053-08-18T14:45:00.000Z",
+          "user_id": "user-12345",
+          "user_source": "Email",
+          "user_status": "Active",
+          "user_type": "Management"
+        }
+      },
+      "organization": {
+        "id": "acme-tenant-001"
+      },
+      "related": {
+        "user": [
+          "hshg.fqb@example.com",
+          "Kmjo",
+          "user-12345"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "hshg.fqb@example.com",
+        "full_name": "Kmjo Cse",
+        "group": {
+          "name": [
+            "Admins",
+            "Security"
+          ]
+        },
+        "id": "user-12345",
+        "name": "Kmjo"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2053-08-15T10:30:01.000Z",
+        "id": "d4a1d1c5-18c1-4a06-9b18-3c0f82d9f541",
+        "kind": "event",
+        "original": "{\"id\":\"d4a1d1c5-18c1-4a06-9b18-3c0f82d9f541\",\"createdDate\":\"2053-08-15T10:30:01Z\",\"updatedDate\":\"2053-08-18T14:45:01Z\",\"tenantId\":\"acme-tenant-002\",\"userId\":\"user-1234\",\"userType\":\"Browser\",\"userStatus\":\"Invited\",\"groups\":[\"Admins\",\"Security\"],\"connectionName\":\"AzureAD\",\"allowedTenantsIds\":[\"acme-tenant-002\",\"partner-tenant-003\"],\"firstName\":\"Dqdvo\",\"lastName\":\"Cse\",\"email\":\"eobmq.bmd@example.com\",\"lastLogin\":\"2053-08-18T14:40:20Z\",\"lastSeen\":\"2053-08-18T14:41:56Z\",\"invitationDate\":\"2053-08-10T09:00:00Z\",\"expirationDate\":null,\"emailVerified\":true,\"userSource\":\"Idp\",\"claims\":{},\"scimId\":null}",
+        "type": [
+          "user"
+        ]
+      },
+      "island_browser": {
+        "user": {
+          "allowed_tenants_ids": [
+            "acme-tenant-002",
+            "partner-tenant-003"
+          ],
+          "connection_name": "AzureAD",
+          "created_date": "2053-08-15T10:30:01.000Z",
+          "email": "eobmq.bmd@example.com",
+          "email_verified": true,
+          "first_name": "Dqdvo",
+          "groups": [
+            "Admins",
+            "Security"
+          ],
+          "id": "d4a1d1c5-18c1-4a06-9b18-3c0f82d9f541",
+          "invitation_date": "2053-08-10T09:00:00.000Z",
+          "last_login": "2053-08-18T14:40:20.000Z",
+          "last_name": "Cse",
+          "last_seen": "2053-08-18T14:41:56.000Z",
+          "tenant_id": "acme-tenant-002",
+          "updated_date": "2053-08-18T14:45:01.000Z",
+          "user_id": "user-1234",
+          "user_source": "Idp",
+          "user_status": "Invited",
+          "user_type": "Browser"
+        }
+      },
+      "organization": {
+        "id": "acme-tenant-002"
+      },
+      "related": {
+        "user": [
+          "eobmq.bmd@example.com",
+          "Dqdvo",
+          "user-1234"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "eobmq.bmd@example.com",
+        "full_name": "Dqdvo Cse",
+        "group": {
+          "name": [
+            "Admins",
+            "Security"
+          ]
+        },
+        "id": "user-1234",
+        "name": "Dqdvo"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2053-08-15T10:30:01.000Z",
+        "id": "d4a1d1c5-18c1-4a06-9b18-3c0f82d9f541",
+        "kind": "event",
+        "original": "{\"id\":\"d4a1d1c5-18c1-4a06-9b18-3c0f82d9f541\",\"createdDate\":\"2053-08-15T10:30:01Z\",\"updatedDate\":\"2053-08-18T14:45:01Z\",\"tenantId\":\"acme-tenant-002\",\"userId\":\"user-1234\",\"userType\":\"Management\",\"userStatus\":\"BlockedSuspicious\",\"groups\":[\"Admins\",\"Security\"],\"connectionName\":\"AzureAD\",\"allowedTenantsIds\":[\"acme-tenant-002\",\"partner-tenant-003\"],\"firstName\":\"Gjfybjc\",\"lastName\":\"Ijznh\",\"email\":\"ykcmcve.Xhrjy@example.com\",\"lastLogin\":\"2053-08-18T14:40:20Z\",\"lastSeen\":\"2053-08-18T14:41:56Z\",\"invitationDate\":\"2053-08-10T09:00:00Z\",\"expirationDate\":null,\"emailVerified\":true,\"userSource\":\"External\",\"claims\":{},\"scimId\":null}",
+        "type": [
+          "user"
+        ]
+      },
+      "island_browser": {
+        "user": {
+          "allowed_tenants_ids": [
+            "acme-tenant-002",
+            "partner-tenant-003"
+          ],
+          "connection_name": "AzureAD",
+          "created_date": "2053-08-15T10:30:01.000Z",
+          "email": "ykcmcve.Xhrjy@example.com",
+          "email_verified": true,
+          "first_name": "Gjfybjc",
+          "groups": [
+            "Admins",
+            "Security"
+          ],
+          "id": "d4a1d1c5-18c1-4a06-9b18-3c0f82d9f541",
+          "invitation_date": "2053-08-10T09:00:00.000Z",
+          "last_login": "2053-08-18T14:40:20.000Z",
+          "last_name": "Ijznh",
+          "last_seen": "2053-08-18T14:41:56.000Z",
+          "tenant_id": "acme-tenant-002",
+          "updated_date": "2053-08-18T14:45:01.000Z",
+          "user_id": "user-1234",
+          "user_source": "External",
+          "user_status": "BlockedSuspicious",
+          "user_type": "Management"
+        }
+      },
+      "organization": {
+        "id": "acme-tenant-002"
+      },
+      "related": {
+        "user": [
+          "ykcmcve.Xhrjy@example.com",
+          "Gjfybjc",
+          "user-1234"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "ykcmcve.Xhrjy@example.com",
+        "full_name": "Gjfybjc Ijznh",
+        "group": {
+          "name": [
+            "Admins",
+            "Security"
+          ]
+        },
+        "id": "user-1234",
+        "name": "Gjfybjc"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2053-08-27T07:09:49.000Z",
+        "id": "b3e7c8d3-92c2-4c90-8b14-7a9c7f0d0c51",
+        "kind": "event",
+        "original": "{\"id\":\"b3e7c8d3-92c2-4c90-8b14-7a9c7f0d0c51\",\"createdDate\":\"2053-08-27T07:09:49Z\",\"updatedDate\":\"2053-08-27T07:09:49Z\",\"tenantId\":\"acme-tenant-003\",\"userId\":\"user-67890\",\"userType\":\"Browser\",\"userStatus\":\"BlockedAcknowledged\",\"groups\":[\"Users\",\"Analytics\"],\"connectionName\":\"GoogleSSO\",\"allowedTenantsIds\":[\"acme-tenant-003\",\"partner-tenant-004\"],\"firstName\":\"Qfxcs\",\"lastName\":\"Fkhzgt\",\"email\":\"hfwdy.aznqny@example.com\",\"lastLogin\":\"2053-08-27T07:05:30Z\",\"lastSeen\":\"2053-08-27T07:09:45Z\",\"invitationDate\":\"2053-08-20T11:15:00Z\",\"expirationDate\":null,\"emailVerified\":true,\"userSource\":\"Email\",\"claims\":{},\"scimId\":null}",
+        "type": [
+          "user"
+        ]
+      },
+      "island_browser": {
+        "user": {
+          "allowed_tenants_ids": [
+            "acme-tenant-003",
+            "partner-tenant-004"
+          ],
+          "connection_name": "GoogleSSO",
+          "created_date": "2053-08-27T07:09:49.000Z",
+          "email": "hfwdy.aznqny@example.com",
+          "email_verified": true,
+          "first_name": "Qfxcs",
+          "groups": [
+            "Users",
+            "Analytics"
+          ],
+          "id": "b3e7c8d3-92c2-4c90-8b14-7a9c7f0d0c51",
+          "invitation_date": "2053-08-20T11:15:00.000Z",
+          "last_login": "2053-08-27T07:05:30.000Z",
+          "last_name": "Fkhzgt",
+          "last_seen": "2053-08-27T07:09:45.000Z",
+          "tenant_id": "acme-tenant-003",
+          "updated_date": "2053-08-27T07:09:49.000Z",
+          "user_id": "user-67890",
+          "user_source": "Email",
+          "user_status": "BlockedAcknowledged",
+          "user_type": "Browser"
+        }
+      },
+      "organization": {
+        "id": "acme-tenant-003"
+      },
+      "related": {
+        "user": [
+          "hfwdy.aznqny@example.com",
+          "Qfxcs",
+          "user-67890"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "hfwdy.aznqny@example.com",
+        "full_name": "Qfxcs Fkhzgt",
+        "group": {
+          "name": [
+            "Users",
+            "Analytics"
+          ]
+        },
+        "id": "user-67890",
+        "name": "Qfxcs"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2053-08-27T07:09:50.000Z",
+        "id": "a8b4a2d6-36d7-4b15-9b82-1a4b6a4b0c81",
+        "kind": "event",
+        "original": "{\"id\":\"a8b4a2d6-36d7-4b15-9b82-1a4b6a4b0c81\",\"createdDate\":\"2053-08-27T07:09:50Z\",\"updatedDate\":\"2053-08-27T07:09:50Z\",\"tenantId\":\"acme-tenant-004\",\"userId\":\"user-54321\",\"userType\":\"Management\",\"userStatus\":\"Subscribed\",\"groups\":[\"Managers\",\"Finance\"],\"connectionName\":\"OKTA\",\"allowedTenantsIds\":[\"acme-tenant-004\"],\"firstName\":\"Tgareel\",\"lastName\":\"Ijznh\",\"email\":\"vhdidao.ortjx@example.com\",\"lastLogin\":null,\"lastSeen\":null,\"invitationDate\":\"2053-08-27T07:00:00Z\",\"expirationDate\":\"2053-09-27T07:00:00Z\",\"emailVerified\":false,\"userSource\":\"GroupToken\",\"claims\":{},\"scimId\":\"scim-98765\"}",
+        "type": [
+          "user"
+        ]
+      },
+      "island_browser": {
+        "user": {
+          "allowed_tenants_ids": [
+            "acme-tenant-004"
+          ],
+          "connection_name": "OKTA",
+          "created_date": "2053-08-27T07:09:50.000Z",
+          "email": "vhdidao.ortjx@example.com",
+          "email_verified": false,
+          "expiration_date": "2053-09-27T07:00:00.000Z",
+          "first_name": "Tgareel",
+          "groups": [
+            "Managers",
+            "Finance"
+          ],
+          "id": "a8b4a2d6-36d7-4b15-9b82-1a4b6a4b0c81",
+          "invitation_date": "2053-08-27T07:00:00.000Z",
+          "last_name": "Ijznh",
+          "scim_id": "scim-98765",
+          "tenant_id": "acme-tenant-004",
+          "updated_date": "2053-08-27T07:09:50.000Z",
+          "user_id": "user-54321",
+          "user_source": "GroupToken",
+          "user_status": "Subscribed",
+          "user_type": "Management"
+        }
+      },
+      "organization": {
+        "id": "acme-tenant-004"
+      },
+      "related": {
+        "user": [
+          "vhdidao.ortjx@example.com",
+          "Tgareel",
+          "user-54321"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "vhdidao.ortjx@example.com",
+        "full_name": "Tgareel Ijznh",
+        "group": {
+          "name": [
+            "Managers",
+            "Finance"
+          ]
+        },
+        "id": "user-54321",
+        "name": "Tgareel"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"d0d4f5f9-10c6-4d42-9e40-2c7a69e9f000\",\"createdDate\":\"2053-08-15T10:30:00Z\",\"updatedDate\":\"2053-08-18T14:45:00Z\",\"tenantId\":\"acme-tenant-001\",\"userId\":\"user-12345\",\"userType\":\"Management\",\"userStatus\":\"Active\",\"groups\":[\"Admins\",\"Security\"],\"connectionName\":\"AzureAD\",\"allowedTenantsIds\":[\"acme-tenant-001\",\"partner-tenant-002\"],\"firstName\":\"Kmjo\",\"lastName\":\"Cse\",\"email\":\"hshg.fqb@example.com\",\"lastLogin\":\"2053-08-18T14:40:10Z\",\"lastSeen\":\"2053-08-18T14:41:55Z\",\"invitationDate\":\"2053-08-10T09:00:00Z\",\"expirationDate\":null,\"emailVerified\":true,\"userSource\":\"Email\",\"claims\":{},\"scimId\":null}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"d4a1d1c5-18c1-4a06-9b18-3c0f82d9f541\",\"createdDate\":\"2053-08-15T10:30:01Z\",\"updatedDate\":\"2053-08-18T14:45:01Z\",\"tenantId\":\"acme-tenant-002\",\"userId\":\"user-1234\",\"userType\":\"Browser\",\"userStatus\":\"Invited\",\"groups\":[\"Admins\",\"Security\"],\"connectionName\":\"AzureAD\",\"allowedTenantsIds\":[\"acme-tenant-002\",\"partner-tenant-003\"],\"firstName\":\"Dqdvo\",\"lastName\":\"Cse\",\"email\":\"eobmq.bmd@example.com\",\"lastLogin\":\"2053-08-18T14:40:20Z\",\"lastSeen\":\"2053-08-18T14:41:56Z\",\"invitationDate\":\"2053-08-10T09:00:00Z\",\"expirationDate\":null,\"emailVerified\":true,\"userSource\":\"Idp\",\"claims\":{},\"scimId\":null}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"d4a1d1c5-18c1-4a06-9b18-3c0f82d9f541\",\"createdDate\":\"2053-08-15T10:30:01Z\",\"updatedDate\":\"2053-08-18T14:45:01Z\",\"tenantId\":\"acme-tenant-002\",\"userId\":\"user-1234\",\"userType\":\"Management\",\"userStatus\":\"BlockedSuspicious\",\"groups\":[\"Admins\",\"Security\"],\"connectionName\":\"AzureAD\",\"allowedTenantsIds\":[\"acme-tenant-002\",\"partner-tenant-003\"],\"firstName\":\"Gjfybjc\",\"lastName\":\"Ijznh\",\"email\":\"ykcmcve.Xhrjy@example.com\",\"lastLogin\":\"2053-08-18T14:40:20Z\",\"lastSeen\":\"2053-08-18T14:41:56Z\",\"invitationDate\":\"2053-08-10T09:00:00Z\",\"expirationDate\":null,\"emailVerified\":true,\"userSource\":\"External\",\"claims\":{},\"scimId\":null}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"b3e7c8d3-92c2-4c90-8b14-7a9c7f0d0c51\",\"createdDate\":\"2053-08-27T07:09:49Z\",\"updatedDate\":\"2053-08-27T07:09:49Z\",\"tenantId\":\"acme-tenant-003\",\"userId\":\"user-67890\",\"userType\":\"Browser\",\"userStatus\":\"BlockedAcknowledged\",\"groups\":[\"Users\",\"Analytics\"],\"connectionName\":\"GoogleSSO\",\"allowedTenantsIds\":[\"acme-tenant-003\",\"partner-tenant-004\"],\"firstName\":\"Qfxcs\",\"lastName\":\"Fkhzgt\",\"email\":\"hfwdy.aznqny@example.com\",\"lastLogin\":\"2053-08-27T07:05:30Z\",\"lastSeen\":\"2053-08-27T07:09:45Z\",\"invitationDate\":\"2053-08-20T11:15:00Z\",\"expirationDate\":null,\"emailVerified\":true,\"userSource\":\"Email\",\"claims\":{},\"scimId\":null}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"a8b4a2d6-36d7-4b15-9b82-1a4b6a4b0c81\",\"createdDate\":\"2053-08-27T07:09:50Z\",\"updatedDate\":\"2053-08-27T07:09:50Z\",\"tenantId\":\"acme-tenant-004\",\"userId\":\"user-54321\",\"userType\":\"Management\",\"userStatus\":\"Subscribed\",\"groups\":[\"Managers\",\"Finance\"],\"connectionName\":\"OKTA\",\"allowedTenantsIds\":[\"acme-tenant-004\"],\"firstName\":\"Tgareel\",\"lastName\":\"Ijznh\",\"email\":\"vhdidao.ortjx@example.com\",\"lastLogin\":null,\"lastSeen\":null,\"invitationDate\":\"2053-08-27T07:00:00Z\",\"expirationDate\":\"2053-09-27T07:00:00Z\",\"emailVerified\":false,\"userSource\":\"GroupToken\",\"claims\":{},\"scimId\":\"scim-98765\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "user",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-island_browser-user-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "island_browser",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

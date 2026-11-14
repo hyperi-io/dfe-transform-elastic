@@ -1,0 +1,360 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2043-06-22T19:14:37.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "06/22/2043:19:14:37 GMT ns 0-PPE-1 : default APPFW APPFW_cross-site scripting 60 0 : 192.0.2.87 616-PPE1 y/3upt2K8ySWWId3Kavbxyni7Rw0000 pr_ffc http://aaron.stratum8.net/FFC/login.php?login_name=dfb&passwd=12345&drinking_pref=on&text_area=%3Cscript%3E%0D%0A&loginButton=ClickToLogin&as_sfid=AAAAAAWEXcNQLlSokNmqaYF6dvfqlChNzSMsdyO9JXOJomm2vBwAMOqZIChv21EcgBc3rexIUcfm0vckKlsgoOeC_BArx1Ic4NLxxkWMtrJe4H7SOfkiv9NL7AG4juPIanTvVo%3D&as_fid=bdfcb2907d41748eaebcc9d64b28cff1a9fcc58e Cross-site script check failed for field text_area=\"Bad tag: script\" <blocked>",
+        "device_event_class_id": "APPFW",
+        "extended": {
+          "message": "192.0.2.87 616-PPE1 y/3upt2K8ySWWId3Kavbxyni7Rw0000 pr_ffc http://aaron.stratum8.net/FFC/login.php?login_name=dfb&passwd=12345&drinking_pref=on&text_area=%3Cscript%3E%0D%0A&loginButton=ClickToLogin&as_sfid=AAAAAAWEXcNQLlSokNmqaYF6dvfqlChNzSMsdyO9JXOJomm2vBwAMOqZIChv21EcgBc3rexIUcfm0vckKlsgoOeC_BArx1Ic4NLxxkWMtrJe4H7SOfkiv9NL7AG4juPIanTvVo%3D&as_fid=bdfcb2907d41748eaebcc9d64b28cff1a9fcc58e Cross-site script check failed for field text_area=\"Bad tag: script\" <blocked>"
+        },
+        "facility": "local0",
+        "host": "ns",
+        "name": "APPFW_cross-site scripting",
+        "priority": "info"
+      },
+      "client": {
+        "ip": "198.51.100.211"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "id": "60",
+        "original": "Jun 22 19:14:37 <local0.info> 198.51.100.211 06/22/2043:19:14:37 GMT ns 0-PPE-1 : default APPFW APPFW_cross-site scripting 60 0 : 192.0.2.87 616-PPE1 y/3upt2K8ySWWId3Kavbxyni7Rw0000 pr_ffc http://aaron.stratum8.net/FFC/login.php?login_name=dfb&passwd=12345&drinking_pref=on&text_area=%3Cscript%3E%0D%0A&loginButton=ClickToLogin&as_sfid=AAAAAAWEXcNQLlSokNmqaYF6dvfqlChNzSMsdyO9JXOJomm2vBwAMOqZIChv21EcgBc3rexIUcfm0vckKlsgoOeC_BArx1Ic4NLxxkWMtrJe4H7SOfkiv9NL7AG4juPIanTvVo%3D&as_fid=bdfcb2907d41748eaebcc9d64b28cff1a9fcc58e Cross-site script check failed for field text_area=\"Bad tag: script\" <blocked>",
+        "severity": 0,
+        "timezone": "GMT"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2045-12-04T17:21:00.000Z",
+      "citrix": {
+        "cef_format": false,
+        "detail": "12/04/2045:17:21:00 GMT citrix.netscaler.test 0-PPE-1 : SSLLOG SSL_HANDSHAKE_SUCCESS 5743593 0 :  SPCBId 87630 - ClientIP 172.26.99.149 - ClientPort 19849 - VserverServiceIP 10.196.25.216 - VserverServicePort 443 - ClientVersion TLSv1.2 - CipherSuite \"RC4-MD5 TLSv1.2 Non-Export 128-bit\" - Session Reuse",
+        "device_event_class_id": "SSLLOG",
+        "extended": {
+          "message": "SPCBId 87630 - ClientIP 172.26.99.149 - ClientPort 19849 - VserverServiceIP 10.196.25.216 - VserverServicePort 443 - ClientVersion TLSv1.2 - CipherSuite \"RC4-MD5 TLSv1.2 Non-Export 128-bit\" - Session Reuse"
+        },
+        "facility": "local0",
+        "host": "citrix.netscaler.test",
+        "name": "SSL_HANDSHAKE_SUCCESS",
+        "priority": "info"
+      },
+      "client": {
+        "ip": "198.51.100.211"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "id": "5743593",
+        "original": "Jun 22 19:14:37 <local0.info> 198.51.100.211 12/04/2045:17:21:00 GMT citrix.netscaler.test 0-PPE-1 : SSLLOG SSL_HANDSHAKE_SUCCESS 5743593 0 :  SPCBId 87630 - ClientIP 172.26.99.149 - ClientPort 19849 - VserverServiceIP 10.196.25.216 - VserverServicePort 443 - ClientVersion TLSv1.2 - CipherSuite \"RC4-MD5 TLSv1.2 Non-Export 128-bit\" - Session Reuse",
+        "severity": 0,
+        "timezone": "GMT"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2042-10-06T14:03:23.000Z",
+      "citrix": {
+        "cef_format": false,
+        "detail": "10/06/2042:14:03:23 GMT ns1 0-PPE-0 : TCP CONN_DELINK 4471 0 : Source 192.168.107.23:52187 - Vserver 198.51.100.211:80 - NatIP 192.168.107.23:52187 - Destination 198.51.100.211:80 - Delink Time 10/06/2042:14:03:23 GMT - Total_bytes_send 1075 - Total_bytes_recv 352",
+        "device_event_class_id": "TCP",
+        "extended": {
+          "message": "Source 192.168.107.23:52187 - Vserver 198.51.100.211:80 - NatIP 192.168.107.23:52187 - Destination 198.51.100.211:80 - Delink Time 10/06/2042:14:03:23 GMT - Total_bytes_send 1075 - Total_bytes_recv 352"
+        },
+        "facility": "local0",
+        "host": "ns1",
+        "name": "CONN_DELINK",
+        "priority": "info"
+      },
+      "client": {
+        "ip": "198.51.100.211"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "id": "4471",
+        "original": "Oct 6 14:03:23 <local0.info> 198.51.100.211 10/06/2042:14:03:23 GMT ns1 0-PPE-0 : TCP CONN_DELINK 4471 0 : Source 192.168.107.23:52187 - Vserver 198.51.100.211:80 - NatIP 192.168.107.23:52187 - Destination 198.51.100.211:80 - Delink Time 10/06/2042:14:03:23 GMT - Total_bytes_send 1075 - Total_bytes_recv 352",
+        "severity": 0,
+        "timezone": "GMT"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2042-10-06T14:03:30.000Z",
+      "citrix": {
+        "cef_format": false,
+        "detail": "10/06/2042:14:03:30 GMT ns1 0-PPE-0 : TCP CONN_TERMINATE 4472 0 : Source 192.168.160.29:80 - Destination 192.168.118.190:35341 - Start Time 10/06/2042:14:02:43 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1",
+        "device_event_class_id": "TCP",
+        "extended": {
+          "message": "Source 192.168.160.29:80 - Destination 192.168.118.190:35341 - Start Time 10/06/2042:14:02:43 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1"
+        },
+        "facility": "local0",
+        "host": "ns1",
+        "name": "CONN_TERMINATE",
+        "priority": "info"
+      },
+      "client": {
+        "ip": "198.51.100.211"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "id": "4472",
+        "original": "Oct 6 14:03:30 <local0.info> 198.51.100.211 10/06/2042:14:03:30 GMT ns1 0-PPE-0 : TCP CONN_TERMINATE 4472 0 : Source 192.168.160.29:80 - Destination 192.168.118.190:35341 - Start Time 10/06/2042:14:02:43 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1",
+        "severity": 0,
+        "timezone": "GMT"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2042-10-06T14:03:30.000Z",
+      "citrix": {
+        "cef_format": false,
+        "detail": "10/06/2042:14:03:30 GMT ns1 0-PPE-0 : TCP CONN_TERMINATE 4473 0 : Source 127.0.0.1:7776 - Destination 127.0.0.2:55623 - Start Time 10/06/2042:14:02:45 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1",
+        "device_event_class_id": "TCP",
+        "extended": {
+          "message": "Source 127.0.0.1:7776 - Destination 127.0.0.2:55623 - Start Time 10/06/2042:14:02:45 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1"
+        },
+        "facility": "local0",
+        "host": "ns1",
+        "name": "CONN_TERMINATE",
+        "priority": "info"
+      },
+      "client": {
+        "ip": "198.51.100.211"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "id": "4473",
+        "original": "Oct 6 14:03:30 <local0.info> 198.51.100.211 10/06/2042:14:03:30 GMT ns1 0-PPE-0 : TCP CONN_TERMINATE 4473 0 : Source 127.0.0.1:7776 - Destination 127.0.0.2:55623 - Start Time 10/06/2042:14:02:45 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1",
+        "severity": 0,
+        "timezone": "GMT"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2042-10-06T14:03:30.000Z",
+      "citrix": {
+        "cef_format": false,
+        "detail": "10/06/2042:14:03:30 GMT ns1 0-PPE-0 : TCP CONN_TERMINATE 4474 0 : Source 127.0.0.1:80 - Destination 127.0.0.2:39771 - Start Time 10/06/2042:14:02:46 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1",
+        "device_event_class_id": "TCP",
+        "extended": {
+          "message": "Source 127.0.0.1:80 - Destination 127.0.0.2:39771 - Start Time 10/06/2042:14:02:46 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1"
+        },
+        "facility": "local0",
+        "host": "ns1",
+        "name": "CONN_TERMINATE",
+        "priority": "info"
+      },
+      "client": {
+        "ip": "198.51.100.211"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "id": "4474",
+        "original": "Oct 6 14:03:30 <local0.info> 198.51.100.211 10/06/2042:14:03:30 GMT ns1 0-PPE-0 : TCP CONN_TERMINATE 4474 0 : Source 127.0.0.1:80 - Destination 127.0.0.2:39771 - Start Time 10/06/2042:14:02:46 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1",
+        "severity": 0,
+        "timezone": "GMT"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-03-04T17:59:39.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<134> 2052/03/04:17:59:39 GMT 0-PPE-1 : default API CMD_EXECUTED 149531 0 : User - ADM_User NONE - Remote_ip - Command \"logout\" - Status \"Success\"",
+        "device_event_class_id": "API",
+        "extended": {
+          "message": "User - ADM_User NONE - Remote_ip - Command \"logout\" - Status \"Success\""
+        },
+        "name": "CMD_EXECUTED"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "id": "149531",
+        "original": "<134> 2052/03/04:17:59:39 GMT 0-PPE-1 : default API CMD_EXECUTED 149531 0 : User - ADM_User NONE - Remote_ip - Command \"logout\" - Status \"Success\"",
+        "severity": 0,
+        "timezone": "GMT"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-03-06T21:02:04.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<134> 2052/03/06:21:02:04 GMT host1 0-PPE-0 : default AAA Message 490029 0 :  \"Authentication is rejected for sshah (client ip : 198.51.100.211   , vserver ip: 192.168.107.23   ), extended error, if any : \"",
+        "device_event_class_id": "AAA",
+        "extended": {
+          "message": "Authentication is rejected for sshah (client ip : 198.51.100.211   , vserver ip: 192.168.107.23   ), extended error, if any : "
+        },
+        "host": "host1",
+        "name": "Message"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "id": "490029",
+        "original": "<134> 2052/03/06:21:02:04 GMT host1 0-PPE-0 : default AAA Message 490029 0 :  \"Authentication is rejected for sshah (client ip : 198.51.100.211   , vserver ip: 192.168.107.23   ), extended error, if any : \"",
+        "severity": 0,
+        "timezone": "GMT"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-03-06T21:02:04.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<133> 2052/03/06:21:02:04 GMT host1 0-PPE-0 : default AAA Message 490026 0 :  \"sslvpn_aaad_login_handler : (0-125662): sslvpn_aaad_login_handler: Reply Received, status from aaad: 3, aaad flags 1000\"",
+        "device_event_class_id": "AAA",
+        "extended": {
+          "message": "sslvpn_aaad_login_handler : (0-125662): sslvpn_aaad_login_handler: Reply Received, status from aaad: 3, aaad flags 1000"
+        },
+        "host": "host1",
+        "name": "Message"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "id": "490026",
+        "original": "<133> 2052/03/06:21:02:04 GMT host1 0-PPE-0 : default AAA Message 490026 0 :  \"sslvpn_aaad_login_handler : (0-125662): sslvpn_aaad_login_handler: Reply Received, status from aaad: 3, aaad flags 1000\"",
+        "severity": 0,
+        "timezone": "GMT"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-03-06T21:02:04.000Z",
+      "citrix": {
+        "cef_format": false,
+        "default_class": true,
+        "detail": "<134> 2052/03/06:21:02:04 GMT host1 0-PPE-0 : default AAA Message 490023 0 :  \"ns_aaa_login_handler : X509 cert not found \"",
+        "device_event_class_id": "AAA",
+        "extended": {
+          "message": "ns_aaa_login_handler : X509 cert not found "
+        },
+        "host": "host1",
+        "name": "Message"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "id": "490023",
+        "original": "<134> 2052/03/06:21:02:04 GMT host1 0-PPE-0 : default AAA Message 490023 0 :  \"ns_aaa_login_handler : X509 cert not found \"",
+        "severity": 0,
+        "timezone": "GMT"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "Jun 22 19:14:37 <local0.info> 198.51.100.211 06/22/2043:19:14:37 GMT ns 0-PPE-1 : default APPFW APPFW_cross-site scripting 60 0 : 192.0.2.87 616-PPE1 y/3upt2K8ySWWId3Kavbxyni7Rw0000 pr_ffc http://aaron.stratum8.net/FFC/login.php?login_name=dfb&passwd=12345&drinking_pref=on&text_area=%3Cscript%3E%0D%0A&loginButton=ClickToLogin&as_sfid=AAAAAAWEXcNQLlSokNmqaYF6dvfqlChNzSMsdyO9JXOJomm2vBwAMOqZIChv21EcgBc3rexIUcfm0vckKlsgoOeC_BArx1Ic4NLxxkWMtrJe4H7SOfkiv9NL7AG4juPIanTvVo%3D&as_fid=bdfcb2907d41748eaebcc9d64b28cff1a9fcc58e Cross-site script check failed for field text_area=\"Bad tag: script\" <blocked>"
+    },
+    {
+      "message": "Jun 22 19:14:37 <local0.info> 198.51.100.211 12/04/2045:17:21:00 GMT citrix.netscaler.test 0-PPE-1 : SSLLOG SSL_HANDSHAKE_SUCCESS 5743593 0 :  SPCBId 87630 - ClientIP 172.26.99.149 - ClientPort 19849 - VserverServiceIP 10.196.25.216 - VserverServicePort 443 - ClientVersion TLSv1.2 - CipherSuite \"RC4-MD5 TLSv1.2 Non-Export 128-bit\" - Session Reuse"
+    },
+    {
+      "message": "Oct 6 14:03:23 <local0.info> 198.51.100.211 10/06/2042:14:03:23 GMT ns1 0-PPE-0 : TCP CONN_DELINK 4471 0 : Source 192.168.107.23:52187 - Vserver 198.51.100.211:80 - NatIP 192.168.107.23:52187 - Destination 198.51.100.211:80 - Delink Time 10/06/2042:14:03:23 GMT - Total_bytes_send 1075 - Total_bytes_recv 352"
+    },
+    {
+      "message": "Oct 6 14:03:30 <local0.info> 198.51.100.211 10/06/2042:14:03:30 GMT ns1 0-PPE-0 : TCP CONN_TERMINATE 4472 0 : Source 192.168.160.29:80 - Destination 192.168.118.190:35341 - Start Time 10/06/2042:14:02:43 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1"
+    },
+    {
+      "message": "Oct 6 14:03:30 <local0.info> 198.51.100.211 10/06/2042:14:03:30 GMT ns1 0-PPE-0 : TCP CONN_TERMINATE 4473 0 : Source 127.0.0.1:7776 - Destination 127.0.0.2:55623 - Start Time 10/06/2042:14:02:45 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1"
+    },
+    {
+      "message": "Oct 6 14:03:30 <local0.info> 198.51.100.211 10/06/2042:14:03:30 GMT ns1 0-PPE-0 : TCP CONN_TERMINATE 4474 0 : Source 127.0.0.1:80 - Destination 127.0.0.2:39771 - Start Time 10/06/2042:14:02:46 GMT - End Time 10/06/2042:14:03:30 GMT - Total_bytes_send 1 - Total_bytes_recv 1"
+    },
+    {
+      "message": "<134> 2052/03/04:17:59:39 GMT 0-PPE-1 : default API CMD_EXECUTED 149531 0 : User - ADM_User NONE - Remote_ip - Command \"logout\" - Status \"Success\""
+    },
+    {
+      "message": "<134> 2052/03/06:21:02:04 GMT host1 0-PPE-0 : default AAA Message 490029 0 :  \"Authentication is rejected for sshah (client ip : 198.51.100.211   , vserver ip: 192.168.107.23   ), extended error, if any : \""
+    },
+    {
+      "message": "<133> 2052/03/06:21:02:04 GMT host1 0-PPE-0 : default AAA Message 490026 0 :  \"sslvpn_aaad_login_handler : (0-125662): sslvpn_aaad_login_handler: Reply Received, status from aaad: 3, aaad flags 1000\""
+    },
+    {
+      "message": "<134> 2052/03/06:21:02:04 GMT host1 0-PPE-0 : default AAA Message 490023 0 :  \"ns_aaa_login_handler : X509 cert not found \""
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-citrix_waf-log-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "citrix_waf",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

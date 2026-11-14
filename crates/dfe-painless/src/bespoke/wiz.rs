@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! wiz's issue, defend and `defend_v2` scripts, transcribed.
+//! wiz's issue, defend and `defend_v2` scripts, as the runtime runs them.
 
 use serde_json::{Map, Value, json};
 
@@ -188,7 +188,7 @@ fn event_severity_from_severity(event: &mut Event, _params: &Value) {
     let _ = event.set("event.severity", score);
 }
 
-/// Every wiz script transcribed here.
+/// Every wiz script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "9907c0ddf3c1b68f363b8153644f6cd96a23d027297889f19b335f80359f8e80",

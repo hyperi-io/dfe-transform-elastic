@@ -1,0 +1,257 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-10-03T20:55:20.685Z",
+      "client": {
+        "domain": "ABF.LOCAL"
+      },
+      "device": {
+        "id": [
+          "yMZ3pS52RcQvi9ZkLNXYyw"
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2052-10-03T20:48:30.685Z",
+        "id": "2:a07cb2f2-58c0-10dd-e96d-7527665e859e",
+        "kind": "event",
+        "module": "AGENT_SECURITY",
+        "original": "{\"category_id\":1,\"device_ip\":\"198.51.100.211\",\"device_location\":{\"desc\":\"Office\",\"on_premises\":true},\"device_time\":2611601310685,\"feature_name\":\"AGENT_SECURITY\",\"feature_uid\":\"1BDBF748-3C7A-44FE-A051-0B977ADD7B20\",\"id\":5,\"message\":\"User has initiated a security scan.\",\"message_id\":\"0x1208021A\",\"raw_data\":\"\",\"severity_id\":2,\"status_detail\":\"Scanning\",\"status_id\":1,\"type\":\"APPLICATION_SECURITY\",\"type_id\":3,\"version\":\"1.1\",\"composite\":1,\"device_domain\":\"ABF.LOCAL\",\"device_group\":\"Default/WGS/4567-US-Office Group/4567-Clients\",\"device_name\":\"YY-Bbpj7\",\"device_networks\":[{\"ipv4\":\"192.0.2.54\",\"ipv6\":\"2001:db8:2d66:2dd7:88cb:ba3c:6465:cb93\",\"mac\":\"12:49:36:04:52:41\"}],\"device_os_name\":\"Windows 10 Pro\",\"device_uid\":\"yMZ3pS52RcQvi9ZkLNXYyw\",\"org_unit_uid\":\"bz3-LTHrAdTI4d3AeckeOv\",\"product_data\":{\"sep_domain_uid\":\"\",\"sep_hw_uid\":\"3FA1AAA14E6A7F40DD811973D1F243C5\"},\"product_name\":\"Symantec Endpoint Security\",\"product_uid\":\"35A8F501-3715-49F1-99D5-26F81D4CE0D1\",\"product_ver\":\"14.3.11217.1000\",\"stic_hw_uid\":\"F7726AF6-501F-646F-532E-6A01915D496E\",\"stic_uid\":\"5A16491C-AA80-481F-85AB-C4E9CCCE68B1\",\"timezone\":180,\"user_name\":\"VTppjvtl\",\"customer_uid\":\"ftp4wpf7SyS6V0j6FhzLqA\",\"device_public_ip\":\"10.140.97.136\",\"domain_uid\":\"cDE5Eq5lRYedl9lJK1QspB\",\"event_data_type\":\"sep\",\"user\":{\"name\":\"VTppjvtl\"},\"device_os_type_id\":101,\"time\":\"2052-10-03T20:55:20.685Z\",\"log_time\":\"2052-10-04T12:10:45.069Z\",\"js_canary_cust\":\"true\",\"uuid\":\"2:a07cb2f2-58c0-10dd-e96d-7527665e859e\"}",
+        "severity": 2
+      },
+      "group": {
+        "name": "Default/WGS/4567-US-Office Group/4567-Clients"
+      },
+      "host": {
+        "hostname": "YY-Bbpj7",
+        "os": {
+          "name": "Windows 10 Pro"
+        }
+      },
+      "message": "User has initiated a security scan.",
+      "related": {
+        "ip": [
+          "198.51.100.211",
+          "10.140.97.136"
+        ],
+        "user": [
+          "VTppjvtl"
+        ]
+      },
+      "ses": {
+        "category_id": "1",
+        "category_name": "Security",
+        "composite": 1,
+        "customer_uid": "ftp4wpf7SyS6V0j6FhzLqA",
+        "device_domain": "ABF.LOCAL",
+        "device_group": "Default/WGS/4567-US-Office Group/4567-Clients",
+        "device_ip": "198.51.100.211",
+        "device_location": {
+          "desc": "Office",
+          "on_premises": true
+        },
+        "device_name": "YY-Bbpj7",
+        "device_networks": [
+          {
+            "ipv4": "192.0.2.54",
+            "ipv6": "2001:db8:2d66:2dd7:88cb:ba3c:6465:cb93",
+            "mac": "12:49:36:04:52:41"
+          }
+        ],
+        "device_os_name": "Windows 10 Pro",
+        "device_os_type_id": "101",
+        "device_public_ip": "10.140.97.136",
+        "device_time": "2052-10-03T20:48:30.685Z",
+        "device_uid": "yMZ3pS52RcQvi9ZkLNXYyw",
+        "domain_uid": "cDE5Eq5lRYedl9lJK1QspB",
+        "event_data_type": "sep",
+        "feature_name": "AGENT_SECURITY",
+        "feature_uid": "1BDBF748-3C7A-44FE-A051-0B977ADD7B20",
+        "id": 5,
+        "js_canary_enabled": true,
+        "log_time": "2052-10-04T12:10:45.069Z",
+        "message": "User has initiated a security scan.",
+        "message_id": "0x1208021A",
+        "org_unit_uid": "bz3-LTHrAdTI4d3AeckeOv",
+        "product_data": {
+          "sep_hw_uid": "3FA1AAA14E6A7F40DD811973D1F243C5"
+        },
+        "product_name": "Symantec Endpoint Security",
+        "product_uid": "35A8F501-3715-49F1-99D5-26F81D4CE0D1",
+        "product_ver": "14.3.11217.1000",
+        "severity_id": "2",
+        "severity_value": "Warning",
+        "status_detail": "Scanning",
+        "status_id": "1",
+        "status_value": "Success",
+        "stic_hw_uid": "F7726AF6-501F-646F-532E-6A01915D496E",
+        "stic_uid": "5A16491C-AA80-481F-85AB-C4E9CCCE68B1",
+        "time": "2052-10-03T20:55:20.685Z",
+        "timezone": 180,
+        "type": "APPLICATION_SECURITY",
+        "type_id": "3",
+        "user": {
+          "name": "VTppjvtl"
+        },
+        "user_name": "VTppjvtl",
+        "uuid": "2:a07cb2f2-58c0-10dd-e96d-7527665e859e",
+        "version": "1.1"
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-10-03T21:10:30.685Z",
+      "client": {
+        "domain": "AAB.LOCAL"
+      },
+      "device": {
+        "id": [
+          "zRn4vL63UbLwi8kMLTXYzw"
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2052-10-03T20:48:30.685Z",
+        "id": "2:e81ee8e1-82d9-11ef-e92d-0000078g231f",
+        "kind": "event",
+        "module": "AGENT_FRAMEWORK",
+        "original": "{\"category_id\":3,\"device_ip\":\"198.51.100.211\",\"device_location\":{\"desc\":\"Remote\",\"on_premises\":false},\"device_time\":2611601310685,\"feature_name\":\"AGENT_FRAMEWORK\",\"feature_uid\":\"CEA0E623-4D0F-4491-B18F-5F62FCC28D5C\",\"id\":6,\"message\":\"User is attempting to restart the endpoint service.\",\"message_id\":\"0x1307021A\",\"raw_data\":\"\",\"severity_id\":3,\"status_detail\":\"Restarting\",\"status_id\":2,\"type\":\"APPLICATION_LIFECYCLE\",\"type_id\":2,\"version\":\"1.2\",\"composite\":3,\"device_domain\":\"AAB.LOCAL\",\"device_group\":\"Default/WGS/3480-US-Remote Group/3480-Clients\",\"device_name\":\"20QXFR7\",\"device_networks\":[{\"ipv4\":\"192.0.2.54\",\"ipv6\":\"2001:db8:2d66:2dd7:88cb:ba3c:6465:cb93\",\"mac\":\"33:7C:B8:11:EF:7C\"}],\"device_os_name\":\"Windows 11 Enterprise\",\"device_uid\":\"zRn4vL63UbLwi8kMLTXYzw\",\"org_unit_uid\":\"dz4-LTGrBdXJ6e9AeckeOq\",\"product_data\":\"{\\\"sep_domain_uid\\\":\\\"\\\",\\\"sep_hw_uid\\\":\\\"5EB1EEB66A8D7A17BA039834D4D433E0\\\"}\" ,\"product_name\":\"Symantec Endpoint Security\",\"product_uid\":\"35B3A634-3541-40B9-88C9-56D96D6FC0F1\",\"product_ver\":\"14.4.21216.9001\",\"stic_hw_uid\":\"B114AFE9-594E-784D-599D-4C28392F963G\",\"stic_uid\":\"7D48523B-A232-436F-95CB-E2F2BEBA84B5\",\"timezone\":300,\"user_name\":\"RGisyr\",\"customer_uid\":\"ftp6xpg7UyS8W2n7FgzMrB\",\"device_public_ip\":\"10.133.110.120\",\"domain_uid\":\"cEF6Eq6mRYgfl9mJK2TspC\",\"event_data_type\":\"sep\",\"user\":{\"name\":\"RGisyr\"},\"device_os_type_id\":102,\"time\":\"2052-10-03T21:10:30.685Z\",\"log_time\":\"2052-10-04T12:15:50.069Z\",\"js_canary_cust\":\"false\",\"uuid\":\"2:e81ee8e1-82d9-11ef-e92d-0000078g231f\"}",
+        "severity": 3
+      },
+      "group": {
+        "name": "Default/WGS/3480-US-Remote Group/3480-Clients"
+      },
+      "host": {
+        "hostname": "20QXFR7",
+        "ip": [
+          "192.0.2.54"
+        ],
+        "mac": [
+          "33-7C-B8-11-EF-7C"
+        ],
+        "os": {
+          "name": "Windows 11 Enterprise"
+        }
+      },
+      "message": "User is attempting to restart the endpoint service.",
+      "related": {
+        "ip": [
+          "198.51.100.211",
+          "10.133.110.120",
+          "192.0.2.54",
+          "2001:db8:2d66:2dd7:88cb:ba3c:6465:cb93"
+        ],
+        "user": [
+          "RGisyr"
+        ]
+      },
+      "ses": {
+        "category_id": "3",
+        "category_name": "Application Activity",
+        "composite": 3,
+        "customer_uid": "ftp6xpg7UyS8W2n7FgzMrB",
+        "device_domain": "AAB.LOCAL",
+        "device_group": "Default/WGS/3480-US-Remote Group/3480-Clients",
+        "device_ip": "198.51.100.211",
+        "device_location": {
+          "desc": "Remote",
+          "on_premises": false
+        },
+        "device_name": "20QXFR7",
+        "device_networks": [
+          {
+            "ipv4": "192.0.2.54",
+            "ipv6": "2001:db8:2d66:2dd7:88cb:ba3c:6465:cb93",
+            "mac": "33:7C:B8:11:EF:7C"
+          }
+        ],
+        "device_os_name": "Windows 11 Enterprise",
+        "device_os_type_id": "102",
+        "device_public_ip": "10.133.110.120",
+        "device_time": "2052-10-03T20:48:30.685Z",
+        "device_uid": "zRn4vL63UbLwi8kMLTXYzw",
+        "domain_uid": "cEF6Eq6mRYgfl9mJK2TspC",
+        "event_data_type": "sep",
+        "feature_name": "AGENT_FRAMEWORK",
+        "feature_uid": "CEA0E623-4D0F-4491-B18F-5F62FCC28D5C",
+        "id": 6,
+        "js_canary_enabled": false,
+        "log_time": "2052-10-04T12:15:50.069Z",
+        "message": "User is attempting to restart the endpoint service.",
+        "message_id": "0x1307021A",
+        "org_unit_uid": "dz4-LTGrBdXJ6e9AeckeOq",
+        "product_data": {
+          "sep_hw_uid": "5EB1EEB66A8D7A17BA039834D4D433E0"
+        },
+        "product_name": "Symantec Endpoint Security",
+        "product_uid": "35B3A634-3541-40B9-88C9-56D96D6FC0F1",
+        "product_ver": "14.4.21216.9001",
+        "severity_id": "3",
+        "severity_value": "Minor",
+        "status_detail": "Restarting",
+        "status_id": "2",
+        "status_value": "Failure",
+        "stic_hw_uid": "B114AFE9-594E-784D-599D-4C28392F963G",
+        "stic_uid": "7D48523B-A232-436F-95CB-E2F2BEBA84B5",
+        "time": "2052-10-03T21:10:30.685Z",
+        "timezone": 300,
+        "type": "APPLICATION_LIFECYCLE",
+        "type_id": "2",
+        "user": {
+          "name": "RGisyr"
+        },
+        "user_name": "RGisyr",
+        "uuid": "2:e81ee8e1-82d9-11ef-e92d-0000078g231f",
+        "version": "1.2"
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "RGisyr"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category_id\":1,\"device_ip\":\"198.51.100.211\",\"device_location\":{\"desc\":\"Office\",\"on_premises\":true},\"device_time\":2611601310685,\"feature_name\":\"AGENT_SECURITY\",\"feature_uid\":\"1BDBF748-3C7A-44FE-A051-0B977ADD7B20\",\"id\":5,\"message\":\"User has initiated a security scan.\",\"message_id\":\"0x1208021A\",\"raw_data\":\"\",\"severity_id\":2,\"status_detail\":\"Scanning\",\"status_id\":1,\"type\":\"APPLICATION_SECURITY\",\"type_id\":3,\"version\":\"1.1\",\"composite\":1,\"device_domain\":\"ABF.LOCAL\",\"device_group\":\"Default/WGS/4567-US-Office Group/4567-Clients\",\"device_name\":\"YY-Bbpj7\",\"device_networks\":[{\"ipv4\":\"192.0.2.54\",\"ipv6\":\"2001:db8:2d66:2dd7:88cb:ba3c:6465:cb93\",\"mac\":\"12:49:36:04:52:41\"}],\"device_os_name\":\"Windows 10 Pro\",\"device_uid\":\"yMZ3pS52RcQvi9ZkLNXYyw\",\"org_unit_uid\":\"bz3-LTHrAdTI4d3AeckeOv\",\"product_data\":{\"sep_domain_uid\":\"\",\"sep_hw_uid\":\"3FA1AAA14E6A7F40DD811973D1F243C5\"},\"product_name\":\"Symantec Endpoint Security\",\"product_uid\":\"35A8F501-3715-49F1-99D5-26F81D4CE0D1\",\"product_ver\":\"14.3.11217.1000\",\"stic_hw_uid\":\"F7726AF6-501F-646F-532E-6A01915D496E\",\"stic_uid\":\"5A16491C-AA80-481F-85AB-C4E9CCCE68B1\",\"timezone\":180,\"user_name\":\"VTppjvtl\",\"customer_uid\":\"ftp4wpf7SyS6V0j6FhzLqA\",\"device_public_ip\":\"10.140.97.136\",\"domain_uid\":\"cDE5Eq5lRYedl9lJK1QspB\",\"event_data_type\":\"sep\",\"user\":{\"name\":\"VTppjvtl\"},\"device_os_type_id\":101,\"time\":\"2052-10-03T20:55:20.685Z\",\"log_time\":\"2052-10-04T12:10:45.069Z\",\"js_canary_cust\":\"true\",\"uuid\":\"2:a07cb2f2-58c0-10dd-e96d-7527665e859e\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"category_id\":3,\"device_ip\":\"198.51.100.211\",\"device_location\":{\"desc\":\"Remote\",\"on_premises\":false},\"device_time\":2611601310685,\"feature_name\":\"AGENT_FRAMEWORK\",\"feature_uid\":\"CEA0E623-4D0F-4491-B18F-5F62FCC28D5C\",\"id\":6,\"message\":\"User is attempting to restart the endpoint service.\",\"message_id\":\"0x1307021A\",\"raw_data\":\"\",\"severity_id\":3,\"status_detail\":\"Restarting\",\"status_id\":2,\"type\":\"APPLICATION_LIFECYCLE\",\"type_id\":2,\"version\":\"1.2\",\"composite\":3,\"device_domain\":\"AAB.LOCAL\",\"device_group\":\"Default/WGS/3480-US-Remote Group/3480-Clients\",\"device_name\":\"20QXFR7\",\"device_networks\":[{\"ipv4\":\"192.0.2.54\",\"ipv6\":\"2001:db8:2d66:2dd7:88cb:ba3c:6465:cb93\",\"mac\":\"33:7C:B8:11:EF:7C\"}],\"device_os_name\":\"Windows 11 Enterprise\",\"device_uid\":\"zRn4vL63UbLwi8kMLTXYzw\",\"org_unit_uid\":\"dz4-LTGrBdXJ6e9AeckeOq\",\"product_data\":\"{\\\"sep_domain_uid\\\":\\\"\\\",\\\"sep_hw_uid\\\":\\\"5EB1EEB66A8D7A17BA039834D4D433E0\\\"}\" ,\"product_name\":\"Symantec Endpoint Security\",\"product_uid\":\"35B3A634-3541-40B9-88C9-56D96D6FC0F1\",\"product_ver\":\"14.4.21216.9001\",\"stic_hw_uid\":\"B114AFE9-594E-784D-599D-4C28392F963G\",\"stic_uid\":\"7D48523B-A232-436F-95CB-E2F2BEBA84B5\",\"timezone\":300,\"user_name\":\"RGisyr\",\"customer_uid\":\"ftp6xpg7UyS8W2n7FgzMrB\",\"device_public_ip\":\"10.133.110.120\",\"domain_uid\":\"cEF6Eq6mRYgfl9mJK2TspC\",\"event_data_type\":\"sep\",\"user\":{\"name\":\"RGisyr\"},\"device_os_type_id\":102,\"time\":\"2052-10-03T21:10:30.685Z\",\"log_time\":\"2052-10-04T12:15:50.069Z\",\"js_canary_cust\":\"false\",\"uuid\":\"2:e81ee8e1-82d9-11ef-e92d-0000078g231f\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint_security-event-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [
+      "winlog.event_id"
+    ],
+    "package": "symantec_endpoint_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

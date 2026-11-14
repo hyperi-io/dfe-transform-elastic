@@ -1,0 +1,117 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-01T06:24:42.442Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "ACCESS",
+        "id": "-6709442587437772138",
+        "kind": [
+          "event"
+        ],
+        "original": "{\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"etag\":\"\\\"CTyc505ppdmJR2motHVsU17kzItOkPo5vYViqlSF0rU/_JGuGElaExAZGVCsPXBMf-HkFqo\\\"\",\"events\":{\"type\":\"access_transparency\",\"name\":\"ACCESS\",\"parameters\":[{\"name\":\"ACCESS_APPROVAL_ALERT_CENTER_IDS\",\"value\":\"alert123\"},{\"name\":\"ACCESS_APPROVAL_REQUEST_IDS\",\"value\":\"req12341\"},{\"name\":\"ACCESS_MANAGEMENT_POLICY\",\"value\":\"policy\"},{\"name\":\"ACTOR_HOME_OFFICE\",\"value\":\"actoroffice\"},{\"name\":\"GSUITE_PRODUCT_NAME\",\"value\":\"CALENDAR\"},{\"name\":\"JUSTIFICATIONS\",\"value\":\"justfy\"},{\"name\":\"LOG_ID\",\"value\":\"lg651667\"},{\"name\":\"ON_BEHALF_OF\",\"value\":\"dsbxpsf@example.com\"},{\"name\":\"OWNER_EMAIL\",\"value\":\"cnk@example.com\"},{\"name\":\"RESOURCE_NAME\",\"value\":\"foo\"},{\"name\":\"TICKETS\",\"value\":\"ticket\"}]},\"id\":{\"applicationName\":\"token\",\"customerId\":\"C02umwv6u\",\"time\":\"2051-01-01T06:24:42.442Z\",\"uniqueQualifier\":\"-6709442587437772138\"},\"ipAddress\":\"203.0.113.248\",\"kind\":\"admin#reports#activity\"}",
+        "provider": "token"
+      },
+      "google_workspace": {
+        "access_transparency": {
+          "access_approval": {
+            "alert_center_ids": "alert123",
+            "request_ids": "req12341"
+          },
+          "access_management": {
+            "policy": "policy"
+          },
+          "actor_home_office": "actoroffice",
+          "gsuite_product_name": "CALENDAR",
+          "justifications": "justfy",
+          "log_id": "lg651667",
+          "on_behalf_of": "dsbxpsf@example.com",
+          "owner_email": "cnk@example.com",
+          "resource_name": "foo",
+          "tickets": "ticket"
+        },
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile": {
+            "id": "1"
+          },
+          "type": "USER"
+        },
+        "etag": "\"CTyc505ppdmJR2motHVsU17kzItOkPo5vYViqlSF0rU/_JGuGElaExAZGVCsPXBMf-HkFqo\"",
+        "event": {
+          "name": "ACCESS",
+          "type": "access_transparency"
+        },
+        "id": {
+          "application_name": "token",
+          "customer": {
+            "id": "C02umwv6u"
+          },
+          "time": "2051-01-01T06:24:42.442Z",
+          "unique_qualifier": "-6709442587437772138"
+        },
+        "ip_address": "203.0.113.248",
+        "kind": "admin#reports#activity"
+      },
+      "organization": {
+        "id": "C02umwv6u"
+      },
+      "related": {
+        "hosts": [
+          "dau.com"
+        ],
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "1",
+          "cnk",
+          "cnk@dau.com",
+          "cnk@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"etag\":\"\\\"CTyc505ppdmJR2motHVsU17kzItOkPo5vYViqlSF0rU/_JGuGElaExAZGVCsPXBMf-HkFqo\\\"\",\"events\":{\"type\":\"access_transparency\",\"name\":\"ACCESS\",\"parameters\":[{\"name\":\"ACCESS_APPROVAL_ALERT_CENTER_IDS\",\"value\":\"alert123\"},{\"name\":\"ACCESS_APPROVAL_REQUEST_IDS\",\"value\":\"req12341\"},{\"name\":\"ACCESS_MANAGEMENT_POLICY\",\"value\":\"policy\"},{\"name\":\"ACTOR_HOME_OFFICE\",\"value\":\"actoroffice\"},{\"name\":\"GSUITE_PRODUCT_NAME\",\"value\":\"CALENDAR\"},{\"name\":\"JUSTIFICATIONS\",\"value\":\"justfy\"},{\"name\":\"LOG_ID\",\"value\":\"lg651667\"},{\"name\":\"ON_BEHALF_OF\",\"value\":\"dsbxpsf@example.com\"},{\"name\":\"OWNER_EMAIL\",\"value\":\"cnk@example.com\"},{\"name\":\"RESOURCE_NAME\",\"value\":\"foo\"},{\"name\":\"TICKETS\",\"value\":\"ticket\"}]},\"id\":{\"applicationName\":\"token\",\"customerId\":\"C02umwv6u\",\"time\":\"2051-01-01T06:24:42.442Z\",\"uniqueQualifier\":\"-6709442587437772138\"},\"ipAddress\":\"203.0.113.248\",\"kind\":\"admin#reports#activity\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "access_transparency",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-google_workspace-access_transparency-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "google_workspace",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

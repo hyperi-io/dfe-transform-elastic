@@ -1,0 +1,285 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2023-04-28T00:00:04.000Z",
+      "client": {
+        "mac": "50-8A-DE-B3-C2-84"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "dhcpdiscover",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "2023:04:28-00:00:04 sophos-test-vm1 dhcpd: DHCPDISCOVER from 50:8a:de:b3:c2:84 via eth7: unknown client",
+        "provider": "dhcp",
+        "timezone": "UTC",
+        "type": [
+          "info",
+          "connection",
+          "protocol"
+        ]
+      },
+      "host": {
+        "hostname": "sophos-test-vm1",
+        "name": "sophos-test-vm1"
+      },
+      "message": "unknown client",
+      "network": {
+        "protocol": "dhcp",
+        "transport": "udp"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "eth7"
+          }
+        },
+        "product": "UTM",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "process": {
+        "name": "dhcpd"
+      },
+      "related": {
+        "hosts": [
+          "sophos-test-vm1"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2023-04-28T06:50:45.000Z",
+      "client": {
+        "ip": "203.0.113.88",
+        "mac": "50-8A-DE-B3-C2-84"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "dhcpack",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "2023:04:28-06:50:45 sophos-test-vm1 dhcpd: DHCPACK on 203.0.113.88 to 50:8a:de:b3:c2:84 (CLIENTHOST) via eth1",
+        "provider": "dhcp",
+        "timezone": "UTC",
+        "type": [
+          "info",
+          "connection",
+          "protocol"
+        ]
+      },
+      "host": {
+        "hostname": "sophos-test-vm1",
+        "name": "sophos-test-vm1"
+      },
+      "network": {
+        "protocol": "dhcp",
+        "transport": "udp"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "eth1"
+          }
+        },
+        "product": "UTM",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "process": {
+        "name": "dhcpd"
+      },
+      "related": {
+        "hosts": [
+          "CLIENTHOST",
+          "sophos-test-vm1"
+        ],
+        "ip": [
+          "203.0.113.88"
+        ]
+      },
+      "sophos": {
+        "utm": {
+          "client": {
+            "hostname": "CLIENTHOST"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2023-04-28T03:30:27.000Z",
+      "client": {
+        "mac": "50-8A-DE-B3-C2-84"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "dhcpd-listening",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "2023:04:28-03:30:27 sophos-test-vm2 dhcpd: Listening on LPF/eth0/50:8a:de:b3:c2:84/89.160.20.0/24",
+        "provider": "dhcp",
+        "timezone": "UTC",
+        "type": [
+          "info",
+          "connection",
+          "protocol"
+        ]
+      },
+      "host": {
+        "hostname": "sophos-test-vm2",
+        "name": "sophos-test-vm2"
+      },
+      "network": {
+        "protocol": "dhcp",
+        "transport": "udp"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "eth0"
+          }
+        },
+        "product": "UTM",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "process": {
+        "name": "dhcpd"
+      },
+      "related": {
+        "hosts": [
+          "sophos-test-vm2"
+        ]
+      },
+      "sophos": {
+        "utm": {
+          "socket": "LPF",
+          "subnet": "89.160.20.0/24"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2023-04-28T03:30:27.000Z",
+      "client": {
+        "mac": "50-8A-DE-B3-C2-84"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "dhcpd-sending",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "2023:04:28-03:30:27 sophos-test-vm2 dhcpd: Sending on   LPF/eth0/50:8a:de:b3:c2:84/89.160.20.0/24",
+        "provider": "dhcp",
+        "timezone": "UTC",
+        "type": [
+          "info",
+          "connection",
+          "protocol"
+        ]
+      },
+      "host": {
+        "hostname": "sophos-test-vm2",
+        "name": "sophos-test-vm2"
+      },
+      "network": {
+        "protocol": "dhcp",
+        "transport": "udp"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "eth0"
+          }
+        },
+        "product": "UTM",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "process": {
+        "name": "dhcpd"
+      },
+      "related": {
+        "hosts": [
+          "sophos-test-vm2"
+        ]
+      },
+      "sophos": {
+        "utm": {
+          "socket": "LPF",
+          "subnet": "89.160.20.0/24"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "2023:04:28-00:00:04 sophos-test-vm1 dhcpd: DHCPDISCOVER from 50:8a:de:b3:c2:84 via eth7: unknown client",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2023:04:28-06:50:45 sophos-test-vm1 dhcpd: DHCPACK on 203.0.113.88 to 50:8a:de:b3:c2:84 (CLIENTHOST) via eth1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2023:04:28-03:30:27 sophos-test-vm2 dhcpd: Listening on LPF/eth0/50:8a:de:b3:c2:84/89.160.20.0/24",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2023:04:28-03:30:27 sophos-test-vm2 dhcpd: Sending on   LPF/eth0/50:8a:de:b3:c2:84/89.160.20.0/24",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "utm",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sophos-utm-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "sophos",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

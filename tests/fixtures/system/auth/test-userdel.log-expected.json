@@ -1,0 +1,73 @@
+{
+  "expected": [
+    {
+      "event": {
+        "original": "2054-05-17T18:05:00.000000+00:00 kzno71081 userdel[2499712]: delete 'siem_test' from group 'tcpdump'"
+      },
+      "input.type": "log",
+      "message": "2054-05-17T18:05:00.000000+00:00 kzno71081 userdel[2499712]: delete 'siem_test' from group 'tcpdump'"
+    },
+    {
+      "event": {
+        "original": "2054-05-17T18:05:01.000000+00:00 kzno71081 userdel[2499712]: delete 'siem_test' from shadow group 'tcpdump'"
+      },
+      "input.type": "log",
+      "message": "2054-05-17T18:05:01.000000+00:00 kzno71081 userdel[2499712]: delete 'siem_test' from shadow group 'tcpdump'"
+    },
+    {
+      "event": {
+        "original": "2054-05-17T18:05:02.000000+00:00 kzno71081 userdel[2499712]: delete user 'siem_test'"
+      },
+      "input.type": "log",
+      "message": "2054-05-17T18:05:02.000000+00:00 kzno71081 userdel[2499712]: delete user 'siem_test'"
+    },
+    {
+      "event": {
+        "original": "2054-05-17T18:05:03.000000+00:00 kzno71081 userdel[2499713]: removed group 'siem_group'"
+      },
+      "input.type": "log",
+      "message": "2054-05-17T18:05:03.000000+00:00 kzno71081 userdel[2499713]: removed group 'siem_group'"
+    },
+    {
+      "event": {
+        "original": "2054-05-17T18:05:04.000000+00:00 kzno71081 userdel[2499713]: removed shadow group 'siem_group'"
+      },
+      "input.type": "log",
+      "message": "2054-05-17T18:05:04.000000+00:00 kzno71081 userdel[2499713]: removed shadow group 'siem_group'"
+    }
+  ],
+  "input": [
+    {
+      "input.type": "log",
+      "message": "2054-05-17T18:05:00.000000+00:00 kzno71081 userdel[2499712]: delete 'siem_test' from group 'tcpdump'"
+    },
+    {
+      "input.type": "log",
+      "message": "2054-05-17T18:05:01.000000+00:00 kzno71081 userdel[2499712]: delete 'siem_test' from shadow group 'tcpdump'"
+    },
+    {
+      "input.type": "log",
+      "message": "2054-05-17T18:05:02.000000+00:00 kzno71081 userdel[2499712]: delete user 'siem_test'"
+    },
+    {
+      "input.type": "log",
+      "message": "2054-05-17T18:05:03.000000+00:00 kzno71081 userdel[2499713]: removed group 'siem_group'"
+    },
+    {
+      "input.type": "log",
+      "message": "2054-05-17T18:05:04.000000+00:00 kzno71081 userdel[2499713]: removed shadow group 'siem_group'"
+    }
+  ],
+  "meta": {
+    "data_stream": "auth",
+    "dynamic_fields": {
+      "event.ingested": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-auth-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

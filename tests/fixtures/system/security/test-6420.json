@@ -1,0 +1,74 @@
+{
+    "events": [
+        {
+            "@timestamp": "2050-11-29T12:51:31.287Z",
+            "winlog": {
+                "event_id": 6420,
+                "computer_name": "Wfmmax1.xcyu5.local",
+                "channel": "Security",
+                "process": {
+                    "thread": {
+                        "id": 3480
+                    },
+                    "pid": 4
+                },
+                "event_data": {
+                    "HardwareIds": "\n\t\tHID\\VID_0E0F&PID_0003&REV_0102&MI_01\n\t\tHID\\VID_0E0F&PID_0003&MI_01\n\t\tHID\\VID_0E0F&UP:0001_U:0002\n\t\tHID_DEVICE_SYSTEM_MOUSE\n\t\tHID_DEVICE_UP:0001_U:0002\n\t\tHID_DEVICE\n\t\t\n\t\t",
+                    "SubjectUserSid": "S-1-5-18",
+                    "SubjectUserName": "WFMMAX1$",
+                    "SubjectDomainName": "TEST1",
+                    "LocationInformation": "-",
+                    "SubjectLogonId": "0x3e7",
+                    "DeviceId": "HID\\VID_0E0F&PID_0003&MI_01\\8&95bc71c&0&0000",
+                    "ClassId": "{0000000X-0000-000X-0000-000000000000}",
+                    "CompatibleIds": "SCSI\\Disk",
+                    "DeviceDescription": "VMware USB Pointing Device",
+                    "ClassName": "Mouse"
+                },
+                "api": "wineventlog",
+                "opcode": "Info",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "task": "Plug and Play Events",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+                "record_id": 24515074
+            },
+            "event": {
+                "kind": "event",
+                "code": 6420,
+                "action": "Plug and Play Events",
+                "created": "2050-11-29T12:51:32.624Z"
+            },
+            "log": {
+                "level": "information"
+            },
+            "message": "A device was disabled.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-18\n\tAccount Name:\t\tSERVER2$\n\tAccount Domain:\t\tTEST1\n\tLogon ID:\t\t0x3E7\n\nDevice ID:\tHID\\VID_0E0F&PID_0003&MI_01\\8&95bc71c&0&0000\n\nDevice Name:\tVMware USB Pointing Device\n\nClass ID:\t\t{00000000-0000-0000-0000-000000000000}\n\nClass Name:\tMouse\n\nHardware IDs:\t\n\t\tHID\\VID_0E0F&PID_0003&REV_0102&MI_01\n\t\tHID\\VID_0E0F&PID_0003&MI_01\n\t\tHID\\VID_0E0F&UP:0001_U:0002\n\t\tHID_DEVICE_SYSTEM_MOUSE\n\t\tHID_DEVICE_UP:0001_U:0002\n\t\tHID_DEVICE\n\t\t\n\t\t\n\nCompatible IDs:\t\n\t\t\n\t\t\n\nLocation Information:\t-",
+            "ecs": {
+                "version": "1.0.1"
+            },
+            "host": {
+                "name": "Wfmmax1",
+                "hostname": "Wfmmax1",
+                "architecture": "x86_64",
+                "os": {
+                    "build": "14393.693",
+                    "platform": "windows",
+                    "version": "10.0",
+                    "family": "windows",
+                    "name": "Windows Server 2016 Standard Evaluation",
+                    "kernel": "10.0.14393.693 (rs1_release.161220-1747)"
+                },
+                "id": "9ff0eeec-e913-4a05-990e-50d99b6ea290"
+            },
+            "agent": {
+                "version": "7.3.1",
+                "type": "winlogbeat",
+                "ephemeral_id": "7d2caeef-f2bc-439c-96ed-84601bb37a76",
+                "hostname": "Wfmmax1",
+                "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee"
+            }
+        }
+    ]
+}

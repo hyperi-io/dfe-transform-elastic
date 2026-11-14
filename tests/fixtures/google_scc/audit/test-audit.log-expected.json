@@ -1,0 +1,98 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-09-24T16:16:57.183Z",
+      "cloud": {
+        "service": {
+          "name": "login.googleapis.com"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "google.login.LoginService.loginFailure",
+        "id": "-nahbepd4l1x",
+        "kind": "event",
+        "original": "{\"protoPayload\":{\"@type\":\"type.googleapis.com/google.cloud.audit.AuditLog\",\"authenticationInfo\":{\"principalEmail\":\"gfis-jqbu@example.net\"},\"requestMetadata\":{\"callerIp\":\"192.0.2.87\",\"requestAttributes\":{},\"destinationAttributes\":{}},\"serviceName\":\"login.googleapis.com\",\"methodName\":\"google.login.LoginService.loginFailure\",\"resourceName\":\"organizations/123\"},\"insertId\":\"-nahbepd4l1x\",\"resource\":{\"type\":\"audited_resource\"},\"httpRequest\":{\"remoteIp\":\"FE80::0202:B3FF:FE1E:1010\"},\"timestamp\":\"2049-09-24T16:16:57.183212Z\",\"severity\":\"NOTICE\",\"logName\":\"organizations/123/logs/cloudaudit.googleapis.com%2Fdata_access\",\"receiveTimestamp\":\"2049-09-24T17:51:25.034361197Z\"}",
+        "severity": 300
+      },
+      "google_scc": {
+        "audit": {
+          "http_request": {
+            "remote": {
+              "ip": "FE80::0202:B3FF:FE1E",
+              "port": 1010
+            }
+          },
+          "insert_id": "-nahbepd4l1x",
+          "log_name": "organizations/123/logs/cloudaudit.googleapis.com%2Fdata_access",
+          "proto_payload": {
+            "authentication_info": {
+              "principal_email": "gfis-jqbu@example.net"
+            },
+            "method_name": "google.login.LoginService.loginFailure",
+            "request_metadata": {
+              "caller": {
+                "ip": "192.0.2.87"
+              }
+            },
+            "resource_name": "organizations/123",
+            "service_name": "login.googleapis.com",
+            "type": "type.googleapis.com/google.cloud.audit.AuditLog"
+          },
+          "receive_timestamp": "2049-09-24T17:51:25.034Z",
+          "resource": {
+            "type": "audited_resource"
+          },
+          "severity": {
+            "code": 300,
+            "value": "NOTICE"
+          },
+          "timestamp": "2049-09-24T16:16:57.183Z"
+        }
+      },
+      "log": {
+        "level": "NOTICE"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "FE80::0202:B3FF:FE1E"
+        ],
+        "user": [
+          "gfis-jqbu@example.net"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87",
+        "user": {
+          "email": "gfis-jqbu@example.net"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"protoPayload\":{\"@type\":\"type.googleapis.com/google.cloud.audit.AuditLog\",\"authenticationInfo\":{\"principalEmail\":\"gfis-jqbu@example.net\"},\"requestMetadata\":{\"callerIp\":\"192.0.2.87\",\"requestAttributes\":{},\"destinationAttributes\":{}},\"serviceName\":\"login.googleapis.com\",\"methodName\":\"google.login.LoginService.loginFailure\",\"resourceName\":\"organizations/123\"},\"insertId\":\"-nahbepd4l1x\",\"resource\":{\"type\":\"audited_resource\"},\"httpRequest\":{\"remoteIp\":\"FE80::0202:B3FF:FE1E:1010\"},\"timestamp\":\"2049-09-24T16:16:57.183212Z\",\"severity\":\"NOTICE\",\"logName\":\"organizations/123/logs/cloudaudit.googleapis.com%2Fdata_access\",\"receiveTimestamp\":\"2049-09-24T17:51:25.034361197Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-google_scc-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "google_scc",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

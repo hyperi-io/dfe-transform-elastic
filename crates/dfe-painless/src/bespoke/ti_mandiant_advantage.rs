@@ -77,7 +77,7 @@ fn split_misp_warning_lists(event: &mut Event, _params: &Value) {
     let _ = event.set("json.misp_warning_list_misses", Value::Array(misses));
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "c230cb2712b8172e9e52789370fcb3758fc3aebc13f44c8f50133c07685f961a",

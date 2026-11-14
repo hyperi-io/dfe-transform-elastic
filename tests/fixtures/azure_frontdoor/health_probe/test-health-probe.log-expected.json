@@ -1,0 +1,230 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-07-07T09:31:41.000Z",
+      "azure": {
+        "frontdoor": {
+          "category": "FrontDoorHealthProbeLog",
+          "health_probe": {
+            "connection_latency_milliseconds": 71,
+            "dns_latency_microseconds": 2000,
+            "health_probe_id": "636aae3284437b9f7fb4e14119c67cf0",
+            "origin_name": "xcyx.internal.sjbuoczrxnsist-f4df9dc0.vcjyol0.bluqadwoncyxeqctkl.io",
+            "pop": "BL",
+            "result": "OriginError",
+            "total_latency_milliseconds": 142
+          },
+          "operation_name": "Microsoft.Cdn/Profiles/FrontDoorHealthProbeLog/Write",
+          "resource_id": "/SUBSCRIPTIONS/23A8E941-1CEA-445C-B601-FCCA0A14F64A/RESOURCEGROUPS/WAF-RG/PROVIDERS/MICROSOFT.CDN/PROFILES/TESTCLOUD"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "original": "{\"time\":\"2054-07-07T09:31:41Z\",\"resourceId\":\"/SUBSCRIPTIONS/23A8E941-1CEA-445C-B601-FCCA0A14F64A/RESOURCEGROUPS/WAF-RG/PROVIDERS/MICROSOFT.CDN/PROFILES/TESTCLOUD\",\"category\":\"FrontDoorHealthProbeLog\",\"operationName\":\"Microsoft.Cdn/Profiles/FrontDoorHealthProbeLog/Write\",\"properties\":{\"healthProbeId\":\"636aae3284437b9f7fb4e14119c67cf0\",\"pop\":\"BL\",\"httpVerb\":\"HEAD\",\"result\":\"OriginError\",\"httpStatusCode\":\"404\",\"probeUrl\":\"http://test.internal.orangemushroom-b8de5ef7.westus2.azurecontainerapps.io:80/\",\"originName\":\"xcyx.internal.sjbuoczrxnsist-f4df9dc0.vcjyol0.bluqadwoncyxeqctkl.io\",\"originIP\":\"198.51.100.124\",\"totalLatencyMilliseconds\":\"142\",\"connectionLatencyMilliseconds\":\"71\",\"DNSLatencyMicroseconds\":\"2000\"}}",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "HEAD"
+        },
+        "response": {
+          "status_code": 404
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.124"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "azure-frontdoor-health-probe",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "test.internal.orangemushroom-b8de5ef7.westus2.azurecontainerapps.io",
+        "full": "http://test.internal.orangemushroom-b8de5ef7.westus2.azurecontainerapps.io:80/",
+        "original": "http://test.internal.orangemushroom-b8de5ef7.westus2.azurecontainerapps.io:80/",
+        "path": "/",
+        "port": 80,
+        "scheme": "http"
+      }
+    },
+    {
+      "@timestamp": "2054-07-07T10:00:00.000Z",
+      "azure": {
+        "frontdoor": {
+          "category": "FrontDoorHealthProbeLog",
+          "health_probe": {
+            "connection_latency_milliseconds": 10,
+            "health_probe_id": "abc123def456",
+            "origin_name": "backend.example.com",
+            "pop": "AMS",
+            "result": "Success",
+            "total_latency_milliseconds": 25
+          },
+          "operation_name": "Microsoft.Cdn/Profiles/FrontDoorHealthProbeLog/Write",
+          "resource_id": "/SUBSCRIPTIONS/23A8E941-1CEA-445C-B601-FCCA0A14F64A/RESOURCEGROUPS/WAF-RG/PROVIDERS/MICROSOFT.CDN/PROFILES/TESTCLOUD"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "198.51.100.124:443",
+        "ip": "198.51.100.124",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "original": "{\"time\":\"2054-07-07T10:00:00Z\",\"resourceId\":\"/SUBSCRIPTIONS/23A8E941-1CEA-445C-B601-FCCA0A14F64A/RESOURCEGROUPS/WAF-RG/PROVIDERS/MICROSOFT.CDN/PROFILES/TESTCLOUD\",\"category\":\"FrontDoorHealthProbeLog\",\"operationName\":\"Microsoft.Cdn/Profiles/FrontDoorHealthProbeLog/Write\",\"properties\":{\"healthProbeId\":\"abc123def456\",\"pop\":\"AMS\",\"httpVerb\":\"GET\",\"result\":\"Success\",\"httpStatusCode\":\"200\",\"probeUrl\":\"https://backend.example.com/health\",\"originName\":\"backend.example.com\",\"originIP\":\"198.51.100.124:443\",\"totalLatencyMilliseconds\":\"25\",\"connectionLatencyMilliseconds\":\"10\",\"DNSLatencyMicroseconds\":\"n/a\"}}",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.124"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "azure-frontdoor-health-probe",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "backend.example.com",
+        "full": "https://backend.example.com/health",
+        "original": "https://backend.example.com/health",
+        "path": "/health",
+        "scheme": "https"
+      }
+    },
+    {
+      "@timestamp": "2054-07-07T10:00:00.000Z",
+      "azure": {
+        "frontdoor": {
+          "category": "FrontDoorHealthProbeLog",
+          "health_probe": {
+            "connection_latency_milliseconds": 10,
+            "health_probe_id": "abc123def456",
+            "origin_name": "backend.example.com",
+            "pop": "AMS",
+            "result": "Success",
+            "total_latency_milliseconds": 25
+          },
+          "operation_name": "Microsoft.Cdn/Profiles/FrontDoorHealthProbeLog/Write",
+          "resource_id": "/SUBSCRIPTIONS/23A8E941-1CEA-445C-B601-FCCA0A14F64A/RESOURCEGROUPS/WAF-RG/PROVIDERS/MICROSOFT.CDN/PROFILES/TESTCLOUD"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "[2001:db8::1]:8080",
+        "ip": "2001:db8::1",
+        "port": 8080
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "original": "{\"time\":\"2054-07-07T10:00:00Z\",\"resourceId\":\"/SUBSCRIPTIONS/23A8E941-1CEA-445C-B601-FCCA0A14F64A/RESOURCEGROUPS/WAF-RG/PROVIDERS/MICROSOFT.CDN/PROFILES/TESTCLOUD\",\"category\":\"FrontDoorHealthProbeLog\",\"operationName\":\"Microsoft.Cdn/Profiles/FrontDoorHealthProbeLog/Write\",\"properties\":{\"healthProbeId\":\"abc123def456\",\"pop\":\"AMS\",\"httpVerb\":\"GET\",\"result\":\"Success\",\"httpStatusCode\":\"200\",\"probeUrl\":\"https://backend.example.com/health\",\"originName\":\"backend.example.com\",\"originIP\":\"[2001:db8::1]:8080\",\"totalLatencyMilliseconds\":\"25\",\"connectionLatencyMilliseconds\":\"10\",\"DNSLatencyMicroseconds\":\"n/a\"}}",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "related": {
+        "ip": [
+          "2001:db8::1"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "azure-frontdoor-health-probe",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "backend.example.com",
+        "full": "https://backend.example.com/health",
+        "original": "https://backend.example.com/health",
+        "path": "/health",
+        "scheme": "https"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\":\"2054-07-07T09:31:41Z\",\"resourceId\":\"/SUBSCRIPTIONS/23A8E941-1CEA-445C-B601-FCCA0A14F64A/RESOURCEGROUPS/WAF-RG/PROVIDERS/MICROSOFT.CDN/PROFILES/TESTCLOUD\",\"category\":\"FrontDoorHealthProbeLog\",\"operationName\":\"Microsoft.Cdn/Profiles/FrontDoorHealthProbeLog/Write\",\"properties\":{\"healthProbeId\":\"636aae3284437b9f7fb4e14119c67cf0\",\"pop\":\"BL\",\"httpVerb\":\"HEAD\",\"result\":\"OriginError\",\"httpStatusCode\":\"404\",\"probeUrl\":\"http://test.internal.orangemushroom-b8de5ef7.westus2.azurecontainerapps.io:80/\",\"originName\":\"xcyx.internal.sjbuoczrxnsist-f4df9dc0.vcjyol0.bluqadwoncyxeqctkl.io\",\"originIP\":\"198.51.100.124\",\"totalLatencyMilliseconds\":\"142\",\"connectionLatencyMilliseconds\":\"71\",\"DNSLatencyMicroseconds\":\"2000\"}}",
+      "tags": [
+        "preserve_original_event",
+        "azure-frontdoor-health-probe"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2054-07-07T10:00:00Z\",\"resourceId\":\"/SUBSCRIPTIONS/23A8E941-1CEA-445C-B601-FCCA0A14F64A/RESOURCEGROUPS/WAF-RG/PROVIDERS/MICROSOFT.CDN/PROFILES/TESTCLOUD\",\"category\":\"FrontDoorHealthProbeLog\",\"operationName\":\"Microsoft.Cdn/Profiles/FrontDoorHealthProbeLog/Write\",\"properties\":{\"healthProbeId\":\"abc123def456\",\"pop\":\"AMS\",\"httpVerb\":\"GET\",\"result\":\"Success\",\"httpStatusCode\":\"200\",\"probeUrl\":\"https://backend.example.com/health\",\"originName\":\"backend.example.com\",\"originIP\":\"198.51.100.124:443\",\"totalLatencyMilliseconds\":\"25\",\"connectionLatencyMilliseconds\":\"10\",\"DNSLatencyMicroseconds\":\"n/a\"}}",
+      "tags": [
+        "preserve_original_event",
+        "azure-frontdoor-health-probe"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2054-07-07T10:00:00Z\",\"resourceId\":\"/SUBSCRIPTIONS/23A8E941-1CEA-445C-B601-FCCA0A14F64A/RESOURCEGROUPS/WAF-RG/PROVIDERS/MICROSOFT.CDN/PROFILES/TESTCLOUD\",\"category\":\"FrontDoorHealthProbeLog\",\"operationName\":\"Microsoft.Cdn/Profiles/FrontDoorHealthProbeLog/Write\",\"properties\":{\"healthProbeId\":\"abc123def456\",\"pop\":\"AMS\",\"httpVerb\":\"GET\",\"result\":\"Success\",\"httpStatusCode\":\"200\",\"probeUrl\":\"https://backend.example.com/health\",\"originName\":\"backend.example.com\",\"originIP\":\"[2001:db8::1]:8080\",\"totalLatencyMilliseconds\":\"25\",\"connectionLatencyMilliseconds\":\"10\",\"DNSLatencyMicroseconds\":\"n/a\"}}",
+      "tags": [
+        "preserve_original_event",
+        "azure-frontdoor-health-probe"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "health_probe",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_frontdoor-health_probe-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "azure_frontdoor",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

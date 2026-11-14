@@ -6247,9 +6247,7 @@ impl Transform for Default {
                 event.append_unique("source.geo.country_name", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.country.name").map_or_else(String::new, template_to_string)))?;
             }
 
-            // Painless script
-            // Source: def locationList = new ArrayList();\nif (ctx.aws?.guardduty?.service?.action?.aws_api_call_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.aws_api_call_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.kubernetes_api_call_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.network_connection_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.network_connection_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.port_probe_action?.port_probe_details instanceof List) {\n  for (list in ctx.aws.guardduty.service.action.port_probe_action.port_probe_details) {\n    locationList.add(list.remote_ip_details.geo_location);\n  }\n}\nif (ctx.aws?.guardduty?.service?.action?.rds_login_attempt_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.geo_location);\n}\nif (!(ctx.source instanceof HashMap)) {\n  ctx.source = new HashMap();\n}\nif (!(ctx.source.geo instanceof HashMap)) {\n  ctx.source.geo = new HashMap();\n}\nctx.source.geo.location = locationList;\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -6962,8 +6960,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

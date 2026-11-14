@@ -1,0 +1,64 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:06:03.636Z",
+            "winlog": {
+                "level": "information",
+                "process": {
+                    "pid": 496,
+                    "thread": {
+                        "id": 504
+                    }
+                },
+                "channel": "Security",
+                "record_id": 5109160,
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2048-04-06T06:39:04.549Z",
+                "outcome": "success",
+                "event_id": 4673,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "event_data": {
+                    "ProcessId": "0x1f0",
+                    "ProcessName": "C:\\Windows\\System32\\lsass.exe",
+                    "SubjectUserName": "CA_TBIY4Q29$",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x3e7",
+                    "PrivilegeList": "SeTcbPrivilege",
+                    "SubjectUserSid": "S-1-5-18",
+                    "ObjectServer": "NT Local Security Authority / Authentication Service",
+                    "Service": "LsaRegisterLogonProcess()"
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4673,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4673.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "b37c9f22-3042-4f2f-a5e7-d2d9e946eac9"
+            }
+        }
+    ]
+}

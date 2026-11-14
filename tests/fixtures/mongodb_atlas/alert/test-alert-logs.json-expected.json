@@ -1,0 +1,312 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-07-02T09:55:24.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "id": "6683ce8c9558e8655626e1ed",
+        "kind": "alert",
+        "module": "mongodb_atlas",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "id": "646f4379c47da356740d14ad"
+      },
+      "mongodb_atlas": {
+        "alert": {
+          "acknowledged": {
+            "comment": "Issue acknowledged and being worked on",
+            "time": "2052-07-05T00:00:00Z",
+            "user": {
+              "name": "devOpsUser"
+            }
+          },
+          "cluster": {
+            "id": "exampleClusterId456",
+            "name": "IntegrationsDevBuildCluster",
+            "parent": {
+              "id": "exampleParentClusterId123"
+            }
+          },
+          "config": {
+            "id": "6683cb42d12516670f38a3ef"
+          },
+          "event_type": {
+            "name": "OUTSIDE_METRIC_THRESHOLD"
+          },
+          "host": {
+            "id": "exampleHostId789",
+            "non_running": {
+              "ids": [
+                "hostId1",
+                "hostId2"
+              ]
+            }
+          },
+          "host_name_and_port": "emlex-bet2sf-jubrd-74-87.t2zpe.pnvkjeb.net:27017",
+          "last_notified": {
+            "time": "2052-07-02T10:03:21Z"
+          },
+          "metric": {
+            "name": "FTS_PROCESS_CPU_USER",
+            "unit": "RAW",
+            "value": 1.2666666666666666
+          },
+          "processor": {
+            "error_msg": "No errors",
+            "instance": {
+              "name": "instance123"
+            },
+            "name": "Processor1",
+            "state": "Running"
+          },
+          "replicaset": {
+            "name": "atlas-ccx4uc-shard-0"
+          },
+          "resolved": {
+            "time": "2052-07-02T10:03:21Z"
+          },
+          "source_type": {
+            "name": "ATLAS_MONITORING_AGENT"
+          },
+          "status": "CLOSED",
+          "tags": [
+            "critical",
+            "cpu",
+            "threshold"
+          ],
+          "updated": {
+            "time": "2052-07-02T10:03:21Z"
+          },
+          "user": {
+            "alias": "vtxfwybxoorkcbufstlcbwl-ovdhc-45-20.t2zpe.pnvkjeb.net"
+          }
+        }
+      },
+      "organization": {
+        "id": "646f418c72f24c07d430aaca"
+      },
+      "related": {
+        "hosts": [
+          "emlex-bet2sf-jubrd-74-87.t2zpe.pnvkjeb.net"
+        ]
+      },
+      "source": {
+        "address": "emlex-bet2sf-jubrd-74-87.t2zpe.pnvkjeb.net",
+        "domain": "emlex-bet2sf-jubrd-74-87.t2zpe.pnvkjeb.net",
+        "port": 27017
+      }
+    },
+    {
+      "@timestamp": "2052-07-02T09:55:24.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "id": "6683ce8c9558e8655626e1ee",
+        "kind": "alert",
+        "module": "mongodb_atlas",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "id": "646f4379c47da356740d14ad"
+      },
+      "mongodb_atlas": {
+        "alert": {
+          "acknowledged": {
+            "comment": "Issue acknowledged and being worked on",
+            "time": "2052-07-05T00:00:00Z",
+            "user": {
+              "name": "devOpsUser"
+            }
+          },
+          "cluster": {
+            "id": "exampleClusterId456",
+            "name": "IntegrationsDevBuildCluster",
+            "parent": {
+              "id": "exampleParentClusterId123"
+            }
+          },
+          "config": {
+            "id": "6683cb42d12516670f38a3ef"
+          },
+          "event_type": {
+            "name": "OUTSIDE_METRIC_THRESHOLD"
+          },
+          "host": {
+            "id": "exampleHostId789",
+            "non_running": {
+              "ids": [
+                "hostId1",
+                "hostId2"
+              ]
+            }
+          },
+          "host_name_and_port": "10.194.10.249:27017",
+          "last_notified": {
+            "time": "2052-07-02T10:03:21Z"
+          },
+          "metric": {
+            "name": "FTS_PROCESS_CPU_USER",
+            "unit": "RAW",
+            "value": 1.2666666666666666
+          },
+          "processor": {
+            "error_msg": "No errors",
+            "instance": {
+              "name": "instance123"
+            },
+            "name": "Processor1",
+            "state": "Running"
+          },
+          "replicaset": {
+            "name": "atlas-ccx4uc-shard-0"
+          },
+          "resolved": {
+            "time": "2052-07-02T10:03:21Z"
+          },
+          "source_type": {
+            "name": "ATLAS_MONITORING_AGENT"
+          },
+          "status": "CLOSED",
+          "tags": [
+            "critical",
+            "cpu",
+            "threshold"
+          ],
+          "updated": {
+            "time": "2052-07-02T10:03:21Z"
+          },
+          "user": {
+            "alias": "vtxfwybxoorkcbufstlcbwl-ovdhc-45-20.t2zpe.pnvkjeb.net"
+          }
+        }
+      },
+      "organization": {
+        "id": "646f418c72f24c07d430aaca"
+      },
+      "related": {
+        "ip": [
+          "10.194.10.249"
+        ]
+      },
+      "source": {
+        "address": "10.194.10.249",
+        "ip": "10.194.10.249",
+        "port": 27017
+      }
+    }
+  ],
+  "input": [
+    {
+      "response": {
+        "acknowledgedUntil": "2052-07-05T00:00:00Z",
+        "acknowledgementComment": "Issue acknowledged and being worked on",
+        "acknowledgingUsername": "devOpsUser",
+        "alertConfigId": "6683cb42d12516670f38a3ef",
+        "clusterId": "exampleClusterId456",
+        "clusterName": "IntegrationsDevBuildCluster",
+        "created": "2052-07-02T09:55:24Z",
+        "currentValue": {
+          "number": 1.2666666666666666,
+          "units": "RAW"
+        },
+        "eventTypeName": "OUTSIDE_METRIC_THRESHOLD",
+        "groupId": "646f4379c47da356740d14ad",
+        "hostId": "exampleHostId789",
+        "hostnameAndPort": "emlex-bet2sf-jubrd-74-87.t2zpe.pnvkjeb.net:27017",
+        "id": "6683ce8c9558e8655626e1ed",
+        "instanceName": "instance123",
+        "lastNotified": "2052-07-02T10:03:21Z",
+        "metricName": "FTS_PROCESS_CPU_USER",
+        "nonRunningHostIds": [
+          "hostId1",
+          "hostId2"
+        ],
+        "orgId": "646f418c72f24c07d430aaca",
+        "parentClusterId": "exampleParentClusterId123",
+        "processorErrorMsg": "No errors",
+        "processorName": "Processor1",
+        "processorState": "Running",
+        "replicaSetName": "atlas-ccx4uc-shard-0",
+        "resolved": "2052-07-02T10:03:21Z",
+        "sourceTypeName": "ATLAS_MONITORING_AGENT",
+        "status": "CLOSED",
+        "tags": [
+          "critical",
+          "cpu",
+          "threshold"
+        ],
+        "updated": "2052-07-02T10:03:21Z",
+        "userAlias": "vtxfwybxoorkcbufstlcbwl-ovdhc-45-20.t2zpe.pnvkjeb.net"
+      }
+    },
+    {
+      "response": {
+        "acknowledgedUntil": "2052-07-05T00:00:00Z",
+        "acknowledgementComment": "Issue acknowledged and being worked on",
+        "acknowledgingUsername": "devOpsUser",
+        "alertConfigId": "6683cb42d12516670f38a3ef",
+        "clusterId": "exampleClusterId456",
+        "clusterName": "IntegrationsDevBuildCluster",
+        "created": "2052-07-02T09:55:24Z",
+        "currentValue": {
+          "number": 1.2666666666666666,
+          "units": "RAW"
+        },
+        "eventTypeName": "OUTSIDE_METRIC_THRESHOLD",
+        "groupId": "646f4379c47da356740d14ad",
+        "hostId": "exampleHostId789",
+        "hostnameAndPort": "10.194.10.249:27017",
+        "id": "6683ce8c9558e8655626e1ee",
+        "instanceName": "instance123",
+        "lastNotified": "2052-07-02T10:03:21Z",
+        "metricName": "FTS_PROCESS_CPU_USER",
+        "nonRunningHostIds": [
+          "hostId1",
+          "hostId2"
+        ],
+        "orgId": "646f418c72f24c07d430aaca",
+        "parentClusterId": "exampleParentClusterId123",
+        "processorErrorMsg": "No errors",
+        "processorName": "Processor1",
+        "processorState": "Running",
+        "replicaSetName": "atlas-ccx4uc-shard-0",
+        "resolved": "2052-07-02T10:03:21Z",
+        "sourceTypeName": "ATLAS_MONITORING_AGENT",
+        "status": "CLOSED",
+        "tags": [
+          "critical",
+          "cpu",
+          "threshold"
+        ],
+        "updated": "2052-07-02T10:03:21Z",
+        "userAlias": "vtxfwybxoorkcbufstlcbwl-ovdhc-45-20.t2zpe.pnvkjeb.net"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "alert",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-mongodb_atlas-alert-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "mongodb_atlas",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

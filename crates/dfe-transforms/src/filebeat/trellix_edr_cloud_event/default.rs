@@ -65,9 +65,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def event_category = ctx.json._eventType.toLowerCase(); ArrayList items = new ArrayList(['process', 'file', 'api', 'network', 'registry','authentication']); for (def j = 0; j < items.length; j++) {\n    String key = items[j];\n    if (event_category.contains('user')){\n        ctx.event.category = [items[5]];\n    } else if (event_category.contains('reg')){\n        ctx.event.category = [items[4]];\n    } else if (event_category.contains('dns')){\n        ctx.event.category = [items[3]];\n    } else if (event_category.contains(key)){\n        ctx.event.category = [key];\n    }\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -113,9 +111,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def event_type = ctx.json._eventType.toLowerCase(); if (!ctx.event.category.contains('registry')){\n\n\n  ctx.event.type = ['info']\n} ArrayList items = new ArrayList(['access', 'creat', 'delet', 'modif', 'change']); ArrayList set_items = new ArrayList(['access', 'creation', 'deletion', 'change', 'change']); for (def j = 0; j < items.length; j++) {\n\n\n    if (event_type.contains(items[j]) && (!event_type.contains('process created'))){\n        ctx.event.type = [set_items[j]];\n    }\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2107,8 +2103,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

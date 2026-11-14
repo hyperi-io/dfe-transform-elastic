@@ -250,9 +250,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\n\nif(ctx.tanium?.threat_response?.state != null) {\n  ctx.tanium.threat_response.state = keysToSnakeCase(ctx.tanium.threat_response.state);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -610,9 +608,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.tanium.threat_response.other_parameters.payload_json = ctx.tanium.threat_response.other_parameters.payload.decodeBase64()
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -691,9 +687,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_object())
             };
             if _cond {
-                // Painless script
-                // Source: ctx.tanium.threat_response.match_details = ctx.tanium.threat_response.match_details ?: [:];\nctx.tanium.threat_response.match_details.putAll(ctx.json['Match Details']);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -709,8 +703,7 @@ impl Transform for Default {
             };
             if _cond {
                 // Begin nested pipeline: "match_details"
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean dropEmptyMapsAndLists(Object object) {\n  if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyMapsAndLists(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyMapsAndLists(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyMapsAndLists(ctx.tanium.threat_response.match_details);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -2084,9 +2077,7 @@ impl Transform for Default {
                 event.remove("tanium.threat_response.user.domain");
             }
 
-            // Painless script
-            // Source: Map truncateMap(Map node, int depth, int maxDepth, List path, List truncations) {\n    if (depth > maxDepth) {\n        truncations.add(String.join(\".\", path));\n        return null; // Return null if max depth is exceeded\n    }\n    for (entry in node.entrySet()) {\n        List newPath = new ArrayList(path);\n        newPath.add(entry.getKey());\n        Object value = entry.getValue();\n        if (value instanceof Map) {\n            entry.setValue(truncateMap((Map) value, depth + 1, maxDepth, newPath, truncations));\n        } else if (value instanceof List) {\n            // A list in a map doesn't add depth - multiple values are treated the same as a single value\n            entry.setValue(truncateList((List) value, depth, maxDepth, newPath, truncations));\n        }\n        // Otherwise it's a plain value, so leave it\n    }\n    return node;\n\n}\nList truncateList(List node, int depth, int maxDepth, List path, List truncations) {\n    List input = new ArrayList(node);\n    node.clear();\n    if (depth > maxDepth) {\n        truncations.add(String.join(\".\", path));\n        return null;\n    }\n    for (item in input) {\n        if (item instanceof Map) {\n            node.add(truncateMap((Map) item, depth + 1, maxDepth, path, truncations));\n        } else if (item instanceof List) {\n            // A list in a list adds depth - but isn't common in our data\n            node.add(truncateList((List) item, depth + 1, maxDepth, path, truncations));\n        } else {\n            node.add(item); // It's a plain value\n        }\n    }\n    return node;\n}\nint maxDepth = 20;\nList truncations = [];\ntruncateMap(ctx, 1, maxDepth, [], truncations);\nctx.tanium.truncations = truncations;\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -2094,8 +2085,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1,0 +1,49 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "logout",
+        "category": [
+          "authentication"
+        ],
+        "dataset": "salesforce.logout",
+        "ingested": "2026-11-13T23:07:16.741087401Z",
+        "kind": "event",
+        "module": "salesforce",
+        "original": "{\"EventDate\":\"2049-10-19T11:38:54Z\",\"EventIdentifier\":\"92ae2d4a-2b9e-4f95-aaf2-25b28e0b41de\",\"SourceIp\":\"203.0.113.248\",\"CreatedById\":\"0055j000000q9s7AAA\",\"Username\":\"umbr.mbrb@dobjr.com\",\"UserId\":\"0056j000000utlQAAR\",\"RelatedEventIdentifier\":null,\"SessionKey\":\"6/HAElgoPCwskqBU\",\"CreatedDate\":\"2049-10-19T11:38:54Z\",\"LoginKey\":\"CuRVtbMjat6xxbTH\",\"SessionLevel\":\"STANDARD\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "event.provider": "Object",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "event.provider": "Object",
+      "message": "{\"EventDate\":\"2049-10-19T11:38:54Z\",\"EventIdentifier\":\"92ae2d4a-2b9e-4f95-aaf2-25b28e0b41de\",\"SourceIp\":\"203.0.113.248\",\"CreatedById\":\"0055j000000q9s7AAA\",\"Username\":\"umbr.mbrb@dobjr.com\",\"UserId\":\"0056j000000utlQAAR\",\"RelatedEventIdentifier\":null,\"SessionKey\":\"6/HAElgoPCwskqBU\",\"CreatedDate\":\"2049-10-19T11:38:54Z\",\"LoginKey\":\"CuRVtbMjat6xxbTH\",\"SessionLevel\":\"STANDARD\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "logout",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-salesforce-logout-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "salesforce",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

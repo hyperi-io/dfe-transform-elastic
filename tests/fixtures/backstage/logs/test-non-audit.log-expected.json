@@ -1,0 +1,254 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-05-22T20:29:50.000Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"level\":\"info\",\"message\":\"Listening on port 7007\",\"service\":\"backstage\",\"timestamp\":\"2054-05-22T20:29:50.000Z\"}"
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Listening on port 7007",
+      "service": {
+        "name": "backstage"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "backstage": {
+        "log": {
+          "trace_flags": "01"
+        }
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"level\":\"info\",\"message\":\"Attempting to fetch overlay file for team platform-team from overlays/github/teams/platform-team.yaml\",\"service\":\"backstage\",\"span_id\":\"d4c6f0c1b0b68687\",\"trace_flags\":\"01\",\"trace_id\":\"0c7f6b2d3e8d07958fcceedf5d9e6a3b\"}"
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Attempting to fetch overlay file for team platform-team from overlays/github/teams/platform-team.yaml",
+      "service": {
+        "name": "backstage"
+      },
+      "span": {
+        "id": "d4c6f0c1b0b68687"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "trace": {
+        "id": "0c7f6b2d3e8d07958fcceedf5d9e6a3b"
+      }
+    },
+    {
+      "@timestamp": "2054-06-03T16:07:19.885Z",
+      "backstage": {
+        "log": {
+          "trace_flags": "01",
+          "type": "incomingRequest"
+        }
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "original": "{\"contentLength\":15,\"date\":\"2054-06-03T16:07:19.885Z\",\"httpVersion\":\"1.1\",\"level\":\"info\",\"message\":\"[2054-06-03T16:07:19.885Z] \\\"GET /.backstage/health/v1/liveness HTTP/1.1\\\" 200 15 \\\"-\\\" \\\"kube-probe/1.35\\\"\",\"method\":\"GET\",\"service\":\"rootHttpRouter\",\"span_id\":\"c9b0f8c2c7347639\",\"status\":200,\"trace_flags\":\"01\",\"trace_id\":\"0c6e9c9e5f21083cadafaa1a8e3d3f0e\",\"type\":\"incomingRequest\",\"url\":\"/.backstage/health/v1/liveness\",\"userAgent\":\"kube-probe/1.35\"}",
+        "outcome": "success",
+        "type": [
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 15
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "[2054-06-03T16:07:19.885Z] \"GET /.backstage/health/v1/liveness HTTP/1.1\" 200 15 \"-\" \"kube-probe/1.35\"",
+      "service": {
+        "name": "rootHttpRouter"
+      },
+      "span": {
+        "id": "c9b0f8c2c7347639"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "trace": {
+        "id": "0c6e9c9e5f21083cadafaa1a8e3d3f0e"
+      },
+      "url": {
+        "original": "/.backstage/health/v1/liveness",
+        "path": "/.backstage/health/v1/liveness"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "kube-probe/1.35"
+      }
+    },
+    {
+      "@timestamp": "2054-06-03T16:07:20.881Z",
+      "backstage": {
+        "log": {
+          "trace_flags": "01",
+          "type": "incomingRequest"
+        }
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "original": "{\"contentLength\":2,\"date\":\"2054-06-03T16:07:20.881Z\",\"httpVersion\":\"1.1\",\"level\":\"info\",\"message\":\"[2054-06-03T16:07:20.881Z] \\\"GET /api/catalog/entities?filter=kind%3DNothingOfThisKind HTTP/1.1\\\" 200 2 \\\"-\\\" \\\"backstage-api-proxy\\\"\",\"method\":\"GET\",\"service\":\"rootHttpRouter\",\"span_id\":\"a2c4a5d077216139\",\"status\":200,\"trace_flags\":\"01\",\"trace_id\":\"4a5e5b6b16478cceecef0b8a2c5e8c6c\",\"type\":\"incomingRequest\",\"url\":\"/api/catalog/entities?filter=kind%3DNothingOfThisKind\",\"userAgent\":\"backstage-api-proxy\"}",
+        "outcome": "success",
+        "type": [
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 2
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "[2054-06-03T16:07:20.881Z] \"GET /api/catalog/entities?filter=kind%3DNothingOfThisKind HTTP/1.1\" 200 2 \"-\" \"backstage-api-proxy\"",
+      "service": {
+        "name": "rootHttpRouter"
+      },
+      "span": {
+        "id": "a2c4a5d077216139"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "trace": {
+        "id": "4a5e5b6b16478cceecef0b8a2c5e8c6c"
+      },
+      "url": {
+        "original": "/api/catalog/entities?filter=kind%3DNothingOfThisKind",
+        "path": "/api/catalog/entities",
+        "query": "filter=kind=NothingOfThisKind"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "backstage-api-proxy"
+      }
+    },
+    {
+      "backstage": {
+        "log": {
+          "entity": "location:default/github-repository-example-repo",
+          "location": "url:https://github.com/euajswc-mqr/catalog-info/tree/dev-compiled/catalog-info.compiled.yaml",
+          "plugin": "catalog",
+          "trace_flags": "01"
+        }
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"entity\":\"location:default/github-repository-example-repo\",\"level\":\"warn\",\"location\":\"url:https://github.com/euajswc-mqr/catalog-info/tree/dev-compiled/catalog-info.compiled.yaml\",\"message\":\"Unable to read url, Error: The Backstage GitHub application used in the example-org organization does not have access to a repository with the name example-repo\",\"plugin\":\"catalog\",\"service\":\"backstage\",\"span_id\":\"c6a4e91656682852\",\"trace_flags\":\"01\",\"trace_id\":\"0f7a4c90607adffccd7d5f2f2a5b6d9e\"}"
+      },
+      "log": {
+        "level": "warn"
+      },
+      "message": "Unable to read url, Error: The Backstage GitHub application used in the example-org organization does not have access to a repository with the name example-repo",
+      "service": {
+        "name": "backstage"
+      },
+      "span": {
+        "id": "c6a4e91656682852"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "trace": {
+        "id": "0f7a4c90607adffccd7d5f2f2a5b6d9e"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"level\":\"info\",\"message\":\"Listening on port 7007\",\"service\":\"backstage\",\"timestamp\":\"2054-05-22T20:29:50.000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"level\":\"info\",\"message\":\"Attempting to fetch overlay file for team platform-team from overlays/github/teams/platform-team.yaml\",\"service\":\"backstage\",\"span_id\":\"d4c6f0c1b0b68687\",\"trace_flags\":\"01\",\"trace_id\":\"0c7f6b2d3e8d07958fcceedf5d9e6a3b\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"contentLength\":15,\"date\":\"2054-06-03T16:07:19.885Z\",\"httpVersion\":\"1.1\",\"level\":\"info\",\"message\":\"[2054-06-03T16:07:19.885Z] \\\"GET /.backstage/health/v1/liveness HTTP/1.1\\\" 200 15 \\\"-\\\" \\\"kube-probe/1.35\\\"\",\"method\":\"GET\",\"service\":\"rootHttpRouter\",\"span_id\":\"c9b0f8c2c7347639\",\"status\":200,\"trace_flags\":\"01\",\"trace_id\":\"0c6e9c9e5f21083cadafaa1a8e3d3f0e\",\"type\":\"incomingRequest\",\"url\":\"/.backstage/health/v1/liveness\",\"userAgent\":\"kube-probe/1.35\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"contentLength\":2,\"date\":\"2054-06-03T16:07:20.881Z\",\"httpVersion\":\"1.1\",\"level\":\"info\",\"message\":\"[2054-06-03T16:07:20.881Z] \\\"GET /api/catalog/entities?filter=kind%3DNothingOfThisKind HTTP/1.1\\\" 200 2 \\\"-\\\" \\\"backstage-api-proxy\\\"\",\"method\":\"GET\",\"service\":\"rootHttpRouter\",\"span_id\":\"a2c4a5d077216139\",\"status\":200,\"trace_flags\":\"01\",\"trace_id\":\"4a5e5b6b16478cceecef0b8a2c5e8c6c\",\"type\":\"incomingRequest\",\"url\":\"/api/catalog/entities?filter=kind%3DNothingOfThisKind\",\"userAgent\":\"backstage-api-proxy\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"entity\":\"location:default/github-repository-example-repo\",\"level\":\"warn\",\"location\":\"url:https://github.com/euajswc-mqr/catalog-info/tree/dev-compiled/catalog-info.compiled.yaml\",\"message\":\"Unable to read url, Error: The Backstage GitHub application used in the example-org organization does not have access to a repository with the name example-repo\",\"plugin\":\"catalog\",\"service\":\"backstage\",\"span_id\":\"c6a4e91656682852\",\"trace_flags\":\"01\",\"trace_id\":\"0f7a4c90607adffccd7d5f2f2a5b6d9e\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-backstage-logs-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "backstage",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

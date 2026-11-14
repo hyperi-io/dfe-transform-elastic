@@ -1,0 +1,574 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-06-08T20:40:23.214Z",
+      "azure": {
+        "firewall": {
+          "action": "Deny",
+          "category": "AzureFirewallApplicationRule",
+          "operation_name": "AzureFirewallApplicationRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "md-qp4jv5snxgk5.z13.blob.storage.azure.net",
+        "domain": "md-qp4jv5snxgk5.z13.blob.storage.azure.net",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTPS request from 10.183.65.250:56029 to md-qp4jv5snxgk5.z13.blob.storage.azure.net:443. Action: Deny. No rule matched. Proceeding with default action\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:23.2140990Z\"}",
+        "reason": "No rule matched. Proceeding with default action",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "network": {
+        "protocol": "https"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "hosts": [
+          "md-qp4jv5snxgk5.z13.blob.storage.azure.net"
+        ],
+        "ip": [
+          "10.183.65.250"
+        ]
+      },
+      "source": {
+        "address": "10.183.65.250",
+        "ip": "10.183.65.250",
+        "port": 56029
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:34.347Z",
+      "azure": {
+        "firewall": {
+          "action": "Allow",
+          "category": "AzureFirewallApplicationRule",
+          "operation_name": "AzureFirewallApplicationRuleLog",
+          "policy": "azfwpolicy-nbfw-prd-weeu-01",
+          "rule_collection_group": "DefaultApplicationRuleCollectionGroup"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "guestconfiguration.azure.com",
+        "domain": "guestconfiguration.azure.com",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTPS request from 10.26.137.145:49553 to guestconfiguration.azure.com:443. Action: Allow. Policy: azfwpolicy-nbfw-prd-weeu-01. Rule Collection Group: DefaultApplicationRuleCollectionGroup. Rule Collection: enablement-genericwebcategory-prd-allow-200. Rule: Allowed Business-Use Webcategories. Web Category: ComputersAndTechnology\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:34.3470680Z\"}",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "network": {
+        "protocol": "https"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "hosts": [
+          "guestconfiguration.azure.com"
+        ],
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "rule": {
+        "category": "ComputersAndTechnology",
+        "name": "Allowed Business-Use Webcategories",
+        "ruleset": "enablement-genericwebcategory-prd-allow-200"
+      },
+      "source": {
+        "address": "10.26.137.145",
+        "ip": "10.26.137.145",
+        "port": 49553
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:39.363Z",
+      "azure": {
+        "firewall": {
+          "action": "Allow",
+          "category": "AzureFirewallApplicationRule",
+          "operation_name": "AzureFirewallApplicationRuleLog",
+          "policy": "azfwpolicy-nbfw-prd-weeu-01",
+          "rule_collection_group": "DefaultApplicationRuleCollectionGroup"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "qcoh.owpciw.com",
+        "domain": "qcoh.owpciw.com",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTP  request from 10.26.137.145:50776 to qcoh.owpciw.com:80. Url: qcoh.owpciw.com/MFQ=. Action: Allow. Policy: azfwpolicy-nbfw-prd-weeu-01. Rule Collection Group: DefaultApplicationRuleCollectionGroup. Rule Collection: generic-allow-500. Rule: Azure-to-AllowedServices, HTTP\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:39.3635100Z\"}",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "network": {
+        "protocol": "http "
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "hosts": [
+          "qcoh.owpciw.com"
+        ],
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "rule": {
+        "name": "Azure-to-AllowedServices, HTTP",
+        "ruleset": "generic-allow-500"
+      },
+      "source": {
+        "address": "10.26.137.145",
+        "ip": "10.26.137.145",
+        "port": 50776
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "qcoh.owpciw.com/MFQ="
+      }
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:44.371Z",
+      "azure": {
+        "firewall": {
+          "action": "Deny",
+          "category": "AzureFirewallApplicationRule",
+          "operation_name": "AzureFirewallApplicationRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "instance01.westeurope.datafactory.azure.net",
+        "domain": "instance01.westeurope.datafactory.azure.net",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTPS request from 10.26.137.145:59060 to instance01.westeurope.datafactory.azure.net:443. Action: Deny. Failed to resolve address adf-rt-prd-weeu-01.westeurope.datafactory.azure.net:443: lookup adf-rt-prd-weeu-01.westeurope.datafactory.azure.net on 10.113.84.253:53: no such host\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:44.3716770Z\"}",
+        "reason": "Failed to resolve address adf-rt-prd-weeu-01.westeurope.datafactory.azure.net:443: lookup adf-rt-prd-weeu-01.westeurope.datafactory.azure.net on 10.113.84.253:53: no such host",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "network": {
+        "protocol": "https"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "hosts": [
+          "instance01.westeurope.datafactory.azure.net"
+        ],
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "source": {
+        "address": "10.26.137.145",
+        "ip": "10.26.137.145",
+        "port": 59060
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-08T20:40:49.391Z",
+      "azure": {
+        "firewall": {
+          "action": "Deny",
+          "category": "AzureFirewallApplicationRule",
+          "operation_name": "AzureFirewallApplicationRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTPS request from 10.26.137.145:6065. Action: Deny. Reason: SNI TLS extension was missing.\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:49.3912780Z\"}",
+        "reason": "SNI TLS extension was missing.",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "network": {
+        "protocol": "https"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "10.26.137.145"
+        ]
+      },
+      "source": {
+        "address": "10.26.137.145",
+        "ip": "10.26.137.145",
+        "port": 6065
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-20T21:20:12.897Z",
+      "azure": {
+        "firewall": {
+          "action": "Allow",
+          "category": "AzureFirewallApplicationRule",
+          "operation_name": "AzureFirewallApplicationRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "www.google.com",
+        "domain": "www.google.com",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTPS request from 10.183.65.250:59051 to www.google.com:443. Action: Allow. Rule Collection: App-Coll01. Rule: Allow-Google\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-20T21:20:12.8979360Z\"}",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "network": {
+        "protocol": "https"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "hosts": [
+          "www.google.com"
+        ],
+        "ip": [
+          "10.183.65.250"
+        ]
+      },
+      "rule": {
+        "name": "Allow-Google",
+        "ruleset": "App-Coll01"
+      },
+      "source": {
+        "address": "10.183.65.250",
+        "ip": "10.183.65.250",
+        "port": 59051
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-06-20T21:20:12.897Z",
+      "azure": {
+        "firewall": {
+          "action": "Deny",
+          "category": "AzureFirewallApplicationRule",
+          "operation_name": "AzureFirewallApplicationRuleLog"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "fk.chinrsdb.simawjokgfeqc.com",
+        "domain": "fk.chinrsdb.simawjokgfeqc.com",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTP  request from 10.183.65.250:60301 to fk.chinrsdb.simawjokgfeqc.com:80. Url: fk.chinrsdb.simawjokgfeqc.com/d/msdownload/update/software/updt/2022/04/windows10.0-kb5013890-x64-ndp48_c9583ec45a198945d3775f628b4bda5212b83760.cab. Action: Deny. No rule matched. Proceeding with default action\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-20T21:20:12.8979360Z\"}",
+        "reason": "No rule matched. Proceeding with default action",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "network": {
+        "protocol": "http "
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "hosts": [
+          "fk.chinrsdb.simawjokgfeqc.com"
+        ],
+        "ip": [
+          "10.183.65.250"
+        ]
+      },
+      "source": {
+        "address": "10.183.65.250",
+        "ip": "10.183.65.250",
+        "port": 60301
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "fk.chinrsdb.simawjokgfeqc.com/d/msdownload/update/software/updt/2022/04/windows10.0-kb5013890-x64-ndp48_c9583ec45a198945d3775f628b4bda5212b83760.cab"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTPS request from 10.183.65.250:56029 to md-qp4jv5snxgk5.z13.blob.storage.azure.net:443. Action: Deny. No rule matched. Proceeding with default action\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:23.2140990Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTPS request from 10.26.137.145:49553 to guestconfiguration.azure.com:443. Action: Allow. Policy: azfwpolicy-nbfw-prd-weeu-01. Rule Collection Group: DefaultApplicationRuleCollectionGroup. Rule Collection: enablement-genericwebcategory-prd-allow-200. Rule: Allowed Business-Use Webcategories. Web Category: ComputersAndTechnology\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:34.3470680Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTP  request from 10.26.137.145:50776 to qcoh.owpciw.com:80. Url: qcoh.owpciw.com/MFQ=. Action: Allow. Policy: azfwpolicy-nbfw-prd-weeu-01. Rule Collection Group: DefaultApplicationRuleCollectionGroup. Rule Collection: generic-allow-500. Rule: Azure-to-AllowedServices, HTTP\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:39.3635100Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTPS request from 10.26.137.145:59060 to instance01.westeurope.datafactory.azure.net:443. Action: Deny. Failed to resolve address adf-rt-prd-weeu-01.westeurope.datafactory.azure.net:443: lookup adf-rt-prd-weeu-01.westeurope.datafactory.azure.net on 10.113.84.253:53: no such host\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:44.3716770Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTPS request from 10.26.137.145:6065. Action: Deny. Reason: SNI TLS extension was missing.\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-08T20:40:49.3912780Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTPS request from 10.183.65.250:59051 to www.google.com:443. Action: Allow. Rule Collection: App-Coll01. Rule: Allow-Google\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-20T21:20:12.8979360Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AzureFirewallApplicationRule\",\"operationName\":\"AzureFirewallApplicationRuleLog\",\"properties\":{\"msg\":\"HTTP  request from 10.183.65.250:60301 to fk.chinrsdb.simawjokgfeqc.com:80. Url: fk.chinrsdb.simawjokgfeqc.com/d/msdownload/update/software/updt/2022/04/windows10.0-kb5013890-x64-ndp48_c9583ec45a198945d3775f628b4bda5212b83760.cab. Action: Deny. No rule matched. Proceeding with default action\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2050-06-20T21:20:12.8979360Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "firewall_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-firewall_logs-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

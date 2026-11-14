@@ -1261,8 +1261,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: String uri = ctx.eset_protect.event.object_uri;\n\n// Match query parameters from the mailto: URI\n// Assumption: the from= value contains plain-text addresses in angle brackets.\n// If ESET starts URL-encoding these addresses in the future, decode before applying this matcher.\njava.util.regex.Matcher fromMatch = /(?:\\?|&)from=([^&]+)/.matcher(uri);\njava.util.regex.Matcher subjectMatch = /(?:\\?|&)subject=([^&]+)/.matcher(uri);\njava.util.regex.Matcher attachmentMatch = /(?:\\?|&)attachment=([^&]+)/.matcher(uri);\n\n// Extract RFC 5321 addresses enclosed in angle brackets from the from= value with best effort.\nList fromAddresses = new ArrayList();\nif (fromMatch.find()) {\n    java.util.regex.Matcher addressMatch = /<\\s*([A-Za-z0-9.!#$%&'*+\\/?^_`{|}~-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,})\\s*>/.matcher(fromMatch.group(1));\n    while (addressMatch.find()) {\n        fromAddresses.add(addressMatch.group(1));\n    }\n}\n\nString subject = subjectMatch.find() ? subjectMatch.group(1) : null;\nString attachment = attachmentMatch.find() ? attachmentMatch.group(1) : null;\n\n// Nothing actionable found – skip field population\nif (fromAddresses.isEmpty() && subject == null && attachment == null) {\n    return;\n}\n\n// Ensure the top-level email map exists before writing into it\nif (!(ctx.email instanceof Map)) {\n    ctx.email = new HashMap();\n}\n\n// Populate ECS email.* fields\nif (!fromAddresses.isEmpty()) {\n    Map from = ctx.email['from'] instanceof Map ? (Map) ctx.email['from'] : new HashMap();\n    from['address'] = fromAddresses;\n    ctx.email['from'] = from;\n}\nif (subject != null) {\n    ctx.email['subject'] = subject;\n}\nif (attachment != null) {\n    Map attachments = new HashMap();\n    Map file = new HashMap();\n    file['name'] = attachment;\n    attachments['file'] = file;\n    List attachmentList = new ArrayList();\n    attachmentList.add(attachments);\n    ctx.email['attachments'] = attachmentList;\n}
+                    // The pipeline's script, emitted as the runtime's equivalent
                     mailto_uri_fields(
                         event,
                         &MailtoUriFields::new(
@@ -2134,8 +2133,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

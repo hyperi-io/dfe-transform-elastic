@@ -1,0 +1,126 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-09-04T09:08:30.000Z",
+      "checkpoint_harmony_endpoint": {
+        "threatextraction": {
+          "advanced_info": " \"disable_exclusion\": true ",
+          "client": {
+            "name": "Check Point Endpoint Security Client",
+            "version": "88.50.0213"
+          },
+          "confidence_level": "High",
+          "description": "File is not supported for extraction",
+          "event_type": "TEX Event",
+          "installed_products": "Full Disk Encryption; Media Encryption & Port Protection; Firewall; Compliance; Application Control; Anti-Malware; VPN; Anti-Bot; Forensics; Threat Emulation",
+          "malware": {
+            "action": "Not Supported"
+          },
+          "policy": {
+            "date": "2052-09-03T10:46:13.0000000Z",
+            "name": "Default Threat Extraction, Emulation and Anti-Exploit settings for the entire organization",
+            "number": 4
+          },
+          "product": {
+            "family": "Endpoint",
+            "name": "Threat Extraction"
+          },
+          "protection_type": "Content Removal",
+          "sequencenum": 16777215,
+          "severity": "Informational",
+          "src": "10.166.209.9",
+          "tenant_id": "5f03fc86-35cd-4864-a650-e172cac1bb01",
+          "type": "Log",
+          "web_client_type": "Chrome"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Extract",
+        "category": [
+          "malware"
+        ],
+        "dataset": "checkpoint_harmony_endpoint.threatextraction",
+        "id": "d6899516-14c0-0e66-67b6-068c67416507",
+        "kind": "alert",
+        "module": "checkpoint_harmony_endpoint",
+        "original": "{\"confidence_level\":\"High\",\"policy_date\":\"2052-09-03T10:46:13.0000000Z\",\"severity\":\"Informational\",\"time\":\"2052-09-04T09:08:30Z\",\"id\":\"d6899516-14c0-0e66-67b6-068c67416507\",\"orig\":\"192.0.2.187\",\"sequencenum\":16777215,\"action\":\"Extract\",\"product\":\"Threat Extraction\",\"domain\":\"SMC User\",\"product_family\":\"Endpoint\",\"type\":\"Log\",\"client_name\":\"Check Point Endpoint Security Client\",\"client_version\":[\"88.50.0213\"],\"description\":\"File is not supported for extraction\",\"event_type\":\"TEX Event\",\"host_type\":[\"Desktop\"],\"installed_products\":\"Full Disk Encryption; Media Encryption & Port Protection; Firewall; Compliance; Application Control; Anti-Malware; VPN; Anti-Bot; Forensics; Threat Emulation\",\"os_name\":[\"Microsoft Windows 10 Pro\"],\"os_version\":[\"10.0-19045-SP0.0-SMP\"],\"src\":\"10.166.209.9\",\"src_machine_name\":\"DESKTOP-E2P4OL0\",\"src_user_name\":[\"admin\"],\"tenant_id\":\"5f03fc86-35cd-4864-a650-e172cac1bb01\",\"user_sid\":\"S-1-5-21-3766288932-3295778425-2939962592-1001\",\"policy_name\":\"Default Threat Extraction, Emulation and Anti-Exploit settings for the entire organization\",\"policy_number\":4,\"protection_type\":\"Content Removal\",\"advanced_info\":\" \\\"disable_exclusion\\\": true \",\"extension_version\":\" 990.99.486 \",\"file_name\":[\"ransomware.go\"],\"file_sha1\":\"no-sha1\",\"file_size\":0,\"file_type\":\"go\",\"malware_action\":[\"Not Supported\"],\"protection_name\":\"Extract potentially malicious content\",\"resource\":[\"blob:https://github.com/5c823c41-c69b-45e7-b29c-9208be75a462\"],\"web_client_type\":[\"Chrome\"]}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "no-sha1"
+        },
+        "name": "ransomware.go",
+        "path": "blob:https://github.com/5c823c41-c69b-45e7-b29c-9208be75a462",
+        "size": 0,
+        "type": "go"
+      },
+      "host": {
+        "hostname": "DESKTOP-E2P4OL0",
+        "ip": [
+          "10.166.209.9"
+        ],
+        "name": "DESKTOP-E2P4OL0",
+        "os": {
+          "name": "Microsoft Windows 10 Pro",
+          "version": "10.0-19045-SP0.0-SMP"
+        },
+        "type": [
+          "Desktop"
+        ]
+      },
+      "related": {
+        "hash": [
+          "no-sha1"
+        ],
+        "hosts": [
+          "DESKTOP-E2P4OL0"
+        ],
+        "ip": [
+          "10.166.209.9"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "rule": {
+        "name": "Extract potentially malicious content"
+      },
+      "tags": [
+        "preserve_original_event",
+        "forwarded"
+      ],
+      "user": {
+        "domain": "SMC User",
+        "id": "S-1-5-21-3766288932-3295778425-2939962592-1001",
+        "name": [
+          "admin"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"confidence_level\":\"High\",\"policy_date\":\"2052-09-03T10:46:13.0000000Z\",\"severity\":\"Informational\",\"time\":\"2052-09-04T09:08:30Z\",\"id\":\"d6899516-14c0-0e66-67b6-068c67416507\",\"orig\":\"192.0.2.187\",\"sequencenum\":16777215,\"action\":\"Extract\",\"product\":\"Threat Extraction\",\"domain\":\"SMC User\",\"product_family\":\"Endpoint\",\"type\":\"Log\",\"client_name\":\"Check Point Endpoint Security Client\",\"client_version\":[\"88.50.0213\"],\"description\":\"File is not supported for extraction\",\"event_type\":\"TEX Event\",\"host_type\":[\"Desktop\"],\"installed_products\":\"Full Disk Encryption; Media Encryption & Port Protection; Firewall; Compliance; Application Control; Anti-Malware; VPN; Anti-Bot; Forensics; Threat Emulation\",\"os_name\":[\"Microsoft Windows 10 Pro\"],\"os_version\":[\"10.0-19045-SP0.0-SMP\"],\"src\":\"10.166.209.9\",\"src_machine_name\":\"DESKTOP-E2P4OL0\",\"src_user_name\":[\"admin\"],\"tenant_id\":\"5f03fc86-35cd-4864-a650-e172cac1bb01\",\"user_sid\":\"S-1-5-21-3766288932-3295778425-2939962592-1001\",\"policy_name\":\"Default Threat Extraction, Emulation and Anti-Exploit settings for the entire organization\",\"policy_number\":4,\"protection_type\":\"Content Removal\",\"advanced_info\":\" \\\"disable_exclusion\\\": true \",\"extension_version\":\" 990.99.486 \",\"file_name\":[\"ransomware.go\"],\"file_sha1\":\"no-sha1\",\"file_size\":0,\"file_type\":\"go\",\"malware_action\":[\"Not Supported\"],\"protection_name\":\"Extract potentially malicious content\",\"resource\":[\"blob:https://github.com/5c823c41-c69b-45e7-b29c-9208be75a462\"],\"web_client_type\":[\"Chrome\"]}",
+      "tags": [
+        "preserve_original_event",
+        "forwarded"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "threatextraction",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-checkpoint_harmony_endpoint-threatextraction-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "checkpoint_harmony_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

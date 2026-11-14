@@ -1,0 +1,505 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-02-13T01:08:26.000Z",
+      "beelzebub": {
+        "event": {
+          "Client": "SSH-2.0-dropbear",
+          "DateTime": "2053-02-13T01:08:26Z",
+          "Description": "SSH interactive ChatGPT",
+          "ID": "1166a566-b6d4-4ce7-971d-421a320f2ec0",
+          "Msg": "New SSH attempt",
+          "Password": "<REDACTED>",
+          "Protocol": "SSH",
+          "RemoteAddr": "192.0.2.158:60748",
+          "SourceIp": "192.0.2.158",
+          "SourcePort": "60748",
+          "Status": "Stateless",
+          "User": "root"
+        },
+        "level": "info",
+        "msg": "New Event",
+        "status": "Stateless",
+        "time": "2053-02-13T01:08:26Z"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "1166a566-b6d4-4ce7-971d-421a320f2ec0",
+        "kind": "event",
+        "original": "{\"event\":{\"DateTime\":\"2053-02-13T01:08:26Z\",\"RemoteAddr\":\"192.0.2.158:60748\",\"Protocol\":\"SSH\",\"Command\":\"\",\"CommandOutput\":\"\",\"Status\":\"Stateless\",\"Msg\":\"New SSH attempt\",\"ID\":\"1166a566-b6d4-4ce7-971d-421a320f2ec0\",\"Environ\":\"\",\"User\":\"root\",\"Password\":\"<REDACTED>\",\"Client\":\"SSH-2.0-dropbear\",\"Headers\":\"\",\"Cookies\":\"\",\"UserAgent\":\"\",\"HostHTTPRequest\":\"\",\"Body\":\"\",\"HTTPMethod\":\"\",\"RequestURI\":\"\",\"Description\":\"SSH interactive ChatGPT\",\"SourceIp\":\"192.0.2.158\",\"SourcePort\":\"60748\"},\"level\":\"info\",\"msg\":\"New Event\",\"status\":\"Stateless\",\"time\":\"2053-02-13T01:08:26Z\"}",
+        "reason": "New Event",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.158"
+        ],
+        "user": [
+          "root"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.158",
+        "port": 60748
+      },
+      "tags": [
+        "preserve_original_event",
+        "redact_passwords",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "root"
+      }
+    },
+    {
+      "@timestamp": "2053-02-13T01:08:34.000Z",
+      "beelzebub": {
+        "event": {
+          "Command": "ps w",
+          "CommandOutput": "```\n    PID TTY      STAT   TIME COMMAND\n   2042 pts/0    Ss     0:00 bash\n   2106 pts/0    R+     0:00 ps w\n```",
+          "DateTime": "2053-02-13T01:08:34Z",
+          "Description": "SSH interactive ChatGPT",
+          "ID": "6b17db25-34ab-40c0-8f66-18f556cd86ba",
+          "Msg": "New SSH Terminal Session",
+          "Protocol": "SSH",
+          "RemoteAddr": "192.0.2.158:60748",
+          "SourceIp": "192.0.2.158",
+          "SourcePort": "60748",
+          "Status": "Interaction"
+        },
+        "level": "info",
+        "msg": "New Event",
+        "status": "Interaction",
+        "time": "2053-02-13T01:08:34Z"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "6b17db25-34ab-40c0-8f66-18f556cd86ba",
+        "kind": "event",
+        "original": "{\"event\":{\"DateTime\":\"2053-02-13T01:08:34Z\",\"RemoteAddr\":\"192.0.2.158:60748\",\"Protocol\":\"SSH\",\"Command\":\"ps w\",\"CommandOutput\":\"```\\n    PID TTY      STAT   TIME COMMAND\\n   2042 pts/0    Ss     0:00 bash\\n   2106 pts/0    R+     0:00 ps w\\n```\",\"Status\":\"Interaction\",\"Msg\":\"New SSH Terminal Session\",\"ID\":\"6b17db25-34ab-40c0-8f66-18f556cd86ba\",\"Environ\":\"\",\"User\":\"\",\"Password\":\"\",\"Client\":\"\",\"Headers\":\"\",\"Cookies\":\"\",\"UserAgent\":\"\",\"HostHTTPRequest\":\"\",\"Body\":\"\",\"HTTPMethod\":\"\",\"RequestURI\":\"\",\"Description\":\"SSH interactive ChatGPT\",\"SourceIp\":\"192.0.2.158\",\"SourcePort\":\"60748\"},\"level\":\"info\",\"msg\":\"New Event\",\"status\":\"Interaction\",\"time\":\"2053-02-13T01:08:34Z\"}",
+        "reason": "New Event",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.158"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.158",
+        "port": 60748
+      },
+      "tags": [
+        "preserve_original_event",
+        "redact_passwords",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-02-27T00:03:02.000Z",
+      "beelzebub": {
+        "event": {
+          "DateTime": "2053-02-27T00:03:02Z",
+          "Description": "Wordpress 6.0",
+          "HTTPMethod": "GET",
+          "Headers": {
+            "accept": "*/*",
+            "accept-encoding": [
+              "gzip, deflate",
+              "gzip, deflate"
+            ],
+            "accept-language": "en US,en;q=0.9,sv;q=0.8",
+            "connection": "keep-alive",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36 Edg/90.0.818.46",
+            "x-requested-with": "XMLHttpRequest"
+          },
+          "HeadersText": "[Key: User-Agent, values: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36 Edg/90.0.818.46],[Key: Accept-Encoding, values: gzip, deflate],[Key: Accept-Encoding, values: gzip, deflate],[Key: Connection, values: keep-alive],[Key: X-Requested-With, values: XMLHttpRequest],[Key: Content-Type, values: application/x-www-form-urlencoded; charset=UTF-8],[Key: Accept-Language, values: en US,en;q=0.9,sv;q=0.8],[Key: Accept, values: */*],",
+          "HostHTTPRequest": "203.0.113.89:80",
+          "ID": "3dc77980-f9d6-47f2-8629-15c397caa3cf",
+          "Msg": "HTTP New request",
+          "Protocol": "HTTP",
+          "RemoteAddr": "203.0.113.9:55264",
+          "RequestURI": "/",
+          "SourceIp": "203.0.113.9",
+          "SourcePort": "55264",
+          "Status": "Stateless",
+          "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36 Edg/90.0.818.46"
+        },
+        "level": "info",
+        "msg": "New Event",
+        "status": "Stateless",
+        "time": "2053-02-27T00:03:02Z"
+      },
+      "destination": {
+        "ip": "203.0.113.89",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "3dc77980-f9d6-47f2-8629-15c397caa3cf",
+        "kind": "event",
+        "original": "{\"event\":{\"DateTime\":\"2053-02-27T00:03:02Z\",\"RemoteAddr\":\"203.0.113.9:55264\",\"Protocol\":\"HTTP\",\"Command\":\"\",\"CommandOutput\":\"\",\"Status\":\"Stateless\",\"Msg\":\"HTTP New request\",\"ID\":\"3dc77980-f9d6-47f2-8629-15c397caa3cf\",\"Environ\":\"\",\"User\":\"\",\"Password\":\"\",\"Client\":\"\",\"Headers\":\"[Key: User-Agent, values: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36 Edg/90.0.818.46],[Key: Accept-Encoding, values: gzip, deflate],[Key: Accept-Encoding, values: gzip, deflate],[Key: Connection, values: keep-alive],[Key: X-Requested-With, values: XMLHttpRequest],[Key: Content-Type, values: application/x-www-form-urlencoded; charset=UTF-8],[Key: Accept-Language, values: en US,en;q=0.9,sv;q=0.8],[Key: Accept, values: */*],\",\"Cookies\":\"\",\"UserAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36 Edg/90.0.818.46\",\"HostHTTPRequest\":\"203.0.113.89:80\",\"Body\":\"\",\"HTTPMethod\":\"GET\",\"RequestURI\":\"/\",\"Description\":\"Wordpress 6.0\",\"SourceIp\":\"203.0.113.9\",\"SourcePort\":\"55264\"},\"level\":\"info\",\"msg\":\"New Event\",\"status\":\"Stateless\",\"time\":\"2053-02-27T00:03:02Z\"}",
+        "reason": "New Event",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.9"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.9",
+        "port": 55264
+      },
+      "tags": [
+        "preserve_original_event",
+        "redact_passwords",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "203.0.113.89",
+        "original": "/",
+        "path": "/",
+        "port": 80
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other",
+          "type": "Desktop"
+        },
+        "name": "Edge",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36 Edg/90.0.818.46",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "90.0.818.46"
+      }
+    },
+    {
+      "@timestamp": "2053-02-19T07:48:34.000Z",
+      "beelzebub": {
+        "event": {
+          "Body": "<!DOCTYPE xxe [\n<!ELEMENT name ANY >\n<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>\n<Autodiscover xmlns=\"http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a\">\n<Request>\n<EMailAddress>aaaaa</EMailAddress>\n<AcceptableResponseSchema>&xxe;</AcceptableResponseSchema>\n</Request>\n</Autodiscover>",
+          "DateTime": "2053-02-19T07:48:34Z",
+          "Description": "Wordpress 6.0",
+          "HTTPMethod": "POST",
+          "Headers": {
+            "accept-encoding": "gzip",
+            "connection": "close",
+            "content-length": "314",
+            "content-type": "application/xml",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+          },
+          "HeadersText": "[Key: User-Agent, values: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36],[Key: Content-Length, values: 314],[Key: Content-Type, values: application/xml],[Key: Accept-Encoding, values: gzip],[Key: Connection, values: close],",
+          "HostHTTPRequest": "203.0.113.89:80",
+          "ID": "2c0734b2-1dfb-4f58-8a14-7ceb629de411",
+          "Msg": "HTTP New request",
+          "Protocol": "HTTP",
+          "RemoteAddr": "203.0.113.133:41654",
+          "RequestURI": "/Autodiscover/Autodiscover.xml",
+          "SourceIp": "203.0.113.133",
+          "SourcePort": "41654",
+          "Status": "Stateless",
+          "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+        },
+        "level": "info",
+        "msg": "New Event",
+        "status": "Stateless",
+        "time": "2053-02-19T07:48:34Z"
+      },
+      "destination": {
+        "ip": "203.0.113.89",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "2c0734b2-1dfb-4f58-8a14-7ceb629de411",
+        "kind": "event",
+        "original": "{\"event\":{\"DateTime\":\"2053-02-19T07:48:34Z\",\"RemoteAddr\":\"203.0.113.133:41654\",\"Protocol\":\"HTTP\",\"Command\":\"\",\"CommandOutput\":\"\",\"Status\":\"Stateless\",\"Msg\":\"HTTP New request\",\"ID\":\"2c0734b2-1dfb-4f58-8a14-7ceb629de411\",\"Environ\":\"\",\"User\":\"\",\"Password\":\"\",\"Client\":\"\",\"Headers\":\"[Key: User-Agent, values: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36],[Key: Content-Length, values: 314],[Key: Content-Type, values: application/xml],[Key: Accept-Encoding, values: gzip],[Key: Connection, values: close],\",\"Cookies\":\"\",\"UserAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36\",\"HostHTTPRequest\":\"203.0.113.89:80\",\"Body\":\"\\u003c!DOCTYPE xxe [\\n\\u003c!ELEMENT name ANY \\u003e\\n\\u003c!ENTITY xxe SYSTEM \\\"file:///etc/passwd\\\"\\u003e]\\u003e\\n\\u003cAutodiscover xmlns=\\\"http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a\\\"\\u003e\\n\\u003cRequest\\u003e\\n\\u003cEMailAddress\\u003eaaaaa\\u003c/EMailAddress\\u003e\\n\\u003cAcceptableResponseSchema\\u003e\\u0026xxe;\\u003c/AcceptableResponseSchema\\u003e\\n\\u003c/Request\\u003e\\n\\u003c/Autodiscover\\u003e\",\"HTTPMethod\":\"POST\",\"RequestURI\":\"/Autodiscover/Autodiscover.xml\",\"Description\":\"Wordpress 6.0\",\"SourceIp\":\"203.0.113.133\",\"SourcePort\":\"41654\"},\"level\":\"info\",\"msg\":\"New Event\",\"status\":\"Stateless\",\"time\":\"2053-02-19T07:48:34Z\"}",
+        "reason": "New Event",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 314,
+            "content": "<!DOCTYPE xxe [\n<!ELEMENT name ANY >\n<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>\n<Autodiscover xmlns=\"http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a\">\n<Request>\n<EMailAddress>aaaaa</EMailAddress>\n<AcceptableResponseSchema>&xxe;</AcceptableResponseSchema>\n</Request>\n</Autodiscover>"
+          },
+          "method": "POST"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.133"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.133",
+        "port": 41654
+      },
+      "tags": [
+        "preserve_original_event",
+        "redact_passwords",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "203.0.113.89",
+        "extension": "xml",
+        "original": "/Autodiscover/Autodiscover.xml",
+        "path": "/Autodiscover/Autodiscover.xml",
+        "port": 80
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other",
+          "type": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "78.0.3904.108"
+      }
+    },
+    {
+      "@timestamp": "2053-07-02T12:23:19.000Z",
+      "beelzebub": {
+        "event": {
+          "Cookies": "CF_AppSession=thingahCF_Authorization=asdfaccess_token=1234refresh_token=blahconnect.sid=test1234cf_clearance=thingo",
+          "DateTime": "2053-07-02T12:23:19Z",
+          "Description": "Wordpress 6.0",
+          "HTTPMethod": "GET",
+          "Headers": {
+            "accept": [
+              "application/graphql-response+json, application/graphql+json, application/json, text/event-stream, multipart/mixed"
+            ],
+            "accept-encoding": [
+              "gzip, deflate, br, zstd"
+            ],
+            "accept-language": [
+              "en-GB,en-US;q=0.9,en;q=0.8"
+            ],
+            "cache-control": [
+              "no-cache"
+            ],
+            "cookie": [
+              "CF_AppSession=thingah; CF_Authorization=asdf; access_token=1234; refresh_token=blah; connect.sid=test1234; cf_clearance=thingo"
+            ],
+            "origin": [
+              "https://some.site.tld"
+            ],
+            "pragma": [
+              "no-cache"
+            ],
+            "priority": [
+              "u=1, i"
+            ],
+            "referer": [
+              "https://some.site.tld/bad-recipes"
+            ],
+            "sec-ch-ua": [
+              "\"Wavebox\";v=\"137\", \"Chromium\";v=\"137\", \"Not/A)Brand\";v=\"24\""
+            ],
+            "sec-ch-ua-mobile": [
+              "?0"
+            ],
+            "sec-fetch-dest": [
+              "empty"
+            ],
+            "sec-fetch-mode": [
+              "cors"
+            ],
+            "sec-fetch-site": [
+              "same-origin"
+            ],
+            "user-agent": [
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+            ]
+          },
+          "HeadersText": "[Key: Sec-Fetch-Site, values: same-origin],[Key: User-Agent, values: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36],[Key: Accept, values: application/graphql-response+json, application/graphql+json, application/json, text/event-stream, multipart/mixed],[Key: Accept-Encoding, values: gzip, deflate, br, zstd],[Key: Accept-Language, values: en-GB,en-US;q=0.9,en;q=0.8],[Key: Cache-Control, values: no-cache],[Key: Cookie, values: CF_AppSession=thingah; CF_Authorization=asdf; access_token=1234; refresh_token=blah; connect.sid=test1234; cf_clearance=thingo],[Key: Pragma, values: no-cache],[Key: Referer, values: https://some.site.tld/bad-recipes],[Key: Sec-Ch-Ua, values: \"Wavebox\";v=\"137\", \"Chromium\";v=\"137\", \"Not/A)Brand\";v=\"24\"],[Key: Origin, values: https://some.site.tld],[Key: Priority, values: u=1, i],[Key: Sec-Ch-Ua-Mobile, values: ?0],[Key: Sec-Fetch-Dest, values: empty],[Key: Sec-Fetch-Mode, values: cors],",
+          "HostHTTPRequest": "localhost",
+          "ID": "7f8023d2-7c6f-45c3-8963-5225b50d6224",
+          "Msg": "HTTP New request",
+          "Protocol": "HTTP",
+          "RemoteAddr": "127.0.0.1:39342",
+          "RequestURI": "/blog/whats-for-dinner-mum",
+          "SourceIp": "127.0.0.1",
+          "SourcePort": "39342",
+          "Status": "Stateless",
+          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+        },
+        "level": "info",
+        "msg": "New Event",
+        "status": "Stateless",
+        "time": "2053-07-02T12:23:19Z"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "7f8023d2-7c6f-45c3-8963-5225b50d6224",
+        "kind": "event",
+        "original": "{\"event\":{\"DateTime\":\"2053-07-02T12:23:19Z\",\"RemoteAddr\":\"127.0.0.1:39342\",\"Protocol\":\"HTTP\",\"Command\":\"\",\"CommandOutput\":\"\",\"Status\":\"Stateless\",\"Msg\":\"HTTP New request\",\"ID\":\"7f8023d2-7c6f-45c3-8963-5225b50d6224\",\"Environ\":\"\",\"User\":\"\",\"Password\":\"\",\"Client\":\"\",\"Headers\":\"[Key: Sec-Fetch-Site, values: same-origin],[Key: User-Agent, values: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36],[Key: Accept, values: application/graphql-response+json, application/graphql+json, application/json, text/event-stream, multipart/mixed],[Key: Accept-Encoding, values: gzip, deflate, br, zstd],[Key: Accept-Language, values: en-GB,en-US;q=0.9,en;q=0.8],[Key: Cache-Control, values: no-cache],[Key: Cookie, values: CF_AppSession=thingah; CF_Authorization=asdf; access_token=1234; refresh_token=blah; connect.sid=test1234; cf_clearance=thingo],[Key: Pragma, values: no-cache],[Key: Referer, values: https://some.site.tld/bad-recipes],[Key: Sec-Ch-Ua, values: \\\"Wavebox\\\";v=\\\"137\\\", \\\"Chromium\\\";v=\\\"137\\\", \\\"Not/A)Brand\\\";v=\\\"24\\\"],[Key: Origin, values: https://some.site.tld],[Key: Priority, values: u=1, i],[Key: Sec-Ch-Ua-Mobile, values: ?0],[Key: Sec-Fetch-Dest, values: empty],[Key: Sec-Fetch-Mode, values: cors],\",\"HeadersMap\":{\"Accept\":[\"application/graphql-response+json, application/graphql+json, application/json, text/event-stream, multipart/mixed\"],\"Accept-Encoding\":[\"gzip, deflate, br, zstd\"],\"Accept-Language\":[\"en-GB,en-US;q=0.9,en;q=0.8\"],\"Cache-Control\":[\"no-cache\"],\"Cookie\":[\"CF_AppSession=thingah; CF_Authorization=asdf; access_token=1234; refresh_token=blah; connect.sid=test1234; cf_clearance=thingo\"],\"Origin\":[\"https://some.site.tld\"],\"Pragma\":[\"no-cache\"],\"Priority\":[\"u=1, i\"],\"Referer\":[\"https://some.site.tld/bad-recipes\"],\"Sec-Ch-Ua\":[\"\\\"Wavebox\\\";v=\\\"137\\\", \\\"Chromium\\\";v=\\\"137\\\", \\\"Not/A)Brand\\\";v=\\\"24\\\"\"],\"Sec-Ch-Ua-Mobile\":[\"?0\"],\"Sec-Fetch-Dest\":[\"empty\"],\"Sec-Fetch-Mode\":[\"cors\"],\"Sec-Fetch-Site\":[\"same-origin\"],\"User-Agent\":[\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36\"]},\"Cookies\":\"CF_AppSession=thingahCF_Authorization=asdfaccess_token=1234refresh_token=blahconnect.sid=test1234cf_clearance=thingo\",\"UserAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36\",\"HostHTTPRequest\":\"localhost\",\"Body\":\"\",\"HTTPMethod\":\"GET\",\"RequestURI\":\"/blog/whats-for-dinner-mum\",\"Description\":\"Wordpress 6.0\",\"SourceIp\":\"127.0.0.1\",\"SourcePort\":\"39342\",\"TLSServerName\":\"\",\"Handler\":\"\"},\"level\":\"info\",\"msg\":\"New Event\",\"status\":\"Stateless\",\"time\":\"2053-07-02T12:23:19Z\"}",
+        "reason": "New Event",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": [
+            "https://some.site.tld/bad-recipes"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "127.0.0.1"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1",
+        "port": 39342
+      },
+      "tags": [
+        "preserve_original_event",
+        "redact_passwords",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "localhost",
+        "original": "/blog/whats-for-dinner-mum",
+        "path": "/blog/whats-for-dinner-mum"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac",
+          "type": "Desktop"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "137.0.0.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"event\":{\"DateTime\":\"2053-02-13T01:08:26Z\",\"RemoteAddr\":\"192.0.2.158:60748\",\"Protocol\":\"SSH\",\"Command\":\"\",\"CommandOutput\":\"\",\"Status\":\"Stateless\",\"Msg\":\"New SSH attempt\",\"ID\":\"1166a566-b6d4-4ce7-971d-421a320f2ec0\",\"Environ\":\"\",\"User\":\"root\",\"Password\":\"test\",\"Client\":\"SSH-2.0-dropbear\",\"Headers\":\"\",\"Cookies\":\"\",\"UserAgent\":\"\",\"HostHTTPRequest\":\"\",\"Body\":\"\",\"HTTPMethod\":\"\",\"RequestURI\":\"\",\"Description\":\"SSH interactive ChatGPT\",\"SourceIp\":\"192.0.2.158\",\"SourcePort\":\"60748\"},\"level\":\"info\",\"msg\":\"New Event\",\"status\":\"Stateless\",\"time\":\"2053-02-13T01:08:26Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "redact_passwords",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"event\":{\"DateTime\":\"2053-02-13T01:08:34Z\",\"RemoteAddr\":\"192.0.2.158:60748\",\"Protocol\":\"SSH\",\"Command\":\"ps w\",\"CommandOutput\":\"```\\n    PID TTY      STAT   TIME COMMAND\\n   2042 pts/0    Ss     0:00 bash\\n   2106 pts/0    R+     0:00 ps w\\n```\",\"Status\":\"Interaction\",\"Msg\":\"New SSH Terminal Session\",\"ID\":\"6b17db25-34ab-40c0-8f66-18f556cd86ba\",\"Environ\":\"\",\"User\":\"\",\"Password\":\"\",\"Client\":\"\",\"Headers\":\"\",\"Cookies\":\"\",\"UserAgent\":\"\",\"HostHTTPRequest\":\"\",\"Body\":\"\",\"HTTPMethod\":\"\",\"RequestURI\":\"\",\"Description\":\"SSH interactive ChatGPT\",\"SourceIp\":\"192.0.2.158\",\"SourcePort\":\"60748\"},\"level\":\"info\",\"msg\":\"New Event\",\"status\":\"Interaction\",\"time\":\"2053-02-13T01:08:34Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "redact_passwords",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"event\":{\"DateTime\":\"2053-02-27T00:03:02Z\",\"RemoteAddr\":\"203.0.113.9:55264\",\"Protocol\":\"HTTP\",\"Command\":\"\",\"CommandOutput\":\"\",\"Status\":\"Stateless\",\"Msg\":\"HTTP New request\",\"ID\":\"3dc77980-f9d6-47f2-8629-15c397caa3cf\",\"Environ\":\"\",\"User\":\"\",\"Password\":\"\",\"Client\":\"\",\"Headers\":\"[Key: User-Agent, values: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36 Edg/90.0.818.46],[Key: Accept-Encoding, values: gzip, deflate],[Key: Accept-Encoding, values: gzip, deflate],[Key: Connection, values: keep-alive],[Key: X-Requested-With, values: XMLHttpRequest],[Key: Content-Type, values: application/x-www-form-urlencoded; charset=UTF-8],[Key: Accept-Language, values: en US,en;q=0.9,sv;q=0.8],[Key: Accept, values: */*],\",\"Cookies\":\"\",\"UserAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36 Edg/90.0.818.46\",\"HostHTTPRequest\":\"203.0.113.89:80\",\"Body\":\"\",\"HTTPMethod\":\"GET\",\"RequestURI\":\"/\",\"Description\":\"Wordpress 6.0\",\"SourceIp\":\"203.0.113.9\",\"SourcePort\":\"55264\"},\"level\":\"info\",\"msg\":\"New Event\",\"status\":\"Stateless\",\"time\":\"2053-02-27T00:03:02Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "redact_passwords",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"event\":{\"DateTime\":\"2053-02-19T07:48:34Z\",\"RemoteAddr\":\"203.0.113.133:41654\",\"Protocol\":\"HTTP\",\"Command\":\"\",\"CommandOutput\":\"\",\"Status\":\"Stateless\",\"Msg\":\"HTTP New request\",\"ID\":\"2c0734b2-1dfb-4f58-8a14-7ceb629de411\",\"Environ\":\"\",\"User\":\"\",\"Password\":\"\",\"Client\":\"\",\"Headers\":\"[Key: User-Agent, values: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36],[Key: Content-Length, values: 314],[Key: Content-Type, values: application/xml],[Key: Accept-Encoding, values: gzip],[Key: Connection, values: close],\",\"Cookies\":\"\",\"UserAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36\",\"HostHTTPRequest\":\"203.0.113.89:80\",\"Body\":\"\\u003c!DOCTYPE xxe [\\n\\u003c!ELEMENT name ANY \\u003e\\n\\u003c!ENTITY xxe SYSTEM \\\"file:///etc/passwd\\\"\\u003e]\\u003e\\n\\u003cAutodiscover xmlns=\\\"http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a\\\"\\u003e\\n\\u003cRequest\\u003e\\n\\u003cEMailAddress\\u003eaaaaa\\u003c/EMailAddress\\u003e\\n\\u003cAcceptableResponseSchema\\u003e\\u0026xxe;\\u003c/AcceptableResponseSchema\\u003e\\n\\u003c/Request\\u003e\\n\\u003c/Autodiscover\\u003e\",\"HTTPMethod\":\"POST\",\"RequestURI\":\"/Autodiscover/Autodiscover.xml\",\"Description\":\"Wordpress 6.0\",\"SourceIp\":\"203.0.113.133\",\"SourcePort\":\"41654\"},\"level\":\"info\",\"msg\":\"New Event\",\"status\":\"Stateless\",\"time\":\"2053-02-19T07:48:34Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "redact_passwords",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"event\":{\"DateTime\":\"2053-07-02T12:23:19Z\",\"RemoteAddr\":\"127.0.0.1:39342\",\"Protocol\":\"HTTP\",\"Command\":\"\",\"CommandOutput\":\"\",\"Status\":\"Stateless\",\"Msg\":\"HTTP New request\",\"ID\":\"7f8023d2-7c6f-45c3-8963-5225b50d6224\",\"Environ\":\"\",\"User\":\"\",\"Password\":\"\",\"Client\":\"\",\"Headers\":\"[Key: Sec-Fetch-Site, values: same-origin],[Key: User-Agent, values: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36],[Key: Accept, values: application/graphql-response+json, application/graphql+json, application/json, text/event-stream, multipart/mixed],[Key: Accept-Encoding, values: gzip, deflate, br, zstd],[Key: Accept-Language, values: en-GB,en-US;q=0.9,en;q=0.8],[Key: Cache-Control, values: no-cache],[Key: Cookie, values: CF_AppSession=thingah; CF_Authorization=asdf; access_token=1234; refresh_token=blah; connect.sid=test1234; cf_clearance=thingo],[Key: Pragma, values: no-cache],[Key: Referer, values: https://some.site.tld/bad-recipes],[Key: Sec-Ch-Ua, values: \\\"Wavebox\\\";v=\\\"137\\\", \\\"Chromium\\\";v=\\\"137\\\", \\\"Not/A)Brand\\\";v=\\\"24\\\"],[Key: Origin, values: https://some.site.tld],[Key: Priority, values: u=1, i],[Key: Sec-Ch-Ua-Mobile, values: ?0],[Key: Sec-Fetch-Dest, values: empty],[Key: Sec-Fetch-Mode, values: cors],\",\"HeadersMap\":{\"Accept\":[\"application/graphql-response+json, application/graphql+json, application/json, text/event-stream, multipart/mixed\"],\"Accept-Encoding\":[\"gzip, deflate, br, zstd\"],\"Accept-Language\":[\"en-GB,en-US;q=0.9,en;q=0.8\"],\"Cache-Control\":[\"no-cache\"],\"Cookie\":[\"CF_AppSession=thingah; CF_Authorization=asdf; access_token=1234; refresh_token=blah; connect.sid=test1234; cf_clearance=thingo\"],\"Origin\":[\"https://some.site.tld\"],\"Pragma\":[\"no-cache\"],\"Priority\":[\"u=1, i\"],\"Referer\":[\"https://some.site.tld/bad-recipes\"],\"Sec-Ch-Ua\":[\"\\\"Wavebox\\\";v=\\\"137\\\", \\\"Chromium\\\";v=\\\"137\\\", \\\"Not/A)Brand\\\";v=\\\"24\\\"\"],\"Sec-Ch-Ua-Mobile\":[\"?0\"],\"Sec-Fetch-Dest\":[\"empty\"],\"Sec-Fetch-Mode\":[\"cors\"],\"Sec-Fetch-Site\":[\"same-origin\"],\"User-Agent\":[\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36\"]},\"Cookies\":\"CF_AppSession=thingahCF_Authorization=asdfaccess_token=1234refresh_token=blahconnect.sid=test1234cf_clearance=thingo\",\"UserAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36\",\"HostHTTPRequest\":\"localhost\",\"Body\":\"\",\"HTTPMethod\":\"GET\",\"RequestURI\":\"/blog/whats-for-dinner-mum\",\"Description\":\"Wordpress 6.0\",\"SourceIp\":\"127.0.0.1\",\"SourcePort\":\"39342\",\"TLSServerName\":\"\",\"Handler\":\"\"},\"level\":\"info\",\"msg\":\"New Event\",\"status\":\"Stateless\",\"time\":\"2053-07-02T12:23:19Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "redact_passwords",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-beelzebub-logs-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "beelzebub",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

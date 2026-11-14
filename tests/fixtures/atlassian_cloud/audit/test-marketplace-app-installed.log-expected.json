@@ -1,0 +1,107 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-05-04T11:30:15.750Z",
+      "atlassian_cloud": {
+        "audit": {
+          "container": [
+            {
+              "attributes": {
+                "cloudUrl": "example.atlassian.net"
+              },
+              "id": "site-example-001",
+              "type": "sites"
+            }
+          ],
+          "context": [
+            {
+              "attributes": {
+                "name": "Example Time Tracking Helper",
+                "vendor": "Example Vendor Inc"
+              },
+              "id": "cddfddbe-fdee-9543-7513-043059672839",
+              "type": "apps"
+            }
+          ],
+          "location": {
+            "geo": "NA"
+          },
+          "message": {
+            "format": "text/plain"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "marketplace_app_installed",
+        "category": [
+          "configuration",
+          "package"
+        ],
+        "created": "2054-05-04T11:30:16.010Z",
+        "id": "d2006864-4584-4817-8204-362924097479",
+        "kind": "event",
+        "original": "{\"type\":\"events\",\"id\":\"d2006864-4584-4817-8204-362924097479\",\"attributes\":{\"time\":\"2054-05-04T11:30:15.750Z\",\"processedAt\":\"2054-05-04T11:30:16.010Z\",\"action\":\"marketplace_app_installed\",\"actor\":{\"id\":\"712020:fcbcbbdf-eafe-ebdf-eced-eaaeefdfbaab\",\"name\":\"Eve Martinez\",\"email\":\"eoe.oamktpao@example.com\"},\"context\":[{\"id\":\"cddfddbe-fdee-9543-7513-043059672839\",\"type\":\"apps\",\"attributes\":{\"name\":\"Example Time Tracking Helper\",\"vendor\":\"Example Vendor Inc\"}}],\"container\":[{\"id\":\"site-example-001\",\"type\":\"sites\",\"attributes\":{\"cloudUrl\":\"example.atlassian.net\"}}],\"location\":{\"ip\":\"198.51.100.50\",\"geo\":\"NA\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Eve Martinez installed Example Time Tracking Helper.\",\"format\":\"text/plain\"}}",
+        "outcome": "success",
+        "type": [
+          "installation"
+        ]
+      },
+      "message": "Eve Martinez installed Example Time Tracking Helper.",
+      "observer": {
+        "product": "Atlassian Cloud",
+        "type": "saas",
+        "vendor": "Atlassian"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.50"
+        ],
+        "user": [
+          "Eve Martinez",
+          "eoe.oamktpao@example.com"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "Example City",
+          "country_name": "Example Country"
+        },
+        "ip": "198.51.100.50"
+      },
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "eoe.oamktpao@example.com",
+        "id": "712020:fcbcbbdf-eafe-ebdf-eced-eaaeefdfbaab",
+        "name": "Eve Martinez"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"type\":\"events\",\"id\":\"d2006864-4584-4817-8204-362924097479\",\"attributes\":{\"time\":\"2054-05-04T11:30:15.750Z\",\"processedAt\":\"2054-05-04T11:30:16.010Z\",\"action\":\"marketplace_app_installed\",\"actor\":{\"id\":\"712020:fcbcbbdf-eafe-ebdf-eced-eaaeefdfbaab\",\"name\":\"Eve Martinez\",\"email\":\"eoe.oamktpao@example.com\"},\"context\":[{\"id\":\"cddfddbe-fdee-9543-7513-043059672839\",\"type\":\"apps\",\"attributes\":{\"name\":\"Example Time Tracking Helper\",\"vendor\":\"Example Vendor Inc\"}}],\"container\":[{\"id\":\"site-example-001\",\"type\":\"sites\",\"attributes\":{\"cloudUrl\":\"example.atlassian.net\"}}],\"location\":{\"ip\":\"198.51.100.50\",\"geo\":\"NA\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Eve Martinez installed Example Time Tracking Helper.\",\"format\":\"text/plain\"}}",
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_cloud-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

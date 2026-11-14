@@ -1,0 +1,6 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_duplicate_custom_fields
+dynamic_fields:
+  event.id: .*

@@ -1,0 +1,417 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "threadpool": {
+          "active_time_seconds": 0,
+          "name": "SIBFAPInboundThreadPool",
+          "threads": {
+            "active": 0,
+            "cleared": 0,
+            "stopped": {
+              "concurrent": 0,
+              "declared": 0
+            },
+            "total": 0
+          },
+          "total": {
+            "active": 0,
+            "created": 0,
+            "destroyed": 0
+          }
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "threadpool": {
+          "active_time_seconds": 0,
+          "name": "SoapConnectorThreadPool",
+          "threads": {
+            "active": 0,
+            "cleared": 0,
+            "stopped": {
+              "concurrent": 0,
+              "declared": 0
+            },
+            "total": 1
+          },
+          "total": {
+            "active": 0,
+            "created": 0,
+            "destroyed": 0
+          }
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "threadpool": {
+          "active_time_seconds": 0,
+          "name": "WMQJCAResourceAdapter",
+          "threads": {
+            "active": 0,
+            "cleared": 0,
+            "stopped": {
+              "concurrent": 0,
+              "declared": 0
+            },
+            "total": 0
+          },
+          "total": {
+            "active": 0,
+            "created": 0,
+            "destroyed": 0
+          }
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "threadpool": {
+          "active_time_seconds": 0,
+          "name": "WebContainer",
+          "threads": {
+            "active": 2,
+            "cleared": 0,
+            "stopped": {
+              "concurrent": 0,
+              "declared": 0
+            },
+            "total": 5
+          },
+          "total": {
+            "active": 0,
+            "created": 1,
+            "destroyed": 0
+          }
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "threadpool": {
+          "active_time_seconds": 0,
+          "name": "AriesThreadPool",
+          "threads": {
+            "active": 0,
+            "cleared": 0,
+            "stopped": {
+              "concurrent": 0,
+              "declared": 0
+            },
+            "total": 0
+          },
+          "total": {
+            "active": 0,
+            "created": 0,
+            "destroyed": 0
+          }
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "threadpool": {
+          "active_time_seconds": 0,
+          "name": "Default",
+          "threads": {
+            "active": 0,
+            "cleared": 0,
+            "stopped": {
+              "concurrent": 0,
+              "declared": 0
+            },
+            "total": 0
+          },
+          "total": {
+            "active": 0,
+            "created": 0,
+            "destroyed": 0
+          }
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": "web",
+        "kind": "metric",
+        "module": "websphere_application_server",
+        "type": "info"
+      },
+      "server": {
+        "address": "10.164.173.40:9080"
+      },
+      "tags": [
+        "prometheus"
+      ],
+      "websphere_application_server": {
+        "threadpool": {
+          "active_time_seconds": 0,
+          "name": "HAManager.thread.pool",
+          "threads": {
+            "active": 0,
+            "cleared": 0,
+            "stopped": {
+              "concurrent": 0,
+              "declared": 0
+            },
+            "total": 2
+          },
+          "total": {
+            "active": 0,
+            "created": 0,
+            "destroyed": 0
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus",
+          "pool": "SIBFAPInboundThreadPool"
+        },
+        "metrics": {
+          "was_threadpool_active_threads": 0,
+          "was_threadpool_active_time_seconds_total": 0,
+          "was_threadpool_active_total": 0,
+          "was_threadpool_clearedThreadHungs_total": 0,
+          "was_threadpool_concurrentHung_threads": 0,
+          "was_threadpool_create_total": 0,
+          "was_threadpool_declaredThreadHungs_total": 0,
+          "was_threadpool_destroy_total": 0,
+          "was_threadpool_size": 0
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus",
+          "pool": "SoapConnectorThreadPool"
+        },
+        "metrics": {
+          "was_threadpool_active_threads": 0,
+          "was_threadpool_active_time_seconds_total": 0,
+          "was_threadpool_active_total": 0,
+          "was_threadpool_clearedThreadHungs_total": 0,
+          "was_threadpool_concurrentHung_threads": 0,
+          "was_threadpool_create_total": 0,
+          "was_threadpool_declaredThreadHungs_total": 0,
+          "was_threadpool_destroy_total": 0,
+          "was_threadpool_size": 1
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus",
+          "pool": "WMQJCAResourceAdapter"
+        },
+        "metrics": {
+          "was_threadpool_active_threads": 0,
+          "was_threadpool_active_time_seconds_total": 0,
+          "was_threadpool_active_total": 0,
+          "was_threadpool_clearedThreadHungs_total": 0,
+          "was_threadpool_concurrentHung_threads": 0,
+          "was_threadpool_create_total": 0,
+          "was_threadpool_declaredThreadHungs_total": 0,
+          "was_threadpool_destroy_total": 0,
+          "was_threadpool_size": 0
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus",
+          "pool": "WebContainer"
+        },
+        "metrics": {
+          "was_threadpool_active_threads": 2,
+          "was_threadpool_active_time_seconds_total": 0,
+          "was_threadpool_active_total": 0,
+          "was_threadpool_clearedThreadHungs_total": 0,
+          "was_threadpool_concurrentHung_threads": 0,
+          "was_threadpool_create_total": 1,
+          "was_threadpool_declaredThreadHungs_total": 0,
+          "was_threadpool_destroy_total": 0,
+          "was_threadpool_size": 5
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus",
+          "pool": "AriesThreadPool"
+        },
+        "metrics": {
+          "was_threadpool_active_threads": 0,
+          "was_threadpool_active_time_seconds_total": 0,
+          "was_threadpool_active_total": 0,
+          "was_threadpool_clearedThreadHungs_total": 0,
+          "was_threadpool_concurrentHung_threads": 0,
+          "was_threadpool_create_total": 0,
+          "was_threadpool_declaredThreadHungs_total": 0,
+          "was_threadpool_destroy_total": 0,
+          "was_threadpool_size": 0
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus",
+          "pool": "Default"
+        },
+        "metrics": {
+          "was_threadpool_active_threads": 0,
+          "was_threadpool_active_time_seconds_total": 0,
+          "was_threadpool_active_total": 0,
+          "was_threadpool_clearedThreadHungs_total": 0,
+          "was_threadpool_concurrentHung_threads": 0,
+          "was_threadpool_create_total": 0,
+          "was_threadpool_declaredThreadHungs_total": 0,
+          "was_threadpool_destroy_total": 0,
+          "was_threadpool_size": 0
+        }
+      }
+    },
+    {
+      "prometheus": {
+        "labels": {
+          "instance": "10.164.173.40:9080",
+          "job": "prometheus",
+          "pool": "HAManager.thread.pool"
+        },
+        "metrics": {
+          "was_threadpool_active_threads": 0,
+          "was_threadpool_active_time_seconds_total": 0,
+          "was_threadpool_active_total": 0,
+          "was_threadpool_clearedThreadHungs_total": 0,
+          "was_threadpool_concurrentHung_threads": 0,
+          "was_threadpool_create_total": 0,
+          "was_threadpool_declaredThreadHungs_total": 0,
+          "was_threadpool_destroy_total": 0,
+          "was_threadpool_size": 2
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "threadpool",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-websphere_application_server-threadpool-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "websphere_application_server",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

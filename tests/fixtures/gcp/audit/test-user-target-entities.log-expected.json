@@ -1,0 +1,245 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-06T11:00:00.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "user:admin@apejtlc.co",
+            "admin@apejtlc.co"
+          ]
+        }
+      },
+      "client": {
+        "user": {
+          "email": "admin@apejtlc.co",
+          "id": "user:admin@apejtlc.co"
+        }
+      },
+      "cloud": {
+        "project": {
+          "id": "test-project"
+        },
+        "provider": "gcp"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "google.iam.admin.v1.CreateServiceAccountKey",
+        "category": [
+          "network",
+          "configuration"
+        ],
+        "id": "test-user-target-1",
+        "kind": "event",
+        "original": "{\"insertId\":\"test-user-target-1\",\"logName\":\"projects/test-project/logs/cloudaudit.googleapis.com%2Factivity\",\"protoPayload\":{\"@type\":\"type.googleapis.com/google.cloud.audit.AuditLog\",\"authenticationInfo\":{\"principalEmail\":\"admin@apejtlc.co\",\"principalSubject\":\"user:admin@apejtlc.co\"},\"authorizationInfo\":[{\"granted\":true,\"permission\":\"iam.serviceAccountKeys.create\",\"resourceAttributes\":{}}],\"methodName\":\"google.iam.admin.v1.CreateServiceAccountKey\",\"requestMetadata\":{\"callerIp\":\"198.51.100.1\"},\"resourceName\":\"projects/test-project/serviceAccounts/users/fnvfc@example.com\",\"serviceName\":\"iam.googleapis.com\"},\"receiveTimestamp\":\"2052-11-06T11:00:00.000000Z\",\"resource\":{\"labels\":{\"project_id\":\"test-project\"},\"type\":\"service_account\"},\"severity\":\"NOTICE\",\"timestamp\":\"2052-11-06T11:00:00.000000Z\"}",
+        "outcome": "success",
+        "provider": "activity",
+        "type": [
+          "access",
+          "allowed"
+        ]
+      },
+      "gcp": {
+        "audit": {
+          "authorization_info": [
+            {
+              "granted": true,
+              "permission": "iam.serviceAccountKeys.create"
+            }
+          ],
+          "receive_timestamp": "2052-11-06T11:00:00.000Z",
+          "resource": {
+            "type": "service_account"
+          },
+          "resource_name": "projects/test-project/serviceAccounts/users/fnvfc@example.com",
+          "type": "type.googleapis.com/google.cloud.audit.AuditLog"
+        }
+      },
+      "log": {
+        "level": "NOTICE",
+        "logger": "projects/test-project/logs/cloudaudit.googleapis.com%2Factivity"
+      },
+      "related": {
+        "entity": [
+          "user:admin@apejtlc.co",
+          "admin@apejtlc.co",
+          "projects/test-project/serviceAccounts/users/fnvfc@example.com"
+        ],
+        "ip": [
+          "198.51.100.1"
+        ],
+        "user": [
+          "admin@apejtlc.co"
+        ]
+      },
+      "service": {
+        "name": "iam.googleapis.com",
+        "target": {
+          "entity": {
+            "id": [
+              "projects/test-project/serviceAccounts/users/fnvfc@example.com"
+            ]
+          }
+        }
+      },
+      "source": {
+        "ip": "198.51.100.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "projects/test-project/serviceAccounts/users/fnvfc@example.com"
+          ]
+        }
+      },
+      "user": {
+        "email": "admin@apejtlc.co",
+        "entity": {
+          "id": [
+            "user:admin@apejtlc.co",
+            "admin@apejtlc.co"
+          ]
+        },
+        "id": "user:admin@apejtlc.co"
+      }
+    },
+    {
+      "@timestamp": "2052-11-06T11:01:00.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "qnxbjaaqxg@djxlbxr.com"
+          ]
+        }
+      },
+      "client": {
+        "user": {
+          "email": "qnxbjaaqxg@djxlbxr.com"
+        }
+      },
+      "cloud": {
+        "project": {
+          "id": "test-project"
+        },
+        "provider": "gcp"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "SetIamPolicy",
+        "category": [
+          "network",
+          "configuration"
+        ],
+        "id": "test-user-target-2",
+        "kind": "event",
+        "original": "{\"insertId\":\"test-user-target-2\",\"logName\":\"projects/test-project/logs/cloudaudit.googleapis.com%2Factivity\",\"protoPayload\":{\"@type\":\"type.googleapis.com/google.cloud.audit.AuditLog\",\"authenticationInfo\":{\"principalEmail\":\"qnxbjaaqxg@djxlbxr.com\"},\"authorizationInfo\":[{\"granted\":true,\"permission\":\"resourcemanager.projects.setIamPolicy\",\"resourceAttributes\":{}}],\"methodName\":\"SetIamPolicy\",\"requestMetadata\":{\"callerIp\":\"198.51.100.2\"},\"resourceName\":\"projects/test-project/groups/engineering-team\",\"serviceName\":\"cloudresourcemanager.googleapis.com\"},\"receiveTimestamp\":\"2052-11-06T11:01:00.000000Z\",\"resource\":{\"labels\":{\"project_id\":\"test-project\"},\"type\":\"project\"},\"severity\":\"NOTICE\",\"timestamp\":\"2052-11-06T11:01:00.000000Z\"}",
+        "outcome": "success",
+        "provider": "activity",
+        "type": [
+          "access",
+          "allowed"
+        ]
+      },
+      "gcp": {
+        "audit": {
+          "authorization_info": [
+            {
+              "granted": true,
+              "permission": "resourcemanager.projects.setIamPolicy"
+            }
+          ],
+          "receive_timestamp": "2052-11-06T11:01:00.000Z",
+          "resource": {
+            "type": "project"
+          },
+          "resource_name": "projects/test-project/groups/engineering-team",
+          "type": "type.googleapis.com/google.cloud.audit.AuditLog"
+        }
+      },
+      "log": {
+        "level": "NOTICE",
+        "logger": "projects/test-project/logs/cloudaudit.googleapis.com%2Factivity"
+      },
+      "related": {
+        "entity": [
+          "projects/test-project/groups/engineering-team",
+          "qnxbjaaqxg@djxlbxr.com"
+        ],
+        "ip": [
+          "198.51.100.2"
+        ],
+        "user": [
+          "qnxbjaaqxg@djxlbxr.com"
+        ]
+      },
+      "service": {
+        "name": "cloudresourcemanager.googleapis.com"
+      },
+      "source": {
+        "ip": "198.51.100.2"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "projects/test-project/groups/engineering-team"
+          ]
+        }
+      },
+      "user": {
+        "email": "qnxbjaaqxg@djxlbxr.com",
+        "entity": {
+          "id": [
+            "qnxbjaaqxg@djxlbxr.com"
+          ]
+        },
+        "target": {
+          "entity": {
+            "id": [
+              "projects/test-project/groups/engineering-team"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"insertId\":\"test-user-target-1\",\"logName\":\"projects/test-project/logs/cloudaudit.googleapis.com%2Factivity\",\"protoPayload\":{\"@type\":\"type.googleapis.com/google.cloud.audit.AuditLog\",\"authenticationInfo\":{\"principalEmail\":\"admin@apejtlc.co\",\"principalSubject\":\"user:admin@apejtlc.co\"},\"authorizationInfo\":[{\"granted\":true,\"permission\":\"iam.serviceAccountKeys.create\",\"resourceAttributes\":{}}],\"methodName\":\"google.iam.admin.v1.CreateServiceAccountKey\",\"requestMetadata\":{\"callerIp\":\"198.51.100.1\"},\"resourceName\":\"projects/test-project/serviceAccounts/users/fnvfc@example.com\",\"serviceName\":\"iam.googleapis.com\"},\"receiveTimestamp\":\"2052-11-06T11:00:00.000000Z\",\"resource\":{\"labels\":{\"project_id\":\"test-project\"},\"type\":\"service_account\"},\"severity\":\"NOTICE\",\"timestamp\":\"2052-11-06T11:00:00.000000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"insertId\":\"test-user-target-2\",\"logName\":\"projects/test-project/logs/cloudaudit.googleapis.com%2Factivity\",\"protoPayload\":{\"@type\":\"type.googleapis.com/google.cloud.audit.AuditLog\",\"authenticationInfo\":{\"principalEmail\":\"qnxbjaaqxg@djxlbxr.com\"},\"authorizationInfo\":[{\"granted\":true,\"permission\":\"resourcemanager.projects.setIamPolicy\",\"resourceAttributes\":{}}],\"methodName\":\"SetIamPolicy\",\"requestMetadata\":{\"callerIp\":\"198.51.100.2\"},\"resourceName\":\"projects/test-project/groups/engineering-team\",\"serviceName\":\"cloudresourcemanager.googleapis.com\"},\"receiveTimestamp\":\"2052-11-06T11:01:00.000000Z\",\"resource\":{\"labels\":{\"project_id\":\"test-project\"},\"type\":\"project\"},\"severity\":\"NOTICE\",\"timestamp\":\"2052-11-06T11:01:00.000000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-gcp-audit-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "gcp",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

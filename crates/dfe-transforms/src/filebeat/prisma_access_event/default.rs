@@ -16,8 +16,7 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == \"null\" || o == \"Null\" || o == \"NULL\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -33,9 +32,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ArrayList temp = new ArrayList(ctx.error.message); ArrayList output = new ArrayList(); for(data in temp){\n    if (!(data.contains('error in field ') || data.contains('strconv.Parse'))) {\n        output.add(data);\n    }\nctx.error.put(\"message\", output); }
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1666,9 +1663,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("prisma_access.event.cpu_usage") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.host == null) {\n    HashMap hm = new HashMap();\n    ctx.put(\"host\", hm);\n}\nctx.host.cpu = new HashMap();\nctx.host.cpu.usage = Math.round(ctx.prisma_access?.event?.cpu_usage *10) / 1000.0;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -14905,8 +14900,7 @@ impl Transform for Default {
             event.remove("cef");
             event.remove("_temp");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

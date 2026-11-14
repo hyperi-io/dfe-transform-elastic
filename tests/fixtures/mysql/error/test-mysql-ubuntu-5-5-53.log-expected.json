@@ -1,0 +1,5901 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053073278Z",
+        "kind": "event",
+        "original": "161209 14:18:50 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053079718Z",
+        "kind": "event",
+        "original": "161209 14:18:50 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053080888Z",
+        "kind": "event",
+        "original": "161209 14:18:50 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053081608Z",
+        "kind": "event",
+        "original": "161209 14:18:50 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053082408Z",
+        "kind": "event",
+        "original": "161209 14:18:50 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053083198Z",
+        "kind": "event",
+        "original": "161209 14:18:50 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053084218Z",
+        "kind": "event",
+        "original": "161209 14:18:50 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053084968Z",
+        "kind": "event",
+        "original": "InnoDB: The first specified data file ./ibdata1 did not exist:",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The first specified data file ./ibdata1 did not exist:",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053085958Z",
+        "kind": "event",
+        "original": "InnoDB: a new database to be created!",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: a new database to be created!",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053086758Z",
+        "kind": "event",
+        "original": "161209 14:18:50  InnoDB: Setting file ./ibdata1 size to 10 MB",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Setting file ./ibdata1 size to 10 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053087568Z",
+        "kind": "event",
+        "original": "InnoDB: Database physically writes the file full: wait...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053089348Z",
+        "kind": "event",
+        "original": "161209 14:18:50  InnoDB: Log file ./ib_logfile0 did not exist: new to be created",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Log file ./ib_logfile0 did not exist: new to be created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053090308Z",
+        "kind": "event",
+        "original": "InnoDB: Setting log file ./ib_logfile0 size to 5 MB",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Setting log file ./ib_logfile0 size to 5 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053091258Z",
+        "kind": "event",
+        "original": "InnoDB: Database physically writes the file full: wait...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053092328Z",
+        "kind": "event",
+        "original": "161209 14:18:50  InnoDB: Log file ./ib_logfile1 did not exist: new to be created",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Log file ./ib_logfile1 did not exist: new to be created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053093048Z",
+        "kind": "event",
+        "original": "InnoDB: Setting log file ./ib_logfile1 size to 5 MB",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Setting log file ./ib_logfile1 size to 5 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053094398Z",
+        "kind": "event",
+        "original": "InnoDB: Database physically writes the file full: wait...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053095358Z",
+        "kind": "event",
+        "original": "InnoDB: Doublewrite buffer not found: creating new",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Doublewrite buffer not found: creating new",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053096588Z",
+        "kind": "event",
+        "original": "InnoDB: Doublewrite buffer created",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Doublewrite buffer created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053097338Z",
+        "kind": "event",
+        "original": "InnoDB: 127 rollback segment(s) active.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 127 rollback segment(s) active.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053098308Z",
+        "kind": "event",
+        "original": "InnoDB: Creating foreign key constraint system tables",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Creating foreign key constraint system tables",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053099388Z",
+        "kind": "event",
+        "original": "InnoDB: Foreign key constraint system tables created",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Foreign key constraint system tables created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053100258Z",
+        "kind": "event",
+        "original": "161209 14:18:50  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:51.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053101418Z",
+        "kind": "event",
+        "original": "161209 14:18:51 InnoDB: 5.5.53 started; log sequence number 0",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:51.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053102238Z",
+        "kind": "event",
+        "original": "161209 14:18:51  InnoDB: Starting shutdown...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053103008Z",
+        "kind": "event",
+        "original": "161209 14:18:52  InnoDB: Shutdown completed; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053104268Z",
+        "kind": "event",
+        "original": "161209 14:18:52 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053105258Z",
+        "kind": "event",
+        "original": "161209 14:18:52 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053106198Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053107028Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053108208Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053108988Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053110188Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053110988Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: highest supported file format is Barracuda.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053111838Z",
+        "kind": "event",
+        "original": "161209 14:18:52  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053112758Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: 5.5.53 started; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053113668Z",
+        "kind": "event",
+        "original": "ERROR: 1064  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTER TABLE user ADD column Show_view_priv enum('N','Y') CHARACTER SET utf8 NOT ' at line 1",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "ERROR: 1064  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTER TABLE user ADD column Show_view_priv enum('N','Y') CHARACTER SET utf8 NOT ' at line 1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053114848Z",
+        "kind": "event",
+        "original": "161209 14:18:53 [ERROR] Aborting",
+        "type": [
+          "info",
+          "error"
+        ]
+      },
+      "log": {
+        "level": "ERROR"
+      },
+      "message": "Aborting",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053115558Z",
+        "kind": "event",
+        "original": "161209 14:18:53  InnoDB: Starting shutdown...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053116398Z",
+        "kind": "event",
+        "original": "161209 14:18:53  InnoDB: Shutdown completed; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053117208Z",
+        "kind": "event",
+        "original": "161209 14:18:53 [Note] /usr/sbin/mysqld: Shutdown complete",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053118148Z",
+        "kind": "event",
+        "original": "161209 14:18:53 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053119468Z",
+        "kind": "event",
+        "original": "161209 14:18:53 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053120168Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053120868Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053121628Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053122418Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053123708Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053124448Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: highest supported file format is Barracuda.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053125188Z",
+        "kind": "event",
+        "original": "161209 14:18:53  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:54.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053126168Z",
+        "kind": "event",
+        "original": "161209 14:18:54 InnoDB: 5.5.53 started; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:54.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053126888Z",
+        "kind": "event",
+        "original": "161209 14:18:54  InnoDB: Starting shutdown...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053127908Z",
+        "kind": "event",
+        "original": "161209 14:18:56 [ERROR] Aborting",
+        "type": [
+          "info",
+          "error"
+        ]
+      },
+      "log": {
+        "level": "ERROR"
+      },
+      "message": "Aborting",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053128938Z",
+        "kind": "event",
+        "original": "161209 14:18:56  InnoDB: Starting shutdown...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053129908Z",
+        "kind": "event",
+        "original": "161209 14:18:56  InnoDB: Shutdown completed; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053130718Z",
+        "kind": "event",
+        "original": "161209 14:18:56 [Note] /usr/sbin/mysqld: Shutdown complete",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053131448Z",
+        "kind": "event",
+        "original": "161209 14:18:56 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053132788Z",
+        "kind": "event",
+        "original": "161209 14:18:56 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053133618Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053134418Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053135458Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053136278Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053137708Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053138768Z",
+        "kind": "event",
+        "original": "161209 14:18:57 InnoDB: highest supported file format is Barracuda.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053139578Z",
+        "kind": "event",
+        "original": "161209 14:18:57  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053140388Z",
+        "kind": "event",
+        "original": "161209 14:18:58 InnoDB: 5.5.53 started; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053141158Z",
+        "kind": "event",
+        "original": "161209 14:18:58 [Note] Server hostname (bind-address): '127.0.0.1'; port: 3306",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Server hostname (bind-address): '127.0.0.1'; port: 3306",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053142148Z",
+        "kind": "event",
+        "original": "161209 14:18:58 [Note]   - '127.0.0.1' resolves to '127.0.0.1';",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "- '127.0.0.1' resolves to '127.0.0.1';",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053143418Z",
+        "kind": "event",
+        "original": "161209 14:18:58 [Note] Server socket created on IP: '127.0.0.1'.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Server socket created on IP: '127.0.0.1'.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053144228Z",
+        "kind": "event",
+        "original": "161209 14:18:58 [Note] Event Scheduler: Loaded 0 events",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Event Scheduler: Loaded 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053145038Z",
+        "kind": "event",
+        "original": "161209 14:18:58 [Note] /usr/sbin/mysqld: ready for connections.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: ready for connections.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053145848Z",
+        "kind": "event",
+        "original": "Version: '5.5.53-0ubuntu0.12.04.1'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Version: '5.5.53-0ubuntu0.12.04.1'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053146788Z",
+        "kind": "event",
+        "original": "161209 14:37:57 [Note] /usr/sbin/mysqld: Normal shutdown",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: Normal shutdown",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053147848Z",
+        "kind": "event",
+        "original": "161209 14:37:57 [Note] Event Scheduler: Purging the queue. 0 events",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Event Scheduler: Purging the queue. 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053148738Z",
+        "kind": "event",
+        "original": "161209 14:37:57  InnoDB: Starting shutdown...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053149448Z",
+        "kind": "event",
+        "original": "161209 14:37:57  InnoDB: Shutdown completed; log sequence number 1595685",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Shutdown completed; log sequence number 1595685",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053150238Z",
+        "kind": "event",
+        "original": "161209 14:37:57 [Note] /usr/sbin/mysqld: Shutdown complete",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053151038Z",
+        "kind": "event",
+        "original": "161209 14:37:57 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053152028Z",
+        "kind": "event",
+        "original": "161209 14:37:57 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053152828Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053153728Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053154548Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053155368Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053157048Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053157998Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: highest supported file format is Barracuda.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053159158Z",
+        "kind": "event",
+        "original": "161209 14:37:57  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053159958Z",
+        "kind": "event",
+        "original": "161209 14:37:58 InnoDB: 5.5.53 started; log sequence number 1595685",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 1595685",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053174968Z",
+        "kind": "event",
+        "original": "161209 14:37:58 [Note] Server hostname (bind-address): '127.0.0.1'; port: 3306",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Server hostname (bind-address): '127.0.0.1'; port: 3306",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053176518Z",
+        "kind": "event",
+        "original": "161209 14:37:58 [Note]   - '127.0.0.1' resolves to '127.0.0.1';",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "- '127.0.0.1' resolves to '127.0.0.1';",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053177508Z",
+        "kind": "event",
+        "original": "161209 14:37:58 [Note] Server socket created on IP: '127.0.0.1'.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Server socket created on IP: '127.0.0.1'.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053178478Z",
+        "kind": "event",
+        "original": "161209 14:37:58 [Note] Event Scheduler: Loaded 0 events",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Event Scheduler: Loaded 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053179258Z",
+        "kind": "event",
+        "original": "161209 14:37:58 [Note] /usr/sbin/mysqld: ready for connections.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: ready for connections.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053179958Z",
+        "kind": "event",
+        "original": "Version: '5.5.53-0ubuntu0.12.04.1-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Version: '5.5.53-0ubuntu0.12.04.1-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053180868Z",
+        "kind": "event",
+        "original": "161209 14:18:50 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053182268Z",
+        "kind": "event",
+        "original": "161209 14:18:50 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053183158Z",
+        "kind": "event",
+        "original": "161209 14:18:50 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053184508Z",
+        "kind": "event",
+        "original": "161209 14:18:50 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053185498Z",
+        "kind": "event",
+        "original": "161209 14:18:50 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053186668Z",
+        "kind": "event",
+        "original": "161209 14:18:50 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053188068Z",
+        "kind": "event",
+        "original": "161209 14:18:50 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053188878Z",
+        "kind": "event",
+        "original": "InnoDB: The first specified data file ./ibdata1 did not exist:",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The first specified data file ./ibdata1 did not exist:",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053190188Z",
+        "kind": "event",
+        "original": "InnoDB: a new database to be created!",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: a new database to be created!",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053191179Z",
+        "kind": "event",
+        "original": "161209 14:18:50  InnoDB: Setting file ./ibdata1 size to 10 MB",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Setting file ./ibdata1 size to 10 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053192089Z",
+        "kind": "event",
+        "original": "InnoDB: Database physically writes the file full: wait...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053193089Z",
+        "kind": "event",
+        "original": "161209 14:18:50  InnoDB: Log file ./ib_logfile0 did not exist: new to be created",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Log file ./ib_logfile0 did not exist: new to be created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053194259Z",
+        "kind": "event",
+        "original": "InnoDB: Setting log file ./ib_logfile0 size to 5 MB",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Setting log file ./ib_logfile0 size to 5 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053195099Z",
+        "kind": "event",
+        "original": "InnoDB: Database physically writes the file full: wait...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053195989Z",
+        "kind": "event",
+        "original": "161209 14:18:50  InnoDB: Log file ./ib_logfile1 did not exist: new to be created",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Log file ./ib_logfile1 did not exist: new to be created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053197009Z",
+        "kind": "event",
+        "original": "InnoDB: Setting log file ./ib_logfile1 size to 5 MB",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Setting log file ./ib_logfile1 size to 5 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053198389Z",
+        "kind": "event",
+        "original": "InnoDB: Database physically writes the file full: wait...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053199819Z",
+        "kind": "event",
+        "original": "InnoDB: Doublewrite buffer not found: creating new",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Doublewrite buffer not found: creating new",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053201099Z",
+        "kind": "event",
+        "original": "InnoDB: Doublewrite buffer created",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Doublewrite buffer created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053201909Z",
+        "kind": "event",
+        "original": "InnoDB: 127 rollback segment(s) active.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 127 rollback segment(s) active.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053202599Z",
+        "kind": "event",
+        "original": "InnoDB: Creating foreign key constraint system tables",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Creating foreign key constraint system tables",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053203769Z",
+        "kind": "event",
+        "original": "InnoDB: Foreign key constraint system tables created",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Foreign key constraint system tables created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:50.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053204679Z",
+        "kind": "event",
+        "original": "161209 14:18:50  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:51.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053205489Z",
+        "kind": "event",
+        "original": "161209 14:18:51 InnoDB: 5.5.53 started; log sequence number 0",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:51.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053206469Z",
+        "kind": "event",
+        "original": "161209 14:18:51  InnoDB: Starting shutdown...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053207449Z",
+        "kind": "event",
+        "original": "161209 14:18:52  InnoDB: Shutdown completed; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053208779Z",
+        "kind": "event",
+        "original": "161209 14:18:52 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053209789Z",
+        "kind": "event",
+        "original": "161209 14:18:52 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053210589Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053211579Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053212479Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053213199Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053214479Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053215649Z",
+        "kind": "event",
+        "original": "161209 14:18:52 InnoDB: highest supported file format is Barracuda.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053216599Z",
+        "kind": "event",
+        "original": "161209 14:18:52  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053217309Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: 5.5.53 started; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053218249Z",
+        "kind": "event",
+        "original": "ERROR: 1064  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTER TABLE user ADD column Show_view_priv enum('N','Y') CHARACTER SET utf8 NOT ' at line 1",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "ERROR: 1064  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTER TABLE user ADD column Show_view_priv enum('N','Y') CHARACTER SET utf8 NOT ' at line 1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053219349Z",
+        "kind": "event",
+        "original": "161209 14:18:53 [ERROR] Aborting",
+        "type": [
+          "info",
+          "error"
+        ]
+      },
+      "log": {
+        "level": "ERROR"
+      },
+      "message": "Aborting",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053220159Z",
+        "kind": "event",
+        "original": "161209 14:18:53  InnoDB: Starting shutdown...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053220949Z",
+        "kind": "event",
+        "original": "161209 14:18:53  InnoDB: Shutdown completed; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053221839Z",
+        "kind": "event",
+        "original": "161209 14:18:53 [Note] /usr/sbin/mysqld: Shutdown complete",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053222809Z",
+        "kind": "event",
+        "original": "161209 14:18:53 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053224069Z",
+        "kind": "event",
+        "original": "161209 14:18:53 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053225059Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053226039Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053227129Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053227849Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053228829Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053229589Z",
+        "kind": "event",
+        "original": "161209 14:18:53 InnoDB: highest supported file format is Barracuda.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:53.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053230399Z",
+        "kind": "event",
+        "original": "161209 14:18:53  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:54.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053231109Z",
+        "kind": "event",
+        "original": "161209 14:18:54 InnoDB: 5.5.53 started; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:54.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053232159Z",
+        "kind": "event",
+        "original": "161209 14:18:54  InnoDB: Starting shutdown...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053233319Z",
+        "kind": "event",
+        "original": "161209 14:18:55  InnoDB: Shutdown completed; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053234659Z",
+        "kind": "event",
+        "original": "161209 14:18:55 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053235629Z",
+        "kind": "event",
+        "original": "161209 14:18:55 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053236429Z",
+        "kind": "event",
+        "original": "161209 14:18:55 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053237619Z",
+        "kind": "event",
+        "original": "161209 14:18:55 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053238419Z",
+        "kind": "event",
+        "original": "161209 14:18:55 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053239649Z",
+        "kind": "event",
+        "original": "161209 14:18:55 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053240629Z",
+        "kind": "event",
+        "original": "161209 14:18:55 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053241599Z",
+        "kind": "event",
+        "original": "161209 14:18:55 InnoDB: highest supported file format is Barracuda.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:55.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053242569Z",
+        "kind": "event",
+        "original": "161209 14:18:55  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053243359Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: 5.5.53 started; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053244589Z",
+        "kind": "event",
+        "original": "ERROR: 1050  Table 'plugin' already exists",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "ERROR: 1050  Table 'plugin' already exists",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053245599Z",
+        "kind": "event",
+        "original": "161209 14:18:56 [ERROR] Aborting",
+        "type": [
+          "info",
+          "error"
+        ]
+      },
+      "log": {
+        "level": "ERROR"
+      },
+      "message": "Aborting",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053246809Z",
+        "kind": "event",
+        "original": "161209 14:18:56  InnoDB: Starting shutdown...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053247799Z",
+        "kind": "event",
+        "original": "161209 14:18:56  InnoDB: Shutdown completed; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053249199Z",
+        "kind": "event",
+        "original": "161209 14:18:56 [Note] /usr/sbin/mysqld: Shutdown complete",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053251009Z",
+        "kind": "event",
+        "original": "161209 14:18:56 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053252019Z",
+        "kind": "event",
+        "original": "161209 14:18:56 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053252729Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053253879Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053254789Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053255769Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053256959Z",
+        "kind": "event",
+        "original": "161209 14:18:56 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053257669Z",
+        "kind": "event",
+        "original": "161209 14:18:57 InnoDB: highest supported file format is Barracuda.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053258509Z",
+        "kind": "event",
+        "original": "161209 14:18:57  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053259339Z",
+        "kind": "event",
+        "original": "161209 14:18:58 InnoDB: 5.5.53 started; log sequence number 1595675",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053260509Z",
+        "kind": "event",
+        "original": "161209 14:18:58 [Note] Server hostname (bind-address): '127.0.0.1'; port: 3306",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Server hostname (bind-address): '127.0.0.1'; port: 3306",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053261449Z",
+        "kind": "event",
+        "original": "161209 14:18:58 [Note]   - '127.0.0.1' resolves to '127.0.0.1';",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "- '127.0.0.1' resolves to '127.0.0.1';",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053262389Z",
+        "kind": "event",
+        "original": "161209 14:18:58 [Note] Server socket created on IP: '127.0.0.1'.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Server socket created on IP: '127.0.0.1'.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053263189Z",
+        "kind": "event",
+        "original": "161209 14:18:58 [Note] Event Scheduler: Loaded 0 events",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Event Scheduler: Loaded 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:18:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053264159Z",
+        "kind": "event",
+        "original": "161209 14:18:58 [Note] /usr/sbin/mysqld: ready for connections.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: ready for connections.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053265329Z",
+        "kind": "event",
+        "original": "Version: '5.5.53-0ubuntu0.12.04.1'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Version: '5.5.53-0ubuntu0.12.04.1'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053266569Z",
+        "kind": "event",
+        "original": "161209 14:37:57 [Note] /usr/sbin/mysqld: Normal shutdown",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: Normal shutdown",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053267279Z",
+        "kind": "event",
+        "original": "161209 14:37:57 [Note] Event Scheduler: Purging the queue. 0 events",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Event Scheduler: Purging the queue. 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053268199Z",
+        "kind": "event",
+        "original": "161209 14:37:57  InnoDB: Starting shutdown...",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053269099Z",
+        "kind": "event",
+        "original": "161209 14:37:57  InnoDB: Shutdown completed; log sequence number 1595685",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Shutdown completed; log sequence number 1595685",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053270509Z",
+        "kind": "event",
+        "original": "161209 14:37:57 [Note] /usr/sbin/mysqld: Shutdown complete",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053271509Z",
+        "kind": "event",
+        "original": "161209 14:37:57 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "message": "Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053272669Z",
+        "kind": "event",
+        "original": "161209 14:37:57 [Note] Plugin 'FEDERATED' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053273909Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: The InnoDB memory heap is disabled",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053274709Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053275509Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: Compressed tables use zlib 198.51.100.57",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053276579Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: Initializing buffer pool, size = 128.0M",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053277359Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053278159Z",
+        "kind": "event",
+        "original": "161209 14:37:57 InnoDB: highest supported file format is Barracuda.",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053279059Z",
+        "kind": "event",
+        "original": "161209 14:37:57  InnoDB: Waiting for the background threads to start",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053279869Z",
+        "kind": "event",
+        "original": "161209 14:37:58 InnoDB: 5.5.53 started; log sequence number 1595685",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "InnoDB: 5.5.53 started; log sequence number 1595685",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053281149Z",
+        "kind": "event",
+        "original": "161209 14:37:58 [Note] Server hostname (bind-address): '127.0.0.1'; port: 3306",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Server hostname (bind-address): '127.0.0.1'; port: 3306",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053282469Z",
+        "kind": "event",
+        "original": "161209 14:37:58 [Note]   - '127.0.0.1' resolves to '127.0.0.1';",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "- '127.0.0.1' resolves to '127.0.0.1';",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053283289Z",
+        "kind": "event",
+        "original": "161209 14:37:58 [Note] Server socket created on IP: '127.0.0.1'.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Server socket created on IP: '127.0.0.1'.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053284109Z",
+        "kind": "event",
+        "original": "161209 14:37:58 [Note] Event Scheduler: Loaded 0 events",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Event Scheduler: Loaded 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2016-12-09T14:37:58.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053284919Z",
+        "kind": "event",
+        "original": "161209 14:37:58 [Note] /usr/sbin/mysqld: ready for connections.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: ready for connections.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.053285979Z",
+        "kind": "event",
+        "original": "Version: '5.5.53-0ubuntu0.12.04.1-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Version: '5.5.53-0ubuntu0.12.04.1-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: The first specified data file ./ibdata1 did not exist:",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: a new database to be created!",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50  InnoDB: Setting file ./ibdata1 size to 10 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50  InnoDB: Log file ./ib_logfile0 did not exist: new to be created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Setting log file ./ib_logfile0 size to 5 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50  InnoDB: Log file ./ib_logfile1 did not exist: new to be created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Setting log file ./ib_logfile1 size to 5 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Doublewrite buffer not found: creating new",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Doublewrite buffer created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: 127 rollback segment(s) active.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Creating foreign key constraint system tables",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Foreign key constraint system tables created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:51 InnoDB: 5.5.53 started; log sequence number 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:51  InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52  InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "ERROR: 1064  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTER TABLE user ADD column Show_view_priv enum('N','Y') CHARACTER SET utf8 NOT ' at line 1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 [ERROR] Aborting",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53  InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53  InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 [Note] /usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:54 InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:54  InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 [ERROR] Aborting",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56  InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56  InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 [Note] /usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:57 InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:57  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 [Note] Server hostname (bind-address): '127.0.0.1'; port: 3306",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 [Note]   - '127.0.0.1' resolves to '127.0.0.1';",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 [Note] Server socket created on IP: '127.0.0.1'.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 [Note] Event Scheduler: Loaded 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 [Note] /usr/sbin/mysqld: ready for connections.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "Version: '5.5.53-0ubuntu0.12.04.1'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 [Note] /usr/sbin/mysqld: Normal shutdown",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 [Note] Event Scheduler: Purging the queue. 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57  InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57  InnoDB: Shutdown completed; log sequence number 1595685",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 [Note] /usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 InnoDB: 5.5.53 started; log sequence number 1595685",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 [Note] Server hostname (bind-address): '127.0.0.1'; port: 3306",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 [Note]   - '127.0.0.1' resolves to '127.0.0.1';",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 [Note] Server socket created on IP: '127.0.0.1'.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 [Note] Event Scheduler: Loaded 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 [Note] /usr/sbin/mysqld: ready for connections.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "Version: '5.5.53-0ubuntu0.12.04.1-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: The first specified data file ./ibdata1 did not exist:",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: a new database to be created!",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50  InnoDB: Setting file ./ibdata1 size to 10 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50  InnoDB: Log file ./ib_logfile0 did not exist: new to be created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Setting log file ./ib_logfile0 size to 5 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50  InnoDB: Log file ./ib_logfile1 did not exist: new to be created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Setting log file ./ib_logfile1 size to 5 MB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Database physically writes the file full: wait...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Doublewrite buffer not found: creating new",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Doublewrite buffer created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: 127 rollback segment(s) active.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Creating foreign key constraint system tables",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "InnoDB: Foreign key constraint system tables created",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:50  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:51 InnoDB: 5.5.53 started; log sequence number 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:51  InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52  InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52 InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:52  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "ERROR: 1064  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTER TABLE user ADD column Show_view_priv enum('N','Y') CHARACTER SET utf8 NOT ' at line 1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 [ERROR] Aborting",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53  InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53  InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 [Note] /usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53 InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:53  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:54 InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:54  InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:55  InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:55 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:55 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:55 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:55 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:55 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:55 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:55 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:55 InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:55  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "ERROR: 1050  Table 'plugin' already exists",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 [ERROR] Aborting",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56  InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56  InnoDB: Shutdown completed; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 [Note] /usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:56 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:57 InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:57  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 InnoDB: 5.5.53 started; log sequence number 1595675",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 [Note] Server hostname (bind-address): '127.0.0.1'; port: 3306",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 [Note]   - '127.0.0.1' resolves to '127.0.0.1';",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 [Note] Server socket created on IP: '127.0.0.1'.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 [Note] Event Scheduler: Loaded 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:18:58 [Note] /usr/sbin/mysqld: ready for connections.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "Version: '5.5.53-0ubuntu0.12.04.1'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 [Note] /usr/sbin/mysqld: Normal shutdown",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 [Note] Event Scheduler: Purging the queue. 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57  InnoDB: Starting shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57  InnoDB: Shutdown completed; log sequence number 1595685",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 [Note] /usr/sbin/mysqld: Shutdown complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed in a future release. Please use the full name instead.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 [Note] Plugin 'FEDERATED' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: The InnoDB memory heap is disabled",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: Compressed tables use zlib 198.51.100.57",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: Initializing buffer pool, size = 128.0M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57 InnoDB: highest supported file format is Barracuda.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:57  InnoDB: Waiting for the background threads to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 InnoDB: 5.5.53 started; log sequence number 1595685",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 [Note] Server hostname (bind-address): '127.0.0.1'; port: 3306",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 [Note]   - '127.0.0.1' resolves to '127.0.0.1';",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 [Note] Server socket created on IP: '127.0.0.1'.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 [Note] Event Scheduler: Loaded 0 events",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "161209 14:37:58 [Note] /usr/sbin/mysqld: ready for connections.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "Version: '5.5.53-0ubuntu0.12.04.1-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Ubuntu)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "error",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-mysql-error-default",
+    "event_count": 198,
+    "numeric_keyword_fields": [],
+    "package": "mysql",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

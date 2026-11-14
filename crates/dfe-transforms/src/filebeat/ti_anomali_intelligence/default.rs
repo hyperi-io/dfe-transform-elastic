@@ -99,9 +99,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: def calculate(String now, String duration, String expiration_ts) {\n  def result = [:];\n  def start = ZonedDateTime.parse(now);\n  ZonedDateTime end;\n  char time_unit = duration.charAt(duration.length() - 1);\n  def time_value = Long.parseLong(duration.substring(0, duration.length() - 1));\n  if (time_unit == (char)'d') {\n    end = start.plusDays(time_value);\n  } else if (time_unit == (char)'h') {\n    end = start.plusHours(time_value);\n  } else if (time_unit == (char)'m') {\n    end = start.plusMinutes(time_value);\n  } else {\n    result[\"message\"] = \"Invalid ioc_duration_before_deletion: using default of 90 days\";\n    end = start.plusDays(90L);\n  }\n  ZonedDateTime upstream_expiration = null;\n  if (expiration_ts != null && expiration_ts != \"\") {\n    upstream_expiration = ZonedDateTime.parse(expiration_ts);\n  }\n  if (upstream_expiration != null && upstream_expiration.isBefore(end)) {\n    result[\"time\"] = upstream_expiration;\n  } else {\n    result[\"time\"] = end;\n  }\n  return result;\n}\ndef result = calculate(ctx[\"@timestamp\"], ctx._conf.ioc_duration_before_deletion, ctx.json.expiration_ts);\nif (result.message != null) {\n  if (ctx.error == null) {\n    ctx.error = [:];\n  }\n  if (ctx.error.message == null) {\n    ctx.error.message = [];\n  }\n  ctx.error.message.add(result.message);\n}\nctx.json[\"deletion_scheduled_at\"] = result.time;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -144,9 +142,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (params.containsKey(ctx.json.itype) && params[ctx.json.itype] != null) {\n  if (ctx.threat == null) {\n    ctx.threat = [:];\n  }\n  if (ctx.threat.indicator == null) {\n    ctx.threat.indicator = [:];\n  }\n  ctx.threat.indicator.type = params[ctx.json.itype];\n} else {\n  throw new IllegalArgumentException(\"indicator type not found from itype\");\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -278,9 +274,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.threat == null) {\n  ctx.threat = [:];\n} if (ctx.threat.indicator == null) {\n  ctx.threat.indicator = [:];\n} def value = ctx.json.confidence; if (value == null) {\n  ctx.threat.indicator.confidence = \"Not Specified\";\n} else if (value <= 0.0 || 100.0 < value) {\n  ctx.threat.indicator.confidence = \"None\";\n} else if (value < 30.0) {\n  ctx.threat.indicator.confidence = \"Low\";\n} else if (value < 70.0) {\n  ctx.threat.indicator.confidence = \"Medium\";\n} else {\n  ctx.threat.indicator.confidence = \"High\";\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -666,9 +660,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.event = ctx.event ?: [:];\nString severity_value = ctx.json.meta.severity;\nif (severity_value.equalsIgnoreCase(\"low\")) {\n  ctx.event.severity = 21;\n} else if (severity_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (severity_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (severity_value.equalsIgnoreCase(\"very-high\")) {\n  ctx.event.severity = 99;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -739,9 +731,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.json?.id != null && !(ctx.json.id instanceof String)) {\n  ctx.json.id = Long.toString((long) ctx.json.id);\n}\nif (ctx.json?.update_id != null && !(ctx.json.update_id instanceof String)) {\n  ctx.json.update_id = Long.toString((long) ctx.json.update_id);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -832,8 +822,7 @@ impl Transform for Default {
             event.remove("json.workgroups");
             event.remove("json.ip");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

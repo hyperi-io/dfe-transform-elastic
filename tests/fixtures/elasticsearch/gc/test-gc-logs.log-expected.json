@@ -1,0 +1,118 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-09-04T22:55:24.027Z",
+      "elasticsearch": {
+        "gc": {
+          "tags": [
+            "safepoint"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-04T22:55:24.027Z",
+        "ingested": "2026-11-13T23:04:17.478928681Z",
+        "kind": "metric",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Safepoint \"Cleanup\", Time since last: 4002353570 ns, Reaching safepoint: 136684 ns, At safepoint: 3099 ns, Total: 139783 ns",
+      "process": {
+        "pid": 208
+      },
+      "service": {
+        "type": "elasticsearch"
+      }
+    },
+    {
+      "@timestamp": "2050-09-04T22:55:25.029Z",
+      "elasticsearch": {
+        "gc": {
+          "tags": [
+            "safepoint"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-04T22:55:25.029Z",
+        "ingested": "2026-11-13T23:04:17.478937011Z",
+        "kind": "metric",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "Safepoint \"Cleanup\", Time since last: 1000758133 ns, Reaching safepoint: 343283 ns, At safepoint: 8027 ns, Total: 351310 ns",
+      "process": {
+        "pid": 208
+      },
+      "service": {
+        "type": "elasticsearch"
+      }
+    },
+    {
+      "@timestamp": "2050-09-04T22:55:27.031Z",
+      "elasticsearch": {
+        "gc": {
+          "tags": [
+            "safepoint"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-04T22:55:27.031Z",
+        "ingested": "2026-11-13T23:04:17.478937742Z",
+        "kind": "metric",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Safepoint \"Cleanup\", Time since last: 2002572298 ns, Reaching safepoint: 346946 ns, At safepoint: 7627 ns, Total: 354573 ns",
+      "process": {
+        "pid": 208
+      },
+      "service": {
+        "type": "elasticsearch"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "[2050-09-04T22:55:24.027+0000][208][info ][safepoint   ] Safepoint \"Cleanup\", Time since last: 4002353570 ns, Reaching safepoint: 136684 ns, At safepoint: 3099 ns, Total: 139783 ns"
+    },
+    {
+      "message": "[2050-09-04T22:55:25.029+0000][208][info ][safepoint   ] Safepoint \"Cleanup\", Time since last: 1000758133 ns, Reaching safepoint: 343283 ns, At safepoint: 8027 ns, Total: 351310 ns"
+    },
+    {
+      "message": "[2050-09-04T22:55:27.031+0000][208][safepoint   ] Safepoint \"Cleanup\", Time since last: 2002572298 ns, Reaching safepoint: 346946 ns, At safepoint: 7627 ns, Total: 354573 ns"
+    }
+  ],
+  "meta": {
+    "data_stream": "gc",
+    "dynamic_fields": {
+      "event.created": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-elasticsearch-gc-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "elasticsearch",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "activemq": {
+        "audit": {
+          "thread": "qtp443290224-47"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:25.419593272Z",
+        "kind": "event",
+        "module": "activemq",
+        "original": "INFO  | anonymous called org.apache.activemq.broker.jmx.QueueView.retryMessages[] at 27-11-2019 08:45:57,213 | qtp443290224-47",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "message": "called org.apache.activemq.broker.jmx.QueueView.retryMessages[] at 27-11-2019 08:45:57,213",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "anonymous"
+      }
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "activemq": {
+        "audit": {
+          "thread": "qtp443290224-45"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:25.419610242Z",
+        "kind": "event",
+        "module": "activemq",
+        "original": "INFO  | admin called org.apache.activemq.broker.jmx.QueueView.retryMessages[] at 27-11-2019 08:45:57,229 | qtp443290224-45",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "message": "called org.apache.activemq.broker.jmx.QueueView.retryMessages[] at 27-11-2019 08:45:57,229",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "admin"
+      }
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "activemq": {
+        "audit": {
+          "thread": "qtp12205619-39"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:25.419611232Z",
+        "kind": "event",
+        "module": "activemq",
+        "original": "WARN  | admin requested /admin/createDestination.action [JMSDestination='test' JMSDestinationType='queue' secret='2ef2de4b-3a7a-4596-817a-39c42aaf82c1' ] from 127.0.0.1 | qtp12205619-39",
+        "type": [
+          "error"
+        ]
+      },
+      "log": {
+        "level": "WARN"
+      },
+      "message": "requested /admin/createDestination.action [JMSDestination='test' JMSDestinationType='queue' secret='2ef2de4b-3a7a-4596-817a-39c42aaf82c1' ] from 127.0.0.1",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "admin"
+      }
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "activemq": {
+        "audit": {
+          "thread": "qtp12205619-36"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "ingested": "2026-11-13T23:03:25.419611942Z",
+        "kind": "event",
+        "module": "activemq",
+        "original": "INFO  | guest requested /admin/purgeDestination.action [JMSDestination='test' JMSDestinationType='queue' secret='fae9c368-7f06-43bc-a11a-4e99c659ade8' ] from 127.0.0.1 | qtp12205619-36",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "message": "requested /admin/purgeDestination.action [JMSDestination='test' JMSDestinationType='queue' secret='fae9c368-7f06-43bc-a11a-4e99c659ade8' ] from 127.0.0.1",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "guest"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "INFO  | anonymous called org.apache.activemq.broker.jmx.QueueView.retryMessages[] at 27-11-2019 08:45:57,213 | qtp443290224-47",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "INFO  | admin called org.apache.activemq.broker.jmx.QueueView.retryMessages[] at 27-11-2019 08:45:57,229 | qtp443290224-45",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "WARN  | admin requested /admin/createDestination.action [JMSDestination='test' JMSDestinationType='queue' secret='2ef2de4b-3a7a-4596-817a-39c42aaf82c1' ] from 127.0.0.1 | qtp12205619-39",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "INFO  | guest requested /admin/purgeDestination.action [JMSDestination='test' JMSDestinationType='queue' secret='fae9c368-7f06-43bc-a11a-4e99c659ade8' ] from 127.0.0.1 | qtp12205619-36",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-activemq-audit-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "activemq",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,1279 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-06-20T18:06:08.000Z",
+      "eclecticiq": {
+        "threat": {
+          "deleted_at": "2051-06-20T18:06:08.000Z",
+          "observable_id": "tzbykLYthzQx1ML8EkT7sv3I1wI="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-08T12:00:30.000Z",
+        "id": "qqgwTMTOLT+XoAJkkmM2S2Isy5o=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.12\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"WHITE\", \"diff\": \"del\", \"entity.id\": \"a264be7b-398e-4afe-8ecf-a5032ba29c5b\", \"entity.title\": \"CVE-2021-45105\", \"entity.type\": \"exploit-target\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/a264be7b-398e-4afe-8ecf-a5032ba29c5b\", \"meta.estimated_observed_time\": \"2049-12-19T00:27:19+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2049-12-19T00:27:19+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:30+00:00\", \"meta.relevancy\": \"0.12\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"WHITE\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:08+00:00\", \"type\": \"cve\", \"value\": \"2021-45105\", \"value_url\": \"https://test.com/main/extracts/cve/2021-45105\"}",
+        "provider": "Test Source",
+        "start": "2049-12-19T00:27:19.000Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/cve/2021-45105"
+      },
+      "vulnerability": {
+        "id": "2021-45105"
+      }
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:08.725Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "zpbWYdDKAYrs+3Nk+uOKXlO1vFM="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-08T12:00:29.962Z",
+        "id": "C/klu43n/NxoStcEJ5liGV91Tk4=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.12\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"NONE\", \"diff\": \"add\", \"entity.id\": \"dfea08d1-3568-4769-983e-220c3d4da25f\", \"entity.title\": \"CVE-2021-44228\", \"entity.type\": \"exploit-target\", \"meta.classification\": \"unknown\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/dfea08d1-3568-4769-983e-220c3d4da25f\", \"meta.estimated_observed_time\": \"2049-12-11T00:23:17.043636+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2049-12-11T00:23:17.043636+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:29.962651+00:00\", \"meta.relevancy\": \"0.12\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"NONE\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:08.725137+00:00\", \"type\": \"uri\", \"value\": \"https://example.com/some/path\", \"value_url\": \"https://test.com/main/extracts/uri/test\"}",
+        "provider": "Test Source",
+        "start": "2049-12-11T00:23:17.043Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/uri/test"
+      },
+      "threat": {
+        "indicator": {
+          "confidence": "Not Specified",
+          "first_seen": "2049-12-11T00:23:17.043Z",
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "name": "https://example.com/some/path",
+          "type": "url",
+          "url": {
+            "full": "https://example.com/some/path"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:08.873Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "vYpratba9Iby4O62rcADQxV2Ta4="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-08T12:00:33.148Z",
+        "id": "KbAC6dsdjwxPq+KuE4HJPoQOdpU=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"GREEN\", \"diff\": \"add\", \"entity.id\": \"c7badc49-550e-5618-a21b-845571e7ac52\", \"entity.title\": \"jquery-3.3.1.min.js\", \"entity.type\": \"indicator\", \"meta.classification\": \"good\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/c7badc49-550e-5618-a21b-845571e7ac52\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:16.466582+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:33.148659+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"GREEN\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:08.873229+00:00\", \"type\": \"file\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/file/jquery-3.3.1.min.js\"}",
+        "provider": "Test Source",
+        "severity": 1,
+        "start": "2051-06-08T10:20:16.466Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/file/jquery-3.3.1.min.js"
+      },
+      "related": {
+        "hash": [
+          "example.com"
+        ]
+      },
+      "tags": [
+        "Indicator Type - undetermined"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "None",
+          "file": {
+            "path": "example.com"
+          },
+          "first_seen": "2051-06-08T10:20:13.000Z",
+          "marking": {
+            "tlp": "GREEN"
+          },
+          "name": "example.com",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:09.304Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "mZqF22zqImlnJ60J8h+UT4YpIyg="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-08T12:00:32.009Z",
+        "id": "4a9hy8cjO2vvL12U62r80JCaSJM=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"GREEN\", \"diff\": \"add\", \"entity.id\": \"b71f84ea-85e1-5b1e-94f2-00b250d4f040\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"high\", \"meta.entity_url\": \"https://test.com/entity/b71f84ea-85e1-5b1e-94f2-00b250d4f040\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:14.984370+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:32.009360+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"GREEN\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.304097+00:00\", \"type\": \"hash-md5\", \"value\": \"721f23782a6ae91bf9dcad2081ca60ec\", \"value_url\": \"https://test.com/main/extracts/hash-md5/test\"}",
+        "provider": "Test Source",
+        "severity": 4,
+        "start": "2051-06-08T10:20:14.984Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/hash-md5/test"
+      },
+      "related": {
+        "hash": [
+          "721f23782a6ae91bf9dcad2081ca60ec"
+        ]
+      },
+      "tags": [
+        "Indicator Type - undetermined"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "file": {
+            "hash": {
+              "md5": "721f23782a6ae91bf9dcad2081ca60ec"
+            }
+          },
+          "first_seen": "2051-06-08T10:20:13.000Z",
+          "marking": {
+            "tlp": "GREEN"
+          },
+          "name": "721f23782a6ae91bf9dcad2081ca60ec",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:09.304Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "TzlPD/Gz5fwj2Tu/y1alnzs8wXE="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-08T12:00:32.009Z",
+        "id": "wb7wWMIcKQo4jB/Firm20Cj+eWc=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"GREEN\", \"diff\": \"add\", \"entity.id\": \"b71f84ea-85e1-5b1e-94f2-00b250d4f040\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"high\", \"meta.entity_url\": \"https://test.com/entity/b71f84ea-85e1-5b1e-94f2-00b250d4f040\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:14.984370+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:32.009360+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"GREEN\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.304097+00:00\", \"type\": \"hash-sha1\", \"value\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"value_url\": \"https://test.com/main/extracts/hash-sha1/test\"}",
+        "provider": "Test Source",
+        "severity": 4,
+        "start": "2051-06-08T10:20:14.984Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/hash-sha1/test"
+      },
+      "related": {
+        "hash": [
+          "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5"
+        ]
+      },
+      "tags": [
+        "Indicator Type - undetermined"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "file": {
+            "hash": {
+              "sha1": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5"
+            }
+          },
+          "first_seen": "2051-06-08T10:20:13.000Z",
+          "marking": {
+            "tlp": "GREEN"
+          },
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:09.018Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "igzysfFlHMnnoAzZ410YSb5AufY="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-08T12:00:32.783Z",
+        "id": "mxrQHVlUv6vUIJeVbqMd/tt+fYo=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"low\", \"meta.entity_url\": \"https://test.com/entity/52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"meta.estimated_observed_time\": \"\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"\", \"meta.ingest_time\": \"2051-06-08T12:00:32.783379+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"\", \"timestamp\": \"2051-06-20 18:06:09.018775+00:00\", \"type\": \"hash-sha256\", \"value\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"value_url\": \"https://test.com/main/extracts/hash-sha256/test\"}",
+        "severity": 2,
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/hash-sha256/test"
+      },
+      "related": {
+        "hash": [
+          "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5"
+        ]
+      },
+      "tags": [
+        "Indicator Type - undetermined"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "Low",
+          "file": {
+            "hash": {
+              "sha256": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5"
+            }
+          },
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:09.018Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "v8fQ7l+S8bfRZQ+tSkHz2aSZVDg="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-08T12:00:32.783Z",
+        "end": "2051-12-08T10:20:15.833Z",
+        "id": "EQLjBQNbt2Tg0GsRg8EM+hZuSqI=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"low\", \"meta.entity_url\": \"https://test.com/entity/52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"2051-12-08T10:20:15.833818+00:00\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:15.833818+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:32.783379+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.018775+00:00\", \"type\": \"hash-sha384\", \"value\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"value_url\": \"https://test.com/main/extracts/hash-sha384/test\"}",
+        "provider": "Test Source",
+        "severity": 2,
+        "start": "2051-06-08T10:20:15.833Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/hash-sha384/test"
+      },
+      "related": {
+        "hash": [
+          "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5"
+        ]
+      },
+      "tags": [
+        "Indicator Type - undetermined"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "Low",
+          "file": {
+            "hash": {
+              "sha384": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5"
+            }
+          },
+          "first_seen": "2051-06-08T10:20:13.000Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:09.018Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "SxJxe83BZtORvmHxB68vzAGOjf8="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-08T12:00:32.783Z",
+        "id": "K7u2aSahe9Q3t73SlgALBLr37VE=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"low\", \"meta.entity_url\": \"https://test.com/entity/52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:15.833818+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:32.783379+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.018775+00:00\", \"type\": \"hash-sha512\", \"value\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"value_url\": \"https://test.com/main/extracts/hash-sha512/test\"}",
+        "provider": "Test Source",
+        "severity": 2,
+        "start": "2051-06-08T10:20:15.833Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/hash-sha512/test"
+      },
+      "related": {
+        "hash": [
+          "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "confidence": "Low",
+          "file": {
+            "hash": {
+              "sha512": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5"
+            }
+          },
+          "first_seen": "2051-06-08T10:20:13.000Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:09.018Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "Z7Dw8JqNzyBY2hoNbi5SknP+GNY="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "id": "7twH+SkJqfoKtscgcnThfJYKgYw=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"low\", \"meta.entity_url\": \"https://test.com/entity/52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:15.833818+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.018775+00:00\", \"type\": \"hash-ssdeep\", \"value\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"value_url\": \"https://test.com/main/extracts/hash-ssdeep/test\"}",
+        "provider": "Test Source",
+        "severity": 2,
+        "start": "2051-06-08T10:20:15.833Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/hash-ssdeep/test"
+      },
+      "related": {
+        "hash": [
+          "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5"
+        ]
+      },
+      "tags": [
+        "Indicator Type - undetermined"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "Low",
+          "file": {
+            "hash": {
+              "ssdeep": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5"
+            }
+          },
+          "first_seen": "2051-06-08T10:20:13.000Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:09.182Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "dru1nkqfRVg9VEJIfG3g4bXfaqM="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-06T18:00:12.190Z",
+        "id": "UMZ5sZ6BWn5K2F56+O3y+gxPrPY=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"RED\", \"diff\": \"add\", \"entity.id\": \"36556991-207d-5347-ac90-0bdc68ca19ed\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"medium\", \"meta.entity_url\": \"https://test.com/entity/36556991-207d-5347-ac90-0bdc68ca19ed\", \"meta.estimated_observed_time\": \"2051-06-08T10:08:56+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:09:00.445986+00:00\", \"meta.ingest_time\": \"2051-06-06T18:00:12.190961+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"RED\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.182186+00:00\", \"type\": \"asn\", \"value\": 13335, \"value_url\": \"https://test.com/main/extracts/asn/test\"}",
+        "provider": "Test Source",
+        "severity": 3,
+        "start": "2051-06-08T10:09:00.445Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/asn/test"
+      },
+      "tags": [
+        "Indicator Type - undetermined"
+      ],
+      "threat": {
+        "indicator": {
+          "as": {
+            "number": 13335
+          },
+          "confidence": "Medium",
+          "first_seen": "2051-06-08T10:08:56.000Z",
+          "marking": {
+            "tlp": "RED"
+          },
+          "name": "13335",
+          "type": "autonomous-system"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:09.450Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "keAAa+ZEt+WxuhApeBbI3jWQZoU="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-06T18:00:12.344Z",
+        "id": "vZiie3YVxWsxTiVjLKoa0cT3rwI=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"GREEN\", \"diff\": \"add\", \"entity.id\": \"6e3858d9-95cb-5191-a2b1-dfcb49286aa1\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/6e3858d9-95cb-5191-a2b1-dfcb49286aa1\", \"meta.estimated_observed_time\": \"2051-06-08T10:08:56+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:09:01.118871+00:00\", \"meta.ingest_time\": \"2051-06-06T18:00:12.344203+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"GREEN\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.450823+00:00\", \"type\": \"rule\", \"value\": \"[url:name = 'test']\", \"value_url\": \"https://test.com/main/extracts/rule/test\"}",
+        "provider": "Test Source",
+        "start": "2051-06-08T10:09:01.118Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/rule/test"
+      },
+      "rule": {
+        "name": "[url:name = 'test']"
+      },
+      "tags": [
+        "Indicator Type - undetermined"
+      ]
+    },
+    {
+      "@timestamp": "2051-06-20T18:06:10.126Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "OwWGOybxVeL+USaXvDQSNonD5eU="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-08T12:00:30.187Z",
+        "id": "eSyihNoAsxvuasilMywpSLNgkTo=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"0.68\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"GREEN\", \"diff\": \"add\", \"entity.id\": \"5a339488-759b-412f-b577-510ddba4a191\", \"entity.title\": \"Example\", \"entity.type\": \"malware\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/5a339488-759b-412f-b577-510ddba4a191\", \"meta.estimated_observed_time\": \"2047-07-09T17:42:44.777000+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2050-05-11T14:00:00.188000+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:30.187097+00:00\", \"meta.relevancy\": \"0.68\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"tag1;tag2\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"GREEN\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:10.126780+00:00\", \"type\": \"domain\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/domain/test\"}",
+        "provider": "Test Source",
+        "start": "2050-05-11T14:00:00.188Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/domain/test"
+      },
+      "tags": [
+        "tag1",
+        "tag2"
+      ],
+      "threat": {
+        "indicator": {
+          "first_seen": "2047-07-09T17:42:44.777Z",
+          "marking": {
+            "tlp": "GREEN"
+          },
+          "name": "example.com",
+          "type": "domain-name",
+          "url": {
+            "domain": "example.com"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:07.730Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "H7C3V3qZnsRbJyMGviwO7QUUr2M="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T07:18:52.753Z",
+        "id": "Zn3gKEkXh+Gfs8sZ3fLaENAhy7E=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"8393ea77-b52f-47a8-8cc0-d40ebfbd8ee6\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/8393ea77-b52f-47a8-8cc0-d40ebfbd8ee6\", \"meta.estimated_observed_time\": \"2051-07-04T07:18:52.753892+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T07:18:52.753892+00:00\", \"meta.ingest_time\": \"2051-07-04T07:18:52.753892+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:07.730453+00:00\", \"type\": \"ipv6\", \"value\": \"2001:db8:5bff:23b8:b0b2:237:3d1:721c\", \"value_url\": \"https://test.com/main/extracts/ipv6/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T07:18:52.753Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/ipv6/test"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ]
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "indicator": {
+          "first_seen": "2051-07-04T07:18:52.753Z",
+          "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "type": "ipv6-addr"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "YiPAL3+CSFACsKuguh8+iYflhYo="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "4yNoObEChBldzGlkdXlutqrYxXo=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"email\", \"value\": \"email@example.com\", \"value_url\": \"https://test.com/main/extracts/email/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/email/test"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "indicator": {
+          "email": {
+            "address": "email@example.com"
+          },
+          "first_seen": "2051-07-04T05:01:50.578Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "email@example.com",
+          "type": "email-addr"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "/JBtZ+o7pq8ZA8j0p44Je4kJKrc="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "75ID4zK9Z337plQBkedbVaErOnk=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"mac-48\", \"value\": \"50:92:2b:12:14:fe\", \"value_url\": \"https://test.com/main/extracts/mac-48/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/mac-48/test"
+      },
+      "server": {
+        "mac": "50-92-2B-12-14-FE"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "indicator": {
+          "first_seen": "2051-07-04T05:01:50.578Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "50:92:2b:12:14:fe",
+          "type": "mac-addr"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "G50+34LUAalvYzW6FVNUGAyoqyk="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "inosMce+HbaHmxyS1wwH3Ql4Hh0=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"mutex\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/mutex/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/mutex/test"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "indicator": {
+          "first_seen": "2051-07-04T05:01:50.578Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "example.com",
+          "type": "mutex"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "5yvbEFr+nSJg2gcwzncgS7crgxk="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "WlYW6FNEi+rp6wIE8538sSmg0pw=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"port\", \"value\": 8008, \"value_url\": \"https://test.com/main/extracts/port/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/port/test"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "indicator": {
+          "first_seen": "2051-07-04T05:01:50.578Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "8008",
+          "type": "port",
+          "url": {
+            "port": 8008
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "QwJLfUBr7lU7YhU9DBA16qxUCuU="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "xduqsUL8qBIG/EMFd8foBr9gA1w=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"process\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/process/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/process/test"
+      },
+      "process": {
+        "command_line": "example.com"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "indicator": {
+          "first_seen": "2051-07-04T05:01:50.578Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "example.com",
+          "type": "process"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "tqKdm5Ii1sa4LGY2Y1Dt0MNt8IM="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "xrMngVMTyrepLDT9kSYHkHh+mKY=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"process-name\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/process-name/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/process-name/test"
+      },
+      "process": {
+        "name": "example.com"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "indicator": {
+          "first_seen": "2051-07-04T05:01:50.578Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "example.com",
+          "type": "process"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "AFuSZ9FRHWFMOIH/KYX0JT3C6BQ="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "LBqWpnIlcfo95HzunjKcGDUms4c=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"winregistry\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/winregistry/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/winregistry/test"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "indicator": {
+          "first_seen": "2051-07-04T05:01:50.578Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "example.com",
+          "registry": {
+            "value": "example.com"
+          },
+          "type": "windows-registry-key"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "7pxGQt+klo607OW/VnoSOkJM+pI="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "UyIk1KggC0dksERQkDJLHIlH3tk=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"certificate-serial-number\", \"value\": \"13335\", \"value_url\": \"https://test.com/main/extracts/certificate-serial-number/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/certificate-serial-number/test"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "indicator": {
+          "first_seen": "2051-07-04T05:01:50.578Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "13335",
+          "type": "x509-certificate",
+          "x509": {
+            "serial_number": "13335"
+          }
+        }
+      }
+    },
+    {
+      "_compat_error": "no result"
+    },
+    {
+      "_compat_error": "no result"
+    },
+    {
+      "_compat_error": "no result"
+    },
+    {
+      "_compat_error": "no result"
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "YQfOCF7bmJCSk4gf+A5tJmpQxug="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "lwGiAGRWuo9bFeuxKAiFqPb/T/4=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"file-size\", \"value\": 13335, \"value_url\": \"https://test.com/main/extracts/file-size/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/file-size/test"
+      },
+      "related": {
+        "hash": [
+          "13335"
+        ]
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "indicator": {
+          "file": {
+            "size": 13335
+          },
+          "first_seen": "2051-07-04T05:01:50.578Z",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "name": "13335",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "6SbKfiF0+55IgsuBNnI6WvqjTWQ="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "WEhBuoioQIosjvw9UD8cvwGekxw=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"malware\", \"value\": \"Test malware\", \"value_url\": \"https://test.com/main/extracts/malware/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/malware/test"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "threat": {
+        "software": {
+          "name": "Test malware",
+          "type": "Malware"
+        }
+      }
+    },
+    {
+      "_compat_error": "no result"
+    },
+    {
+      "_compat_error": "no result"
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "05nw/6bmbxBRPKo+gQcWlEU4k+g="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "Zinsc2ByC3NXRbJdlCi6DjyDQ5s=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"user-agent\", \"value\": \"Test user-agent\", \"value_url\": \"https://test.com/main/extracts/user-agent/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/user-agent/test"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ],
+      "user_agent": {
+        "original": "Test user-agent"
+      }
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "kOa9KcwQLs/tK+2oHj9j/MdNB58="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "JOYDoDI96PIHG3dfSkCUwJ/1uQ0=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"organization\", \"value\": \"Test organization\", \"value_url\": \"https://test.com/main/extracts/organization/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/organization/test"
+      },
+      "organization": {
+        "name": "Test organization"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ]
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "E4OqOotBIDf6C9xEHrUphnHDlig="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "subject": "Test email subject"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "3VT/WNCHRykqv/7IQxyM/4Pzj9Y=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"email-subject\", \"value\": \"Test email subject\", \"value_url\": \"https://test.com/main/extracts/email-subject/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/email-subject/test"
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ]
+    },
+    {
+      "@timestamp": "2051-07-04T07:25:08.513Z",
+      "eclecticiq": {
+        "threat": {
+          "observable_id": "Rhz8MpSQkbMx986l0Z/WNLCHRBM="
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2051-07-04T05:01:50.578Z",
+        "id": "XWrE/n0bnPA9xNd/tf6CmK/d9Q8=",
+        "kind": "enrichment",
+        "original": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"host\", \"value\": \"Test host\", \"value_url\": \"https://test.com/main/extracts/host/test\"}",
+        "provider": "cyberthreatnl",
+        "start": "2051-07-04T05:01:50.578Z",
+        "type": [
+          "indicator"
+        ],
+        "url": "https://test.com/main/extracts/host/test"
+      },
+      "host": {
+        "hostname": "Test host"
+      },
+      "related": {
+        "hosts": [
+          "Test host"
+        ]
+      },
+      "tags": [
+        "Fastflux",
+        "abushost"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"calculated.relevancy\": \"0.12\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"WHITE\", \"diff\": \"del\", \"entity.id\": \"a264be7b-398e-4afe-8ecf-a5032ba29c5b\", \"entity.title\": \"CVE-2021-45105\", \"entity.type\": \"exploit-target\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/a264be7b-398e-4afe-8ecf-a5032ba29c5b\", \"meta.estimated_observed_time\": \"2049-12-19T00:27:19+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2049-12-19T00:27:19+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:30+00:00\", \"meta.relevancy\": \"0.12\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"WHITE\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:08+00:00\", \"type\": \"cve\", \"value\": \"2021-45105\", \"value_url\": \"https://test.com/main/extracts/cve/2021-45105\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.12\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"NONE\", \"diff\": \"add\", \"entity.id\": \"dfea08d1-3568-4769-983e-220c3d4da25f\", \"entity.title\": \"CVE-2021-44228\", \"entity.type\": \"exploit-target\", \"meta.classification\": \"unknown\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/dfea08d1-3568-4769-983e-220c3d4da25f\", \"meta.estimated_observed_time\": \"2049-12-11T00:23:17.043636+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2049-12-11T00:23:17.043636+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:29.962651+00:00\", \"meta.relevancy\": \"0.12\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"NONE\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:08.725137+00:00\", \"type\": \"uri\", \"value\": \"https://example.com/some/path\", \"value_url\": \"https://test.com/main/extracts/uri/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"GREEN\", \"diff\": \"add\", \"entity.id\": \"c7badc49-550e-5618-a21b-845571e7ac52\", \"entity.title\": \"jquery-3.3.1.min.js\", \"entity.type\": \"indicator\", \"meta.classification\": \"good\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/c7badc49-550e-5618-a21b-845571e7ac52\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:16.466582+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:33.148659+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"GREEN\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:08.873229+00:00\", \"type\": \"file\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/file/jquery-3.3.1.min.js\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"GREEN\", \"diff\": \"add\", \"entity.id\": \"b71f84ea-85e1-5b1e-94f2-00b250d4f040\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"high\", \"meta.entity_url\": \"https://test.com/entity/b71f84ea-85e1-5b1e-94f2-00b250d4f040\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:14.984370+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:32.009360+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"GREEN\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.304097+00:00\", \"type\": \"hash-md5\", \"value\": \"721f23782a6ae91bf9dcad2081ca60ec\", \"value_url\": \"https://test.com/main/extracts/hash-md5/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"GREEN\", \"diff\": \"add\", \"entity.id\": \"b71f84ea-85e1-5b1e-94f2-00b250d4f040\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"high\", \"meta.entity_url\": \"https://test.com/entity/b71f84ea-85e1-5b1e-94f2-00b250d4f040\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:14.984370+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:32.009360+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"GREEN\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.304097+00:00\", \"type\": \"hash-sha1\", \"value\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"value_url\": \"https://test.com/main/extracts/hash-sha1/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"low\", \"meta.entity_url\": \"https://test.com/entity/52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"meta.estimated_observed_time\": \"\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"\", \"meta.ingest_time\": \"2051-06-08T12:00:32.783379+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"\", \"timestamp\": \"2051-06-20 18:06:09.018775+00:00\", \"type\": \"hash-sha256\", \"value\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"value_url\": \"https://test.com/main/extracts/hash-sha256/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"low\", \"meta.entity_url\": \"https://test.com/entity/52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"2051-12-08T10:20:15.833818+00:00\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:15.833818+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:32.783379+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.018775+00:00\", \"type\": \"hash-sha384\", \"value\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"value_url\": \"https://test.com/main/extracts/hash-sha384/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"low\", \"meta.entity_url\": \"https://test.com/entity/52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:15.833818+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:32.783379+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.018775+00:00\", \"type\": \"hash-sha512\", \"value\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"value_url\": \"https://test.com/main/extracts/hash-sha512/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"low\", \"meta.entity_url\": \"https://test.com/entity/52bfe0cc-d1b0-5366-afe1-6ad9af9c03ac\", \"meta.estimated_observed_time\": \"2051-06-08T10:20:13+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:20:15.833818+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.018775+00:00\", \"type\": \"hash-ssdeep\", \"value\": \"f4d220b5fea67071af1df30ad7cb17eb06c7c352e173f162c45e475279f09bf5\", \"value_url\": \"https://test.com/main/extracts/hash-ssdeep/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"RED\", \"diff\": \"add\", \"entity.id\": \"36556991-207d-5347-ac90-0bdc68ca19ed\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"bad\", \"meta.confidence\": \"medium\", \"meta.entity_url\": \"https://test.com/entity/36556991-207d-5347-ac90-0bdc68ca19ed\", \"meta.estimated_observed_time\": \"2051-06-08T10:08:56+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:09:00.445986+00:00\", \"meta.ingest_time\": \"2051-06-06T18:00:12.190961+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"RED\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.182186+00:00\", \"type\": \"asn\", \"value\": 13335, \"value_url\": \"https://test.com/main/extracts/asn/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.76\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"GREEN\", \"diff\": \"add\", \"entity.id\": \"6e3858d9-95cb-5191-a2b1-dfcb49286aa1\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/6e3858d9-95cb-5191-a2b1-dfcb49286aa1\", \"meta.estimated_observed_time\": \"2051-06-08T10:08:56+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-06-08T10:09:01.118871+00:00\", \"meta.ingest_time\": \"2051-06-06T18:00:12.344203+00:00\", \"meta.relevancy\": \"0.76\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"Indicator Type - undetermined\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"GREEN\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:09.450823+00:00\", \"type\": \"rule\", \"value\": \"[url:name = 'test']\", \"value_url\": \"https://test.com/main/extracts/rule/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"0.68\", \"calculated.source_reliability\": \"A\", \"calculated.tlp\": \"GREEN\", \"diff\": \"add\", \"entity.id\": \"5a339488-759b-412f-b577-510ddba4a191\", \"entity.title\": \"Example\", \"entity.type\": \"malware\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/5a339488-759b-412f-b577-510ddba4a191\", \"meta.estimated_observed_time\": \"2047-07-09T17:42:44.777000+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2050-05-11T14:00:00.188000+00:00\", \"meta.ingest_time\": \"2051-06-08T12:00:30.187097+00:00\", \"meta.relevancy\": \"0.68\", \"meta.source_reliability\": \"A\", \"meta.tags\": \"tag1;tag2\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"GREEN\", \"source.ids\": \"39bb288e-8d1c-442b-a205-38c17aa75ed3\", \"source.names\": \"Test Source\", \"timestamp\": \"2051-06-20 18:06:10.126780+00:00\", \"type\": \"domain\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/domain/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"8393ea77-b52f-47a8-8cc0-d40ebfbd8ee6\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/8393ea77-b52f-47a8-8cc0-d40ebfbd8ee6\", \"meta.estimated_observed_time\": \"2051-07-04T07:18:52.753892+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T07:18:52.753892+00:00\", \"meta.ingest_time\": \"2051-07-04T07:18:52.753892+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:07.730453+00:00\", \"type\": \"ipv6\", \"value\": \"2001:db8:5bff:23b8:b0b2:237:3d1:721c\", \"value_url\": \"https://test.com/main/extracts/ipv6/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"email\", \"value\": \"email@example.com\", \"value_url\": \"https://test.com/main/extracts/email/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"mac-48\", \"value\": \"50:92:2b:12:14:fe\", \"value_url\": \"https://test.com/main/extracts/mac-48/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"mutex\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/mutex/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"port\", \"value\": 8008, \"value_url\": \"https://test.com/main/extracts/port/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"process\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/process/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"process-name\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/process-name/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"winregistry\", \"value\": \"example.com\", \"value_url\": \"https://test.com/main/extracts/winregistry/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"certificate-serial-number\", \"value\": \"13335\", \"value_url\": \"https://test.com/main/extracts/certificate-serial-number/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"address\", \"value\": \"test-address\", \"value_url\": \"https://test.com/main/extracts/address/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"city\", \"value\": \"test-city\", \"value_url\": \"https://test.com/main/extracts/city/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"country\", \"value\": \"Wonderland\", \"value_url\": \"https://test.com/main/extracts/country/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"country-code\", \"value\": \"XY\", \"value_url\": \"https://test.com/main/extracts/country-code/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"file-size\", \"value\": 13335, \"value_url\": \"https://test.com/main/extracts/file-size/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"malware\", \"value\": \"Test malware\", \"value_url\": \"https://test.com/main/extracts/malware/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"postcode\", \"value\": \"13335\", \"value_url\": \"https://test.com/main/extracts/postcode/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"region\", \"value\": \"Test region\", \"value_url\": \"https://test.com/main/extracts/region/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"user-agent\", \"value\": \"Test user-agent\", \"value_url\": \"https://test.com/main/extracts/user-agent/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"organization\", \"value\": \"Test organization\", \"value_url\": \"https://test.com/main/extracts/organization/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"email-subject\", \"value\": \"Test email subject\", \"value_url\": \"https://test.com/main/extracts/email-subject/test\"}"
+    },
+    {
+      "message": "{\"calculated.relevancy\": \"1.00\", \"calculated.source_reliability\": \"C\", \"calculated.tlp\": \"AMBER\", \"diff\": \"add\", \"entity.id\": \"29fa81ce-91dd-42d3-916c-f41f86046690\", \"entity.title\": \"test\", \"entity.type\": \"indicator\", \"meta.classification\": \"\", \"meta.confidence\": \"\", \"meta.entity_url\": \"https://test.com/entity/29fa81ce-91dd-42d3-916c-f41f86046690\", \"meta.estimated_observed_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.estimated_threat_end_time\": \"\", \"meta.estimated_threat_start_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.ingest_time\": \"2051-07-04T05:01:50.578886+00:00\", \"meta.relevancy\": \"1.00\", \"meta.source_reliability\": \"C\", \"meta.tags\": \"Fastflux;abushost\", \"meta.taxonomy\": \"\", \"meta.terms_of_use\": \"\", \"meta.tlp\": \"AMBER\", \"source.ids\": \"ff6920ee-75d3-4cab-96d2-f7f80ac8c0aa\", \"source.names\": \"cyberthreatnl\", \"timestamp\": \"2051-07-04 07:25:08.513236+00:00\", \"type\": \"host\", \"value\": \"Test host\", \"value_url\": \"https://test.com/main/extracts/host/test\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "threat",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_eclecticiq-threat-default",
+    "event_count": 33,
+    "numeric_keyword_fields": [],
+    "package": "ti_eclecticiq",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

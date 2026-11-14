@@ -1,0 +1,188 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-03-20T23:39:59.849Z",
+      "azure": {
+        "firewall": {
+          "category": "AZFWApplicationRule",
+          "is_explicit_proxy_request": false,
+          "is_tls_inspected": false,
+          "policy": "policy",
+          "rule_collection_group": "ApplicationRuleGroup",
+          "web_category": "category"
+        },
+        "resource": {
+          "group": "TEST-FW-RG",
+          "id": "/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01",
+          "name": "TEST-FW01",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "63377162-B1DB-412D-8ECD-8667E8438804"
+      },
+      "cloud": {
+        "account": {
+          "id": "63377162-B1DB-412D-8ECD-8667E8438804"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "address": "192.0.2.134",
+        "ip": "192.0.2.134",
+        "port": 123
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Allow",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AZFWApplicationRule\",\"properties\":{\"Action\":\"Allow\",\"ActionReason\":\"reason\",\"DestinationIp\":\"192.0.2.134\",\"DestinationPort\": 123,\"Fqdn\":\"\",\"IsExplicitProxyRequest\":false,\"IsTlsInspected\":false,\"Policy\":\"policy\",\"Protocol\":\"HTTP\",\"Rule\":\"ApplicationRule\",\"RuleCollection\":\"ApplicationRuleSet\",\"RuleCollectionGroup\":\"ApplicationRuleGroup\",\"SourceIp\":\"192.0.2.134\",\"SourcePort\":1234,\"TargetUrl\":\"https://www.microsoft.com/en-us/about\",\"WebCategory\":\"category\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2052-03-20T23:39:59.8494370Z\"}",
+        "reason": "reason",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "network": {
+        "protocol": "http"
+      },
+      "observer": {
+        "name": "TEST-FW01",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.134"
+        ]
+      },
+      "rule": {
+        "name": "ApplicationRule",
+        "ruleset": "ApplicationRuleSet"
+      },
+      "source": {
+        "address": "192.0.2.134",
+        "ip": "192.0.2.134",
+        "port": 1234
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "www.microsoft.com",
+        "original": "https://www.microsoft.com/en-us/about",
+        "path": "/en-us/about",
+        "scheme": "https"
+      }
+    },
+    {
+      "@timestamp": "2053-11-26T14:16:47.139Z",
+      "azure": {
+        "firewall": {
+          "category": "AZFWApplicationRule",
+          "is_explicit_proxy_request": false,
+          "is_tls_inspected": false,
+          "policy": "test-azfw-premium-policy",
+          "rule_collection_group": "DefaultApplicationRuleCollectionGroup"
+        },
+        "resource": {
+          "group": "TEST-AZFW-RG",
+          "id": "/SUBSCRIPTIONS/48669008-8848-0544-0717-3BA5D23657C7/RESOURCEGROUPS/TEST-AZFW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-AZFW",
+          "name": "TEST-AZFW",
+          "provider": "MICROSOFT.NETWORK/AZUREFIREWALLS"
+        },
+        "subscription_id": "48669008-8848-0544-0717-3BA5D23657C7"
+      },
+      "cloud": {
+        "account": {
+          "id": "48669008-8848-0544-0717-3BA5D23657C7"
+        },
+        "provider": "azure"
+      },
+      "destination": {
+        "domain": "test.us.endpoint.security.microsoft.com",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Allow",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"AZFWApplicationRule\",\"properties\":{\"Action\":\"Allow\",\"ActionReason\":\"\",\"DestinationPort\":443,\"Fqdn\":\"test.us.endpoint.security.microsoft.com\",\"IsExplicitProxyRequest\":false,\"IsTlsInspected\":false,\"Policy\":\"test-azfw-premium-policy\",\"Protocol\":\"HTTPS\",\"Rule\":\"Microsoft\",\"RuleCollection\":\"App-Collection\",\"RuleCollectionGroup\":\"DefaultApplicationRuleCollectionGroup\",\"SourceIp\":\"192.0.2.134\",\"SourcePort\":59956,\"TargetUrl\":\"\",\"WebCategory\":\"\"},\"resourceId\":\"/SUBSCRIPTIONS/48669008-8848-0544-0717-3BA5D23657C7/RESOURCEGROUPS/TEST-AZFW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-AZFW\",\"time\":\"2053-11-26T14:16:47.139739+00:00\"}",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "network": {
+        "protocol": "https"
+      },
+      "observer": {
+        "name": "TEST-AZFW",
+        "product": "Network Firewall",
+        "type": "firewall",
+        "vendor": "Azure"
+      },
+      "related": {
+        "hosts": [
+          "test.us.endpoint.security.microsoft.com"
+        ],
+        "ip": [
+          "192.0.2.134"
+        ]
+      },
+      "rule": {
+        "name": "Microsoft",
+        "ruleset": "App-Collection"
+      },
+      "source": {
+        "address": "192.0.2.134",
+        "ip": "192.0.2.134",
+        "port": 59956
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category\":\"AZFWApplicationRule\",\"properties\":{\"Action\":\"Allow\",\"ActionReason\":\"reason\",\"DestinationIp\":\"192.0.2.134\",\"DestinationPort\": 123,\"Fqdn\":\"\",\"IsExplicitProxyRequest\":false,\"IsTlsInspected\":false,\"Policy\":\"policy\",\"Protocol\":\"HTTP\",\"Rule\":\"ApplicationRule\",\"RuleCollection\":\"ApplicationRuleSet\",\"RuleCollectionGroup\":\"ApplicationRuleGroup\",\"SourceIp\":\"192.0.2.134\",\"SourcePort\":1234,\"TargetUrl\":\"https://www.microsoft.com/en-us/about\",\"WebCategory\":\"category\"},\"resourceId\":\"/SUBSCRIPTIONS/63377162-B1DB-412D-8ECD-8667E8438804/RESOURCEGROUPS/TEST-FW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-FW01\",\"time\":\"2052-03-20T23:39:59.8494370Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"category\":\"AZFWApplicationRule\",\"properties\":{\"Action\":\"Allow\",\"ActionReason\":\"\",\"DestinationPort\":443,\"Fqdn\":\"test.us.endpoint.security.microsoft.com\",\"IsExplicitProxyRequest\":false,\"IsTlsInspected\":false,\"Policy\":\"test-azfw-premium-policy\",\"Protocol\":\"HTTPS\",\"Rule\":\"Microsoft\",\"RuleCollection\":\"App-Collection\",\"RuleCollectionGroup\":\"DefaultApplicationRuleCollectionGroup\",\"SourceIp\":\"192.0.2.134\",\"SourcePort\":59956,\"TargetUrl\":\"\",\"WebCategory\":\"\"},\"resourceId\":\"/SUBSCRIPTIONS/48669008-8848-0544-0717-3BA5D23657C7/RESOURCEGROUPS/TEST-AZFW-RG/PROVIDERS/MICROSOFT.NETWORK/AZUREFIREWALLS/TEST-AZFW\",\"time\":\"2053-11-26T14:16:47.139739+00:00\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "firewall_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-firewall_logs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

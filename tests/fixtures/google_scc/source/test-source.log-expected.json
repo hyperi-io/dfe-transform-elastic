@@ -1,0 +1,59 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"name\":\"organizations/595779152576/sources/10134421585261057824\",\"displayName\":\"Ejzkeelfna Seawuxmh Doduuy\",\"description\":\"Extend your security view from the edge.\",\"canonicalName\":\"organizations/595779152576/sources/10134421585261057824\"}"
+      },
+      "google_scc": {
+        "source": {
+          "canonical_name": "organizations/595779152576/sources/10134421585261057824",
+          "description": "Extend your security view from the edge.",
+          "display_name": "Ejzkeelfna Seawuxmh Doduuy",
+          "id": "10134421585261057824",
+          "name": "organizations/595779152576/sources/10134421585261057824"
+        }
+      },
+      "message": "Extend your security view from the edge.",
+      "organization": {
+        "id": "595779152576"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"name\":\"organizations/595779152576/sources/10134421585261057824\",\"displayName\":\"Ejzkeelfna Seawuxmh Doduuy\",\"description\":\"Extend your security view from the edge.\",\"canonicalName\":\"organizations/595779152576/sources/10134421585261057824\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"sources\":[]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "source",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-google_scc-source-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "google_scc",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}
