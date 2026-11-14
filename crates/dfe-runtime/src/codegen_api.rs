@@ -3805,8 +3805,7 @@ mod tests {
     #[cfg(feature = "testutil")]
     #[test]
     fn a_gap_before_a_quote_closes_so_the_field_reads_as_quoted() {
-        let path =
-            crate::testutil::fixtures().join("cisco/umbrella/test-umbrella-dnslogs.log");
+        let path = crate::testutil::fixtures().join("cisco/umbrella/test-umbrella-dnslogs.log");
         let text = std::fs::read_to_string(&path)
             .unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
         let line = text

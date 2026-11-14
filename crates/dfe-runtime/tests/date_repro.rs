@@ -63,5 +63,9 @@ fn a_named_zone_shifts_the_instant() {
         chrono::DateTime::parse_from_rfc3339(text)
             .unwrap_or_else(|e| panic!("`{text}` is not RFC 3339: {e}"))
     };
-    assert_eq!(at(&parsed), at("2023-05-03T03:55:35.928+00:00"), "`{written}`");
+    assert_eq!(
+        at(&parsed),
+        at("2023-05-03T03:55:35.928+00:00"),
+        "`{written}`"
+    );
 }

@@ -1446,12 +1446,22 @@ fn captured() -> Vec<Captured> {
         let Some(meta) = file.get("meta") else {
             continue;
         };
-        let array = |key: &str| file.get(key).and_then(Value::as_array).cloned().unwrap_or_default();
+        let array = |key: &str| {
+            file.get(key)
+                .and_then(Value::as_array)
+                .cloned()
+                .unwrap_or_default()
+        };
         let (input, expected) = (array("input"), array("expected"));
         if input.is_empty() || expected.is_empty() {
             continue;
         }
-        let text = |key: &str| meta.get(key).and_then(Value::as_str).unwrap_or_default().to_string();
+        let text = |key: &str| {
+            meta.get(key)
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_string()
+        };
         let fixture = path
             .file_name()
             .and_then(|n| n.to_str())

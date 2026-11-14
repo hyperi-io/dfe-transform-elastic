@@ -328,8 +328,7 @@ mod tests {
         transport: &str,
         keep: impl Fn(&serde_json::Value) -> bool,
     ) -> serde_json::Value {
-        let path =
-            crate::testutil::fixtures().join("cisco/ios/test-cisco-ios.log-expected.json");
+        let path = crate::testutil::fixtures().join("cisco/ios/test-cisco-ios.log-expected.json");
         let docs = crate::testutil::expected_documents(&path);
         docs.into_iter()
             .find(|doc| {

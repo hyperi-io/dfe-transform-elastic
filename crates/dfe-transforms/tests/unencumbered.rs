@@ -206,7 +206,11 @@ fn the_repositorys_own_fixtures_carry_no_elastic_material() {
     }
     stray.sort();
 
-    assert!(scanned > 1_000, "only {scanned} fixture files under {}", root.display());
+    assert!(
+        scanned > 1_000,
+        "only {scanned} fixture files under {}",
+        root.display()
+    );
     assert!(
         stray.is_empty(),
         "these fixtures name an Elastic repository or licence: {stray:?}"

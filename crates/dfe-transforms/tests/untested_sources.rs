@@ -154,14 +154,26 @@ macro_rules! source_case {
         #[test]
         fn $name() {
             let path = dfe_runtime::testutil::fixtures().join($fixture);
-            check(stringify!($name), &$transform, &path, $max_errors, $min_enriched);
+            check(
+                stringify!($name),
+                &$transform,
+                &path,
+                $max_errors,
+                $min_enriched,
+            );
         }
     };
     (public, $name:ident, $transform:expr, $fixture:literal, $max_errors:expr, $min_enriched:expr) => {
         #[test]
         fn $name() {
             let path = public_fixtures().join($fixture);
-            check(stringify!($name), &$transform, &path, $max_errors, $min_enriched);
+            check(
+                stringify!($name),
+                &$transform,
+                &path,
+                $max_errors,
+                $min_enriched,
+            );
         }
     };
 }
