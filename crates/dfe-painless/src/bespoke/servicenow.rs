@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `servicenow`'s URL escaping and oversize-string trim, transcribed.
+//! `servicenow`'s URL escaping and oversize-string trim, as the runtime runs them.
 //!
 //! A record's `url` display value is a query the console wrote, and it carries
 //! the two characters `java.net.URI` will not take: a space, and the `^` the
@@ -15,7 +15,7 @@
 //! under Lucene's own term limit. Four data streams ship it verbatim --
 //! `qualys_vmdr`'s two and `vectra_rux`'s audit stream as well as this one --
 //! and the registry keys on the script rather than the source, so the one
-//! transcription serves them all.
+//! runner serves them all.
 
 use serde_json::Value;
 
@@ -95,7 +95,7 @@ fn trim_massive(value: &mut Value) {
     }
 }
 
-/// Every `servicenow` script transcribed here.
+/// Every `servicenow` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "87628cef8192eb1a35da23964eff32ce29f6c7a66b2522ce28693d82ab0fc76a",

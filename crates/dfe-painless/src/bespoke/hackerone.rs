@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `hackerone`'s report scripts, transcribed.
+//! `hackerone`'s report scripts, as the runtime runs them.
 //!
 //! A report's workflow state is the whole of its ECS categorisation, and the
 //! people on it are spread across four different relationship shapes -- the
@@ -165,7 +165,7 @@ fn push_unique(users: &mut Vec<String>, user: String) {
     }
 }
 
-/// Every `hackerone` script transcribed here.
+/// Every `hackerone` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "cc7ca1400b23119604e65b98156527fd05eb1632b5448176673b352f0e26dea9",

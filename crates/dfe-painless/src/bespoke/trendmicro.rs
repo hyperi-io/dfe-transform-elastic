@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `trendmicro`'s malware categorisation, transcribed.
+//! `trendmicro`'s malware categorisation, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -37,7 +37,7 @@ fn malware_categorisation(event: &mut Event, _params: &Value) {
     let _ = event.set("event.type", Value::Array(vec![Value::from("info")]));
 }
 
-/// Every trendmicro script transcribed here.
+/// Every trendmicro script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "ef24ecc47d8fb17205d912534a1bb32e4164cddbb284e833a1e332a6d6da7a3b",
     source: "trendmicro",

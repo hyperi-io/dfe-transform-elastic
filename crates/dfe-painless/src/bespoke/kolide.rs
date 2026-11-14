@@ -200,7 +200,7 @@ fn audit_categorization(event: &mut Event, params: &Value) {
     let _ = event.set("event.type", Value::Array(vec![Value::from(lifecycle)]));
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "46874178d40278e7d579b84db17760e7fb181710715f86f6a6815e21c09c738c",

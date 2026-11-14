@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `entityanalytics_ad`'s entity scripts, transcribed.
+//! `entityanalytics_ad`'s entity scripts, as the runtime runs them.
 //!
 //! Active Directory hands its identifiers over as base64 of the raw LDAP
 //! attribute, so `objectSid` and `objectGUID` arrive as bytes rather than the
@@ -495,7 +495,7 @@ fn build_user_rel(dns: &Value) -> Value {
     Value::Object(rel)
 }
 
-/// Every `entityanalytics_ad` script transcribed here.
+/// Every `entityanalytics_ad` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "1fc6614a979b8062cde1cda5e56bfa3cb14dbee54d9fe48dd301265e6054455f",

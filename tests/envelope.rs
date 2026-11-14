@@ -968,10 +968,10 @@ fn cloudtrail_fills_its_columns_from_the_fetcher_row() {
     }
 }
 
-/// What an Elastic Agent hands the `cisco_ios` pipeline, from the Elastic
-/// data's `tests/envelopes/beats/agent_cisco_ios.json`.
+/// What an Elastic Agent hands the `cisco_ios` pipeline, from
+/// `tests/envelopes/beats/agent_cisco_ios.json`.
 fn agent_wrapped() -> Value {
-    let path = dfe_runtime::testutil::require_elastic_root()
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("tests/envelopes/beats/agent_cisco_ios.json");
     let text =
         std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
@@ -984,7 +984,6 @@ fn agent_wrapped() -> Value {
 /// tested: `data_stream` and `elastic_agent` appear ZERO times in the corpus,
 /// so every parity number was measured on the module shape.
 #[test]
-#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
 fn cisco_ios_produces_the_same_output_from_beats_or_the_agent() {
     let wrapped = agent_wrapped();
     let line = wrapped["message"]

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `airlock_digital`'s two `params` lookup scripts, transcribed.
+//! `airlock_digital`'s two `params` lookup scripts, as the runtime runs them.
 //!
 //! Both read a numeric code off the vendor payload and answer with the label
 //! the processor's own `params` block carries for it -- an agent status and an
@@ -50,7 +50,7 @@ fn label_for(event: &Event, params: &Value, path: &str) -> Option<Value> {
     params.get(painless_to_string(code)).cloned()
 }
 
-/// Every `airlock_digital` script transcribed here.
+/// Every `airlock_digital` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "919ce8f7a5d3a2b4aefe2ac11fccc1f44476986fe388f1442d8322115b35d01d",

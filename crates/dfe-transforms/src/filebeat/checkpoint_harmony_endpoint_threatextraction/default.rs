@@ -240,8 +240,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.os.name") && event.has_value("host.os.version") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -279,8 +278,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.name") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -316,8 +314,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.path") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -344,8 +341,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("url.original") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -409,8 +405,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("checkpoint_harmony_endpoint.threatextraction.malware.action") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -446,8 +441,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("checkpoint_harmony_endpoint.threatextraction.client.version") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -459,8 +453,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("checkpoint_harmony_endpoint.threatextraction.web_client_type") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -504,7 +497,7 @@ impl Transform for Default {
             event.remove("checkpoint_harmony_endpoint.threatextraction.extension_time");
             event.remove("checkpoint_harmony_endpoint.threatextraction.time");
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

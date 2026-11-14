@@ -18,7 +18,7 @@ impl Transform for Default {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             // Begin nested pipeline: "common_init"
             parse_json_field(event, "message", "tychon")?;
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -40,8 +40,7 @@ impl Transform for Default {
             if _cond {
                 event.remove("message");
             }
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -272,7 +271,7 @@ impl Transform for Default {
             {
                 event.set("host.os.family", v)?;
             }
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             allowed_value_copy(
                 event,
                 &AllowedValueCopy::new(
@@ -335,8 +334,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("tychon.package.installed") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -412,8 +410,7 @@ impl Transform for Default {
                     && event.has_value("tychon.package.version")
             };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! extrahop's investigation identifier, transcribed.
+//! extrahop's investigation identifier, as the runtime runs them.
 //!
 //! An investigation carries no id that is unique over time, so the pipeline
 //! pairs the vendor's id with the instant the document was ingested.
@@ -37,7 +37,7 @@ fn event_id_from_ingest_time(event: &mut Event, _params: &Value) {
     let _ = event.set("event.id", format!("{id}-{millis}"));
 }
 
-/// Every extrahop script transcribed here.
+/// Every extrahop script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "7edce39b76f1ddd1d30c855dfa72aed85e5f28ab010cba39473fca17a3dab11b",
     source: "extrahop",

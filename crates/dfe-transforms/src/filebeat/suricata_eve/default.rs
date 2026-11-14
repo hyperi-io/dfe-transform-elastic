@@ -142,8 +142,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.mac") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -323,8 +322,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -462,8 +460,7 @@ impl Transform for Default {
                 };
                 if _cond {
                     // Begin nested pipeline: "dns-answer-v1"
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -483,8 +480,7 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("dns.answers") };
                     if _cond {
-                        // Painless script
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -509,8 +505,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("dns.question.registered_domain") };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -582,8 +577,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("suricata.eve.tls.sni") };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1155,8 +1149,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1515,7 +1508,7 @@ impl Transform for Default {
                 event.rename("suricata.eve.flow.bytes_toserver", "source.bytes")?;
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             sum_totals(
                 event,
                 &SumTotals::new(vec![
@@ -1556,8 +1549,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

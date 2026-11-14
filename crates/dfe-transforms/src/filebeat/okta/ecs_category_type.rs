@@ -18,8 +18,7 @@ impl Transform for EcsCategoryType {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             let _cond = { event.has_value("okta.event_type") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

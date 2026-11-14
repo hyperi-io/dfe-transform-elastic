@@ -225,8 +225,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_tmp.date") && event.has_value("_tmp.time") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -461,8 +460,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_tmp.time_taken") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -490,8 +488,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_tmp.split_x_forwarded_for") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -643,8 +640,7 @@ impl Transform for Default {
                     && event.get_str("_tmp.split_x_forwarded_for") != Some("-")
             };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -851,8 +847,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

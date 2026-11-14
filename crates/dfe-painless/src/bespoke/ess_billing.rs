@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `ess_billing`'s region-to-geo lookup, transcribed.
+//! `ess_billing`'s region-to-geo lookup, as the runtime runs them.
 
 use serde_json::{Map, Value};
 
@@ -168,7 +168,7 @@ fn region_geo(event: &mut Event, _params: &Value) {
     let _ = event.set("cloud.geo", Value::Object(geo));
 }
 
-/// Every `ess_billing` script transcribed here.
+/// Every `ess_billing` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "fd78808f86da6362137b5fe4698b42eab1a6c9638b0cec3d335575818bb4d0b7",
     source: "ess_billing",

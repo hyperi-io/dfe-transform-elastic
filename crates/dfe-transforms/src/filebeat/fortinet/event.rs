@@ -465,8 +465,7 @@ impl Transform for Event {
                 }
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -485,8 +484,7 @@ impl Transform for Event {
 
             let _cond = { event.get_str("fortinet.firewall.subtype") == Some("vpn") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

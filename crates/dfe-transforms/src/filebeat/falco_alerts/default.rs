@@ -33,8 +33,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("output_fields") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -166,8 +165,7 @@ impl Transform for Default {
 
             dot_expand(event, "falco.output_fields", "*")?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -175,8 +173,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -217,8 +214,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("falco.tags") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -229,8 +225,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("falco.tags") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -241,8 +236,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("falco.priority") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -270,8 +264,7 @@ impl Transform for Default {
                 event.set("event.sequence", v)?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -387,8 +380,7 @@ impl Transform for Default {
                 event.set("process.parent.name", v)?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -947,8 +939,7 @@ impl Transform for Default {
 
             event.set("observer.product", json!("falco"))?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

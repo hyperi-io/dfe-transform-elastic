@@ -67,7 +67,7 @@ fn split_span(span: &str) -> Option<(char, Result<i64, std::num::ParseIntError>)
     matches!(unit, 'd' | 'h' | 'm').then(|| (unit, characters.as_str().parse::<i64>()))
 }
 
-/// The transcription this module registers.
+/// The script equivalent this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "56369e1eccf514805fe993224048e8d2c7a9a5f76867ea867908cf67a2ba06d1",
     source: "ti_rapid7_threat_command",

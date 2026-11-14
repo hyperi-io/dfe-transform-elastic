@@ -86,8 +86,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -97,8 +96,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -426,8 +424,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -448,8 +445,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -849,8 +845,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1234,8 +1229,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1680,8 +1674,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2126,8 +2119,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2500,8 +2492,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2872,8 +2863,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3239,8 +3229,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3685,8 +3674,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4072,8 +4060,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4268,8 +4255,7 @@ impl Transform for Default {
                     json!("Apple’s XProtect remediated malware on the system"),
                 )?;
                 event.append("event.category", json!("malware"))?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4476,8 +4462,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4872,8 +4857,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -5268,8 +5252,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -5661,8 +5644,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6057,8 +6039,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6254,8 +6235,7 @@ impl Transform for Default {
                 )?;
                 event.append("event.type", json!("start"))?;
                 event.append("event.category", json!("session"))?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6415,8 +6395,7 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -6601,8 +6580,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6798,8 +6776,7 @@ impl Transform for Default {
                 )?;
                 event.append("event.type", json!("end"))?;
                 event.append("event.category", json!("session"))?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6858,8 +6835,7 @@ impl Transform for Default {
                         "source.ip",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -7044,8 +7020,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -7242,8 +7217,7 @@ impl Transform for Default {
                 event.append("event.type", json!("start"))?;
                 event.append("event.category", json!("authentication"))?;
                 event.append("event.category", json!("session"))?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -7280,8 +7254,7 @@ impl Transform for Default {
                         "user.name",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -7291,8 +7264,7 @@ impl Transform for Default {
                         "{\"itemTypeMap\":{\"0\":\"Unknown\",\"1\":\"IPv4\",\"2\":\"IPv6\",\"3\":\"UNIX Socket\"}}"
                     ),
                 )?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -7477,8 +7449,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -7717,8 +7688,7 @@ impl Transform for Default {
                         "source.ip",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -7903,8 +7873,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -8100,8 +8069,7 @@ impl Transform for Default {
                 )?;
                 event.append("event.type", json!("start"))?;
                 event.append("event.category", json!("authentication"))?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -8300,8 +8268,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -8689,8 +8656,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -8983,8 +8949,7 @@ impl Transform for Default {
                         event.set("jamf_protect.telemetry.btm_executable_path", converted)?;
                     }
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -9336,8 +9301,7 @@ impl Transform for Default {
                 ) {
                     event.rename("jamf_protect.telemetry.event.btm_launch_item_add.instigator.executable.path", "process.executable")?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -9781,8 +9745,7 @@ impl Transform for Default {
                             "process.executable",
                         )?;
                     }
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -10068,8 +10031,7 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -10450,8 +10412,7 @@ impl Transform for Default {
                 event.rename("jamf_protect.telemetry.event.btm_launch_item_remove.instigator.executable.path", "process.executable")?;
                 }
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -10926,8 +10887,7 @@ impl Transform for Default {
                             "process.executable",
                         )?;
                     }
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -11191,8 +11151,7 @@ impl Transform for Default {
                         event.set("jamf_protect.telemetry.profile_display_name", converted)?;
                     }
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -11435,8 +11394,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -11649,8 +11607,7 @@ impl Transform for Default {
                         event.set("jamf_protect.telemetry.profile_display_name", converted)?;
                     }
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -11870,8 +11827,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -12021,8 +11977,7 @@ impl Transform for Default {
                 )?;
                 event.append("event.type", json!("start"))?;
                 event.append("event.category", json!("authentication"))?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -12051,8 +12006,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -12320,8 +12274,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -12514,8 +12467,7 @@ impl Transform for Default {
                 event.append("event.category", json!("authentication"))?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -12527,8 +12479,7 @@ impl Transform for Default {
                     )?;
                     Ok(())
                 })();
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -12537,8 +12488,7 @@ impl Transform for Default {
                 )?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -12549,8 +12499,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -12618,8 +12567,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -13128,8 +13076,7 @@ impl Transform for Default {
                 if event.has_value("jamf_protect.telemetry.event.authentication.data.auto_unlock.instigator.executable.path") {
                 event.rename("jamf_protect.telemetry.event.authentication.data.auto_unlock.instigator.executable.path", "process.executable")?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -13747,8 +13694,7 @@ impl Transform for Default {
                             "process.executable",
                         )?;
                     }
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -14157,8 +14103,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -14577,8 +14522,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -14948,8 +14892,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -15320,8 +15263,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -15496,8 +15438,7 @@ impl Transform for Default {
                         "file.path",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -15505,8 +15446,7 @@ impl Transform for Default {
                     ),
                     cached_params!("{\"itemTypeMap\":{\"0\":\"User\",\"1\":\"Computer\"}}"),
                 )?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -15691,8 +15631,7 @@ impl Transform for Default {
                 ) {
                     event.rename("jamf_protect.telemetry.event.od_modify_password.instigator.executable.path", "process.executable")?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -16048,8 +15987,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -16413,8 +16351,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -16775,8 +16712,7 @@ impl Transform for Default {
                 if event.has_value("jamf_protect.telemetry.event.od_attribute_value_add.instigator.executable.path") {
                 event.rename("jamf_protect.telemetry.event.od_attribute_value_add.instigator.executable.path", "process.executable")?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -17126,8 +17062,7 @@ impl Transform for Default {
                 if event.has_value("jamf_protect.telemetry.event.od_attribute_value_remove.instigator.executable.path") {
                 event.rename("jamf_protect.telemetry.event.od_attribute_value_remove.instigator.executable.path", "process.executable")?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -17517,8 +17452,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -17877,8 +17811,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -18240,8 +18173,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -18605,8 +18537,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -18968,8 +18899,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -19490,8 +19420,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -19755,8 +19684,7 @@ impl Transform for Default {
                         event.set("source.port", converted)?;
                     }
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -19766,8 +19694,7 @@ impl Transform for Default {
                         "{\"itemTypeMap\":{\"1\":\"icmp\",\"6\":\"tcp\",\"17\":\"udp\",\"41\":\"ip6in4\",\"58\":\"icmp6\",\"255\":\"ipproto_raw\"}}"
                     ),
                 )?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -19777,8 +19704,7 @@ impl Transform for Default {
                         "{\"itemTypeMap\":{\"1\":\"af_unix\",\"2\":\"af_inet\",\"30\":\"af_inet6\"}}"
                     ),
                 )?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -19980,8 +19906,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -20150,8 +20075,7 @@ impl Transform for Default {
                         "jamf_protect.telemetry.tcc_identity_type",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -20161,8 +20085,7 @@ impl Transform for Default {
                         "{\"itemTypeMap\":{\"0\":\"denied\",\"1\":\"unknown\",\"2\":\"allowed\",\"3\":\"limited\",\"4\":\"add_modify_added\",\"5\":\"session_pid\",\"6\":\"learn_more\"}}"
                     ),
                 )?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -20172,8 +20095,7 @@ impl Transform for Default {
                         "{\"itemTypeMap\":{\"0\":\"none\",\"1\":\"error\",\"2\":\"user_consent\",\"3\":\"user_set\",\"4\":\"system_set\",\"5\":\"service_policy\",\"6\":\"mdm_policy\",\"7\":\"service_override_policy\",\"8\":\"missing_usage_string\",\"9\":\"prompt_timeout\",\"10\":\"preflight_unknown\",\"11\":\"entitled\",\"12\":\"app_type_policy\",\"13\":\"prompt_cancel\"}}"
                     ),
                 )?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -20388,8 +20310,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -20727,8 +20648,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -21104,8 +21024,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -21349,7 +21268,7 @@ impl Transform for Default {
             event.remove("jamf_protect.telemetry.process_token");
             event.remove("message");
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

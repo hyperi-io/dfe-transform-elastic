@@ -813,7 +813,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -991,7 +991,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("proxysg.time_taken") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new(

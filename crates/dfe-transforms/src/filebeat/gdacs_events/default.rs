@@ -352,7 +352,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             coerce_boolean(
                 event,
                 &CoerceBoolean::new(
@@ -367,8 +367,7 @@ impl Transform for Default {
                 ),
             );
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -376,8 +375,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -608,8 +606,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -617,8 +614,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -636,7 +632,7 @@ impl Transform for Default {
 
             event.set("event.provider", json!("gdacs"))?;
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             join_present_fields(
                 event,
                 &JoinPresentFields::new(
@@ -711,7 +707,7 @@ impl Transform for Default {
             event.remove("gdacs.geometry_doc");
             event.remove("gdacs.geometry_id");
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

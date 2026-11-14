@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `claroty_ctd`'s two event scripts, transcribed.
+//! `claroty_ctd`'s two event scripts, as the runtime runs them.
 //!
 //! The CEF extensions carry one worker's health as a Python-style dict printed
 //! into a single extension value, so the whole `claroty_ctd.event.worker`
@@ -24,7 +24,7 @@ const WORKER: &str = "claroty_ctd.event.worker";
 /// what the event is about.
 ///
 /// The fourth arm the vendor spells is unreachable -- the first already claims
-/// every class id holding `Event` -- and is transcribed as written.
+/// every class id holding `Event` -- and is kept as written.
 fn event_kind_type_category(event: &mut Event, _params: &Value) {
     let Some(class_id) = event.get_string(CLASS_ID) else {
         return;
@@ -111,7 +111,7 @@ fn objectify(map: &mut Map<String, Value>) {
     }
 }
 
-/// Every `claroty_ctd` script transcribed here.
+/// Every `claroty_ctd` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "2a0c566aae094f0f6c308015ae8774469888773b7cffcf5889c7498e83fbe3ee",

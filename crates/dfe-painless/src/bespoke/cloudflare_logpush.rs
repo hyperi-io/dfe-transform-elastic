@@ -151,7 +151,7 @@ fn member(attachment: &Value, key: &str) -> Option<Value> {
     Some(held.clone())
 }
 
-/// Every `cloudflare_logpush` script transcribed here.
+/// Every `cloudflare_logpush` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "6b50189aab95c0da5a782726b220c9bd3be2b4ba431920c3222823745c0d07c6",

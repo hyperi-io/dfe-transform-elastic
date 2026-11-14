@@ -2,7 +2,7 @@
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! `nginx`'s choice of source address out of the forwarded-for chain,
-//! transcribed.
+//! as the runtime runs them.
 
 use serde_json::Value;
 
@@ -64,7 +64,7 @@ fn is_private(delimiters: &str, address: &Value) -> bool {
         || first == 127
 }
 
-/// Every nginx script transcribed here.
+/// Every nginx script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "8077e0c5103759c21e7acb0af6d1acc72cb2b62a6d5a1315d0d56ddf47c21092",
     source: "nginx",

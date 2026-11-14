@@ -67,7 +67,7 @@ impl Transform for Default {
 
             let _cond = { event.get("workday.sign_on").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 rename_map_keys(
                     event,
                     &RenameMapKeys::new("workday.sign_on".into(), '-', '_'),
@@ -76,7 +76,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("workday.sign_on") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 coerce_boolean(
                     event,
                     &CoerceBoolean::new(
@@ -948,7 +948,7 @@ impl Transform for Default {
             event.remove("workday.sign_on.Signoff_DateTime");
             event.remove("workday.sign_on.Signoff_Time");
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

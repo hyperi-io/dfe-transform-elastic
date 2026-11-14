@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `iis`'s repeated-capture collapse, transcribed.
+//! `iis`'s repeated-capture collapse, as the runtime runs them.
 //!
 //! An access line can name the same address twice -- once in the `c-ip` column
 //! and once in an `X-Forwarded-For` header -- and the grok captures both into a
@@ -57,7 +57,7 @@ fn distinct_under(event: &mut Event, params: &Value, root: &str) {
     }
 }
 
-/// Every `iis` script transcribed here.
+/// Every `iis` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "da8d489184e8a68b1e3e7ea771bf3f02540b827c043603e92333cc0bbaa5f43c",

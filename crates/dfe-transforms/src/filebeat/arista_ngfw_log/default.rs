@@ -32,11 +32,10 @@ impl Transform for Default {
                     }
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -47,8 +46,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -79,7 +77,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // SKIPPED: condition not transpiled: Collection supportedClasses = [ 'class com.untangle.uvm.event.AdminLoginEvent', 'class com.untangle.app.firewall.FirewallEvent', 'class com.untangle.app.http.HttpRequestEvent', 'class com.untangle.app ...
+            // SKIPPED: the pipeline's condition has no equivalent here
             #[allow(unreachable_code, unused_variables)]
             if false {
                 return Ok(TransformResult::Drop);
@@ -100,8 +98,7 @@ impl Transform for Default {
                 if event.has_value("arista.clientAddress") {
                     event.rename("arista.clientAddress", "source.ip")?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -196,8 +193,7 @@ impl Transform for Default {
                         && event.has_value("arista.cpu.user.pct")
                 };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1156,8 +1152,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -1332,8 +1327,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.start") && event.has_value("event.end") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1342,8 +1336,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1381,7 +1374,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions(event, &["bytes"]);
                     Ok(())
                 })();
@@ -1394,7 +1387,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions(event, &["packets"]);
                     Ok(())
                 })();
@@ -1402,8 +1395,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.ip") && event.has_value("destination.ip") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1488,8 +1480,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

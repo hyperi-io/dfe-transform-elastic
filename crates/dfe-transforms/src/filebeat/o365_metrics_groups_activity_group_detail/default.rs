@@ -59,7 +59,7 @@ impl Transform for Default {
 
             let _cond = { event.get("json").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 rewrite_keys(
                     event,
                     &RewriteKeys::new(
@@ -1227,7 +1227,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

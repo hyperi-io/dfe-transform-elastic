@@ -418,7 +418,7 @@ impl Transform for Default {
             event.remove("axonius.gateway.email_recipients");
             event.remove("axonius.gateway.id");
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

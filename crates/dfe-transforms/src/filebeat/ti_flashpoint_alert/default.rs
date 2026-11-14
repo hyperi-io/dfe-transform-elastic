@@ -69,7 +69,7 @@ impl Transform for Default {
 
             event.set("event.kind", json!("alert"))?;
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             rewrite_keys(
                 event,
                 &RewriteKeys::new(
@@ -1185,7 +1185,7 @@ impl Transform for Default {
                 event.remove("ti_flashpoint.alert.resource.link");
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -51,10 +51,10 @@ pub struct TransformMetrics {
     /// replacements. A non-zero rate means an upstream encoding problem.
     pub lossy_payloads: Counter,
 
-    /// Painless scripts the runtime recognised and ran.
+    /// Pipeline scripts the runtime has an equivalent for, and ran.
     pub painless_handled: Counter,
 
-    /// Painless scripts skipped because nothing recognised them. The event is
+    /// Pipeline scripts skipped because the runtime has no equivalent. The event is
     /// still emitted, so a high rate is silent data loss rather than an error.
     pub painless_unhandled: Counter,
 

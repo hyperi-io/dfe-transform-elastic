@@ -227,7 +227,7 @@ fn parse_user_risk_general(event: &mut Event, _params: &Value) {
     let _ = event.set("akamai.siem.user_risk.general", Value::Object(general));
 }
 
-/// Every akamai script transcribed here.
+/// Every akamai script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "26af47fb381e55afc57a8edc20b0d9d9d3d965dd4775a03f74c9326ab9707e7e",

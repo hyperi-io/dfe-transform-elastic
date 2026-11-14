@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `ti_socradar_feeds`'s indicator scripts, transcribed.
+//! `ti_socradar_feeds`'s indicator scripts, as the runtime runs them.
 //!
 //! The feed ships one indicator per line with its kind in a free-text
 //! `feed_type`, so where the value lands -- an IP, a domain, a file hash, a
@@ -187,7 +187,7 @@ fn ioc_expiration(event: &mut Event, _params: &Value) {
     );
 }
 
-/// Every `ti_socradar_feeds` script transcribed here.
+/// Every `ti_socradar_feeds` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "c7a8e8cfcc7c6a1c44fe6edb44b5a0679acacb786a901a939fc730582fdd2685",

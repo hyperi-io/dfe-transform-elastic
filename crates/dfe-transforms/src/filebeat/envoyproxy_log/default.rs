@@ -56,7 +56,7 @@ impl Transform for Default {
                     });
                 }
                 // Begin nested pipeline: "plaintext"
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 ensure_prefix(
                     event,
                     &EnsurePrefix::new(
@@ -233,8 +233,7 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "dissect")?;
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -250,7 +249,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("dest") };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     split_at_delimiter(
                         event,
                         &SplitAtDelimiter::new(
@@ -289,8 +288,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("duration") };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -313,7 +311,7 @@ impl Transform for Default {
                     // Begin nested pipeline: "http"
                     let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
+                        // The pipeline's script, emitted as the runtime's equivalent
                         event.set("http", json!({}))?;
                         split_at_delimiter(
                             event,
@@ -364,8 +362,7 @@ impl Transform for Default {
                             && event.get_str("upstream_service_time") != Some("-")
                     };
                     if _cond {
-                        // Painless script
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -560,7 +557,7 @@ impl Transform for Default {
             };
             if _cond {
                 // Begin nested pipeline: "plaintext"
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 ensure_prefix(
                     event,
                     &EnsurePrefix::new(
@@ -737,8 +734,7 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "dissect")?;
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -754,7 +750,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("dest") };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     split_at_delimiter(
                         event,
                         &SplitAtDelimiter::new(
@@ -793,8 +789,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("duration") };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -817,7 +812,7 @@ impl Transform for Default {
                     // Begin nested pipeline: "http"
                     let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
+                        // The pipeline's script, emitted as the runtime's equivalent
                         event.set("http", json!({}))?;
                         split_at_delimiter(
                             event,
@@ -868,8 +863,7 @@ impl Transform for Default {
                             && event.get_str("upstream_service_time") != Some("-")
                     };
                     if _cond {
-                        // Painless script
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -1235,7 +1229,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

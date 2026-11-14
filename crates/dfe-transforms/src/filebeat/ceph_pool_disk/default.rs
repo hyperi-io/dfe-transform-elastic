@@ -82,7 +82,7 @@ impl Transform for Default {
                 event.rename("json.stats.percent_used", "ceph.pool_disk.used.pct")?;
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

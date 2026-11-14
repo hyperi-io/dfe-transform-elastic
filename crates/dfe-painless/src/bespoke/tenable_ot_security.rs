@@ -93,7 +93,7 @@ fn normalise(value: &Value) -> Value {
     }
 }
 
-/// Every `tenable_ot_security` script transcribed here.
+/// Every `tenable_ot_security` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "befb894b8b5e7247fa7deaa56f88b2e6c1fe329936b3eea63505cfae492fbcc6",

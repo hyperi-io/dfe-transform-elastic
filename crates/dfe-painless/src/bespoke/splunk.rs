@@ -99,7 +99,7 @@ fn lookup(params: &Value, table: &str, key: &str) -> Option<Value> {
         .cloned()
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "034f4fd024a3e6d279ad95a792c312142110ebd560ee11a0887fe11b7d205134",

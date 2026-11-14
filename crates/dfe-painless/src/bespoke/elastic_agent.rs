@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Scripts the `elastic_agent` package ships, transcribed by hand.
+//! The `elastic_agent` package's scripts, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -25,7 +25,7 @@ fn derive_health_status(event: &mut Event, _params: &Value) {
     let _ = event.set("health_status", health);
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "c8fe8b1355f6749cc12c4ed0c742e186253ea883bb336d37082aabb244be5fec",
     source: "elastic_agent",

@@ -303,7 +303,7 @@ impl Transform for Default {
                     && event.has_value("zeek.kerberos.valid.until")
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 scalar_expression(
                     event,
                     &ScalarExpression::new(

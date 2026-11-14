@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `google_scc`'s MITRE id lookup, transcribed.
+//! `google_scc`'s MITRE id lookup, as the runtime runs them.
 //!
 //! A finding names its tactics and techniques in Google's own upper-case
 //! spelling -- `PERSISTENCE`, `ADDITIONAL_CLOUD_CREDENTIALS` -- and the
@@ -41,7 +41,7 @@ fn look_up(event: &mut Event, params: &Value, namespace: &str, table: &str) {
     let _ = event.set(&format!("{namespace}.id"), Value::Array(ids));
 }
 
-/// Every `google_scc` script transcribed here.
+/// Every `google_scc` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "803aa7d676a5d13dccf1fe41519bfa2cc9d1b585c70a86e49bb8d5331054b17f",
     source: "google_scc",

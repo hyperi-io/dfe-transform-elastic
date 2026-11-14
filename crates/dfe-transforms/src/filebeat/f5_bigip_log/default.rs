@@ -89,7 +89,7 @@ impl Transform for Default {
 
             event.set("observer.vendor", json!("F5"))?;
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -777,8 +777,7 @@ impl Transform for Default {
                         && event.has_value("f5_bigip.log.bytes.out")
                 };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2459,8 +2458,7 @@ impl Transform for Default {
                         && event.has_value("f5_bigip.log.bytes.out")
                 };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -3694,8 +3692,7 @@ impl Transform for Default {
                 if event.has_value("json.policy_name") {
                     event.rename("json.policy_name", "f5_bigip.log.policy.name")?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3988,8 +3985,7 @@ impl Transform for Default {
                         && event.has_value("f5_bigip.log.request.protocol")
                 };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -11664,7 +11660,7 @@ impl Transform for Default {
                             .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     move_map_entry(
                         event,
                         &MoveMapEntry::new(
@@ -11682,7 +11678,7 @@ impl Transform for Default {
                             .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     move_map_entry(
                         event,
                         &MoveMapEntry::new(
@@ -11700,7 +11696,7 @@ impl Transform for Default {
                             .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     move_map_entry(
                         event,
                         &MoveMapEntry::new(
@@ -11718,7 +11714,7 @@ impl Transform for Default {
                             .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     move_map_entry(
                         event,
                         &MoveMapEntry::new(
@@ -11986,16 +11982,14 @@ impl Transform for Default {
                 event.append("event.category", json!("vulnerability"))?;
                 event.append("event.type", json!("info"))?;
                 event.set("observer.product", json!("iHealth Information"))?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
                         r#"def convertKeysToString(Map versionMap, String[] keysToConvert) {\n  def convertedMap = [:];\n  versionMap.entrySet().forEach(entry -> {\n    def key = entry.getKey().toString();\n    def value = entry.getValue();\n    if (Arrays.asList(keysToConvert).contains(key)) {\n      convertedMap[key] = value.toString();\n    } else {\n      convertedMap[key] = value;\n    }\n  });\n  return convertedMap;\n}\ndef diagnosticArray = ctx.json.diagnostics;\ndef keysToConvert = new String[] {\n  'minor',\n  'major',\n  'maintenance',\n  'fix',\n  'point'\n};\nif (diagnosticArray instanceof List) {\n  for (int i = 0; i < diagnosticArray.size(); i++) {\n    def versionArray = diagnosticArray[i].version;\n    if (versionArray instanceof List) {\n      for (int j = 0; j < versionArray.size(); j++) {\n        versionArray[j] = convertKeysToString(versionArray[j], keysToConvert);\n      }\n      ctx.json.diagnostics[i].put('version', versionArray);\n    }\n  }\n}\n"#
                     ),
                 )?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -12387,7 +12381,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -13681,8 +13675,7 @@ impl Transform for Default {
                         str::to_lowercase,
                     )?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -14445,7 +14438,7 @@ impl Transform for Default {
                 // End nested pipeline: "pipeline_bigip_bot_and_dos"
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

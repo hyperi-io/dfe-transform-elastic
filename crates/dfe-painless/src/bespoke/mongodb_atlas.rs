@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Scripts the `mongodb_atlas` package ships, transcribed by hand.
+//! The `mongodb_atlas` package's scripts, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -52,7 +52,7 @@ fn informative_log_level(event: &mut Event, params: &Value) {
     mapped_code(event, params, "severity_levels", "json.s", "severity");
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "8b7601a8df0edcea7d843016346580b9b19126b6e20216af9a1d639ade8b1d8c",

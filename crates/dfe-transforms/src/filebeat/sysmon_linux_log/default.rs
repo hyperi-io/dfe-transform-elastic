@@ -20,8 +20,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("winlog.event_data") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -137,8 +136,7 @@ impl Transform for Default {
 
             event.set("event.action", json!("log"))?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -266,8 +264,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp.hashes") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -535,8 +532,7 @@ impl Transform for Default {
                         && event.get_str("process.parent.command_line") != Some(""))
             };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -556,8 +552,7 @@ impl Transform for Default {
                             .is_some_and(|s| s.len() > 1))
             };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -729,8 +724,7 @@ impl Transform for Default {
                         .is_some_and(|s| s.len() > 1)
             };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -888,8 +882,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("winlog.event_data.QueryResults") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1032,8 +1025,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("dns.resolved_ip") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1271,8 +1263,7 @@ impl Transform for Default {
                     && event.get_str("sysmon.dns.status") != Some("")
             };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1371,8 +1362,7 @@ impl Transform for Default {
                     && ["12", "13", "14"].contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1429,7 +1419,7 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

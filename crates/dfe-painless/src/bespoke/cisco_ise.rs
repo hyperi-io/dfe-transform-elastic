@@ -177,7 +177,7 @@ fn split_log_details_raw(event: &mut Event, _params: &Value) {
     let _ = event.set(LOG_DETAILS, Value::Object(details));
 }
 
-/// Every `cisco_ise` script transcribed here.
+/// Every `cisco_ise` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "b1de5852c63f9fc6b4ee9ae2d791d454c6f72b2ec4dcca8c692794e3ed59cfc4",

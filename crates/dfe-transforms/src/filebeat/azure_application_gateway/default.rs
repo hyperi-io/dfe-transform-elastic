@@ -264,7 +264,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions_into_existing(event, &["bytes"]);
                     Ok(())
                 })();
@@ -272,8 +272,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(r#"ctx.event.duration *= params.MS_TO_NS;"#),
@@ -695,7 +694,7 @@ impl Transform for Default {
                 event.set("observer.name", v)?;
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

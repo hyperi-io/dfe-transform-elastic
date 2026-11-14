@@ -63,7 +63,7 @@ fn java_round(value: f64) -> f64 {
     }
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "5aa6e27ecc8384cd1929508c602b8642524dfad68161105d2e42b3ea52b2a882",

@@ -41,7 +41,7 @@ fn unescape_values(event: &mut Event, _params: &Value) {
     }
 }
 
-/// Every `ti_socradar_taxii` script transcribed here.
+/// Every `ti_socradar_taxii` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "d93cb354343f2410769a7949780d2870b7f027168ee1285665772f78378424e4",
     source: "ti_socradar_taxii",

@@ -2,7 +2,7 @@
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! `azure_openai`'s key rewriting and its two content-filter summaries,
-//! transcribed.
+//! as the runtime runs them.
 //!
 //! Azure reports a filter verdict per category as its own object, and the
 //! pipeline flattens the filtered ones into a list the mapping can hold.
@@ -174,7 +174,7 @@ fn filtered_category(results: &Value, name: &str) -> Option<Value> {
     Some(Value::Object(verdict))
 }
 
-/// Every `azure_openai` script transcribed here.
+/// Every `azure_openai` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "891ec7306240546833e7cc71b1eed08383bc2aef2fd446d263d8d2485c4632b0",

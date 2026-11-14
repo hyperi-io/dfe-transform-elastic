@@ -544,8 +544,8 @@ impl Event {
 
     /// Rename a field, replacing whatever the target already held.
     ///
-    /// The `override: true` reading. Three of the 4,105 renames the vendored
-    /// pipelines ship ask for it.
+    /// The `override: true` reading. Three of the 4,105 renames across the
+    /// transforms ask for it.
     pub fn rename_over(&mut self, from: &str, to: &str) -> Result<()> {
         match self.remove(from) {
             // Resolved, not split: `rename` guards on [`Self::has`], which

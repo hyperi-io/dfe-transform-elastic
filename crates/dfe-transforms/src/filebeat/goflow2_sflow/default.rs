@@ -36,7 +36,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             scalar_expression(
                 event,
                 &ScalarExpression::new(
@@ -56,7 +56,7 @@ impl Transform for Default {
                     && event.get_str("goflow2.sampling_rate") != Some("")
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 scalar_expression(
                     event,
                     &ScalarExpression::new(

@@ -136,7 +136,7 @@ fn attributes(event: &Event, path: &str) -> Vec<(String, Value)> {
         .collect()
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "5ae52753a2f671408ff9df1e1d85adc90e313dab3a92dbdc7b280d13ba2dd1db",
     source: "qualys_vmdr",

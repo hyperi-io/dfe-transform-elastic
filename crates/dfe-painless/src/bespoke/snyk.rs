@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `snyk`'s blank extension bucket and its scan-item tags, transcribed.
+//! `snyk`'s blank extension bucket and its scan-item tags, as the runtime runs them.
 
 use serde_json::{Map, Value};
 
@@ -68,7 +68,7 @@ fn member(fields: &Map<String, Value>, key: &str) -> String {
     painless_to_string(fields.get(key).unwrap_or(&Value::Null))
 }
 
-/// Every snyk script transcribed here.
+/// Every snyk script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "8e89773e2e77483c595410e1b25bafdbb26643d506007132e08ee7ea6a57de00",

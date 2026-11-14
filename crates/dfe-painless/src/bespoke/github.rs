@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `github`'s split of the audit log's `events` field, transcribed.
+//! `github`'s split of the audit log's `events` field, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -34,7 +34,7 @@ fn events_object_from_events(event: &mut Event, _params: &Value) {
     let _ = event.set("github.events_object", Value::Array(events));
 }
 
-/// Every `github` script transcribed here.
+/// Every `github` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "e92a500bd4ca92b74ba288556a79ad0b425a9eb691a9facccf3cc58dd8651a3f",
     source: "github",

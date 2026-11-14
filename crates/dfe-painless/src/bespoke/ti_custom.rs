@@ -58,7 +58,7 @@ pub(super) fn unescape_value(value: &mut Value) {
     }
 }
 
-/// Every `ti_custom` script transcribed here.
+/// Every `ti_custom` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "34c13ee13bbaacc1d35bd32447461390592a901f717e548c5ae8d0d447009caf",
     source: "ti_custom",

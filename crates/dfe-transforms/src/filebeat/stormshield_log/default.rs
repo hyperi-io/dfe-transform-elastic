@@ -28,8 +28,7 @@ impl Transform for Default {
 
             event.set("observer.vendor", json!("Stormshield"))?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -129,8 +128,7 @@ impl Transform for Default {
             let _cond = { event.get_str("stormshield.logtype") == Some("filterstat") };
             if _cond {
                 // Begin nested pipeline: "filterstat"
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -144,8 +142,7 @@ impl Transform for Default {
             let _cond = { event.get_str("stormshield.logtype") == Some("monitor") };
             if _cond {
                 // Begin nested pipeline: "monitor"
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -155,8 +152,7 @@ impl Transform for Default {
                         "{\"special_cases\":[{\"key\":\"CPU\",\"value\":[\"user_time\",\"kernel_time\",\"system_disruption\"]}],\"devices\":[\"agg\",\"ipsec\",\"sslvpn\",\"Wifi\",\"Qid\",\"Vlan\"],\"stats\":[\"name\",\"incoming_throughput\",\"maximum_incoming_throughput\",\"outgoing_throughput\",\"maximum_outgoing_throughput\",\"packets_accepted\",\"packets_blocked\"]}"
                     ),
                 )?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -172,8 +168,7 @@ impl Transform for Default {
             let _cond = { event.get_str("stormshield.logtype") == Some("count") };
             if _cond {
                 // Begin nested pipeline: "count"
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -510,7 +505,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions(event, &["bytes"]);
                     Ok(())
                 })();
@@ -638,8 +633,7 @@ impl Transform for Default {
 
             event.remove("stormshield.srcmac");
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -688,8 +682,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("stormshield.ipv") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -795,8 +788,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -868,8 +860,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("error") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

@@ -40,8 +40,7 @@ impl Transform for V2Pipeline {
 
             let _cond = { event.has_value("mimecast.type") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -777,8 +776,7 @@ impl Transform for V2Pipeline {
 
             let _cond = { event.has_value("email.attachments") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

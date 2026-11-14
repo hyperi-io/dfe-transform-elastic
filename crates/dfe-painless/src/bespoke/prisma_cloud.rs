@@ -87,7 +87,7 @@ fn wrap_cves(findings: &[Value]) -> Value {
     Value::Object(wrapper)
 }
 
-/// Every `prisma_cloud` script transcribed here.
+/// Every `prisma_cloud` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "41812d345b101d9df08a93a101a038837a44355c0daee1a03abe32aba92eb1d4",

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Scripts the `cisco_secure_endpoint` package ships, transcribed by hand.
+//! The `cisco_secure_endpoint` package's scripts, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -12,7 +12,7 @@ use dfe_core::event::Event;
 /// the arguments and take the executable off the head of the list.
 ///
 /// `mysql_enterprise`'s `audit` stream ships the same script character for
-/// character, so this one transcription serves both call sites.
+/// character, so this one runner serves both call sites.
 fn set_process_args_count(event: &mut Event, _params: &Value) {
     let Some(args) = event.get_array("process.args") else {
         return;
@@ -25,7 +25,7 @@ fn set_process_args_count(event: &mut Event, _params: &Value) {
     }
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "f5b39befedd4c90a4916a5cbbc74a54e658ea8f1a5b201a317e844581bdadfd6",
     source: "cisco_secure_endpoint",

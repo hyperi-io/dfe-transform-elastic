@@ -2,7 +2,7 @@
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! `trend_micro_vision_one`'s alert payload, severity and indicator fields,
-//! transcribed.
+//! as the runtime runs them.
 
 use serde_json::{Map, Value};
 
@@ -138,7 +138,7 @@ fn sorted(groups: &[Value], first: &[Value]) -> Vec<Value> {
     names
 }
 
-/// Every `trend_micro_vision_one` script transcribed here.
+/// Every `trend_micro_vision_one` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "d60d35ac2a0e7913dc5ea001d2d462b6b5e884cd3857d91584fb143af41e4d22",

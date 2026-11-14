@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `citrix_adc`'s megabyte readings, transcribed.
+//! `citrix_adc`'s megabyte readings, as the runtime runs them.
 
 use serde_json::{Value, json};
 
@@ -35,7 +35,7 @@ fn memory_megabytes_to_bytes(event: &mut Event, _params: &Value) {
     }
 }
 
-/// Every `citrix_adc` script transcribed here.
+/// Every `citrix_adc` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "7e11fb7744f66558de19fdd3171799d8296e62b92fe1f026b7b6039721269e38",
     source: "citrix_adc",

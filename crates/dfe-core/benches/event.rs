@@ -10,7 +10,7 @@
 //! The dotted-path accessors, which every processor in every transform calls.
 //!
 //! `rename` 12,275, `set` 8,419, `append` 8,380, `convert` 4,102 and `remove`
-//! 3,618 across the vendored pipelines, against `script` 1,242 and `grok` 640.
+//! 3,618 across the transforms' pipelines, against `script` 1,242 and `grok` 640.
 //! The hot path is field plumbing, so whatever one path walk costs is the
 //! number that multiplies out to a batch: an okta event alone does hundreds.
 //!

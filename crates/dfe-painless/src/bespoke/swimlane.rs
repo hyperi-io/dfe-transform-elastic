@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `swimlane`'s source-address unwrapping, transcribed.
+//! `swimlane`'s source-address unwrapping, as the runtime runs them.
 //!
 //! The audit API sends the client address as a one-element list, and the grok
 //! that turns it into `source.ip` reads a string. Each data stream ships the
@@ -36,7 +36,7 @@ fn unwrap_first(event: &mut Event, path: &str) {
     event.update(path, first);
 }
 
-/// Every `swimlane` script transcribed here.
+/// Every `swimlane` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "ae92e77b6a0d8b047a0ae9a2276f2aa0fc36622db9bac933332e4a4d48a5c28d",

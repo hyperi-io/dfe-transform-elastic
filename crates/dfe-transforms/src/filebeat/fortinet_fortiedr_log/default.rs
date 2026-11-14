@@ -55,7 +55,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
 
             // ignore_failure: true

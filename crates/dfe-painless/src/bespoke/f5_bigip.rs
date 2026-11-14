@@ -248,7 +248,7 @@ fn utf16_offset(text: &str, units: usize) -> Option<usize> {
     (seen == units).then_some(text.len())
 }
 
-/// Every `f5_bigip` script transcribed here.
+/// Every `f5_bigip` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "5cba10b16fc0476a923fd96b661a0de1119cf75cee861f937583481a1214cc57",

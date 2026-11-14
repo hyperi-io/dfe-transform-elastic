@@ -99,7 +99,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 guarded_replace(
                     event,
                     &GuardedReplace::new("json.properties", "temp_properties", "'", "\""),
@@ -254,7 +254,7 @@ impl Transform for Default {
             }
             // End nested pipeline: "azure-shared-pipeline"
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

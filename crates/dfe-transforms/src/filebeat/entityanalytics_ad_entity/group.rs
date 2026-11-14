@@ -30,8 +30,7 @@ impl Transform for Group {
             event.set("asset.type", json!("activedirectory_group"))?;
 
             // Begin nested pipeline: "common"
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(

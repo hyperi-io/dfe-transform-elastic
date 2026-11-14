@@ -321,19 +321,15 @@ mod tests {
         assert_eq!(cid1, cid2);
     }
 
-    /// The first flow over `transport` that carries a community id, in the
-    /// Elastic data's `cisco/ios/test-cisco-ios.log-expected.json`.
+    /// The first flow over `transport` that carries a community id, in
+    /// `tests/fixtures/cisco/ios/test-cisco-ios.log-expected.json`.
     #[cfg(feature = "testutil")]
     fn cisco_ios_flow(
         transport: &str,
         keep: impl Fn(&serde_json::Value) -> bool,
     ) -> serde_json::Value {
-        let path =
-            crate::testutil::elastic_fixtures().join("cisco/ios/test-cisco-ios.log-expected.json");
-        let text = std::fs::read_to_string(&path)
-            .unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
-        let docs: Vec<serde_json::Value> = serde_json::from_str(&text)
-            .unwrap_or_else(|e| panic!("{}: not a JSON array: {e}", path.display()));
+        let path = crate::testutil::fixtures().join("cisco/ios/test-cisco-ios.log-expected.json");
+        let docs = crate::testutil::expected_documents(&path);
         docs.into_iter()
             .find(|doc| {
                 doc["network"]["transport"] == transport
@@ -347,7 +343,6 @@ mod tests {
     /// hashed one-way, to the id Elasticsearch wrote for it.
     #[cfg(feature = "testutil")]
     #[test]
-    #[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
     fn icmp_without_a_counterpart_is_one_way() {
         let flow = cisco_ios_flow("icmp", |doc| doc["icmp"]["type"] == "3");
         let number = |field: &str| -> u16 {
@@ -380,7 +375,6 @@ mod tests {
     /// different id from the one Elasticsearch wrote.
     #[cfg(feature = "testutil")]
     #[test]
-    #[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
     fn a_protocol_without_ports_omits_the_port_bytes() {
         let flow = cisco_ios_flow("igmp", |_| true);
         let cid = community_id_v1(

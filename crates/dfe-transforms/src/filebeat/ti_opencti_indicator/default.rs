@@ -73,8 +73,7 @@ impl Transform for Default {
 
             event.set("threat.indicator.confidence", json!("Not Specified"))?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -137,8 +136,7 @@ impl Transform for Default {
 
             event.rename("valid_until", "opencti.indicator.valid_until")?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -152,7 +150,7 @@ impl Transform for Default {
 
             event.rename("x_opencti_main_observable_type", "threat.indicator.type")?;
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             string_ops(
                 event,
                 &StringOps::new(
@@ -252,8 +250,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -381,8 +378,7 @@ impl Transform for Default {
                 })?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -390,8 +386,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -399,8 +394,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -410,8 +404,7 @@ impl Transform for Default {
 
             event.remove("observables");
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -545,7 +538,7 @@ impl Transform for Default {
                                         .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
-                            // Painless script, resolved to its runners at generation time
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_as", "threat.indicator.as"),
@@ -628,8 +621,7 @@ impl Transform for Default {
                             }
                             let _cond = { event.has_value("_tmp_registry.hive") };
                             if _cond {
-                                // Painless script
-                                // TODO: Transpile Painless to Rust (2.2.3)
+                                // The pipeline's script, run by the runtime's equivalent
                                 painless_exec_plan_params(
                                     event,
                                     cached_painless!(
@@ -640,7 +632,7 @@ impl Transform for Default {
                                     ),
                                 )?;
                             }
-                            // Painless script, resolved to its runners at generation time
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_registry", "threat.indicator.registry"),
@@ -739,7 +731,7 @@ impl Transform for Default {
                                         .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
-                            // Painless script, resolved to its runners at generation time
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_registry", "threat.indicator.registry"),
@@ -892,7 +884,7 @@ impl Transform for Default {
                                         .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
-                            // Painless script, resolved to its runners at generation time
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_x509", "threat.indicator.x509"),
@@ -1013,8 +1005,7 @@ impl Transform for Default {
                 })?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -1082,7 +1073,7 @@ impl Transform for Default {
                             if let Some(v) = event.get("_tmp_url.original").cloned() {
                                 event.set("_tmp_url.full", v)?;
                             }
-                            // Painless script, resolved to its runners at generation time
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_url", "threat.indicator.url"),
@@ -1209,7 +1200,7 @@ impl Transform for Default {
                                     }
                                 }
                             }
-                            // Painless script, resolved to its runners at generation time
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_url", "threat.indicator.url"),
@@ -1329,16 +1320,14 @@ impl Transform for Default {
                                     Ok(())
                                 })?;
                             }
-                            // Painless script
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
                                     r#"if (ctx._tmp_file?.name != null) {\n  def result = [];\n  for (name in ctx._tmp_file.name) {\n      if (name != null && name != '') {\n          result.add(name);\n      }\n  }\n  if (result.length == 0) {\n    ctx._tmp_file.remove(\"name\");\n  } else {\n    ctx._tmp_file.name = result;\n  }\n}\n"#
                                 ),
                             )?;
-                            // Painless script
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -1372,7 +1361,7 @@ impl Transform for Default {
                             {
                                 event.set("_tmp_file.hash", v)?;
                             }
-                            // Painless script, resolved to its runners at generation time
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_file", "threat.indicator.file"),
@@ -1529,16 +1518,14 @@ impl Transform for Default {
                                                     },
                                                 )?;
                                             }
-                                            // Painless script
-                                            // TODO: Transpile Painless to Rust (2.2.3)
+                                            // The pipeline's script, run by the runtime's equivalent
                                             painless_exec_plan(
                                                 event,
                                                 cached_painless!(
                                                     r#"if (ctx._tmp_file?.name != null) {\n  def result = [];\n  for (name in ctx._tmp_file.name) {\n      if (name != null && name != '') {\n          result.add(name);\n      }\n  }\n  if (result.length == 0) {\n    ctx._tmp_file.remove(\"name\");\n  } else {\n    ctx._tmp_file.name = result;\n  }\n}\n"#
                                                 ),
                                             )?;
-                                            // Painless script
-                                            // TODO: Transpile Painless to Rust (2.2.3)
+                                            // The pipeline's script, run by the runtime's equivalent
                                             painless_exec_plan(
                                                 event,
                                                 cached_painless!(
@@ -1572,7 +1559,7 @@ impl Transform for Default {
                                             {
                                                 event.set("_tmp_file.hash", v)?;
                                             }
-                                            // Painless script, resolved to its runners at generation time
+                                            // The pipeline's script, emitted as the runtime's equivalent
                                             ensure_append(
                                                 event,
                                                 &EnsureAppend::new(
@@ -1718,7 +1705,7 @@ impl Transform for Default {
                             if !painless_is_empty_value(&v) {
                                 event.set("_tmp_file.type", v)?;
                             }
-                            // Painless script, resolved to its runners at generation time
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_file", "threat.indicator.file"),
@@ -1804,8 +1791,7 @@ impl Transform for Default {
                                     Ok(())
                                 })?;
                             }
-                            // Painless script
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -1831,7 +1817,7 @@ impl Transform for Default {
                             {
                                 event.set("_tmp_file.hash", v)?;
                             }
-                            // Painless script, resolved to its runners at generation time
+                            // The pipeline's script, emitted as the runtime's equivalent
                             ensure_append(
                                 event,
                                 &EnsureAppend::new("_tmp_file", "threat.indicator.file"),
@@ -1993,8 +1979,7 @@ impl Transform for Default {
                             }
                             let _cond = { event.has_value("threat.indicator.file.name") };
                             if _cond {
-                                // Painless script
-                                // TODO: Transpile Painless to Rust (2.2.3)
+                                // The pipeline's script, run by the runtime's equivalent
                                 painless_exec_plan(
                                     event,
                                     cached_painless!(
@@ -2076,8 +2061,7 @@ impl Transform for Default {
                             }
                             let _cond = { event.has_value("tmp_registry.hive") };
                             if _cond {
-                                // Painless script
-                                // TODO: Transpile Painless to Rust (2.2.3)
+                                // The pipeline's script, run by the runtime's equivalent
                                 painless_exec_plan_params(
                                     event,
                                     cached_painless!(
@@ -2092,8 +2076,7 @@ impl Transform for Default {
                                 event.rename("tmp_registry", "threat.indicator.registry")?;
                             }
                             event.remove("_tmp_registry");
-                            // Painless script
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -2157,8 +2140,7 @@ impl Transform for Default {
                 })?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -2304,8 +2286,7 @@ impl Transform for Default {
                 })?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -2313,8 +2294,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -2395,7 +2375,7 @@ impl Transform for Default {
                 event.append_unique("tags", json!("ecs-indicator-detail"))?;
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

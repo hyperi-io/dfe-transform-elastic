@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Scripts the aws package ships, transcribed by hand.
+//! The aws package's scripts, as the runtime runs them.
 
 use serde_json::{Map, Value};
 
@@ -144,7 +144,7 @@ fn insert_at(root: &mut Map<String, Value>, path: &str, value: Value) {
     current.insert(rest.to_string(), value);
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "eb7dcf86eb859267bdd353d7abd4c675febedf759de966c25e687e01ebe20953",

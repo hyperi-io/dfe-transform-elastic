@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `cef`'s Check Point extension mapper, transcribed.
+//! `cef`'s Check Point extension mapper, as the runtime runs them.
 //!
 //! Check Point spends the CEF custom slots -- `deviceCustomString1` through
 //! `6`, the two custom dates, the flex numbers -- on a different field per
@@ -90,7 +90,7 @@ fn copy(value: &Value, to: &str) -> Value {
     Value::Object(entry)
 }
 
-/// Every `cef` script transcribed here.
+/// Every `cef` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "c35f3f0d96015c4589fa3ff784fb1f1c568ead9288aead5c199b8fda53518aeb",
     source: "cef",

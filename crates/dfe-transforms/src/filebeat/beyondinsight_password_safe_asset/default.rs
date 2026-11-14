@@ -39,8 +39,7 @@ impl Transform for Default {
 
             parse_json_field(event, "event.original", "beyondinsight_password_safe.asset")?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -48,8 +47,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -58,8 +56,7 @@ impl Transform for Default {
                 cached_params!("{\"numeric_ids\":[\"AssetID\",\"WorkgroupID\"]}"),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(

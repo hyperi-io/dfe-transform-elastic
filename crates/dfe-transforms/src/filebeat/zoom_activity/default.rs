@@ -286,7 +286,7 @@ impl Transform for Default {
             event.remove("zoom.activity.ip_address");
             event.remove("zoom.activity.email");
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

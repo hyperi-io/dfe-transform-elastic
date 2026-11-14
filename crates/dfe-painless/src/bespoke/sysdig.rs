@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! The three `sysdig/event` scripts, transcribed.
+//! The three `sysdig/event` scripts, as the runtime runs them.
 
 use serde_json::{Value, json};
 
@@ -128,7 +128,7 @@ fn ensure_container(event: &mut Event, path: &str, empty: &Value) {
     let _ = event.set(path, empty.clone());
 }
 
-/// Every `sysdig` script transcribed here.
+/// Every `sysdig` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "1351179af7e0115ddf3cc96bcd16c058234ca72dd649898c9459c2a057ede0ed",

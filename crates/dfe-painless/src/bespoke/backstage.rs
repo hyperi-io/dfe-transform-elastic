@@ -36,7 +36,7 @@ fn serialize_meta_residual(event: &mut Event, _params: &Value) {
     let _ = event.set("backstage.meta", rendered);
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "7fc57527579530bfa0ff5ef83022caf4c73f2333131f31372b5924a86ffe31ef",

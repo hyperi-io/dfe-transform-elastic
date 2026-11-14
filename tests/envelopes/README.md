@@ -1,9 +1,9 @@
 # Envelope fixtures
 
 One file per inbound shape the service must recognise. Each is the wrapper a
-producer actually writes, taken from that producer's own tests or from the
-compat corpus -- never invented, because a detector asserted against a guessed
-shape proves nothing.
+producer writes, taken from that producer's own tests or built from the keys
+the producer documents, because a detector asserted against a guessed shape
+proves nothing.
 
 Every file is the same object:
 
@@ -20,10 +20,9 @@ shape look like a bug, and one recording only the detector's answer would hide
 which shapes we are blind to.
 
 `tests/envelope_detection.rs` walks this directory and asserts `detect`, so
-adding a shape is adding a file. These are committed, unlike `testdata/`, which
-holds the fetched Elastic corpus.
+adding a shape is adding a file.
 
-The `beats` shapes are read off Elastic's own test documents, so they are Elastic License 2.0 and kept outside this repository, under `tests/envelopes/beats/` in the Elastic test data's `fixtures/elastic/` directory. They join the set where `DFE_ELASTIC_FIXTURES` names that directory, and `the_beats_shapes_load_from_the_elastic_data` fails a run that asked for them and found none.
+The `beats` shapes are built from the keys a Beats shipper or Elastic Agent writes around a vendor line: `agent`, `data_stream`, `input` and `message`. `the_beats_shapes_load` fails a run that finds fewer than five.
 
 ## The families
 

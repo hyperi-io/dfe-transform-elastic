@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Scripts the `jamf_compliance_reporter` package ships, transcribed by hand.
+//! The `jamf_compliance_reporter` package's scripts, as the runtime runs them.
 
 use serde_json::{Map, Value};
 
@@ -12,7 +12,7 @@ use dfe_core::event::Event;
 /// The socket address families both `aue_bind`/`aue_connect` and `aue_accept`
 /// map, in the vendor's own spelling.
 ///
-/// The two duplicate keys are the vendor's, not a transcription slip: `1` maps
+/// The two duplicate keys are the vendor's, not a slip here: `1` maps
 /// to `AF_LOCAL` and the separate key `AF_LOCAL` maps on to `AF_UNIX`. So are
 /// `AF_ImapPLINK` and `AF_ECmapA`, which a find-and-replace in the integration
 /// mangled and Elasticsearch emits unchanged.
@@ -149,7 +149,7 @@ fn exec_env_host_os_type(event: &mut Event, params: &Value) {
     event.remove("json.exec_env.env.ARCH");
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "f6892470e60c11b72f56cc6f5a5fe237eec6f7d46c498ab7ad95cc3144bc11e1",

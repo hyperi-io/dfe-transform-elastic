@@ -45,7 +45,7 @@ fn rewrite_annotations(event: &mut Event, _params: &Value) {
     event.update("kubernetes.audit.annotations", Value::Object(updated));
 }
 
-/// The transcription this module registers.
+/// The script equivalent this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "15f2a7dc09b2428edf55df7593a862574cee51690d577d9c8164a1fdc5766ef1",
     source: "kubernetes",

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `doppler`'s metadata scripts, transcribed.
+//! `doppler`'s metadata scripts, as the runtime runs them.
 //!
 //! Doppler puts the interesting part of an event in a free-form `metadata`
 //! object it then removes, so both scripts lift what they need out of it
@@ -152,7 +152,7 @@ fn promote_added_members(event: &mut Event, _params: &Value) {
     }
 }
 
-/// Every `doppler` script transcribed here.
+/// Every `doppler` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "3393144025c63c528ca2173e798933d25b1843b90b4c14b7d76fd778d8cc8a98",

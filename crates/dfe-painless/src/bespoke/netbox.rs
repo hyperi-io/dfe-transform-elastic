@@ -24,7 +24,7 @@ fn coordinates(event: &mut Event, _params: &Value) {
     let _ = event.set("netbox.device.coordinates", Value::Array(pair));
 }
 
-/// The transcription this module registers.
+/// The script equivalent this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "a351927eeb0597b4007f5e4eb50667c6572dfc68a86700af5d06010c4561c0be",
     source: "netbox",

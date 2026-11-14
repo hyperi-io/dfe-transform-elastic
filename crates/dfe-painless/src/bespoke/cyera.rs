@@ -71,7 +71,7 @@ fn fallback(action: &str) -> Option<Value> {
     None
 }
 
-/// The transcription this module registers.
+/// The script equivalent this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "120e71425894e85aaef2bb7bec37950a10924faf506202507a0bb7bed8ee52c6",
     source: "cyera",

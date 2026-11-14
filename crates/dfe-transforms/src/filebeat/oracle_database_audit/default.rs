@@ -183,7 +183,7 @@ impl Transform for Default {
                 event.rename("db_user", "oracle.database_audit.database_user")?;
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             rewrite_keys(
                 event,
                 &RewriteKeys::new(
@@ -193,7 +193,7 @@ impl Transform for Default {
                 ),
             );
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             rename_map_keys(
                 event,
                 &RenameMapKeys::new("oracle.database_audit".into(), ' ', '_'),
@@ -242,7 +242,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("oracle.database_audit") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

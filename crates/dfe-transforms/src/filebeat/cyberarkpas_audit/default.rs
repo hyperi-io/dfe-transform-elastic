@@ -118,8 +118,7 @@ impl Transform for Default {
                         .to_string(),
                     });
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -385,8 +384,7 @@ impl Transform for Default {
                 if !painless_is_empty_value(&v) {
                     event.set("@timestamp", v)?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -501,16 +499,14 @@ impl Transform for Default {
                 if event.has_value("_tmp.kv") {
                     event.rename("_tmp.kv", "cyberarkpas.audit.ExtraDetails")?;
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
                         r#"String to_snake_case(String s) {\n  /* faster code path for strings that won't need an underscore */\n  if (s.chars().skip(1).noneMatch(Character::isUpperCase)) {\n    return s.toLowerCase();\n  }\n  int run = 0;\n  boolean first = true;\n  StringBuilder result = new StringBuilder();\n  for (char c : s.toCharArray()) {\n    char o = Character.toLowerCase(c);\n    if (c != o) {\n      if (run == 0 && !first) {\n        result.append('_');\n      }\n      run ++;\n    } else {\n      if (run > 1) {\n        char prev = result.charAt(result.length()-1);\n        result.setCharAt(result.length()-1, (char)'_');\n        result.append(prev);\n      }\n      run = 0;\n      first = false;\n    }\n    result.append(o);\n  }\n  return result.toString();\n} def keys_to_snake_case_recursive(Map object) {\n  return object.entrySet().stream().collect(\n    Collectors.toMap(\n      e -> to_snake_case(e.getKey()),\n      e -> e.getValue() instanceof Map ? keys_to_snake_case_recursive(e.getValue()) : e.getValue()\n    )\n  );\n} ctx.cyberarkpas.audit = keys_to_snake_case_recursive(ctx.cyberarkpas.audit);\n"#
                     ),
                 )?;
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -593,8 +589,7 @@ impl Transform for Default {
                         event.rename("_tmp.hostname", "observer.hostname")?;
                     }
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -626,8 +621,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("_tmp.duration_hms") };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -895,8 +889,7 @@ impl Transform for Default {
                         event.set("process.pid", converted)?;
                     }
                 }
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

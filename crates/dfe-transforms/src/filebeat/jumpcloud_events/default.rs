@@ -32,7 +32,7 @@ impl Transform for Default {
 
             parse_json_field(event, "event.original", "json")?;
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

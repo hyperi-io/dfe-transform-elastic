@@ -188,8 +188,7 @@ impl Transform for Default {
                 event.set("event.reference", v)?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

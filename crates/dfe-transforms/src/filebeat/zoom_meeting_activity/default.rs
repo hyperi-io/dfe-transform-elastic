@@ -152,7 +152,7 @@ impl Transform for Default {
 
             event.remove("zoom.meeting_activity.activity_time");
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

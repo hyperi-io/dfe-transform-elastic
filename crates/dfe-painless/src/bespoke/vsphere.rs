@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! The two host utilisation ratios `vsphere` computes, transcribed.
+//! The two host utilisation ratios `vsphere` computes, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -52,7 +52,7 @@ fn ratio(event: &mut Event, used: &str, total: &str, target: &str) {
     let _ = event.set(target, rounded);
 }
 
-/// Every `vsphere` script transcribed here.
+/// Every `vsphere` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "d67a7eb6c4e28b369f83d828f296e77959500b0a0a4e201d7c6dd058bd12dce5",

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `microsoft_sqlserver`'s audit scripts, transcribed.
+//! `microsoft_sqlserver`'s audit scripts, as the runtime runs them.
 //!
 //! A SQL Server audit record names its action and its object class by
 //! two-letter code -- `SL` for a select, `U` for a table -- so both are looked
@@ -81,7 +81,7 @@ fn duration_to_nanos(event: &mut Event, _params: &Value) {
     let _ = event.set("event.duration", milliseconds * 1_000_000);
 }
 
-/// Every `microsoft_sqlserver` script transcribed here.
+/// Every `microsoft_sqlserver` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "686fe34d7a1700217abca6ee554bcf88d83fd48f3939561464e2db7afe76c5c1",

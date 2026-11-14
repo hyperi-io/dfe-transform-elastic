@@ -32,7 +32,7 @@ impl Transform for Default {
                     }
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
 
             if let Some(input) = event.get_string("_temp_.full_message") {
@@ -262,8 +262,7 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") != Some("") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -8757,8 +8756,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp_.orig_security") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -9001,8 +8999,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -9085,14 +9082,13 @@ impl Transform for Default {
                     && !event.has_value("network.bytes")
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 sum_directions(event, &["bytes"]);
             }
 
             let _cond = { event.has_value("_temp_.duration_hms") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -9390,8 +9386,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("network.transport") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -10160,8 +10155,7 @@ impl Transform for Default {
                         || !event.has_value("_temp_.internal_zones"))
             };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -10396,8 +10390,7 @@ impl Transform for Default {
                 event.rename("cisco.ftd.list_id", "cisco.ftd.rule_name")?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -10787,7 +10780,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -20,7 +20,7 @@ use dfe_core::date_formats::{java_to_chrono, parse_date};
 /// The shipped Kafka batch, so the per-event number is measured where it runs.
 const BATCH: usize = 20_000;
 
-/// The commonest pattern in the vendored pipelines: one format, no optional
+/// The commonest pattern across the transforms' pipelines: one format, no optional
 /// section, and a year in the text.
 const ISO: [&str; 1] = ["yyyy-MM-dd'T'HH:mm:ss.SSSXXX"];
 

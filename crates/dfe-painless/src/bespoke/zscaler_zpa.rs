@@ -173,7 +173,7 @@ fn epoch_seconds(values: &Value, key: &str) -> Option<i64> {
     }
 }
 
-/// Every `zscaler_zpa` script transcribed here.
+/// Every `zscaler_zpa` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "0a324fa4ada08d867c433aa7a9e578ace10c1cbc0c36a4c684f57ede9fc5b572",

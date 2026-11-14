@@ -232,8 +232,7 @@ impl Transform for Default {
                 event.rename("swimlane.audit_log.UserId", "user.id")?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(

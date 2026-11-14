@@ -29,8 +29,7 @@ impl Transform for User {
                 event.rename("azure_ad", "entityanalytics_entra_id.user")?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -422,8 +421,7 @@ impl Transform for User {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

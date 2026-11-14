@@ -18,8 +18,7 @@ impl Transform for Threat {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             let _cond = { event.get_str("panw.panos.sub_type") == Some("url") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -992,8 +991,7 @@ impl Transform for Threat {
 
             let _cond = { event.has_value("url.original") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1027,8 +1025,7 @@ impl Transform for Threat {
 
             let _cond = { event.get("file.path").is_some_and(|v| v.is_string()) };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

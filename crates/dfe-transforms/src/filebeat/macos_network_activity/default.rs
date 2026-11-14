@@ -163,8 +163,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.messageType") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -457,7 +456,7 @@ impl Transform for Default {
                 )?;
             }
             event.remove("json");
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -520,7 +519,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.bytes") && event.has_value("destination.bytes") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 event.set("network", json!({}))?;
                 sum_directions(event, &["bytes"]);
             }
@@ -528,7 +527,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("source.packets") && event.has_value("destination.packets") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 sum_directions(event, &["packets"]);
             }
 

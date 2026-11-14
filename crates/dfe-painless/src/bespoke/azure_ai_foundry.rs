@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `azure_ai_foundry`'s gateway-log scripts, transcribed.
+//! `azure_ai_foundry`'s gateway-log scripts, as the runtime runs them.
 //!
 //! The gateway records a model's content-filter verdict as a map of per-category
 //! flags, and the pipeline flattens the categories that actually fired into one
@@ -161,7 +161,7 @@ fn category(name: &str, severity: Option<Value>) -> Value {
     Value::Object(entry)
 }
 
-/// Every `azure_ai_foundry` script transcribed here.
+/// Every `azure_ai_foundry` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "4bff6526a5362d6d92ab11d55b0eabd262c23cb140cc540c8690f042695968a6",

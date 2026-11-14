@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `tenable_io`'s plugin-output scripts, transcribed.
+//! `tenable_io`'s plugin-output scripts, as the runtime runs them.
 //!
 //! A vulnerability's evidence arrives as the scanner plugin's own printed
 //! text, so the package list, the versions and the fix are parsed back out of
@@ -299,7 +299,7 @@ fn is_ipv6ish(text: &str) -> bool {
         .all(|byte| byte.is_ascii_hexdigit() || matches!(byte, b':' | b'.'))
 }
 
-/// Every `tenable_io` script transcribed here.
+/// Every `tenable_io` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "ecfa216d46bf7e0315890933156a61758f5f2fff10d34adaf0c7034c9cf8867b",

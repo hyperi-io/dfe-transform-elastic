@@ -30,7 +30,7 @@ enrich, and route the data.
 | Elastic Component | dfe-transform-elastic Equivalent | Status |
 |-------------------|----------------------------------|--------|
 | **Ingest processors** (27 used) | Rust processor implementations, one per Elastic processor type | Done |
-| **Painless scripts** | A hand-transcribed runner from `crates/dfe-painless/src/bespoke/` where one is registered for that script, otherwise pattern-matched against `params.rs` and the ladder in `common.rs`; unrecognised scripts are skipped | see [Painless coverage](parsers.md#painless-coverage) -- the figure is a corpus-run output, not a constant, so re-derive it rather than quoting one from here |
+| **Painless scripts** | A hand-written runner from `crates/dfe-painless/src/bespoke/` where one is registered for that script, otherwise pattern-matched against `params.rs` and the ladder in `common.rs`; unrecognised scripts are skipped | see [Painless coverage](parsers.md#painless-coverage) -- the figure is a corpus-run output, not a constant, so re-derive it rather than quoting one from here |
 | **Foreach processor** | Per-event loop inside the transform function | Okta, O365 |
 | **Pipeline chaining** | A nested pipeline is INLINED into the calling module between `// Begin nested pipeline` / `// End nested pipeline` markers, so there is no call and no dispatch on the hot path | Done. `rg -c "Begin nested pipeline" crates/dfe-transforms/src/` counts today's call sites |
 | **GeoIP enrichment** | Global MMDB enricher, auto-detected at startup, behind a bounded cache | Done (DB-IP Lite) |

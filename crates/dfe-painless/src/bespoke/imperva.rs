@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `imperva`'s custom-string gathering, transcribed.
+//! `imperva`'s custom-string gathering, as the runtime runs them.
 //!
 //! CEF defines six custom string slots, and the appliance sends twenty-one. The
 //! first six arrive under their full `deviceCustomStringN` names and the
@@ -62,7 +62,7 @@ fn gather_custom_strings(event: &mut Event, _params: &Value) {
     }
 }
 
-/// Every `imperva` script transcribed here.
+/// Every `imperva` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "826bfc3c557b5ad787f00d4653af3c58c1eb15fb406c864c7c14a40c08015c12",
     source: "imperva",

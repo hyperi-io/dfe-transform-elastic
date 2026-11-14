@@ -370,8 +370,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("json.app_metric_info.cpu_percentage") };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -466,8 +465,7 @@ impl Transform for Default {
                         && event.get_i64("json.header.time_seconds_epoch") != Some(0)
                 };
                 if _cond {
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1084,8 +1082,7 @@ impl Transform for Default {
                     })();
                     let _cond = { event.has_value("json.inet_family") };
                     if _cond {
-                        // Painless script
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -1451,8 +1448,7 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("json.inet_family") };
                     if _cond {
-                        // Painless script
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -1799,7 +1795,7 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
+                        // The pipeline's script, emitted as the runtime's equivalent
                         octal_string(
                             event,
                             &OctalString::new(
@@ -2098,7 +2094,7 @@ impl Transform for Default {
                     // End nested pipeline: "pipeline_exec_chain_child_object"
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
+                        // The pipeline's script, emitted as the runtime's equivalent
                         octal_string(
                             event,
                             &OctalString::new(
@@ -2411,8 +2407,7 @@ impl Transform for Default {
                             && event.get_str("json.exec_env.env.ARCH") != Some("")
                     };
                     if _cond {
-                        // Painless script
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -2456,8 +2451,7 @@ impl Transform for Default {
                             "jamf_compliance_reporter.log.exec_env.env.compiled",
                         )?;
                     }
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2466,7 +2460,7 @@ impl Transform for Default {
                     )?;
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
+                        // The pipeline's script, emitted as the runtime's equivalent
                         octal_string(
                             event,
                             &OctalString::new(
@@ -3500,7 +3494,7 @@ impl Transform for Default {
                     })();
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
+                        // The pipeline's script, emitted as the runtime's equivalent
                         octal_string(
                             event,
                             &OctalString::new(
@@ -3579,8 +3573,7 @@ impl Transform for Default {
                             "jamf_compliance_reporter.log.exec_chain_parent.uuid",
                         )?;
                     }
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -4534,7 +4527,7 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script, resolved to its runners at generation time
+                        // The pipeline's script, emitted as the runtime's equivalent
                         octal_string(
                             event,
                             &OctalString::new(
@@ -9597,8 +9590,7 @@ impl Transform for Default {
                     if event.has_value("json.texts") {
                         event.rename("json.texts", "jamf_compliance_reporter.log.texts")?;
                     }
-                    // Painless script
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -10855,7 +10847,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `ti_opencti`'s GraphQL edges, observable grouping and ECS fold, transcribed.
+//! `ti_opencti`'s GraphQL edges, observable grouping and ECS fold, as the runtime runs them.
 //!
 //! `OpenCTI` answers over GraphQL, so every collection arrives as
 //! `{edges: [{node: ...}]}` and most of this pipeline is unwrapping that:
@@ -458,7 +458,7 @@ fn wrap_indicator_values(event: &mut Event, _params: &Value) {
     }
 }
 
-/// Every `ti_opencti` script transcribed here.
+/// Every `ti_opencti` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "b8554175dc85d017c05b4d9aeab91366d6acdc3f8af64eb21a6aa6bb3ae8254b",

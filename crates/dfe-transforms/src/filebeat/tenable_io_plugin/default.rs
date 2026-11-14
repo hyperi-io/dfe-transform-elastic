@@ -1724,7 +1724,7 @@ impl Transform for Default {
                 event.remove("tenable_io.plugin.attributes.cvss3.temporal.score");
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

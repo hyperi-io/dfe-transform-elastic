@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `ceph`'s client operation total, transcribed.
+//! `ceph`'s client operation total, as the runtime runs them.
 //!
 //! The OSD pool stats endpoint reports reads and writes per second separately,
 //! and the package wants the one number a dashboard plots. The script adds the
@@ -47,7 +47,7 @@ fn rate(event: &Event, path: &str) -> bool {
     }
 }
 
-/// Every `ceph` script transcribed here.
+/// Every `ceph` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "edfa0c5307cf75c5a7ed5d4cfa7724dd19b34cdb70322b44b6daeaddf1c4ad0c",
     source: "ceph",

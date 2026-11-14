@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `ti_ticura`'s enrichment merge, transcribed.
+//! `ti_ticura`'s enrichment merge, as the runtime runs them.
 //!
 //! An indicator carries country, industry and actor lists twice -- the feed's
 //! own and whatever the enrichment added -- and the pipeline folds each pair
@@ -86,7 +86,7 @@ fn natural_order(one: &Value, two: &Value) -> Ordering {
     }
 }
 
-/// Every `ti_ticura` script transcribed here.
+/// Every `ti_ticura` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "c7d0c4616684f1d92d3d47b6860e27fe6e23808f4030cb808d9c39c65356ed49",
     source: "ti_ticura",

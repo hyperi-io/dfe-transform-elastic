@@ -33,7 +33,7 @@ impl Transform for Default {
 
             parse_json_field(event, "event.original", "_tmp_")?;
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             member_from_variant_key(
                 event,
                 &MemberFromVariantKey::new(
@@ -257,7 +257,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

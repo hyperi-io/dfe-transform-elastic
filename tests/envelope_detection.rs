@@ -61,10 +61,6 @@ impl Fixture {
 }
 
 /// Every fixture, read from disk once for the whole binary.
-///
-/// The Beats shapes are read off Elastic's own test documents, so they sit with
-/// the Elastic data kept outside this repository and join the set only where
-/// `DFE_ELASTIC_FIXTURES` names it.
 fn fixtures() -> &'static [Fixture] {
     static FIXTURES: LazyLock<Vec<Fixture>> = LazyLock::new(load_fixtures);
     &FIXTURES
@@ -73,21 +69,10 @@ fn fixtures() -> &'static [Fixture] {
 fn load_fixtures() -> Vec<Fixture> {
     let mut found = load_from(&Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/envelopes"));
     assert!(
-        found.len() >= 14,
+        found.len() >= 19,
         "only {} envelope fixtures found -- the directory did not load",
         found.len()
     );
-
-    if let Some(root) = dfe_runtime::testutil::elastic_root() {
-        let elastic = load_from(&root.join("tests/envelopes"));
-        assert!(
-            elastic.len() >= 5,
-            "only {} envelope fixtures under {} -- the Elastic data did not load",
-            elastic.len(),
-            root.display()
-        );
-        found.extend(elastic);
-    }
 
     found.sort_by(|a, b| a.path.cmp(&b.path));
     found
@@ -139,12 +124,10 @@ fn unwrapped(name: &str) -> Value {
     event.as_value().clone()
 }
 
-/// The Beats shapes come from the Elastic data, and a run that asked for it
-/// must have every one of them in the set the tests below walk.
+/// Every Beats shape is in the set the tests below walk.
 #[test]
-#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
-fn the_beats_shapes_load_from_the_elastic_data() {
-    let root = dfe_runtime::testutil::require_elastic_root().join("tests/envelopes");
+fn the_beats_shapes_load() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/envelopes");
     let beats: Vec<String> = fixtures()
         .iter()
         .filter(|f| f.path.starts_with(&root) && f.family("shape") == Envelope::Beats)

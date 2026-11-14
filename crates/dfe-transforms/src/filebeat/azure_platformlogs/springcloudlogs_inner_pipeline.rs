@@ -18,8 +18,7 @@ impl Transform for SpringcloudlogsInnerPipeline {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

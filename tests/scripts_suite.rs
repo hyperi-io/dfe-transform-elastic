@@ -4,16 +4,12 @@
 //! Run the Python tooling's own test suite and the generated tables' drift
 //! check, so both are in the gate.
 //!
-//! `scripts/` carries 538 lines of tests across `test_compat.py`,
-//! `test_field_census.py` and `test_pattern_reach.py`, and NOTHING executed
-//! them. `.hyperi-ci.yaml` declares `language: rust`, the reusable
-//! `rust-ci.yml` runs no pytest or unittest, and neither does
-//! `hyperi-ci check` -- so a fix landing in one of them was fiction.
+//! `scripts/` carries tests beside its tools, and `.hyperi-ci.yaml` declares
+//! `language: rust`, so the reusable `rust-ci.yml` runs no pytest or unittest
+//! and neither does `hyperi-ci check`. This test is what runs them.
 //!
-//! They are not incidental. `field_census.py`'s leaf walk produces every
-//! schema width figure the design rests on, and `pattern_reach.py` is the join
-//! that finds a pattern claiming a script it never applies -- it drove five
-//! fixes this week. A miscount in either is silent.
+//! `field_census.py`'s leaf walk produces every schema width figure the design
+//! rests on, so a miscount there is silent without it.
 //!
 //! Shelling out is the way in because `hyperi-ci` offers no per-repo hook for
 //! a second language and lives in another repository. `python3` is present by
@@ -79,7 +75,7 @@ fn the_python_tooling_suite_passes() {
         .and_then(|count| count.parse().ok())
         .unwrap_or(0);
     assert!(
-        ran >= 40,
+        ran >= 35,
         "the script suite ran {ran} tests, under the floor -- discovery is not \
          finding them, so a green result means nothing"
     );

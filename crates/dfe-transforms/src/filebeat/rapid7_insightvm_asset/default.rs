@@ -437,7 +437,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.name") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
+                // The pipeline's script, emitted as the runtime's equivalent
                 split_at_delimiter(
                     event,
                     &SplitAtDelimiter::new(
@@ -2378,7 +2378,7 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -24,7 +24,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -207,7 +207,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.forcepoint_web?.url != null && ctx.forcepoint_web?.url =~ /^(?![a-zA-Z0-9]+:\/\/)/ && ctx.http?.request?.method == "CONNECT"
+            // SKIPPED: the pipeline's condition has no equivalent here
             #[allow(unreachable_code, unused_variables)]
             if false {
                 if event.has_value("forcepoint_web.url") {
@@ -221,7 +221,7 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.forcepoint_web?.url != null && ctx.forcepoint_web?.url =~ /^(?![a-zA-Z0-9]+:\/\/)/
+            // SKIPPED: the pipeline's condition has no equivalent here
             #[allow(unreachable_code, unused_variables)]
             if false {
                 if event.has_value("forcepoint_web.url") {
@@ -570,7 +570,7 @@ impl Transform for Default {
             event.remove("_tmp");
             event.remove("_config");
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

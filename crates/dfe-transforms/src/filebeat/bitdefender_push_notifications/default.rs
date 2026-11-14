@@ -1247,8 +1247,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("organization.id") && event.has_value("_tmp.tenants") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1288,8 +1287,7 @@ impl Transform for Default {
                 event.set("event.module", v)?;
             }
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1300,8 +1298,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1312,8 +1309,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1324,8 +1320,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1679,7 +1674,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.bitdefender?.event?.url != null && ctx.bitdefender?.event?.url =~ /^(?![a-zA-Z0-9]+:\/\/)/
+            // SKIPPED: the pipeline's condition has no equivalent here
             #[allow(unreachable_code, unused_variables)]
             if false {
                 if event.has_value("bitdefender.event.url") {
@@ -3076,7 +3071,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             fill_empty_elements(
                 event,
                 &ListFill::new("bitdefender.event.filePath".into(), "-".into()),

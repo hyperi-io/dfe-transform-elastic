@@ -13,7 +13,7 @@ Everything deeper than the [README](../README.md). Start at
 | [enrichment.md](enrichment.md) | GeoIP, user agent and community ID -- the three runtime enrichers and the cache in front of the MMDB |
 | [performance.md](performance.md) | SIMD, zero-copy, buffer reuse, the release profile, the native parser targets, and the key dependencies |
 | [testing.md](testing.md) | The three test tracks, the match modes, and the non-English sweep |
-| [compat.md](compat.md) | How to run `scripts/compat.py`: prerequisites, commands, working a source, older stacks, and the licence position on the corpus |
+| [compat.md](compat.md) | The confirmed documents from the real Elastic engine: what they are, what each fixture's `-expected.json` holds, and the known limits |
 | [compat-policy.md](compat-policy.md) | What counts as a difference: the ratchet, the `compare-policy.yaml` sections, and the divergences kept on purpose |
 | [schema-generation.md](schema-generation.md) | Publishing the Elastic-side field knowledge to `dfe-schemas` as ClickHouse schemas |
 | [shared-crates.md](shared-crates.md) | What dfe-transform-splack took a copy of, and what it would take to extract the common half |

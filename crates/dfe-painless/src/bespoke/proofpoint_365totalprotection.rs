@@ -90,7 +90,7 @@ fn extension_of(filename: &str) -> Option<String> {
     Some(chars[at + 1..].iter().collect::<String>().to_lowercase())
 }
 
-/// Every `proofpoint_365totalprotection` script transcribed here.
+/// Every `proofpoint_365totalprotection` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "942ece0329387367f5edf2a99fd314510afb6effa5464434f27d10cee780aa4c",
     source: "proofpoint_365totalprotection",

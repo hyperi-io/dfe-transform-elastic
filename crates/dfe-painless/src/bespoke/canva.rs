@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `canva`'s audit-log normalising, transcribed.
+//! `canva`'s audit-log normalising, as the runtime runs them.
 //!
 //! Two jobs, both reading the action the audit event names. One turns the
 //! vendor's upper-case action name into an ECS `event.type`; the other walks
@@ -117,7 +117,7 @@ fn convert_flags(map: &Map<String, Value>) -> Map<String, Value> {
     converted
 }
 
-/// Every `canva` script transcribed here.
+/// Every `canva` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "9954eadc3ec2efedefd9a363d83da39acbc246f6ddeb64bc4e943fa5a86242bd",

@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `system`'s Windows security-descriptor enrichment, transcribed.
+//! `system`'s Windows security-descriptor enrichment, as the runtime runs them.
 //!
 //! Five Windows security events carry a descriptor as an SDDL string and a
 //! group membership as a space-separated SID run, and neither is readable as
 //! shipped. The script translates each SID through the pipeline's own
 //! `AccountSIDDescription` table, splits the SDDL into its ACEs, and writes a
 //! rendered line per ACE beside the raw value. `windows_forwarded` ships the
-//! same script, so the transcription serves both.
+//! same script, so the one runner serves both.
 //!
 //! Two of its readings look like defects and are the vendor's own. The DACL
 //! pattern's inner `.*` is greedy, so the run it hands the ACE scanner reaches
@@ -265,7 +265,7 @@ fn java_decode(text: &str) -> Option<i64> {
     i64::from_str_radix(digits, radix).ok().map(|n| sign * n)
 }
 
-/// Every `system` script transcribed here.
+/// Every `system` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "5ab51c82dadc0002629689347d7ebcfc15f69c7208ff325fc4939848bf7930ea",
     source: "system",

@@ -199,7 +199,7 @@ fn present(value: Option<&Value>) -> Option<Value> {
     }
 }
 
-/// Every `entityanalytics_okta` script transcribed here.
+/// Every `entityanalytics_okta` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "54265bdd0b03b7d3039a2a8dd1ea510e09a8c730379998cab11425f4cf212d68",

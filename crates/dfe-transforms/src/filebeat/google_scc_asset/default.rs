@@ -755,8 +755,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.asset.accessLevel.basic.conditions") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -778,8 +777,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.asset.iamPolicy.auditConfigs") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1282,8 +1280,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.asset.orgPolicy") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1419,8 +1416,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.asset.relatedAssets.assets") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1680,8 +1676,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.asset.servicePerimeter.status.egressPolicies") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1694,8 +1689,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.asset.servicePerimeter.spec.egressPolicies") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1708,8 +1702,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.asset.servicePerimeter.spec.ingressPolicies") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1722,8 +1715,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.asset.servicePerimeter.status.ingressPolicies") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -2395,8 +2387,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.priorAsset.accessLevel.basic.conditions") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -2427,8 +2418,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.priorAsset.iamPolicy.auditConfigs") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -2934,8 +2924,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.priorAsset.orgPolicy") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -3073,8 +3062,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.priorAsset.relatedAssets.assets") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -3329,8 +3317,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("json.priorAsset.servicePerimeter.status.egressPolicies") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -3343,8 +3330,7 @@ impl Transform for Default {
             }
             let _cond = { event.has_value("json.priorAsset.servicePerimeter.spec.egressPolicies") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -3358,8 +3344,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("json.priorAsset.servicePerimeter.spec.ingressPolicies") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -3373,8 +3358,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("json.priorAsset.servicePerimeter.status.ingressPolicies") };
             if _cond {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -3581,7 +3565,7 @@ impl Transform for Default {
                 event.remove("google_scc.asset.service_perimeter.description");
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -38,7 +38,7 @@ impl Transform for Default {
 
             event.append("event.category", json!("host"))?;
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -431,7 +431,7 @@ impl Transform for Default {
                 event.remove("event.original");
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -2,7 +2,7 @@
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! `gitlab`'s GraphQL variable blocks and its sidekiq job duration,
-//! transcribed.
+//! as the runtime runs them.
 //!
 //! A GraphQL query's variables are user-supplied and arbitrarily keyed, so the
 //! vendor pipeline stores the block as JSON TEXT rather than letting an unknown
@@ -96,7 +96,7 @@ fn duration_seconds_to_nanoseconds(event: &mut Event, _params: &Value) {
     let _ = event.update("event.duration", (seconds * 1e9) as i64);
 }
 
-/// Every gitlab script transcribed here.
+/// Every gitlab script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "79066a30f5f42ddac23bfb370b9f7ae7537d730902c210a2e6945305abbed995",

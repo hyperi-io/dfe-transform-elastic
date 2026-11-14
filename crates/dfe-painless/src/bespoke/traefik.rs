@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `traefik`'s header gathering, transcribed.
+//! `traefik`'s header gathering, as the runtime runs them.
 //!
 //! The JSON access log flattens every header into one key per header, prefixed
 //! by the side it came from -- `request_Accept`, `downstream_Content-Type`,
@@ -55,7 +55,7 @@ fn header_name(name: &str, prefix: &str) -> String {
     name.replace(prefix, "").to_lowercase()
 }
 
-/// Every `traefik` script transcribed here.
+/// Every `traefik` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "597ef01e6f2e50f4aa63b8a4df84ce4446f6d71a8ac9883c07eeaa3dbf401ea8",
     source: "traefik",

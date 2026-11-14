@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `couchbase`'s sample readings, transcribed.
+//! `couchbase`'s sample readings, as the runtime runs them.
 //!
 //! The stats endpoint answers with a minute of history per counter -- sixty
 //! numbers a list -- and the package wants the latest reading. Each data
@@ -79,7 +79,7 @@ fn last_reading(samples: &Map<String, Value>, name: &str) -> Option<Value> {
     }
 }
 
-/// Every `couchbase` script transcribed here.
+/// Every `couchbase` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "48c871359ee6dd918dc81a26248a6192d75ee81c54a23ba2a537e4249697e84f",

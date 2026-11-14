@@ -516,7 +516,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
+                    // The pipeline's script, emitted as the runtime's equivalent
                     syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
                     Ok(())
                 })() {
@@ -2405,7 +2405,7 @@ impl Transform for Default {
                 event.remove("event.original");
             }
 
-            // Painless script, resolved to its runners at generation time
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

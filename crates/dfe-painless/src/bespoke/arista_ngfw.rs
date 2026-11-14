@@ -53,7 +53,7 @@ fn copy_configured(event: &mut Event, from: &str, to: &str) {
     let _ = event.set(to, configured);
 }
 
-/// Every `arista_ngfw` script transcribed here.
+/// Every `arista_ngfw` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "a867495fff14aa6763ddbff4dee88aeb7abd4c858a9cde3b98a2fc307e3cebed",
     source: "arista_ngfw",
