@@ -174,7 +174,7 @@ Measured on this repo, per release run:
 The PGO figure is measured rather than projected: instrument build, then 300
 seconds of load against each of two sources, then the optimise build.
 
-The cause is this repo's shape rather than a misconfiguration. `dfe-transforms`
+The cause is this repo's size rather than a misconfiguration. `dfe-transforms`
 carries one module per data stream, over a thousand of them across about 2,200
 source files, so it compiles as a single `rustc` holding about 13 GiB whatever
 `-j` says, and the binary then links under fat LTO in one thread. Neither step

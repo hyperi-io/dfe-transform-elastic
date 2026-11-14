@@ -111,11 +111,11 @@ transport.
 |---|---|
 | `main.rs` | Entry point, hands off to `cli.rs` |
 | `cli.rs` | Subcommands: `sources` (list registered transforms), `emit-dockerfile`, `emit-compose`, `emit-config`, `emit-catalogue`, plus scalo's `run`, `version`, `config-check`, `config-schema`, `generate-artefacts` and `metrics-manifest` |
-| `config.rs` | The config shape: `source.*`, `sink.*`, `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles. Also `Transport`, the `bus`/`direct` selector on each side |
+| `config.rs` | The config fields: `source.*`, `sink.*`, `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles. Also `Transport`, the `bus`/`direct` selector on each side |
 | `config/loader.rs` | Reading it, from the scalo cascade or an explicit `--config` file, and `SCALO_SECTIONS` -- the sections scalo reads for itself, which the unread-key warning skips |
 | `config/validate.rs` | Refusing a configuration that cannot work. The range checks run ahead of the idle gate, so a value someone set out of range still refuses while an unconfigured instance idles |
 | `registry.rs` | Source name to `Transform` lookup, plus each source's `Intake` (which envelopes it accepts), `Framing` and dataset |
-| `envelope.rs` | Detects which of the three producer families wrapped an event and unwraps it into the shape every transform expects |
+| `envelope.rs` | Detects which of the three producer families wrapped an event and unwraps it into the bare event every transform expects |
 | `pipeline.rs` | Batch processing: NDJSON parse, envelope unwrap, transform, serialise, with per-batch outcome counts |
 | `service.rs` | Runs `pipeline.rs` on scalo's `BatchEngine` pipeline between the scalo consumer and producer -- Kafka on the bus, a Push listener and a gRPC client on direct -- and maps what the sink answers onto the delivery semantics below |
 | `deployment.rs` | The single deployment contract: Dockerfile, Helm chart, compose fragment and KEDA scaler are all generated from here. Its tests pin the Dockerfile, `config.example.yaml`, `docs/deployment-contract.json` and the `docs/` config artefacts against a fresh regen -- not every artefact, see the README |
