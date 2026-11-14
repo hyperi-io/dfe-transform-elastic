@@ -39,7 +39,7 @@ complete-filebeat **vocabulary** is. So:
 - **Deployable table** — common header + meta + sub, at data-stream grain.
 
 The grouping needs no new taxonomy. `src/registry.rs` already holds one entry
-per source, shaped
+per source, written as
 `("<beat>.<module>.<pipeline>", transform, intake, "<package>.<data_stream>")`,
 and the fourth element is the grouping key. `dfe-transform-elastic sources`
 lists them, so count them there rather than from a figure written here -- the
@@ -79,7 +79,7 @@ ECS layer cannot be assembled from the integrations clone alone.
 
 `dfe-engine`'s `services/schema/elastic_schema_service.py` walks an **index
 template**'s `mappings.properties`. Our input is `fields.yml`'s
-`name`/`type`/`group`/`fields` shape, which is a different format, so
+`name`/`type`/`group`/`fields` layout, which is a different format, so
 `_walk_mapping` does not transfer.
 
 Two pieces must stay identical across the Python and the Rust port, or the
