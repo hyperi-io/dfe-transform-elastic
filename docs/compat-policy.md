@@ -73,8 +73,8 @@ EVENT granularity -- but on a source already scoring zero matched events, which
 is most of the ones carrying real debt, nothing checks them at all. The run
 prints the current figure; it is not restated here, for the same reason.
 
-Extras are the best single signal that a source is emitting a RAW shape rather
-than the parsed one. axonius carried 2,313 of them on 3,705 fields, all of the
+Extras are the best single signal that a source is emitting its fields RAW rather
+than parsed. axonius carried 2,313 of them on 3,705 fields, all of the
 form `<base>.event.data.<name>` where Elasticsearch had `<base>.<name>` -- one
 unread hoist, and reading it took the source from 11% of events to 94%.
 
