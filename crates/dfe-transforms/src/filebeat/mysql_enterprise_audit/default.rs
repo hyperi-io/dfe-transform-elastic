@@ -30,8 +30,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.message = ctx.message.substring(0, ctx.message.length() - 1);"#
+                    compiled_painless!(
+                        "153db85c0de92a5e291c46e4a27ec154ec73cdde33a0d75e928655969c3f1d78",
+                        r#"{"params":null,"known":[{"DropLastChar":"message"}]}"#
                     ),
                 )?;
             }
@@ -201,8 +202,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.process.args_count = ctx.process.args.length;\nif (ctx.process.args.length > 0) {\n  ctx.process.executable = ctx.process.args[0];\n}\n"#
+                    compiled_painless!(
+                        "f5b39befedd4c90a4916a5cbbc74a54e658ea8f1a5b201a317e844581bdadfd6",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"process.args","target":"process.executable","only_if_unset":false,"only_if_single":false,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }

@@ -4,17 +4,7 @@
 //! ECS lists appended to when a record's own label carries a word.
 //!
 //! `darktrace` classifies a model breach from the components that triggered it,
-//! and the only evidence is the metric's display label:
-//!
-//! ```painless
-//! for (component in ctx.json.triggeredComponents) {
-//!   if (component?.metric?.label?.toLowerCase().contains('connection')) {
-//!     ctx.event?.type?.add('connection');
-//!     if (ctx.event.category == null) { ctx.event.category = new ArrayList(); }
-//!     ctx.event.category.add('network');
-//!   }
-//! }
-//! ```
+//! and the only evidence is the metric's display label.
 //!
 //! Unclaimed it costs `event.type` and `event.category` on the two events whose
 //! components are connection metrics.
@@ -33,7 +23,7 @@ use dfe_core::Event;
 use crate::common::{block_statements, for_each_in, if_block, painless_path};
 
 /// One literal appended to one list.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct TagAppend {
     /// The list appended to, as a ctx path.
     target: String,
@@ -48,7 +38,7 @@ pub struct TagAppend {
 }
 
 /// A list of records, the member word that selects one, and what to append.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct MemberTags {
     /// The list walked, as a ctx path.
     list: String,
@@ -206,7 +196,8 @@ fn member<'a>(record: &'a Value, path: &str) -> Option<&'a Value> {
     Some(held)
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "member_tags_tests.rs"]
 #[allow(
     clippy::unwrap_used,

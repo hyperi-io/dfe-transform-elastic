@@ -27,8 +27,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"for (entry in ctx.envoy.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n    if (k.startsWith('envoy_')) {\n        def parts = k.splitOnToken('_');\n        def newKey = '';\n\n        def matchFound = false;\n        for (specialCase in params.special_cases) {\n            def prefix = 'envoy_' + specialCase;\n            if (k.startsWith(prefix)) {\n                def suffix = k.substring(prefix.length());\n                if (suffix.startsWith('_')) {\n                    suffix = suffix.substring(1);\n                }\n                newKey = specialCase + (suffix.length() > 0 ? '.' + suffix : '');\n                matchFound = true;\n                break;\n            }\n        }\n        if (!matchFound && parts.length >= 2) {\n            def remaining = '';\n            for (int i = 2; i < parts.length; i++) {\n                remaining += parts[i];\n                if (i < parts.length - 1) remaining += '_';\n            }\n            newKey = parts[1] + '.' + remaining;\n        }\n        if (newKey.length() > 0) {\n            ctx.envoy.remove(k);\n            ctx.envoy[newKey] = v;\n        }\n    }\n    if (!(v instanceof String)) {\n        v.keySet().stream().filter(s -> s.startsWith('1m_rate') || s.startsWith('5m_rate') ||s.startsWith('15m_rate') || s.startsWith('p99_9') || s.startsWith('p75') || s.startsWith('p99') || s.startsWith('p95'))\n        .collect(Collectors.toList()).forEach(m -> v.remove(m))\n    }\n}"#
+                compiled_painless!(
+                    "c243992764b2eee35393d14da9ac1dc07b88ff188cb2d21d9d52ee81bacd461a",
+                    r#"{"params":null,"known":[]}"#
                 ),
                 cached_params!(
                     "{\"special_cases\":[\"thread_local_cluster_manager\",\"cluster_manager\",\"tls_inspector\"]}"

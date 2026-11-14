@@ -54,8 +54,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event = ctx.event ?: [:];\nctx.event.original = Json.dump(ctx.o365audit)"#
+                    compiled_painless!(
+                        "a3d0726d34bed0ebb2771c2c574b301ea25a2523f32b64874dcd574d126d7cee",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -73,8 +74,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"for (def field : params.fields) {\n  def value = ctx.o365audit[field];\n  if (value instanceof Number) {\n    ctx.o365audit[field] = ((Number)value).longValue().toString();\n  } else if (value instanceof String && (value.indexOf('e') >= 0 || value.indexOf('E') >= 0)) {\n    ctx.o365audit[field] = new BigDecimal(value).toBigIntegerExact().toString();\n  }\n}"#
+                    compiled_painless!(
+                        "8309192897f1cb0ca96bdc0a1ac7a74a13878d404257d6edba67911a75022bad",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"fields\":[\"RecordType\",\"ActorYammerUserId\",\"TargetYammerUserId\",\"YammerNetworkId\",\"Version\",\"InternalLogonType\",\"LogonType\",\"RunningTime\",\"FileSize\"]}"
@@ -191,8 +193,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx._tmp = [:];\ndef actions = [];\nctx._tmp.action_strings = [];\nif (!(ctx.o365audit.Actions instanceof List)) {\n  ctx.o365audit.Actions = [ctx.o365audit.Actions];\n}\n\n// Actions contains both a human readable `QueryTime` using AM/PM and an ISO8601 format `QueryTime`\n// We remove the AM/PM containing `QueryTime` to avoid duplicate field errors on flattening.\ndef queryTimePattern = /,\"QueryTime\":\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\"|\"QueryTime\":\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\",/;\nfor (def e: ctx.o365audit.Actions) {\n  if (e instanceof Map) {\n    actions.add(e);\n  } else if (e instanceof String) {\n    ctx._tmp.action_strings.add(queryTimePattern.matcher(e).replaceAll(''));\n  }\n}\nif (actions.length == ctx.o365audit.Actions.length) {\n  ctx._tmp.remove(\"action_strings\");\n  return\n}\nctx.o365audit.Actions = actions;"#
+                    compiled_painless!(
+                        "83df451c436faa86f3e81e65d8747283deeb176f3248466d52afe8c84a9bcdd3",
+                        r#"{"params":null,"known":[{"AppendEach":{"source":"o365audit.Actions","target":"o365audit.Actions","map_keys":[],"separator":",","deduped":false}}]}"#
                     ),
                 )?;
             }
@@ -241,8 +244,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// To reach here, ctx._tmp.action_strings must be non-null\n// and for this to be true, script_select_string_actions\n// must have run, requiring that ctx.o365audit.Actions is\n// non-null, so we do not need to check again.\nctx.o365audit.Actions.addAll(ctx._tmp.action_strings);"#
+                    compiled_painless!(
+                        "21f888c15fa6caee916ddb1fb385f2953250b8fed5b64d5faf1b07c47b9d48dc",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"AppendAll":{"path":"o365audit.Actions","source":"_tmp.action_strings"}}}],"whole":true}}]}"#
                     ),
                 )?;
             }
@@ -451,8 +455,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def schemaId = ctx.o365audit.RecordType.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.code = schema;\n}\n"#
+                    compiled_painless!(
+                        "0c680041a96a99b423a9dbc2fc39f06e194799d6fff42b0e686743796194662f",
+                        r#"{"params":{"KeyedRowAssign":{"source":"o365audit.RecordType","target":"event.code"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"1\":\"ExchangeAdmin\",\"2\":\"ExchangeItem\",\"3\":\"ExchangeItemGroup\",\"4\":\"SharePoint\",\"6\":\"SharePointFileOperation\",\"7\":\"OneDrive\",\"8\":\"AzureActiveDirectory\",\"9\":\"AzureActiveDirectoryAccountLogon\",\"10\":\"DataCenterSecurityCmdlet\",\"11\":\"ComplianceDLPSharePoint\",\"12\":\"Sway\",\"13\":\"ComplianceDLPExchange\",\"14\":\"SharePointSharingOperation\",\"15\":\"AzureActiveDirectoryStsLogon\",\"16\":\"SkypeForBusinessPSTNUsage\",\"17\":\"SkypeForBusinessUsersBlocked\",\"18\":\"SecurityComplianceCenterEOPCmdlet\",\"19\":\"ExchangeAggregatedOperation\",\"20\":\"PowerBIAudit\",\"21\":\"CRM\",\"22\":\"Yammer\",\"23\":\"SkypeForBusinessCmdlets\",\"24\":\"Discovery\",\"25\":\"MicrosoftTeams\",\"28\":\"ThreatIntelligence\",\"29\":\"MailSubmission\",\"30\":\"MicrosoftFlow\",\"31\":\"AeD\",\"32\":\"MicrosoftStream\",\"33\":\"ComplianceDLPSharePointClassification\",\"34\":\"ThreatFinder\",\"35\":\"Project\",\"36\":\"SharePointListOperation\",\"37\":\"SharePointCommentOperation\",\"38\":\"DataGovernance\",\"39\":\"Kaizala\",\"40\":\"SecurityComplianceAlerts\",\"41\":\"ThreatIntelligenceUrl\",\"42\":\"SecurityComplianceInsights\",\"43\":\"MIPLabel\",\"44\":\"WorkplaceAnalytics\",\"45\":\"PowerAppsApp\",\"46\":\"PowerAppsPlan\",\"47\":\"ThreatIntelligenceAtpContent\",\"48\":\"LabelContentExplorer\",\"49\":\"TeamsHealthcare\",\"50\":\"ExchangeItemAggregated\",\"51\":\"HygieneEvent\",\"52\":\"DataInsightsRestApiAudit\",\"53\":\"InformationBarrierPolicyApplication\",\"54\":\"SharePointListItemOperation\",\"55\":\"SharePointContentTypeOperation\",\"56\":\"SharePointFieldOperation\",\"57\":\"MicrosoftTeamsAdmin\",\"58\":\"HRSignal\",\"59\":\"MicrosoftTeamsDevice\",\"60\":\"MicrosoftTeamsAnalytics\",\"61\":\"InformationWorkerProtection\",\"62\":\"Campaign\",\"63\":\"DLPEndpoint\",\"64\":\"AirInvestigation\",\"65\":\"Quarantine\",\"66\":\"MicrosoftForms\",\"67\":\"ApplicationAudit\",\"68\":\"ComplianceSupervisionExchange\",\"69\":\"CustomerKeyServiceEncryption\",\"70\":\"OfficeNative\",\"71\":\"MipAutoLabelSharePointItem\",\"72\":\"MipAutoLabelSharePointPolicyLocation\",\"73\":\"MicrosoftTeamsShifts\",\"75\":\"MipAutoLabelExchangeItem\",\"76\":\"CortanaBriefing\",\"78\":\"WDATPAlerts\",\"82\":\"SensitivityLabelPolicyMatch\",\"83\":\"SensitivityLabelAction\",\"84\":\"SensitivityLabeledFileAction\",\"85\":\"AttackSim\",\"86\":\"AirManualInvestigation\",\"87\":\"SecurityComplianceRBAC\",\"88\":\"UserTraining\",\"89\":\"AirAdminActionInvestigation\",\"90\":\"MSTIC\",\"91\":\"PhysicalBadgingSignal\",\"93\":\"AipDiscover\",\"94\":\"AipSensitivityLabelAction\",\"95\":\"AipProtectionAction\",\"96\":\"AipFileDeleted\",\"97\":\"AipHeartBeat\",\"98\":\"MCASAlerts\",\"99\":\"OnPremisesFileShareScannerDlp\",\"100\":\"OnPremisesSharePointScannerDlp\",\"101\":\"ExchangeSearch\",\"102\":\"SharePointSearch\",\"103\":\"PrivacyInsights\",\"105\":\"MyAnalyticsSettings\",\"106\":\"SecurityComplianceUserChange\",\"107\":\"ComplianceDLPExchangeClassification\",\"109\":\"MipExactDataMatch\",\"113\":\"MS365DCustomDetection\",\"147\":\"CoreReportingSettings\",\"148\":\"ComplianceConnector\",\"174\":\"DataShareOperation\",\"181\":\"EduDataLakeDownloadOperation\"}"
@@ -496,8 +501,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.Parameters; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i][\"Value\"] != null) {\n    newparams[oldparams[i][\"Name\"]] = oldparams[i][\"Value\"];\n  }\n} ctx.o365audit.Parameters = newparams;\n"#
+                    compiled_painless!(
+                        "ba72ebdc9b2b595d01ae76e6a6cb0fd34e59a563f7edac1da6c99467102c1ca3",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -538,7 +544,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "58d84a7a6731d833ac1909d91bcddce5c9bea82ee182271a87dd5bcee4ac2008",
+                    r#"{"params":null,"known":["SplitTrimCollect"]}"#,
                     r#"void splitTrimAdd(Set acc, String str) {\n    if (str != null && str != '') {\n        String[] parts = str.splitOnToken(';');\n        for (int i = 0; i < parts.length; i++) {\n            acc.add(parts[i].trim());\n        }\n    }\n}\ndef addressSet = new HashSet(ctx.email?.to?.address ?: []);\nsplitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardAsAttachmentTo); splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardTo); splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.RedirectTo);\nif (!addressSet.isEmpty()) {\n  ctx.email = ctx.email ?: [:];\n  ctx.email.to = ctx.email.to ?: [:];\n  ctx.email.to.address = addressSet.asList();\n}\n"#
                 ),
             )?;
@@ -556,8 +564,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def value = ctx.o365audit.Platform.toString(); def name = params[value]; if (name != null) {\n  ctx.o365audit.Platform = name;\n}\n"#
+                    compiled_painless!(
+                        "89947a9278e2440c1b0b631d0c340156d6efc56f8e544113d66f9e73a2fca6ca",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"0\":\"Unknown\",\"1\":\"Windows\",\"2\":\"MacOS\",\"3\":\"iOS\",\"4\":\"Android\",\"5\":\"Web Browser\"}"
@@ -570,8 +579,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString lcPlatform = ctx.o365audit.Platform.toLowerCase();\nif (lcPlatform.contains('windows')) {\n    ctx.host.os.type = 'windows';\n} else if (lcPlatform.contains('linux')) {\n    ctx.host.os.type = 'linux';\n} else if (lcPlatform.contains('mac')) {\n    ctx.host.os.type = 'macos';\n} else if (lcPlatform.contains('unix')) {\n    ctx.host.os.type = 'unix';\n} else if (lcPlatform.contains('ios')) {\n    ctx.host.os.type = 'ios';\n} else if (lcPlatform.contains('android')) {\n    ctx.host.os.type = 'android';\n}\n"#
+                    compiled_painless!(
+                        "56ea5b28b39437a63c8654e30562afd09edfb70893bbf60b60116d80e929a5b6",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -598,8 +608,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.ExtendedProperties; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i][\"Value\"] != null) {\n    newparams[oldparams[i][\"Name\"]] = oldparams[i][\"Value\"];\n  }\n} ctx.o365audit.ExtendedProperties = newparams;\n"#
+                    compiled_painless!(
+                        "ef1e518d2fcc787043b799cc234ef0401f67840b318755354448c1aed7fd95e9",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -627,8 +638,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.ModifiedProperties; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i] instanceof Map && oldparams[i][\"OldValue\"] != null && oldparams[i][\"NewValue\"] != null) {\n    def validname = oldparams[i][\"Name\"].replace(\" \",\"_\").replace(\".\",\"_\");\n    newparams[validname] = new HashMap();\n    newparams[validname][\"NewValue\"] = oldparams[i][\"NewValue\"];\n    newparams[validname][\"OldValue\"] = oldparams[i][\"OldValue\"];\n  }\n  if (oldparams[i] instanceof String) {\n    def validname = oldparams[i].replace(\" \",\"_\").replace(\".\",\"_\");\n    newparams[validname] = new HashMap();\n  }\n} if (newparams.isEmpty()) {\n  ctx.o365audit.remove(\"ModifiedProperties\");\n  return;\n} ctx.o365audit.ModifiedProperties = newparams;\n"#
+                    compiled_painless!(
+                        "6a9b4ffd86f6e865c1c765cbc69f46fa2cead31ee96092f8046cef3f89f8c264",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -656,8 +668,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def list = ctx.o365audit.AlertLinks; def links = new ArrayList(); for (int i = 0; i < list.length; ++i) {\n  if (list[i] instanceof Map && list[i].containsKey(\"AlertLinkHref\") && list[i][\"AlertLinkHref\"] != null && list[i][\"AlertLinkHref\"] instanceof String) {\n    links.add(list[i][\"AlertLinkHref\"]);\n  }\n} if (links.length == 0) {\n  ctx.o365audit.remove(\"AlertLinks\");\n  return;\n} ctx.o365audit.AlertLinks = links;\n"#
+                    compiled_painless!(
+                        "35346429fd988d261bdd7937d6295c2446e224fcf0290550a777e6eaf1c2ff50",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -1213,7 +1226,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "e9a7a4c39ba77bfb0c639b0bb1b0c527223ccc0ef80aae31df25a69368449f28",
+                        r#"{"params":null,"known":["ConcatMessage"]}"#,
                         r#"def operation = ctx.event?.action ?: ''; def user = ctx.user?.id ?: ''; def subject = ctx.o365audit?.ExchangeMetaData?.Subject ?: ctx.email?.subject ?: '';\nif (operation.isEmpty() && user.isEmpty() && subject.isEmpty()) {\n  ctx.message = \"Office365 Alert\";\n} else {\n  ctx.message = \"Office365 Alert: \" + operation + \" detected in email sent by \" + user + \" with subject '\" + subject + \"'\";\n}\n"#
                     ),
                 )?;
@@ -1378,8 +1393,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def fields = new def[] {\"To\", \"CC\", \"BCC\"}; if (ctx.destination == null) {\n  ctx.destination = new HashMap();\n} if (ctx.destination.user == null) {\n  ctx.destination.user = new HashMap();\n} ctx.destination.user.email = new ArrayList(); for (int i = 0; i < fields.length; ++i) {\n  if (ctx.o365audit.ExchangeMetaData instanceof Map && ctx.o365audit.ExchangeMetaData.containsKey(fields[i])) {\n    def emails = ctx.o365audit.ExchangeMetaData[fields[i]];\n    if (emails instanceof List){\n      for (int e = 0; e < emails.length; ++e) {\n        ctx.destination.user.email.add(emails[e]);\n      }\n    }\n    if (emails instanceof String){\n      ctx.destination.user.email.add(emails);\n    }\n  }\n}\n"#
+                    compiled_painless!(
+                        "336c9043f1efcc54e2a67ea3bee403a11e07f5128c1eefc618ba924c279c33dd",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -1409,8 +1425,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"int severityToCode(def x) { \n  if (x.toLowerCase() == \"informational\") {\n    return 1;\n  }\n  if (x.toLowerCase() == \"low\") {\n    return 2;\n  }\n  if (x.toLowerCase() == \"medium\") {\n    return 3;\n  }\n  if (x.toLowerCase() == \"high\") {\n    return 4;\n  }\n  return 0;\n} def policies = ctx.o365audit.PolicyDetails; if (policies == null) {\n  return;\n} if (ctx.rule == null) {\n  ctx.rule = new HashMap();\n} if (ctx.rule.id == null) {\n  ctx.rule.id = new ArrayList();\n} if (ctx.rule.name == null) {\n  ctx.rule.name = new ArrayList();\n} def maxSeverity = 0; def allowed = true; for (int i = 0; i < policies.length && policies instanceof List; ++i) {\n  def rules = policies[i].Rules;\n  if (rules == null) {\n    continue;\n  }\n  for (int j = 0; j < rules.length; ++j) {\n    def rule = rules[j];\n    def id = rule.RuleId;\n    def name = rule.RuleName;\n    def sev = severityToCode(rule.Severity);\n    if (id != null && name != null) {\n      ctx.rule.id.add(id);\n      ctx.rule.name.add(name);\n    }\n    if (sev > maxSeverity) {\n      maxSeverity = sev;\n    }\n    if (allowed) {\n      if (rule.Actions != null && rule.Actions.contains(\"BlockAccess\")) {\n        allowed = false;\n      }\n    }\n  }\n} if (maxSeverity > -1) {\n  ctx.event.severity = maxSeverity;\n} if (allowed) {\n  ctx.event.outcome = \"success\";\n  return;\n} if (ctx.event?.action == \"DlpRuleUndo\") {\n  ctx.event.outcome = \"success\";\n  return;\n} if (ctx.event?.action == \"DlpInfo\") {\n  ctx.event.outcome = \"failure\";\n  return;\n} if (ctx.o365audit?.ExceptionInfo != null && !ctx.o365audit?.ExceptionInfo.isEmpty()) {\n  ctx.event.outcome = \"success\";\n  return;\n} ctx.event.outcome = \"failure\";\n"#
+                    compiled_painless!(
+                        "79f2762a57048664cf94400eddbd91b345df6c04e0f70639489bd18290816fc0",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -1707,8 +1724,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def members = ctx.o365audit?.Members; if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} for (int i = 0; i < members.length; ++i) {\n  if (members[i] instanceof Map && members[i].containsKey(\"UPN\") && !members[i][\"UPN\"].isEmpty()) {\n    ctx.related.user.add(members[i][\"UPN\"]);\n  }\n}\n"#
+                    compiled_painless!(
+                        "c8ded392dbd97084acf49673d8a17df7e612a4e287c3668bcd13fc715b8357ee",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -1900,8 +1918,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.user.email = ctx.user.id; ctx.user.domain = splitmail[1]; ctx.user.name = splitmail[0];\n"#
+                    compiled_painless!(
+                        "a03f8845759da11e022062e55f51f5d4382a183cad75178dbf89944619b4e3ca",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"user.id","names":["user.name"],"domains":["user.domain"],"emails":["user.email"],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -1918,8 +1937,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.user.target.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.user.target.email = ctx.user.target.id; ctx.user.target.domain = splitmail[1]; ctx.user.target.name = splitmail[0];\n"#
+                    compiled_painless!(
+                        "99407f841fb9b1bb7dd092c9051600f237118d9b940d6f5e0e21d31b1d7d530a",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"user.target.id","names":["user.target.name"],"domains":["user.target.domain"],"emails":["user.target.email"],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -1936,8 +1956,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.source.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.source.user.email = ctx.source.user.id; ctx.source.user.domain = splitmail[1]; ctx.source.user.name = splitmail[0];\n"#
+                    compiled_painless!(
+                        "8e8331674cb8e17243d9a9c8c23f30afa8b6c3bbe95ed15eaf05508e54df536e",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"source.user.id","names":["source.user.name"],"domains":["source.user.domain"],"emails":["source.user.email"],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -1956,8 +1977,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.destination.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.destination.user.email = ctx.destination.user.id; ctx.destination.user.domain = splitmail[1]; ctx.destination.user.name = splitmail[0];\n"#
+                    compiled_painless!(
+                        "13ca8ab8c5a130a70070ac3970036bf84439edbf20bb0e537301410b608cfc79",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"destination.user.id","names":["destination.user.name"],"domains":["destination.user.domain"],"emails":["destination.user.email"],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -2093,8 +2115,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def conftenants = ctx._conf.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n}\n"#
+                    compiled_painless!(
+                        "6adc86085d80b1f8ec825dd07cf0f26805b215003114d30591ffcf039d991aa0",
+                        r#"{"params":null,"known":[{"CtxTableLookup":{"table":"_conf.tenants","key":"organization.id","target":"organization.name"}}]}"#
                     ),
                 )?;
             }
@@ -2322,8 +2345,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.email = ctx.email ?: [:];\nctx.email.attachments = [];\n\ndef attachmentList = ctx.o365audit.Item.Attachments.splitOnToken(';');\n\nfor (def attachment : attachmentList) {\n  def att = attachment.trim();\n  if (att.isEmpty() || !att.endsWith(')')) continue;\n\n  // Find the size marker at the end: \" (<digits>b)\"\n  int lastSep = att.lastIndexOf(' (');\n  if (lastSep < 0) continue;\n\n  def maybeSize = att.substring(lastSep + 2, att.length() - 1);\n  if (!maybeSize.endsWith('b')) continue;\n\n  def sizeStr = maybeSize.substring(0, maybeSize.length() - 1);\n  long sizeVal;\n  try { sizeVal = Long.parseLong(sizeStr); } catch (Exception e) { continue; }\n\n  def filename = att.substring(0, lastSep).trim();\n  if (filename.isEmpty()) continue;\n\n  int dotIdx = filename.lastIndexOf('.');\n  if (dotIdx < 0) continue;\n\n  def attachmentObj = [:];\n  attachmentObj.file = [:];\n  attachmentObj.file.extension = filename.substring(dotIdx + 1);\n  attachmentObj.file.name = filename;\n  attachmentObj.file.size = sizeVal;\n  ctx.email.attachments.add(attachmentObj);\n}"#
+                        compiled_painless!(
+                            "f292a6b2377f95e21c1aff26236dcdee1a2a075afb03b0845d05d53e653de003",
+                            r#"{"params":null,"known":[{"AppendEach":{"source":"o365audit.Item.Attachments","target":"email.attachments","map_keys":[],"separator":";","deduped":false}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -2502,8 +2526,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"for (def key : params.knownKeys) {\n  if (ctx.o365audit.Data.flattened.containsKey(key)) {\n    ctx.o365audit.Data[key] = ctx.o365audit.Data.flattened[key];\n  }\n}\n"#
+                    compiled_painless!(
+                        "dcc60a769c431bb2d48e3c3d995b1b5a36553b3dcc02649754a27c5a7789c48b",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"knownKeys\":[\"ad\",\"af\",\"aii\",\"ail\",\"alk\",\"als\",\"an\",\"at\",\"cid\",\"cpid\",\"dm\",\"dpn\",\"eid\",\"etps\",\"etype\",\"f3u\",\"fvs\",\"imsgid\",\"lon\",\"mat\",\"md\",\"ms\",\"od\",\"op\",\"ot\",\"plk\",\"pud\",\"reid\",\"rid\",\"sev\",\"sict\",\"sid\",\"sip\",\"sitmi\",\"srt\",\"ssic\",\"suid\",\"tdc\",\"te\",\"thn\",\"tht\",\"tid\",\"tpid\",\"tpt\",\"trc\",\"ts\",\"tsd\",\"ttdt\",\"ttr\",\"upfc\",\"upfv\",\"ut\",\"von\",\"wl\",\"zfh\",\"zfn\",\"zmfh\",\"zmfn\",\"zu\"]}"
@@ -2809,8 +2834,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"ctx._tmp = ctx._tmp ?: [:]; ctx._tmp.entities = [:]; for (def entity: ctx.o365audit.Data.flattened.Entities) {\n  if (entity instanceof Map) {\n    for (def key : params.knownEntityKeys) {\n      if (! ctx._tmp.entities.containsKey(key)) {\n        ctx._tmp.entities[key] = [];\n      }\n      if (entity.containsKey(key)) {\n        ctx._tmp.entities[key].add(entity[key]);\n      }\n    }\n  }\n}\n"#
+                    compiled_painless!(
+                        "d87fe80dc9d6017d6e188cec968b41449d5568636658da8dd16cb6269f4337ca",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"knownEntityKeys\":[\"InternetMessageId\",\"NetworkMessageId\",\"OriginalDeliveryLocation\",\"P1Sender\",\"P2Sender\",\"PhishConfidenceLevel\",\"Recipient\",\"SenderIP\",\"Subject\",\"ThreatDetectionMethods\",\"Upn\"]}"
@@ -3154,8 +3180,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def methods = ctx._tmp.entities.ThreatDetectionMethods; def result = []; for (def method: methods){\n  if (method instanceof List) {\n    for (def m: method) {\n      result.add(m);\n    }\n  } else if (method instanceof String) {\n    result.add(method);\n  }\n} ctx.o365audit.ThreatDetectionMethods = result;\n"#
+                    compiled_painless!(
+                        "d76ad891040eb33802c207260c7858d539274beaf36c2d8ab8bb27299c1817bb",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

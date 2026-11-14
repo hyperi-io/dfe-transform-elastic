@@ -466,8 +466,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def temp = params.get(ctx.http.request.method.toLowerCase());\n// elastic.co/api/v1/deployments\n// and we only want the part after the /api/v1/\nString url_parts = ctx.url.original.splitOnToken(\"/api/v1/\")[1];\nif (url_parts.contains('elasticsearch/elasticsearch/proxy/')){\n  // we handle the special cases here\n  url_parts = url_parts.splitOnToken('elasticsearch/elasticsearch/proxy/')[1];\n  // that should give us `_search`, `_cat/indices`\n  url_parts = url_parts.splitOnToken('?')[0];\n  // we do not care about params ? this will just overload the event.action\n  url_parts = url_parts.splitOnToken('/')[0];\n  // we do not care about '/' like in `_cat/indices`, just getting `_cat` back is good enough\n  ctx.putIfAbsent(\"event\", [:]);\n  ctx.event.action = \"elasticsearch_api_through_ece\" + \"-\" + url_parts.toLowerCase();\n}\nelse if (temp != null){\n    if (temp.get(url_parts) != null){\n        ctx.putIfAbsent(\"event\", [:]);\n        ctx.event.action = temp.get(url_parts);\n    }\n}\nif (ctx.event?.action == null){\n    ctx.putIfAbsent(\"event\", [:]);\n    ctx.event.action = ctx.http.request.method.toLowerCase() + \"_\" + url_parts.splitOnToken(\"/\")[0];\n}\n"#
+                        compiled_painless!(
+                            "5fcd00c8728a8d4562de64f8ea7cf6a37cbfc5169cbc1670fe6bd975cd00e6ab",
+                            r#"{"params":{"UrlTailAction":{"url":"url.original","method":"http.request.method","target":"event.action","after":"/api/v1/","proxy":{"marker":"elasticsearch/elasticsearch/proxy/","prefix":"elasticsearch_api_through_ece"}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"get\":{\"deployments\":\"list_deployments\"},\"post\":{\"deployments\":\"create_deployment\"}}"

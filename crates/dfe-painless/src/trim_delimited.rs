@@ -5,26 +5,7 @@
 //! carries, through a helper the script declares once.
 //!
 //! `sentinel_one_cloud_funnel` sends both command lines wrapped in quotes and
-//! strips them here, on every one of its fourteen streams:
-//!
-//! ```painless
-//! String trimQuotes(def doubleQuote, def v) {
-//!   if (v.startsWith(doubleQuote) && v.endsWith(doubleQuote)) {
-//!     v = v.substring(1, v.length() - 1);
-//!   }
-//!   return v;
-//! }
-//! def v1 = ctx.json?.src?.process?.parent?.cmdline;
-//! def v2 = ctx.json?.tgt?.process?.cmdline;
-//! if (v1 instanceof String && v1 != null) {
-//!   v1 = trimQuotes(params.double_quote, v1);
-//!   ctx.json.src.process.parent.put("cmdline", v1);
-//! }
-//! if (v2 instanceof String && v2 != null) {
-//!   v2 = trimQuotes(params.double_quote, v2);
-//!   ctx.json.tgt.process.put("cmdline", v2);
-//! }
-//! ```
+//! strips them here, on every one of its fourteen streams.
 //!
 //! Same intent as [`crate::common`]'s `StripSurroundingPair`, three spellings
 //! apart: the delimiter is a params VALUE rather than a literal, the cut lives
@@ -45,7 +26,7 @@ use crate::params::{balanced, ctx_path_term};
 use dfe_core::Event;
 
 /// One field read, trimmed, and written back.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct TrimField {
     /// The `ctx` path the local is read from.
     source: String,
@@ -54,7 +35,7 @@ pub struct TrimField {
 }
 
 /// Several fields unwrapped from one params-carried delimiter.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct TrimDelimited {
     /// The params key holding the delimiter both ends must carry.
     delimiter: String,
@@ -219,7 +200,8 @@ pub fn trim_delimited(
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#`.
 #[allow(
@@ -228,146 +210,5 @@ pub fn trim_delimited(
     clippy::panic,
     clippy::needless_raw_string_hashes
 )]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/sentinel_one_cloud_funnel_event/default.rs`,
-    /// in the escaped one-line form a stored script reaches it in.
-    const SENTINEL_ONE_TRIM_QUOTES: &str = r#"String trimQuotes(def doubleQuote, def v) {\n  if (v.startsWith(doubleQuote) && v.endsWith(doubleQuote)) {\n    v = v.substring(1, v.length() - 1);\n  }\n  return v;\n}\ndef v1 = ctx.json?.src?.process?.parent?.cmdline;\ndef v2 = ctx.json?.tgt?.process?.cmdline;\nif (v1 instanceof String && v1 != null) {\n  v1 = trimQuotes(params.double_quote, v1);\n  ctx.json.src.process.parent.put(\"cmdline\", v1);\n}\nif (v2 instanceof String && v2 != null) {\n  v2 = trimQuotes(params.double_quote, v2);\n  ctx.json.tgt.process.put(\"cmdline\", v2);\n}\n"#;
-
-    fn double_quote() -> Map<String, Value> {
-        let Value::Object(params) = json!({ "double_quote": "\"" }) else {
-            unreachable!("the literal is an object")
-        };
-        params
-    }
-
-    #[test]
-    fn the_sentinel_one_helper_names_both_command_lines() {
-        assert_eq!(
-            parse_trim_delimited(&crate::common::normalise(SENTINEL_ONE_TRIM_QUOTES)),
-            Some(TrimDelimited {
-                delimiter: "double_quote".to_owned(),
-                fields: vec![
-                    TrimField {
-                        source: "json.src.process.parent.cmdline".to_owned(),
-                        target: "json.src.process.parent.cmdline".to_owned(),
-                    },
-                    TrimField {
-                        source: "json.tgt.process.cmdline".to_owned(),
-                        target: "json.tgt.process.cmdline".to_owned(),
-                    },
-                ],
-            })
-        );
-    }
-
-    #[test]
-    fn a_quoted_command_line_loses_one_quote_from_each_end() {
-        let pattern =
-            parse_trim_delimited(&crate::common::normalise(SENTINEL_ONE_TRIM_QUOTES)).unwrap();
-        let mut event = Event::new(json!({ "json": { "src": { "process": { "parent": {
-            "cmdline": "\"C:\\ProgramFiles\\Google\\chrome.exe\""
-        }}}}}));
-        assert!(trim_delimited(&mut event, &pattern, &double_quote()));
-        assert_eq!(
-            event.get_str("json.src.process.parent.cmdline"),
-            Some("C:\\ProgramFiles\\Google\\chrome.exe")
-        );
-    }
-
-    /// An unquoted value goes through the helper unchanged, so nothing moves.
-    #[test]
-    fn an_unquoted_command_line_is_left_alone() {
-        let pattern =
-            parse_trim_delimited(&crate::common::normalise(SENTINEL_ONE_TRIM_QUOTES)).unwrap();
-        let mut event = Event::new(json!({ "json": { "tgt": { "process": {
-            "cmdline": "chrome.exe --headless"
-        }}}}));
-        assert!(trim_delimited(&mut event, &pattern, &double_quote()));
-        assert_eq!(
-            event.get_str("json.tgt.process.cmdline"),
-            Some("chrome.exe --headless")
-        );
-    }
-
-    /// Only the OUTER pair goes: a command line whose second argument is a
-    /// quoted JSON blob keeps every quote inside it.
-    #[test]
-    fn only_the_outer_pair_is_cut() {
-        let pattern =
-            parse_trim_delimited(&crate::common::normalise(SENTINEL_ONE_TRIM_QUOTES)).unwrap();
-        let mut event = Event::new(json!({ "json": { "src": { "process": { "parent": {
-            "cmdline": "\"C:\\ranger\\SentinelRanger.exe\"\"{\"uuid\":\"asdf1234\"}\""
-        }}}}}));
-        assert!(trim_delimited(&mut event, &pattern, &double_quote()));
-        assert_eq!(
-            event.get_str("json.src.process.parent.cmdline"),
-            Some("C:\\ranger\\SentinelRanger.exe\"\"{\"uuid\":\"asdf1234\"}")
-        );
-    }
-
-    /// A field the event does not carry is the script's own `instanceof String`
-    /// guard, and the other field is still written.
-    #[test]
-    fn an_absent_field_is_skipped_and_the_other_still_runs() {
-        let pattern =
-            parse_trim_delimited(&crate::common::normalise(SENTINEL_ONE_TRIM_QUOTES)).unwrap();
-        let mut event = Event::new(json!({ "json": { "tgt": { "process": {
-            "cmdline": "\"notepad.exe\""
-        }}}}));
-        assert!(trim_delimited(&mut event, &pattern, &double_quote()));
-        assert_eq!(event.get("json.src"), None);
-        assert_eq!(
-            event.get_str("json.tgt.process.cmdline"),
-            Some("notepad.exe")
-        );
-    }
-
-    /// A non-string is not trimmed and not stringified either.
-    #[test]
-    fn a_numeric_field_is_left_alone() {
-        let pattern =
-            parse_trim_delimited(&crate::common::normalise(SENTINEL_ONE_TRIM_QUOTES)).unwrap();
-        let mut event = Event::new(json!({ "json": { "tgt": { "process": { "cmdline": 42 }}}}));
-        assert!(trim_delimited(&mut event, &pattern, &double_quote()));
-        assert_eq!(event.get("json.tgt.process.cmdline"), Some(&json!(42)));
-    }
-
-    /// A delimiter of more than one character makes the script's guard and its
-    /// one-character cut disagree, so nothing is written.
-    #[test]
-    fn a_multi_character_delimiter_is_declined() {
-        let pattern =
-            parse_trim_delimited(&crate::common::normalise(SENTINEL_ONE_TRIM_QUOTES)).unwrap();
-        let Value::Object(params) = json!({ "double_quote": "''" }) else {
-            unreachable!("the literal is an object")
-        };
-        let mut event = Event::new(json!({ "json": { "tgt": { "process": {
-            "cmdline": "''notepad.exe''"
-        }}}}));
-        assert!(!trim_delimited(&mut event, &pattern, &params));
-        assert_eq!(
-            event.get_str("json.tgt.process.cmdline"),
-            Some("''notepad.exe''")
-        );
-    }
-
-    /// A cut of a different width takes different characters, so the helper is
-    /// not this one.
-    #[test]
-    fn a_helper_cutting_a_different_width_is_declined() {
-        let script = r#"String trim(def d, def v) {\n  if (v.startsWith(d) && v.endsWith(d)) {\n    v = v.substring(2, v.length() - 2);\n  }\n  return v;\n}\ndef v1 = ctx.a.b;\nif (v1 instanceof String) {\n  v1 = trim(params.pair, v1);\n  ctx.a.put(\"b\", v1);\n}\n"#;
-        assert!(parse_trim_delimited(&crate::common::normalise(script)).is_none());
-    }
-
-    /// A helper testing one end against a different argument is a prefix strip,
-    /// not an unwrap.
-    #[test]
-    fn a_helper_testing_two_different_ends_is_declined() {
-        let script = r#"String trim(def open, def close, def v) {\n  if (v.startsWith(open) && v.endsWith(close)) {\n    v = v.substring(1, v.length() - 1);\n  }\n  return v;\n}\ndef v1 = ctx.a.b;\nv1 = trim(params.open, params.close, v1);\nctx.a.put(\"b\", v1);\n"#;
-        assert!(parse_trim_delimited(&crate::common::normalise(script)).is_none());
-    }
-}
+#[path = "trim_delimited_tests.rs"]
+mod tests;

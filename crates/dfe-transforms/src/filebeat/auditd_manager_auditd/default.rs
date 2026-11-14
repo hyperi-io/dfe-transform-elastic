@@ -54,8 +54,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  for (def k : map.keySet().toArray(new def[map.size()])) {\n    if (map[k] instanceof Map) {\n      handleMap(map[k]);\n    }\n\n    if (k.contains(\"-\")) {\n      map[k.replace(\"-\", \"_\")] = map[k];\n      map.remove(k);\n    }\n  }\n}\nhandleMap(ctx);\n"#
+                compiled_painless!(
+                    "a43f0caf53a71d9ddf4055de84d7a687c0fc6f67f28c81cc01452a6207e1d249",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

@@ -4,22 +4,7 @@
 //! One list walked, each named member it carries written to a field of its own.
 //!
 //! `ti_cybersixgill` turns its STIX `external_references` into the ECS tactic
-//! block and two vendor sub-objects in a single walk:
-//!
-//! ```painless
-//! def refs = ctx.cybersixgill.external_references;
-//! ctx.cybersixgill.mitre = new HashMap();
-//! ctx.cybersixgill.virustotal = new HashMap();
-//! ctx.threat.tactic = new HashMap();
-//! for (def ref : refs) {
-//!   if (ref?.description != null) { ctx.cybersixgill.mitre.description = ref.description; }
-//!   if (ref?.mitre_attack_tactic != null) { ctx.threat.tactic.name = [ref.mitre_attack_tactic]; }
-//!   if (ref?.mitre_attack_tactic_id != null) { ctx.threat.tactic.id = [ref.mitre_attack_tactic_id]; }
-//!   if (ref?.mitre_attack_tactic_url != null) { ctx.threat.tactic.reference = [ref.mitre_attack_tactic_url]; }
-//!   if (ref?.positive_rate != null) { ctx.cybersixgill.virustotal.pr = ref.positive_rate; }
-//!   if (ref?.url != null) { ctx.cybersixgill.virustotal.url = ref.url; }
-//! }
-//! ```
+//! block and two vendor sub-objects in a single walk.
 //!
 //! It was the source's whole debt -- 21 fields over four events, and every one
 //! of them -- while the census reported the script wholly unbound.
@@ -56,7 +41,7 @@ use crate::params::{balanced, clean_path};
 use dfe_core::Event;
 
 /// One member, and the field it lands on.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct MemberWrite {
     member: String,
     target: String,
@@ -85,7 +70,7 @@ impl MemberWrite {
 }
 
 /// A list's members fanned out to fields of their own.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct MemberFanOut {
     list: String,
     /// Maps the script opens before the walk, which survive it empty.
@@ -258,149 +243,10 @@ pub fn member_fan_out(event: &mut Event, pattern: &MemberFanOut) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#`.
 #[allow(clippy::needless_raw_string_hashes)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/ti_cybersixgill_threat/default.rs`,
-    /// in the escaped one-line form the call site holds.
-    const CYBERSIXGILL_REFERENCES: &str = r#"def refs = ctx.cybersixgill.external_references; ctx.cybersixgill.mitre = new HashMap(); ctx.cybersixgill.virustotal = new HashMap(); ctx.threat.tactic = new HashMap(); for (def ref : refs) {\n  if (ref?.description != null) {\n    ctx.cybersixgill.mitre.description = ref.description;\n  }\n  if (ref?.mitre_attack_tactic != null) {\n    ctx.threat.tactic.name = [ref.mitre_attack_tactic];\n  }\n  if (ref?.mitre_attack_tactic_id != null) {\n    ctx.threat.tactic.id = [ref.mitre_attack_tactic_id];\n  }\n  if (ref?.mitre_attack_tactic_url != null) {\n    ctx.threat.tactic.reference = [ref.mitre_attack_tactic_url];\n  }\n  if (ref?.positive_rate != null) {\n    ctx.cybersixgill.virustotal.pr = ref.positive_rate;\n  }\n  if (ref?.url != null) {\n    ctx.cybersixgill.virustotal.url = ref.url;\n  }    \n}\n"#;
-
-    #[test]
-    fn the_references_give_up_six_members_in_one_walk() {
-        assert_eq!(
-            parse_member_fan_out(&crate::common::normalise(CYBERSIXGILL_REFERENCES)),
-            Some(MemberFanOut::new(
-                "cybersixgill.external_references",
-                &[
-                    "cybersixgill.mitre",
-                    "cybersixgill.virustotal",
-                    "threat.tactic"
-                ],
-                vec![
-                    MemberWrite::new("description", "cybersixgill.mitre.description"),
-                    MemberWrite::new("mitre_attack_tactic", "threat.tactic.name").wrapped(),
-                    MemberWrite::new("mitre_attack_tactic_id", "threat.tactic.id").wrapped(),
-                    MemberWrite::new("mitre_attack_tactic_url", "threat.tactic.reference")
-                        .wrapped(),
-                    MemberWrite::new("positive_rate", "cybersixgill.virustotal.pr"),
-                    MemberWrite::new("url", "cybersixgill.virustotal.url"),
-                ],
-            ))
-        );
-    }
-
-    /// The capture's first event: a `VirusTotal` reference and a MITRE one, each
-    /// carrying members the other does not.
-    #[test]
-    fn members_spread_across_records_all_reach_their_own_field() {
-        let mut event = Event::new(json!({ "cybersixgill": { "external_references": [
-            {
-                "positive_rate": "none",
-                "source_name": "VirusTotal",
-                "url": "https://virustotal.com/#/file/2e7e",
-            },
-            {
-                "description": "Mitre attack tactics and technique reference",
-                "mitre_attack_tactic": "Test capabilities",
-                "mitre_attack_tactic_id": "TA0025",
-                "mitre_attack_tactic_url": "https://attack.mitre.org/tactics/TA0025/",
-            },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            CYBERSIXGILL_REFERENCES
-        ));
-        assert_eq!(event.get("threat.tactic.id"), Some(&json!(["TA0025"])));
-        assert_eq!(
-            event.get("threat.tactic.name"),
-            Some(&json!(["Test capabilities"]))
-        );
-        assert_eq!(
-            event.get("threat.tactic.reference"),
-            Some(&json!(["https://attack.mitre.org/tactics/TA0025/"]))
-        );
-        assert_eq!(
-            event.get("cybersixgill.mitre.description"),
-            Some(&json!("Mitre attack tactics and technique reference"))
-        );
-        assert_eq!(
-            event.get("cybersixgill.virustotal.pr"),
-            Some(&json!("none"))
-        );
-        assert_eq!(
-            event.get("cybersixgill.virustotal.url"),
-            Some(&json!("https://virustotal.com/#/file/2e7e"))
-        );
-    }
-
-    /// The capture's other three events: only a MITRE reference, so the
-    /// allocation is all `virustotal` ever gets -- and Elasticsearch keeps it.
-    #[test]
-    fn an_allocation_the_walk_never_fills_stays_as_an_empty_map() {
-        let mut event = Event::new(json!({ "cybersixgill": { "external_references": [
-            {
-                "description": "Mitre attack tactics and technique reference",
-                "mitre_attack_tactic": "Build Capabilities",
-                "mitre_attack_tactic_id": "TA0024",
-                "mitre_attack_tactic_url": "https://attack.mitre.org/tactics/TA0024/",
-                "source_name": "mitre-attack",
-            },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            CYBERSIXGILL_REFERENCES
-        ));
-        assert_eq!(event.get("cybersixgill.virustotal"), Some(&json!({})));
-        assert_eq!(event.get("threat.tactic.id"), Some(&json!(["TA0024"])));
-    }
-
-    /// Every record writes, so the document keeps the LAST one. Gathering these
-    /// into a list instead would write four descriptions where there is one.
-    #[test]
-    fn the_last_record_carrying_a_member_is_the_one_that_survives() {
-        let mut event = Event::new(json!({ "cybersixgill": { "external_references": [
-            { "description": "first" },
-            { "description": "second" },
-            { "url": "https://example.test/only" },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            CYBERSIXGILL_REFERENCES
-        ));
-        assert_eq!(
-            event.get("cybersixgill.mitre.description"),
-            Some(&json!("second"))
-        );
-    }
-
-    #[test]
-    fn a_walk_that_does_more_than_write_its_members_is_declined() {
-        // A body statement outside the grammar, and a statement after the loop.
-        // Claiming either would drop the part this reader never looked at.
-        for (name, script) in [
-            (
-                "a second statement under one guard",
-                r#"def refs = ctx.a.b; for (def r : refs) {\n  if (r?.x != null) {\n    ctx.c.d = r.x;\n    ctx.c.e = 1;\n  }\n}\n"#,
-            ),
-            (
-                "a write of a member the guard never tested",
-                r#"def refs = ctx.a.b; for (def r : refs) {\n  if (r?.x != null) {\n    ctx.c.d = r.y;\n  }\n}\n"#,
-            ),
-            (
-                "a statement after the walk",
-                r#"def refs = ctx.a.b; for (def r : refs) {\n  if (r?.x != null) {\n    ctx.c.d = r.x;\n  }\n}\nctx.done = true;\n"#,
-            ),
-        ] {
-            assert!(
-                parse_member_fan_out(&crate::common::normalise(script)).is_none(),
-                "{name} was claimed"
-            );
-        }
-    }
-}
+#[path = "member_fan_out_tests.rs"]
+mod tests;

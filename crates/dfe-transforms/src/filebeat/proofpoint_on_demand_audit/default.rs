@@ -84,7 +84,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "c7a035c2df67cd1599d6798e98e0138de0e716df96a65bde5f896112ab65b890",
+                        r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Compare":{"path":"json.audit.action","wanted":"Null","negated":false,"lowered":false}}],["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                         r#"if (ctx.json?.audit?.action == null || params.get(ctx.json.audit.action.toLowerCase()) == null) {\n  return;\n}\nparams.get(ctx.json.audit.action.toLowerCase()).forEach((k, v) -> {\n  if (v instanceof List) {\n    ctx.event[k] = new ArrayList(v);\n  } else {\n    ctx.event[k] = v;\n  }\n});"#
                     ),
                     cached_params!(
@@ -544,8 +546,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.put(\"labels\", new HashMap()); for (tag in ctx.proofpoint_on_demand.audit.tags) {\n  ctx.labels.put(tag.name, tag.value);\n}"#
+                        compiled_painless!(
+                            "0cccb50da8e6d13c39a8ea6d12c56321292507d15e4bedf3c5101b3cd8052150",
+                            r#"{"params":null,"known":[{"NameValueFold":{"source":"proofpoint_on_demand.audit.tags","target":"labels","key_member":"name","value_member":"value"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -563,8 +566,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.proofpoint_on_demand.audit.action == null) {\n  return;\n} String action = ctx.proofpoint_on_demand.audit.action + '.'; String outcome; for (tag in ctx.proofpoint_on_demand.audit.tags) {\n  if (tag.name.startsWith(action)) {\n    if (tag.value.toLowerCase() == \"true\") {\n      outcome = \"success\";\n    } else if (tag.value.toLowerCase() == \"false\") {\n      outcome = \"failure\";\n    }\n  }\n} ctx.action.put(\"outcome\", outcome);"#
+                        compiled_painless!(
+                            "62f1dc09642c5b7ad8dd505fb63644048041fd3dd7df9a4e5495af907df8108f",
+                            r#"{"params":null,"known":[{"OutcomeFromTags":{"action_field":"proofpoint_on_demand.audit.action","tags":"proofpoint_on_demand.audit.tags","target":"action.outcome"}}]}"#
                         ),
                     )?;
                     Ok(())

@@ -40,8 +40,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.proofpoint.email.size = ctx.proofpoint.email.size.value + ' ' + ctx.proofpoint.email.size.unit;\n"#
+                        compiled_painless!(
+                            "bdfc7b2b5fba2ca0503f32dfdd96bae1240c0e9b7836505ec38b193e83c17183",
+                            r#"{"params":null,"known":[{"ConcatAssignment":{"target":"proofpoint.email.size","terms":[{"Field":"proofpoint.email.size.value"},{"Literal":" "},{"Field":"proofpoint.email.size.unit"}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -74,8 +75,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def attachmentNames = [];\ndef attachmentExtensions = [];\ndef ecsAttachments = [];\nfor (att in ctx.proofpoint.email.attachments) {\n    if (att instanceof Map && att.containsKey('name')) {\n        def filename = att.name;\n        attachmentNames.add(filename);\n        \n        // Extract file extension\n        def lastDot = filename.lastIndexOf('.');\n        def ext = null;\n        if (lastDot > 0 && lastDot < filename.length() - 1) {\n            ext = filename.substring(lastDot + 1).toLowerCase();\n            if (!attachmentExtensions.contains(ext)) {\n                attachmentExtensions.add(ext);\n            }\n        }\n        \n        // Create ECS attachment object\n        def ecsAtt = ['file': ['name': filename]];\n        if (ext != null) {\n            ecsAtt.file.extension = ext;\n        }\n        if (att.containsKey('size')) {\n            ecsAtt.file.size = att.size;\n        }\n        ecsAttachments.add(ecsAtt);\n    }\n}\nctx.proofpoint.email.attachmentsList = attachmentNames;\nctx.proofpoint.email.attachmentsExtensions = attachmentExtensions;\nctx.proofpoint.email.attachments = attachmentNames.size() > 0 ? 'yes' : 'no';\nif (!ctx.containsKey('email')) {\n    ctx.email = [:];\n}\nctx.email.attachments = ecsAttachments;\n"#
+                        compiled_painless!(
+                            "1b966c2ab9a0fda4ee874724d42ef5d6dce40a24a0460a363e0db2dc9cba022f",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -157,8 +159,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.proofpoint.email.classification.containsKey('text')) {\n    ctx.proofpoint.email.classification_text = ctx.proofpoint.email.classification.text;\n    ctx.proofpoint.email.classification_id = ctx.proofpoint.email.classification.id;\n}\n"#
+                        compiled_painless!(
+                            "2cdbe0a1b0d047d28842c5c4d83d86f947393a311ee75837375f2f7c790370f6",
+                            r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"ContainsKey":{"path":"proofpoint.email.classification","key":"text"}}]],"then":[{"Literal":{"Set":{"path":"proofpoint.email.classification_text","value":{"Field":"proofpoint.email.classification.text"}}}},{"Literal":{"Set":{"path":"proofpoint.email.classification_id","value":{"Field":"proofpoint.email.classification.id"}}}}],"alt":[]}}],"whole":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -176,8 +179,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.proofpoint.email.status.containsKey('text')) {\n    ctx.proofpoint.email.status_text = ctx.proofpoint.email.status.text;\n    ctx.proofpoint.email.status_id = ctx.proofpoint.email.status.id;\n}\n"#
+                        compiled_painless!(
+                            "766f8a06d412ffc22855c2d8fe1251cf6ec4eee792f6ba123b3f5f9544bb4750",
+                            r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"ContainsKey":{"path":"proofpoint.email.status","key":"text"}}]],"then":[{"Literal":{"Set":{"path":"proofpoint.email.status_text","value":{"Field":"proofpoint.email.status.text"}}}},{"Literal":{"Set":{"path":"proofpoint.email.status_id","value":{"Field":"proofpoint.email.status.id"}}}}],"alt":[]}}],"whole":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -191,8 +195,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def dir = ctx.proofpoint.email.direction;\n// Set direction text based on integer value\nif (dir == 1) {\n    ctx.proofpoint.email.direction_text = 'inbound';\n} else if (dir == 2) {\n    ctx.proofpoint.email.direction_text = 'outbound';\n} else {\n    ctx.proofpoint.email.direction_text = 'unknown';\n}\n"#
+                        compiled_painless!(
+                            "eacae9846fb4d607e299f53fa8c977dd156792a7c6d9caa42e1fb34bb4623e07",
+                            r#"{"params":null,"known":[{"BandLadder":{"subject":"proofpoint.email.direction","arms":[[{"bounds":[{"op":"Eq","scaled":1000}],"all":true},{"Text":"inbound"}],[{"bounds":[{"op":"Eq","scaled":2000}],"all":true},{"Text":"outbound"}]],"default":{"Text":"unknown"},"absent":null,"target":"proofpoint.email.direction_text"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -210,8 +215,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.proofpoint.email.crypt_type_in.containsKey('text')) {\n    ctx.proofpoint.email.incoming_encryption = ctx.proofpoint.email.crypt_type_in.text;\n}\n"#
+                        compiled_painless!(
+                            "3c4d9d3315a55b5ea6011e14d944288188db651b0d9157b2585e812cd2e00346",
+                            r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"ContainsKey":{"path":"proofpoint.email.crypt_type_in","key":"text"}}]],"then":[{"Literal":{"Set":{"path":"proofpoint.email.incoming_encryption","value":{"Field":"proofpoint.email.crypt_type_in.text"}}}}],"alt":[]}}],"whole":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -229,8 +235,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.proofpoint.email.crypt_type_out.containsKey('text')) {\n    ctx.proofpoint.email.outgoing_encryption = ctx.proofpoint.email.crypt_type_out.text;\n}\n"#
+                        compiled_painless!(
+                            "833058baa2e1d32da976cfd4a7254368e8c03b5472afb33232b5d01c376c2297",
+                            r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"ContainsKey":{"path":"proofpoint.email.crypt_type_out","key":"text"}}]],"then":[{"Literal":{"Set":{"path":"proofpoint.email.outgoing_encryption","value":{"Field":"proofpoint.email.crypt_type_out.text"}}}}],"alt":[]}}],"whole":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -244,7 +251,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "a5ffacd94db3f0b2666f0c7977feaf458e0519d6c1bead284a13d87e2c8e3b41",
+                            r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"proofpoint.email.direction","wanted":"Null","negated":true,"lowered":false}},{"Compare":{"path":"proofpoint.email.direction","wanted":{"Value":1},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"proofpoint.email.to","value":{"Field":"proofpoint.email.owner"}}}},{"If":{"test":[[{"ContainsKey":{"path":"proofpoint.email","key":"comm_partner"}},{"Compare":{"path":"proofpoint.email.comm_partner","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"proofpoint.email.from","value":{"Field":"proofpoint.email.comm_partner"}}}}],"alt":[]}}],"alt":[{"If":{"test":[[{"Compare":{"path":"proofpoint.email.direction","wanted":"Null","negated":true,"lowered":false}},{"Compare":{"path":"proofpoint.email.direction","wanted":{"Value":2},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"proofpoint.email.from","value":{"Field":"proofpoint.email.owner"}}}},{"If":{"test":[[{"ContainsKey":{"path":"proofpoint.email","key":"comm_partner"}},{"Compare":{"path":"proofpoint.email.comm_partner","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"proofpoint.email.to","value":{"Field":"proofpoint.email.comm_partner"}}}}],"alt":[]}}],"alt":[]}}]}}],"whole":false}}]}"#,
                             r#"def direction = ctx.proofpoint.email.containsKey('direction') ? ctx.proofpoint.email.direction : null;\nif (direction != null && direction == 1) {\n    // Inbound: owner is recipient, comm_partner is sender\n    ctx.proofpoint.email.to = ctx.proofpoint.email.owner;\n    if (ctx.proofpoint.email.containsKey('comm_partner') && ctx.proofpoint.email.comm_partner != null) {\n        ctx.proofpoint.email.from = ctx.proofpoint.email.comm_partner;\n    }\n} else if (direction != null && direction == 2) {\n    // Outbound: owner is sender, comm_partner is recipient\n    ctx.proofpoint.email.from = ctx.proofpoint.email.owner;\n    if (ctx.proofpoint.email.containsKey('comm_partner') && ctx.proofpoint.email.comm_partner != null) {\n        ctx.proofpoint.email.to = ctx.proofpoint.email.comm_partner;\n    }\n}\n"#
                         ),
                     )?;

@@ -396,8 +396,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def time_to_resolution = new HashMap();\ndef fixedAtDt = ctx.github.code_scanning.fixed_at;\ndef dismissedAtDt = ctx.github.code_scanning.dismissed_at;\ndef createdAtDt = ctx.github.code_scanning.created_at;\nZonedDateTime zdt = ZonedDateTime.parse(createdAtDt);\nlong createdAtEpoch = zdt.toEpochSecond();\nif (fixedAtDt != null) {\n    zdt = ZonedDateTime.parse(fixedAtDt);\n    long fixedAtEpoch = zdt.toEpochSecond();\n    time_to_resolution.put(\"sec\", fixedAtEpoch - createdAtEpoch);\n    ctx.github.code_scanning.time_to_resolution = time_to_resolution;\n}\nelse {\n    zdt = ZonedDateTime.parse(dismissedAtDt);\n    long dismissedAtEpoch = zdt.toEpochSecond();\n    time_to_resolution.put(\"sec\", dismissedAtEpoch - createdAtEpoch);\n    ctx.github.code_scanning.time_to_resolution = time_to_resolution;\n}\n"#
+                    compiled_painless!(
+                        "05379ca7ce79984db934cfbcd4c31196fde9f0a9fe8f31fbf1ad808ad52123da",
+                        r#"{"params":null,"known":[{"SecondsBetween":{"from":"github.code_scanning.created_at","to":["github.code_scanning.fixed_at","github.code_scanning.dismissed_at"],"key":"sec","target":"github.code_scanning.time_to_resolution"}}]}"#
                     ),
                 )?;
             }

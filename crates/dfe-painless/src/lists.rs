@@ -24,7 +24,7 @@ use serde_json::{Map, Value};
 use dfe_core::Event;
 
 /// One member renamed inside every item of a list.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ItemRename {
     /// The member the vendor wrote.
     from: String,
@@ -45,7 +45,7 @@ impl ItemRename {
 }
 
 /// One list, and the renames applied to every item in it.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ListWalk {
     /// The list's dotted path.
     list: String,
@@ -65,7 +65,7 @@ impl ListWalk {
 }
 
 /// A list guaranteed to exist, and the one item appended into it.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct EnsureItem {
     /// The list, created empty when absent.
     list: String,
@@ -85,7 +85,7 @@ impl EnsureItem {
 }
 
 /// The whole script: an optional preamble, then the walks.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ListItemRenames {
     /// Atlassian's cloud streams carry ONE object where the self-hosted ones
     /// carry a list, so the list is created and the object put into it.
@@ -310,152 +310,8 @@ fn path_before(text: &str, marker: &str) -> Option<String> {
     Some(clean(raw))
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Atlassian's cloud stream, verbatim from
-    /// `pipelines/atlassian_jira/audit/cloud.yml`.
-    ///
-    /// The captured `changed_values` reads `i18nKey`, `key`, `to` -- the
-    /// renamed members at the END, whatever order the input had. That is what
-    /// insert-then-remove gives and a rebuilt map would not.
-    #[test]
-    fn every_item_takes_its_renames_in_key_order() {
-        let script = "if(ctx.jira?.audit?.affected_objects == null) {\n    \
-            ArrayList items = new ArrayList();\n    \
-            ctx.jira?.audit.put(\"affected_objects\", items);\n}\n\
-            if(ctx.json?.objectItem != null && \
-            !ctx.jira?.audit?.affected_objects.contains(ctx.json?.objectItem)) {\n    \
-            ctx.jira?.audit?.affected_objects.add(ctx.json?.objectItem);\n}\n\
-            if(ctx.jira?.audit?.affected_objects != null) {\n    \
-            for (def j = 0; j < ctx.jira?.audit?.affected_objects.length; j++) {\n        \
-            if(ctx.jira.audit.affected_objects[j]?.typeName != null) {\n            \
-            ctx.jira.audit.affected_objects[j].put('type', \
-            ctx.jira.audit.affected_objects[j].typeName);\n            \
-            ctx.jira.audit.affected_objects[j].remove('typeName');\n        }\n    }\n}\n\
-            if(ctx.jira?.audit?.changed_values != null) {\n    \
-            for (def j = 0; j < ctx.jira?.audit?.changed_values.length; j++) {\n        \
-            if(ctx.jira.audit.changed_values[j]?.fieldName != null) {\n            \
-            ctx.jira.audit.changed_values[j].put('i18nKey', \
-            ctx.jira.audit.changed_values[j].fieldName);\n            \
-            ctx.jira.audit.changed_values[j].put('key', \
-            ctx.jira.audit.changed_values[j].fieldName);\n            \
-            ctx.jira.audit.changed_values[j].remove('fieldName');\n        }\n        \
-            if(ctx.jira.audit.changed_values[j]?.changedTo != null) {\n            \
-            ctx.jira.audit.changed_values[j].put('to', \
-            ctx.jira.audit.changed_values[j].changedTo);\n            \
-            ctx.jira.audit.changed_values[j].remove('changedTo');\n        }\n    }\n}";
-        let pattern = parse_list_item_renames(script).expect("the reshape is recognised");
-
-        let mut event = Event::new(json!({
-            "json": { "objectItem": { "typeName": "User", "name": "test.user" } },
-            "jira": { "audit": { "changed_values": [
-                { "fieldName": "Name", "changedTo": "Version 3.0" }
-            ] } }
-        }));
-        assert!(list_item_renames(&mut event, &pattern));
-
-        // The single object became the list the self-hosted stream carries.
-        let objects = event.get("jira.audit.affected_objects").unwrap();
-        assert_eq!(objects.as_array().unwrap().len(), 1);
-        assert_eq!(objects[0]["type"], json!("User"));
-        assert!(objects[0].get("typeName").is_none());
-
-        // One member to TWO destinations, and the renamed keys land last.
-        let changed = event.get("jira.audit.changed_values").unwrap();
-        let keys: Vec<&str> = changed[0]
-            .as_object()
-            .unwrap()
-            .keys()
-            .map(String::as_str)
-            .collect();
-        assert_eq!(keys, ["i18nKey", "key", "to"]);
-        assert_eq!(changed[0]["i18nKey"], json!("Name"));
-        assert_eq!(changed[0]["key"], json!("Name"));
-        assert_eq!(changed[0]["to"], json!("Version 3.0"));
-    }
-
-    /// Confluence's twin, verbatim from
-    /// `pipelines/atlassian_confluence/audit/cloud.yml`. Same job, different
-    /// member names throughout and no null-safe navigation on the append --
-    /// which is what the reader has to be indifferent to.
-    #[test]
-    fn the_confluence_twin_reads_the_same_way() {
-        let script = "if(ctx.confluence.audit.affected_objects == null) {\n    \
-            ArrayList items = new ArrayList();\n    \
-            ctx.confluence.audit.put(\"affected_objects\", items);\n}\n\
-            if(ctx.json?.affectedObject != null && \
-            !ctx.confluence?.audit?.affected_objects.contains(ctx.json?.affectedObject)) {\n    \
-            ctx.confluence.audit.affected_objects.add(ctx.json?.affectedObject);\n}\n\
-            if(ctx.confluence.audit.affected_objects != null) {\n    \
-            for (def j = 0; j < ctx.confluence?.audit?.affected_objects.length; j++) {\n        \
-            if(ctx.confluence.audit.affected_objects[j]?.objectType != null) {\n            \
-            ctx.confluence.audit.affected_objects[j].put('type', \
-            ctx.confluence.audit.affected_objects[j].objectType);\n            \
-            ctx.confluence.audit.affected_objects[j].remove('objectType');\n        }\n    }\n}\n\
-            if(ctx.confluence.audit.changed_values != null) {\n    \
-            for (def j = 0; j < ctx.confluence.audit.changed_values.length; j++) {\n        \
-            if(ctx.confluence.audit.changed_values[j]?.name != null) {\n            \
-            ctx.confluence.audit.changed_values[j].put('i18nKey', \
-            ctx.confluence.audit.changed_values[j].name);\n            \
-            ctx.confluence.audit.changed_values[j].put('key', \
-            ctx.confluence.audit.changed_values[j].name);\n            \
-            ctx.confluence.audit.changed_values[j].remove('name');\n        }\n        \
-            if(ctx.confluence.audit.changed_values[j]?.newValue != null) {\n            \
-            ctx.confluence.audit.changed_values[j].put('to', \
-            ctx.confluence.audit.changed_values[j].newValue);\n            \
-            ctx.confluence.audit.changed_values[j].remove('newValue');\n        }\n        \
-            if(ctx.confluence.audit.changed_values[j]?.oldValue != null) {\n            \
-            ctx.confluence.audit.changed_values[j].put('from', \
-            ctx.confluence.audit.changed_values[j].oldValue);\n            \
-            ctx.confluence.audit.changed_values[j].remove('oldValue');\n        }\n    }\n}";
-        let pattern = parse_list_item_renames(script).expect("the twin is recognised");
-
-        let mut event = Event::new(json!({
-            "json": { "affectedObject": { "objectType": "Page", "name": "Home" } },
-            "confluence": { "audit": { "changed_values": [
-                { "name": "Title", "newValue": "After", "oldValue": "Before" }
-            ] } }
-        }));
-        assert!(list_item_renames(&mut event, &pattern));
-
-        let objects = event.get("confluence.audit.affected_objects").unwrap();
-        assert_eq!(objects[0]["type"], json!("Page"));
-        assert!(objects[0].get("objectType").is_none());
-
-        let changed = event.get("confluence.audit.changed_values").unwrap();
-        let keys: Vec<&str> = changed[0]
-            .as_object()
-            .unwrap()
-            .keys()
-            .map(String::as_str)
-            .collect();
-        assert_eq!(keys, ["i18nKey", "key", "to", "from"]);
-        assert_eq!(changed[0]["from"], json!("Before"));
-    }
-
-    /// The item is appended once, however often the script runs.
-    #[test]
-    fn an_item_already_in_the_list_is_not_appended_again() {
-        let ensure = EnsureItem::new("a.list", "src.item");
-        let pattern = ListItemRenames::new(Some(ensure), vec![ListWalk::new("a.list", vec![])]);
-        let mut event = Event::new(json!({
-            "a": { "list": [{ "id": 1 }] },
-            "src": { "item": { "id": 1 } }
-        }));
-        assert!(list_item_renames(&mut event, &pattern));
-        assert_eq!(event.get("a.list").unwrap().as_array().unwrap().len(), 1);
-    }
-
-    /// A rename with no removal beside it is declined: the item would keep both
-    /// spellings and ship a field Elasticsearch does not.
-    #[test]
-    fn a_rename_that_leaves_its_source_behind_is_declined() {
-        let script = "if(ctx.a?.b != null) {\n  for (def j = 0; j < ctx.a.b.length; j++) {\n    \
-            ctx.a.b[j].put('type', ctx.a.b[j].typeName);\n  }\n}";
-        assert!(parse_list_item_renames(script).is_none());
-    }
-}
+#[path = "lists_tests.rs"]
+mod tests;

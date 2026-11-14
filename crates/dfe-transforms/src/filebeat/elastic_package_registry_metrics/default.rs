@@ -137,8 +137,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.package_registry.containsKey(\"start_time\") && ctx.containsKey(\"@timestamp\")) {\n    ZonedDateTime created = ZonedDateTime.parse(ctx[\"@timestamp\"]);\n    ZonedDateTime start = ZonedDateTime.parse(ctx.package_registry['start_time']);\n    long uptime = ChronoUnit.MILLIS.between(start, created)/1000;\n    ctx.package_registry[\"uptime\"] = uptime;\n}"#
+                compiled_painless!(
+                    "93452588d813fdef39523447eab2646e8bc8127209fca2ea2c630b93343527df",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

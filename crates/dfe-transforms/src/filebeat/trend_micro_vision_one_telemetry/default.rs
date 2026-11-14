@@ -83,16 +83,18 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\n\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      newObj[camelToSnake(entry.getKey())] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    if (obj == \"\") {\n      return null;\n    }\n    return obj;\n  }\n}\n\n// Apply the conversion\nif (ctx.trend_micro_vision_one?.telemetry != null) {\n  ctx.trend_micro_vision_one.telemetry = convertToSnakeCase(ctx.trend_micro_vision_one.telemetry);\n}\n"#
+                compiled_painless!(
+                    "9582c7bf76a0f15176e6cb7b3dc446508b0e732145b7fc2167e1abcf92aa64f3",
+                    r#"{"params":null,"known":[{"CamelToSnake":{"target":"trend_micro_vision_one.telemetry","source":"trend_micro_vision_one.telemetry","rule":"AfterNonUpper","at_keys":"Convert","merge":false,"removes":[]}}]}"#
                 ),
             )?;
 
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"def key = (ctx.trend_micro_vision_one?.telemetry?.event_id ?: \"\").toString();\nif (params.containsKey(key)) {\n  ctx.trend_micro_vision_one.telemetry.event_type = params[key];\n} else {\n  ctx.trend_micro_vision_one.telemetry.event_type = 'Other';\n}\n"#
+                compiled_painless!(
+                    "309a613d2d143297dce32c54cc0283387d63fdf00855ff312ebd2f37821f52a7",
+                    r#"{"params":{"StringifiedLookupOrLiteral":{"source":"trend_micro_vision_one.telemetry.event_id","absent_key":"","target":"trend_micro_vision_one.telemetry.event_type","default":"Other"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"1\":\"TELEMETRY_PROCESS\",\"2\":\"TELEMETRY_FILE\",\"3\":\"TELEMETRY_CONNECTION\",\"4\":\"TELEMETRY_DNS\",\"5\":\"TELEMETRY_REGISTRY\",\"6\":\"TELEMETRY_ACCOUNT\",\"7\":\"TELEMETRY_INTERNET\",\"8\":\"TELEMETRY_MODIFIED_PROCESS\",\"9\":\"TELEMETRY_WINDOWS_HOOK\",\"10\":\"TELEMETRY_WINDOWS_EVENT\",\"11\":\"TELEMETRY_AMSI\",\"12\":\"TELEMETRY_WMI\",\"13\":\"TELEMETRY_MEMORY\",\"14\":\"TELEMETRY_BM\",\"15\":\"TELEMETRY_APP\",\"16\":\"TELEMETRY_SYSTEM_EVENT\",\"17\":\"TELEMETRY_EVENT_PIPE\",\"18\":\"TELEMETRY_MAC_SYS_LOG\",\"19\":\"TELEMETRY_DDR\",\"101\":\"TELEMETRY_ASSOCIATION\"}"
@@ -102,8 +104,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"def key = (ctx.trend_micro_vision_one?.telemetry?.event_sub_id ?: \"\").toString();\nif (params.containsKey(key)) {\n  ctx.trend_micro_vision_one.telemetry.event_subtype = params[key];\n} else {\n  ctx.trend_micro_vision_one.telemetry.event_subtype = 'Other';\n}\n"#
+                compiled_painless!(
+                    "e3459b25d0ddd3d519a529e507acc68f8b669493a69ec88a378e3714aa63f522",
+                    r#"{"params":{"StringifiedLookupOrLiteral":{"source":"trend_micro_vision_one.telemetry.event_sub_id","absent_key":"","target":"trend_micro_vision_one.telemetry.event_subtype","default":"Other"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"0\":\"TELEMETRY_NONE\",\"1\":\"TELEMETRY_PROCESS_OPEN\",\"2\":\"TELEMETRY_PROCESS_CREATE\",\"3\":\"TELEMETRY_PROCESS_TERMINATE\",\"4\":\"TELEMETRY_PROCESS_LOAD_IMAGE\",\"5\":\"TELEMETRY_PROCESS_EXECUTE\",\"6\":\"TELEMETRY_PROCESS_CONNECT\",\"7\":\"TELEMETRY_PROCESS_TRACME\",\"8\":\"TELEMETRY_PROCESS_LOAD_KERNEL_IMAGE\",\"101\":\"TELEMETRY_FILE_CREATE\",\"102\":\"TELEMETRY_FILE_OPEN\",\"103\":\"TELEMETRY_FILE_DELETE\",\"104\":\"TELEMETRY_FILE_SET_SECURITY\",\"105\":\"TELEMETRY_FILE_COPY\",\"106\":\"TELEMETRY_FILE_MOVE\",\"107\":\"TELEMETRY_FILE_CLOSE\",\"108\":\"TELEMETRY_FILE_MODIFY_TIMESTAMP\",\"109\":\"TELEMETRY_FILE_MODIFY\",\"110\":\"TELEMETRY_FILE_SET_ATTRIBUTES\",\"111\":\"TELEMETRY_FILE_ENUMERATE\",\"112\":\"TELEMETRY_FILE_SET_EXTENDED_ATTRIBUTE\",\"113\":\"TELEMETRY_FILE_DELETE_EXTENDED_ATTRIBUTE\",\"201\":\"TELEMETRY_CONNECTION_CONNECT\",\"202\":\"TELEMETRY_CONNECTION_LISTEN\",\"203\":\"TELEMETRY_CONNECTION_CONNECT_INBOUND\",\"204\":\"TELEMETRY_CONNECTION_CONNECT_OUTBOUND\",\"301\":\"TELEMETRY_DNS_QUERY\",\"401\":\"TELEMETRY_REGISTRY_CREATE\",\"402\":\"TELEMETRY_REGISTRY_SET\",\"403\":\"TELEMETRY_REGISTRY_DELETE\",\"404\":\"TELEMETRY_REGISTRY_RENAME\",\"405\":\"TELEMETRY_REGISTRY_ENUMERATE\",\"406\":\"TELEMETRY_REGISTRY_ENUMERATEVALUE\",\"407\":\"TELEMETRY_REGISTRY_QUERYVALUE\",\"408\":\"TELEMETRY_REGISTRY_SAVE\",\"501\":\"TELEMETRY_ACCOUNT_ADD\",\"502\":\"TELEMETRY_ACCOUNT_DELETE\",\"503\":\"TELEMETRY_ACCOUNT_IMPERSONATE\",\"504\":\"TELEMETRY_ACCOUNT_MODIFY\",\"505\":\"TELEMETRY_ACCOUNT_LOGIN\",\"506\":\"TELEMETRY_ACCOUNT_LOGOUT\",\"601\":\"TELEMETRY_INTERNET_OPEN\",\"602\":\"TELEMETRY_INTERNET_CONNECT\",\"603\":\"TELEMETRY_INTERNET_DOWNLOAD\",\"701\":\"TELEMETRY_MODIFIED_PROCESS_CREATE_REMOTETHREAD\",\"702\":\"TELEMETRY_MODIFIED_PROCESS_WRITE_MEMORY\",\"703\":\"TELEMETRY_MODIFIED_PROCESS_WRITE_PROCESS\",\"704\":\"TELEMETRY_MODIFIED_PROCESS_READ_PROCESS\",\"705\":\"TELEMETRY_MODIFIED_PROCESS_WRITE_PROCESS_NAME\",\"801\":\"TELEMETRY_WINDOWS_HOOK_SET\",\"901\":\"TELEMETRY_AMSI_EXECUTE\",\"1001\":\"TELEMETRY_MEMORY_MODIFY\",\"1002\":\"TELEMETRY_MEMORY_MODIFY_PERMISSION\",\"1003\":\"TELEMETRY_MEMORY_READ\",\"1101\":\"TELEMETRY_BM_INVOKE\",\"1102\":\"TELEMETRY_BM_INVOKE_API\",\"1201\":\"TELEMETRY_APP_START\",\"1202\":\"TELEMETRY_APP_STOP\",\"1203\":\"TELEMETRY_APP_INSTALL\",\"1204\":\"TELEMETRY_APP_UNINSTALL\",\"1205\":\"TELEMETRY_APP_BEHAVIOR\",\"1301\":\"TELEMETRY_SYSTEM_EVENT_ENABLE\",\"1302\":\"TELEMETRY_SYSTEM_EVENT_DISABLE\",\"1303\":\"TELEMETRY_SYSTEM_CERTIFICATION_INSTALL\",\"1304\":\"TELEMETRY_SYSTEM_DEVICE_ROOTED\",\"1401\":\"TELEMETRY_PIPE_CREATE\",\"1402\":\"TELEMETRY_PIPE_CONNECT\",\"1601\":\"TELEMETRY_MAC_SYS_LOG_COLLECT\",\"1701\":\"TELEMETRY_DDR_FILE_COPY\",\"1702\":\"TELEMETRY_DDR_FILE_MOVE\",\"1703\":\"TELEMETRY_DDR_FILE_RENAME\",\"1704\":\"TELEMETRY_DDR_FILE_MODIFY\",\"1705\":\"TELEMETRY_DDR_FILE_DELETE\",\"1706\":\"TELEMETRY_DDR_FILE_UNZIP\",\"1707\":\"TELEMETRY_DDR_FILE_ZIP\",\"1708\":\"TELEMETRY_DDR_FILE_UPLOAD\",\"1709\":\"TELEMETRY_DDR_FILE_DOWNLOAD\",\"1710\":\"TELEMETRY_DDR_FILE_PRINT\",\"10101\":\"TELEMETRY_ASSOCIATION_PROCESS_IMAGE_FILE\",\"10102\":\"TELEMETRY_ASSOCIATION_AUTO_RUN_KEY_FULL_PATH\",\"10103\":\"TELEMETRY_ASSOCIATION_HOST_PROC_CMD_FULL_PATH\",\"10104\":\"TELEMETRY_ASSOCIATION_SERVICE_DLL\",\"10105\":\"TELEMETRY_ASSOCIATION_ARCHIVE_FILE\",\"10106\":\"TELEMETRY_ASSOCIATION_BROWSER_PROCESS\"}"
@@ -113,8 +116,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Matcher m = /([+-]\\d\\d:\\d\\d)$/.matcher(ctx.trend_micro_vision_one?.telemetry?.timezone ?: \"\");\nctx._tmp_timezone = m.find() ? m.group(1) : \"UTC\";\n"#
+                compiled_painless!(
+                    "8ee7dc2e520fead698b2eda0bc889bb971ca46caccff27f437649fb273257893",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 
@@ -1645,8 +1649,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.file == null) ctx.file = [:];\nctx.file.created = [\n  ctx.trend_micro_vision_one?.telemetry?.object_file_creation,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_creation,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_creation,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_creation\n];\nctx.file.created.removeIf(v -> v == null);\nif (ctx.file.created.size() == 1) ctx.file.created = ctx.file.created[0];\n"#
+                    compiled_painless!(
+                        "a950b064eed849706a09c2ea9bf1268cd2559ce0422bb7eaca786ff3b879e115",
+                        r#"{"params":null,"known":[{"CollectPresent":{"target":"file.created","sources":["trend_micro_vision_one.telemetry.object_file_creation","trend_micro_vision_one.telemetry.parent_file_creation","trend_micro_vision_one.telemetry.process_file_creation","trend_micro_vision_one.telemetry.src_file_creation"]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -1721,8 +1726,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.file == null) ctx.file = [:];\nctx.file.mtime = [\n  ctx.trend_micro_vision_one?.telemetry?.object_file_modified_time,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_modified_time,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_modified_time,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_modified_time\n];\nctx.file.mtime.removeIf(v -> v == null);\nif (ctx.file.mtime.size() == 1) ctx.file.mtime = ctx.file.mtime[0];\n"#
+                    compiled_painless!(
+                        "15a1e76622cee0995c4b8f3ed794411c72ff77567b3992738e6939cdd0765708",
+                        r#"{"params":null,"known":[{"CollectPresent":{"target":"file.mtime","sources":["trend_micro_vision_one.telemetry.object_file_modified_time","trend_micro_vision_one.telemetry.src_file_modified_time","trend_micro_vision_one.telemetry.process_file_modified_time","trend_micro_vision_one.telemetry.parent_file_modified_time"]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -1764,8 +1770,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.file == null) ctx.file = [:];\nctx.file.path = [\n  ctx.trend_micro_vision_one?.telemetry?.object_file_path,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_path\n];\nctx.file.path.removeIf(v -> v == null);\nif (ctx.file.path.size() == 1) ctx.file.path = ctx.file.path[0];\n"#
+                    compiled_painless!(
+                        "12b925492b6c14c94d78fb45db69bc238cce7b2b612cc03de678ed55654c4b74",
+                        r#"{"params":null,"known":[{"CollectPresent":{"target":"file.path","sources":["trend_micro_vision_one.telemetry.object_file_path","trend_micro_vision_one.telemetry.src_file_path"]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -1807,8 +1814,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.file == null) ctx.file = [:];\nctx.file.size = [\n  ctx.trend_micro_vision_one?.telemetry?.object_current_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.object_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_size\n];\nctx.file.size.removeIf(v -> v == null);\nif (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];\n"#
+                    compiled_painless!(
+                        "068906d0c56d8278918f08581d5477821edbe16531bdd511d02acb1617a10c25",
+                        r#"{"params":null,"known":[{"CollectPresent":{"target":"file.size","sources":["trend_micro_vision_one.telemetry.object_current_file_size","trend_micro_vision_one.telemetry.object_file_size","trend_micro_vision_one.telemetry.src_file_size","trend_micro_vision_one.telemetry.process_file_size","trend_micro_vision_one.telemetry.parent_file_size"]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -1970,8 +1978,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.process == null) ctx.process = [:];\nctx.process.command_line = [\n  ctx.trend_micro_vision_one?.telemetry?.process_cmd,\n  ctx.trend_micro_vision_one?.telemetry?.object_cmd\n];\nctx.process.command_line.removeIf(v -> v == null);\nif (ctx.process.command_line.size() == 1) ctx.process.command_line = ctx.process.command_line[0];\n"#
+                    compiled_painless!(
+                        "f8dd974f3a8d535553ea0dd8d3ad2edf1834c0b1c81f219dc990829d3074b32a",
+                        r#"{"params":null,"known":[{"CollectPresent":{"target":"process.command_line","sources":["trend_micro_vision_one.telemetry.process_cmd","trend_micro_vision_one.telemetry.object_cmd"]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -2056,8 +2065,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.process == null) ctx.process = [:];\nctx.process.name = [\n  ctx.trend_micro_vision_one?.telemetry?.process_name,\n  ctx.trend_micro_vision_one?.telemetry?.object_name\n];\nctx.process.name.removeIf(v -> v == null);\nif (ctx.process.name.size() == 1) ctx.process.name = ctx.process.name[0];\n"#
+                    compiled_painless!(
+                        "81f7c9110c1453a3ead45f198cea129fe3f682752f8069a3235d478d834eb789",
+                        r#"{"params":null,"known":[{"CollectPresent":{"target":"process.name","sources":["trend_micro_vision_one.telemetry.process_name","trend_micro_vision_one.telemetry.object_name"]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -2099,8 +2109,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.process == null) ctx.process = [:];\nctx.process.pid = [\n  ctx.trend_micro_vision_one?.telemetry?.process_pid,\n  ctx.trend_micro_vision_one?.telemetry?.object_pid\n];\nctx.process.pid.removeIf(v -> v == null);\nif (ctx.process.pid.size() == 1) ctx.process.pid = ctx.process.pid[0];\n"#
+                    compiled_painless!(
+                        "ac6eee19c67a6338b29f8f81a5dacae4969bc0aa396dc64b805b4273e9b29204",
+                        r#"{"params":null,"known":[{"CollectPresent":{"target":"process.pid","sources":["trend_micro_vision_one.telemetry.process_pid","trend_micro_vision_one.telemetry.object_pid"]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -2142,8 +2153,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.process == null) ctx.process = [:];\nctx.process.start = [\n  ctx.trend_micro_vision_one?.telemetry?.process_launch_time,\n  ctx.trend_micro_vision_one?.telemetry?.object_launch_time\n];\nctx.process.start.removeIf(v -> v == null);\nif (ctx.process.start.size() == 1) ctx.process.start = ctx.process.start[0];\n"#
+                    compiled_painless!(
+                        "c09b04fe8c40cc1a4ac4208f1981c6a89c1adf3b2224a16291c44454d22937d5",
+                        r#"{"params":null,"known":[{"CollectPresent":{"target":"process.start","sources":["trend_micro_vision_one.telemetry.process_launch_time","trend_micro_vision_one.telemetry.object_launch_time"]}}]}"#
                     ),
                 )?;
                 Ok(())

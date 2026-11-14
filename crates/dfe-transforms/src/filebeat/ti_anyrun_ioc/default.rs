@@ -155,8 +155,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def value = ctx.stix.confidence; if (value == 0) {\n  ctx.threat.indicator.confidence = \"None\";\n} else if (value >= 1 && value <= 29) {\n  ctx.threat.indicator.confidence = \"Low\";\n} else if (value >= 30 && value <= 69) {\n  ctx.threat.indicator.confidence = \"Medium\";\n} else if (value >= 70 && value <= 100) {\n  ctx.threat.indicator.confidence = \"High\";\n} else {\n  ctx.threat.indicator.confidence = \"Not Specified\";\n}\n"#
+                    compiled_painless!(
+                        "3c33adfee08c99c85e013c58ea25a43edcc7792fb0460baa01c9089227d24b58",
+                        r#"{"params":null,"known":[{"BandLadder":{"subject":"stix.confidence","arms":[[{"bounds":[{"op":"Eq","scaled":0}],"all":true},{"Text":"None"}],[{"bounds":[{"op":"Ge","scaled":1000},{"op":"Le","scaled":29000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":30000},{"op":"Le","scaled":69000}],"all":true},{"Text":"Medium"}],[{"bounds":[{"op":"Ge","scaled":70000},{"op":"Le","scaled":100000}],"all":true},{"Text":"High"}]],"default":{"Text":"Not Specified"},"absent":null,"target":"threat.indicator.confidence"}}]}"#
                     ),
                 )?;
             }
@@ -225,8 +226,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ZonedDateTime ioc_expiration_date; ZonedDateTime updated_at; def dur = ctx._conf.ioc_expiration_duration;\nif (ctx.threat.indicator.last_seen != null) {\n  updated_at = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n} else { \n  updated_at = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n} \n\nif (dur instanceof String){\n  String time_unit = dur.substring(dur.length() -  1, dur.length());\n  String time_value = dur.substring(0, dur.length() - 1);\n  if (time_unit == 'd') {\n    ioc_expiration_date = updated_at.plusDays(Long.parseLong(time_value));\n  } else if (time_unit == 'h') {\n    ioc_expiration_date = updated_at.plusHours(Long.parseLong(time_value));\n  } else if (time_unit == 'm') {\n    ioc_expiration_date = updated_at.plusMinutes(Long.parseLong(time_value));\n  } else {\n    if (ctx.error == null) {\n      ctx.error = new HashMap();\n    }\n    if (ctx.error.message == null) {\n      ctx.error.message = new ArrayList();\n    }\n    ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n    ioc_expiration_date = updated_at.plusDays(90L);\n  }\n} else {\n    ioc_expiration_date = updated_at.plusDays(90L);\n}\nctx.stix.ioc_expiration_date = ioc_expiration_date;\n"#
+                        compiled_painless!(
+                            "c0f93d1ff7beec979ed399f4dd46ed9a57caf3d710fd1c611affae9da41c96e6",
+                            r#"{"params":null,"known":[{"IocExpiry":{"duration":"_conf.ioc_expiration_duration","default_duration":null,"bases":["threat.indicator.last_seen","threat.indicator.first_seen"],"default_days":90,"settle_seconds":0,"invalid_message":"invalid ioc_expiration_duration: using default 90 days","target":"stix.ioc_expiration_date"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -269,8 +271,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.stix.valid_until != null) {\n  ctx.stix.ioc_expiration_reason = params.valid_until;\n} else if (ctx.stix.revoked != null && ctx.stix.revoked == true) {\n  ctx.stix.ioc_expiration_reason = params.revoked;\n} else {\n  ctx.stix.ioc_expiration_reason = params.default;\n}\n"#
+                    compiled_painless!(
+                        "21f93e062a5d3a9ca6e7fa3f6a6b1a7e84fc9b80fb5bc1d7e4557b58392d2a07",
+                        r#"{"params":{"GuardedParamsRow":{"target":"stix.ioc_expiration_reason","arms":[["stix.valid_until",null,"valid_until"],["stix.revoked",true,"revoked"]],"fallback":"default"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"valid_until\":\"Expiration set from valid_until field\",\"revoked\":\"Expiration set from revoked field\",\"default\":\"Expiration set by Elastic from the integration's parameter `IOC Expiration Duration`\"}"
@@ -809,8 +812,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"void unescape(Object obj) {\n  if (obj instanceof Map) {\n    for (entry in ((Map)obj).entrySet()) {\n      Object value = entry.getValue();\n      unescape(value);\n      if (value instanceof String) {\n        entry.setValue(((String)value).replace('\\\\\\\\', '\\\\'));\n      }\n    }\n  } else if (obj instanceof List) {\n    for (int i = 0; i < ((List)obj).size(); i++) {\n      Object value = ((List)obj).get(i);\n      unescape(value);\n      if (value instanceof String) {\n        ((List)obj).set(i, ((String)value).replace('\\\\\\\\', '\\\\'));\n      }\n    }\n  }\n} unescape(ctx);\n"#
+                compiled_painless!(
+                    "34c13ee13bbaacc1d35bd32447461390592a901f717e548c5ae8d0d447009caf",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

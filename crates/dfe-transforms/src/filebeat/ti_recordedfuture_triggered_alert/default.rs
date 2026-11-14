@@ -433,8 +433,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.related = ctx.related ?: [:];\ndef ipList = new ArrayList();\nfor (data in ctx.recordedfuture.triggered_alert.entities) {\n  if (data.type != null && data.name != null && data.type.toLowerCase() == 'ipaddress' && !data.name.contains(\"/\")) {\n    ipList.add(data.name);\n  }\n}\nctx.related.put('ip', ipList);"#
+                    compiled_painless!(
+                        "0f5e891702f537498da88922a6a78010e1d1bbd6279150b14d5d533f8cc3a716",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

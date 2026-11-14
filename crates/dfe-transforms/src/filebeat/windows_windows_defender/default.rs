@@ -191,8 +191,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx?.event?.category instanceof List) {\n  for (category in ctx.event.category) {\n    if (category == 'configuration' && ctx?.event?.code == '5007') {\n      ctx.event.type = ['change'];\n      break;\n    }\n  }\n}\nif (ctx?.event?.type == null && ctx?.event?.category instanceof List) {\n  for (category in ctx.event.category) {\n    if (category == 'malware' || category == 'file' || category == 'process') {\n      ctx.event.type = ['info'];\n      break;\n    }\n  }\n}\nif (ctx?.event?.type == null && ctx?.event?.category instanceof List) {\n  for (category in ctx.event.category) {\n    if (category == 'process') {\n      ctx.event.type = ['start'];\n      break;\n    }\n  }\n}\n"#
+                compiled_painless!(
+                    "cabb695273b4bd417ff725044e4b29c5c1a56a19548accb7f0ee47a953cda170",
+                    r#"{"params":null,"known":[{"CategoryTypeLadder":[{"list":"event.category","literals":["configuration"],"extras":[["event.code","5007"]],"target":"event.type","values":["change"],"only_if_unset":false},{"list":"event.category","literals":["malware","file","process"],"extras":[],"target":"event.type","values":["info"],"only_if_unset":true},{"list":"event.category","literals":["process"],"extras":[],"target":"event.type","values":["start"],"only_if_unset":true}]}]}"#
                 ),
             )?;
 

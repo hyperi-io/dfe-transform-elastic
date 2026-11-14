@@ -50,8 +50,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.containsKey('id')) { ctx.json.id = ctx.remove('id'); }\nif (ctx.containsKey('timestamp')) { ctx.json.timestamp = ctx.remove('timestamp'); }\nif (ctx.containsKey('data')) { ctx.json.data = ctx.remove('data'); }"#
+                    compiled_painless!(
+                        "30f5dfb289e7b9cf4888a0118ad8346585c9fddfd5207cc54f6638b2cbca4ec0",
+                        r#"{"params":null,"known":[{"MoveKeys":[["id","json.id"],["timestamp","json.timestamp"],["data","json.data"]]}]}"#
                     ),
                 )?;
             }
@@ -923,7 +924,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "a559077c3ae6a50a4c23393e7766dc0bd018f855ad45b63a9dff41c5dd875a75",
+                        r#"{"params":{"RowOrDefaults":{"subject":"event.action","table":"exact","prelude":[],"columns":[{"target":"event.kind","member":"kind","only_if_unset":false,"empty":"Verbatim"},{"target":"event.category","member":"category","only_if_unset":false,"empty":"Verbatim"},{"target":"event.type","member":"type","only_if_unset":false,"empty":"Verbatim"}],"defaults":[["event.kind","event"],["event.category",["configuration","iam"]],["event.type",["creation"]]]}},"known":[{"GuardedCopy":{"statements":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}},{"Literal":{"Set":{"path":"event.category","value":{"Literal":["configuration","iam"]}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["creation"]}}}}]}}],"whole":false}}]}"#,
                         r#"def action = ctx.event.action;\ndef m = params.exact.get(action);\nif (m != null) {\n  ctx.event.kind = m.kind;\n  ctx.event.category = new ArrayList(m.category);\n  ctx.event.type = new ArrayList(m.type);\n} else {\n  ctx.event.kind = 'event';\n  ctx.event.category = ['configuration', 'iam'];\n  ctx.event.type = ['creation'];\n}"#
                     ),
                     cached_params!(

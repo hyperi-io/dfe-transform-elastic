@@ -1011,8 +1011,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.event?.action?.contains('limit shared folder') == true) {\n  int indx = ctx.lastpass.event_report.data.original.lastIndexOf(' ');\n  String str = ctx.lastpass.event_report.data.original.substring(0,indx)+ ',' + ctx.lastpass.event_report.data.original.substring(indx+1);\n  ctx._temp = str;\n}\n"#
+                compiled_painless!(
+                    "bb0787215942f145792511049b48046572846c5ee41caddb419999c1b5189aba",
+                    r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"lastpass.event_report.data.original","target":"lastpass.event_report.data.original.lastIndexOf","separator":" ","whole_when_absent":false}}]}"#
                 ),
             )?;
 

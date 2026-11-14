@@ -276,8 +276,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.url = \"https://app.wiz.io/findings/configuration-findings/cloud#~(filters~(status~()~rule~(equals~(~'\" + ctx.json.rule.id + \")))~groupBy~(~)~entity~(~'\" + ctx.event.id + \"*2cCONFIGURATION_FINDING))\";\n"#
+                    compiled_painless!(
+                        "b3576a0ed1fe4c6a4c3b03765cfb6f25909e8121d6223d7201935e2440dc8b7d",
+                        r#"{"params":null,"known":[{"ConcatAssignment":{"target":"event.url","terms":[{"Literal":"https://app.wiz.io/findings/configuration-findings/cloud#~(filters~(status~()~rule~(equals~(~'"},{"Field":"json.rule.id"},{"Literal":")))~groupBy~(~)~entity~(~'"},{"Field":"event.id"},{"Literal":"*2cCONFIGURATION_FINDING))"}]}}]}"#
                     ),
                 )?;
             }

@@ -233,8 +233,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.host.os.name instanceof List && ctx.host.os.name.size() == 1)\n    ctx.host.os.name = ctx.host.os.name[0];\nif (ctx.host.os.version instanceof List && ctx.host.os.version.size() == 1)\n    ctx.host.os.version = ctx.host.os.version[0];"#
+                    compiled_painless!(
+                        "9e8e3ec533b117be2ce709d23d6a427dfcd970667e786cc0b6ca1a6155f90097",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"host.os.name","target":"host.os.name","only_if_unset":false,"only_if_single":true,"consumes_array":false},{"array":"host.os.version","target":"host.os.version","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -275,8 +276,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.url.original instanceof List && ctx.url.original.size() == 1)\n    ctx.url.original = ctx.url.original[0];"#
+                    compiled_painless!(
+                        "cedd2657f48613f5eeda466f73d0cd26a4f6f09fe352b0181800b37c7da98efe",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"url.original","target":"url.original","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -376,8 +378,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.urlfiltering.client.version instanceof List && ctx.checkpoint_harmony_endpoint.urlfiltering.client.version.size() == 1)\n    ctx.checkpoint_harmony_endpoint.urlfiltering.client.version = ctx.checkpoint_harmony_endpoint.urlfiltering.client.version[0];"#
+                    compiled_painless!(
+                        "04d1ea6d6c786891af7b4928a3d0d010146679079e29de94104088ab54d63ed6",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.urlfiltering.client.version","target":"checkpoint_harmony_endpoint.urlfiltering.client.version","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -388,8 +391,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.urlfiltering.web_client_type instanceof List && ctx.checkpoint_harmony_endpoint.urlfiltering.web_client_type.size() == 1)\n    ctx.checkpoint_harmony_endpoint.urlfiltering.web_client_type = ctx.checkpoint_harmony_endpoint.urlfiltering.web_client_type[0];"#
+                    compiled_painless!(
+                        "4e55f57c290c7bdf269c8aa8b838941428d3881341dff0464edf7caa41351722",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.urlfiltering.web_client_type","target":"checkpoint_harmony_endpoint.urlfiltering.web_client_type","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -424,8 +428,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.urlfiltering.app.properties instanceof List && ctx.checkpoint_harmony_endpoint.urlfiltering.app.properties.size() == 1)\n    ctx.checkpoint_harmony_endpoint.urlfiltering.app.properties = ctx.checkpoint_harmony_endpoint.urlfiltering.app.properties[0];"#
+                    compiled_painless!(
+                        "a272f13f5477283fdfdbc24c72492a98cec17c8018f482e719e853782f6f8edc",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.urlfiltering.app.properties","target":"checkpoint_harmony_endpoint.urlfiltering.app.properties","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }

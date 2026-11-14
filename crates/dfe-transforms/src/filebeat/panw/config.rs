@@ -366,7 +366,10 @@ impl Transform for Config {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(r#"ctx.event.action = params.get(ctx.panw.panos.cmd);"#),
+                        compiled_painless!(
+                            "c2ac03560e636cda2a42fcdf25a8414fb4b79918783dbc9abcc4274c6b5c6742",
+                            r#"{"params":{"LookupNormalise":[{"key":"panw.panos.cmd","fold":"None","target":"event.action"},{"statements":[],"whole":false}]},"known":[]}"#
+                        ),
                         cached_params!(
                             "{\"add\":\"cmd-add\",\"clone\":\"cmd-clone\",\"commit\":\"cmd-commit\",\"delete\":\"cmd-delete\",\"edit\":\"cmd-edit\",\"move\":\"cmd-move\",\"rename\":\"cmd-rename\",\"set\":\"cmd-set\"}"
                         ),

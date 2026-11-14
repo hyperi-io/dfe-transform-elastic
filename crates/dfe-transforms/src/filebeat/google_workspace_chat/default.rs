@@ -180,8 +180,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\ndef category = params.get(ctx.google_workspace.chat.name);\nif (category == null) {\n  ctx.event.remove('category');\n} else {\n  ctx.event.category = [category];\n}"#
+                        compiled_painless!(
+                            "6bd217f496022cb77c5865b33dde492f4a978189a6718f34d7d20922683bcb10",
+                            r#"{"params":{"MemberLookup":{"key":"google_workspace.chat.name","table":null,"fold":"None","target":"event.category","wrap":true,"miss":"Remove","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"add_room_member\":\"configuration\",\"attachment_download\":\"file\",\"attachment_upload\":\"file\",\"block_room\":\"configuration\",\"block_user\":\"configuration\",\"emoji_created\":\"configuration\",\"emoji_deleted\":\"configuration\",\"history_turned_off\":\"configuration\",\"history_turned_on\":\"configuration\",\"remove_room_member\":\"configuration\",\"room_created\":\"configuration\",\"room_deleted\":\"configuration\",\"room_details_updated\":\"configuration\",\"room_left\":\"configuration\",\"room_name_updated\":\"configuration\",\"room_unblocked\":\"configuration\",\"unread_timestamp_updated\":\"configuration\",\"user_unblocked\":\"configuration\",\"role_updated\":\"iam\"}"
@@ -229,8 +230,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\ndef type = params.get(ctx.google_workspace.chat.name);\nif (type == null) {\n  ctx.event.remove('type');\n} else {\n  ctx.event.type = [type];\n}"#
+                        compiled_painless!(
+                            "40f626e9192e0b60e3c559ca04dd5709dab98ddfb58c8901807c1e03c758d77f",
+                            r#"{"params":{"MemberLookup":{"key":"google_workspace.chat.name","table":null,"fold":"None","target":"event.type","wrap":true,"miss":"Remove","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"add_room_member\":\"change\",\"attachment_download\":\"info\",\"attachment_upload\":\"info\",\"block_room\":\"change\",\"block_user\":\"change\",\"conversation_read\":\"access\",\"custom_status_updated\":\"change\",\"direct_message_started\":\"info\",\"emoji_created\":\"creation\",\"emoji_deleted\":\"deletion\",\"history_turned_off\":\"change\",\"history_turned_on\":\"change\",\"invite_accept\":\"info\",\"invite_decline\":\"info\",\"invite_send\":\"info\",\"message_deleted\":\"deletion\",\"message_edited\":\"change\",\"message_posted\":\"creation\",\"message_report_resolved\":\"change\",\"message_reported\":\"info\",\"reaction_added\":\"info\",\"reaction_removed\":\"info\",\"remove_room_member\":\"change\",\"role_updated\":\"change\",\"room_created\":\"creation\",\"room_deleted\":\"deletion\",\"room_details_updated\":\"change\",\"room_left\":\"change\",\"room_name_updated\":\"change\",\"room_unblocked\":\"change\",\"unread_timestamp_updated\":\"change\",\"user_unblocked\":\"change\"}"
@@ -753,8 +755,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def fileName = ctx.google_workspace.chat.filename;\nctx.file.extension = fileName.substring(fileName.lastIndexOf('.') + 1);"#
+                    compiled_painless!(
+                        "2734fb3ff4b0dff85e2a0b98ac463d10a86d6128fe5d56f47826d4c5189e8200",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

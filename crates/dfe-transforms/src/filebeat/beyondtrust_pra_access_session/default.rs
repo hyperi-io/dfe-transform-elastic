@@ -757,7 +757,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "a2dbe588cef19344d2e5c6c52e8f81535823f037982906743d266d011255fc98",
+                            r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[["Never"]],"then":[{"Literal":{"Set":{"path":"event.category","value":{"Literal":["session"]}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}},"Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                             r#"if (params.get(ctx.event.action) == null) {\n  ctx.event.category = [\"session\"]; // As each event belongs to a session\n  ctx.event.type = [\"info\"]; // Remaining are of type info\n  return;\n}\n // As each event belongs to a session\ndef event_category = new ArrayList([\"session\"]); params.get(ctx.event.action).forEach((k, v) -> {\n    if (k.equals(\"category\")) {\n      event_category.addAll(v);\n    }else{\n        ctx.event[k] = v;\n    }  \n}); ctx.event.category = event_category"#
                         ),
                         cached_params!(

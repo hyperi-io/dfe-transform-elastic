@@ -23,8 +23,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def alerts = []; def warnings = []; for (alarm in ctx.vsphere.host.triggered_alarms) {\n    if (alarm.status == 'red') {\n    alerts.add(alarm.name);\n    }\n    if (alarm.status == 'yellow') {\n    warnings.add(alarm.name);\n    }\n} ctx.alerts = alerts; ctx.warnings = warnings\n"#
+                    compiled_painless!(
+                        "91c801ae13ded4f3911e1f3abfae0c9e16caa25795b791bc50717cd6e01747a8",
+                        r#"{"params":null,"known":[{"CollectByLiteral":{"list":"vsphere.host.triggered_alarms","tested":"status","arms":[{"literal":"red","member":"name","target":"alerts"},{"literal":"yellow","member":"name","target":"warnings"}]}}]}"#
                     ),
                 )?;
             }
@@ -45,8 +46,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"float used_bytes = ctx.vsphere.host.memory.used.bytes; float total_bytes = ctx.vsphere.host.memory.total.bytes; float used_memory_pct = used_bytes/total_bytes; ctx.vsphere.host.memory.used.pct = used_memory_pct; \n"#
+                    compiled_painless!(
+                        "4104c9bd9e63fc91ff3fb49b403eebdc4e9ea521e31114dcd7342d5fb09ad3cf",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -59,8 +61,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"float used_cpu = ctx.vsphere.host.cpu.used.mhz; float total_cpu = ctx.vsphere.host.cpu.total.mhz; float used_cpu_pct = used_cpu/total_cpu; ctx.vsphere.host.cpu.used.pct = used_cpu_pct;\n"#
+                    compiled_painless!(
+                        "d67a7eb6c4e28b369f83d828f296e77959500b0a0a4e201d7c6dd058bd12dce5",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

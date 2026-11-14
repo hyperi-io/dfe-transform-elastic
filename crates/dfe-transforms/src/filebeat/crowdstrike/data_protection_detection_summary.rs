@@ -556,8 +556,9 @@ impl Transform for DataProtectionDetectionSummary {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"Instant event_start = ZonedDateTime.parse(ctx.event.start).toInstant();\nInstant event_end = ZonedDateTime.parse(ctx.event.end).toInstant();\nctx.event['duration'] = ChronoUnit.NANOS.between(event_start, event_end);\n"#
+                        compiled_painless!(
+                            "1496daf8f08c6652a2df3a98d37315861f71afac938495737d22336a18d16689",
+                            r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -676,8 +677,9 @@ impl Transform for DataProtectionDetectionSummary {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def idx = ctx.crowdstrike.event.Filename.lastIndexOf('.');\nif (idx != -1) {\n  ctx.file = ctx.file ?: [:];\n  ctx.file.extension = ctx.crowdstrike.event.Filename.substring(idx + 1).toLowerCase();\n}"#
+                        compiled_painless!(
+                            "9a72b3b61b62f76ff327d25e426b686cdbd9f3f072358d568a2258cf0247e5d5",
+                            r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"crowdstrike.event.Filename","target":"file.extension","separator":".","whole_when_absent":true}}]}"#
                         ),
                     )?;
                     Ok(())

@@ -2375,7 +2375,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
+                            compiled_painless!(
+                                "18ae6493fc745e614fdd9ebbbc981c1a022e7e799ad676b21a9f307f32065d93",
+                                r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                                 r#"ctx.event = ctx.event ?: [:];\nString risk_score_value = ctx.netskope.alert_v2.severity;\nif (risk_score_value.equalsIgnoreCase(\"low\") || risk_score_value.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (risk_score_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (risk_score_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (risk_score_value.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
                             ),
                         )?;
@@ -5606,8 +5608,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"ctx.event = ctx.event ?: [:];\nctx.event.severity = params.get(ctx.netskope.events_v2.severity.toLowerCase());"#
+                            compiled_painless!(
+                                "48cc001a630172a6eb9d3d53152f9059704d450e2ca2feb8a51be6fdb06e9ce7",
+                                r#"{"params":{"LookupNormalise":[{"key":"netskope.events_v2.severity","fold":"Lower","target":"event.severity"},{"statements":[],"whole":false}]},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"informational\":21,\"low\":21,\"medium\":47,\"high\":73}"

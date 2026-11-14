@@ -29,7 +29,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "46de568aa0d0bae7f2c7f161130f7bdd17645af1e92d11bc8e69106d916618a2",
+                        r#"{"params":"Replace","known":[]}"#,
                         r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#
                     ),
                     cached_params!("{\"empty_field_name\":\"\\\"\\\":\\\"\\\",\"}"),
@@ -387,7 +389,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "9f9c90e4f91775fe67ee2632e8c138fcb8957f6e350220f240467745e1aed012",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#
                     ),
                     cached_params!("{\"param_nano\":1000000}"),
@@ -404,7 +408,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "582928c192d0fd9ce5e1ed7573402b0796aee30e313bb9f0e97c40aad870636e",
+                        r#"{"params":null,"known":["AzureEventCategory"]}"#,
                         r#"if (ctx?.azure?.springcloudlogs?.properties?.eventCategory != null) {\n  ctx.azure.springcloudlogs.event_category = ctx.azure.springcloudlogs.properties.eventCategory;\n} else if (ctx?.azure?.springcloudlogs?.properties?.policies != null)  {\n  ctx.azure.springcloudlogs.event_category = 'Policy';\n} else {\n  ctx.azure.springcloudlogs.event_category = 'Administrative';\n}"#
                     ),
                 )?;
@@ -570,7 +576,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "4423cb5af4333652ab48dc9de3087d290cd79d7455e6a655fa086d638e078920",
+                    r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Compare":{"path":"azure.springcloudlogs.category","wanted":"Null","negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                     r#"if (ctx?.azure?.springcloudlogs?.category == null) {\n  return;\n} def category = ctx.azure.springcloudlogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(

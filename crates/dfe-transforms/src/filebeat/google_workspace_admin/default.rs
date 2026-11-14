@@ -746,8 +746,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.google_workspace.admin == null) {\n  ctx.google_workspace.admin = new HashMap();\n} for (int i = 0; i < ctx.json.events.parameters.length; ++i) {\n  if (ctx.json.events.parameters[i].value != null) {\n    ctx.google_workspace.admin[ctx.json.events.parameters[i].name] = ctx.json.events.parameters[i].value;\n  }\n  if (ctx.json.events.parameters[i].intValue != null) {\n    ctx.google_workspace.admin[ctx.json.events.parameters[i].name] = ctx.json.events.parameters[i].intValue;\n  }\n  if (ctx.json.events.parameters[i].multiValue != null) {\n    ctx.google_workspace.admin[ctx.json.events.parameters[i].name] = ctx.json.events.parameters[i].multiValue;\n  }\n  if (ctx.json.events.parameters[i].messageValue != null) {\n    ctx.google_workspace.admin[ctx.json.events.parameters[i].name] = ctx.json.events.parameters[i].messageValue;\n  }\n}\n"#
+                    compiled_painless!(
+                        "04ee596c5089dc4a50c80c100471cd68b7357c04e06ad28be76fa57f9451354c",
+                        r#"{"params":null,"known":[{"NameValueFold":{"source":"json.events.parameters","target":"google_workspace.admin","key_member":"name","value_member":"value"}}]}"#
                     ),
                 )?;
             }
@@ -763,8 +764,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"for (int i = 0; i < ctx.google_workspace.admin.SETTING_METADATA.parameter.length; ++i) {\n  def value = ctx.google_workspace.admin.SETTING_METADATA.parameter[i].value;\n  if (value != null) {\n    ctx.google_workspace.admin.SETTING_METADATA[ctx.google_workspace.admin.SETTING_METADATA.parameter[i].name] = value;\n  }\n}\n"#
+                        compiled_painless!(
+                            "574803c8f22729a11a6fc75372717c9ff8896bbbc8c92c90553e116dbe966e33",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -1945,8 +1947,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.source.user.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} ctx.user.name = splitmail[0]; ctx.source.user.name = splitmail[0]; ctx.user.domain = splitmail[1]; ctx.source.user.domain = splitmail[1];\n"#
+                    compiled_painless!(
+                        "0a7b50a87773f444b7e4fec2eac1bf08fb6a7b27ab9eb53a0632da53a5a8ce8a",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"source.user.email","names":["user.name","source.user.name"],"domains":["user.domain","source.user.domain"],"emails":[],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -1967,8 +1970,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.google_workspace.admin.group.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.group == null) {\n  ctx.group = new HashMap();\n} ctx.group.name = splitmail[0]; ctx.group.domain = splitmail[1];\n"#
+                    compiled_painless!(
+                        "e2e6047f560a6a069685a31d4c5a64bc9247f8924eb0f1ee7f4dec516c78022e",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"google_workspace.admin.group.email","names":["group.name"],"domains":["group.domain"],"emails":[],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -1989,8 +1993,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.google_workspace.admin.user.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} if (ctx.user.target == null) {\n  ctx.user.target = new HashMap();\n} ctx.user.target.name = splitmail[0]; ctx.user.target.domain = splitmail[1]; ctx.user.target.email = ctx.google_workspace.admin.user.email;\n"#
+                    compiled_painless!(
+                        "4d615174aff9d05c0261776473b86bb86159e461984f136e09a25b3c188979ae",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"google_workspace.admin.user.email","names":["user.target.name"],"domains":["user.target.domain"],"emails":["user.target.email"],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -2014,8 +2019,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ZonedDateTime end = ZonedDateTime.parse(ctx.event.end); ctx.event.duration = ChronoUnit.NANOS.between(start, end);"#
+                    compiled_painless!(
+                        "394b33a528b0a7715d1280fdd377528126d2fcbd7143b24d28469bcce85ff84f",
+                        r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                     ),
                 )?;
             }

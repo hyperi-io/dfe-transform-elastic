@@ -199,8 +199,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Map annotations = ctx['kubernetes']['audit']['annotations']; Map updatedAnnotation = new HashMap(); for (String key: annotations.keySet()) {\n    updatedAnnotation[key.replace('.', '_')] = annotations[key];\n    if (key == 'authorization.k8s.io/decision') {\n        if (annotations['authorization.k8s.io/decision'] == 'allow') {\n            ctx.event.outcome = 'success';\n        } else if (annotations['authorization.k8s.io/decision'] == 'forbid') {\n            ctx.event.outcome = 'failure';\n        }\n    }\n} ctx['kubernetes']['audit']['annotations'] = updatedAnnotation"#
+                    compiled_painless!(
+                        "15f2a7dc09b2428edf55df7593a862574cee51690d577d9c8164a1fdc5766ef1",
+                        r#"{"params":null,"known":["ReplaceDotsInKeys"]}"#
                     ),
                 )?;
             }

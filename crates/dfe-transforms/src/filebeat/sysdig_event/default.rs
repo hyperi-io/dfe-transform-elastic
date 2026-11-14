@@ -1309,8 +1309,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def parseDate(def rawtimestamp) {\n  long timestamp;\n  if (rawtimestamp instanceof String) {\n    timestamp = Long.parseLong(rawtimestamp);\n  } else if (rawtimestamp instanceof long) {\n    timestamp = (long) rawtimestamp;\n  }\n  if (String.valueOf(timestamp).length() == 19) {\n    long epoch = timestamp / 1000000000L;\n    long seconds = timestamp % 1000000000L;\n    return Instant.ofEpochSecond(epoch, seconds).atZone(ZoneOffset.UTC);\n  }\n  return '';\n} if (ctx.json?.timestamp != null) {\n  ctx.json.timestamp = parseDate(ctx.json.timestamp);\n} if (ctx.sysdig?.event?.content?.fields?.proc?.pid_ts != null) {\n  ctx.sysdig.event.content.fields.proc.pid_ts = parseDate(ctx.sysdig.event.content.fields.proc.pid_ts);\n} if (ctx.sysdig?.event?.content?.fields?.proc?.ppid_ts != null) {\n  ctx.sysdig.event.content.fields.proc.ppid_ts = parseDate(ctx.sysdig.event.content.fields.proc.ppid_ts);\n}\n"#
+                    compiled_painless!(
+                        "6e3451701810425893258bf9a23a3f1f5f895de7eed426109f55740bd23f5ff0",
+                        r#"{"params":null,"known":[{"EpochNanosToDateTime":{"fields":["json.timestamp","sysdig.event.content.fields.proc.pid_ts","sysdig.event.content.fields.proc.ppid_ts"]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -1928,8 +1929,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.threat = ctx.threat ?: [:]; ctx.threat.tactic = ctx.threat.tactic ?: [:]; ctx.threat.technique = ctx.threat.technique ?: [:]; ctx.threat.technique.subtechnique = ctx.threat.technique.subtechnique ?: [:]; ctx.threat.tactic.id = ctx.threat.tactic.id ?: []; ctx.threat.technique.id = ctx.threat.technique.id ?: []; ctx.threat.technique.subtechnique.id = ctx.threat.technique.subtechnique.id ?: []; ctx.threat.tactic.name = ctx.threat.tactic.name ?: []; ctx.threat.technique.name = ctx.threat.technique.name ?: []; ctx.threat.technique.subtechnique.name = ctx.threat.technique.subtechnique.name ?: []; Pattern pattern = /MITRE_(T[A-Z]\\d{4})_(\\w+)|MITRE_(T\\d{4}(?:\\.\\d{3})?)_(\\w+)/; for (int i = 0; i < ctx.sysdig.event.content.rule_tags.size(); i++) {\n  def tag = ctx.sysdig.event.content.rule_tags[i];\n  def matcher = pattern.matcher(tag);\n  if (matcher.find()) {\n    if (matcher.group(1) != null && matcher.group(2) != null) {\n      ctx.threat.tactic.id.add(matcher.group(1));\n      ctx.threat.tactic.name.add(matcher.group(2));\n    } else if (matcher.group(3) != null && matcher.group(4) != null) {\n      if (matcher.group(3).contains('.')) {\n        ctx.threat.technique.subtechnique.id.add(matcher.group(3));\n        ctx.threat.technique.subtechnique.name.add(matcher.group(4));\n      } else {\n        ctx.threat.technique.id.add(matcher.group(3));\n        ctx.threat.technique.name.add(matcher.group(4));\n      }\n    }\n  }\n}\n"#
+                        compiled_painless!(
+                            "1351179af7e0115ddf3cc96bcd16c058234ca72dd649898c9459c2a057ede0ed",
+                            r#"{"params":null,"known":["CollectingLadder"]}"#
                         ),
                     )?;
                     Ok(())
@@ -2534,8 +2536,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.related = ctx.related ?: [:]; ctx.related.hash = ctx.related.hash ?: []; String digest = ctx.sysdig.event.labels.container.image.digest; int index = digest.indexOf(':'); String hash = digest.substring(index + 1); ctx.related.hash.add(hash);"#
+                        compiled_painless!(
+                            "6b81fdc103933f8f1b89b0e60ab29eefa3869225f6bcf1f9a1eb86af7fe506ea",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -2973,8 +2976,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String severity_value; if (ctx.event.severity >= 0 && ctx.event.severity <= 3) {\n  severity_value = \"High\";\n} else if (ctx.event.severity >= 4 && ctx.event.severity <= 5) {\n  severity_value = \"Medium\";\n} else if (ctx.event.severity == 6) {\n  severity_value = \"Low\";\n} else if (ctx.event.severity == 7) {\n  severity_value = \"Info\";\n} if (severity_value != null) {\n  ctx.sysdig.event.severity_value = severity_value;\n}\n"#
+                        compiled_painless!(
+                            "9b284f325fd5faea5f7cb55803eeca90917ee9d1abae987e6ab9c2fada863b8e",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

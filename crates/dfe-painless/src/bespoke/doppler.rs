@@ -155,7 +155,7 @@ fn promote_added_members(event: &mut Event, _params: &Value) {
 /// Every `doppler` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
-        hash: "3393144025c63c528ca2173e798933d25b1843b90b4c14b7d76fd778d8cc8a98",
+        hash: "cac35b05661399615e274177475e826063593c576fe575f34c5cecc7687c2eaa",
         source: "doppler",
         name: "reshape_secrets",
         run: reshape_secrets,

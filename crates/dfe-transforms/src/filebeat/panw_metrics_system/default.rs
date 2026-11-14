@@ -19,8 +19,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.panw != null && ctx.panw.system != null) {\n    if (ctx.panw.system.cpu != null) {\n        def cpuFields = ['user', 'system', 'nice', 'idle', 'wait', 'hi', 'system_int', 'steal'];\n        for (def fieldName : cpuFields) {\n            if (ctx.panw.system.cpu[fieldName] != null) {\n                ctx.panw.system.cpu[fieldName] = ctx.panw.system.cpu[fieldName] / 100.0;\n            }\n        }\n    }\n    if (ctx.panw.system.containsKey('filesystem.use_percent') && ctx.panw.system['filesystem.use_percent'] != null) {\n        ctx.panw.system['filesystem.use_percent'] = ctx.panw.system['filesystem.use_percent'] / 100.0;\n    }\n}\n"#
+                compiled_painless!(
+                    "413a9c642dcf3d57906708575b8d45242b47d150189e9875be5bf440ef8007dd",
+                    r#"{"params":null,"known":[{"RescaleFields":{"targets":["panw.system.cpu.user","panw.system.cpu.system","panw.system.cpu.nice","panw.system.cpu.idle","panw.system.cpu.wait","panw.system.cpu.hi","panw.system.cpu.system_int","panw.system.cpu.steal","panw.system.filesystem.use_percent"],"divisor":100,"round_unit":null}}]}"#
                 ),
             )?;
 

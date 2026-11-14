@@ -21,7 +21,9 @@ impl Transform for EcsCategoryType {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "8962e8a3469ba484d66dfb2281161eb5b508071fb5f57aa48aabf2cc8e2ad7c2",
+                        r#"{"params":"AddUniqueRow","known":[]}"#,
                         r#"def addUnique(List dst, List src) {\n  src = src ?: [];\n  if (src.length == 0) {\n    return dst ?: [];\n  }\n  HashSet s = new HashSet(dst ?: []);\n  s.addAll(src);\n  return new ArrayList(s);\n}\ndef p = params[ctx.okta.event_type];\nctx.event.type = addUnique(ctx.event.type, p.type);\nctx.event.category = addUnique(ctx.event.category, p.category);\nctx.tags = addUnique(ctx.tags, p.tags);"#
                     ),
                     cached_params!(

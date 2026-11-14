@@ -1231,7 +1231,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "4014e04cb18de945103ade47c5611f222ec4c9bb0b927b0e628c44d4485da440",
+                            r#"{"params":"FirstContainedMember","known":[]}"#,
                             r#"String os_type = ctx.cato_networks.event.os_type.toLowerCase();\nctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nfor (String os: params.os_type) {\n  if (os_type.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\nif (os_type.contains('centos') || os_type.contains('ubuntu')) {\n  ctx.host.os.put('type', 'linux');\n}\n"#
                         ),
                         cached_params!(
@@ -1529,8 +1531,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def sev = params.levels.get(ctx.cato_networks.event.risk_level);\nif (sev != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.severity = sev;\n}"#
+                    compiled_painless!(
+                        "37b3fabf950feeeae864b3717f3c32dee7b95b0cdd1438e48026ef5c798309c1",
+                        r#"{"params":{"MemberLookup":{"key":"cato_networks.event.risk_level","table":"levels","fold":"None","target":"event.severity","wrap":false,"miss":"Keep","literals":{"statements":[],"whole":true}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"levels\":{\"Low\":21,\"Medium\":47,\"High\":73,\"Critical\":99}}"

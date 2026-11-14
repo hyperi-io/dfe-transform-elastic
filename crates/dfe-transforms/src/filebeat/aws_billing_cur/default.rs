@@ -1665,8 +1665,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Map sortedTags = new TreeMap(); sortedTags.putAll(ctx.temp_tags_obj);\nStringBuilder sb = new StringBuilder(); sb.append('{');\nIterator it = sortedTags.entrySet().iterator(); while (it.hasNext()) {\n  Map.Entry pair = (Map.Entry)it.next();\n  sb.append('\"');\n  sb.append(pair.getKey());\n  sb.append('\"');\n  sb.append(':');\n  sb.append('\"');\n  sb.append(pair.getValue());\n  sb.append('\"');\n  if (it.hasNext()) {\n    sb.append(',');\n  }\n}\nsb.append('}'); ctx.aws_billing.cur.resource_tags = sb.toString();"#
+                    compiled_painless!(
+                        "ae1155fe531af748cca124130451468b0a65a69474ab78198678c2b4190dcdb6",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -1692,8 +1693,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Map sortedCostCategories = new TreeMap(); sortedCostCategories.putAll(ctx.temp_cost_category_obj);\nStringBuilder sb = new StringBuilder(); sb.append('{');\nIterator it = sortedCostCategories.entrySet().iterator(); while (it.hasNext()) {\n  Map.Entry pair = (Map.Entry)it.next();\n  sb.append('\"');\n  sb.append(pair.getKey());\n  sb.append('\"');\n  sb.append(':');\n  sb.append('\"');\n  sb.append(pair.getValue());\n  sb.append('\"');\n  if (it.hasNext()) {\n    sb.append(',');\n  }\n}\nsb.append('}'); ctx.aws_billing.cur.cost_category = sb.toString();"#
+                    compiled_painless!(
+                        "a65f27e7cee4a52e0f3e228a440607128348cadc374e802a91414ae41536a88c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -1733,8 +1735,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.original = 'sha1-'+ctx.event.original.sha1()+':'+ctx.event.original.length().toString();\n"#
+                    compiled_painless!(
+                        "3567f9d7c3b51975767b2a0a58678701a97b1c62215c653de82afccde8aa6e6c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

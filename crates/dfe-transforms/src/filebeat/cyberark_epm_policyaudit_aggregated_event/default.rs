@@ -575,8 +575,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def hash = ctx.cyberark_epm.policyaudit_aggregated_event.hash;\nif (ctx.file == null) {\n  ctx.put('file', new HashMap());\n}\nif (ctx.file.hash == null) {\n  ctx.file.put('hash', new HashMap());\n}\nif (hash.length() == 40) {\n  ctx.file.hash.sha1 = hash;\n} else if (hash.startsWith('sha1##') || hash.startsWith('SHA1##')) {\n  ctx.file.hash.sha1 = hash.substring(6);\n}"#
+                        compiled_painless!(
+                            "16b3cc79dfc608694a00e7db7aba4f3f900df438bc31c39158e336168120e869",
+                            r#"{"params":null,"known":[{"HashByWidthOrPrefix":{"source":"cyberark_epm.policyaudit_aggregated_event.hash","target":"file.hash.sha1","width":40,"prefixes":["sha1##","SHA1##"],"cut":6}}]}"#
                         ),
                     )?;
                     Ok(())

@@ -5,24 +5,7 @@
 //! records folded into one map.
 //!
 //! `google_secops` ships three such members on every detection and folds them all
-//! in one pass:
-//!
-//! ```painless
-//! String[] kvFields = new String[] {"detection_fields", "outcomes", "rule_labels"};
-//! for (def detection : ctx.google_secops.alert_v2.detection) {
-//!   for (def fieldName : kvFields) {
-//!     if (!(detection[fieldName] instanceof List)) { continue; }
-//!     def flat = new HashMap();
-//!     for (def entry : detection[fieldName]) {
-//!       if (entry?.key == null || entry.key == '') { continue; }
-//!       if (entry.value != null && entry.value != '') { flat[entry.key] = entry.value; }
-//!       else if (entry.source != null && entry.source != '') { flat[entry.key] = entry.source; }
-//!     }
-//!     if (flat.isEmpty()) { detection.remove(fieldName); }
-//!     else { detection[fieldName] = flat; }
-//!   }
-//! }
-//! ```
+//! in one pass.
 //!
 //! Distinct from `crate::common::KnownPattern::KeyValuePairs`, which folds ONE
 //! list at a document path and writes the fold back over it. That reader
@@ -39,7 +22,7 @@ use serde_json::{Map, Value};
 use crate::common::{matching_brace, painless_path};
 
 /// The list walked, the members folded, and the members of each entry read.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct MemberKvFold {
     /// The document path of the list of records.
     list: String,
@@ -261,7 +244,8 @@ fn stored(fold: &str, entry: &str, key: &str) -> Option<Vec<String>> {
     (!values.is_empty()).then_some(values)
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "member_kv_fold_tests.rs"]
 #[allow(
     clippy::unwrap_used,

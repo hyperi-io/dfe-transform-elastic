@@ -6,20 +6,7 @@
 //!
 //! The vendor ships one key carrying either a map or a scalar, and
 //! Elasticsearch's mapping needs a map either way -- so the pipeline normalises
-//! the scalar into a single-key map rather than declining it:
-//!
-//! ```painless
-//! for (def entity : ctx.trend_micro_vision_one.alert.impact_scope.entities) {
-//!   if (entity.containsKey('entity_value')) {
-//!     def ev = entity.remove('entity_value');
-//!     if (ev instanceof Map) {
-//!       entity.put('value', ev);
-//!     } else {
-//!       entity.put('value', ['account_value': ev]);
-//!     }
-//!   }
-//! }
-//! ```
+//! the scalar into a single-key map rather than declining it.
 //!
 //! Distinct from [`crate::typed_member_rename::TypedMemberRename`], which is
 //! the conditional half of the same idea: its type test decides WHETHER the key
@@ -37,7 +24,7 @@ use serde_json::{Map, Value};
 use crate::common::{if_block, painless_path};
 
 /// The list walked, the member renamed, and the key a scalar is wrapped under.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct MemberValueWrap {
     /// The document path of the list of records.
     list: String,
@@ -202,7 +189,8 @@ fn wrapped_put(body: &str, record: &str, local: &str) -> Option<(String, String)
         .then(|| (to.to_owned(), wrap.to_owned()))
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "member_value_wrap_tests.rs"]
 #[allow(
     clippy::unwrap_used,

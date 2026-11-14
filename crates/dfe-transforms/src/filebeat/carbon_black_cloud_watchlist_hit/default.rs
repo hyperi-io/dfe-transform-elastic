@@ -442,8 +442,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"void mapHashField(def ctx, def hashes, def key) {\n    for (hash in hashes) {\n        if (hash.length() == 32) {ctx['json'][key + '_md5'] = hash;}\n        if (hash.length() == 64) {ctx['json'][key + '_sha256'] = hash;}\n    }\n}\nif (ctx.json?.process_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.process_hash, 'process_hash');\n}\nif (ctx.json?.parent_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.parent_hash, 'parent_hash');\n}\n"#
+                compiled_painless!(
+                    "ee6ee206c75fb897d8b951be7c298655a080ba986d01cfc8dbcb5510dcbfedce",
+                    r#"{"params":null,"known":[{"HashesByLength":{"parent":"json","lists":[["json.process_hash","process_hash"],["json.parent_hash","parent_hash"]],"widths":[[32,"_md5"],[64,"_sha256"]]}}]}"#
                 ),
             )?;
 
@@ -851,8 +852,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (Map.Entry m : ctx.json.entrySet()) {\n  ctx.carbon_black_cloud.watchlist_hit[m.getKey()] = m.getValue();\n}\n"#
+                    compiled_painless!(
+                        "f3e375277caf5a4c9d80023c93042df346170dee253c680e250875bdb1359569",
+                        r#"{"params":null,"known":[{"MergeMapUp":{"parent":"carbon_black_cloud.watchlist_hit","source":"json","take":false,"collision":"Overwrite","drops":[]}}]}"#
                     ),
                 )?;
             }
@@ -862,8 +864,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx?.related?.user != null) {\n  ctx.related.user = new HashSet(ctx.related.user)\n}\nif (ctx?.related?.hash != null) {\n  def hashes = new HashSet(ctx.related.hash);\n  def hash = new ArrayList();\n  for (def h: hashes) {\n    hash.add(h);\n  }\n  Collections.sort(hash);\n  ctx.related.hash = hash;\n}\n"#
+                compiled_painless!(
+                    "45172127de01ec44f5a072af889c3c7daeab5f8eff1da34dea96da393bb6b74b",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

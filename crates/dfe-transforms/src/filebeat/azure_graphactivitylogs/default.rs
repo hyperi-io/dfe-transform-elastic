@@ -43,8 +43,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['graphactivitylogs'] = keysToSnakeCase(ctx.azure.graphactivitylogs);\n"#
+                compiled_painless!(
+                    "b0ee78495df5d44afd9c85905ae16246153cacac87ab681e7c731ca291eab9e6",
+                    r#"{"params":null,"known":[{"KeysToSnakeCase":["azure.graphactivitylogs","CamelBreak"]}]}"#
                 ),
             )?;
 
@@ -401,7 +402,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "ef98108d093e325272538ab5fde91dc71d1b679fedaf79a52e2c4d9d83b3334f",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"event.duration","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.duration","value":{"Scaled":{"path":"event.duration","factor":1000000,"divide":false}}}}}],"alt":[]}}],"whole":true}}]}"#,
                         r#"if (ctx.event.duration!= null) {\n  ctx.event.duration = ctx.event.duration * 1000000;\n}\n"#
                     ),
                 )?;

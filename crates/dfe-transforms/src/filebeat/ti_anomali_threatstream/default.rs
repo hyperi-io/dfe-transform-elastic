@@ -31,8 +31,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"String mapping = params[ctx.json.itype]; if (mapping != null) {\n   ctx[\"threatintel_indicator_type\"] = mapping;\n}\n"#
+                        compiled_painless!(
+                            "c8df5cdff3eb2ec78bf098002b834baba27a16f9fdd5cc57f214aebab8928faf",
+                            r#"{"params":{"NormalisedLookup":{"source":"json.itype","target":"threatintel_indicator_type","fold":"None"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"actor_ip\":\"ipv4-addr\",\"adware_domain\":\"domain-name\",\"anon_proxy\":\"ipv4-addr\",\"anon_vpn\":\"ipv4-addr\",\"apt_domain\":\"domain-name\",\"apt_email\":\"email-addr\",\"apt_ip\":\"ipv4-addr\",\"apt_md5\":\"file\",\"apt_subject\":\"email\",\"apt_ua\":\"url\",\"apt_url\":\"url\",\"bot_ip\":\"ipv4-addr\",\"brute_ip\":\"ipv4-addr\",\"c2_domain\":\"domain-name\",\"c2_ip\":\"ipv4-addr\",\"c2_url\":\"url\",\"comm_proxy_domain\":\"domain-name\",\"comm_proxy_ip\":\"ipv4-addr\",\"compromised_domain\":\"domain-name\",\"compromised_ip\":\"ipv4-addr\",\"compromised_url\":\"url\",\"crypto_hash\":\"file\",\"crypto_ip\":\"ipv4-addr\",\"crypto_pool\":\"domain\",\"crypto_url\":\"url\",\"crypto_wallet\":\"file\",\"ddos_ip\":\"ipv4-addr\",\"disposable_email_domain\":\"domain-name\",\"dyn_dns\":\"domain-name\",\"exfil_domain\":\"domain-name\",\"exfil_ip\":\"ipv4-addr\",\"exfil_url\":\"url\",\"exploit_domain\":\"domain-name\",\"exploit_ip\":\"ipv4-addr\",\"exploit_url\":\"url\",\"free_email_domain\":\"domain-name\",\"geolocation_url\":\"url\",\"hack_tool\":\"file\",\"i2p_ip\":\"ipv4-addr\",\"ipcheck_url\":\"url\",\"mal_domain\":\"domain-name\",\"mal_email\":\"email-addr\",\"mal_ip\":\"ipv4-addr\",\"mal_md5\":\"file\",\"mal_sslcert_sh1\":\"x509-certificate\",\"mal_sslcert_sha1\":\"x509-certificate\",\"mal_ua\":\"url\",\"mal_url\":\"url\",\"p2pcnc\":\"ipv4-addr\",\"parked_domain\":\"domain-name\",\"parked_ip\":\"ipv4-addr\",\"parked_url\":\"url\",\"pastesite_url\":\"url\",\"phish_domain\":\"domain-name\",\"phish_email\":\"email-addr\",\"phish_ip\":\"ipv4-addr\",\"phish_url\":\"url\",\"proxy_ip\":\"ipv4-addr\",\"scan_ip\":\"ipv4-addr\",\"sinkhole_domain\":\"domain-name\",\"sinkhole_ip\":\"ipv4-addr\",\"spam_domain\":\"domain-name\",\"spam_email\":\"email-addr\",\"spam_ip\":\"ipv4-addr\",\"spam_url\":\"url\",\"speedtest_url\":\"url\",\"ssh_ip\":\"ipv4-addr\",\"suppress\":\"suppress\",\"suspicious_domain\":\"domain-name\",\"suspicious_email\":\"email-addr\",\"suspicious_ip\":\"ipv4-addr\",\"suspicious_reg_email\":\"email-addr\",\"suspicious_url\":\"url\",\"tor_ip\":\"ipv4-addr\",\"torrent_tracker_url\":\"url\",\"vpn_domain\":\"domain-name\",\"vps_ip\":\"ipv4-addr\",\"whois_bulk_reg_email\":\"email-addr\",\"whois_privacy_domain\":\"domain-name\",\"whois_privacy_email\":\"email-addr\"}"
@@ -75,8 +76,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String indicatorType = ctx.threat?.indicator?.type;\nif (indicatorType == 'ipv4-addr' || indicatorType == 'ipv6-addr') {\n  if (ctx.json?.srcip != null) ctx.threat.indicator.name = ctx.json.srcip;\n} else if (indicatorType == 'domain-name') {\n  if (ctx.json?.domain != null) ctx.threat.indicator.name = ctx.json.domain;\n} else if (indicatorType == 'url') {\n  if (ctx.json?.url != null) ctx.threat.indicator.name = ctx.json.url;\n} else if (indicatorType == 'email-addr' || indicatorType == 'email') {\n  if (ctx.json?.email != null) ctx.threat.indicator.name = ctx.json.email;\n} else if (indicatorType == 'file') {\n  if (ctx.json?.md5 != null) ctx.threat.indicator.name = ctx.json.md5;\n}\n"#
+                        compiled_painless!(
+                            "3470538df8ed6f2d72743d0e962c0354109b54e011cc27542afe1f16020664d1",
+                            r#"{"params":null,"known":[{"CopyByLabel":{"subject":"threat.indicator.type","arms":[[["ipv4-addr","ipv6-addr"],"json.srcip"],[["domain-name"],"json.domain"],[["url"],"json.url"],[["email-addr","email"],"json.email"],[["file"],"json.md5"]],"target":"threat.indicator.name"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -139,7 +141,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "e5db9eb3633b4753703de6805af81b4f5781cf6585f09ffffa5741e5b1c74eb3",
+                            r#"{"params":null,"known":["JoinOptional"]}"#,
                             r#"def dur = ctx._conf.ioc_expiration_duration; String added_at = ctx.json.added_at; ZonedDateTime _tmp_deleted_at; if (dur instanceof String){\n  char time_unit;\n  String time_value;\n  if (dur.length() != 0){\n    time_unit = dur.charAt(dur.length() - 1);\n    time_value = dur.substring(0, dur.length() - 1);\n  }\n  if (time_unit == (char)'d') {\n    _tmp_deleted_at = ZonedDateTime.parse(added_at, DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.of('Z'))).plusDays(Long.parseLong(time_value));\n  } else if (time_unit == (char)'h') {\n    _tmp_deleted_at = ZonedDateTime.parse(added_at, DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.of('Z'))).plusHours(Long.parseLong(time_value));\n  } else if (time_unit == (char)'m') {\n    _tmp_deleted_at = ZonedDateTime.parse(added_at, DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.of('Z'))).plusMinutes(Long.parseLong(time_value));\n  } else {\n    if (ctx.error == null) {\n      ctx.error = new HashMap();\n    }\n    if (ctx.error.message == null) {\n      ctx.error.message = new ArrayList();\n    }\n    ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n    _tmp_deleted_at = ZonedDateTime.parse(added_at, DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.of('Z'))).plusDays(90L);\n  }\n  ctx.json.deleted_at = _tmp_deleted_at;\n}\n"#
                         ),
                     )?;
@@ -477,8 +481,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def value = ctx.json.confidence; if (value <= 0.0 || value > 100.0) {\n  ctx[\"threatintel_indicator_confidence\"] = \"None\";\n  return;\n} if (value >= 1.0 && value <= 29.0) {\n  ctx[\"threatintel_indicator_confidence\"] = \"Low\";\n  return;\n} if (value >= 30.0 && value <= 69.0) {\n  ctx[\"threatintel_indicator_confidence\"] = \"Medium\";\n  return;\n} if (value >= 70 && value <= 100) {\n  ctx[\"threatintel_indicator_confidence\"] = \"High\";\n  return;\n}\n"#
+                        compiled_painless!(
+                            "a581da9c0ec8d047e25f6b8164c25018b812428a1d65b737cd3566d516f91a6d",
+                            r#"{"params":null,"known":[{"BandLadder":{"subject":"json.confidence","arms":[[{"bounds":[{"op":"Le","scaled":0},{"op":"Gt","scaled":100000}],"all":false},{"Text":"None"}],[{"bounds":[{"op":"Ge","scaled":1000},{"op":"Le","scaled":29000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":30000},{"op":"Le","scaled":69000}],"all":true},{"Text":"Medium"}],[{"bounds":[{"op":"Ge","scaled":70000},{"op":"Le","scaled":100000}],"all":true},{"Text":"High"}]],"default":null,"absent":null,"target":"threatintel_indicator_confidence"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -774,7 +779,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "46dd881b651e872d3425f948452ca351740f8b9e18b89e65525c1258012ba17d",
+                            r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                             r#"ctx.event = ctx.event ?: [:];\nString severity_value = ctx.json.severity;\nif (severity_value.equalsIgnoreCase(\"low\")) {\n  ctx.event.severity = 21;\n} else if (severity_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (severity_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (severity_value.equalsIgnoreCase(\"very-high\")) {\n  ctx.event.severity = 99;\n}"#
                         ),
                     )?;
@@ -822,8 +829,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def lst = Stream.of(ctx.json.trusted_circle_ids.splitOnToken(',')).filter(s -> !s.isEmpty()).collect(Collectors.toList()); if (lst.size() > 0) {\n  ctx.json.trusted_circle_ids = lst;\n} else {\n  ctx.json.remove('trusted_circle_ids');\n}\n"#
+                        compiled_painless!(
+                            "63c523157a1363b576fb4657c2fb2eda32c116db133f29d75a1fceee2d22077f",
+                            r#"{"params":null,"known":[{"SplitTokenField":{"source":"json.trusted_circle_ids","separator":",","parse_int":false,"target":"json.trusted_circle_ids","head":null,"drop_empty":true,"remove_if_empty":true}}]}"#
                         ),
                     )?;
                     Ok(())

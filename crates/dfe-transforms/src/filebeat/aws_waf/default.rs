@@ -619,8 +619,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.json.httpRequest.headers != null) {\n  ctx.aws.waf.request = new HashMap();\n  ctx.aws.waf.request.headers = new HashMap();\n  for (def i = 0; i < ctx.json.httpRequest.headers.length; i++) {\n    ctx.aws.waf.request.headers[ctx.json.httpRequest.headers[i].name] = ctx.json.httpRequest.headers[i].value;\n  }\n}"#
+                    compiled_painless!(
+                        "e81e183028e1c417d8adef56f328d2fe377459f3cefb3cfc9e12b0bfb9a99a07",
+                        r#"{"params":null,"known":[{"NameValueFold":{"source":"json.httpRequest.headers","target":"aws.waf.request.headers","key_member":"name","value_member":"value"}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -639,8 +640,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.aws.waf.request_headers_inserted = new HashMap(); for (def i = 0; i < ctx.json.requestHeadersInserted.length; i++) {\n  ctx.aws.waf.request_headers_inserted[ctx.json.requestHeadersInserted[i].name] = ctx.json.requestHeadersInserted[i].value;\n}"#
+                        compiled_painless!(
+                            "cb87c2de50d83476ae1d62b162da67f293daeb5e7ef200575c346e32190b6493",
+                            r#"{"params":null,"known":[{"NameValueFold":{"source":"json.requestHeadersInserted","target":"aws.waf.request_headers_inserted","key_member":"name","value_member":"value"}}]}"#
                         ),
                     )?;
                     Ok(())

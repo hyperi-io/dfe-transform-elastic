@@ -70,8 +70,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String camelToSnake(String str) {\n    def result = \"\";\n    for (int i = 0; i < str.length(); i++) {\n        char c = str.charAt(i);\n        if (Character.isUpperCase(c)) {\n            if (i > 0 && Character.isLowerCase(str.charAt(i - 1))) {\n                result += \"_\";\n            }\n            result += Character.toLowerCase(c);\n        } else {\n            result += c;\n        }\n    }\n    return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\nif (ctx.xm_cyber?.product != null) {\n  ctx.xm_cyber.product = convertToSnakeCase(ctx.xm_cyber.product);\n}"#
+                    compiled_painless!(
+                        "0191bcdf35461f620ba51dc9c4c55898cb1c56b666b1b883c6d15a4bb743a5e2",
+                        r#"{"params":null,"known":[{"CamelToSnake":{"target":"xm_cyber.product","source":"xm_cyber.product","rule":"OnWordBreak","at_keys":"Convert","merge":false,"removes":[]}}]}"#
                     ),
                 )?;
                 Ok(())

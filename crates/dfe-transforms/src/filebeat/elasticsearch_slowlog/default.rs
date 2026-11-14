@@ -134,7 +134,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "e9de2e3a8095c10f5ced4bb1e625326239781a383f52f967e3ea358e157f3955",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.event.duration = Math.round(ctx.elasticsearch.slowlog.duration * params.scale)"#
                     ),
                     cached_params!("{\"scale\":1000000}"),
@@ -150,7 +152,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "4d51fdfdb4f371bdd452c4303fc539f18378330ede93eae76bbd6f361aa1705f",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"log.level","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[[{"ListContains":{"members":["FATAL","ERROR"],"argument":{"Field":"log.level"}}}]],"then":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["error"]}}}}],"alt":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}}]}}],"alt":[]}}],"whole":true}}]}"#,
                     r#"def errorLevels = ['FATAL', 'ERROR']; if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n    ctx.event.type = ['error'];\n  } else {\n    ctx.event.type = ['info'];\n  }\n}"#
                 ),
             )?;

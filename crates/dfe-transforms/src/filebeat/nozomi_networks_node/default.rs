@@ -1215,8 +1215,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"long lastActivity = ctx.json.last_activity_time;\nlong createdAt = ctx.json.created_at;\nlong uptimeMillis = lastActivity - createdAt;\nlong uptimeSeconds = uptimeMillis / 1000;\nctx.host = ctx.host ?: [:];\nctx.host.uptime = uptimeSeconds;"#
+                    compiled_painless!(
+                        "a5ad050926ebbc2cdb0bf18c3912370ea7c65141139f29483403d2e2245190e8",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

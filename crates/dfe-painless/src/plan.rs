@@ -31,14 +31,24 @@ use dfe_core::event::Event;
 #[cfg(doc)]
 use crate::common::DropPolicy;
 
-/// A script's normalised text and the matcher branches its text triggers.
+/// A script's key, the matcher branches its text triggers, and the text
+/// itself only where a runner still reads it.
 ///
-/// Built once per call site by `cached_painless!`; executed per event by
+/// Built once per call site by `compiled_painless!` from the plan the generator
+/// resolved, or by [`PainlessPlan::new`] from text; executed per event by
 /// [`painless_exec_plan`] / [`painless_exec_plan_params`].
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PainlessPlan {
-    text: String,
+    hash: String,
+    text: Option<String>,
     bespoke: Option<&'static bespoke::Entry>,
+    params: Option<ParamsPattern>,
+    known: Vec<KnownPattern>,
+}
+
+/// The serialisable half of a [`PainlessPlan`]: what dispatch needs, and no text.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub struct CompiledPlan {
     params: Option<ParamsPattern>,
     known: Vec<KnownPattern>,
 }
@@ -49,17 +59,68 @@ impl PainlessPlan {
     pub fn new(script: &str) -> Self {
         let text = normalise(script).into_owned();
         Self {
+            hash: bespoke::script_hash(&text),
             bespoke: bespoke::lookup(&text),
             params: params_pattern(&text),
             known: known_patterns(&text),
-            text,
+            text: Some(text),
         }
     }
 
-    /// The script with its escapes resolved, for callers that log or count it.
+    /// Rebuild a plan the generator resolved, keyed by its script's hash.
+    ///
+    /// `text` is the script, passed only where [`Self::reads_text`] held at
+    /// generation time, and normalised here as [`Self::new`] does.
+    ///
+    /// # Panics
+    ///
+    /// Panics on a plan the generator did not write, which is a build defect.
+    #[allow(
+        clippy::panic,
+        reason = "a generated plan that does not decode is a build defect, caught by the first test that reaches it"
+    )]
     #[must_use]
-    pub fn text(&self) -> &str {
-        &self.text
+    pub fn compiled(hash: &str, plan: &str, text: Option<&str>) -> Self {
+        let decoded: CompiledPlan = serde_json::from_str(plan)
+            .unwrap_or_else(|e| panic!("plan for script {hash} does not decode: {e}"));
+        Self {
+            hash: hash.to_string(),
+            text: text.map(|script| normalise(script).into_owned()),
+            bespoke: bespoke::lookup_hash(hash),
+            params: decoded.params,
+            known: decoded.known,
+        }
+    }
+
+    /// The serialisable half of this plan, for the generator to emit.
+    #[must_use]
+    pub fn compiled_plan(&self) -> CompiledPlan {
+        CompiledPlan {
+            params: self.params.clone(),
+            known: self.known.clone(),
+        }
+    }
+
+    /// The key the script is registered and counted under.
+    #[must_use]
+    pub fn hash(&self) -> &str {
+        &self.hash
+    }
+
+    /// The script with its escapes resolved, where the plan still carries it.
+    #[must_use]
+    pub fn text(&self) -> Option<&str> {
+        self.text.as_deref()
+    }
+
+    /// Whether a runner this plan binds still reads the script text per call.
+    ///
+    /// A registered bespoke runner wins dispatch and never reads it.
+    #[must_use]
+    pub fn reads_text(&self) -> bool {
+        self.bespoke.is_none()
+            && (self.params.as_ref().is_some_and(ParamsPattern::reads_text)
+                || self.known.iter().any(KnownPattern::reads_text))
     }
 
     /// Whether any matcher claims this script's text.
@@ -132,22 +193,23 @@ pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
 ///
 /// Never fails today: an unrecognised script is counted and skipped.
 pub fn painless_exec_params(event: &mut Event, script: &str, params: &Value) -> Result<()> {
-    if let Some(entry) = bespoke::lookup(&normalise(script)) {
+    let hash = bespoke::script_hash(&normalise(script));
+    if let Some(entry) = bespoke::lookup_hash(&hash) {
         (entry.run)(event, params);
-        crate::stats::record_handled(script);
+        crate::stats::record_handled(&hash);
         return Ok(());
     }
     if crate::params::try_params_painless(event, script, params) {
-        crate::stats::record_handled(script);
+        crate::stats::record_handled(&hash);
         return Ok(());
     }
     if crate::common::try_known_painless(event, script) {
-        crate::stats::record_handled(script);
+        crate::stats::record_handled(&hash);
         return Ok(());
     }
     // Counted, because an uncounted skip is indistinguishable from a script
     // that did nothing.
-    crate::stats::record_unhandled(script);
+    crate::stats::record_unhandled(&hash);
     debug!(
         script_len = script.len(),
         "painless_exec: unrecognised script skipped"
@@ -179,16 +241,17 @@ pub fn painless_exec_plan_params(
     plan: &PainlessPlan,
     params: &Value,
 ) -> Result<()> {
+    let text = plan.text.as_deref().unwrap_or_default();
     if let Some(entry) = plan.bespoke {
         (entry.run)(event, params);
-        crate::stats::record_handled(&plan.text);
+        crate::stats::record_handled(&plan.hash);
         return Ok(());
     }
     if let Some(pattern) = &plan.params
         && let Some(map) = params.as_object()
-        && run_params_pattern(event, &plan.text, map, pattern)
+        && run_params_pattern(event, text, map, pattern)
     {
-        crate::stats::record_handled(&plan.text);
+        crate::stats::record_handled(&plan.hash);
         return Ok(());
     }
     // FALL-THROUGH, and deliberately so: the listed patterns are ALTERNATIVES,
@@ -200,26 +263,41 @@ pub fn painless_exec_plan_params(
     if plan
         .known
         .iter()
-        .any(|pattern| run_known_pattern(event, &plan.text, pattern))
+        .any(|pattern| run_known_pattern(event, text, pattern))
     {
-        crate::stats::record_handled(&plan.text);
+        crate::stats::record_handled(&plan.hash);
         return Ok(());
     }
     // Counted, because an uncounted skip is indistinguishable from a script
     // that did nothing.
-    crate::stats::record_unhandled(&plan.text);
+    crate::stats::record_unhandled(&plan.hash);
     debug!(
-        script_len = plan.text.len(),
+        script = %plan.hash,
         "painless_exec: unrecognised script skipped"
     );
     Ok(())
 }
 
-/// A Painless script's [`PainlessPlan`], built once per CALL SITE.
+/// A generated call site's [`PainlessPlan`], decoded once per CALL SITE from the
+/// plan the generator resolved and keyed by the script's hash.
 ///
-/// Replaces `cached_script!` at generated sites: where that macro cached only
-/// the escape resolution, this also caches the dispatch decision and the
-/// trigger-parses' results, so per event nothing constant is re-derived.
+/// The third literal, the normalised text, appears only where a bound runner
+/// still reads it.
+#[macro_export]
+macro_rules! compiled_painless {
+    ($hash:literal, $plan:literal $(,)?) => {{
+        static SITE: ::std::sync::OnceLock<$crate::plan::PainlessPlan> =
+            ::std::sync::OnceLock::new();
+        SITE.get_or_init(|| $crate::plan::PainlessPlan::compiled($hash, $plan, None))
+    }};
+    ($hash:literal, $plan:literal, $text:literal $(,)?) => {{
+        static SITE: ::std::sync::OnceLock<$crate::plan::PainlessPlan> =
+            ::std::sync::OnceLock::new();
+        SITE.get_or_init(|| $crate::plan::PainlessPlan::compiled($hash, $plan, Some($text)))
+    }};
+}
+
+/// A Painless script's [`PainlessPlan`] built from its text, once per call site.
 #[macro_export]
 macro_rules! cached_painless {
     ($script:literal $(,)?) => {{
@@ -229,256 +307,8 @@ macro_rules! cached_painless {
     }};
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use serde_json::json;
-
-    use super::*;
-
-    #[test]
-    fn painless_exec_unknown_script_noop() {
-        let _guard = crate::stats::serialised();
-        let mut event = Event::new(json!({"field": "value"}));
-        let result = painless_exec(&mut event, "unknown_script_that_does_nothing();");
-        assert!(result.is_ok());
-        assert_eq!(event.get_str("field"), Some("value"));
-    }
-
-    #[test]
-    fn painless_exec_drop_empty_known() {
-        let _guard = crate::stats::serialised();
-        let mut event = Event::new(json!({"a": "", "b": "keep", "c": null}));
-        let result = painless_exec(
-            &mut event,
-            r#"boolean drop(Object o) { if (o == null || o == "") { return true; } }"#,
-        );
-        assert!(result.is_ok());
-    }
-
-    /// Scripts that between them route through a params matcher, an early
-    /// text matcher, a guarded fall-through, the named tail, and no matcher
-    /// at all -- with the events that make each branch fire.
-    fn corpus() -> Vec<(&'static str, Value, Value)> {
-        vec![
-            (
-                // Params: sentinel removal, verbatim from crowdstrike.
-                "ctx.crowdstrike.event.entrySet().removeIf(entry -> \
-                 params.values.contains(entry.getValue()));\\n",
-                json!({ "values": [null, "", "-", "N/A", "NA", 0] }),
-                json!({ "crowdstrike": { "event": { "keep": "v", "dash": "-" } } }),
-            ),
-            (
-                // Text, first branch: the drop-empty pattern with its policy.
-                "boolean drop(Object o) { if (o == null || o == '') return true; \
-                 if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
-                 return ((Map) o).size() == 0; } if (o instanceof List) { \
-                 ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } \
-                 return false; } drop(ctx);",
-                Value::Null,
-                json!({ "a": "", "b": null, "c": { "d": null }, "keep": "x" }),
-            ),
-            (
-                // Text, guarded fall-through: sum-of-fields declines when a
-                // side is absent, and nothing later claims the script.
-                "ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes;",
-                Value::Null,
-                json!({ "source": { "bytes": 7 } }),
-            ),
-            (
-                // Named tail: the okta.target rename.
-                "for (item in ctx.okta.target) {\\n  if (item.alternateId != null) \
-                 {\\n    item.alternate_id = item.alternateId;\\n  }\\n}",
-                Value::Null,
-                json!({ "okta": { "target": [ { "alternateId": "a@b.c" } ] } }),
-            ),
-            (
-                // Unhandled: nothing matches, the event must come back intact.
-                "def splitFancy(String input) { return input; }",
-                Value::Null,
-                json!({ "message": "x" }),
-            ),
-        ]
-    }
-
-    /// The plan path and the string path are the same dispatch: same event
-    /// afterwards, whichever way the script went in.
-    #[test]
-    fn plan_path_matches_string_path() {
-        // Executing scripts records into the process-global stats, which the
-        // stats tests read -- one lock keeps the counting tests honest.
-        let _guard = crate::stats::serialised();
-        for (script, params, input) in corpus() {
-            let plan = PainlessPlan::new(script);
-
-            let mut via_plan = Event::new(input.clone());
-            painless_exec_plan_params(&mut via_plan, &plan, &params).unwrap();
-
-            let mut via_string = Event::new(input);
-            // The string path expects the escapes already resolved, which is
-            // what `cached_script!` hands it.
-            let normalised = normalise(script).into_owned();
-            painless_exec_params(&mut via_string, &normalised, &params).unwrap();
-
-            assert_eq!(
-                via_plan.as_value(),
-                via_string.as_value(),
-                "script diverged: {script}"
-            );
-        }
-    }
-
-    /// The macro caches: two expansions of one literal are one plan.
-    #[test]
-    fn cached_painless_returns_the_same_plan() {
-        fn site() -> &'static PainlessPlan {
-            cached_painless!("ctx.a = ctx.b + ctx.c;")
-        }
-        assert!(std::ptr::eq(site(), site()));
-    }
-
-    /// The patterns a generator can emit today, each rendering to the call
-    /// the ladder would have made. The first four are verbatim scripts from
-    /// `pipelines/fortinet_fortiproxy/log/default.yml`, which is the source
-    /// the direct-emit spike regenerates.
-    ///
-    /// The drop-empty pair is here twice on purpose: a direct call BAKES the
-    /// policy into the shipped module, so the runtime reading and the emitted
-    /// literal can drift apart silently. This is what says they have not.
-    #[cfg(feature = "codegen")]
-    #[test]
-    fn an_expressible_plan_renders_the_call_the_ladder_would_make() {
-        for (script, expected) in [
-            (
-                "if (ctx.log?.syslog?.priority == null) {\\n  return;\\n} \
-                 def severity = [:]; severity['code'] = ctx.log.syslog.priority&0x7; \
-                 ctx.log.syslog['severity'] = severity; def facility = [:]; \
-                 facility['code'] = ctx.log.syslog.priority>>3; \
-                 ctx.log.syslog['facility'] = facility;",
-                "syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));",
-            ),
-            (
-                "ctx.event['duration'] = ctx.event.duration * 1e9;",
-                "scale_field(event, &ScaleField::new(\"event.duration\", \
-                 \"event.duration\", Factor::Double(1000000000.0)));",
-            ),
-            (
-                // The same scale over a DIFFERENCE, which canva and ibm_qradar
-                // both write. Read as a plain path the source was whichever
-                // `ctx.` came last, so both shipped the START scaled to
-                // nanoseconds where the elapsed time belonged.
-                "ctx.event.duration = (ctx.json.action.end_timestamp - \
-                 ctx.json.action.start_timestamp) * 1000000;",
-                "scale_field(event, &ScaleField::between(\"json.action.end_timestamp\", \
-                 \"json.action.start_timestamp\", \"event.duration\", Factor::Long(1000000)));",
-            ),
-            (
-                // The commonest pattern in the catalogue, 759 call sites.
-                "boolean drop(Object o) { if (o == null || o == '') return true; \
-                 if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
-                 return ((Map) o).size() == 0; } if (o instanceof List) { \
-                 ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } \
-                 return false; } drop(ctx);",
-                "drop_empty(event, &DropPolicy { nulls: true, empty_strings: true, \
-                 empty_collections: true, prune_lists: true, ..DropPolicy::none() }, None);",
-            ),
-            (
-                // tychon gates the copy on ECS's closed vocabulary for
-                // host.os.type, 36 call sites.
-                "def value = ctx.tychon.host?.os?.family?.toLowerCase();\\n\
-                 if (['linux', 'macos', 'unix', 'windows', 'ios', 'android'].contains(value)) {\\n  \
-                 if (ctx.host == null) {\\n    ctx.host = [:];\\n  }\\n  \
-                 if (ctx.host.os == null) {\\n    ctx.host.os = [:];\\n  }\\n  \
-                 ctx.host.os.type = value;\\n}\\n",
-                "allowed_value_copy(event, &AllowedValueCopy::new(\"tychon.host.os.family\", \
-                 true, vec![\"linux\".into(), \"macos\".into(), \"unix\".into(), \
-                 \"windows\".into(), \"ios\".into(), \"android\".into()], \"host.os.type\"));",
-            ),
-            (
-                // The same prune under an `instanceof String` guard means the
-                // OTHER axis -- mysql_enterprise and oracle, one call site
-                // each. Read as a collection test it inverted both.
-                "void handleMap(Map map) {\\n  for (def x : map.values()) {\\n    \
-                 if (x instanceof Map) {\\n        handleMap(x);\\n    } \
-                 else if (x instanceof List) {\\n        handleList(x);\\n    }\\n  }\\n  \
-                 map.values().removeIf(v -> v instanceof String && v.isEmpty() == true);\\n}\\n\
-                 void handleList(List list) {\\n  for (def x : list) {\\n      \
-                 if (x instanceof Map) {\\n          handleMap(x);\\n      } \
-                 else if (x instanceof List) {\\n          handleList(x);\\n      }\\n  }\\n}\\n\
-                 handleMap(ctx);\\n",
-                "drop_empty(event, &DropPolicy { empty_strings: true, \
-                 ..DropPolicy::none() }, None);",
-            ),
-            (
-                // servicenow's prune drops five WORDS as well as the empty
-                // containers, and the words were being discarded: the call
-                // ran, five fields Elasticsearch does not emit survived it.
-                "boolean drop(Object object) {\\n  if ((object instanceof String && \
-                 ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String \
-                 && ((String) object).equalsIgnoreCase('none')) || (object instanceof String \
-                 && ((String) object).equalsIgnoreCase('null')) || (object instanceof String \
-                 && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String \
-                 && ((String) object).equalsIgnoreCase('na'))) {\\n    return true;\\n  } \
-                 else if (object instanceof Map) {\\n    \
-                 ((Map) object).values().removeIf(v -> drop(v));\\n    \
-                 return (((Map) object).size() == 0);\\n  } else if (object instanceof List) \
-                 {\\n    ((List) object).removeIf(v -> drop(v));\\n    \
-                 return (((List) object).length == 0);\\n  }\\n  return false;\\n}\\ndrop(ctx);",
-                "drop_empty(event, &DropPolicy { empty_collections: true, prune_lists: true, \
-                 sentinels_ci: vec![\"unknown\".into(), \"none\".into(), \"null\".into(), \
-                 \"n/a\".into(), \"na\".into()], ..DropPolicy::none() }, None);",
-            ),
-        ] {
-            let plan = PainlessPlan::new(script);
-            assert_eq!(
-                plan.direct_call().as_deref(),
-                Some([expected.to_string()].as_slice()),
-                "script rendered wrong: {script}"
-            );
-        }
-    }
-
-    /// A script no matcher claims, and one whose matcher still needs the text,
-    /// both decline -- the call site keeps the ladder rather than emitting a
-    /// call that would run something else.
-    #[cfg(feature = "codegen")]
-    #[test]
-    fn an_inexpressible_plan_declines() {
-        assert!(
-            PainlessPlan::new("def splitFancy(String input) { return input; }")
-                .direct_call()
-                .is_none()
-        );
-        // A params pattern declines the whole plan, however expressible its
-        // text patterns are: dispatch tries params first and skips them.
-        assert!(
-            PainlessPlan::new(
-                "def k = ctx.network.direction.toLowerCase(); def v = params.get(k); \
-                 if (v != null) { ctx.network.direction = v; return; } \
-                 ctx.network.direction = k;"
-            )
-            .direct_call()
-            .is_none()
-        );
-    }
-
-    /// A drop-empty plan carries its policy, parsed once.
-    #[test]
-    fn the_plan_carries_the_trigger_parse() {
-        let plan = PainlessPlan::new(
-            "boolean drop(Object o) { if (o == null || o == '') return true; \
-             if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
-             return ((Map) o).size() == 0; } if (o instanceof List) { \
-             ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } \
-             return false; } drop(ctx);",
-        );
-        assert!(matches!(
-            plan.known.as_slice(),
-            [KnownPattern::DropEmpty {
-                policy,
-                root: None,
-                ..
-            }] if policy.empty_strings
-        ));
-    }
-}
+#[path = "plan_tests.rs"]
+mod tests;

@@ -3,21 +3,6 @@
 
 //! securityhub's ECS entity fields, read off the resource an OCSF finding names.
 //!
-//! ```painless
-//! def res;
-//! if (ctx.aws_securityhub.finding.resources.size() == 1) {
-//!   res = ctx.aws_securityhub.finding.resources[0];
-//! } else {
-//!   for (def resource: ctx.aws_securityhub.finding.resources) {
-//!     if (resource.labels?.contains('primary_resource') == true) { res = resource; break; }
-//!   }
-//! }
-//! ctx.resource.type = res.type;
-//! ctx.resource.id = res.uid;
-//! ...
-//! ctx.cloud.service.name = res.type;
-//! ```
-//!
 //! The `finding` data stream carries AWS's OCSF form, where the older
 //! `securityhub_findings` pair carries ASFF. [`crate::common`] already reads the
 //! ASFF spelling, and it cannot serve this one: every member is renamed
@@ -39,7 +24,7 @@ use serde_json::{Map, Value};
 use dfe_core::Event;
 
 /// The resource list a finding's ECS entity fields are read from.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct OcsfResource {
     /// The list walked, as a ctx path.
     source: String,
@@ -76,7 +61,7 @@ pub fn parse_ocsf_resource(script: &str) -> Option<OcsfResource> {
 }
 
 /// The primary resource's members, lifted before the list is rewritten.
-#[derive(Default)]
+#[derive(Default, serde::Serialize, serde::Deserialize)]
 struct Primary {
     kind: Option<String>,
     uid: Option<String>,
@@ -266,21 +251,7 @@ pub fn run_ocsf_resource(event: &mut Event, pattern: &OcsfResource) -> bool {
 }
 
 /// The remediation a finding carries, or the one its first vulnerability does.
-///
-/// ```painless
-/// def remediation = ctx.aws_securityhub?.finding?.remediation;
-/// if (remediation == null && ctx.aws_securityhub?.finding?.vulnerabilities instanceof List && ...) {
-///   remediation = ctx.aws_securityhub.finding.vulnerabilities[0].remediation;
-/// }
-/// def desc = remediation?.desc;
-/// if (remediation?.references instanceof List) {
-///   def separator = String.valueOf((char)10);
-///   for (def ref: remediation.references) { desc += separator + ref; }
-/// }
-/// ctx.rule.remediation = desc;
-/// ctx.rule.reference = remediation?.references;
-/// ```
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct OcsfRemediation {
     /// The finding root the two sources hang off, as a ctx path.
     finding: String,
@@ -359,7 +330,7 @@ pub fn run_ocsf_remediation(event: &mut Event, pattern: &OcsfRemediation) -> boo
 }
 
 /// The ECS vulnerability and package fields off a finding's first entry.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct OcsfVulnerability {
     /// The finding root, as a ctx path.
     finding: String,
@@ -470,21 +441,11 @@ pub fn run_ocsf_vulnerability(event: &mut Event, pattern: &OcsfVulnerability) ->
 
 /// A finding's severity id banded onto ECS, and onto its vulnerability.
 ///
-/// ```painless
-/// String severity = ctx.aws_securityhub.finding.severity_id;
-/// String vulnerability_severity;
-/// if (severity == "1" || severity == "2") { ctx.event.severity = 21; vulnerability_severity = 'Low'; }
-/// ...
-/// if (ctx.aws_securityhub?.finding?.vulnerabilities instanceof List && ...) {
-///   ctx.vulnerability.severity = vulnerability_severity;
-/// }
-/// ```
-///
 /// The generic equality ladder reads the `event.severity` half and stops there:
 /// the band's WORD goes to a local the ladder has no notion of, and is written
 /// out only where the finding carries a vulnerability. That second half is the
 /// whole reason this is its own pattern.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct OcsfSeverity {
     /// The finding root, as a ctx path.
     finding: String,
@@ -540,7 +501,8 @@ pub fn run_ocsf_severity(event: &mut Event, pattern: &OcsfSeverity) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "securityhub_ocsf_tests.rs"]
 #[allow(
     clippy::unwrap_used,

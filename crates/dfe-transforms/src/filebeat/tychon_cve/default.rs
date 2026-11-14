@@ -43,7 +43,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "7f12ccaa598ce71826ece24e3b1849e78f394882764fa18f83ae9ff61f5bf057",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"tychon.script.current_duration","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"tychon.script.current_duration","value":{"LongOf":"tychon.script.current_duration"}}}}],"alt":[]}}],"whole":true}}]}"#,
                     r#"if (ctx.tychon?.script?.current_duration != null)\n{\n  ctx.tychon.script.current_duration =\n    (long) Double.parseDouble(ctx.tychon.script.current_duration.toString());\n}\n"#
                 ),
             )?;
@@ -389,8 +391,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.tychon.vulnerability?.result == \"fail\") {\n  ctx.event.outcome = \"failure\"\n} else if (ctx.tychon.vulnerability?.result == \"pass\") {\n  ctx.event.outcome = \"success\"\n} else {\n  ctx.event.outcome = \"unknown\"\n}\n"#
+                compiled_painless!(
+                    "006750143448427ea379ea3476b8cf60709fb46c13f0e9051362080c664deef8",
+                    r#"{"params":null,"known":[{"EqualityLadder":{"subject":"tychon.vulnerability.result","fold_case":false,"test":"Equals","arms":[{"literals":["fail"],"writes":[["event.outcome","failure"]],"removes":[]},{"literals":["pass"],"writes":[["event.outcome","success"]],"removes":[]}]}}]}"#
                 ),
             )?;
             if let Some(v) = event

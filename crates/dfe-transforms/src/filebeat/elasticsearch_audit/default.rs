@@ -332,7 +332,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "2b2a7bde88f1d2d1cdeb9e26e098a4d805b891d99624046d487ca394e508c9e6",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"elasticsearch.audit.event_type","wanted":"Null","negated":true,"lowered":false}},{"ListContains":{"members":["authentication_success","access_granted","run_as_granted","connection_granted"],"argument":{"Field":"elasticsearch.audit.event_type"}}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}]}},{"If":{"test":[[{"Compare":{"path":"event.action","wanted":"Null","negated":true,"lowered":false}},{"ListContains":{"members":["authentication_success","access_granted","run_as_granted","connection_granted"],"argument":{"Field":"event.action"}}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}]}}],"whole":true}}]}"#,
                     r#"def successEvents = ['authentication_success', 'access_granted', 'run_as_granted', 'connection_granted']; if (ctx?.elasticsearch?.audit?.event_type != null && successEvents.contains(ctx.elasticsearch.audit.event_type)) {\n  ctx.event.outcome = 'success';\n} else {\n  ctx.event.outcome = 'failure';\n} if (ctx?.event.action != null && successEvents.contains(ctx.event.action)) {\n  ctx.event.outcome = 'success';\n} else {\n  ctx.event.outcome = 'failure';\n}"#
                 ),
             )?;

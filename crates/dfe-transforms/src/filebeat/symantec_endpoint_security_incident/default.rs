@@ -720,8 +720,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.ses.incident.put(\"severity\",params[ctx.ses.incident.severity_id])"#
+                        compiled_painless!(
+                            "8069fa6ec61b7720e3564a421fb55e2cb7321fb7ac5cf20cb6a6fb461ef00318",
+                            r#"{"params":{"PutWrites":{"writes":[{"container":"ses.incident","member":"severity","source":"ses.incident.severity_id","through_params":true,"fold":"None"}],"require":null}},"known":[]}"#
                         ),
                         cached_params!("{\"3\":\"Minor\",\"4\":\"Major\",\"5\":\"Critical\"}"),
                     )?;
@@ -832,7 +833,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "0b8b6e9692f53d54bf9af7800eaa5ceed201fc9d3afadf92b7a4625560a4af30",
+                            r#"{"params":"IndexedLookup","known":[]}"#,
                             r#"def StateID = Integer.parseInt(ctx.ses.incident.state_id);\nif (StateID >= 0 && StateID < params.State.length) {\n  ctx.ses.incident.put('state', params['State'][StateID]);\n}"#
                         ),
                         cached_params!(
@@ -878,7 +881,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "726ca6c7cbf6c7a673f18d25dd85f26af9cf6b028ebe43219375e11b6f899dbb",
+                            r#"{"params":"IndexedLookup","known":[]}"#,
                             r#"def PriorityID = Integer.parseInt(ctx.ses.incident.priority_id);\nif (PriorityID >= 0 && PriorityID < params.Priority.length) {\n  ctx.ses.incident.put('priority', params['Priority'][PriorityID]);\n}"#
                         ),
                         cached_params!(
@@ -924,8 +929,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def ResolutionID = Integer.parseInt(ctx.ses.incident.resolution_id)-1;\nif (ResolutionID >= 0 && ResolutionID < params.Resolution.length) {\n  ctx.ses.incident.put('resolution', params['Resolution'][ResolutionID]);\n}"#
+                        compiled_painless!(
+                            "d4d8580b8bd84d6add154d40efe4f4f1db4694a398f2232553c0487252de8b4b",
+                            r#"{"params":"IndexedLookup","known":[]}"#
                         ),
                         cached_params!(
                             "{\"Resolution\":[\"Insufficient data\",\"Security risk\",\"False positive\",\"Managed externally\",\"Benign\",\"Test\"]}"
@@ -973,8 +979,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.ses.incident.put(\"event\",params[ctx.ses.incident.event_id])"#
+                        compiled_painless!(
+                            "3b794d2d015083c984f94bdaab51e8422127e78f76fbd62d0d9d2236c7f9daa5",
+                            r#"{"params":{"PutWrites":{"writes":[{"container":"ses.incident","member":"event","source":"ses.incident.event_id","through_params":true,"fold":"None"}],"require":null}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"8075004\":\"Incident Creation: Logged\",\"8075000\":\"Incident Creation: Unknown\",\"8076004\":\"Incident Update: Logged\",\"8076000\":\"Incident Update: Unknown\",\"8077004\":\"Incident Closure: Logged\",\"8077000\":\"Incident Closure: Unknown\"}"

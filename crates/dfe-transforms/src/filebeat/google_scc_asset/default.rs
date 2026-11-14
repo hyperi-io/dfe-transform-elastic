@@ -758,8 +758,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef conditions = new ArrayList();\nfor(entity in ctx.json.asset.accessLevel.basic.conditions){\n  conditions.add(renameKeys(entity, params));\n}\nctx.json.asset.accessLevel.basic.remove('conditions');\nctx.json.asset.accessLevel.basic.put('conditions',conditions);\n"#
+                    compiled_painless!(
+                        "fc190ce2f8409394baab978f64eb33d3862e2c90e7b37faca92a4184a24e6f41",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.asset.accessLevel.basic.conditions","target":"json.asset.accessLevel.basic.conditions","drop":"json.asset.accessLevel.basic.conditions"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"conditions\":\"conditions\",\"requiredAccessLevels\":\"required_access_levels\",\"devicePolicy\":\"device_policy\",\"requireScreenlock\":\"require_screenlock\",\"allowedEncryptionStatuses\":\"allowed_encryption_statuses\",\"osConstraints\":\"os_constraints\",\"osType\":\"os_type\",\"minimumVersion\":\"minimum_version\",\"requireVerifiedChromeOs\":\"require_verified_chrome_os\",\"allowedDeviceManagementLevels\":\"allowed_device_management_levels\",\"requireAdminApproval\":\"require_admin_approval\",\"requireCorpOwned\":\"require_corp_owned\",\"ipSubnetworks\":\"sub_networks\"}"
@@ -780,8 +781,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef audit_configs = new ArrayList();\nfor(entity in ctx.json.asset.iamPolicy.auditConfigs){\n  audit_configs.add(renameKeys(entity, params));\n}\nctx.json.asset.iamPolicy.remove('auditConfigs');\nctx.json.asset.iamPolicy.put('audit_configs',audit_configs);\n"#
+                    compiled_painless!(
+                        "d8e9ad6c85793c6fbfe78e82f4dac652ead89afb7e87565fc2c4276769b93bc1",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.asset.iamPolicy.auditConfigs","target":"json.asset.iamPolicy.audit_configs","drop":"json.asset.iamPolicy.auditConfigs"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"auditConfigs\":\"audit_configs\",\"auditLogConfigs\":\"audit_log_configs\",\"logType\":\"log_type\",\"exemptedMembers\":\"exempted_members\"}"
@@ -1283,8 +1285,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef organization_policy = new ArrayList();\nfor(entity in ctx.json.asset.orgPolicy){\n  organization_policy.add(renameKeys(entity, params));\n}\nctx.json.asset.remove('orgPolicy');\nctx.google_scc.asset.put('organization_policy',organization_policy);\n"#
+                    compiled_painless!(
+                        "916b7c2067c3a3e4894c71b73dc5ab567d6bf7591a0099fa25f50e99082a766e",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.asset.orgPolicy","target":"google_scc.asset.organization_policy","drop":"json.asset.orgPolicy"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"orgPolicy\":\"organization_policy\",\"listPolicy\":\"list_policy\",\"allowedValues\":\"allowed_values\",\"deniedValues\":\"denied_values\",\"allValues\":\"all_values\",\"suggestedValue\":\"suggested_value\",\"restoreDefault\":\"restore_default\",\"updateTime\":\"update_time\",\"inheritFromParent\":\"inherit_from_parent\",\"booleanPolicy\":\"boolean_policy\"}"
@@ -1419,8 +1422,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef assets = new ArrayList();\nfor(entity in ctx.json.asset.relatedAssets.assets){\n  assets.add(renameKeys(entity, params));\n}\nctx.json.asset.relatedAssets.put('assets',assets);\n"#
+                    compiled_painless!(
+                        "c1e4a774af2e778ab80d4181b0fb36d83a7ecc46a3fe19374b9ca6fb601aa528",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.asset.relatedAssets.assets","target":"json.asset.relatedAssets.assets","drop":null}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"assetType\":\"type\",\"asset\":\"name\",\"relationshipType\":\"relationship_type\"}"
@@ -1679,8 +1683,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef egress_policies = new ArrayList();\nfor(entity in ctx.json.asset.servicePerimeter.status.egressPolicies){\n  egress_policies.add(renameKeys(entity, params));\n}\nctx.json.asset.servicePerimeter.status.remove('egressPolicies');\nctx.json.asset.servicePerimeter.status.put('egress_policies',egress_policies);\n"#
+                    compiled_painless!(
+                        "f0881215d32af02935a74b2654e5c8bf6327a1483b96b0b53477806d51a08249",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.asset.servicePerimeter.status.egressPolicies","target":"json.asset.servicePerimeter.status.egress_policies","drop":"json.asset.servicePerimeter.status.egressPolicies"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"egressPolicies\":\"egress_policies\",\"egressFrom\":\"egress_from\",\"accessLevel\":\"access_level\",\"identityType\":\"identity_type\",\"egressTo\":\"egress_to\",\"methodSelectors\":\"method_selectors\",\"serviceName\":\"service_name\",\"externalResources\":\"external_resources\"}"
@@ -1692,8 +1697,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef egress_policies = new ArrayList();\nfor(entity in ctx.json.asset.servicePerimeter.spec.egressPolicies){\n  egress_policies.add(renameKeys(entity, params));\n}\nctx.json.asset.servicePerimeter.spec.remove('egressPolicies');\nctx.json.asset.servicePerimeter.spec.put('egress_policies',egress_policies);\n"#
+                    compiled_painless!(
+                        "37cbd5e4454a811b88f1a81940b3a7117d80653ed77b90e35b2b294fa74c0a8f",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.asset.servicePerimeter.spec.egressPolicies","target":"json.asset.servicePerimeter.spec.egress_policies","drop":"json.asset.servicePerimeter.spec.egressPolicies"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"egressPolicies\":\"egress_policies\",\"egressFrom\":\"egress_from\",\"accessLevel\":\"access_level\",\"identityType\":\"identity_type\",\"egressTo\":\"egress_to\",\"methodSelectors\":\"method_selectors\",\"serviceName\":\"service_name\",\"externalResources\":\"external_resources\"}"
@@ -1705,8 +1711,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef ingress_policies = new ArrayList();\nfor(entity in ctx.json.asset.servicePerimeter.spec.ingressPolicies){\n  ingress_policies.add(renameKeys(entity, params));\n}\nctx.json.asset.servicePerimeter.spec.remove('ingressPolicies');\nctx.json.asset.servicePerimeter.spec.put('ingress_policies',ingress_policies);\n"#
+                    compiled_painless!(
+                        "94cfd446f4c1592916b1c16ec6091c39183f4907edc9424ad4f1e3b169f2033d",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.asset.servicePerimeter.spec.ingressPolicies","target":"json.asset.servicePerimeter.spec.ingress_policies","drop":"json.asset.servicePerimeter.spec.ingressPolicies"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"ingressPolicies\":\"ingress_policies\",\"ingressFrom\":\"ingress_from\",\"accessLevel\":\"access_level\",\"identityType\":\"identity_type\",\"ingressTo\":\"ingress_to\",\"methodSelectors\":\"method_selectors\",\"serviceName\":\"service_name\"}"
@@ -1718,8 +1725,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef ingress_policies = new ArrayList();\nfor(entity in ctx.json.asset.servicePerimeter.status.ingressPolicies){\n  ingress_policies.add(renameKeys(entity, params));\n}\nctx.json.asset.servicePerimeter.status.remove('ingressPolicies');\nctx.json.asset.servicePerimeter.status.put('ingress_policies',ingress_policies);\n"#
+                    compiled_painless!(
+                        "8b42c80fbc097e2cc43a9072babca64d153c38c3b9c094cca3c1d4c4180be8a9",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.asset.servicePerimeter.status.ingressPolicies","target":"json.asset.servicePerimeter.status.ingress_policies","drop":"json.asset.servicePerimeter.status.ingressPolicies"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"ingressPolicies\":\"ingress_policies\",\"ingressFrom\":\"ingress_from\",\"accessLevel\":\"access_level\",\"identityType\":\"identity_type\",\"ingressTo\":\"ingress_to\",\"methodSelectors\":\"method_selectors\",\"serviceName\":\"service_name\"}"
@@ -2390,8 +2398,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef conditions = new ArrayList();\nfor(entity in ctx.json.priorAsset.accessLevel.basic.conditions){\n  conditions.add(renameKeys(entity, params));\n}\nctx.json.priorAsset.accessLevel.basic.remove('conditions');\nctx.json.priorAsset.accessLevel.basic.put('conditions',conditions);\n"#
+                    compiled_painless!(
+                        "ec0afb349582cde266fa1c55eefdaf011566e8767a6737836c7d9eb4bd236272",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.priorAsset.accessLevel.basic.conditions","target":"json.priorAsset.accessLevel.basic.conditions","drop":"json.priorAsset.accessLevel.basic.conditions"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"conditions\":\"conditions\",\"requiredAccessLevels\":\"required_access_levels\",\"devicePolicy\":\"device_policy\",\"requireScreenlock\":\"require_screenlock\",\"allowedEncryptionStatuses\":\"allowed_encryption_statuses\",\"osConstraints\":\"os_constraints\",\"osType\":\"os_type\",\"minimumVersion\":\"minimum_version\",\"requireVerifiedChromeOs\":\"require_verified_chrome_os\",\"allowedDeviceManagementLevels\":\"allowed_device_management_levels\",\"requireAdminApproval\":\"require_admin_approval\",\"requireCorpOwned\":\"require_corp_owned\",\"ipSubnetworks\":\"sub_networks\"}"
@@ -2421,8 +2430,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef audit_configs = new ArrayList();\nfor(entity in ctx.json.priorAsset.iamPolicy.auditConfigs){\n  audit_configs.add(renameKeys(entity, params));\n}\nctx.json.priorAsset.iamPolicy.remove('auditConfigs');\nctx.json.priorAsset.iamPolicy.put('audit_configs',audit_configs);\n"#
+                    compiled_painless!(
+                        "a7058d72a2ee374ddbb163e255b66120009ff22b79938023d75ff3c920ec1b51",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.priorAsset.iamPolicy.auditConfigs","target":"json.priorAsset.iamPolicy.audit_configs","drop":"json.priorAsset.iamPolicy.auditConfigs"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"auditConfigs\":\"audit_configs\",\"auditLogConfigs\":\"audit_log_configs\",\"logType\":\"log_type\",\"exemptedMembers\":\"exemted_members\"}"
@@ -2927,8 +2937,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef organization_policy = new ArrayList();\nfor(entity in ctx.json.priorAsset.orgPolicy){\n  organization_policy.add(renameKeys(entity, params));\n}\nctx.json.priorAsset.remove('orgPolicy');\nctx.google_scc.asset.prior.put('organization_policy',organization_policy);\n"#
+                    compiled_painless!(
+                        "01ba86a57aea6929b291e5adbc1be4db1756f5a3e58383c8e0a5ea43d4ca1de9",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.priorAsset.orgPolicy","target":"google_scc.asset.prior.organization_policy","drop":"json.priorAsset.orgPolicy"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"orgPolicy\":\"organization_policy\",\"listPolicy\":\"list_policy\",\"allowedValues\":\"allowed_values\",\"deniedValues\":\"denied_values\",\"allValues\":\"all_values\",\"suggestedValue\":\"suggested_value\",\"restoreDefault\":\"restore_default\",\"updateTime\":\"update_time\",\"inheritFromParent\":\"inherit_from_parent\",\"booleanPolicy\":\"boolean_policy\"}"
@@ -3065,8 +3076,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef assets = new ArrayList();\nfor(entity in ctx.json.priorAsset.relatedAssets.assets){\n  assets.add(renameKeys(entity, params));\n}\nctx.json.priorAsset.relatedAssets.put('assets',assets);\n"#
+                    compiled_painless!(
+                        "2280c5fad2c8b07f2a9d3a0f83ce386895d5ab6b0972e7b28e5435387f7d7ebe",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.priorAsset.relatedAssets.assets","target":"json.priorAsset.relatedAssets.assets","drop":null}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"assetType\":\"type\",\"asset\":\"name\",\"relationshipType\":\"relationship_type\"}"
@@ -3320,8 +3332,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef egress_policies = new ArrayList();\nfor(entity in ctx.json.priorAsset.servicePerimeter.status.egressPolicies){\n  egress_policies.add(renameKeys(entity, params));\n}\nctx.json.priorAsset.servicePerimeter.status.remove('egressPolicies');\nctx.json.priorAsset.servicePerimeter.status.put('egress_policies',egress_policies);\n"#
+                    compiled_painless!(
+                        "efc66f52f41402c1c8fac52bd958e5cbc9908e3b757c0f5d1b35b049f3365165",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.priorAsset.servicePerimeter.status.egressPolicies","target":"json.priorAsset.servicePerimeter.status.egress_policies","drop":"json.priorAsset.servicePerimeter.status.egressPolicies"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"egressPolicies\":\"egress_policies\",\"egressFrom\":\"egress_from\",\"accessLevel\":\"access_level\",\"identityType\":\"identity_type\",\"egressTo\":\"egress_to\",\"methodSelectors\":\"method_selectors\",\"serviceName\":\"service_name\"}"
@@ -3333,8 +3346,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef egress_policies = new ArrayList();\nfor(entity in ctx.json.priorAsset.servicePerimeter.spec.egressPolicies){\n  egress_policies.add(renameKeys(entity, params));\n}\nctx.json.priorAsset.servicePerimeter.spec.remove('egressPolicies');\nctx.json.priorAsset.servicePerimeter.spec.put('egress_policies',egress_policies);\n"#
+                    compiled_painless!(
+                        "40829dbc8e9ea14909665c9117e31b4dd7ff9be93d4655b57881d3f945e2fb14",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.priorAsset.servicePerimeter.spec.egressPolicies","target":"json.priorAsset.servicePerimeter.spec.egress_policies","drop":"json.priorAsset.servicePerimeter.spec.egressPolicies"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"egressPolicies\":\"egress_policies\",\"egressFrom\":\"egress_from\",\"accessLevel\":\"access_level\",\"identityType\":\"identity_type\",\"egressTo\":\"egress_to\",\"methodSelectors\":\"method_selectors\",\"serviceName\":\"service_name\"}"
@@ -3347,8 +3361,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef ingress_policies = new ArrayList();\nfor(entity in ctx.json.priorAsset.servicePerimeter.spec.ingressPolicies){\n  ingress_policies.add(renameKeys(entity, params));\n}\nctx.json.priorAsset.servicePerimeter.spec.remove('ingressPolicies');\nctx.json.priorAsset.servicePerimeter.spec.put('ingress_policies',ingress_policies);\n"#
+                    compiled_painless!(
+                        "8430d5a4673aa720024a683d77dc1ceaf4ceb82c0741b74ab2f6a6823d3fddb6",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.priorAsset.servicePerimeter.spec.ingressPolicies","target":"json.priorAsset.servicePerimeter.spec.ingress_policies","drop":"json.priorAsset.servicePerimeter.spec.ingressPolicies"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"ingressPolicies\":\"ingress_policies\",\"ingressFrom\":\"ingress_from\",\"accessLevel\":\"access_level\",\"identityType\":\"identity_type\",\"ingressTo\":\"ingress_to\",\"methodSelectors\":\"method_selectors\",\"serviceName\":\"service_name\"}"
@@ -3361,8 +3376,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef ingress_policies = new ArrayList();\nfor(entity in ctx.json.priorAsset.servicePerimeter.status.ingressPolicies){\n  ingress_policies.add(renameKeys(entity, params));\n}\nctx.json.priorAsset.servicePerimeter.status.remove('ingressPolicies');\nctx.json.priorAsset.servicePerimeter.status.put('ingress_policies',ingress_policies);\n"#
+                    compiled_painless!(
+                        "4b1ddff6c214a3beada69113acd1623cfeb4a174b301b9d442e9ebf1f24a8070",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.priorAsset.servicePerimeter.status.ingressPolicies","target":"json.priorAsset.servicePerimeter.status.ingress_policies","drop":"json.priorAsset.servicePerimeter.status.ingressPolicies"}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"ingressPolicies\":\"ingress_policies\",\"ingressFrom\":\"ingress_from\",\"accessLevel\":\"access_level\",\"identityType\":\"identity_type\",\"ingressTo\":\"ingress_to\",\"methodSelectors\":\"method_selectors\",\"serviceName\":\"service_name\"}"

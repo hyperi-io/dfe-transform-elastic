@@ -359,8 +359,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def dur = ctx._conf.ioc_expiration_duration; ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_created_at = ZonedDateTime.parse(ctx.cybersixgill.created); if (dur instanceof String){\n  String time_unit = dur.substring(dur.length() -  1, dur.length());\n  String time_value = dur.substring(0, dur.length() - 1);\n  if (time_unit == 'd') {\n    _tmp_deleted_at = _tmp_created_at.plusDays(Long.parseLong(time_value));\n  } else if (time_unit == 'h') {\n    _tmp_deleted_at = _tmp_created_at.plusHours(Long.parseLong(time_value));\n  } else if (time_unit == 'm') {\n    _tmp_deleted_at = _tmp_created_at.plusMinutes(Long.parseLong(time_value));\n  } else {\n    _tmp_deleted_at = _tmp_created_at.plusDays(90L);\n    if (ctx.error == null) {\n      ctx.error = new HashMap();\n    }\n    if (ctx.error.message == null) {\n      ctx.error.message = new ArrayList();\n    }\n    ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n  }\n  ctx.cybersixgill.deleted_at = _tmp_deleted_at;\n}\n"#
+                        compiled_painless!(
+                            "9149041f43bda2722b0caa5dec0dc66dbcf67218bf662aa46bc9717e997bb4b8",
+                            r#"{"params":null,"known":[{"IocExpiry":{"duration":"_conf.ioc_expiration_duration","default_duration":null,"bases":["cybersixgill.created"],"default_days":90,"settle_seconds":0,"invalid_message":"invalid ioc_expiration_duration: using default 90 days","target":"cybersixgill.deleted_at"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -464,8 +465,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def refs = ctx.cybersixgill.external_references; ctx.cybersixgill.mitre = new HashMap(); ctx.cybersixgill.virustotal = new HashMap(); ctx.threat.tactic = new HashMap(); for (def ref : refs) {\n  if (ref?.description != null) {\n    ctx.cybersixgill.mitre.description = ref.description;\n  }\n  if (ref?.mitre_attack_tactic != null) {\n    ctx.threat.tactic.name = [ref.mitre_attack_tactic];\n  }\n  if (ref?.mitre_attack_tactic_id != null) {\n    ctx.threat.tactic.id = [ref.mitre_attack_tactic_id];\n  }\n  if (ref?.mitre_attack_tactic_url != null) {\n    ctx.threat.tactic.reference = [ref.mitre_attack_tactic_url];\n  }\n  if (ref?.positive_rate != null) {\n    ctx.cybersixgill.virustotal.pr = ref.positive_rate;\n  }\n  if (ref?.url != null) {\n    ctx.cybersixgill.virustotal.url = ref.url;\n  }    \n}\n"#
+                    compiled_painless!(
+                        "43ab038646f1cddb32ffbd170466fbff86512dbf7516ca87df902bdfe9e2b03f",
+                        r#"{"params":null,"known":[{"MemberFanOut":{"list":"cybersixgill.external_references","allocations":["cybersixgill.mitre","cybersixgill.virustotal","threat.tactic"],"writes":[{"member":"description","target":"cybersixgill.mitre.description","wrapped":false},{"member":"mitre_attack_tactic","target":"threat.tactic.name","wrapped":true},{"member":"mitre_attack_tactic_id","target":"threat.tactic.id","wrapped":true},{"member":"mitre_attack_tactic_url","target":"threat.tactic.reference","wrapped":true},{"member":"positive_rate","target":"cybersixgill.virustotal.pr","wrapped":false},{"member":"url","target":"cybersixgill.virustotal.url","wrapped":false}]}}]}"#
                     ),
                 )?;
             }
@@ -496,8 +498,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def value = ctx.threat.indicator.confidence; if (value <= 0.0 || value > 100.0) {\n  ctx.threat.indicator.confidence = \"None\";\n  return;\n} if (value >= 1.0 && value <= 29.0) {\n  ctx.threat.indicator.confidence = \"Low\";\n  return;\n} if (value >= 30.0 && value <= 69.0) {\n  ctx.threat.indicator.confidence = \"Med\";\n  return;\n} if (value >= 70 && value <= 100) {\n  ctx.threat.indicator.confidence = \"High\";\n  return;\n}\n"#
+                    compiled_painless!(
+                        "a9886bce8ed3115a1313004baf8e6d00376487449356e3737c5ef345cc5ef685",
+                        r#"{"params":null,"known":[{"BandLadder":{"subject":"threat.indicator.confidence","arms":[[{"bounds":[{"op":"Le","scaled":0},{"op":"Gt","scaled":100000}],"all":false},{"Text":"None"}],[{"bounds":[{"op":"Ge","scaled":1000},{"op":"Le","scaled":29000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":30000},{"op":"Le","scaled":69000}],"all":true},{"Text":"Med"}],[{"bounds":[{"op":"Ge","scaled":70000},{"op":"Le","scaled":100000}],"all":true},{"Text":"High"}]],"default":null,"absent":null,"target":"threat.indicator.confidence"}}]}"#
                     ),
                 )?;
             }

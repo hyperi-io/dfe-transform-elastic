@@ -173,8 +173,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.wiz.audit.action.contains('Login')) {\n  ctx.event.category = ['authentication'];\n} else if (ctx.wiz.audit.action.contains('Report')){\n  ctx.event.category = ['file'];\n}"#
+                    compiled_painless!(
+                        "3d49bd3ee6eeeebabbac9e1d8fec6f7b40089b9f146ca07a9cd02534615541fc",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"wiz.audit.action","fold_case":false,"test":"Contains","arms":[{"literals":["Login"],"writes":[["event.category",["authentication"]]],"removes":[]},{"literals":["Report"],"writes":[["event.category",["file"]]],"removes":[]}]}}]}"#
                     ),
                 )?;
             }

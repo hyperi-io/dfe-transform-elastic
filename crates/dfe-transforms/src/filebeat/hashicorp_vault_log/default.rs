@@ -75,8 +75,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.hashicorp_vault.remove(\"log\");\nif (ctx.hashicorp_vault.isEmpty()) {\n  ctx.remove(\"hashicorp_vault\");\n}\n"#
+                        compiled_painless!(
+                            "2d818e316233e7a61c511e53f8c09b1cc865789b9e02e6567d85c206d037d995",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }

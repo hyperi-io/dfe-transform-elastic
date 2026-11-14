@@ -664,8 +664,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def value = ctx.threatq.score; if (ctx.containsKey('threat') == false || ctx.threat == null) {\n  ctx.threat = new HashMap();\n}\nif (ctx.threat.containsKey('indicator') == false || ctx.threat.indicator == null) {\n  ctx.threat.indicator = new HashMap();\n} if (value >= 0 && value <= 4) {\n  ctx.threat.indicator.confidence = \"Low\";\n  return;\n} if (value >= 5 && value <=7) {\n  ctx.threat.indicator.confidence = \"Medium\";\n  return;\n} if (value >= 8 && value <= 10) {\n  ctx.threat.indicator.confidence = \"High\";\n  return;\n}\n"#
+                    compiled_painless!(
+                        "4b4cf0c2dbf824755941399d2e56ae17e5ec9200212268d7459bf260caaa286f",
+                        r#"{"params":null,"known":[{"BandLadder":{"subject":"threatq.score","arms":[[{"bounds":[{"op":"Ge","scaled":0},{"op":"Le","scaled":4000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":5000},{"op":"Le","scaled":7000}],"all":true},{"Text":"Medium"}],[{"bounds":[{"op":"Ge","scaled":8000},{"op":"Le","scaled":10000}],"all":true},{"Text":"High"}]],"default":null,"absent":null,"target":"threat.indicator.confidence"}}]}"#
                     ),
                 )?;
             }
@@ -698,8 +699,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.threatq.ioc_expired_at == null) {\n  ZonedDateTime ioc_expired_at;\n  if (ctx.threatq.status == 'Expired') {\n    ioc_expired_at = ZonedDateTime.parse(ctx['@timestamp']);\n  }\n  else {\n    def dur = ctx._conf.ioc_expiration_duration;\n    ZonedDateTime updated_at = ZonedDateTime.parse(ctx.threatq.updated_at, DateTimeFormatter.ISO_ZONED_DATE_TIME);\n    if (dur instanceof String){\n      char time_unit;\n      String time_value;\n      if (dur.length() != 0){\n        time_unit = dur.charAt(dur.length() - 1);\n        time_value = dur.substring(0, dur.length() - 1);\n      }\n      if (time_unit == (char)'d') {\n        ioc_expired_at = updated_at.plusDays(Long.parseLong(time_value));\n      } else if (time_unit == (char)'h') {\n        ioc_expired_at = updated_at.plusHours(Long.parseLong(time_value));\n      } else if (time_unit == (char)'m') {\n        ioc_expired_at = updated_at.plusMinutes(Long.parseLong(time_value));\n      } else {\n        if (ctx.error == null) {\n          ctx.error = new HashMap();\n        }\n        if (ctx.error.message == null) {\n          ctx.error.message = new ArrayList();\n        }\n        ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n        ioc_expired_at = updated_at.plusDays(90L);\n      }\n    }\n    else {\n      ioc_expired_at = updated_at.plusDays(90L);\n    }\n  }\n  ctx.threatq.ioc_expired_at = ioc_expired_at;\n}\n\n// Set threatq.ioc_expiration_reason\nif (ctx.threatq.expires_at != null && ctx.threatq.expired_at == null) {\n  ctx.threatq.ioc_expiration_reason = params.expires_at;\n} else if (ctx.threatq.expired_at != null) {\n  ctx.threatq.ioc_expiration_reason = params.expired_at;\n} else if (ctx.threatq.status == 'Expired') {\n  ctx.threatq.ioc_expiration_reason = params.expired_status;\n} else {\n  ctx.threatq.ioc_expiration_reason = params.expired_default;\n}\n"#
+                        compiled_painless!(
+                            "2a0961fdf41b15a4cb81ea4ada2fab61c1d222a1e3ac3e879e69439f05c2406e",
+                            r#"{"params":null,"known":[{"IocExpiry":{"duration":"_conf.ioc_expiration_duration","default_duration":null,"bases":["threatq.updated_at"],"default_days":90,"settle_seconds":0,"invalid_message":"invalid ioc_expiration_duration: using default 90 days","target":"threatq.ioc_expiration_reason"}}]}"#
                         ),
                         cached_params!(
                             "{\"expires_at\":\"Expiration set by ThreatQ from expires_at field\",\"expired_at\":\"Expiration set by ThreatQ from expired_at field\",\"expired_status\":\"Expiration set by Elastic when threatq.status is 'Expired'\",\"expired_default\":\"Expiration set by Elastic from the integration's parameter `IOC Expiration Duration`\"}"
@@ -1543,8 +1545,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def ecsTlps = ['WHITE', 'GREEN', 'AMBER', 'RED', 'CLEAR', 'AMBER+STRICT'];\ndef providers = new ArrayList();\ndef tlps = new ArrayList();\nfor (source in ctx.threatq.sources) {\n  if (source == null) {\n    return;\n  }\n  if (source.containsKey(\"name\") && source[\"name\"] != null) {\n    providers.add(source[\"name\"]);\n  }\n  if (source.containsKey(\"tlp_name\") && source[\"tlp_name\"] != null && ecsTlps.contains(source[\"tlp_name\"])) {\n    tlps.add(source[\"tlp_name\"]);\n  }\n}\nif (tlps.size() > 0) {\n  if (ctx.threat.indicator.marking == null) {\n    ctx.threat.indicator.marking = new HashMap();\n  }\n  ctx.threat.indicator.marking.tlp = tlps;\n}\nif (providers.size() > 0) {\n  if (ctx.threat.indicator.provider == null) {\n    ctx.threat.indicator.provider = new HashMap();\n  }\n  ctx.threat.indicator.provider = providers;\n}"#
+                    compiled_painless!(
+                        "ab4538de5aa1f97743da0734a4b5774c7d22f1db683f027f8abe10660f31f1ed",
+                        r#"{"params":null,"known":[{"GatherMembers":{"list":"threatq.sources","stop_on_null_element":true,"columns":[{"member":"tlp_name","targets":["threat.indicator.marking.tlp"],"allowed":["WHITE","GREEN","AMBER","RED","CLEAR","AMBER+STRICT"],"lowercase":false,"flatten":false,"dedupe":false,"selector":null,"literals":[],"split":null},{"member":"name","targets":["threat.indicator.provider"],"allowed":[],"lowercase":false,"flatten":false,"dedupe":false,"selector":null,"literals":[],"split":null}],"flag":null}}]}"#
                     ),
                 )?;
             }

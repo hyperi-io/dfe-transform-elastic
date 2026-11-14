@@ -236,8 +236,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.remove('temp_message'); throw new Exception(\"Dissect error: Not a valid envoyproxy access log\");"#
+                        compiled_painless!(
+                            "b77af5e77fdaf0a297f47caa210eda7f02c11c7764dee153897994108f7eb2b8",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -291,7 +292,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "95f2db4fdfb0951de6881a6a08e1bcd17f261d9a66a3ddd36bf81422823689dc",
+                            r#"{"params":"Scale","known":[]}"#,
                             r#"ctx.event.duration = Math.round(ctx.duration * params.scale)"#
                         ),
                         cached_params!("{\"scale\":1000000}"),
@@ -365,7 +368,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
+                            compiled_painless!(
+                                "984c23f5ef0f658e4376ee8f12b661d57a89c540b09b3b49774c37e65cb97385",
+                                r#"{"params":"Scale","known":[]}"#,
                                 r#"ctx.envoyproxy.log.upstream_service_time = Math.round(Double.parseDouble(ctx.upstream_service_time) * params.scale)"#
                             ),
                             cached_params!("{\"scale\":1000000}"),
@@ -737,8 +742,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.remove('temp_message'); throw new Exception(\"Dissect error: Not a valid envoyproxy access log\");"#
+                        compiled_painless!(
+                            "b77af5e77fdaf0a297f47caa210eda7f02c11c7764dee153897994108f7eb2b8",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -792,7 +798,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "95f2db4fdfb0951de6881a6a08e1bcd17f261d9a66a3ddd36bf81422823689dc",
+                            r#"{"params":"Scale","known":[]}"#,
                             r#"ctx.event.duration = Math.round(ctx.duration * params.scale)"#
                         ),
                         cached_params!("{\"scale\":1000000}"),
@@ -866,7 +874,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
+                            compiled_painless!(
+                                "984c23f5ef0f658e4376ee8f12b661d57a89c540b09b3b49774c37e65cb97385",
+                                r#"{"params":"Scale","known":[]}"#,
                                 r#"ctx.envoyproxy.log.upstream_service_time = Math.round(Double.parseDouble(ctx.upstream_service_time) * params.scale)"#
                             ),
                             cached_params!("{\"scale\":1000000}"),

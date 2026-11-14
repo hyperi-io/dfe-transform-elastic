@@ -97,8 +97,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def attrs = ctx.aws.bedrock_agentcore.memory.resource.attributes;\n\nif (attrs.containsKey('service.name')) {\n  if (ctx.service == null) ctx.service = new HashMap();\n  ctx.service.name = attrs['service.name'];\n}\n"#
+                        compiled_painless!(
+                            "16ea8f69001f61b8c554bc3e0f0e3d85f2439e4207f778549f55d1cd0148cbdf",
+                            r#"{"params":null,"known":[{"DottedKeyCopies":{"map":"aws.bedrock_agentcore.memory.resource.attributes","copies":[["service.name","service.name"]]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -180,7 +181,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "c9352797fb6e0382a53dcbdfad0ad3c2db6bd9b3e04577e034a6af6c0d15cdf5",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"aws.bedrock_agentcore.memory.body.isError","wanted":{"Value":true},"negated":false,"lowered":false}}],[{"Compare":{"path":"error.message","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}]}}],"whole":false}}]}"#,
                     r#"if (ctx.aws?.bedrock_agentcore?.memory?.body?.isError == true || ctx.error?.message != null) {\n  ctx.event = ctx.event != null ? ctx.event : new HashMap();\n  ctx.event.outcome = 'failure';\n} else {\n  ctx.event = ctx.event != null ? ctx.event : new HashMap();\n  ctx.event.outcome = 'success';\n}\n"#
                 ),
             )?;

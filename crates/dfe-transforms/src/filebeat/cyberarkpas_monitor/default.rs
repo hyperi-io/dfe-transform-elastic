@@ -115,7 +115,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "50197b3d9d09105e9f99f91230993f6b91ebd33ff51ab06632b52576fd20362c",
+                    r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                     r#"ctx.cyberarkpas.monitor.entrySet().removeIf(entry -> entry.getValue() == \"\");"#
                 ),
             )?;
@@ -168,8 +170,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"String to_snake_case(String s) {\n  /* faster code path for strings that won't need an underscore */\n  if (s.chars().skip(1).noneMatch(Character::isUpperCase)) {\n    return s.toLowerCase();\n  }\n  int run = 0;\n  boolean first = true;\n  StringBuilder result = new StringBuilder();\n  for (char c : s.toCharArray()) {\n    char o = Character.toLowerCase(c);\n    if (c != o) {\n      if (run == 0 && !first) {\n        result.append('_');\n      }\n      run ++;\n    } else {\n      if (run > 1) {\n        char prev = result.charAt(result.length()-1);\n        result.setCharAt(result.length()-1, (char)'_');\n        result.append(prev);\n      }\n      run = 0;\n      first = false;\n    }\n    result.append(o);\n  }\n  return result.toString();\n} def keys_to_snake_case_recursive(Map object) {\n  return object.entrySet().stream().collect(\n    Collectors.toMap(\n      e -> to_snake_case(e.getKey()),\n      e -> e.getValue() instanceof Map ? keys_to_snake_case_recursive(e.getValue()) : e.getValue()\n    )\n  );\n} ctx.cyberarkpas.monitor = keys_to_snake_case_recursive(ctx.cyberarkpas.monitor);\n"#
+                compiled_painless!(
+                    "ff30094be583e4063234dd5f97c8079c67757954cadfafc9266e54b8df26daad",
+                    r#"{"params":null,"known":[{"KeysToSnakeCase":["cyberarkpas.monitor","AcronymRun"]}]}"#
                 ),
             )?;
 
@@ -324,8 +327,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def i = ctx.tags.indexOf(\"cyberarkpas-audit\"); if (i != -1) ctx.tags.set(i, \"cyberarkpas-monitor\");"#
+                    compiled_painless!(
+                        "598a0dfb16bcb03fcfb3730d3556f561520f877286de99e22caa800269aa6540",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -367,8 +371,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.host == null) ctx.host = [:]; if (ctx.host.cpu == null) ctx.host.cpu = [:]; ctx.host.cpu.usage = ctx.cyberarkpas.monitor.cpu_usage/100.0;"#
+                    compiled_painless!(
+                        "0dc9885aaf42401ac4f75212c8d165e5716ee9b465fafe9ccb62a5863c524117",
+                        r#"{"params":null,"known":[{"GuardedDivide":{"target":"host.cpu.usage","source":"cyberarkpas.monitor.cpu_usage","absent":null,"divisor":100}}]}"#
                     ),
                 )?;
             }

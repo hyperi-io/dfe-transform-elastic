@@ -31,8 +31,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"ctx[\"stormshield\"] = new HashMap();\ndef kvStart = 0; def kvSplit = 0; def kvEnd = 0; def inQuote = false;\nfor (int i = 0, n = ctx[\"message\"].length(); i < n; ++i) {\n  char c = ctx[\"message\"].charAt(i);\n  if (c == (char)'\"') {\n    inQuote = !inQuote;\n  }\n  if (inQuote) {\n    continue;\n  }\n  \n  if (c == (char)'=') {\n    kvSplit = i;\n  }\n  if (c == (char)' ' || (i == n - 1)) {\n    if (kvStart != kvSplit) {\n      def key = ctx[\"message\"].substring(kvStart, kvSplit);\n      def end = i;\n      if (i == n - 1)  {\n          end = n;\n      }\n      def value = ctx[\"message\"].substring(kvSplit + 1, end).replace(\"\\\"\", \"\");\n      ctx[\"stormshield\"][key] = value;\n    }\n\n    kvStart = i + 1;\n    kvSplit = i + 1;\n  }\n}"#
+                compiled_painless!(
+                    "341691e98ce2ca4264b43f72e8f5ecad0470f0575129898311e89477cef08e46",
+                    r#"{"params":null,"known":[{"KvIntoNamespace":"stormshield"}]}"#
                 ),
             )?;
 
@@ -131,8 +132,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"Pattern compositeKeyPattern = /^(\\w+)\\((\\w+)\\/(\\w+)\\)$/; Pattern compositeValuePattern = /^(\\w+)\\/(\\w+)$/;\ndef replacePairs = [:]; def move = []; ctx.stormshield.forEach((k, v) -> {\n  if (k.contains('(')) {\n    replacePairs[k] = v;\n  } else if (Character.isUpperCase(k.charAt(0))) {\n    move.add(k);\n  }\n\n  return true;\n});\nif (!ctx.stormshield.containsKey(\"metadata\")) {\n  ctx.stormshield.metadata = [:];\n} move.forEach(k -> {\n  ctx.stormshield.metadata[k] = ctx.stormshield[k];\n  ctx.stormshield.remove(k);\n  return true;\n}); replacePairs.forEach((k, v) -> {\n  def keyMatcher = compositeKeyPattern.matcher(k);\n  if (!keyMatcher.matches()) {\n    return false;\n  }\n  def valueMatcher = compositeValuePattern.matcher(v);\n  if (!valueMatcher.matches()) {\n    return false;\n  }\n  def newSubkeys = [:];\n  def newSubkey0 = keyMatcher.group(2);\n  def newSubkey1 = keyMatcher.group(3);\n  newSubkey0 = params.containsKey(newSubkey0) ? params[newSubkey0] : newSubkey0;\n  newSubkey1 = params.containsKey(newSubkey1) ? params[newSubkey1] : newSubkey1;\n  newSubkeys[newSubkey0] = Long.parseLong(valueMatcher.group(1));\n  newSubkeys[newSubkey1] = Long.parseLong(valueMatcher.group(2));\n  ctx.stormshield.metadata[keyMatcher.group(1)] = newSubkeys;\n  ctx.stormshield.remove(k);\n});"#
+                    compiled_painless!(
+                        "7fcd8ae0b46f1a0ca4efa3dbe45ced648c260e32a6eea40f42d3977956295d6a",
+                        r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Not":{"ContainsKey":{"path":"stormshield","key":"metadata"}}}]],"then":[],"alt":[]}},"Return"],"whole":false}},"known":[]}"#
                     ),
                     cached_params!("{\"i\":\"in_count\",\"o\":\"out_count\"}"),
                 )?;
@@ -145,8 +147,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def deviceStats = [:]; def specialCases = [:]; ctx.stormshield.forEach((k, v) -> {\n  params.devices.forEach(d -> {\n    if (k.startsWith(d)) {\n      deviceStats[k] = [:];\n      deviceStats[k][\"value\"] = v;\n      deviceStats[k][\"stem\"] = d;\n    }\n\n    return true;\n  });\n  params.special_cases.forEach(s -> {\n    def sp_k = s[\"key\"];\n    def sp_v = s[\"value\"];\n    if (k.startsWith(sp_k)) {\n      def _map = [:];\n      def values = v.splitOnToken(',', 3);\n      for (int i = 0; i < sp_v.length; ++i) {\n        _map[sp_v[i]] = Long.parseLong(values[i]);\n      }\n      specialCases[sp_k] = _map;\n    }\n\n    return true;\n  });\n});\nif (deviceStats.isEmpty() && specialCases.isEmpty()) {\n  return;\n}\ndef result = [:]; for (entry in deviceStats.entrySet()) {\n  def entryValue = entry.getValue();\n  def stem = entryValue[\"stem\"];\n  if (!result.containsKey(stem)) {\n    result[stem] = [];\n  }\n  def values = entryValue[\"value\"].splitOnToken(',', 7);\n  def item = [:];\n  item[\"original\"] = entry.getKey();\n  for (int i = 0; i < values.length; ++i) {\n    if (i == 0) {\n      item[params.stats[i]] = values[i];\n    } else {\n      item[params.stats[i]] = Long.parseLong(values[i]);        \n    }\n  }\n  result[stem].add(item);\n  ctx.stormshield.remove(entry.getKey());\n} for (entry in result.entrySet()) {\n  result[entry.getKey()].sort((a, b) -> a[\"original\"].compareTo(b[\"original\"]));\n} if (!ctx.stormshield.containsKey(\"metadata\")) {\n  ctx.stormshield[\"metadata\"] = [:];\n} ctx.stormshield.metadata.device_stats = result; for (entry in specialCases.entrySet()) {\n  ctx.stormshield.metadata.device_stats[entry.getKey()] = entry.getValue();\n  ctx.stormshield.remove(entry.getKey());\n}"#
+                    compiled_painless!(
+                        "66d4731050fbad6680e35840d458c4a057a7291a15ae255899f3f5e8110fa790",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"special_cases\":[{\"key\":\"CPU\",\"value\":[\"user_time\",\"kernel_time\",\"system_disruption\"]}],\"devices\":[\"agg\",\"ipsec\",\"sslvpn\",\"Wifi\",\"Qid\",\"Vlan\"],\"stats\":[\"name\",\"incoming_throughput\",\"maximum_incoming_throughput\",\"outgoing_throughput\",\"maximum_outgoing_throughput\",\"packets_accepted\",\"packets_blocked\"]}"
@@ -155,8 +158,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def deviceStats = [:]; ctx.stormshield.forEach((k, v) -> {\n  params.devices.forEach(d -> {\n    if (k.startsWith(d)) {\n      deviceStats[k] = [:];\n      deviceStats[k][\"value\"] = v;\n      deviceStats[k][\"stem\"] = d;\n    }\n\n    return true;\n  });\n});\nif (deviceStats.isEmpty()) {\n  return;\n}\nif (!ctx.stormshield.containsKey(\"metadata\")) {\n  ctx.stormshield.metadata = [:];\n} def ports = []; for (entry in deviceStats.entrySet()) {\n  def entryKey = entry.getKey();\n  def entryValue = entry.getValue();\n  def values = entryValue[\"value\"].splitOnToken(',', 7);\n  def item = [:];\n  ports.add(entryKey);\n  item[\"original\"] = entryKey;\n  for (int i = 0; i < values.length; ++i) {\n    if (i == 0) {\n      item[params.stats[i]] = values[i];\n    } else {\n      item[params.stats[i]] = Long.parseLong(values[i]);        \n    }\n  }\n  ctx.stormshield.remove(entryKey);\n  ctx.stormshield.metadata[entryKey] = item;\n} ports.sort((a, b) -> a.compareTo(b)); ctx.stormshield.ports = ports;"#
+                    compiled_painless!(
+                        "57d8c00a8f8fc6eefec44c7e8583b6698434881ce735691fed9a13d45f50f5f7",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"devices\":[\"Ethernet\"],\"stats\":[\"name\",\"incoming_throughput\",\"maximum_incoming_throughput\",\"outgoing_throughput\",\"maximum_outgoing_throughput\",\"packets_accepted\",\"packets_blocked\"]}"
@@ -171,8 +175,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"boolean isNumeric(def s) {\n  if (!(s instanceof String) || s.isEmpty() || s.length() > 18) {\n    return false;\n  }\n  for (int i = 0; i < s.length(); i++) {\n    if (Character.isDigit(s.charAt(i)) == false) {\n      return false;\n    }\n  }\n  return true;\n} def ruleStats = []; def ruleKeys = []; def str = \"Rule\"; ctx.stormshield.forEach((k, v) -> {\n  if (k.startsWith(str) && k.indexOf(\":\") > str.length()) {\n    ruleKeys.add(k);\n    def parts = k.substring(str.length()).splitOnToken(\":\");\n    if (parts.length == 2 && isNumeric(v) && isNumeric(parts[1]) && parts[0].length() == 1 && isNumeric(parts[0])) {\n      int category = Integer.parseInt(parts[0]);\n      if (category < params.stats.size()) {\n        def item = [:];\n        item[\"original\"] = k;\n        item[\"byte_count\"] = Long.parseLong(v);\n        item[\"category\"] = params.stats[category];\n        item[\"rule_number\"] = Long.parseLong(parts[1]);\n        ruleStats.add(item);\n      }\n    }\n  }\n\n  return true;\n});\nfor (k in ruleKeys) {\n  ctx.stormshield.remove(k);\n}\nif (ruleStats.isEmpty()) {\n  return;\n}\nruleStats.sort((a, b) -> a[\"original\"].compareTo(b[\"original\"])); if (!ctx.stormshield.containsKey(\"metadata\")) {\n  ctx.stormshield.metadata = [:];\n} ctx.stormshield.metadata.rule_stats = ruleStats;"#
+                    compiled_painless!(
+                        "f113bc85d14c963b92872407b6f80279c89ce329e397074a28fc4a35a6f00050",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"devices\":[\"Rule\"],\"stats\":[\"Implicit Filter Rule\",\"Global Filter Rule\",\"Local Filter Rule\",\"Implicit NAT Rule\",\"Global NAT Rule\",\"Local NAT Rule\"]}"
@@ -636,8 +641,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.stormshield?.duration != null) {\n    def duration = Float.parseFloat(ctx.stormshield.duration);\n    duration *= 1000000000; // 10^9 nanoseconds per second\n    if (!ctx.containsKey(\"event\")) {\n        ctx.event = [:];\n    }\n\n    ctx.event.duration = (int)duration;\n    ctx.stormshield.remove(\"duration\");\n}"#
+                compiled_painless!(
+                    "00775dfe7f0374c3e61a57608c17272c72c590baa1c8e2f5d6ba477cb49614ae",
+                    r#"{"params":null,"known":[{"FloatSecondsToNanos":{"source":"stormshield.duration","target":"event.duration","remove_source":true}}]}"#
                 ),
             )?;
 
@@ -685,8 +691,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.stormshield.ipv == \"4\") {\n    ctx.network.type = \"ipv4\";\n    ctx.stormshield.remove(\"ipv\");\n} else if (ctx.stormshield.ipv == \"6\") {\n    ctx.network.type = \"ipv6\";\n    ctx.stormshield.remove(\"ipv\");\n}"#
+                    compiled_painless!(
+                        "1e5f3e6fa57dd562d1b885ab929bc1d61c6d8ba9b79d3e75cf3460d912418bc0",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"stormshield.ipv","fold_case":false,"test":"Equals","arms":[{"literals":["4"],"writes":[["network.type","ipv4"]],"removes":["stormshield.ipv"]},{"literals":["6"],"writes":[["network.type","ipv6"]],"removes":["stormshield.ipv"]}]}}]}"#
                     ),
                 )?;
             }
@@ -791,8 +798,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"if (!ctx.stormshield.containsKey(\"metadata\")) {\n    ctx.stormshield.metadata = [:];\n} params.names.forEach(k -> {\n    if (ctx.stormshield.containsKey(k)) {\n        ctx.stormshield.metadata[k] = ctx.stormshield[k];\n        ctx.stormshield.remove(k);\n    }\n    return true;\n});"#
+                compiled_painless!(
+                    "4839b9550f0f0ff4b4518894daa86526f5250b2bf4f9d3b1052746f91c40579b",
+                    r#"{"params":{"MoveKeysIntoChild":{"parent":"stormshield","child":"metadata","names":"names"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"names\":[\"Pvm\",\"address\",\"alarmid\",\"arg\",\"auth\",\"authcaptive\",\"authconsole\",\"authipsec\",\"authsslvpn\",\"authtotp\",\"authwebadmin\",\"cat_site\",\"class\",\"classification\",\"clientappid\",\"confid\",\"contentpolicy\",\"cookie_i\",\"cookie_r\",\"datechange\",\"domain\",\"dstcontinent\",\"dstcountry\",\"dstportname\",\"error\",\"filename\",\"filetype\",\"groupid\",\"icmpcode\",\"icmptype\",\"id\",\"ikev\",\"localnet\",\"mem\",\"method\",\"modsrc\",\"modsrcport\",\"op\",\"phase\",\"pri\",\"rcvd\",\"remoteid\",\"remotenet\",\"repeat\",\"result\",\"risk\",\"ruletype\",\"sandboxing\",\"sandboxinglevel\",\"security\",\"sensible\",\"sent\",\"serverappid\",\"sessionid\",\"side\",\"slotlevel\",\"slotname\",\"spamlevel\",\"spi_in\",\"spi_out\",\"srccontinent\",\"srccountry\",\"srcname\",\"srcportname\",\"target\",\"totp\",\"urlruleid\",\"usergroup\",\"version\",\"virus\"]}"
@@ -863,7 +871,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "dad548f19bc6b404d30f5828db62f4d636d152d3f72d5009bcc0f7663bfface4",
+                        r#"{"params":{"EventBlockTable":{"subject":"stormshield.logtype","target":"event","table":"logtypes","default_kind":"event","action_subjects":"action_logtypes","action_types":"action_types","action_field":"event.action"}},"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"event","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"If":{"test":[["Never"]],"then":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}}],"alt":[{"If":{"test":[["Never",{"InstanceOf":{"path":"event.action","kind":"Text"}}]],"then":[{"If":{"test":[["Never",{"Not":"Never"}]],"then":[],"alt":[]}}],"alt":[]}}]}}],"whole":false}}]}"#,
                         r#"def logtype = ctx.stormshield?.logtype; def entry = params.logtypes[logtype]; if (ctx.event == null) {\n    ctx.event = [:];\n} if (entry == null) {\n    ctx.event.kind = 'event';\n} else {\n    ctx.event.kind = entry.kind;\n    ctx.event.category = new ArrayList(entry.category);\n    ctx.event.type = new ArrayList(entry.type);\n    if (params.action_logtypes.contains(logtype) && ctx.event.action instanceof String) {\n        def mapped = params.action_types[ctx.event.action.toLowerCase()];\n        if (mapped != null && !ctx.event.type.contains(mapped)) {\n            ctx.event.type.add(mapped);\n        }\n    }\n}"#
                     ),
                     cached_params!(

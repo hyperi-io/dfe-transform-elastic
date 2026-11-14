@@ -123,8 +123,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (def item : ctx._conf.tz_map) {\n  if (item.tz_short == ctx.temp.timezone) {\n    ctx.temp.timezone = item.tz_long;\n    break;\n  }\n}"#
+                    compiled_painless!(
+                        "8871662b92f9806fb98dd752a26237ea81498c7df0eeac8e76b903c0574b8e93",
+                        r#"{"params":null,"known":[{"RecordLookup":{"table":"_conf.tz_map","subject":"temp.timezone","key":"tz_short","value":"tz_long","target":"temp.timezone","default":null}}]}"#
                     ),
                 )?;
             }
@@ -614,7 +615,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "7834d37e5c7f49be662ca7ec1dbf527ed7b1c88a6403906fc1c5a7fa02015ba3",
+                            r#"{"params":"IndexedLookup","known":[]}"#,
                             r#"def LogLevelValue = (int) ctx.event.severity;\nif (LogLevelValue >= 0 && LogLevelValue < params.LogLevel.length) {\n  ctx.log.put('level', params['LogLevel'][LogLevelValue]);\n}"#
                         ),
                         cached_params!(

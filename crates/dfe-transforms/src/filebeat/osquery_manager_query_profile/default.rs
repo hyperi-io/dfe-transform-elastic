@@ -69,8 +69,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"String sql = ctx.action_data.query;\nif (sql.length() > 1024) {\n  sql = sql.substring(0, 1023) + \"…\";\n}\nif (!(ctx.query instanceof Map)) {\n  ctx.query = new HashMap();\n}\nctx.query.name = sql;\n"#
+                compiled_painless!(
+                    "ce59db65ac3b5e6d60a78bfa70bf4989f27155d70b1ae6e3c2b2eca28dd53f9c",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
         }

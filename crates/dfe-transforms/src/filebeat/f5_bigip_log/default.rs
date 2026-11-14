@@ -780,8 +780,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.network = new HashMap();\nctx.network.bytes = ctx.f5_bigip.log.bytes.in + ctx.f5_bigip.log.bytes.out;\n"#
+                        compiled_painless!(
+                            "856bbbf312412a9431b385f3c66ae5be5c373e16a2ca357facc58b84637a9806",
+                            r#"{"params":null,"known":[{"CombineFields":{"target":"network.bytes","op":"Add","left":{"path":"f5_bigip.log.bytes.in","divisor":null},"right":{"path":"f5_bigip.log.bytes.out","divisor":null}}}]}"#
                         ),
                     )?;
                 }
@@ -2461,8 +2462,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.network = new HashMap();\nctx.network.bytes = ctx.f5_bigip.log.bytes.in + ctx.f5_bigip.log.bytes.out;\n"#
+                        compiled_painless!(
+                            "856bbbf312412a9431b385f3c66ae5be5c373e16a2ca357facc58b84637a9806",
+                            r#"{"params":null,"known":[{"CombineFields":{"target":"network.bytes","op":"Add","left":{"path":"f5_bigip.log.bytes.in","divisor":null},"right":{"path":"f5_bigip.log.bytes.out","divisor":null}}}]}"#
                         ),
                     )?;
                 }
@@ -3695,8 +3697,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def log; if (ctx.event?.original != null) {\n  log = ctx.event.original;\n} else if (ctx.json?.originalRawData != null) {\n  log = ctx.json.originalRawData;\n} if (log != null) {\n  def sAMAccountNameMatch = /sAMAccountName=([^\\\\)]+)/.matcher(log);\n  if (sAMAccountNameMatch.find()) {\n    ctx.f5_bigip.log.sam_account_name = sAMAccountNameMatch.group(1);\n  }\n\n  def userPrincipleNameMatch = /UserPrincipleName=([^\\\\)]+)/.matcher(log);\n  if (userPrincipleNameMatch.find()) {\n    ctx.f5_bigip.log.user_principle_name = userPrincipleNameMatch.group(1);\n  }\n\n  def userNameMatch = /User_Name=([^\\\\)]+)/.matcher(log);\n  if (userNameMatch.find()) {\n    ctx.f5_bigip.log.user_name = userNameMatch.group(1);\n  }\n}\n"#
+                    compiled_painless!(
+                        "5cba10b16fc0476a923fd96b661a0de1119cf75cee861f937583481a1214cc57",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 if event.has_value("json.query_string") {
@@ -3988,8 +3991,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.url == null) {\n    ctx.url = new HashMap();\n}\nctx.url.original = ctx.network.protocol + '://' +ctx.f5_bigip.log.request.host + ctx.f5_bigip.log.request.path\n"#
+                        compiled_painless!(
+                            "06b02a0efc52c0bf639b16dbc86685de2efa541247d73f655ab3aad569c89d38",
+                            r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"Compare":{"path":"url","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"Literal":{"Set":{"path":"url.original","value":{"Concat":{"pieces":[{"Field":"network.protocol"},{"Literal":"://"},{"Field":"f5_bigip.log.request.host"},{"Field":"f5_bigip.log.request.path"}],"fold":"None"}}}}}],"whole":true}}]}"#
                         ),
                     )?;
                 }
@@ -11985,15 +11989,17 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def convertKeysToString(Map versionMap, String[] keysToConvert) {\n  def convertedMap = [:];\n  versionMap.entrySet().forEach(entry -> {\n    def key = entry.getKey().toString();\n    def value = entry.getValue();\n    if (Arrays.asList(keysToConvert).contains(key)) {\n      convertedMap[key] = value.toString();\n    } else {\n      convertedMap[key] = value;\n    }\n  });\n  return convertedMap;\n}\ndef diagnosticArray = ctx.json.diagnostics;\ndef keysToConvert = new String[] {\n  'minor',\n  'major',\n  'maintenance',\n  'fix',\n  'point'\n};\nif (diagnosticArray instanceof List) {\n  for (int i = 0; i < diagnosticArray.size(); i++) {\n    def versionArray = diagnosticArray[i].version;\n    if (versionArray instanceof List) {\n      for (int j = 0; j < versionArray.size(); j++) {\n        versionArray[j] = convertKeysToString(versionArray[j], keysToConvert);\n      }\n      ctx.json.diagnostics[i].put('version', versionArray);\n    }\n  }\n}\n"#
+                    compiled_painless!(
+                        "46278489e80d12311abb9786376c1086fcb03f2aa990304e73741deb037fff9d",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def diagnosticArray = ctx.json.diagnostics;\ndef cveIds = new HashSet();\ndef importance = new HashSet();\ndef header = new HashSet();\ndef summary = new HashSet();\ndef ruleName = new HashSet();\ndef ruleRef = new HashSet();\ndef threatRef = new HashSet();\nif (ctx.vulnerability == null) {\n  ctx.vulnerability = new HashMap()\n}\nif (ctx.rule == null) {\n  ctx.rule = new HashMap()\n}\nif (ctx.threat == null) {\n  ctx.threat = new HashMap()\n}\nif (ctx.threat.enrichments == null) {\n  ctx.threat.enrichments = new HashMap()\n}\nif (ctx.threat.enrichments.indicator == null) {\n  ctx.threat.enrichments.indicator = new HashMap()\n}\nif (diagnosticArray instanceof List) {\n  for (int i = 0; i < diagnosticArray.size(); i++) {\n    def cveIdsArray = diagnosticArray[i].cveIds;\n    if (cveIdsArray instanceof List) {\n      for (int j=0; j < cveIdsArray.size(); j++) {\n        cveIds.add(cveIdsArray[j]);\n      }\n      ctx.json.diagnostics[i].remove('cveIds');\n      ctx.json.diagnostics[i].put('cve_ids', cveIdsArray);\n    }\n    def solutionArray = diagnosticArray[i].solution;\n    if (solutionArray instanceof List) {\n      for (int j=0; j < solutionArray.size(); j++) {\n        if (solutionArray[j].id != null) {\n          ruleRef.add(solutionArray[j].id);\n        }\n        if (solutionArray[j].value != null) {\n          threatRef.add(solutionArray[j].value);\n        }\n      }\n      ctx.json.diagnostics[i].remove('cveIds');\n      ctx.json.diagnostics[i].put('cve_ids', cveIdsArray);\n    }\n    if (diagnosticArray[i].importance != null){\n      importance.add(diagnosticArray[i].importance);\n    }\n    if (diagnosticArray[i].header != null){\n      header.add(diagnosticArray[i].header);\n    }\n    if (diagnosticArray[i].summary != null){\n      summary.add(diagnosticArray[i].summary);\n    }\n    if (diagnosticArray[i].name != null){\n      ruleName.add(diagnosticArray[i].name);\n    }\n  }\n}\nctx.vulnerability.put('id', cveIds);\nctx.vulnerability.put('severity', importance);\nctx.vulnerability.put('description', header);\nctx.vulnerability.put('description', summary);\nctx.rule.put('name', ruleName);\nctx.rule.put('reference', ruleRef);\nctx.threat.enrichments.indicator.put('reference', threatRef);\n"#
+                    compiled_painless!(
+                        "146defcaf3c298630cd40d7f1530c2c37a2e85c048c89ecf7cebee38e2a320c2",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 if event.has_value("json") {
@@ -13678,8 +13684,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String message = ctx.event.original;\nint startIndex = message.indexOf('http_request=\"') + 'http_request=\"'.length();\nint endIndex = message.indexOf('\"', startIndex);\nif (startIndex >= 0 && endIndex >= 0) {\n  ctx.kv.http_request = message.substring(startIndex, endIndex);\n}\n"#
+                    compiled_painless!(
+                        "f8868a7496d5ae6459687fd029db4584f0b9ca68646270601ee3bad5e17096a7",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 if event.has_value("kv.http_request") {

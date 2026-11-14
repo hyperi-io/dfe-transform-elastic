@@ -443,8 +443,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n    def result = \"\";\n    for (int i = 0; i < str.length(); i++) {\n        char c = str.charAt(i);\n        if (Character.isUpperCase(c)) {\n            if (i > 0 && Character.isLowerCase(str.charAt(i - 1))) {\n                result += \"_\";\n            }\n            result += Character.toLowerCase(c);\n        } else {\n            result += c;\n        }\n    }\n    return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n// Apply the conversion\nif (ctx.xm_cyber?.audit_trail != null) {\n  ctx.xm_cyber.audit_trail = convertToSnakeCase(ctx.xm_cyber.audit_trail);\n}"#
+                compiled_painless!(
+                    "0f11c068c6c4f5e58f9a2763e8c75acbcf71c3745b978abc2e78eb3d90b06a9a",
+                    r#"{"params":null,"known":[{"CamelToSnake":{"target":"xm_cyber.audit_trail","source":"xm_cyber.audit_trail","rule":"OnWordBreak","at_keys":"Convert","merge":false,"removes":[]}}]}"#
                 ),
             )?;
 

@@ -41,8 +41,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def bean_name = ctx.apache_spark.mbean.toString().splitOnToken(\".\"); def app_name = \"\"; if (bean_name[0].contains(\"name=application\") == true) {\n    app_name = bean_name[1] + \".\" + bean_name[2];\n} ctx.apache_spark.application.name = app_name;"#
+                    compiled_painless!(
+                        "a1b2320fc4fdb80a3c0e4a7a65484ef1a9640674878ec70a57621d25e049e88e",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

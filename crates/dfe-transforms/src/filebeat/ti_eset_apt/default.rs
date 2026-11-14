@@ -89,8 +89,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.eset == null) {\n  ctx.eset = new HashMap();\n}\nctx.eset.valid_until =  ZonedDateTime.parse(ctx['@timestamp']).plusDays(365);"#
+                    compiled_painless!(
+                        "8e2f2b2960a062137472d9cfa95b210744e8060925f76049de9bb0e3375cd1b8",
+                        r#"{"params":null,"known":[{"DatePlusDays":{"source":"@timestamp","target":"eset.valid_until","days":365}}]}"#
                     ),
                 )?;
             }
@@ -482,8 +483,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.threat.indicator.email.address = ctx.threat.indicator.email.address.splitOnToken(' ');\n"#
+                        compiled_painless!(
+                            "3973b161d11fdbf16f27291ec8db031b3d71ca90938ed88e9db81a55709cb7be",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }

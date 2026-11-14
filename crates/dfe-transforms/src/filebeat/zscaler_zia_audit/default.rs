@@ -93,8 +93,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.resp?.version == null) {\n  def fields = [];\n  for (e in ctx.json.entrySet()) {\n    fields.add(e.getKey());\n  }\n  Collections.sort(fields);\n  String signature = String.join(\"|\", fields);\n  if (signature != params.expect.fields) {\n    ctx.error = ctx.error ?: [:];\n    ctx.error.message = ctx.error.message ?: [];\n    ctx.error.message.add(\"field set mismatch: \"+signature+\" is not expected set of templated fields (see \"+params.data_stream+\" in https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n  }\n} else if (ctx.resp.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add(\"template version mismatch: \"+ctx.resp.version.toString()+\" is not expected version (see \"+params.data_stream+\" in https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n}"#
+                    compiled_painless!(
+                        "663ee170a7e45b0896c17a09fcd5b3ed75fd71a28429a61100eaeffcae38faea",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"pkg_version\":\"3.15.1\",\"data_stream\":\"audit-log\",\"expect\":{\"fields\":\"action|adminid|auditlogtype|category|clientip|errorcode|interface|postaction|preaction|recordid|resource|result|subcategory|time|timezone\",\"version\":\"v1\"}}"
@@ -125,7 +126,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "2a1668e23bbbcf5a5a4b93ce2fee600e3256a0ac411cf534150dc26c02a9f803",
+                        r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Compare":{"path":"json.category","wanted":"Null","negated":false,"lowered":false}}],["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                         r#"if (ctx.json?.category == null || params.get(ctx.json.category) == null) {\n  return;\n}\nparams.get(ctx.json.category).forEach((k, v) -> {\n  if (v instanceof List) {\n    ctx.event[k] = new ArrayList(v);\n  } else {\n    ctx.event[k] = v;\n  }\n});"#
                     ),
                     cached_params!(

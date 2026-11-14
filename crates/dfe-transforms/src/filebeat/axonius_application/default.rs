@@ -74,8 +74,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.axonius?.application?.event?.data instanceof Map) {\n  Map eventData = ctx.axonius.application.event.data;\n  for (String key : new ArrayList(eventData.keySet())) {\n    if (ctx.axonius.application.containsKey(key)) {\n      ctx.axonius.application['data_' + key] = eventData[key];\n    } else {\n      ctx.axonius.application[key] = eventData[key];\n    }\n  }\n  ctx.axonius.application.event.remove('data');\n}"#
+                compiled_painless!(
+                    "92f515e06e9dc8afe991d9d9288017bba4b6338325e173aa89799885781baa14",
+                    r#"{"params":null,"known":[{"MergeMapUp":{"parent":"axonius.application","source":"axonius.application.event.data","take":true,"collision":{"Prefix":"data_"},"drops":[]}}]}"#
                 ),
             )?;
 

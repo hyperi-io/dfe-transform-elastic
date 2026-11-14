@@ -50,8 +50,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.zscaler_zia.sandbox_verdict.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.sandbox_verdict.version == null ? 'null' : ctx.zscaler_zia.sandbox_verdict.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}"#
+                        compiled_painless!(
+                            "fc3ea656ec07f100855b3bdfcbd39f97076697f532280ca2b7d5a78a502c1067",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"pkg_version\":\"4.2.0\",\"data_stream\":\"sandbox_verdict\",\"expect\":{\"version\":\"v1\"}}"
@@ -106,8 +107,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"void splitStr(Map m, String key) {\n  if (m == null || key == null) return;\n  def v = m.get(key);\n  if (!(v instanceof String)) return;\n  String s = (String) v;\n  if (s.length() == 0) return;\n  List out = new ArrayList();\n  int from = 0;\n  int n = s.length();\n  for (int i = 0; i < n; i++) {\n    if (s.charAt(i) == (char)'|') {\n      out.add(s.substring(from, i));\n      from = i + 1;\n    }\n  }\n  out.add(s.substring(from, n));\n  m.put(key, out);\n}\ndef sv = ctx.zscaler_zia?.sandbox_verdict;\nif (sv == null) return;\nif (sv.threat instanceof Map) {\n  if (sv.threat.tactic instanceof Map) {\n    splitStr(sv.threat.tactic, 'id');\n  }\n  if (sv.threat.technique instanceof Map) {\n    splitStr(sv.threat.technique, 'id');\n  }\n}\nif (sv.file instanceof Map && sv.file.hash instanceof Map) {\n  splitStr(sv.file.hash, 'children_md5');\n}"#
+                    compiled_painless!(
+                        "e42959b544b6151eb577cab8f8445b0e31821817bb06d5e188983904ec0c70d3",
+                        r#"{"params":null,"known":[{"SplitPipeFields":["zscaler_zia.sandbox_verdict.threat.tactic.id","zscaler_zia.sandbox_verdict.threat.technique.id","zscaler_zia.sandbox_verdict.file.hash.children_md5"]}]}"#
                     ),
                 )?;
                 Ok(())

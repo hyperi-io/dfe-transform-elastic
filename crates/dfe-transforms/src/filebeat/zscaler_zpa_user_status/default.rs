@@ -502,8 +502,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.zscaler_zpa.user_status.fqdn = new HashMap();\nctx.zscaler_zpa.user_status.fqdn.registered = (ctx.json.FQDNRegistered != '0');\n"#
+                        compiled_painless!(
+                            "9e515d12cabcc6b8bb3da1dcc16ee1b34c4382740135a32a4620c174c9a4c4ee",
+                            r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Set":{"path":"zscaler_zpa.user_status.fqdn.registered","value":{"Test":[[{"Compare":{"path":"json.FQDNRegistered","wanted":{"Text":"0"},"negated":true,"lowered":false}}]]}}}}],"whole":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -610,8 +611,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (Map.Entry m : ctx.json.entrySet()) {\n  ctx.zscaler_zpa.user_status[m.getKey()] = m.getValue();\n}\n"#
+                    compiled_painless!(
+                        "f97115af3596c91bb6ceaaf0df21b7613424b202f18c35710c646fb5d4976456",
+                        r#"{"params":null,"known":[{"MergeMapUp":{"parent":"zscaler_zpa.user_status","source":"json","take":false,"collision":"Overwrite","drops":[]}}]}"#
                     ),
                 )?;
             }

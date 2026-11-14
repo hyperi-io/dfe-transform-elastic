@@ -1371,8 +1371,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def var = new ArrayList(); if (params.containsKey((ctx.ses.device_os_type_id).toString())) {\n    def type = params.get((ctx.ses.device_os_type_id).toString());\n    ctx.ses.device_os_type_value = type;\n}"#
+                        compiled_painless!(
+                            "4f8bcfab2cff7b828b06345e115eaffde6eeaf033fee5471f868f01cb437b98b",
+                            r#"{"params":{"GuardedLookup":{"key":"ses.device_os_type_id","target":"ses.device_os_type_value"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"0\":\"Unknown\",\"100\":\"Windows\",\"200\":\"Linux\",\"300\":\"Solaris\",\"301\":\"AIX\",\"302\":\"HP-UX\",\"400\":\"Macintosh\",\"500\":\"iOS\",\"501\":\"Android\",\"502\":\"Windows Mobile\",\"503\":\"iPadOS\",\"1001\":\"Other\"}"
@@ -1420,8 +1421,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def var = new ArrayList(); if (params.containsKey((ctx.ses.device_os_type_id).toString())) {\n    def type = params.get((ctx.ses.device_os_type_id).toString());\n    var.add(type);\n} if (ctx.host == null) {\n    ctx.host = new HashMap();\n} if (ctx.host.os == null) {\n    ctx.host.os = new HashMap();\n} ctx.host.os.put('type', var)"#
+                        compiled_painless!(
+                            "947953a4c3657f6bbc88bfa39b3aa29a1e046ae5bc9c2f2dafde3db8319e3dff",
+                            r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.device_os_type_id"},"target":"host.os.type","dedup":false,"seeded":false}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"100\":\"windows\",\"200\":\"linux\",\"400\":\"macos\",\"500\":\"ios\",\"501\":\"android\"}"
@@ -1903,8 +1905,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event.duration = ctx.ses.event_duration * params.S_TO_NS;"#
+                        compiled_painless!(
+                            "ee89a887f9108abc79ce8ea538ca7fa2d3ed07dbff24bfa2b142966bba018e74",
+                            r#"{"params":"Scale","known":[]}"#
                         ),
                         cached_params!("{\"S_TO_NS\":1000000}"),
                     )?;
@@ -2993,8 +2996,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def obj = ctx.ses.severity_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.severity_value = type\n}"#
+                        compiled_painless!(
+                            "ab15ca8c88aae3812f504625a2f4b21bd03a6c65bea27867902f77f21afb0230",
+                            r#"{"params":{"GuardedLookup":{"key":"ses.severity_id","target":"ses.severity_value"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"0\":\"Unknown\",\"1\":\"Informational\",\"2\":\"Warning\",\"3\":\"Minor\",\"4\":\"Major\",\"5\":\"Critical\",\"6\":\"Fatal\"}"
@@ -3141,8 +3145,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def obj = ctx.ses.status_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.status_value = type\n}"#
+                        compiled_painless!(
+                            "3ce5abf2267e8eba26a0328e5af7e0f4529ec2707100f292e41a01d9a708ac93",
+                            r#"{"params":{"GuardedLookup":{"key":"ses.status_id","target":"ses.status_value"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"0\":\"Unknown\",\"1\":\"Success\",\"2\":\"Failure\",\"3\":\"In Progress\",\"4\":\"Partial Success\"}"
@@ -3952,8 +3957,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def obj = ctx.ses.curr_security_level_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.curr_security_level_value = type\n}"#
+                            compiled_painless!(
+                                "e082454b7c9439dbd9ea5435abdbd141b2c16e9f6ff0476fa742c8a1400e09ab",
+                                r#"{"params":{"GuardedLookup":{"key":"ses.curr_security_level_id","target":"ses.curr_security_level_value"}},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"0\":\"Unknown\",\"1\":\"Secure\",\"2\":\"At Risk\",\"3\":\"Compromised\"}"
@@ -4649,8 +4655,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"ctx.event.duration = ctx.ses.duration * params.S_TO_NS;"#
+                            compiled_painless!(
+                                "cc60b41239ff4d226b7ee401d0459e1f1859e18b9a79c40da99c7f05c941d810",
+                                r#"{"params":"Scale","known":[]}"#
                             ),
                             cached_params!("{\"S_TO_NS\":1000000000}"),
                         )?;
@@ -5597,8 +5604,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def obj = ctx.ses.resolution_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.resolution_value = type\n}"#
+                            compiled_painless!(
+                                "4276c5fa14c04ef68d30b97328f756c9945501417c630a169978490a46d39207",
+                                r#"{"params":{"GuardedLookup":{"key":"ses.resolution_id","target":"ses.resolution_value"}},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"0\":\"Unknown\",\"1\":\"Insufficient data\",\"2\":\"Security risk\",\"3\":\"False positive\",\"4\":\"Managed externally\",\"5\":\"Benign\",\"6\":\"Test\"}"
@@ -5878,8 +5886,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def obj = ctx.ses.scan_type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.scan_type_value = type\n}"#
+                            compiled_painless!(
+                                "a31b95eae43526af5872f53bd6935e5595a8c7e9748286f62bd405b98b18aa62",
+                                r#"{"params":{"GuardedLookup":{"key":"ses.scan_type_id","target":"ses.scan_type_value"}},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"0\":\"Unknown\",\"1\":\"Manual\",\"2\":\"Scheduled\",\"3\":\"Updated Definitions\",\"4\":\"Quarantined Items\",\"5\":\"Attached Media\",\"6\":\"User Logon\",\"7\":\"ELAM\",\"8\":\"Command\"}"
@@ -5977,8 +5986,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def obj = ctx.ses.state_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.state_value = type\n}"#
+                            compiled_painless!(
+                                "933b8be5a1c54f8b1fdc76734071f1d4c70aff940c6afaa3bf34db5868d0bf9d",
+                                r#"{"params":{"GuardedLookup":{"key":"ses.state_id","target":"ses.state_value"}},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"0\":\"Unknown\",\"1\":\"New\",\"2\":\"In Progress\",\"3\":\"On Hold\",\"4\":\"Resolved\",\"5\":\"Closed\"}"
@@ -6174,8 +6184,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def obj = ctx.ses.verdict_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.verdict_value = type\n}"#
+                            compiled_painless!(
+                                "d29ad620f7077b47370c6981f553beba30e053bb708e064604af1bba7d8addf5",
+                                r#"{"params":{"GuardedLookup":{"key":"ses.verdict_id","target":"ses.verdict_value"}},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"0\":\"Unknown\",\"1\":\"Resolved\",\"2\":\"Clean\",\"3\":\"Unresolved\",\"4\":\"Error\",\"5\":\"Cancelled\"}"
@@ -6333,8 +6344,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.actor.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "f3ac1b4ab2a40deb482f475c62766a702da4f290e495c04a01ed8e4188e999ba",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.actor.file.attribute_ids"},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -7335,8 +7347,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.actor.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)"#
+                                compiled_painless!(
+                                    "5c3251e2339e68df702306231b8761f3d8ca19d388b722052bf8fbad67ca56e9",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.actor.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -9804,8 +9817,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new ArrayList(); def direction = ctx.ses.connection.direction_id; if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n}\nif (ctx.network == null) {\n    ctx.network = new HashMap();\n} ctx.network.put('direction', var)"#
+                                compiled_painless!(
+                                    "67f981d4c83c7224b1d6e1e3d4c6bd7f518dfd11c77536858a1e5686fae7e9be",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.connection.direction_id"},"target":"network.direction","dedup":false,"seeded":false}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"unknown\",\"1\":\"inbound\",\"2\":\"outbound\"}"
@@ -11892,8 +11906,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)"#
+                                compiled_painless!(
+                                    "7bff173545249b95bc74d5963f6e25cb4a58f0f79efb3e18ded1b955b4153fb5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.emails","member":"direction_id"}},"target":"email.direction","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"unknown\",\"1\":\"inbound\",\"2\":\"outbound\"}"
@@ -12178,8 +12193,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "eb08d25ca1a8829def15996a82dcc32b1fbcd403d3f0cf77220ed9123334c198",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"attribute_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -12206,8 +12222,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "45d956acc424bedf636a3636dbf09f6c2f6bd2a7197e3e6639d2bb5beeafdde5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"attribute_ids"}},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -13258,8 +13275,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "b7d2c3fbd3d24ebe6ace4d6db62eb5a480433f6c8d2f5330609320ec4b26612b",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"signature_value_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -13523,8 +13541,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var); "#
+                                compiled_painless!(
+                                    "5b827adc6ae3bbf89a7198d1a2afa0ef66e205a7a92227d72edc5ff0a8be122e",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"type_id"}},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -15170,8 +15189,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "9159a834eceb6fb0f03e048944ea622af0b7ce5e37677eb9018c6493d21d5ff9",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.file.attribute_ids"},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -15337,8 +15357,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.file.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.file.type_value = type\n}"#
+                                compiled_painless!(
+                                    "3bbc0f77f352382302154435683ae054024947c31ab3afb35b515104b2fba764",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.file.type_id","target":"ses.file.type_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"File\",\"2\":\"Directory\",\"3\":\"Hard Link\",\"4\":\"Mount\",\"5\":\"Node\",\"6\":\"Symbolic Link\",\"7\":\"Named Pipe\",\"8\":\"Socket\",\"9\":\"Device\",\"10\":\"Email\",\"11\":\"Memory File\",\"12\":\"File in container\"}"
@@ -16091,8 +16112,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);"#
+                                compiled_painless!(
+                                    "fbb77134aa2fa577c790005017a4f21648190caae4f098e17d917cc03e86e71a",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -17520,8 +17542,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.kernel.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.kernel.type_value = type\n}"#
+                                compiled_painless!(
+                                    "fa73eb8c717cbb002f05fde8705a7e9c77abd2eb743a9fd5929cd1e6215849c5",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.kernel.type_id","target":"ses.kernel.type_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"Unknown\",\"1\":\"Shared mutex\",\"2\":\"System call\",\"3\":\"Named pipe\"}"
@@ -18417,8 +18440,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.module.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.module.type_value = type\n}"#
+                                compiled_painless!(
+                                    "2937cac04666a4be856afd49d06a5c9be9fc73c567f6cb5c16360e8794c465bd",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.module.type_id","target":"ses.module.type_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"File\",\"2\":\"Directory\",\"3\":\"Hard Link\",\"4\":\"Mount\",\"5\":\"Node\",\"6\":\"Symbolic Link\",\"7\":\"Named Pipe\",\"8\":\"Socket\",\"9\":\"Device\",\"10\":\"Email\",\"11\":\"Memory File\",\"12\":\"File in container\"}"
@@ -22240,8 +22264,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.process.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "ecbe83f5213f91a67656a96b8fbc791a5095030f8ddd0c10585d9ccfeef51739",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.process.file.attribute_ids"},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -23160,8 +23185,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.process.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)"#
+                                compiled_painless!(
+                                    "9daa2fd2f4220e40eb1f84a2c01247de7a69a7de6fcf94463af44f5465b729db",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.process.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -25991,8 +26017,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}"#
+                                compiled_painless!(
+                                    "d466859195a5284bfbdf39243ee36cd8544da8ea4f0df41447bbd8c41b531c83",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.session.auth_protocol_id","target":"ses.session.auth_protocol_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"Unknown\",\"1\":\"NTLM\",\"2\":\"Kerberos\",\"3\":\"Digest\",\"4\":\"OpenID\",\"5\":\"SAML\",\"6\":\"OAUTH 2.0\",\"7\":\"PAP\",\"8\":\"CHAP\",\"9\":\"EAP\",\"10\":\"RADIUS\"}"
@@ -27335,8 +27362,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.threat.risk_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.threat.risk_value = type\n}"#
+                                compiled_painless!(
+                                    "9c7dbb94f0c660bdc1655dc84b90eab9d9165175994efa456cd6ba175ac982d0",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.threat.risk_id","target":"ses.threat.risk_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"Unknown\",\"100\":\"Bad\",\"200\":\"Somewhat Bad\",\"300\":\"Neutral\",\"400\":\"Somewhat Good\",\"500\":\"Untrusted\"}"
@@ -27444,8 +27472,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.threat.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.threat.type_value = type\n}"#
+                                compiled_painless!(
+                                    "4fb151b7746ef4c4c39102a8f73a51a121b8d5cf8fbc25f8a53a14c56ce2f670",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.threat.type_id","target":"ses.threat.type_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"Malware\",\"2\":\"Behavioral\",\"3\":\"Potentially Unwanted Applications\",\"4\":\"Exploit (PEP)\",\"5\":\"Heuristic\",\"6\":\"Security Risk\"}"
@@ -28546,8 +28575,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)"#
+                                compiled_painless!(
+                                    "7bff173545249b95bc74d5963f6e25cb4a58f0f79efb3e18ded1b955b4153fb5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.emails","member":"direction_id"}},"target":"email.direction","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"unknown\",\"1\":\"inbound\",\"2\":\"outbound\"}"
@@ -28832,8 +28862,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "eb08d25ca1a8829def15996a82dcc32b1fbcd403d3f0cf77220ed9123334c198",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"attribute_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -28860,8 +28891,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "45d956acc424bedf636a3636dbf09f6c2f6bd2a7197e3e6639d2bb5beeafdde5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"attribute_ids"}},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -29912,8 +29944,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "b7d2c3fbd3d24ebe6ace4d6db62eb5a480433f6c8d2f5330609320ec4b26612b",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"signature_value_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -30177,8 +30210,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var); "#
+                                compiled_painless!(
+                                    "5b827adc6ae3bbf89a7198d1a2afa0ef66e205a7a92227d72edc5ff0a8be122e",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"type_id"}},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -31913,8 +31947,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}"#
+                                compiled_painless!(
+                                    "d466859195a5284bfbdf39243ee36cd8544da8ea4f0df41447bbd8c41b531c83",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.session.auth_protocol_id","target":"ses.session.auth_protocol_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"Unknown\",\"1\":\"NTLM\",\"2\":\"Kerberos\",\"3\":\"Digest\",\"4\":\"OpenID\",\"5\":\"SAML\",\"6\":\"OAUTH 2.0\",\"7\":\"PAP\",\"8\":\"CHAP\",\"9\":\"EAP\",\"10\":\"RADIUS\"}"
@@ -34611,8 +34646,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)"#
+                                compiled_painless!(
+                                    "7bff173545249b95bc74d5963f6e25cb4a58f0f79efb3e18ded1b955b4153fb5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.emails","member":"direction_id"}},"target":"email.direction","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"unknown\",\"1\":\"inbound\",\"2\":\"outbound\"}"
@@ -34897,8 +34933,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "eb08d25ca1a8829def15996a82dcc32b1fbcd403d3f0cf77220ed9123334c198",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"attribute_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -34925,8 +34962,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "45d956acc424bedf636a3636dbf09f6c2f6bd2a7197e3e6639d2bb5beeafdde5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"attribute_ids"}},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -35977,8 +36015,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "b7d2c3fbd3d24ebe6ace4d6db62eb5a480433f6c8d2f5330609320ec4b26612b",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"signature_value_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -36242,8 +36281,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var); "#
+                                compiled_painless!(
+                                    "5b827adc6ae3bbf89a7198d1a2afa0ef66e205a7a92227d72edc5ff0a8be122e",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"type_id"}},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -37886,8 +37926,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "9159a834eceb6fb0f03e048944ea622af0b7ce5e37677eb9018c6493d21d5ff9",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.file.attribute_ids"},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -38053,8 +38094,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.file.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.file.type_value = type\n}"#
+                                compiled_painless!(
+                                    "3bbc0f77f352382302154435683ae054024947c31ab3afb35b515104b2fba764",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.file.type_id","target":"ses.file.type_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"File\",\"2\":\"Directory\",\"3\":\"Hard Link\",\"4\":\"Mount\",\"5\":\"Node\",\"6\":\"Symbolic Link\",\"7\":\"Named Pipe\",\"8\":\"Socket\",\"9\":\"Device\",\"10\":\"Email\",\"11\":\"Memory File\",\"12\":\"File in container\"}"
@@ -38807,8 +38849,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);"#
+                                compiled_painless!(
+                                    "fbb77134aa2fa577c790005017a4f21648190caae4f098e17d917cc03e86e71a",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -43645,8 +43688,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}"#
+                                compiled_painless!(
+                                    "d466859195a5284bfbdf39243ee36cd8544da8ea4f0df41447bbd8c41b531c83",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.session.auth_protocol_id","target":"ses.session.auth_protocol_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"Unknown\",\"1\":\"NTLM\",\"2\":\"Kerberos\",\"3\":\"Digest\",\"4\":\"OpenID\",\"5\":\"SAML\",\"6\":\"OAUTH 2.0\",\"7\":\"PAP\",\"8\":\"CHAP\",\"9\":\"EAP\",\"10\":\"RADIUS\"}"
@@ -45686,8 +45730,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)"#
+                                compiled_painless!(
+                                    "7bff173545249b95bc74d5963f6e25cb4a58f0f79efb3e18ded1b955b4153fb5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.emails","member":"direction_id"}},"target":"email.direction","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"unknown\",\"1\":\"inbound\",\"2\":\"outbound\"}"
@@ -45972,8 +46017,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "eb08d25ca1a8829def15996a82dcc32b1fbcd403d3f0cf77220ed9123334c198",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"attribute_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -46000,8 +46046,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "45d956acc424bedf636a3636dbf09f6c2f6bd2a7197e3e6639d2bb5beeafdde5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"attribute_ids"}},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -47052,8 +47099,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "b7d2c3fbd3d24ebe6ace4d6db62eb5a480433f6c8d2f5330609320ec4b26612b",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"signature_value_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -47317,8 +47365,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var); "#
+                                compiled_painless!(
+                                    "5b827adc6ae3bbf89a7198d1a2afa0ef66e205a7a92227d72edc5ff0a8be122e",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"type_id"}},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -48960,8 +49009,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "9159a834eceb6fb0f03e048944ea622af0b7ce5e37677eb9018c6493d21d5ff9",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.file.attribute_ids"},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -49127,8 +49177,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.file.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.file.type_value = type\n}"#
+                                compiled_painless!(
+                                    "3bbc0f77f352382302154435683ae054024947c31ab3afb35b515104b2fba764",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.file.type_id","target":"ses.file.type_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"File\",\"2\":\"Directory\",\"3\":\"Hard Link\",\"4\":\"Mount\",\"5\":\"Node\",\"6\":\"Symbolic Link\",\"7\":\"Named Pipe\",\"8\":\"Socket\",\"9\":\"Device\",\"10\":\"Email\",\"11\":\"Memory File\",\"12\":\"File in container\"}"
@@ -49881,8 +49932,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);"#
+                                compiled_painless!(
+                                    "fbb77134aa2fa577c790005017a4f21648190caae4f098e17d917cc03e86e71a",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -51610,8 +51662,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}"#
+                                compiled_painless!(
+                                    "d466859195a5284bfbdf39243ee36cd8544da8ea4f0df41447bbd8c41b531c83",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.session.auth_protocol_id","target":"ses.session.auth_protocol_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"Unknown\",\"1\":\"NTLM\",\"2\":\"Kerberos\",\"3\":\"Digest\",\"4\":\"OpenID\",\"5\":\"SAML\",\"6\":\"OAUTH 2.0\",\"7\":\"PAP\",\"8\":\"CHAP\",\"9\":\"EAP\",\"10\":\"RADIUS\"}"
@@ -54516,8 +54569,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.directory.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);"#
+                            compiled_painless!(
+                                "f790321a3f6368021ebad86d0979c33cf297cef347a2b6e81dfb34f4a4599db5",
+                                r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.directory.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                             ),
                             cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                         )?;
@@ -56124,8 +56178,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.directory_result.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)"#
+                            compiled_painless!(
+                                "447bd6697637cc3207da03c54fab15070f593e2f96cd95a30675db90f34679d2",
+                                r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.directory_result.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                             ),
                             cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                         )?;
@@ -56463,8 +56518,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def var = new HashSet(); if (ctx.email != null && ctx.email.direction != null) {\n    var = ctx.email.direction;\n} else {\n  if (ctx.email == null)\n  {\n    ctx.email = new HashMap();\n  }\n} def direction = ctx.ses.email.direction_id; if (params.containsKey(direction.toString())) { def type = params.get(direction.toString()); var.add(type); }\nctx.email.put('direction', var)"#
+                            compiled_painless!(
+                                "f8e898f1e5b2d7c3c5f7d24ba637e088b0cb9294e9be27be408fc36a6e84d9db",
+                                r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.email.direction_id"},"target":"email.direction","dedup":true,"seeded":true}},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"0\":\"unknown\",\"1\":\"inbound\",\"2\":\"outbound\"}"
@@ -58321,8 +58377,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.remote_process.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);"#
+                            compiled_painless!(
+                                "032a633735851a1c663156e8e325886cc6b16143585a13cc72c5c4b9c205cfd4",
+                                r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.remote_process.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                             ),
                             cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                         )?;
@@ -62607,8 +62664,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.startup_app.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n}\nctx.file.put('type', var);"#
+                            compiled_painless!(
+                                "e42866c91c40121570c1592526e7199a5f92c8631b22213fb7e58826f81a6924",
+                                r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.startup_app.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                             ),
                             cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                         )?;
@@ -63624,8 +63682,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.actor.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "f3ac1b4ab2a40deb482f475c62766a702da4f290e495c04a01ed8e4188e999ba",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.actor.file.attribute_ids"},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -64626,8 +64685,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.actor.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)"#
+                                compiled_painless!(
+                                    "5c3251e2339e68df702306231b8761f3d8ca19d388b722052bf8fbad67ca56e9",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.actor.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -67095,8 +67155,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new ArrayList(); def direction = ctx.ses.connection.direction_id; if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n}\nif (ctx.network == null) {\n    ctx.network = new HashMap();\n} ctx.network.put('direction', var)"#
+                                compiled_painless!(
+                                    "67f981d4c83c7224b1d6e1e3d4c6bd7f518dfd11c77536858a1e5686fae7e9be",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.connection.direction_id"},"target":"network.direction","dedup":false,"seeded":false}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"unknown\",\"1\":\"inbound\",\"2\":\"outbound\"}"
@@ -69183,8 +69244,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)"#
+                                compiled_painless!(
+                                    "7bff173545249b95bc74d5963f6e25cb4a58f0f79efb3e18ded1b955b4153fb5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.emails","member":"direction_id"}},"target":"email.direction","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"unknown\",\"1\":\"inbound\",\"2\":\"outbound\"}"
@@ -69469,8 +69531,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "eb08d25ca1a8829def15996a82dcc32b1fbcd403d3f0cf77220ed9123334c198",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"attribute_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -69497,8 +69560,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "45d956acc424bedf636a3636dbf09f6c2f6bd2a7197e3e6639d2bb5beeafdde5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"attribute_ids"}},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -70549,8 +70613,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "b7d2c3fbd3d24ebe6ace4d6db62eb5a480433f6c8d2f5330609320ec4b26612b",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"signature_value_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -70814,8 +70879,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var); "#
+                                compiled_painless!(
+                                    "5b827adc6ae3bbf89a7198d1a2afa0ef66e205a7a92227d72edc5ff0a8be122e",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"type_id"}},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -72461,8 +72527,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "9159a834eceb6fb0f03e048944ea622af0b7ce5e37677eb9018c6493d21d5ff9",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.file.attribute_ids"},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -72628,8 +72695,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.file.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.file.type_value = type\n}"#
+                                compiled_painless!(
+                                    "3bbc0f77f352382302154435683ae054024947c31ab3afb35b515104b2fba764",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.file.type_id","target":"ses.file.type_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"File\",\"2\":\"Directory\",\"3\":\"Hard Link\",\"4\":\"Mount\",\"5\":\"Node\",\"6\":\"Symbolic Link\",\"7\":\"Named Pipe\",\"8\":\"Socket\",\"9\":\"Device\",\"10\":\"Email\",\"11\":\"Memory File\",\"12\":\"File in container\"}"
@@ -73382,8 +73450,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);"#
+                                compiled_painless!(
+                                    "fbb77134aa2fa577c790005017a4f21648190caae4f098e17d917cc03e86e71a",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -74811,8 +74880,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.kernel.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.kernel.type_value = type\n}"#
+                                compiled_painless!(
+                                    "fa73eb8c717cbb002f05fde8705a7e9c77abd2eb743a9fd5929cd1e6215849c5",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.kernel.type_id","target":"ses.kernel.type_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"Unknown\",\"1\":\"Shared mutex\",\"2\":\"System call\",\"3\":\"Named pipe\"}"
@@ -75708,8 +75778,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.module.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.module.type_value = type\n}"#
+                                compiled_painless!(
+                                    "2937cac04666a4be856afd49d06a5c9be9fc73c567f6cb5c16360e8794c465bd",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.module.type_id","target":"ses.module.type_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"File\",\"2\":\"Directory\",\"3\":\"Hard Link\",\"4\":\"Mount\",\"5\":\"Node\",\"6\":\"Symbolic Link\",\"7\":\"Named Pipe\",\"8\":\"Socket\",\"9\":\"Device\",\"10\":\"Email\",\"11\":\"Memory File\",\"12\":\"File in container\"}"
@@ -79531,8 +79602,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.process.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "ecbe83f5213f91a67656a96b8fbc791a5095030f8ddd0c10585d9ccfeef51739",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.process.file.attribute_ids"},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -80451,8 +80523,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.process.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)"#
+                                compiled_painless!(
+                                    "9daa2fd2f4220e40eb1f84a2c01247de7a69a7de6fcf94463af44f5465b729db",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.process.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -83282,8 +83355,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}"#
+                                compiled_painless!(
+                                    "d466859195a5284bfbdf39243ee36cd8544da8ea4f0df41447bbd8c41b531c83",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.session.auth_protocol_id","target":"ses.session.auth_protocol_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"Unknown\",\"1\":\"NTLM\",\"2\":\"Kerberos\",\"3\":\"Digest\",\"4\":\"OpenID\",\"5\":\"SAML\",\"6\":\"OAUTH 2.0\",\"7\":\"PAP\",\"8\":\"CHAP\",\"9\":\"EAP\",\"10\":\"RADIUS\"}"
@@ -85459,8 +85533,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)"#
+                                compiled_painless!(
+                                    "7bff173545249b95bc74d5963f6e25cb4a58f0f79efb3e18ded1b955b4153fb5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.emails","member":"direction_id"}},"target":"email.direction","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"unknown\",\"1\":\"inbound\",\"2\":\"outbound\"}"
@@ -85745,8 +85820,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "eb08d25ca1a8829def15996a82dcc32b1fbcd403d3f0cf77220ed9123334c198",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"attribute_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -85773,8 +85849,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "45d956acc424bedf636a3636dbf09f6c2f6bd2a7197e3e6639d2bb5beeafdde5",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"attribute_ids"}},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -86825,8 +86902,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}"#
+                                compiled_painless!(
+                                    "b7d2c3fbd3d24ebe6ace4d6db62eb5a480433f6c8d2f5330609320ec4b26612b",
+                                    r#"{"params":null,"known":[{"LongCoercion":{"StringifyMemberList":{"list":"ses.cybox.files","member":"signature_value_ids"}}}]}"#
                                 ),
                             )?;
                             Ok(())
@@ -87090,8 +87168,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var); "#
+                                compiled_painless!(
+                                    "5b827adc6ae3bbf89a7198d1a2afa0ef66e205a7a92227d72edc5ff0a8be122e",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ses.cybox.files","member":"type_id"}},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -88750,8 +88829,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.process.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)"#
+                                compiled_painless!(
+                                    "ecbe83f5213f91a67656a96b8fbc791a5095030f8ddd0c10585d9ccfeef51739",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.process.file.attribute_ids"},"target":"file.attributes","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"archive\",\"2\":\"compressed\",\"3\":\"directory\",\"4\":\"encrypted\",\"5\":\"hidden\",\"8\":\"readonly\",\"11\":\"system\",\"16\":\"execute\"}"
@@ -89670,8 +89750,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.process.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)"#
+                                compiled_painless!(
+                                    "9daa2fd2f4220e40eb1f84a2c01247de7a69a7de6fcf94463af44f5465b729db",
+                                    r#"{"params":{"CollectParamsRows":{"source":{"Path":"ses.process.file.type_id"},"target":"file.type","dedup":true,"seeded":true}},"known":[]}"#
                                 ),
                                 cached_params!("{\"1\":\"file\",\"2\":\"dir\",\"6\":\"symlink\"}"),
                             )?;
@@ -91991,8 +92072,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}"#
+                                compiled_painless!(
+                                    "d466859195a5284bfbdf39243ee36cd8544da8ea4f0df41447bbd8c41b531c83",
+                                    r#"{"params":{"GuardedLookup":{"key":"ses.session.auth_protocol_id","target":"ses.session.auth_protocol_value"}},"known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"0\":\"Unknown\",\"1\":\"NTLM\",\"2\":\"Kerberos\",\"3\":\"Digest\",\"4\":\"OpenID\",\"5\":\"SAML\",\"6\":\"OAUTH 2.0\",\"7\":\"PAP\",\"8\":\"CHAP\",\"9\":\"EAP\",\"10\":\"RADIUS\"}"
@@ -93353,8 +93435,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def new_sizes = []; for (int i = 0; i < ctx.file.size.length; i++) {\n  def sz = ctx.file.size[i];\n  if (sz == null) {\n    continue\n  }\n  if (sz instanceof long || sz instanceof int) {\n    new_sizes.add((long)sz);\n  } else if (sz instanceof String && sz != \"\") {\n    new_sizes.add(Long.parseLong(sz));\n  }\n} ctx.file.size = new_sizes;"#
+                        compiled_painless!(
+                            "f21a41bdacc4b2608b8c8c249598a84e1324dd62b4c6c1c4c8a468eb539579dc",
+                            r#"{"params":null,"known":[{"LongCoercion":{"CollectLongs":{"list":"file.size","target":"file.size"}}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -93400,8 +93483,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.ses.raw_data instanceof List) {\n  for (def e: ctx.ses.raw_data) {\n    if (!(e instanceof Map)) {\n      def m = new HashMap();\n      m[\"value\"] = ctx.ses.raw_data;\n      ctx.ses.raw_data = m;\n      break;\n    }\n  }\n  return;\n}\ndef m = new HashMap();\nm[\"value\"] = ctx.ses.raw_data;\nctx.ses.raw_data = m;"#
+                    compiled_painless!(
+                        "a6ee67078a0a442107d7daea9357b62d346862758404f78621ce04d67b334b09",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

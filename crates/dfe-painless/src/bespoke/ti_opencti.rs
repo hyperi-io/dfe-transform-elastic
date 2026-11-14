@@ -509,7 +509,7 @@ pub const ENTRIES: &[Entry] = &[
         run: extension_from_file_name,
     },
     Entry {
-        hash: "4c8968b4b14ad6efd043a2e746128602b865305d6a65200640d156c10dcb0728",
+        hash: "3a9a8c124e9ce6df55628fd87c77cb874683824768de7b3b6afd0af49995220d",
         source: "ti_opencti",
         name: "extensions_from_observable_names",
         run: extensions_from_observable_names,

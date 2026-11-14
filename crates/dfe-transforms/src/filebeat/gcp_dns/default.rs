@@ -263,7 +263,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "4ddc42c58b18d32a33a88b62c403548dab0abc1c56b20d64a3cd0c2a80b2c6a8",
+                        r#"{"params":null,"known":["DnsRdataAnswers"]}"#,
                         r#"def rdata = ctx.gcp.dns.rdata;\ndef dns_answers = [];\n\n// Check for truncated answers.\ndef truncated = rdata.endsWith(\"...\") ? 1 : 0;\n\n// Process answers.\ndef rdata_answers = /\\n/.split(rdata);\n\nfor (def i = 0; i < rdata_answers.length - truncated; i++) {\n    def answer_parts = /\\t/.split(rdata_answers[i]);\n\n    // Assign answer parts.\n    def name = answer_parts[0];\n    def ttl = Long.parseLong(answer_parts[1]);\n    def cls = answer_parts[2];\n    def type = answer_parts[3];\n    def data = answer_parts[4];\n\n    // Remove trailing fullstop.\n    if (name.endsWith(\".\")) {\n        name = name.substring(0, name.length() - 1);\n    }\n\n    if (data.endsWith(\".\")) {\n        data = data.substring(0, data.length() - 1);\n    }\n\n    // Uppercase type.\n    type = type.toUpperCase();\n\n    dns_answers.add([\n        \"name\": name,\n        \"ttl\": ttl,\n        \"class\": cls,\n        \"type\": type,\n        \"data\": data\n    ]);\n}\nctx.dns.answers = dns_answers;\n"#
                     ),
                 )?;
@@ -281,8 +283,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"List answers = new ArrayList(); for (answer in ctx.json.jsonPayload.structuredRdata) {\n  Map new_answer = new HashMap();\n  if(answer.class != null) {\n    new_answer.put(\"class\", answer.class);\n  }\n  if(answer.type != null) {\n    new_answer.put(\"type\", answer.type);\n  }\n  if(answer.ttl != null) {\n    new_answer.put(\"ttl\", Long.parseLong(answer.ttl));\n  }\n  if(answer.rvalue != null) {\n    new_answer.put(\"data\", answer.rvalue);\n    if (new_answer.data != null && new_answer.data.length() > 0 && new_answer.data.substring(new_answer.data.length() - 1) == '.') {\n        new_answer.data = new_answer.data.substring(0, new_answer.data.length() - 1);\n    }\n    if (answer.domainName != null) {\n      new_answer.put(\"name\", answer.domainName);\n    }\n  }\n  answers.add(new_answer);\n} if(ctx.dns.answers == null) {\n    ctx.dns.put('answers',new ArrayList());\n} ctx.dns.answers = answers;"#
+                        compiled_painless!(
+                            "f4827da32971b945494668ea40e8527ff4331d5d64faa2f8acd41aca1c10eb64",
+                            r#"{"params":null,"known":["StructuredRdataAnswers"]}"#
                         ),
                     )?;
                     Ok(())
@@ -299,8 +302,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"List answers = new ArrayList(); if(ctx.related == null) {\n    ctx.put('related', new HashMap());\n} if(ctx.related.ip == null) {\n    ctx.related.put('ip',new ArrayList());\n} if(ctx.dns.resolved_ip == null) {\n    ctx.dns.put('resolved_ip',new ArrayList());\n} if(ctx.related.hosts == null) {\n    ctx.related.put('hosts',new ArrayList());\n} for (answer in ctx.dns.answers) {\n  if(['A','AAAA'].contains(answer.type)) {\n    if(!ctx.related.ip.contains(answer.data)) {\n        ctx.related.ip.add(answer.data);\n    }\n    if(!ctx.dns.resolved_ip.contains(answer.data)) {\n        ctx.dns.resolved_ip.add(answer.data);\n    }\n  }\n  if(['CNAME'].contains(answer.type) && !ctx.related.hosts.contains(answer.data)) {\n    ctx.related.hosts.add(answer.data);\n  }\n  if(['MX'].contains(answer.type)) {\n    def mx_server = / /.split(answer.data);\n    if(mx_server[1] != null && !ctx.related.hosts.contains(mx_server[1]))\n    ctx.related.hosts.add(mx_server[1]);\n  }\n}"#
+                        compiled_painless!(
+                            "4c0cf7d04eb019f600a6c584ac0969ce73011fcc05c7edbb293eae5dec0ca1a5",
+                            r#"{"params":null,"known":["RelatedFromDnsAnswers"]}"#
                         ),
                     )?;
                     Ok(())

@@ -47,8 +47,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.cef.device.event_class_id.contains('Insight') || ctx.cef.device.event_class_id.contains('Event')) {\n    ctx.event.category = ['network'];\n    ctx.event.type = ['info'];\n    ctx.event.kind = 'event'\n} else if (ctx.cef.device.event_class_id.contains('ActivityLog') || ctx.cef.device.event_class_id.contains('HealthCheck')) {\n    ctx.event.kind = 'event'\n} else if (ctx.cef.device.event_class_id.contains('Alert')) {\n    ctx.event.category = ['threat'];\n    ctx.event.type = ['indicator'];\n    ctx.event.kind = 'alert'\n} else if (ctx.cef.device.event_class_id.contains('Event')) {\n    ctx.event.category = ['network'];\n    ctx.event.type = ['info'];\n    ctx.event.kind = 'event';\n}\n"#
+                    compiled_painless!(
+                        "2a0c566aae094f0f6c308015ae8774469888773b7cffcf5889c7498e83fbe3ee",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -7321,8 +7322,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"void objectify(Map m) {\n  def regex = /'/;\n  for (entry in m.entrySet()) {\n    def v = entry.getValue();\n    if (!(v instanceof String)) {\n      continue\n    }\n    if (!v.startsWith('{')) {\n      continue\n    }\n    def k = entry.getKey();\n    String msg = regex.matcher(v).replaceAll('\"');\n    try {\n      m[k] = Processors.json(msg);\n    }\n    catch (Exception e) {\n      m[k] = msg;\n    }\n  }\n}\nobjectify(ctx.claroty_ctd.event.worker);\nfor (w in ctx.claroty_ctd.event.worker.entrySet()) {\n  def v = w.getValue();\n  if (v instanceof Map) {\n    objectify(w.getValue());\n  }\n}\n"#
+                    compiled_painless!(
+                        "1b8ac3a056b17cfa34e2ede88ab9a504793246e1be964985b8e252a7b3871964",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

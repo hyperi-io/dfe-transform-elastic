@@ -1193,7 +1193,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
+                            compiled_painless!(
+                                "c612640668d813e046919947e11ff295fe257786ab29046cde8694bb862c41fe",
+                                r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                                 r#"ctx.event = ctx.event ?: [:];\nString risk_score_value = ctx.m365_defender.event.severity;\nif (risk_score_value.equalsIgnoreCase(\"low\") || risk_score_value.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (risk_score_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (risk_score_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (risk_score_value.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
                             ),
                         )?;
@@ -1275,8 +1277,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"// appendBSBytes appends n '\\\\' bytes to b and returns the resulting slice.\ndef appendBSBytes(StringBuilder b, int n) {\n    for (; n > 0; n--) {\n        b.append('\\\\');\n    }\n    return b;\n}\n\n// readNextArg splits command line string into next\n// argument and command line remainder offset.\ndef readNextArg(String line, int offset) {\n    def b = new StringBuilder();\n    boolean inquote;\n    int nslash;\n    for (; offset < line.length(); offset++) {\n        def c = line.charAt(offset);\n        if (c == (char)' ' || c == (char)0x09) {\n            if (!inquote) {\n                return [\n                    \"arg\":  appendBSBytes(b, nslash).toString(),\n                    \"offset\": offset+1\n                ];\n            }\n        } else if (c == (char)'\"') {\n            b = appendBSBytes(b, nslash/2);\n            if (nslash%2 == 0) {\n                // use \"Prior to 2008\" rule from\n                // http://daviddeley.com/autohotkey/parameters/parameters.htm\n                // section 5.2 to deal with double double quotes\n                if (inquote && offset+1 < line.length() && line.charAt(offset+1) == (char)'\"') {\n                    b.append(c);\n                    offset++;\n                }\n                inquote = !inquote;\n            } else {\n                b.append(c);\n            }\n            nslash = 0;\n            continue;\n        } else if (c == (char)'\\\\') {\n            nslash++;\n            continue;\n        }\n        b = appendBSBytes(b, nslash);\n        nslash = 0;\n        b.append(c);\n    }\n    return [\n        \"arg\":  appendBSBytes(b, nslash).toString(), \n        \"offset\": line.length()\n    ];\n}\n\n// commandLineToArgv splits a command line into individual argument\n// strings, following the Windows conventions documented\n// at http://daviddeley.com/autohotkey/parameters/parameters.htm#WINARGV\n// Original implementation found at: https://github.com/golang/go/commit/39c8d2b7faed06b0e91a1ad7906231f53aab45d1\ndef commandLineToArgv(String line) {\n    def args = new ArrayList();\n    for (int i = 0; i < line.length();) {\n        if (line.charAt(i) == (char)' ' || line.charAt(i) == (char)0x09) {\n            i++;\n            continue;\n        }\n        def next = readNextArg(line, i);\n        i = next.offset;\n        if (next.arg == '') {\n            // Empty strings will be removed later so don't bother adding them.\n            continue;\n        }\n        args.add(next.arg);\n    }\n    return args;\n}\n\nctx.process.args = commandLineToArgv(ctx.process.command_line);\nctx.process.args_count = ctx.process.args.length;\nif (ctx.process.args.length > 0) {\n    ctx.process.executable = ctx.process.args[0];\n}"#
+                        compiled_painless!(
+                            "4a9a9ea18ac10472ecc08e23c2aa56a9544282a594ad708b0e01ddc55341fc1c",
+                            r#"{"params":null,"known":[{"SplitCommandLine":{"sites":[{"source":"process.command_line","base":"process","count":true,"executable":true}],"skip_empty":true}}]}"#
                         ),
                     )?;
                 }
@@ -1464,8 +1467,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def subtechnique_name = new ArrayList();\ndef subtechnique_id = new ArrayList();\nif (!(ctx.threat instanceof HashMap)) {\n  ctx.threat = new HashMap();\n}\nif (!(ctx.threat.technique instanceof HashMap)) {\n  ctx.threat.technique = new HashMap();\n}\nif (!(ctx.threat.technique.subtechnique instanceof HashMap)) {\n  ctx.threat.technique.subtechnique = new HashMap();\n}\nfor (item in ctx.m365_defender.event.attack_techniques) {\n  subtechnique_name.add(item.substring(0,item.lastIndexOf(' ')));\n  subtechnique_id.add(item.substring(item.indexOf('(')+1,item.indexOf(')')));\n}\nctx.threat.technique.subtechnique.id = subtechnique_id;\nctx.threat.technique.subtechnique.name = subtechnique_name;\n"#
+                            compiled_painless!(
+                                "1cccc52356a7dee40ffe86ae872eb00d279fe9bdc0ba8401aeb414107e15ad45",
+                                r#"{"params":null,"known":[{"SliceEachItem":{"source":"m365_defender.event.attack_techniques","columns":[["threat.technique.subtechnique.name",{"BeforeLast":" "}],["threat.technique.subtechnique.id",{"Between":["(",")"]}]]}}]}"#
                             ),
                         )?;
                         Ok(())
@@ -2740,8 +2744,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def af = ctx.m365_defender.event.additional_fields;\nList ecs_flags = [\"AA\", \"TC\", \"RD\", \"RA\", \"AD\", \"CD\", \"DO\"];\nList flags = [];\nif (af instanceof Map) {\n    for (def flag: ecs_flags) {\n        if (af[flag] != null && af[flag] == \"true\") {\n            flags.add(flag);\n        }\n    }\n}\nif (!ctx.m365_defender.event.containsKey('dns')) {\n    ctx.m365_defender.event.dns = new HashMap();\n}\nctx.m365_defender.event.dns.header_flags = flags;\n"#
+                        compiled_painless!(
+                            "d8d7f919754ef9977ee111ae7e7edcc4e8a2c25374eabf77e418d05a089c9df3",
+                            r#"{"params":null,"known":[{"FlagsPresent":{"source":"m365_defender.event.additional_fields","target":"m365_defender.event.dns.header_flags","keys":["AA","TC","RD","RA","AD","CD","DO"],"wanted":"true"}}]}"#
                         ),
                     )?;
                 }
@@ -3640,8 +3645,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def isTruthy(def val) {\n   if (val == null) {\n     // Fast return if field is absent.\n     return null;\n   }\n   if (val instanceof Boolean) {\n     return val;\n   }\n   if (val instanceof Integer) {\n     if (val == 1) {\n       return true;\n     }\n     if (val == 0) {\n       return false;\n     }\n     return null;\n   }\n   if (val instanceof String) {\n     if (val == \"1\" || val == \"true\") {\n       return true;\n     }\n     if (val == \"0\" || val == \"false\") {\n       return false;\n     }\n     return null;\n   }\n   return null;\n }\n ctx.m365_defender.event.is_root_signer_microsoft = isTruthy(ctx.json?.properties?.IsRootSignerMicrosoft);\n ctx.m365_defender.event.is_signed = isTruthy(ctx.json?.properties?.IsSigned);\n ctx.m365_defender.event.is_trusted = isTruthy(ctx.json?.properties?.IsTrusted);\n ctx.m365_defender.event.is_azure_info_protection_applied = isTruthy(ctx.json?.properties?.IsAzureInfoProtectionApplied);\n ctx.m365_defender.event.is_azure_ad_joined = isTruthy(ctx.json?.properties?.IsAzureADJoined);\n ctx.m365_defender.event.is_local_admin = isTruthy(ctx.json?.properties?.IsLocalAdmin);\n"#
+                    compiled_painless!(
+                        "c5b27be907dca83b34e13308d1b344f000a2fea9bf668dc7fe103892119f28cf",
+                        r#"{"params":null,"known":[{"TruthyAssignments":[["m365_defender.event.is_root_signer_microsoft","json.properties.IsRootSignerMicrosoft"],["m365_defender.event.is_signed","json.properties.IsSigned"],["m365_defender.event.is_trusted","json.properties.IsTrusted"],["m365_defender.event.is_azure_info_protection_applied","json.properties.IsAzureInfoProtectionApplied"],["m365_defender.event.is_azure_ad_joined","json.properties.IsAzureADJoined"],["m365_defender.event.is_local_admin","json.properties.IsLocalAdmin"]]}]}"#
                     ),
                 )?;
                 if event.has_value("json.properties.FolderPath") {
@@ -4632,8 +4638,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String path = ctx.file.path;\nString sep = \"/\";\nString windows_sep = \"\\\\\";\ndef idx = -1;\nif (path.contains(windows_sep)) {\n    idx = path.lastIndexOf(windows_sep);\n}\nelse {\n    idx = path.lastIndexOf(sep);\n} \nif (idx > -1) {\n    if (ctx.file.name == null) {\n        ctx.file.name = path.substring(idx+1);\n    }\n    ctx.file.directory = path.substring(0, idx);\n    def extIdx = path.lastIndexOf(\".\");\n    if (extIdx > -1 && ctx.file.extension == null) {\n        ctx.file.extension = path.substring(extIdx+1);\n    }\n}"#
+                        compiled_painless!(
+                            "363cd88f072d3f2b46bf872d841b83a0dd0b49d2c5965185d3fa12e410881e96",
+                            r#"{"params":null,"known":[{"FileInfo":"file.path"}]}"#
                         ),
                     )?;
                 }
@@ -6034,8 +6041,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String actiontype = ctx.m365_defender.event.action.type;\ndef idx = actiontype.toLowerCase().lastIndexOf('apicall');\nctx._temp_process_Ext_api_name = actiontype.substring(0, idx);\n"#
+                        compiled_painless!(
+                            "f930d918924bd7f0bcc915fcd112ee4a232d3a60cd54c9db55ceaac88e0d6f6f",
+                            r#"{"params":null,"known":[{"SubstringBeforeLast":{"source":"m365_defender.event.action.type","target":"_temp_process_Ext_api_name","needle":"apicall"}}]}"#
                         ),
                     )?;
                 }
@@ -7489,8 +7497,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def name = ctx._tmp.registry.hive.toUpperCase();\nif (ctx.registry == null) {\n  ctx.registry = new HashMap();\n}\nctx.registry.hive = params.getOrDefault(name, name);\n"#
+                        compiled_painless!(
+                            "0c287e86b01273bbb3f935e4023195b9df3532027126a758df23ebae6d0444d0",
+                            r#"{"params":{"UppercaseLookupDefault":{"source":"_tmp.registry.hive","target":"registry.hive"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKEY_USERS\":\"HKU\",\"HKEY_CURRENT_CONFIG\":\"HKCC\"}"
@@ -8199,8 +8208,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def answers = ctx.m365_defender.event.dns.answers; def ttls = ctx.m365_defender.event.dns.ttls; if (answers.isEmpty() || ttls.isEmpty()) {\n  return;\n} else if (answers.length != ttls.length) {\n  if (ctx.error == null) {\n    ctx.error = new HashMap();\n  }\n  if (ctx.error.message == null) {\n    ctx.error.message = new ArrayList();\n  }\n  ctx.error.message.add('DNS answers and TTLs have a different length');\n} def lst = new ArrayList(); for (def i = 0; i < answers.length; i++) {\n  lst.add([\n    \"data\": answers[i],\n    \"ttl\": (long)ttls[i]\n  ])\n} if (ctx.dns == null) {\n  ctx.dns = new HashMap();\n} ctx.dns.answers = lst;"#
+                        compiled_painless!(
+                            "fd333a05d458bf23462d369c5c3e23e919df3eed41ee81a77209c645490b03d1",
+                            r#"{"params":null,"known":[{"ZipLists":{"columns":[{"key":"data","source":"m365_defender.event.dns.answers","to_long":false},{"key":"ttl","source":"m365_defender.event.dns.ttls","to_long":true}],"target":"dns.answers","mismatch":"DNS answers and TTLs have a different length"}}]}"#
                         ),
                     )?;
                 }
@@ -8707,8 +8717,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"// appendBSBytes appends n '\\\\' bytes to b and returns the resulting slice.\ndef appendBSBytes(StringBuilder b, int n) {\n    for (; n > 0; n--) {\n        b.append('\\\\');\n    }\n    return b;\n}\n\n// readNextArg splits command line string into next\n// argument and command line remainder offset.\ndef readNextArg(String line, int offset) {\n    def b = new StringBuilder();\n    boolean inquote;\n    int nslash;\n    for (; offset < line.length(); offset++) {\n        def c = line.charAt(offset);\n        if (c == (char)' ' || c == (char)0x09) {\n            if (!inquote) {\n                return [\n                    \"arg\":  appendBSBytes(b, nslash).toString(),\n                    \"offset\": offset+1\n                ];\n            }\n        } else if (c == (char)'\"') {\n            b = appendBSBytes(b, nslash/2);\n            if (nslash%2 == 0) {\n                // use \"Prior to 2008\" rule from\n                // http://daviddeley.com/autohotkey/parameters/parameters.htm\n                // section 5.2 to deal with double double quotes\n                if (inquote && offset+1 < line.length() && line.charAt(offset+1) == (char)'\"') {\n                    b.append(c);\n                    offset++;\n                }\n                inquote = !inquote;\n            } else {\n                b.append(c);\n            }\n            nslash = 0;\n            continue;\n        } else if (c == (char)'\\\\') {\n            nslash++;\n            continue;\n        }\n        b = appendBSBytes(b, nslash);\n        nslash = 0;\n        b.append(c);\n    }\n    return [\n        \"arg\":  appendBSBytes(b, nslash).toString(), \n        \"offset\": line.length()\n    ];\n}\n\n// commandLineToArgv splits a command line into individual argument\n// strings, following the Windows conventions documented\n// at http://daviddeley.com/autohotkey/parameters/parameters.htm#WINARGV\n// Original implementation found at: https://github.com/golang/go/commit/39c8d2b7faed06b0e91a1ad7906231f53aab45d1\ndef commandLineToArgv(String line) {\n    def args = new ArrayList();\n    for (int i = 0; i < line.length();) {\n        if (line.charAt(i) == (char)' ' || line.charAt(i) == (char)0x09) {\n            i++;\n            continue;\n        }\n        def next = readNextArg(line, i);\n        i = next.offset;\n        if (next.arg == '') {\n            // Empty strings will be removed later so don't bother adding them.\n            continue;\n        }\n        args.add(next.arg);\n    }\n    return args;\n}\n\nif (ctx.process?.command_line != null && ctx.process.command_line != '') {\n  ctx.process.args = commandLineToArgv(ctx.process.command_line);\n  ctx.process.args_count = ctx.process.args.length;\n}\nif (ctx.process?.parent?.command_line != null && ctx.process.parent.command_line != '') {\n  ctx.process.parent.args = commandLineToArgv(ctx.process.parent.command_line);\n  ctx.process.parent.args_count = ctx.process.parent.args.length;\n}"#
+                        compiled_painless!(
+                            "81279d062c8e93450d13d71772f751017e3dff48a9287cd274e6a485b78be780",
+                            r#"{"params":null,"known":[{"SplitCommandLine":{"sites":[{"source":"process.command_line","base":"process","count":true,"executable":false},{"source":"process.parent.command_line","base":"process.parent","count":true,"executable":false}],"skip_empty":true}}]}"#
                         ),
                     )?;
                 }
@@ -9410,8 +9421,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def isTruthy(def val) {\n   if (val == null) {\n     // Fast return if field is absent.\n     return null;\n   }\n   if (val instanceof Boolean) {\n     return val;\n   }\n   if (val instanceof Integer) {\n     if (val == 1) {\n       return true;\n     }\n     if (val == 0) {\n       return false;\n     }\n     return null;\n   }\n   if (val instanceof String) {\n     if (val == \"1\" || val == \"true\") {\n       return true;\n     }\n     if (val == \"0\" || val == \"false\") {\n       return false;\n     }\n     return null;\n   }\n   return null;\n }\n ctx.m365_defender.event.is_clicked_through = isTruthy(ctx.json?.properties?.IsClickedThrough);\n"#
+                    compiled_painless!(
+                        "9402d2a0688200c474aafd2a99ff76875a84b39bec1562842d986ff49640436a",
+                        r#"{"params":null,"known":[{"TruthyAssignments":[["m365_defender.event.is_clicked_through","json.properties.IsClickedThrough"]]}]}"#
                     ),
                 )?;
                 let _cond = { event.get_str("json.properties.EmailClusterId") != Some("") };
@@ -11986,8 +11998,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def isTruthy(def val) {\n   if (val == null) {\n     // Fast return if field is absent.\n     return null;\n   }\n   if (val instanceof Boolean) {\n     return val;\n   }\n   if (val instanceof Integer) {\n     if (val == 1) {\n       return true;\n     }\n     if (val == 0) {\n       return false;\n     }\n     return null;\n   }\n   if (val instanceof String) {\n     if (val == \"1\" || val == \"true\") {\n       return true;\n     }\n     if (val == \"0\" || val == \"false\") {\n       return false;\n     }\n     return null;\n   }\n   return null;\n }\n ctx.m365_defender.event.is_admin_operation = isTruthy(ctx.json?.properties?.IsAdminOperation);\n ctx.m365_defender.event.is_anonymous_proxy = isTruthy(ctx.json?.properties?.IsAnonymousProxy);\n ctx.m365_defender.event.is_external_user = isTruthy(ctx.json?.properties?.IsExternalUser);\n ctx.m365_defender.event.is_impersonated = isTruthy(ctx.json?.properties?.IsImpersonated);\n"#
+                    compiled_painless!(
+                        "b2734e00c00160661a50458595c22cf7b6d27a4c643726c15fe8547bf97e6689",
+                        r#"{"params":null,"known":[{"TruthyAssignments":[["m365_defender.event.is_admin_operation","json.properties.IsAdminOperation"],["m365_defender.event.is_anonymous_proxy","json.properties.IsAnonymousProxy"],["m365_defender.event.is_external_user","json.properties.IsExternalUser"],["m365_defender.event.is_impersonated","json.properties.IsImpersonated"]]}]}"#
                     ),
                 )?;
                 let _cond = {
@@ -13346,8 +13359,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.process = ctx.process ?: [:];\nctx.process.name = ctx.process.name ?: [];\n// Normalize process.name to a list\ndef nameList = [];\nif (ctx.process.name != null) {\n  if (ctx.process.name instanceof String) {\n    nameList.add(ctx.process.name);\n  } else if (ctx.process.name instanceof List) {\n    nameList.addAll(ctx.process.name);\n  }\n}\n\n// Deduplication using HashSet\ndef currentNames = new HashSet();\ncurrentNames.addAll(nameList);\n// Handle process.command_line (string or list)\nif (ctx.process.command_line != null) {\n  // Convert string to list for unified handling\n  def cmdList = [];\n  if (ctx.process.command_line instanceof String) {\n    cmdList.add(ctx.process.command_line);\n  } else if (ctx.process.command_line instanceof List) {\n    cmdList.addAll(ctx.process.command_line);\n  }\n  for (cmd in cmdList) {\n    if (cmd != null && cmd.length() > 0) {\n      // Extract the first token\n      def parts = cmd.trim().splitOnToken(\" \");\n      if (parts.length > 0) {\n        def executable = parts[0];\n        // If executable is a path, take only the last part\n        if (executable.contains(\"/\")) {\n          def slashParts = executable.splitOnToken(\"/\");\n          executable = slashParts[slashParts.length - 1];\n        }\n        executable = /\\\"/.matcher(executable).replaceAll(\"\");\n        currentNames.add(executable);\n      }\n    }\n  }\n}\n// Update process.name with unique list\nif (currentNames != null && currentNames.size() == 1) {\n  ctx.process.name = currentNames.iterator().next();\n} else {\n  ctx.process.name = new ArrayList(currentNames);\n}\n"#
+                        compiled_painless!(
+                            "b2a8fb70dc0f0b328d9c46f3d804c98476421445c46371e2f06634d52cc1718e",
+                            r#"{"params":null,"known":["ProcessNameFromCommandLine"]}"#
                         ),
                     )?;
                     Ok(())

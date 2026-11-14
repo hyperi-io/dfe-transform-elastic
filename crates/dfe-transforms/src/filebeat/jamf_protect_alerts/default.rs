@@ -52,8 +52,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event = ctx.event ?: [:];\nctx.event.original = Json.dump(ctx.jamf_protect.alerts);"#
+                    compiled_painless!(
+                        "e9b3df15153d2d58c1766e0b05a93f90116611dd6b4e56d6206947309a672585",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -114,8 +115,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.rule == null) {\n  ctx.rule = new HashMap();\n}\nctx.rule.name = ctx.jamf_protect.alerts.input.match.facts[0].name\n"#
+                    compiled_painless!(
+                        "11397b52efe4568ea14166aa100674912864976fc9a082265cb7f08f2cd9fc62",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"Compare":{"path":"rule","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"Literal":{"Set":{"path":"rule.name","value":{"Field":"jamf_protect.alerts.input.match.facts.0.name"}}}}],"whole":true}}]}"#
                     ),
                 )?;
             }
@@ -127,8 +129,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.rule == null) {\n  ctx.rule = new HashMap();\n}\nctx.rule.description = ctx.jamf_protect.alerts.input.match.facts[0].human\n"#
+                    compiled_painless!(
+                        "4af99fccfa1392cc2f3801731550ce9b147a937d06df5d8d8beb1d2f3e8d4b30",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"Compare":{"path":"rule","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"Literal":{"Set":{"path":"rule.description","value":{"Field":"jamf_protect.alerts.input.match.facts.0.human"}}}}],"whole":true}}]}"#
                     ),
                 )?;
             }
@@ -142,8 +145,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.event.action = ctx.jamf_protect.alerts.input.match.facts[0].name;\n"#
+                        compiled_painless!(
+                            "dd70e5d7a8d88b5174f93a7a51583a0ebe877a78053b887afad40c4f9ce2fd81",
+                            r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Set":{"path":"event.action","value":{"Field":"jamf_protect.alerts.input.match.facts.0.name"}}}}],"whole":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -159,8 +163,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.event.reason = ctx.jamf_protect.alerts.input.match.facts[0].human;\n"#
+                        compiled_painless!(
+                            "437053e7da03bc3733c8389576551684cdb1df7f95c79e6e3ca7629de48acf1d",
+                            r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Set":{"path":"event.reason","value":{"Field":"jamf_protect.alerts.input.match.facts.0.human"}}}}],"whole":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -176,8 +181,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (!(ctx.tags instanceof List) || ctx.tags.size() == 0) {\n  ctx.tags = ctx.jamf_protect.alerts.input.match.facts[0].tags;\n  return;\n}  HashSet tags = new HashSet(ctx.tags); for (def t: ctx.jamf_protect.alerts.input.match.facts[0].tags) {\n  tags.add(t);\n} ctx.tags = tags;\n"#
+                        compiled_painless!(
+                            "3a99359fd3e3a2ab38197846b106dc735208ae79d234a8267b041c102ec499f9",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -253,8 +259,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.jamf_protect?.alerts?.input?.related?.users != null && ctx.jamf_protect.alerts.input.related.users.size() > 0) {\n    ArrayList userNames = new ArrayList();\n\n    for (def user : ctx.jamf_protect.alerts.input.related.users) {\n        if (user.containsKey('name') && user['name'] != null) {\n            userNames.add(user['name']);\n        }\n    }\n    if (userNames.size() > 0) {\n        ctx.related = ctx.related ?: new HashMap();\n        ctx.related.user = userNames;\n    }\n}  \n"#
+                compiled_painless!(
+                    "76f3efc1318de5a450510a3f754acbf560c53d91b5fb84b32440d98e9bd18607",
+                    r#"{"params":null,"known":[{"GatherMembers":{"list":"jamf_protect.alerts.input.related.users","stop_on_null_element":false,"columns":[{"member":"name","targets":["related.user"],"allowed":[],"lowercase":false,"flatten":false,"dedupe":false,"selector":null,"literals":[],"split":null}],"flag":null}}]}"#
                 ),
             )?;
 
@@ -305,8 +312,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect.alerts.input.related.files.size() > 0) {\n    def file = ctx.jamf_protect.alerts.input.related.files[0];\n\n    ctx.file = ctx.file ?: new HashMap();\n    \n    ctx.file.path = file.path;\n    ctx.file.size = file.size;\n    ctx.file.inode = String.valueOf(file.inode);\n    ctx.file.gid = String.valueOf(file.gid);\n    ctx.file.mode = String.valueOf(file.mode);\n    ctx.file.uid = String.valueOf(file.uid);\n    \n    ctx.file.hash = ctx.file.hash ?: new HashMap();\n    ctx.file.hash.sha1 = file.sha1hex;\n    ctx.file.hash.sha256 = file.sha256hex;\n    \n    ctx.file.code_signature = ctx.file.code_signature ?: new HashMap();\n    ctx.file.code_signature.signing_id = file.signingInfo?.appid; // Use safe navigation for nested objects\n    ctx.file.code_signature.status = file.signingInfo?.statusMessage;\n    ctx.file.code_signature.team_id = file.signingInfo?.teamid;\n}\n"#
+                    compiled_painless!(
+                        "111774e6ebd0a7020d712088ce0e0c15b4b57c8ce6d27fcd64f587ffeddea893",
+                        r#"{"params":null,"known":[{"ElementMapping":{"locals":[{"name":"file","list":"jamf_protect.alerts.input.related.files","index":{"At":0}}],"body":[{"If":{"test":{"Longer":{"list":"jamf_protect.alerts.input.related.files","least":0}},"body":[{"EnsureMap":"file"},{"Write":{"path":"file.path","read":{"Member":{"local":0,"members":["path"]}},"render":"Direct"}},{"Write":{"path":"file.size","read":{"Member":{"local":0,"members":["size"]}},"render":"Direct"}},{"Write":{"path":"file.inode","read":{"Member":{"local":0,"members":["inode"]}},"render":"StringValueOf"}},{"Write":{"path":"file.gid","read":{"Member":{"local":0,"members":["gid"]}},"render":"StringValueOf"}},{"Write":{"path":"file.mode","read":{"Member":{"local":0,"members":["mode"]}},"render":"StringValueOf"}},{"Write":{"path":"file.uid","read":{"Member":{"local":0,"members":["uid"]}},"render":"StringValueOf"}},{"EnsureMap":"file.hash"},{"Write":{"path":"file.hash.sha1","read":{"Member":{"local":0,"members":["sha1hex"]}},"render":"Direct"}},{"Write":{"path":"file.hash.sha256","read":{"Member":{"local":0,"members":["sha256hex"]}},"render":"Direct"}},{"EnsureMap":"file.code_signature"},{"Write":{"path":"file.code_signature.signing_id","read":{"Member":{"local":0,"members":["signingInfo","appid"]}},"render":"Direct"}},{"Write":{"path":"file.code_signature.status","read":{"Member":{"local":0,"members":["signingInfo","statusMessage"]}},"render":"Direct"}},{"Write":{"path":"file.code_signature.team_id","read":{"Member":{"local":0,"members":["signingInfo","teamid"]}},"render":"Direct"}}]}}]}}]}"#
                     ),
                 )?;
             }
@@ -334,8 +342,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.alerts?.input?.related?.processes != null && ctx.jamf_protect.alerts.input.related.processes.size() > 0) {\n    def process = ctx.jamf_protect.alerts.input.related.processes[0];\n    def binary = ctx.jamf_protect.alerts.input.related.binaries[0];\n    \n    ctx.process = ctx.process ?: new HashMap();                          \n    ctx.process.name = process.name;\n    ctx.process.executable = process.path;\n    ctx.process.pid = process.pid;\n    if (process.containsKey('startTimestamp')) {\n        ctx.process.start = Instant.ofEpochSecond(process.startTimestamp).toString();\n    }\n    if (process?.exitCode != null) {\n        ctx.process.exit_code = process.exitCode;\n    }\n    ctx.process.args = process.args ?: new ArrayList();\n    ctx.process.entity_id = process.uuid;\n\n    ctx.process.parent = new HashMap();    \n    ctx.process.parent.pid = process.responsiblePID;\n\n    ctx.process.user = new HashMap();\n    ctx.process.user.id = process.uid.toString();\n\n    ctx.process.group_leader = new HashMap();\n    if (process?.pgid != null) {\n        ctx.process.group_leader.pid = process.pgid;\n    }\n    ctx.process.group_leader.group = new HashMap();\n    if (process?.gid != null) {\n        ctx.process.group_leader.group.id = process.gid.toString();\n    }\n\n    ctx.process.real_user = new HashMap();\n    if (process?.ruid != null) {\n        ctx.process.real_user.id = process.ruid.toString();\n    }               \n\n    ctx.process.real_group = new HashMap();\n    if (process?.rgid != null) {\n        ctx.process.real_group.id = process.rgid.toString();\n    }      \n\n    ctx.process.hash = ctx.process.hash ?: new HashMap();\n    if (binary?.sha1hex != null) {\n        ctx.process.hash.sha1 = binary.sha1hex;\n    }\n    if (binary?.sha256hex != null) {\n        ctx.process.hash.sha256 = binary.sha256hex;\n    }\n    \n    ctx.process.code_signature = ctx.process.code_signature ?: new HashMap();\n    if (process.signingInfo?.appid != null) {\n        ctx.process.code_signature.signing_id = process.signingInfo.appid;\n    }\n    if (process.signingInfo?.statusMessage != null) {\n        ctx.process.code_signature.status = process.signingInfo.statusMessage;\n    }\n    if (process?.signingInfo?.teamid != null) {\n        ctx.process.code_signature.team_id = process.signingInfo.teamid;\n    }\n\n    // Mapping out the parent process\n    if (ctx.jamf_protect.alerts.input.related.processes.size() > 1) {\n    def parentProcess = ctx.jamf_protect.alerts.input.related.processes[1];\n\n    ctx.process.parent = new HashMap();\n    ctx.process.parent.name = parentProcess.name;\n    ctx.process.parent.pid = parentProcess.pid;\n    ctx.process.parent.executable = parentProcess.path;\n    ctx.process.parent.entity_id = parentProcess.uuid;\n\n    if (parentProcess.containsKey('startTimestamp')) {\n        ctx.process.parent.start = Instant.ofEpochSecond(parentProcess.startTimestamp).toString();\n    }\n\n    ctx.process.parent.user = new HashMap();\n    if (parentProcess?.uid != null) {\n        ctx.process.parent.user.id = parentProcess.uid.toString();\n    }      \n\n    ctx.process.parent.real_user = new HashMap();\n    if (parentProcess?.ruid != null) {\n        ctx.process.parent.real_user.id = parentProcess.ruid.toString();\n    }               \n\n    ctx.process.parent.real_group = new HashMap();\n    if (parentProcess?.rgid != null) {\n        ctx.process.parent.real_group.id = parentProcess.rgid.toString();\n    }\n\n    ctx.process.parent.code_signature = ctx.process.parent.code_signature ?: new HashMap();\n    if (parentProcess.signingInfo?.appid != null) {\n        ctx.process.parent.code_signature.signing_id = parentProcess.signingInfo.appid;\n    }\n    if (parentProcess.signingInfo?.statusMessage != null) {\n        ctx.process.parent.code_signature.status = parentProcess.signingInfo.statusMessage;\n    }\n    if (parentProcess?.signingInfo?.teamid != null) {\n        ctx.process.parent.code_signature.team_id = parentProcess.signingInfo.teamid;\n    }\n\n    }\n\n    // Mapping out the process group leader, which can be the same as parent\n    def processGroupLeader = ctx.jamf_protect.alerts.input.related.processes[ctx.jamf_protect.alerts.input.related.processes.size() - 1];\n    ctx.process.group_leader = new HashMap();\n    ctx.process.group_leader.name = processGroupLeader.name;\n    ctx.process.group_leader.pid = processGroupLeader.pid;\n    ctx.process.group_leader.executable = processGroupLeader.path;\n\n    if (processGroupLeader.containsKey('startTimestamp')) {\n        ctx.process.group_leader.start = Instant.ofEpochSecond(processGroupLeader.startTimestamp).toString();\n    }\n\n    ctx.process.group_leader.user = new HashMap();\n    if (processGroupLeader?.uid != null) {\n        ctx.process.group_leader.user.id = processGroupLeader.uid.toString();\n    }      \n\n    ctx.process.group_leader.real_user = new HashMap();\n    if (processGroupLeader?.ruid != null) {\n        ctx.process.group_leader.real_user.id = processGroupLeader.ruid.toString();\n    }               \n\n    ctx.process.group_leader.real_group = new HashMap();\n    if (processGroupLeader?.rgid != null) {\n        ctx.process.group_leader.real_group.id = processGroupLeader.rgid.toString();\n    }\n}\n"#
+                    compiled_painless!(
+                        "421244aa20a3a3b104ee99f40b7d71ffaab1d285892a7bb3402873541e00385e",
+                        r#"{"params":null,"known":[{"ElementMapping":{"locals":[{"name":"process","list":"jamf_protect.alerts.input.related.processes","index":{"At":0}},{"name":"binary","list":"jamf_protect.alerts.input.related.binaries","index":{"At":0}},{"name":"parentProcess","list":"jamf_protect.alerts.input.related.processes","index":{"At":1}},{"name":"processGroupLeader","list":"jamf_protect.alerts.input.related.processes","index":"Last"}],"body":[{"If":{"test":{"All":[{"NotNull":{"Field":"jamf_protect.alerts.input.related.processes"}},{"Longer":{"list":"jamf_protect.alerts.input.related.processes","least":0}}]},"body":[{"EnsureMap":"process"},{"Write":{"path":"process.name","read":{"Member":{"local":0,"members":["name"]}},"render":"Direct"}},{"Write":{"path":"process.executable","read":{"Member":{"local":0,"members":["path"]}},"render":"Direct"}},{"Write":{"path":"process.pid","read":{"Member":{"local":0,"members":["pid"]}},"render":"Direct"}},{"If":{"test":{"ContainsKey":{"local":0,"member":"startTimestamp"}},"body":[{"Write":{"path":"process.start","read":{"Member":{"local":0,"members":["startTimestamp"]}},"render":"EpochSecond"}}]}},{"If":{"test":{"NotNull":{"Member":{"local":0,"members":["exitCode"]}}},"body":[{"Write":{"path":"process.exit_code","read":{"Member":{"local":0,"members":["exitCode"]}},"render":"Direct"}}]}},{"Write":{"path":"process.args","read":{"Member":{"local":0,"members":["args"]}},"render":"OrEmptyList"}},{"Write":{"path":"process.entity_id","read":{"Member":{"local":0,"members":["uuid"]}},"render":"Direct"}},{"ResetMap":"process.parent"},{"Write":{"path":"process.parent.pid","read":{"Member":{"local":0,"members":["responsiblePID"]}},"render":"Direct"}},{"ResetMap":"process.user"},{"Write":{"path":"process.user.id","read":{"Member":{"local":0,"members":["uid"]}},"render":"ToString"}},{"ResetMap":"process.group_leader"},{"If":{"test":{"NotNull":{"Member":{"local":0,"members":["pgid"]}}},"body":[{"Write":{"path":"process.group_leader.pid","read":{"Member":{"local":0,"members":["pgid"]}},"render":"Direct"}}]}},{"ResetMap":"process.group_leader.group"},{"If":{"test":{"NotNull":{"Member":{"local":0,"members":["gid"]}}},"body":[{"Write":{"path":"process.group_leader.group.id","read":{"Member":{"local":0,"members":["gid"]}},"render":"ToString"}}]}},{"ResetMap":"process.real_user"},{"If":{"test":{"NotNull":{"Member":{"local":0,"members":["ruid"]}}},"body":[{"Write":{"path":"process.real_user.id","read":{"Member":{"local":0,"members":["ruid"]}},"render":"ToString"}}]}},{"ResetMap":"process.real_group"},{"If":{"test":{"NotNull":{"Member":{"local":0,"members":["rgid"]}}},"body":[{"Write":{"path":"process.real_group.id","read":{"Member":{"local":0,"members":["rgid"]}},"render":"ToString"}}]}},{"EnsureMap":"process.hash"},{"If":{"test":{"NotNull":{"Member":{"local":1,"members":["sha1hex"]}}},"body":[{"Write":{"path":"process.hash.sha1","read":{"Member":{"local":1,"members":["sha1hex"]}},"render":"Direct"}}]}},{"If":{"test":{"NotNull":{"Member":{"local":1,"members":["sha256hex"]}}},"body":[{"Write":{"path":"process.hash.sha256","read":{"Member":{"local":1,"members":["sha256hex"]}},"render":"Direct"}}]}},{"EnsureMap":"process.code_signature"},{"If":{"test":{"NotNull":{"Member":{"local":0,"members":["signingInfo","appid"]}}},"body":[{"Write":{"path":"process.code_signature.signing_id","read":{"Member":{"local":0,"members":["signingInfo","appid"]}},"render":"Direct"}}]}},{"If":{"test":{"NotNull":{"Member":{"local":0,"members":["signingInfo","statusMessage"]}}},"body":[{"Write":{"path":"process.code_signature.status","read":{"Member":{"local":0,"members":["signingInfo","statusMessage"]}},"render":"Direct"}}]}},{"If":{"test":{"NotNull":{"Member":{"local":0,"members":["signingInfo","teamid"]}}},"body":[{"Write":{"path":"process.code_signature.team_id","read":{"Member":{"local":0,"members":["signingInfo","teamid"]}},"render":"Direct"}}]}},{"If":{"test":{"Longer":{"list":"jamf_protect.alerts.input.related.processes","least":1}},"body":[{"ResetMap":"process.parent"},{"Write":{"path":"process.parent.name","read":{"Member":{"local":2,"members":["name"]}},"render":"Direct"}},{"Write":{"path":"process.parent.pid","read":{"Member":{"local":2,"members":["pid"]}},"render":"Direct"}},{"Write":{"path":"process.parent.executable","read":{"Member":{"local":2,"members":["path"]}},"render":"Direct"}},{"Write":{"path":"process.parent.entity_id","read":{"Member":{"local":2,"members":["uuid"]}},"render":"Direct"}},{"If":{"test":{"ContainsKey":{"local":2,"member":"startTimestamp"}},"body":[{"Write":{"path":"process.parent.start","read":{"Member":{"local":2,"members":["startTimestamp"]}},"render":"EpochSecond"}}]}},{"ResetMap":"process.parent.user"},{"If":{"test":{"NotNull":{"Member":{"local":2,"members":["uid"]}}},"body":[{"Write":{"path":"process.parent.user.id","read":{"Member":{"local":2,"members":["uid"]}},"render":"ToString"}}]}},{"ResetMap":"process.parent.real_user"},{"If":{"test":{"NotNull":{"Member":{"local":2,"members":["ruid"]}}},"body":[{"Write":{"path":"process.parent.real_user.id","read":{"Member":{"local":2,"members":["ruid"]}},"render":"ToString"}}]}},{"ResetMap":"process.parent.real_group"},{"If":{"test":{"NotNull":{"Member":{"local":2,"members":["rgid"]}}},"body":[{"Write":{"path":"process.parent.real_group.id","read":{"Member":{"local":2,"members":["rgid"]}},"render":"ToString"}}]}},{"EnsureMap":"process.parent.code_signature"},{"If":{"test":{"NotNull":{"Member":{"local":2,"members":["signingInfo","appid"]}}},"body":[{"Write":{"path":"process.parent.code_signature.signing_id","read":{"Member":{"local":2,"members":["signingInfo","appid"]}},"render":"Direct"}}]}},{"If":{"test":{"NotNull":{"Member":{"local":2,"members":["signingInfo","statusMessage"]}}},"body":[{"Write":{"path":"process.parent.code_signature.status","read":{"Member":{"local":2,"members":["signingInfo","statusMessage"]}},"render":"Direct"}}]}},{"If":{"test":{"NotNull":{"Member":{"local":2,"members":["signingInfo","teamid"]}}},"body":[{"Write":{"path":"process.parent.code_signature.team_id","read":{"Member":{"local":2,"members":["signingInfo","teamid"]}},"render":"Direct"}}]}}]}},{"ResetMap":"process.group_leader"},{"Write":{"path":"process.group_leader.name","read":{"Member":{"local":3,"members":["name"]}},"render":"Direct"}},{"Write":{"path":"process.group_leader.pid","read":{"Member":{"local":3,"members":["pid"]}},"render":"Direct"}},{"Write":{"path":"process.group_leader.executable","read":{"Member":{"local":3,"members":["path"]}},"render":"Direct"}},{"If":{"test":{"ContainsKey":{"local":3,"member":"startTimestamp"}},"body":[{"Write":{"path":"process.group_leader.start","read":{"Member":{"local":3,"members":["startTimestamp"]}},"render":"EpochSecond"}}]}},{"ResetMap":"process.group_leader.user"},{"If":{"test":{"NotNull":{"Member":{"local":3,"members":["uid"]}}},"body":[{"Write":{"path":"process.group_leader.user.id","read":{"Member":{"local":3,"members":["uid"]}},"render":"ToString"}}]}},{"ResetMap":"process.group_leader.real_user"},{"If":{"test":{"NotNull":{"Member":{"local":3,"members":["ruid"]}}},"body":[{"Write":{"path":"process.group_leader.real_user.id","read":{"Member":{"local":3,"members":["ruid"]}},"render":"ToString"}}]}},{"ResetMap":"process.group_leader.real_group"},{"If":{"test":{"NotNull":{"Member":{"local":3,"members":["rgid"]}}},"body":[{"Write":{"path":"process.group_leader.real_group.id","read":{"Member":{"local":3,"members":["rgid"]}},"render":"ToString"}}]}}]}}]}}]}"#
                     ),
                 )?;
             }
@@ -343,8 +352,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.jamf_protect?.alerts?.input?.related?.groups != null && ctx.jamf_protect.alerts.input.related.groups.size() > 0) {\n    def group = ctx.jamf_protect.alerts.input.related.groups[0];\n    \n        ctx.group = ctx.group ?: new HashMap();\n        \n        ctx.group.name = group.name;\n        ctx.group.id = group.gid.toString();\n}\n"#
+                compiled_painless!(
+                    "b9056046b38a42feae5f99c22d1eed8abbe876e5bbce08d4c5d638eeb6bc5c73",
+                    r#"{"params":null,"known":[{"ElementMapping":{"locals":[{"name":"group","list":"jamf_protect.alerts.input.related.groups","index":{"At":0}}],"body":[{"If":{"test":{"All":[{"NotNull":{"Field":"jamf_protect.alerts.input.related.groups"}},{"Longer":{"list":"jamf_protect.alerts.input.related.groups","least":0}}]},"body":[{"EnsureMap":"group"},{"Write":{"path":"group.name","read":{"Member":{"local":0,"members":["name"]}},"render":"Direct"}},{"Write":{"path":"group.id","read":{"Member":{"local":0,"members":["gid"]}},"render":"ToString"}}]}}]}}]}"#
                 ),
             )?;
 

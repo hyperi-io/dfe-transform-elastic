@@ -43,7 +43,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "7f12ccaa598ce71826ece24e3b1849e78f394882764fa18f83ae9ff61f5bf057",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"tychon.script.current_duration","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"tychon.script.current_duration","value":{"LongOf":"tychon.script.current_duration"}}}}],"alt":[]}}],"whole":true}}]}"#,
                     r#"if (ctx.tychon?.script?.current_duration != null)\n{\n  ctx.tychon.script.current_duration =\n    (long) Double.parseDouble(ctx.tychon.script.current_duration.toString());\n}\n"#
                 ),
             )?;
@@ -329,8 +331,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.tychon?.host?.adapter?.link_speed?.contains(' ') == true) {\n  String[] parts = ctx.tychon.host.adapter.link_speed.splitOnToken(' ');\n  ctx.tychon.host.adapter.link_speed = Double.parseDouble(parts[0]);\n  if (parts[1] == 'Kbps') {\n    ctx.tychon.host.adapter.link_speed *= 1e3\n  } else if (parts[1] == 'Mbps') {\n    ctx.tychon.host.adapter.link_speed *= 1e6\n  } else if (parts[1] == 'Gbps') {\n    ctx.tychon.host.adapter.link_speed *= 1e9\n  }\n} else {\n  if (ctx.tychon.host == null) {\n    ctx.tychon.host = [:];\n  }\n  if (ctx.tychon.host.adapter == null) {\n    ctx.tychon.host.adapter = [:];\n  }\n  ctx.tychon.host.adapter.link_speed = 0.0;\n}\nctx.tychon.host.adapter.link_speed = (long) ctx.tychon.host.adapter.link_speed;\n"#
+                compiled_painless!(
+                    "c8c1df0bb978c1f8e365506c429281ea1105a466772fc2ee3cbce0a76fe21e10",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
             let _cond = { event.has_value("tychon.host.adapter.domain") };

@@ -117,7 +117,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "ff4f5b3c2365d54abef9026c6f030175528b58e8e63b09cf6bec2e3cef929f3b",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.event.duration = ctx.event.duration * params.param_nano"#
                     ),
                     cached_params!("{\"param_nano\":1000000}"),
@@ -355,7 +357,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "98d20952e414c47bf1b812ef1e2d3cada7ca18e52d5e44add59d65f9d82f33ef",
+                        r#"{"params":null,"known":["ArrayToIndexedObject"]}"#,
                         r#"if (ctx.azure.auditlogs.properties?.targetResources != null) {\n  ctx.azure.auditlogs.properties.target_resources = new HashMap();\n  for (def i = 0; i < ctx.azure.auditlogs.properties.targetResources.length; i++) {\n    String index = String.valueOf(i);\n    ctx.azure.auditlogs.properties.target_resources[index] = new HashMap();\n    if(ctx.azure.auditlogs.properties.targetResources[i].displayName != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].display_name = ctx.azure.auditlogs.properties.targetResources[i].displayName;\n    }\n    ctx.azure.auditlogs.properties.target_resources[index].id = ctx.azure.auditlogs.properties.targetResources[i].id;\n    ctx.azure.auditlogs.properties.target_resources[index].type = ctx.azure.auditlogs.properties.targetResources[i].type;\n    if (ctx.azure.auditlogs.properties.targetResources[i].ipAddress != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].ip_address = ctx.azure.auditlogs.properties.targetResources[i].ipAddress;\n    }\n    if (ctx.azure.auditlogs.properties.targetResources[i].userPrincipalName != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].user_principal_name = ctx.azure.auditlogs.properties.targetResources[i].userPrincipalName;\n    }\n    ctx.azure.auditlogs.properties.target_resources[index].modified_properties = new HashMap();\n    for (def j = 0; j < ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties.length; j++) {\n      String n = String.valueOf(j);\n      ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n] = new HashMap();\n\n      ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].display_name = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].displayName;\n      \n      if (ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].newValue != null) {\n        ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].new_value = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].newValue;\n      }\n      if (ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].oldValue != null) {\n        ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].old_value = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].oldValue;\n      }\n    }\n  }\n  ctx.azure.auditlogs.properties.remove('targetResources');\n}"#
                     ),
                 )?;
@@ -492,7 +496,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "d3afbe9bbc8686e946b9348fe274dc05fc462ca7a332fd37ed2566f76edb9611",
+                        r#"{"params":null,"known":["CollectMapValues"]}"#,
                         r#"ctx.related = ctx.related ?: [:];\nctx.related.entity = ctx.related.entity ?: [];\nif (ctx.azure.auditlogs.properties?.target_resources != null) {\n    for (String k : ctx.azure.auditlogs.properties.target_resources.keySet()) {\n        def resource = ctx.azure.auditlogs.properties.target_resources[k];\n        if (resource?.id != null && resource.id != '' && !ctx.related.entity.contains(resource.id)) {\n                ctx.related.entity.add(resource.id);\n        }\n    }\n}\n"#
                     ),
                 )?;

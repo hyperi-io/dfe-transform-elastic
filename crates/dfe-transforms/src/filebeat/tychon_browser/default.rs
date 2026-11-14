@@ -43,7 +43,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "7f12ccaa598ce71826ece24e3b1849e78f394882764fa18f83ae9ff61f5bf057",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"tychon.script.current_duration","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"tychon.script.current_duration","value":{"LongOf":"tychon.script.current_duration"}}}}],"alt":[]}}],"whole":true}}]}"#,
                     r#"if (ctx.tychon?.script?.current_duration != null)\n{\n  ctx.tychon.script.current_duration =\n    (long) Double.parseDouble(ctx.tychon.script.current_duration.toString());\n}\n"#
                 ),
             )?;
@@ -331,8 +333,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (['installed', 'true'].contains(ctx.tychon.package.installed)) {\n  ctx.tychon.package.installed = '1970-01-01T00:00:01Z';\n} else {\n  ctx.tychon.package.remove('installed');\n}\n"#
+                    compiled_painless!(
+                        "c3d9a2b8eec66d4c3611dffdfa075e1dbefed0b385763f103bbf9fddf8b951ee",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"ListContains":{"members":["installed","true"],"argument":{"Field":"tychon.package.installed"}}}]],"then":[{"Literal":{"Set":{"path":"tychon.package.installed","value":{"Literal":"1970-01-01T00:00:01Z"}}}}],"alt":[{"Literal":{"Remove":{"path":"tychon.package.installed"}}}]}}],"whole":true}}]}"#
                     ),
                 )?;
             }

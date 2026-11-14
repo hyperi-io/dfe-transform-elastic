@@ -26,14 +26,14 @@ use serde_json::{Map, Value};
 use dfe_core::event::Event;
 
 /// Which of the script's two collection sets a statement feeds.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum SetRef {
     Related,
     Target,
 }
 
 /// One statement of an enrich function or the main body's preamble.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Action {
     /// `addField(enrichCtx.X, "path")` -- read the event path, add the string.
     AddField(SetRef, String),
@@ -88,7 +88,7 @@ enum Action {
 }
 
 /// Where a forEach reads its array from.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Source {
     /// `$("path", [])` -- an event path.
     Event(String),
@@ -97,14 +97,14 @@ enum Source {
 }
 
 /// One `void enrich*` function: its `eventSource` gate and its statements.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct EnrichFn {
     source: String,
     body: Vec<Action>,
 }
 
 /// The whole script, parsed once per call site.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct EntityScript {
     enrich: Vec<EnrichFn>,
     preamble: Vec<Action>,
@@ -232,7 +232,7 @@ fn member_expr(text: &str) -> Option<(String, String)> {
 
 /// The parser's running state: locals bound to `$()` reads, and the loop
 /// variables in scope, innermost last.
-#[derive(Default)]
+#[derive(Default, serde::Serialize, serde::Deserialize)]
 struct ParseScope {
     locals: Vec<(String, String)>,
     loop_vars: Vec<String>,
@@ -663,7 +663,7 @@ fn readable_preamble(text: &str) -> Vec<String> {
 // ---------------------------------------------------------------------------
 
 /// What the collection phase gathers before anything is written.
-#[derive(Default)]
+#[derive(Default, serde::Serialize, serde::Deserialize)]
 struct Collected {
     related: BTreeSet<String>,
     target: BTreeSet<String>,
@@ -862,7 +862,7 @@ fn eval_action<'v>(event: &'v Event, action: &Action, scope: &mut Scope<'v>, out
 // ---------------------------------------------------------------------------
 
 /// Where one entity value lands.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Kind {
     User,
     Host,
@@ -1070,304 +1070,8 @@ pub(crate) fn run_entity_script(
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use serde_json::json;
-
-    use super::*;
-
-    /// A representative slice of the real script: helpers, two enrich
-    /// functions covering the ladder, forEach, nested forEach, addValues,
-    /// locals, `String.valueOf` and `SendCommand`, then the main body and the
-    /// classifier tail's markers.
-    const SCRIPT: &str = r#"
-        void addFields(Set entities, List fields) {
-          for (String field : fields) {
-            addField(entities, field);
-          }
-        }
-        void addField(Set entities, String fieldName) {
-          addValue(entities, $(fieldName, null));
-        }
-        boolean addValue(Set entities, String value) {
-          if (value == null || value == "") {
-            return false;
-          }
-          return entities.add(value);
-        }
-
-        void enrichEc2(def enrichCtx, def eventSource, def eventName) {
-          if (eventSource != "ec2.amazonaws.com") {
-              return;
-          }
-          addFields(enrichCtx.related, [
-            "json.requestParameters.groupId",
-            "json.requestParameters.vpcId"
-          ]);
-          $("json.responseElements.instancesSet.items", []).stream().forEach(instances -> {
-            addValues(enrichCtx.related, [
-              instances.instanceId,
-              instances.iamInstanceProfile?.arn
-            ]);
-            instances.networkInterfaceSet?.items?.stream().forEach(networks -> {
-              addValue(enrichCtx.related, networks.networkInterfaceId);
-            });
-          });
-          if (eventName == "DeleteNetworkAclEntry") {
-            addField(enrichCtx.target, "json.requestParameters.networkAclId");
-            def ruleNumber = $("json.requestParameters.ruleNumber", null);
-            if (ruleNumber != null) {
-              addValue(enrichCtx.target, String.valueOf(ruleNumber));
-            }
-          } else if (eventName == "GetPasswordData"
-                    || eventName == "ModifyImageAttribute") {
-            addField(enrichCtx.target, "json.requestParameters.instanceId");
-          }
-        }
-
-        void enrichSsm(def enrichCtx, def eventSource, def eventName) {
-          if (eventSource != "ssm.amazonaws.com") {
-            return;
-          }
-          if (eventName == "SendCommand") {
-            List instanceIds = $("json.requestParameters.instanceIds", []);
-            if (instanceIds.isEmpty()) {
-              instanceIds = $("json.requestParameters.targets", []).stream().flatMap(target -> target.values.stream()).collect(Collectors.toList());
-            }
-            if (instanceIds.size() == 1 && instanceIds.get(0) == "*") {
-              instanceIds = [ $("json.recipientAccountId", null) ];
-            }
-            addValues(enrichCtx.target, instanceIds);
-          }
-        }
-
-        Map enrichCtx = [:];
-        enrichCtx.related = new TreeSet();
-        enrichCtx.target = new TreeSet();
-
-        enrichCtx.actor = $("json.userIdentity.arn", null);
-        if (enrichCtx.actor == null) {
-          enrichCtx.actor = $("json.userIdentity.onBehalfOf.userId", null);
-        }
-
-        addFields(enrichCtx.related, [
-          "json.userIdentity.accessKeyId",
-          "json.userIdentity.arn",
-          "json.userIdentity.userName"
-        ]);
-
-        if ($("json.userIdentity.type", null) == "IdentityCenterUser") {
-          addField(enrichCtx.related, "json.userIdentity.onBehalfOf.identityStoreArn");
-        }
-
-        $("json.resources", []).stream().forEach(f -> addValue(enrichCtx.related, f.ARN));
-
-        String eventSource = $("json.eventSource", null);
-        String eventName = $("json.eventName", null);
-
-        enrichEc2(enrichCtx, eventSource, eventName);
-        enrichSsm(enrichCtx, eventSource, eventName);
-
-        if (!enrichCtx.target.isEmpty()) {
-          field("target.entity.id").set(enrichCtx.target);
-          for (def targetValue : enrichCtx.target) {
-            if (target.contains("/AWSServiceRoleFor") || target.contains("/aws-service-role/")) {
-              serviceTargets.add(target);
-            } else if (params.userResourceTypes.containsKey(resourceType)) {
-              userTargets.add(target);
-            } else if (params.hostResourceTypes.containsKey(resourceType)) {
-              hostTargets.add(target);
-            } else if (params.serviceResourceTypes.containsKey(resourceType)) {
-              serviceTargets.add(target);
-            }
-            if (target.length() == 20 && target.startsWith("AKIA")) {
-              userTargets.add(target);
-            }
-            for (def prefix : params.hostIdPrefixes) { }
-            for (def prefix : params.serviceIdPrefixes) { }
-          }
-          if (!userTargets.isEmpty()) {
-            field("user.target.entity.id").set(userTargets);
-          }
-          enrichCtx.related.addAll(enrichCtx.target);
-        }
-        if (enrichCtx.actor != null) {
-          field("actor.entity.id").set([ enrichCtx.actor ]);
-          if (params.userIdentityTypes.containsKey(userType)) {
-            field("user.entity.id").set([ enrichCtx.actor ]);
-          }
-        }
-        field("related.entity").set(enrichCtx.related);
-    "#;
-
-    fn params() -> Map<String, Value> {
-        json!({
-            "userResourceTypes": { "user": true, "role": true, "assumed-role": true },
-            "hostResourceTypes": { "instance": true },
-            "serviceResourceTypes": { "network-acl": true },
-            "hostIdPrefixes": ["i-"],
-            "serviceIdPrefixes": ["sg-", "acl-"],
-            "userIdentityTypes": { "IAMUser": true, "Root": true, "AssumedRole": true },
-        })
-        .as_object()
-        .cloned()
-        .unwrap()
-    }
-
-    fn parsed() -> EntityScript {
-        EntityScript::parse(SCRIPT).expect("the representative script parses")
-    }
-
-    #[test]
-    fn the_representative_script_parses() {
-        let script = parsed();
-        assert_eq!(script.enrich.len(), 2);
-        assert_eq!(script.enrich[0].source, "ec2.amazonaws.com");
-        assert_eq!(script.enrich[1].source, "ssm.amazonaws.com");
-    }
-
-    #[test]
-    fn related_gathers_fields_members_and_nested_members() {
-        let mut event = Event::new(json!({
-            "json": {
-                "eventSource": "ec2.amazonaws.com",
-                "eventName": "RunInstances",
-                // An all-zero key id shaped like AWS's, not a credential.
-                // nosemgrep: generic.secrets.security.detected-aws-access-key-id-value.detected-aws-access-key-id-value
-                "userIdentity": { "arn": "arn:aws:iam::1:user/alice", "accessKeyId": "AKIA0000000000000000" },
-                "requestParameters": { "groupId": "sg-1", "vpcId": "vpc-9" },
-                "responseElements": { "instancesSet": { "items": [
-                    { "instanceId": "i-abc",
-                      "iamInstanceProfile": { "arn": "arn:aws:iam::1:instance-profile/p" },
-                      "networkInterfaceSet": { "items": [ { "networkInterfaceId": "eni-7" } ] } }
-                ] } },
-            }
-        }));
-        assert!(run_entity_script(&mut event, &parsed(), &params()));
-
-        let related = event.get("related.entity").unwrap();
-        for expected in [
-            "sg-1",
-            "vpc-9",
-            "i-abc",
-            "arn:aws:iam::1:instance-profile/p",
-            "eni-7",
-            "arn:aws:iam::1:user/alice",
-            // nosemgrep: generic.secrets.security.detected-aws-access-key-id-value.detected-aws-access-key-id-value
-            "AKIA0000000000000000",
-        ] {
-            assert!(
-                related.as_array().unwrap().iter().any(|v| v == expected),
-                "missing {expected} in {related}"
-            );
-        }
-    }
-
-    #[test]
-    fn the_event_ladder_takes_only_its_arm() {
-        let mut event = Event::new(json!({
-            "json": {
-                "eventSource": "ec2.amazonaws.com",
-                "eventName": "DeleteNetworkAclEntry",
-                "requestParameters": { "networkAclId": "acl-3", "ruleNumber": 100,
-                                        "instanceId": "i-should-not-appear" },
-            }
-        }));
-        assert!(run_entity_script(&mut event, &parsed(), &params()));
-
-        assert_eq!(
-            event.get("target.entity.id"),
-            Some(&json!(["100", "acl-3"])),
-            "the rule number is stringified, and both members share a bucket"
-        );
-        // acl-3 classifies as service by prefix; "100" is generic.
-        assert_eq!(
-            event.get("service.target.entity.id"),
-            Some(&json!(["acl-3"]))
-        );
-        assert_eq!(event.get("entity.target.id"), Some(&json!(["100"])));
-    }
-
-    #[test]
-    fn send_command_falls_back_through_targets_and_wildcard() {
-        let mut event = Event::new(json!({
-            "json": {
-                "eventSource": "ssm.amazonaws.com",
-                "eventName": "SendCommand",
-                "recipientAccountId": "123456789012",
-                "requestParameters": { "targets": [ { "values": ["*"] } ] },
-            }
-        }));
-        assert!(run_entity_script(&mut event, &parsed(), &params()));
-        assert_eq!(
-            event.get("target.entity.id"),
-            Some(&json!(["123456789012"]))
-        );
-    }
-
-    #[test]
-    fn the_actor_classifies_by_identity_type_then_arn() {
-        let cases = [
-            // IAMUser type wins via the table.
-            (
-                json!({"type": "IAMUser", "arn": "arn:aws:iam::1:user/alice"}),
-                "user.entity.id",
-            ),
-            // AWSService goes to service even with a user-shaped arn.
-            (
-                json!({"type": "AWSService", "arn": "arn:aws:iam::1:user/alice"}),
-                "service.entity.id",
-            ),
-            // A service-linked role is a service whatever the type says.
-            (
-                json!({"type": "Unknown", "arn": "arn:aws:iam::1:role/aws-service-role/x/AWSServiceRoleForX"}),
-                "service.entity.id",
-            ),
-            // An unknown type falls to the arn's resource type.
-            (
-                json!({"type": "Unknown", "arn": "arn:aws:sts::1:assumed-role/r/s"}),
-                "user.entity.id",
-            ),
-        ];
-        for (identity, field) in cases {
-            let mut event = Event::new(json!({
-                "json": { "eventSource": "none", "userIdentity": identity }
-            }));
-            assert!(run_entity_script(&mut event, &parsed(), &params()));
-            let actor = event.get("actor.entity.id").cloned();
-            assert!(actor.is_some(), "actor always written when present");
-            assert_eq!(
-                event.get(field),
-                actor.as_ref(),
-                "{identity} classifies to {field}"
-            );
-        }
-    }
-
-    #[test]
-    fn the_fallback_actor_is_on_behalf_of() {
-        let mut event = Event::new(json!({
-            "json": { "userIdentity": { "onBehalfOf": { "userId": "u-1" } } }
-        }));
-        assert!(run_entity_script(&mut event, &parsed(), &params()));
-        assert_eq!(event.get("actor.entity.id"), Some(&json!(["u-1"])));
-        // u-1 is no arn, no AKIA, no known prefix: the generic entity.id.
-        assert_eq!(event.get("entity.id"), Some(&json!(["u-1"])));
-    }
-
-    #[test]
-    fn an_unreadable_statement_fails_the_whole_parse() {
-        let broken = SCRIPT.replace(
-            "addField(enrichCtx.target, \"json.requestParameters.networkAclId\");",
-            "frobnicate(enrichCtx.target);",
-        );
-        assert!(EntityScript::parse(&broken).is_none());
-    }
-
-    #[test]
-    fn a_missing_classifier_marker_fails_the_parse() {
-        let restructured = SCRIPT.replace("params.userIdentityTypes.containsKey", "something.else");
-        assert!(EntityScript::parse(&restructured).is_none());
-    }
-}
+#[path = "entity_tests.rs"]
+mod tests;

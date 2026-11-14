@@ -81,8 +81,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"long t = (long)(ctx.json.Timestamp);\nif (t > (long)(1e18)) {\n  ctx.json.Timestamp = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.Timestamp = t*(long)(1e3)\n}\n"#
+                        compiled_painless!(
+                            "896d6cfe7e6ab30897367707da5328b1ed441f19fdc07479a8dfbfcd16efc9c4",
+                            r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.Timestamp",false]],"parse_strings":false}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -878,8 +879,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def domains = new HashSet();\nif (ctx.related?.hosts instanceof List) {\n  for (def h: ctx.related.hosts) {\n    domains.add(h);\n  }\n}\nif (ctx.server?.domain != null) {\n  domains.add(ctx.server.domain)\n}\nif (ctx.related?.user instanceof List) {\n  for (def u: ctx.related.user) {\n    if (u.length() < 3) {\n      continue;\n    }\n    def parts = u.splitOnToken('@');\n    if (parts.length != 2) {\n      continue;\n    }\n    domains.add(parts[1]);\n  }\n}\nctx.related.hosts = domains;"#
+                        compiled_painless!(
+                            "5ab0f0b894000579816b01e70acd9c772e0685ec2331ec264d8b2338c10f6bcb",
+                            r#"{"params":null,"known":[{"EmailSplit":{"source":"related.user","names":["related.name"],"domains":["related.domain"],"emails":[],"appends":[]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -1008,8 +1010,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def files = [];\ndef emailAttachments = [];\ndef hashes = new HashSet();\nfor (def a: ctx.cloudflare_logpush.email_security_alerts.attachments) {\n  def f = [:];\n  def efa = [:];\n  if (a.Name != null) {\n    f.name = a.Name;\n  }\n  if (a.ContentTypeComputed != null) {\n    f.mime_type = a.ContentTypeComputed;\n  }\n  def fh = [:];\n  if (a.Md5 != null) {\n    fh.md5 = a.Md5;\n  }\n  if (a.Sha1 != null) {\n    fh.sha1 = a.Sha1;\n  }\n  if (a.Sha256 != null) {\n    fh.sha256 = a.Sha256;\n  }\n  if (a.Sha384 != null) {\n    fh.sha384 = a.Sha384;\n  }\n  if (a.Sha512 != null) {\n    fh.sha512 = a.Sha512;\n  }\n  if (a.Ssdeep != null) {\n    fh.ssdeep = a.Ssdeep;\n  }\n  if (fh.size() != 0) {\n    f.hash = fh;\n  }\n  files.add(f);\n  efa.put('file', f);\n  emailAttachments.add(efa);\n  for (def h: fh.entrySet()) {\n    hashes.add(h.getValue());\n  }\n}\nctx.file = files;\nif (emailAttachments.size() != 0) {\n  if (ctx.email == null) {\n    ctx.email = [:];\n  }\n  ctx.email.attachments = emailAttachments;\n}\nctx.related = ctx.related ?: [:];\nctx.related.hash = hashes;"#
+                        compiled_painless!(
+                            "6b50189aab95c0da5a782726b220c9bd3be2b4ba431920c3222823745c0d07c6",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

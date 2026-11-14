@@ -35,8 +35,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if(ctx.aws?.ec2?.metrics?.CPUUtilization?.avg != null && ctx.host?.cpu?.usage == null) {\n    ctx.aws.ec2.metrics.CPUUtilization.avg = ctx.aws.ec2.metrics.CPUUtilization.avg / 100;\n}\n"#
+                compiled_painless!(
+                    "0d09f5e1c573281af42d01421e0f6f1185c7babe8f8552d6f1736cf205365bfe",
+                    r#"{"params":null,"known":[{"GuardedDivide":{"target":"aws.ec2.metrics.CPUUtilization.avg","source":"aws.ec2.metrics.CPUUtilization.avg","absent":"host.cpu.usage","divisor":100}}]}"#
                 ),
             )?;
 

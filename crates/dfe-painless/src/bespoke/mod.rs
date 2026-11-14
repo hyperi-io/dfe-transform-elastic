@@ -298,17 +298,18 @@ const ENTRIES: &[&[Entry]] = &[
 
 /// The key a script is registered under.
 ///
-/// The script with its escapes resolved, every run of whitespace collapsed to
-/// one space, both ends trimmed, hashed with SHA-256 and rendered as lowercase
-/// hex. Whitespace is normalised so the YAML source, the generated literal and
-/// a hand-pasted copy all key the same.
+/// The script with its escapes resolved, its `//` and `/* */` comments
+/// removed outside string literals, every run of whitespace collapsed to one
+/// space and both ends trimmed, hashed with SHA-256 and rendered as lowercase
+/// hex. Whitespace and comments are normalised so the YAML source, the
+/// generated plan and a hand-pasted copy all key the same.
 #[must_use]
 pub fn script_hash(script: &str) -> String {
     let mut hasher = Sha256::new();
     let mut started = false;
     let mut pending_space = false;
     let mut buf = [0u8; 4];
-    for ch in script.chars() {
+    for ch in without_comments(script).chars() {
         if ch.is_whitespace() {
             pending_space = started;
             continue;
@@ -323,8 +324,55 @@ pub fn script_hash(script: &str) -> String {
     lower_hex(&hasher.finalize())
 }
 
+/// The script with its comments replaced by a space, string literals kept whole.
+fn without_comments(script: &str) -> String {
+    let mut out = String::with_capacity(script.len());
+    let mut chars = script.chars().peekable();
+    let mut quote: Option<char> = None;
+    while let Some(ch) = chars.next() {
+        if let Some(q) = quote {
+            out.push(ch);
+            if ch == '\\' {
+                if let Some(next) = chars.next() {
+                    out.push(next);
+                }
+            } else if ch == q {
+                quote = None;
+            }
+            continue;
+        }
+        match (ch, chars.peek()) {
+            ('\'' | '"', _) => {
+                quote = Some(ch);
+                out.push(ch);
+            }
+            ('/', Some('/')) => {
+                for skipped in chars.by_ref() {
+                    if skipped == '\n' {
+                        break;
+                    }
+                }
+                out.push(' ');
+            }
+            ('/', Some('*')) => {
+                chars.next();
+                let mut last = '\0';
+                for skipped in chars.by_ref() {
+                    if last == '*' && skipped == '/' {
+                        break;
+                    }
+                    last = skipped;
+                }
+                out.push(' ');
+            }
+            _ => out.push(ch),
+        }
+    }
+    out
+}
+
 /// A digest as lower-case hex, the form Painless's `sha1()` and `sha256()` return.
-fn lower_hex(bytes: &[u8]) -> String {
+pub(crate) fn lower_hex(bytes: &[u8]) -> String {
     const DIGITS: &[u8; 16] = b"0123456789abcdef";
     let mut out = String::with_capacity(bytes.len() * 2);
     for byte in bytes {
@@ -338,6 +386,12 @@ fn lower_hex(bytes: &[u8]) -> String {
 #[must_use]
 pub fn lookup(script: &str) -> Option<&'static Entry> {
     table().get(script_hash(script).as_str()).copied()
+}
+
+/// The runner registered under a script hash, if any.
+#[must_use]
+pub fn lookup_hash(hash: &str) -> Option<&'static Entry> {
+    table().get(hash).copied()
 }
 
 /// Every registered runner.

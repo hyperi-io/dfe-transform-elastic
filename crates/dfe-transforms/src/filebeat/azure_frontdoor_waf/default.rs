@@ -295,8 +295,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"Map convertDotsToUnderscore(Map m) {\n  def out = new HashMap();\n  for (entry in m.entrySet()) {\n    def k = entry.getKey().replace('.', '_');\n    def v = entry.getValue();\n    out.put(k, v);\n  }\n  return out;\n}\nctx.azure.frontdoor.waf.identity.claims = convertDotsToUnderscore(ctx.azure.frontdoor.waf.identity.claims);\n"#
+                        compiled_painless!(
+                            "d2e37e9291561784a6703d564763ad37cc8c417b91884ee7d7f344083fd5da91",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -342,8 +343,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def claims = ctx.azure.frontdoor.waf.identity.claims;\ndef claims_initiated_by_user = new HashMap();\nif (claims.name != null) {\n    claims_initiated_by_user.fullname = claims.name;\n}\nfor (entry in params.entrySet()) {\n    if (claims[entry.getValue()] != null) {\n        claims_initiated_by_user[entry.getKey()] = claims[entry.getValue()];\n    }\n}\nif (claims_initiated_by_user.size() > 0) {\n    claims_initiated_by_user.schema = \"http://schemas.xmlsoap.org/ws/2005/05/identity/claims\";\n    ctx.azure.frontdoor.waf.identity.claims_initiated_by_user = claims_initiated_by_user;\n}"#
+                        compiled_painless!(
+                            "4cc72b37368e6420efad78b8f8fb881d85bff9811b21b3fac776b18e837efe9f",
+                            r#"{"params":"ReversibleLookup","known":[]}"#
                         ),
                         cached_params!(
                             "{\"surname\":\"http://schemas_xmlsoap_org/ws/2005/05/identity/claims/surname\",\"name\":\"http://schemas_xmlsoap_org/ws/2005/05/identity/claims/name\",\"givenname\":\"http://schemas_xmlsoap_org/ws/2005/05/identity/claims/givenname\",\"objectidentifier\":\"http://schemas_microsoft_com/identity/claims/objectidentifier\",\"tenantid\":\"http://schemas_microsoft_com/identity/claims/tenantid\"}"

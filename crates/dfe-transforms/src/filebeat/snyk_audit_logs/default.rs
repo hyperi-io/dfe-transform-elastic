@@ -279,8 +279,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def blank = ctx.snyk.audit_logs.content.notSupported[''];\nif (blank == null) {\n  return;\n}\nctx.snyk.audit_logs.content.notSupported.no_extension = ctx.snyk.audit_logs.content.notSupported[''];\nctx.snyk.audit_logs.content.notSupported.remove('');"#
+                    compiled_painless!(
+                        "8e89773e2e77483c595410e1b25bafdbb26643d506007132e08ee7ea6a57de00",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

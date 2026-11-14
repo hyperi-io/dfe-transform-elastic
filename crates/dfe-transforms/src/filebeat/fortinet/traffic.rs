@@ -499,8 +499,9 @@ impl Transform for Traffic {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.fortinet.firewall.deltabytes = ctx.fortinet.firewall.rcvddelta + ctx.fortinet.firewall.sentdelta"#
+                    compiled_painless!(
+                        "2c86175f73f346ca64dd4d4f3932b00aec208b2a6311094103143638b9ba9d40",
+                        r#"{"params":null,"known":[{"CombineFields":{"target":"fortinet.firewall.deltabytes","op":"Add","left":{"path":"fortinet.firewall.rcvddelta","divisor":null},"right":{"path":"fortinet.firewall.sentdelta","divisor":null}}},{"ScalarExpression":{"target":"fortinet.firewall.deltabytes","expr":{"Binary":[{"Field":"fortinet.firewall.rcvddelta"},"Add",{"Field":"fortinet.firewall.sentdelta"}]}}}]}"#
                     ),
                 )?;
             }

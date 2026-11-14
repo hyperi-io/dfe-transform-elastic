@@ -194,8 +194,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.host == null) { ctx.host = new HashMap(); }\nctx.host.ip = [ ctx.json.kolide_decorations.remote_ip ];"#
+                    compiled_painless!(
+                        "b0bb981ea2f56036a41acac08a2dc9a571b7d9382d1beb4499b23b13bb81b006",
+                        r#"{"params":null,"known":[{"WrapValueInList":[{"source":"json.kolide_decorations.remote_ip","target":"host.ip","remove_source":false,"guards":{"not_list":false,"not_null":false,"not_empty":false}}]}]}"#
                     ),
                 )?;
             }

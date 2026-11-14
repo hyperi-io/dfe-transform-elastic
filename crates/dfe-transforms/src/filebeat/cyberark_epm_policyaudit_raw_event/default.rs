@@ -535,8 +535,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def getOctalValue(String permissions) {\n  def value = 0;\n  if (permissions.charAt(0) == (char) 'r') value += 4;\n  if (permissions.charAt(1) == (char) 'w') value += 2;\n  if (permissions.charAt(2) == (char) 'x') value += 1;\n  return value;\n}\nString permissionString = ctx.cyberark_epm.policyaudit_raw_event.file_access_permission;\nif (permissionString.length() != 10) {\n  return;\n}\nint owner = getOctalValue(permissionString.substring(1, 4));\nint group = getOctalValue(permissionString.substring(4, 7));\nint other = getOctalValue(permissionString.substring(7, 10));\nif (ctx.file == null) {\n  ctx.put('file', new HashMap());\n}\nctx.file.put('mode', Integer.toString(owner) + Integer.toString(group) + Integer.toString(other));"#
+                        compiled_painless!(
+                            "a120fff24f2fed30bab6d2e3b5622f9e4e05266069693b3102dcbc71d183b561",
+                            r#"{"params":null,"known":[{"PermissionOctal":{"source":"cyberark_epm.policyaudit_raw_event.file_access_permission","target":"file.mode","length":10,"triplets":[[1,4],[4,7],[7,10]],"scores":[[0,"r",4],[1,"w",2],[2,"x",1]]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -790,8 +791,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def hash = ctx.cyberark_epm.policyaudit_raw_event.hash;\nif (ctx.file == null) {\n  ctx.put('file', new HashMap());\n}\nif (ctx.file.hash == null) {\n  ctx.file.put('hash', new HashMap());\n}\nif (hash.length() == 40) {\n  ctx.file.hash.sha1 = hash;\n} else if (hash.startsWith('sha1##') || hash.startsWith('SHA1##')) {\n  ctx.file.hash.sha1 = hash.substring(6);\n}"#
+                        compiled_painless!(
+                            "878332bf380f3559ddaedf3c5a0cd523e0d51c42fa526aae1c758f302f851772",
+                            r#"{"params":null,"known":[{"HashByWidthOrPrefix":{"source":"cyberark_epm.policyaudit_raw_event.hash","target":"file.hash.sha1","width":40,"prefixes":["sha1##","SHA1##"],"cut":6}}]}"#
                         ),
                     )?;
                     Ok(())

@@ -4,19 +4,7 @@
 //! A ladder banding ONE member of every element of a list, the last match won.
 //!
 //! `google_secops` reads the severity word off each security result and writes a
-//! numeric `event.severity` for it:
-//!
-//! ```painless
-//! if (ctx.google_secops?.alert_v2?.event?.security_result instanceof List) {
-//!   for (list in ctx.google_secops?.alert_v2?.event.security_result) {
-//!     if (list["severity"] != null && list["severity"] != '') {
-//!       if (list["severity"].equalsIgnoreCase('critical')) { ctx.event.severity = 99 }
-//!       else if (list["severity"].equalsIgnoreCase('high')) { ctx.event.severity = 73 }
-//!       ...
-//!     }
-//!   }
-//! }
-//! ```
+//! numeric `event.severity` for it.
 //!
 //! Its `alert` stream writes the same ladder as `.toUpperCase() == 'CRITICAL'`
 //! against an upper-case literal, so both calls are read here.
@@ -38,7 +26,7 @@ use crate::common::{for_each_in, if_block, painless_literal};
 use crate::params::clean_path;
 
 /// The list walked, the member banded, and the bands.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct MemberLadder {
     /// The document path of the list.
     list: String,
@@ -217,7 +205,8 @@ fn written(arm: &str) -> Option<(String, Value)> {
     Some((path, painless_literal(value.trim())?))
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "member_ladder_tests.rs"]
 #[allow(
     clippy::unwrap_used,

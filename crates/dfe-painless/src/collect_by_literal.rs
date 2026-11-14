@@ -5,16 +5,7 @@
 //! lists a LITERAL test on another member chooses.
 //!
 //! Every `vsphere` data stream ships this script, over its own subtree -- the
-//! alarm NAMES sorted into two lists by the alarm's colour:
-//!
-//! ```painless
-//! def alerts = []; def warnings = [];
-//! for (alarm in ctx.vsphere.cluster.triggered_alarms) {
-//!   if (alarm.status == 'red') { alerts.add(alarm.name); }
-//!   if (alarm.status == 'yellow') { warnings.add(alarm.name); }
-//! }
-//! ctx.alerts = alerts; ctx.warnings = warnings;
-//! ```
+//! alarm NAMES sorted into two lists by the alarm's colour.
 //!
 //! The list the module renames to `vsphere.<stream>.alert.names` is what its
 //! own `drop_empty` then removes when nothing was red, so an event with no
@@ -35,7 +26,7 @@ use crate::params::{balanced, clean_path, is_ctx_path};
 use dfe_core::Event;
 
 /// One named accumulator and the test that fills it.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct LiteralArm {
     /// What the tested member has to equal for a record to contribute.
     literal: String,
@@ -46,7 +37,7 @@ pub struct LiteralArm {
 }
 
 /// A list partitioned into named lists by a literal test on one member.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct CollectByLiteral {
     /// The list walked.
     list: String,
@@ -205,130 +196,8 @@ pub fn collect_by_literal(event: &mut Event, pattern: &CollectByLiteral) -> bool
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/vsphere_cluster/default.rs`, in the
-    /// escaped one-line form a stored script reaches the matcher in.
-    const CLUSTER: &str = r"def alerts = []; def warnings = []; for (alarm in ctx.vsphere.cluster.triggered_alarms) {\n    if (alarm.status == 'red') {\n    alerts.add(alarm.name);\n    }\n    if (alarm.status == 'yellow') {\n    warnings.add(alarm.name);\n    }\n} ctx.alerts = alerts; ctx.warnings = warnings;\n";
-
-    /// The other six streams close without the semicolon, which is a different
-    /// literal and so a different call site.
-    const HOST: &str = r"def alerts = []; def warnings = []; for (alarm in ctx.vsphere.host.triggered_alarms) {\n    if (alarm.status == 'red') {\n    alerts.add(alarm.name);\n    }\n    if (alarm.status == 'yellow') {\n    warnings.add(alarm.name);\n    }\n} ctx.alerts = alerts; ctx.warnings = warnings\n";
-
-    #[test]
-    fn the_vsphere_alarms_partition_on_their_colour() {
-        assert_eq!(
-            parse_collect_by_literal(&crate::common::normalise(CLUSTER)),
-            Some(CollectByLiteral {
-                list: "vsphere.cluster.triggered_alarms".to_owned(),
-                tested: "status".to_owned(),
-                arms: vec![
-                    LiteralArm {
-                        literal: "red".to_owned(),
-                        member: "name".to_owned(),
-                        target: "alerts".to_owned(),
-                    },
-                    LiteralArm {
-                        literal: "yellow".to_owned(),
-                        member: "name".to_owned(),
-                        target: "warnings".to_owned(),
-                    },
-                ],
-            })
-        );
-    }
-
-    /// The same script without the closing semicolon reads the same.
-    #[test]
-    fn the_semicolon_free_spelling_reads_the_same() {
-        let parsed = parse_collect_by_literal(&crate::common::normalise(HOST)).unwrap();
-        assert_eq!(parsed.list, "vsphere.host.triggered_alarms");
-        assert_eq!(parsed.arms.len(), 2);
-    }
-
-    /// The document, not the parse. LIST ORDER, not sorted, and the names --
-    /// `Host memory usage` is the one yellow alarm of the four the capture ships.
-    #[test]
-    fn the_names_land_in_list_order_under_their_colour() {
-        let mut event = Event::new(json!({ "vsphere": { "cluster": { "triggered_alarms": [
-            { "status": "red", "name": "Host hardware system board status" },
-            { "status": "red", "name": "Host storage status" },
-            { "status": "yellow", "name": "Host memory usage" },
-            { "status": "red", "name": "CPU Utilization" },
-        ]}}}));
-        assert!(crate::common::try_known_painless(&mut event, CLUSTER));
-        assert_eq!(
-            event.get("alerts"),
-            Some(&json!([
-                "Host hardware system board status",
-                "Host storage status",
-                "CPU Utilization",
-            ]))
-        );
-        assert_eq!(event.get("warnings"), Some(&json!(["Host memory usage"])));
-    }
-
-    /// No alarm of a colour leaves that list EMPTY rather than absent, which is
-    /// what the vendor's own prune then removes.
-    #[test]
-    fn a_colour_nothing_matched_writes_an_empty_list() {
-        let mut event = Event::new(json!({ "vsphere": { "cluster": { "triggered_alarms": [
-            { "status": "yellow", "name": "Host memory usage" },
-        ]}}}));
-        assert!(crate::common::try_known_painless(&mut event, CLUSTER));
-        assert_eq!(event.get("alerts"), Some(&json!([])));
-        assert_eq!(event.get("warnings"), Some(&json!(["Host memory usage"])));
-    }
-
-    /// The walked list is left where it is: the expected document carries the
-    /// alarms and the two name lists together.
-    #[test]
-    fn the_walked_list_is_left_alone() {
-        let mut event = Event::new(json!({ "vsphere": { "cluster": { "triggered_alarms": [
-            { "status": "red", "name": "A" },
-        ]}}}));
-        assert!(crate::common::try_known_painless(&mut event, CLUSTER));
-        assert_eq!(
-            event.get("vsphere.cluster.triggered_alarms"),
-            Some(&json!([{ "status": "red", "name": "A" }]))
-        );
-    }
-
-    /// A guard testing a member for PRESENCE is `CollectFromList`'s script, and
-    /// claiming it here would collect nothing at all.
-    #[test]
-    fn a_presence_guard_is_declined() {
-        let script = r"for (v in ctx.a.list) {\n  if (v.ip != null) {\n    ctx.related.ip.add(v.ip);\n  }\n}";
-        assert!(parse_collect_by_literal(&crate::common::normalise(script)).is_none());
-    }
-
-    /// Two arms testing DIFFERENT members is a fan-out, not a partition.
-    #[test]
-    fn two_tested_members_decline_the_script() {
-        let script = r"def a = []; def b = []; for (x in ctx.a.list) {\n  if (x.kind == 'one') { a.add(x.name); }\n  if (x.other == 'two') { b.add(x.name); }\n}\nctx.a = a; ctx.b = b;";
-        assert!(parse_collect_by_literal(&crate::common::normalise(script)).is_none());
-    }
-
-    /// An accumulator nothing hands to a `ctx.` path writes nowhere, so the
-    /// script is declined rather than half-applied.
-    #[test]
-    fn an_accumulator_never_handed_to_ctx_declines_the_script() {
-        let script =
-            r"def a = []; for (x in ctx.a.list) {\n  if (x.kind == 'one') { a.add(x.name); }\n}";
-        assert!(parse_collect_by_literal(&crate::common::normalise(script)).is_none());
-    }
-
-    /// An accumulator that was never DECLARED as an empty list started as
-    /// something else, and appending to it is a different operation.
-    #[test]
-    fn an_undeclared_accumulator_declines_the_script() {
-        let script =
-            r"for (x in ctx.a.list) {\n  if (x.kind == 'one') { a.add(x.name); }\n}\nctx.out = a;";
-        assert!(parse_collect_by_literal(&crate::common::normalise(script)).is_none());
-    }
-}
+#[path = "collect_by_literal_tests.rs"]
+mod tests;

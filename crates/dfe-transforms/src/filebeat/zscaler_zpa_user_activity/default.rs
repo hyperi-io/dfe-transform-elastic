@@ -317,8 +317,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.network = ctx.network ?: [:];\nctx.network.transport = params.iana_numbers[ctx.json.IPProtocol.toString()];"#
+                        compiled_painless!(
+                            "b03c09d6946dee3702e00e7fd618365c12bccef7c929f90fcd86ddd68e2cf675",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"iana_numbers\":{\"0\":\"unknown_ip_ipprotocol\",\"1\":\"icmp\",\"2\":\"igmp\",\"6\":\"tcp\",\"17\":\"udp\",\"41\":\"ip6in4\",\"47\":\"gre\",\"50\":\"esp\",\"58\":\"icmp6\",\"88\":\"eigrp\",\"97\":\"etherip\",\"103\":\"pim\",\"112\":\"vrrp\",\"132\":\"sctp\"}}"
@@ -1523,8 +1524,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (Map.Entry m : ctx.json.entrySet()) {\n  ctx.zscaler_zpa.user_activity[m.getKey()] = m.getValue();\n}\n"#
+                    compiled_painless!(
+                        "579cdecc0c8b538095166c71d5f57771cdbb3da9ec071a76e06913bd117ba542",
+                        r#"{"params":null,"known":[{"MergeMapUp":{"parent":"zscaler_zpa.user_activity","source":"json","take":false,"collision":"Overwrite","drops":[]}}]}"#
                     ),
                 )?;
             }

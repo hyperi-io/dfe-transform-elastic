@@ -215,8 +215,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def result = [];\nfor (def tag : ctx.snyk.issues.relationships.scan_item.data.attributes.tags) {\n  if (tag instanceof Map) {\n    result.add([tag.key, tag.value].join(\":\"))\n  } else if (tag instanceof String) {\n    result.add(tag);\n  }\n}\nctx.snyk.issues.relationships.scan_item.data.attributes.tags = result;\n"#
+                    compiled_painless!(
+                        "4660968d1b1e7d815c9a0e3a22cb056bb4f05b36f160930f7347bdfaea4d4980",
+                        r#"{"params":null,"known":[{"AppendEach":{"source":"snyk.issues.relationships.scan_item.data.attributes.tags","target":"snyk.issues.relationships.scan_item.data.attributes.tags","map_keys":[],"separator":",","deduped":false}}]}"#
                     ),
                 )?;
             }

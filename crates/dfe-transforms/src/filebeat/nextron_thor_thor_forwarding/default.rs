@@ -60,7 +60,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "47059a0bd403c6a746dd4e5c418cbc74e9ab6abf2b4831649b36377a1b57ce7b",
+                            r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[["Never"]],"then":[],"alt":[]}}],"whole":false}},"known":[]}"#,
                             r#"ctx.event = ctx.event ?: [:];\ndef m = params.get(ctx.thor.module);\nif (m != null) {\n  m.forEach((k, v) -> {\n    if (v instanceof List) {\n      ctx.event[k] = new ArrayList(v);\n    } else {\n      ctx.event[k] = v;\n    }\n  });\n}"#
                         ),
                         cached_params!(
@@ -2522,8 +2524,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.thor.start = ctx.thor.start.splitOnToken(',')[0].trim();"#
+                        compiled_painless!(
+                            "c53159f192fad76d114bfafca524cd6deab1f823370f798ab43bcbe238a223f7",
+                            r#"{"params":null,"known":[{"SplitElement":{"source":"thor.start","separator":",","index":0,"trim":true,"target":"thor.start"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -3471,8 +3474,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String s = ctx.thor.duration.toString().trim();\nif (s.length() == 0) return;\n\nlong hours = 0L;\nlong mins  = 0L;\nlong secs  = 0L;\n\nString[] parts = s.splitOnToken(\" \");\nfor (int i = 0; i < parts.length - 1; i++) {\n  String v = parts[i];\n  String u = parts[i + 1].toLowerCase(Locale.ROOT);\n\n  long n;\n  try {\n    n = Long.parseLong(v);\n  } catch (Exception e) {\n    continue;  // skip non-numeric tokens safely\n  }\n\n  if (u.startsWith(\"hour\")) {\n    hours = n;\n  } else if (u.startsWith(\"min\")) {\n    mins = n;\n  } else if (u.startsWith(\"sec\")) {\n    secs = n;\n  }\n}\n\nctx.thor.duration = hours * 3600L + mins * 60L + secs;"#
+                    compiled_painless!(
+                        "f73e1a87c59d0d5ea8a08e9321e5c20eb1a99ac979c7a58947cd6e13eb45f5b8",
+                        r#"{"params":null,"known":[{"DurationFromUnitTokens":{"source":"thor.duration","target":"thor.duration","separator":" ","units":[["hour",3600],["min",60],["sec",1]]}}]}"#
                     ),
                 )?;
             }

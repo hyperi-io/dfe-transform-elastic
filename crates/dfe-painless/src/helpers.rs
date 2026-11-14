@@ -481,12 +481,7 @@ pub fn painless_drop_empty(v: &mut Value) -> bool {
 
 /// Remove entries from a JSON object whose values match sentinel values.
 ///
-/// Used by `CrowdStrike` and other pipelines that use Painless scripts like:
-/// ```painless
-/// ctx.crowdstrike.event.entrySet().removeIf(
-///     entry -> params.values.contains(entry.getValue())
-/// );
-/// ```
+/// `CrowdStrike` and other pipelines drop sentinel values this way.
 ///
 /// The `sentinels` parameter contains values to remove (e.g., `null`, `""`, `"-"`, `"NA"`, `0`).
 pub fn remove_sentinel_values(obj: &mut Map<String, Value>, sentinels: &[Value]) {
@@ -574,7 +569,7 @@ pub fn painless_keys_to_snake_case(v: &Value) -> Value {
 /// the copies have diverged. Seven of them disagree in ways the captured output
 /// shows, which is why each is kept and the rule is read off the script's own
 /// body -- never off the source name.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum SnakeRule {
     /// Underscore only at a lowercase-to-uppercase transition, so
     /// `HTTPServer` stays one word.
@@ -726,16 +721,7 @@ fn acronym_run_snake(s: &str) -> String {
 
 /// beyondtrust's `camelToSnake`, which LOOKS AHEAD instead of counting a run.
 ///
-/// The vendor's own condition, verbatim from `epm`'s and `isi`'s pipelines:
-///
-/// ```text
-/// char prev = str.charAt(i - 1);
-/// boolean nextIsLower = (i + 1 < str.length()) && Character.isLowerCase(str.charAt(i + 1));
-/// boolean prevIsDigit = Character.isDigit(prev);
-/// if (Character.isLowerCase(prev) || prevIsDigit || (Character.isUpperCase(prev) && nextIsLower)) {
-///   result.append('_');
-/// }
-/// ```
+/// The condition is the one `epm`'s and `isi`'s pipelines write.
 ///
 /// Every predecessor outside those three arms -- `_`, `-`, `.`, a space, the
 /// start of the string -- writes nothing, which is what keeps a separator from

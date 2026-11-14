@@ -66,8 +66,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def getLastElement(def arr) {\n  def last_index = arr.length - 1;\n  return arr[last_index];\n}\nif (ctx.http?.query_index?.op?.samples != null) {\n  if (ctx.http.query_index.op.samples.index_remaining_ram != null) {\n    ctx.index_remaining_ram = getLastElement(ctx.http.query_index.op.samples.index_remaining_ram);\n  }\n  if (ctx.http.query_index.op.samples.index_ram_percent != null) {\n    ctx.index_ram_percent = getLastElement(ctx.http.query_index.op.samples.index_ram_percent);\n  }\n  if (ctx.http.query_index.op.samples.query_avg_req_time != null) {\n    ctx.query_avg_req_time = getLastElement(ctx.http.query_index.op.samples.query_avg_req_time);\n  }\n  if (ctx.http.query_index.op.samples.query_requests != null) {\n    ctx.query_requests = getLastElement(ctx.http.query_index.op.samples.query_requests);\n  }\n  if (ctx.http.query_index.op.samples.query_result_count != null) {\n    ctx.query_result_count = getLastElement(ctx.http.query_index.op.samples.query_result_count);\n  }\n  if (ctx.http.query_index.op.samples['eventing/failed_count'] != null) {\n    ctx.eventing_failed_count = getLastElement(ctx.http.query_index.op.samples['eventing/failed_count']);\n  }\n}"#
+                    compiled_painless!(
+                        "48c871359ee6dd918dc81a26248a6192d75ee81c54a23ba2a537e4249697e84f",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())

@@ -114,7 +114,7 @@ pub const ENTRIES: &[Entry] = &[
         run: merge_match_details,
     },
     Entry {
-        hash: "00c5e190a09cf3e65145d131872b50bd778c7fd8818c14d347cb7316c6c36405",
+        hash: "d8c3ac6d41402c052c21a59855a022f14ffeaec681016998e7a33d9970d90175",
         source: "tanium",
         name: "truncate_at_max_depth",
         run: truncate_at_max_depth,

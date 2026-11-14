@@ -254,7 +254,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "2ae02c77b9af6ee9b81130b2b8c93addcbffc1de73b81eb45e88c531e0b77bda",
+                        r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Compare":{"path":"watchguard_firebox.log.msg_id","wanted":"Null","negated":false,"lowered":false}}],["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                         r#"if (ctx.watchguard_firebox?.log?.msg_id == null || params.get(ctx.watchguard_firebox.log.msg_id) == null) {\n  return;\n}\nparams.get(ctx.watchguard_firebox.log.msg_id).forEach((k, v) -> {\n  if (k.equals(\"log_type\")) {\n    ctx.watchguard_firebox.log[k] = v;\n  } else if (v instanceof List) {\n    ctx.event[k] = new ArrayList(v);\n  } else {\n    ctx.event[k] = v;\n  }\n});"#
                     ),
                     cached_params!(
@@ -15316,8 +15318,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def kvStart = 0; def kvSplit = 0; def inQuote = false;\nPattern quotePattern = /^\\\"|\\\"$/;\nfor (int i = 0, n = ctx[\"_temp\"].length(); i < n; ++i) {\n  char c = ctx[\"_temp\"].charAt(i);\n  char c2 = i < n - 1 ? ctx[\"_temp\"].charAt(i + 1) : 0;\n\n  if (c == (char)'\"') {\n    if (inQuote && (c2 == 0 || c2 == (char)' ' || c2 == (char)':')) {\n      inQuote = false;\n    } else {\n      inQuote = true;\n    }\n  }\n  if (inQuote) {\n    continue;\n  }\n  if (c == (char)'=') {\n    kvSplit = i;\n  }\n  if (c == (char)'\"' || c == (char)' ' || c2 == 0) {\n    if (i != kvStart) {\n      def endIndex = i == n - 1 ? i + 1 : i;\n      def key = ctx[\"_temp\"].substring(kvStart, kvSplit);\n      def value = quotePattern.matcher(ctx[\"_temp\"].substring(kvSplit + 1, endIndex)).replaceAll(\"\");\n\n      if (key != '') {\n        ctx.watchguard_firebox.log.put(key, value);\n      }\n    }\n\n    kvStart = i + 1;\n    kvSplit = i + 1;\n  }\n}"#
+                            compiled_painless!(
+                                "88c77a7bdcbbbf04d82460590d2cd2888f74bbf0b8b97b56368793d8a021dd59",
+                                r#"{"params":null,"known":[{"QuotedKvScan":{"source":"_temp","target":"watchguard_firebox.log"}}]}"#
                             ),
                         )?;
                     }

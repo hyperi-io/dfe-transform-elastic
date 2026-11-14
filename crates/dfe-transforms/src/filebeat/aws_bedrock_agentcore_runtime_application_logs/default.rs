@@ -143,8 +143,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def attrs = ctx.aws.bedrock_agentcore.resource.attributes;\n\nif (attrs.containsKey('service.name')) {\n  if (ctx.service == null) ctx.service = new HashMap();\n  ctx.service.name = attrs['service.name'];\n}\n"#
+                        compiled_painless!(
+                            "b73170dc250ee1321ea07da52f746aa014fc62c10165362285c1699fc8e3d12b",
+                            r#"{"params":null,"known":[{"DottedKeyCopies":{"map":"aws.bedrock_agentcore.resource.attributes","copies":[["service.name","service.name"]]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -191,8 +192,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.aws.bedrock_agentcore.request_payload.prompt.length() > 32766) {\n  ctx.aws.bedrock_agentcore.prompt_hash = ctx.aws.bedrock_agentcore.request_payload.prompt.sha1(); \n  ctx.aws.bedrock_agentcore.request_payload.remove(\"prompt\");\n}\n"#
+                        compiled_painless!(
+                            "91353832ec5e73c780124b8b7d227faf55eb23546eae5eab0e6616cdc5593aea",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

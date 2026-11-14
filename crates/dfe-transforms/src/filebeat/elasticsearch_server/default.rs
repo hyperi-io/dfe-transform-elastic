@@ -143,7 +143,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "fb2f77383e3453184488c61bc48b176fe1e7cc4d3ba02e861c41519427d6b247",
+                    r#"{"params":"Scale","known":[]}"#,
                     r#"def gc = ctx?.elasticsearch?.server?.gc; def observationDuration = gc?.observation_duration; if (observationDuration != null) {\n  if (observationDuration.unit == params.seconds_unit) {\n    observationDuration.ms = observationDuration.time * params.ms_in_one_s;\n  }\n  if (observationDuration.unit == params.milliseconds_unit) {\n    observationDuration.ms = observationDuration.time;\n  }\n  if (observationDuration.unit == params.minutes_unit) {\n    observationDuration.ms = observationDuration.time * params.ms_in_one_m;\n  }\n} def collectionDuration = gc?.collection_duration; if (collectionDuration != null) {\n  if (collectionDuration.unit == params.seconds_unit) {\n    collectionDuration.ms = collectionDuration.time * params.ms_in_one_s;\n  }\n  if (collectionDuration.unit == params.milliseconds_unit) {\n    collectionDuration.ms = collectionDuration.time;\n  }\n  if (collectionDuration.unit == params.minutes_unit) {\n    collectionDuration.ms = collectionDuration.time * params.ms_in_one_m;\n  }\n}"#
                 ),
                 cached_params!(
@@ -158,7 +160,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "4d51fdfdb4f371bdd452c4303fc539f18378330ede93eae76bbd6f361aa1705f",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"log.level","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[[{"ListContains":{"members":["FATAL","ERROR"],"argument":{"Field":"log.level"}}}]],"then":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["error"]}}}}],"alt":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}}]}}],"alt":[]}}],"whole":true}}]}"#,
                     r#"def errorLevels = ['FATAL', 'ERROR']; if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n    ctx.event.type = ['error'];\n  } else {\n    ctx.event.type = ['info'];\n  }\n}"#
                 ),
             )?;

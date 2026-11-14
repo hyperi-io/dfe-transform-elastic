@@ -276,8 +276,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def convert(def megabytes){\n    def bytes = (megabytes*1024*1024);\n    return bytes;\n}\nif(ctx.citrix_adc?.system?.memory?.size?.value!=null && ctx.citrix_adc?.system?.memory?.size?.value!=\"\"){\n    ctx.citrix_adc.system.memory.size.value = convert(ctx.citrix_adc.system.memory.size.value);\n}\nif(ctx.citrix_adc?.system?.memory?.usage?.value!=null && ctx.citrix_adc?.system?.memory?.usage?.value!=\"\"){\n    ctx.citrix_adc.system.memory.usage.value = convert(ctx.citrix_adc.system.memory.usage.value);\n}\n"#
+                compiled_painless!(
+                    "7e11fb7744f66558de19fdd3171799d8296e62b92fe1f026b7b6039721269e38",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

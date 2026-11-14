@@ -139,8 +139,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"\ndef mergeMaps(Map map1, Map map2) {\n  for (def key : map2.keySet()) {\n    if (!map1.containsKey(key)\n        || map1[key] == null\n        || map1[key] == \"\"\n        || (map1[key] instanceof Map && map1[key].isEmpty())) {\n      // If map1's value is absent or empty, use map2's.\n      map1[key] = map2[key];\n    } else if (map1[key] != map2[key]) {\n      if (map1[key] instanceof Map && map2[key] instanceof Map) {\n        // If values in map1 and map2 for key are both maps, merge them.\n        map1[key] = mergeMaps(map1[key], map2[key]);\n      } else if (map1[key] instanceof List) {\n        // If map1's value is a list, merge map2's value, remove any duplicates.\n        def combined = new LinkedHashSet(map1[key]);\n        if (map2[key] instanceof List) {\n          combined.addAll(map2[key]);\n        } else if (map2[key] != null) {\n          combined.add(map2[key]);\n        }\n        map1[key] = new ArrayList(combined);\n      }\n    }\n  }\n  return map1;\n}\nmergeMaps(ctx, ctx.json);"#
+                    compiled_painless!(
+                        "d52271ae56efd48257965f0a371c228dd918ec5d628d8fa25baaf3213298c0a2",
+                        r#"{"params":null,"known":[{"DeepMerge":{"into":"","from":"json"}}]}"#
                     ),
                 )?;
             }

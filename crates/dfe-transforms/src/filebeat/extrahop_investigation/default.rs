@@ -282,8 +282,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def isoString = ctx.temp.ingest_time;\ndef formatter = java.time.format.DateTimeFormatter.ISO_DATE_TIME;\ndef instant = java.time.Instant.from(formatter.parse(isoString));\ndef epochMillis = instant.toEpochMilli();\n\ndef jsonId = ctx.extrahop.investigation.id;\nctx.event = ctx.event ?: [:];\nctx.event.id = jsonId + '-' + epochMillis;\n"#
+                        compiled_painless!(
+                            "7edce39b76f1ddd1d30c855dfa72aed85e5f28ab010cba39473fca17a3dab11b",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -518,8 +519,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Instant eventstart = Instant.parse(ctx.event?.start); Instant eventend = Instant.parse(ctx.event?.end); ctx.event['duration'] = ChronoUnit.NANOS.between(eventstart, eventend);"#
+                    compiled_painless!(
+                        "aa7af63ed5c0bacd12227214be1b0f45f29994381f14b8754c5774a30b9c4759",
+                        r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                     ),
                 )?;
             }

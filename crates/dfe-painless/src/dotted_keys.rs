@@ -7,16 +7,7 @@
 //! key, so the map holds a single entry called `service.name` rather than a
 //! `service` map with a `name` member. Every path reader in this crate walks
 //! dots as separators, which is why none of them reaches the entry -- and why
-//! the vendor binds the map to a local and subscripts it instead:
-//!
-//! ```painless
-//! def attrs = ctx.aws.bedrock_agentcore.resource.attributes;
-//!
-//! if (attrs.containsKey('service.name')) {
-//!   if (ctx.service == null) ctx.service = new HashMap();
-//!   ctx.service.name = attrs['service.name'];
-//! }
-//! ```
+//! the vendor binds the map to a local and subscripts it instead.
 //!
 //! `aws_bedrock_agentcore` ships that script three times, once per stream, and
 //! the three differ only in where the attribute map sits. Nothing claimed any
@@ -32,7 +23,7 @@ use crate::params::{balanced, ctx_path_plain as ctx_path, skip_trivia};
 use dfe_core::Event;
 
 /// Entries copied out of ONE map, each under its own `containsKey` guard.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct DottedKeyCopies {
     /// The `ctx.` path the map sits at.
     map: String,
@@ -151,159 +142,8 @@ fn identifier(text: &str) -> Option<&str> {
     .then_some(name)
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use serde_json::json;
-
-    use super::*;
-
-    /// Verbatim from
-    /// `pipelines/aws_bedrock_agentcore/runtime_application_logs/default.yml`,
-    /// with the YAML block fold applied.
-    fn script() -> String {
-        crate::common::normalise(
-            r"def attrs = ctx.aws.bedrock_agentcore.resource.attributes;\n\nif (attrs.containsKey('service.name')) {\n  if (ctx.service == null) ctx.service = new HashMap();\n  ctx.service.name = attrs['service.name'];\n}\n",
-        )
-        .into_owned()
-    }
-
-    fn pattern() -> DottedKeyCopies {
-        parse_dotted_key_copies(&script()).expect("the attribute copy is recognised")
-    }
-
-    /// The map, the key and the target all come OFF the script.
-    #[test]
-    fn every_part_is_read_off_the_script() {
-        assert_eq!(
-            pattern(),
-            DottedKeyCopies {
-                map: "aws.bedrock_agentcore.resource.attributes".into(),
-                copies: vec![("service.name".into(), "service.name".into())],
-            }
-        );
-    }
-
-    /// The captured attribute map: a dotted key among three others, none of
-    /// which the script names.
-    #[test]
-    fn the_dotted_key_is_read_out_of_the_map() {
-        let mut event = Event::new(json!({ "aws": { "bedrock_agentcore": { "resource": {
-            "attributes": {
-                "cloud.provider": "aws",
-                "service.name": "customersupport.DEFAULT",
-                "cloud.platform": "aws_bedrock_agentcore",
-            }
-        } } } }));
-        assert!(dotted_key_copies(&mut event, &pattern()));
-        assert_eq!(
-            event.get("service.name"),
-            Some(&json!("customersupport.DEFAULT"))
-        );
-        assert!(!event.has("cloud.platform"));
-    }
-
-    /// A map without the key writes nothing, which is the script's own
-    /// `containsKey` guard.
-    #[test]
-    fn a_map_without_the_key_writes_nothing() {
-        for attributes in [json!({ "cloud.provider": "aws" }), json!({})] {
-            let mut event = Event::new(json!({ "aws": { "bedrock_agentcore": { "resource": {
-                "attributes": attributes
-            } } } }));
-            assert!(dotted_key_copies(&mut event, &pattern()));
-            assert!(!event.has("service.name"));
-        }
-    }
-
-    /// The map is read as a MAP. A document that nests the key as a path
-    /// instead holds a different thing, and taking it would write a value the
-    /// vendor's own script cannot see.
-    #[test]
-    fn a_nested_path_of_the_same_name_is_not_the_entry() {
-        let mut event = Event::new(json!({ "aws": { "bedrock_agentcore": { "resource": {
-            "attributes": { "service": { "name": "nested" } }
-        } } } }));
-        assert!(dotted_key_copies(&mut event, &pattern()));
-        assert!(!event.has("service.name"));
-    }
-
-    /// One statement the reader cannot place declines the WHOLE script.
-    #[test]
-    fn one_unreadable_statement_declines_the_whole_script() {
-        for broken in [
-            // A copy out of some other map.
-            script().replace("= attrs['service.name']", "= ctx.other"),
-            // A second clause in the guard, which is a condition this does not
-            // model.
-            script().replace(
-                "if (attrs.containsKey('service.name'))",
-                "if (attrs.containsKey('service.name') && ctx.a == null)",
-            ),
-            // A key the guard and the read disagree on.
-            script().replace("= attrs['service.name']", "= attrs['cloud.provider']"),
-            // A write the guard does not cover.
-            script().replace(
-                "ctx.service.name = attrs['service.name'];",
-                "ctx.service.name = attrs['service.name']; ctx.a = 1;",
-            ),
-            // The map bound to something that is not a ctx path.
-            script().replace("= ctx.aws.bedrock_agentcore.resource.attributes;", "= [:];"),
-        ] {
-            assert_ne!(broken, script(), "each replacement has to bite");
-            assert!(
-                parse_dotted_key_copies(&broken).is_none(),
-                "read a script it should have declined: {broken}"
-            );
-        }
-    }
-
-    /// The other two streams ship the same script against their own map, so
-    /// the parse has to follow the binding rather than a fixed path.
-    #[test]
-    fn the_gateway_and_memory_streams_read_their_own_maps() {
-        for stream in ["gateway", "memory"] {
-            let script = script().replace(
-                "ctx.aws.bedrock_agentcore.resource",
-                &format!("ctx.aws.bedrock_agentcore.{stream}.resource"),
-            );
-            let pattern = parse_dotted_key_copies(&script).expect("recognised");
-            assert_eq!(
-                pattern.map,
-                format!("aws.bedrock_agentcore.{stream}.resource.attributes")
-            );
-        }
-    }
-
-    /// The dispatch reaches this matcher, and nothing else is bound beside it.
-    #[test]
-    fn the_ladder_dispatches_the_script_here() {
-        let bound = crate::common::known_patterns(&script());
-        assert_eq!(
-            bound.len(),
-            1,
-            "the ladder bound {bound:?} instead of this matcher alone"
-        );
-    }
-
-    /// The production path. A generated call site hands `PainlessPlan` the
-    /// script with its newlines ESCAPED, so a matcher that works only on real
-    /// newlines passes its own tests and does nothing in the service.
-    #[test]
-    fn the_escaped_call_site_literal_runs() {
-        let _guard = crate::stats::serialised();
-        let plan = crate::plan::PainlessPlan::new(
-            r"def attrs = ctx.aws.bedrock_agentcore.resource.attributes;\n\nif (attrs.containsKey('service.name')) {\n  if (ctx.service == null) ctx.service = new HashMap();\n  ctx.service.name = attrs['service.name'];\n}\n",
-        );
-        assert!(plan.matches(), "the call site's own literal binds nothing");
-
-        let mut event = Event::new(json!({ "aws": { "bedrock_agentcore": { "resource": {
-            "attributes": { "service.name": "ordermanager-gw-abc12def34" }
-        } } } }));
-        crate::plan::painless_exec_plan(&mut event, &plan).expect("the plan runs");
-        assert_eq!(
-            event.get("service.name"),
-            Some(&json!("ordermanager-gw-abc12def34"))
-        );
-    }
-}
+#[path = "dotted_keys_tests.rs"]
+mod tests;

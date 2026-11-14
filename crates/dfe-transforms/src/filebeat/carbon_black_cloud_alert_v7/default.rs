@@ -993,8 +993,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.process.parent.name = ctx.process.parent.name.substring(ctx.process.parent.name.lastIndexOf('\\\\') + 1);\n"#
+                    compiled_painless!(
+                        "d059534b80c52b9971f9d764171a84e30329b61b8ea622391632191d15ebc94b",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.parent.name","target":"process.parent.name","separator":"\\","whole_when_absent":false}}]}"#
                     ),
                 )?;
             }
@@ -1179,8 +1180,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.process.name = ctx.process.name.substring(ctx.process.name.lastIndexOf('\\\\') + 1);\n"#
+                    compiled_painless!(
+                        "ed553dabe400f4e6d021b390e2c228da7f5f5160801b42082d7abf3dc24b61ae",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.name","target":"process.name","separator":"\\","whole_when_absent":false}}]}"#
                     ),
                 )?;
             }
@@ -2404,8 +2406,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (Map.Entry m : ctx.json.entrySet()) {\n  ctx.carbon_black_cloud.alert[m.getKey()] = m.getValue();\n}\n"#
+                    compiled_painless!(
+                        "335bfc3bb22debe0d13dab6b14e3fca4189d24e6c59e6c2833cc595ad654b475",
+                        r#"{"params":null,"known":[{"MergeMapUp":{"parent":"carbon_black_cloud.alert","source":"json","take":false,"collision":"Overwrite","drops":[]}}]}"#
                     ),
                 )?;
             }

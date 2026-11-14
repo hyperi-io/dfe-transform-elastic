@@ -287,7 +287,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx.event.duration = (long) (ctx.event.duration*1e9)"#),
+                    compiled_painless!(
+                        "bab4a4c2fa99f137884cecefcf7fe6b15753d20d7c061f4c4c8dfecd29b7591f",
+                        r#"{"params":null,"known":[]}"#
+                    ),
                 )?;
             }
 

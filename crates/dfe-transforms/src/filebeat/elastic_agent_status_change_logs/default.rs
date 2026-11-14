@@ -23,8 +23,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String status = ctx.status;\nString healthStatus;\n\nif (status == 'online') {\n  healthStatus = 'healthy';\n} else if (status == 'error' || status == 'degraded') {\n  healthStatus = 'unhealthy';\n} else if (status == 'updating' || status == 'enrolling' || status == 'unenrolling') {\n  healthStatus = 'updating';\n} else {\n  healthStatus = status;\n}\n\nctx.health_status = healthStatus;\n"#
+                        compiled_painless!(
+                            "c8fe8b1355f6749cc12c4ed0c742e186253ea883bb336d37082aabb244be5fec",
+                            r#"{"params":null,"known":["JoinOptional"]}"#
                         ),
                     )?;
                     Ok(())

@@ -9936,8 +9936,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"params.fields.forEach(field -> {\n  if (!ctx._tmp?.containsKey(field) || !(ctx._tmp[field] instanceof String)) {\n    return true;\n  }\n\n  String val = ctx._tmp[field];\n  ctx._tmp[field] = val.trim();\n});"#
+                compiled_painless!(
+                    "ddf442782a5fd4cd00a7e525804efcc3f99f34647eb96473b27c39461874c363",
+                    r#"{"params":null,"known":[]}"#
                 ),
                 cached_params!(
                     "{\"fields\":[\"timestamp_native\",\"timestamp\",\"delink_time\",\"start_time\",\"end_time\"]}"
@@ -9949,8 +9950,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def zone = ctx.event?.timezone != null ? ZoneId.of(ctx.event.timezone) : null;\ndef formatter = DateTimeFormatter.ofPattern(ctx._conf.custom_date_format);\ndef outFormatter = DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSSXXX\");\n\nparams.fields.forEach(field -> {\n  if (!ctx._tmp?.containsKey(field)) {\n    return true;\n  }\n\n  try {\n    def localDateTime = LocalDateTime.parse(ctx._tmp[field], formatter);\n    ctx.citrix_adc.log[field] = outFormatter.format(ZonedDateTime.of(localDateTime, zone));\n  } catch (Exception e) {\n    /* Intentionally ignored */\n    return true;\n  }\n});"#
+                    compiled_painless!(
+                        "b9e7aba63cd1a10bf9a3ea21dce2e1206ea4c2eb487c5d90ba991ae919f0423b",
+                        r#"{"params":{"ConfiguredDateFormat":{"names":"fields","format":"_conf.custom_date_format","zone":"event.timezone","source":"_tmp","target":"citrix_adc.log"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"fields\":[\"timestamp_native\",\"timestamp\",\"delink_time\",\"start_time\",\"end_time\"]}"
@@ -10304,8 +10306,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ZonedDateTime end = ZonedDateTime.parse(ctx.event.end); ctx.event.duration = ChronoUnit.NANOS.between(start, end);"#
+                    compiled_painless!(
+                        "394b33a528b0a7715d1280fdd377528126d2fcbd7143b24d28469bcce85ff84f",
+                        r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                     ),
                 )?;
             }

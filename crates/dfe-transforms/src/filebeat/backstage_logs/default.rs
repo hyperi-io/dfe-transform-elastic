@@ -448,8 +448,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.backstage = ctx.backstage == null ? new HashMap() : ctx.backstage;\nctx.backstage.task = ctx.backstage.task == null ? new HashMap() : ctx.backstage.task;\nctx.backstage.task.parameters = ctx.json.meta.taskParameters.toString();\n"#
+                        compiled_painless!(
+                            "7fc57527579530bfa0ff5ef83022caf4c73f2333131f31372b5924a86ffe31ef",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }
@@ -469,8 +470,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.backstage = ctx.backstage == null ? new HashMap() : ctx.backstage;\nctx.backstage.meta = ctx.json.meta.toString();\n"#
+                        compiled_painless!(
+                            "0a823edf4885a0b80c7b971e30508d354afebf1679caebd3517f68d4003fc808",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }

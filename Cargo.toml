@@ -118,6 +118,21 @@ members = [
     "crates/dfe-parse",
     "crates/dfe-runtime",
     "crates/dfe-transforms",
+    "crates/dfe-transforms-1password-authentik",
+    "crates/dfe-transforms-aws-axonius",
+    "crates/dfe-transforms-azure-cisa",
+    "crates/dfe-transforms-cisco-cloud",
+    "crates/dfe-transforms-cloudflare-extrahop",
+    "crates/dfe-transforms-f5-hid",
+    "crates/dfe-transforms-hpe-lyve",
+    "crates/dfe-transforms-m365-nvidia",
+    "crates/dfe-transforms-o365-qnap",
+    "crates/dfe-transforms-qualys-stan",
+    "crates/dfe-transforms-stormshield-swimlane",
+    "crates/dfe-transforms-symantec",
+    "crates/dfe-transforms-sysdig-traefik",
+    "crates/dfe-transforms-trellix-zoom",
+    "crates/dfe-transforms-zscaler",
     "crates/pgo-driver",
 ]
 # Edition 2024's resolver. Feature unification is per-target, so a dev- or
@@ -129,6 +144,8 @@ resolver = "3"
 # lint, and these crates are internal to a black-box service.
 [workspace.lints.rust]
 unsafe_code = "forbid"
+# Set by the private repository's CI, which supplies the script-based test modules.
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(dfe_script_tests)"] }
 
 [workspace.lints.clippy]
 pedantic = { level = "warn", priority = -1 }
@@ -161,6 +178,21 @@ dfe-painless = { path = "crates/dfe-painless" }
 dfe-parse = { path = "crates/dfe-parse" }
 dfe-runtime = { path = "crates/dfe-runtime" }
 dfe-transforms = { path = "crates/dfe-transforms" }
+dfe-transforms-1password-authentik = { path = "crates/dfe-transforms-1password-authentik" }
+dfe-transforms-aws-axonius = { path = "crates/dfe-transforms-aws-axonius" }
+dfe-transforms-azure-cisa = { path = "crates/dfe-transforms-azure-cisa" }
+dfe-transforms-cisco-cloud = { path = "crates/dfe-transforms-cisco-cloud" }
+dfe-transforms-cloudflare-extrahop = { path = "crates/dfe-transforms-cloudflare-extrahop" }
+dfe-transforms-f5-hid = { path = "crates/dfe-transforms-f5-hid" }
+dfe-transforms-hpe-lyve = { path = "crates/dfe-transforms-hpe-lyve" }
+dfe-transforms-m365-nvidia = { path = "crates/dfe-transforms-m365-nvidia" }
+dfe-transforms-o365-qnap = { path = "crates/dfe-transforms-o365-qnap" }
+dfe-transforms-qualys-stan = { path = "crates/dfe-transforms-qualys-stan" }
+dfe-transforms-stormshield-swimlane = { path = "crates/dfe-transforms-stormshield-swimlane" }
+dfe-transforms-symantec = { path = "crates/dfe-transforms-symantec" }
+dfe-transforms-sysdig-traefik = { path = "crates/dfe-transforms-sysdig-traefik" }
+dfe-transforms-trellix-zoom = { path = "crates/dfe-transforms-trellix-zoom" }
+dfe-transforms-zscaler = { path = "crates/dfe-transforms-zscaler" }
 
 # Batteries-included runtime (crates.io) — NEVER a path dependency.
 # Features are added when their API is actually referenced, not speculatively.
@@ -300,13 +332,67 @@ panic = "abort"
 strip = true
 opt-level = 3
 
-# One module per data stream means one rustc holding 21.5 GiB at opt-level 3,
-# which is more than the 16 GiB build runner has; opt-level 1 holds 13.1 GiB and
-# leaves the three transform benches unchanged, because thin LTO re-optimises
-# this crate's code at the binary's own opt-level anyway. codegen-units buys no
-# memory at all -- every unit is in flight at once, so sixteen small LLVM modules
-# total what one big one did -- but it halves the crate's build.
-[profile.release.package.dfe-transforms]
+# The generated transforms build at opt-level 1: it leaves the three transform
+# benches unchanged, because thin LTO re-optimises this code at the binary's own
+# opt-level anyway, and it holds a rustc's memory down. Splitting the modules
+# across crates by package is what keeps each rustc inside a 16 GiB runner.
+[profile.release.package.dfe-transforms-1password-authentik]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-aws-axonius]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-azure-cisa]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-cisco-cloud]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-cloudflare-extrahop]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-f5-hid]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-hpe-lyve]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-m365-nvidia]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-o365-qnap]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-qualys-stan]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-stormshield-swimlane]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-symantec]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-sysdig-traefik]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-trellix-zoom]
+opt-level = 1
+codegen-units = 16
+
+[profile.release.package.dfe-transforms-zscaler]
 opt-level = 1
 codegen-units = 16
 

@@ -849,8 +849,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\nctx.event.severity = params.get(ctx.sentinel_one.application_risk.severity.toLowerCase());"#
+                        compiled_painless!(
+                            "d88ef6b62a3bfdaa64dc5173854a8bcedc48040d514a9362496579a82be93355",
+                            r#"{"params":{"LookupNormalise":[{"key":"sentinel_one.application_risk.severity","fold":"Lower","target":"event.severity"},{"statements":[],"whole":false}]},"known":[]}"#
                         ),
                         cached_params!("{\"low\":21,\"medium\":47,\"high\":73,\"critical\":99}"),
                     )?;

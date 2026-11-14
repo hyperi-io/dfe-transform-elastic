@@ -878,8 +878,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def temp = ctx.microsoft_sentinel.incident.properties.severity.toLowerCase(); if (temp == 'informational') {\n  ctx.event.severity = 0;\n} else if (temp == 'low') {\n  ctx.event.severity = 1;\n} else if (temp == 'medium') {\n  ctx.event.severity = 2;\n} else if (temp == 'high') {\n  ctx.event.severity = 3;\n}"#
+                        compiled_painless!(
+                            "69c4c0b0afd661f0c44410e4d8991cce52b1f3f94804d951fe2b8b6236c1c295",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"microsoft_sentinel.incident.properties.severity","fold_case":true,"test":"Equals","arms":[{"literals":["informational"],"writes":[["event.severity",0]],"removes":[]},{"literals":["low"],"writes":[["event.severity",1]],"removes":[]},{"literals":["medium"],"writes":[["event.severity",2]],"removes":[]},{"literals":["high"],"writes":[["event.severity",3]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())

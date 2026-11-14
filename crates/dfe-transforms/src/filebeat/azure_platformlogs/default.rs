@@ -29,7 +29,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "46de568aa0d0bae7f2c7f161130f7bdd17645af1e92d11bc8e69106d916618a2",
+                        r#"{"params":"Replace","known":[]}"#,
                         r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#
                     ),
                     cached_params!("{\"empty_field_name\":\"\\\"\\\":\\\"\\\",\"}"),
@@ -456,7 +458,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "9f9c90e4f91775fe67ee2632e8c138fcb8957f6e350220f240467745e1aed012",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#
                     ),
                     cached_params!("{\"param_nano\":1000000}"),
@@ -473,7 +477,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "7c40201410316320edaf7b7a5f2dd3b46eea875b52ba682ebc6e8c887d4cc408",
+                        r#"{"params":null,"known":["AzureEventCategory"]}"#,
                         r#"if (ctx?.azure?.platformlogs?.properties?.eventCategory != null) {\n  ctx.azure.platformlogs.event_category = ctx.azure.platformlogs.properties.eventCategory;\n} else if (ctx?.azure?.platformlogs?.properties?.policies != null)  {\n  ctx.azure.platformlogs.event_category = 'Policy';\n} else {\n  ctx.azure.platformlogs.event_category = 'Administrative';\n}"#
                     ),
                 )?;
@@ -648,7 +654,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "725c50e866685e1406e2c5509ab4289bf64d308e287bc7885e2236c8f46da7d6",
+                    r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Compare":{"path":"azure.platformlogs.category","wanted":"Null","negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                     r#"if (ctx?.azure?.platformlogs?.category == null) {\n  return;\n} def category = ctx.azure.platformlogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(
@@ -844,8 +852,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')"#
+                        compiled_painless!(
+                            "1d98408bb17fac2a68cd97ba63e3417da23809a4516f242fff4d7dc0cb6d7f40",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

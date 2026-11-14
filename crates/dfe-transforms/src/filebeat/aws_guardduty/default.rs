@@ -6250,8 +6250,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def locationList = new ArrayList();\nif (ctx.aws?.guardduty?.service?.action?.aws_api_call_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.aws_api_call_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.kubernetes_api_call_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.network_connection_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.network_connection_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.port_probe_action?.port_probe_details instanceof List) {\n  for (list in ctx.aws.guardduty.service.action.port_probe_action.port_probe_details) {\n    locationList.add(list.remote_ip_details.geo_location);\n  }\n}\nif (ctx.aws?.guardduty?.service?.action?.rds_login_attempt_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.geo_location);\n}\nif (!(ctx.source instanceof HashMap)) {\n  ctx.source = new HashMap();\n}\nif (!(ctx.source.geo instanceof HashMap)) {\n  ctx.source.geo = new HashMap();\n}\nctx.source.geo.location = locationList;\n"#
+                compiled_painless!(
+                    "59f7847baf7750a6c1e7e125d28e7481a4145d094fdb53d983d9799fae75d117",
+                    r#"{"params":null,"known":[{"PrependToArray":{"scalar":"aws.guardduty.service.action.aws_api_call_action.remote_ip_details.geo_location","array":"aws.guardduty.service.action.port_probe_action.port_probe_details","target":"source.geo.location"}}]}"#
                 ),
             )?;
 

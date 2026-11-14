@@ -46,7 +46,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "b5f142dbefe7db23107c99621e3e070285bce46555eaa53813207d573021ea58",
+                    r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                     r#"ctx.beyondinsight_password_safe.managedaccount.entrySet().removeIf(entry ->\n  entry.getValue() == null ||\n  (entry.getValue() instanceof String && entry.getValue().isEmpty())\n);\n"#
                 ),
             )?;
@@ -54,8 +56,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"for (field in params.numeric_ids) {\n  def value = ctx.beyondinsight_password_safe.managedaccount[field];\n  if (value instanceof Number) {\n    ctx.beyondinsight_password_safe.managedaccount[field] =\n      Integer.toString(value.intValue());\n  }\n}\n"#
+                compiled_painless!(
+                    "a79a8271188cd758a789b1b2c579b10a48f5f7d851a600a8790db179e16724d5",
+                    r#"{"params":{"StringifyNamedFields":{"container":"beyondinsight_password_safe.managedaccount","table":"numeric_ids"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"numeric_ids\":[\"AccountId\",\"ApplicationID\",\"ChangeState\",\"PlatformID\",\"SystemId\"]}"
@@ -65,8 +68,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"Map renamedFields = [:];\nfor (entry in ctx.beyondinsight_password_safe.managedaccount.entrySet()) {\n  def originalKey = entry.getKey();\n  def snakeKey = params.field_mappings[originalKey];\n  if (snakeKey != null) {\n    renamedFields[snakeKey] = entry.getValue();\n  } else {\n    renamedFields[originalKey] = entry.getValue();\n  }\n}\nctx.beyondinsight_password_safe.managedaccount = renamedFields;\n"#
+                compiled_painless!(
+                    "a9368b763cce320a3a55d2bb2b00182efd52f51297f360afd7c91db83b6eedf7",
+                    r#"{"params":{"SelectRenameKeys":{"subject":"beyondinsight_password_safe.managedaccount","table":"field_mappings","keep_unmapped":true,"wrap_in_list":false}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"field_mappings\":{\"AccountDescription\":\"account_description\",\"AccountId\":\"account_id\",\"AccountName\":\"account_name\",\"ApplicationDisplayName\":\"application_display_name\",\"ApplicationID\":\"application_id\",\"ChangeState\":\"change_state\",\"DefaultReleaseDuration\":\"default_release_duration\",\"DomainName\":\"domain_name\",\"InstanceName\":\"instance_name\",\"IsChanging\":\"is_changing\",\"IsISAAccess\":\"is_isa_access\",\"LastChangeDate\":\"last_change_date\",\"MaximumReleaseDuration\":\"maximum_release_duration\",\"NextChangeDate\":\"next_change_date\",\"PlatformID\":\"platform_id\",\"PreferredNodeID\":\"preferred_node_id\",\"SystemId\":\"system_id\",\"SystemName\":\"system_name\",\"UserPrincipalName\":\"user_principal_name\"}}"
@@ -185,8 +189,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def description = params.descriptions.get(ctx.beyondinsight_password_safe.managedaccount.change_state);\nif (description != null) {\n  ctx.beyondinsight_password_safe.managedaccount.change_state = description;\n}\n"#
+                    compiled_painless!(
+                        "c49d0ff727011128b7e9fc32d09cb7748a93e1f7989d4275abf02bf69407ede7",
+                        r#"{"params":{"MemberLookup":{"key":"beyondinsight_password_safe.managedaccount.change_state","table":"descriptions","fold":"None","target":"beyondinsight_password_safe.managedaccount.change_state","wrap":false,"miss":"Keep","literals":{"statements":[],"whole":true}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"descriptions\":{\"0\":\"idle\",\"1\":\"changing\",\"2\":\"queued\"}}"

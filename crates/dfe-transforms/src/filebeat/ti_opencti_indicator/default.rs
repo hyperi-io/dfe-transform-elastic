@@ -76,8 +76,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.confidence == null) {\n  ctx.threat.indicator.confidence = 'Not Specified';\n} else if (ctx.confidence == 0) {\n  ctx.threat.indicator.confidence = 'None';\n} else if (1 <= ctx.confidence && ctx.confidence <= 29) {\n  ctx.threat.indicator.confidence = 'Low';\n} else if (30 <= ctx.confidence && ctx.confidence <= 69) {\n  ctx.threat.indicator.confidence = 'Medium';\n} else if (70 <= ctx.confidence && ctx.confidence <= 100) {\n  ctx.threat.indicator.confidence = 'High';\n} else {\n  ctx.threat.indicator.confidence = 'Not Specified';\n}\n"#
+                compiled_painless!(
+                    "fe7d29eee1bfa35e76954d6209b5054d833826e29ab1f39fa80a0a18fc879f4c",
+                    r#"{"params":null,"known":[{"BandLadder":{"subject":"confidence","arms":[[{"bounds":[{"op":"Eq","scaled":0}],"all":true},{"Text":"None"}],[{"bounds":[{"op":"Ge","scaled":1000},{"op":"Le","scaled":29000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":30000},{"op":"Le","scaled":69000}],"all":true},{"Text":"Medium"}],[{"bounds":[{"op":"Ge","scaled":70000},{"op":"Le","scaled":100000}],"all":true},{"Text":"High"}]],"default":{"Text":"Not Specified"},"absent":{"Text":"Not Specified"},"target":"threat.indicator.confidence"}}]}"#
                 ),
             )?;
 
@@ -139,8 +140,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.opencti.indicator.revoked == true &&\n    ctx.threat.indicator.modified_at.compareTo(ctx.opencti.indicator.valid_until) < 0) {\n    ctx.opencti.indicator.invalid_or_revoked_from = ctx.threat.indicator.modified_at;\n} else {\n    // valid_until always has a value, will be epoch + 10^14 ms if no other value\n    ctx.opencti.indicator.invalid_or_revoked_from = ctx.opencti.indicator.valid_until;\n}\n"#
+                compiled_painless!(
+                    "d7ca668d0d7f0ee6f1002fdbbb052ed20a2b8cfa8e64d593b19cd1d12cd0f4f6",
+                    r#"{"params":null,"known":[{"CompareToChoice":{"flag":"opencti.indicator.revoked","lesser":"threat.indicator.modified_at","fallback":"opencti.indicator.valid_until","target":"opencti.indicator.invalid_or_revoked_from"}}]}"#
                 ),
             )?;
 
@@ -253,8 +255,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"ArrayList edges = ctx.externalReferences.edges;\nif (edges == null) {\n  return;\n}\nfor (int i = 0; i < edges.length; i++) {\n  if (!ctx.opencti?.indicator?.containsKey('external_reference') == true) {\n    if (!ctx.containsKey('opencti')) {\n      ctx.opencti = [:];\n    }\n    if (!ctx.opencti.containsKey('indicator')) {\n      ctx.opencti.indicator = [:];\n    }\n    if (!ctx.opencti.indicator.containsKey('external_reference')) {\n      ctx.opencti.indicator.external_reference = [];\n    }\n  }\n  def newNode = [:];\n  for (def key : edges[i]['node'].keySet()) {\n    if (edges[i]['node'][key] != null) {\n      newNode[key] = edges[i]['node'][key];\n    }\n  }\n  ctx.opencti.indicator.external_reference.add(newNode);\n}\n"#
+                compiled_painless!(
+                    "456e8b6a689db5e00077a004233c678b7e3ccd5bce6e7706d0885b34cb9592f3",
+                    r#"{"params":null,"known":[{"AppendRecords":{"list":"externalReferences.edges","record":"node","target":"opencti.indicator.external_reference"}}]}"#
                 ),
             )?;
 
@@ -381,24 +384,27 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.observables?.edges instanceof List) {\n  for (def edge : ctx.observables.edges) {\n    if (edge.node?.startup_info instanceof List) {\n      def result = [:];\n      for (def kv : edge.node.startup_info) {\n        result[kv.key] = kv.value;\n      }\n      edge.node.startup_info = result;\n    }\n  }\n}\n"#
+                compiled_painless!(
+                    "b8554175dc85d017c05b4d9aeab91366d6acdc3f8af64eb21a6aa6bb3ae8254b",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Map hashesToECS(ArrayList hashes) {\n  Map hash = [:];\n  for (int i = 0; i < hashes.length; i++) {\n    String algorithm = hashes[i].algorithm;\n    algorithm = algorithm.toLowerCase();\n    algorithm = algorithm.replace('sha-', 'sha');\n    algorithm = algorithm.replace('sha3-', 'sha3_');\n    hash[algorithm] = hashes[i].hash;\n  }\n  return hash;\n}\nArrayList observables = ctx.observables.edges;\nfor (int i = 0; i < observables.length; i++) {\n  Map observable = observables[i].node;\n  if (observable.containsKey('hashes')) {\n    def ecsHash = hashesToECS(observable.hashes);\n    if (ecsHash.size() > 0) {\n      observable.hash = ecsHash;\n    }\n    observable.remove('hashes');\n  }\n  if (observable.containsKey('service_dlls')) {\n    for (int ii = 0; ii < observable.service_dlls.length; ii++) {\n      Map serviceDll = observable.service_dlls[ii];\n      if (serviceDll.containsKey('hashes')) {\n        def ecsHash = hashesToECS(serviceDll.hashes);\n        if (ecsHash.size() > 0) {\n          serviceDll.hash = ecsHash;\n        }\n        serviceDll.remove('hashes');\n      }\n    }\n  }\n}\n"#
+                compiled_painless!(
+                    "1961c4577dd3590f3274dce94f37b8cd36a102e2681da5afe07f0ecf8a36e27a",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (!ctx.containsKey('opencti')) {\n  ctx.opencti = [:];\n}\nif (!ctx.opencti.containsKey('observable')) {\n  ctx.opencti.observable = [:];\n}\nArrayList observables = ctx.observables.edges;\nfor (int i = 0; i < observables.length; i++) {\n  String entity = observables[i]['node']['entity_type'];\n  entity = entity.replace('StixFile', 'file');\n  entity = entity.toLowerCase();\n  entity = entity.replace('-', '_');\n  if (!ctx.opencti.observable.containsKey(entity)) {\n    ctx.opencti.observable[entity] = [];\n  }\n  ctx.opencti.observable[entity].add(observables[i]['node']);\n}\n"#
+                compiled_painless!(
+                    "b33df6bf77373400f179463d0460ebbcdcf5beb769cac6aeedae510eea2c97de",
+                    r#"{"params":null,"known":[{"GroupRecords":{"list":"observables.edges","record":"node","key":"entity_type","steps":[{"Replace":{"from":"StixFile","to":"file"}},"Lowercase",{"Replace":{"from":"-","to":"_"}}],"target":"opencti.observable"}}]}"#
                 ),
             )?;
 
@@ -407,8 +413,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def dropNulls(Object obj) {\n  if (obj instanceof Map) {\n    def map = (Map) obj;\n    Map result = [:];\n    for (def key : map.keySet()) {\n      if (map[key] instanceof Map || map[key] instanceof List) {\n        result[key] = dropNulls(map[key]);\n      } else if (map[key] != null) {\n        result[key] = map[key];\n      }\n    }\n    return result;\n  } else if (obj instanceof List) {\n    def list = (List) obj;\n    List result = [];\n    for (def item : list) {\n      if (item instanceof Map || item instanceof List) {\n        result.add(dropNulls(item));\n      } else if (item != null) {\n        result.add(item);\n      }\n    }\n    return result;\n  } else {\n    return obj;\n  }\n}\nif (ctx.opencti?.containsKey('observable') == true) {\n  ctx.opencti.observable = dropNulls(ctx.opencti.observable);\n  for (def key : ctx.opencti.observable.keySet()) {\n    if (ctx.opencti.observable[key].size() == 0) {\n      ctx.opencti.observable.remove(key);\n    }\n  }\n  if (ctx.opencti.observable.size() == 0) {\n    ctx.opencti.remove('observable');\n  }\n}\n"#
+                compiled_painless!(
+                    "b93f01fb0e781c7a9a95652989057967ecf16263bcd9f19eb4ede69318f1c4c9",
+                    r#"{"params":null,"known":["CollectingLadder"]}"#
                 ),
             )?;
 
@@ -624,8 +631,9 @@ impl Transform for Default {
                                 // The pipeline's script, run by the runtime's equivalent
                                 painless_exec_plan_params(
                                     event,
-                                    cached_painless!(
-                                        r#"def name = ctx._tmp_registry.hive.toUpperCase();\nctx._tmp_registry.hive = params.getOrDefault(name, name);\n"#
+                                    compiled_painless!(
+                                        "7228ba8e5ce5d1b34ba1962fa8266b93b4d35b8ccce412b9ea948e3cb8ed7718",
+                                        r#"{"params":{"UppercaseLookupDefault":{"source":"_tmp_registry.hive","target":"_tmp_registry.hive"}},"known":[]}"#
                                     ),
                                     cached_params!(
                                         "{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKEY_USERS\":\"HKU\",\"HKEY_CURRENT_CONFIG\":\"HKCC\"}"
@@ -1008,8 +1016,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx._tmp_found_urls != null) {\n  def result = [];\n  for (item in ctx._tmp_found_urls) {\n      if (item != null && item != '') {\n          result.add(item);\n      }\n  }\n  ctx._tmp_found_urls = result;\n}\n"#
+                compiled_painless!(
+                    "a4445d9ad722f6888ee43d56c10512b1bea8ed4e0b4632c99f25256496cf5645",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 
@@ -1323,15 +1332,17 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"if (ctx._tmp_file?.name != null) {\n  def result = [];\n  for (name in ctx._tmp_file.name) {\n      if (name != null && name != '') {\n          result.add(name);\n      }\n  }\n  if (result.length == 0) {\n    ctx._tmp_file.remove(\"name\");\n  } else {\n    ctx._tmp_file.name = result;\n  }\n}\n"#
+                                compiled_painless!(
+                                    "7c942c3c9ed2d3f336698b0961db559d7cade6a804e27ebd41136eb33f64e8f6",
+                                    r#"{"params":null,"known":[]}"#
                                 ),
                             )?;
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"if (ctx._tmp_file.name != null) {\n  def result = [];\n  for (fullname in ctx._tmp_file.name) {\n    // name shouldn't have a directory, but do strip it if it's there\n    def parts = /[\\/\\\\]/.split(fullname);\n    def name = parts[parts.length - 1];\n    if (name.contains(\".\")) {\n      def nameParts = /\\./.split(name);\n      def extension = nameParts[nameParts.length - 1];\n      if (extension.length() > 0) {\n        result.add(extension);\n      }\n    }\n  }\n  if (result.length > 0) {\n    ctx._tmp_file.extension = result;\n  }\n}\n"#
+                                compiled_painless!(
+                                    "3a9a8c124e9ce6df55628fd87c77cb874683824768de7b3b6afd0af49995220d",
+                                    r#"{"params":null,"known":[]}"#
                                 ),
                             )?;
                             let v = json!(
@@ -1521,15 +1532,17 @@ impl Transform for Default {
                                             // The pipeline's script, run by the runtime's equivalent
                                             painless_exec_plan(
                                                 event,
-                                                cached_painless!(
-                                                    r#"if (ctx._tmp_file?.name != null) {\n  def result = [];\n  for (name in ctx._tmp_file.name) {\n      if (name != null && name != '') {\n          result.add(name);\n      }\n  }\n  if (result.length == 0) {\n    ctx._tmp_file.remove(\"name\");\n  } else {\n    ctx._tmp_file.name = result;\n  }\n}\n"#
+                                                compiled_painless!(
+                                                    "7c942c3c9ed2d3f336698b0961db559d7cade6a804e27ebd41136eb33f64e8f6",
+                                                    r#"{"params":null,"known":[]}"#
                                                 ),
                                             )?;
                                             // The pipeline's script, run by the runtime's equivalent
                                             painless_exec_plan(
                                                 event,
-                                                cached_painless!(
-                                                    r#"if (ctx._tmp_file.name != null) {\n  def result = [];\n  for (fullname in ctx._tmp_file.name) {\n    // name shouldn't have a directory, but do strip it if it's there\n    def parts = /[\\/\\\\]/.split(fullname);\n    def name = parts[parts.length - 1];\n    if (name.contains(\".\")) {\n      def nameParts = /\\./.split(name);\n      def extension = nameParts[nameParts.length - 1];\n      if (extension.length() > 0) {\n        result.add(extension);\n      }\n    }\n  }\n  if (result.length > 0) {\n    ctx._tmp_file.extension = result;\n  }\n}\n"#
+                                                compiled_painless!(
+                                                    "3a9a8c124e9ce6df55628fd87c77cb874683824768de7b3b6afd0af49995220d",
+                                                    r#"{"params":null,"known":[]}"#
                                                 ),
                                             )?;
                                             let v = json!(
@@ -1794,8 +1807,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"if (ctx._tmp_file?.name != null) {\n  def result = [];\n  for (name in ctx._tmp_file.name) {\n      if (name != null && name != '') {\n          result.add(name);\n      }\n  }\n  if (result.length == 0) {\n    ctx._tmp_file.remove(\"name\");\n  } else if (result.length == 1) {\n    ctx._tmp_file.name = result[0];\n  } else {\n    ctx._tmp_file.name = result;\n  }\n}\n"#
+                                compiled_painless!(
+                                    "90e5f60079795a5e7402f22d302cd91e8db0ca91b4182dfb1ade6bc4ff72fce8",
+                                    r#"{"params":null,"known":[]}"#
                                 ),
                             )?;
                             let v = json!(
@@ -1982,8 +1996,9 @@ impl Transform for Default {
                                 // The pipeline's script, run by the runtime's equivalent
                                 painless_exec_plan(
                                     event,
-                                    cached_painless!(
-                                        r#"def tmp_file_name = ctx.threat.indicator.file.name;\nif (tmp_file_name != null) {\n  def parts = /[\\/\\\\]/.split(tmp_file_name);\n  def name = parts[parts.length - 1];\n  if (name.contains(\".\")) {\n    def nameParts = /\\./.split(name);\n    def extension = nameParts[nameParts.length - 1];\n    if (extension.length() > 0) {\n      ctx.threat.indicator.file.extension = extension;\n    }\n  }\n}\n"#
+                                    compiled_painless!(
+                                        "64bc62d91f61e78499f4b56a09bd241162c4f33fd01bcc81119f5e88c5bf6c37",
+                                        r#"{"params":null,"known":[]}"#
                                     ),
                                 )?;
                             }
@@ -2064,8 +2079,9 @@ impl Transform for Default {
                                 // The pipeline's script, run by the runtime's equivalent
                                 painless_exec_plan_params(
                                     event,
-                                    cached_painless!(
-                                        r#"def name = ctx.tmp_registry.hive.toUpperCase();\nctx.tmp_registry.hive = params.getOrDefault(name, name);\n"#
+                                    compiled_painless!(
+                                        "ed8c8e1235a82e499a89665015cf848d30733ee4a4210e83ef68a6d10c011fba",
+                                        r#"{"params":{"UppercaseLookupDefault":{"source":"tmp_registry.hive","target":"tmp_registry.hive"}},"known":[]}"#
                                     ),
                                     cached_params!(
                                         "{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKEY_USERS\":\"HKU\",\"HKEY_CURRENT_CONFIG\":\"HKCC\"}"
@@ -2079,8 +2095,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
-                                cached_painless!(
-                                    r#"if (ctx.threat?.indicator?.file?.name != null && !(ctx.threat.indicator.file.name instanceof List)) {\n  ctx.threat.indicator.file.name = [ctx.threat.indicator.file.name];\n}\nif (ctx.threat?.indicator?.file?.extension != null && !(ctx.threat.indicator.file.extension instanceof List)) {\n  ctx.threat.indicator.file.extension = [ctx.threat.indicator.file.extension];\n}\nif (ctx.threat?.indicator?.email?.address != null && !(ctx.threat.indicator.email.address instanceof List)) {\n  ctx.threat.indicator.email.address = [ctx.threat.indicator.email.address];\n}\nif (ctx.threat?.indicator?.ip != null && !(ctx.threat.indicator.ip instanceof List)) {\n  ctx.threat.indicator.ip = [ctx.threat.indicator.ip];\n}\nif (ctx.threat?.indicator?.url != null && !(ctx.threat.indicator.url instanceof List)) {\n  ctx.threat.indicator.url = [ctx.threat.indicator.url];\n}\n"#
+                                compiled_painless!(
+                                    "20d4585746e459cd7c73ec3d559d15614183f4449fd8d3dd731dc0a700bf93ee",
+                                    r#"{"params":null,"known":[{"WrapValueInList":[{"source":"threat.indicator.file.name","target":"threat.indicator.file.name","remove_source":false,"guards":{"not_list":true,"not_null":true,"not_empty":false}},{"source":"threat.indicator.file.extension","target":"threat.indicator.file.extension","remove_source":false,"guards":{"not_list":true,"not_null":true,"not_empty":false}},{"source":"threat.indicator.email.address","target":"threat.indicator.email.address","remove_source":false,"guards":{"not_list":true,"not_null":true,"not_empty":false}},{"source":"threat.indicator.ip","target":"threat.indicator.ip","remove_source":false,"guards":{"not_list":true,"not_null":true,"not_empty":false}},{"source":"threat.indicator.url","target":"threat.indicator.url","remove_source":false,"guards":{"not_list":true,"not_null":true,"not_empty":false}}]}]}"#
                                 ),
                             )?;
                             // End nested pipeline: "ecs_from_pattern"
@@ -2143,8 +2160,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.threat?.indicator?.file != null) {\n  def files = ctx.threat.indicator.file instanceof List ? ctx.threat.indicator.file : [ctx.threat.indicator.file];\n  ctx.related = ctx.related ?: [:];\n  ctx.related.hash = ctx.related.hash ?: [];\n  def hashSet = new HashSet(ctx.related.hash);\n  for (def file : files) {\n    if (file?.hash != null) {\n      if (file.hash.md5 != null) {\n        hashSet.add(file.hash.md5);\n      }\n      if (file.hash.sha1 != null) {\n        hashSet.add(file.hash.sha1);\n      }\n      if (file.hash.sha256 != null) {\n        hashSet.add(file.hash.sha256);\n      }\n    }\n  }\n  if (hashSet.size() > 0) {\n    ctx.related.hash = new ArrayList(hashSet);\n  } else {\n    ctx.related.remove('hash');\n  }\n}\n"#
+                compiled_painless!(
+                    "a99b81fb813c168c222491b143e7a08b33a646a3ea250d6acc3f67e4af4f32f4",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 
@@ -2289,16 +2307,18 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def cleanUp(Map obj, String key) {\n  if (obj.containsKey(key) && obj[key] instanceof List) {\n    def result = [];\n    for (item in obj[key]) {\n        if (item != null && item != '') {\n            result.add(item);\n        }\n    }\n    if (result.isEmpty()) {\n      obj.remove(key);\n    } else {\n      obj[key] = result;\n    }\n  }\n  return obj;\n}\nif (ctx.containsKey('related') && ctx.related != null) {\n  cleanUp(ctx.related, 'hash');\n  cleanUp(ctx.related, 'hosts');\n  cleanUp(ctx.related, 'ip');\n  cleanUp(ctx.related, 'user');\n}\n"#
+                compiled_painless!(
+                    "d3ccf7d52ba2e4551d6e20e1c4da86ad60e1da02ee94eb98e5c7e947e9097dad",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def mergeMaps(Map map1, Map map2) {\n  for (def key : map2.keySet()) {\n    if (map1.containsKey(key) && map1[key] != map2[key]) {\n      if (map1[key] instanceof Map && map2[key] instanceof Map) {\n        map1[key] = mergeMaps(map1[key], map2[key]);\n      } else {\n        if (!(map1[key] instanceof List)) {\n          map1[key] = [map1[key]];\n        }\n        def combined = new HashSet(map1[key]);\n        if (map2[key] instanceof List) {\n          combined.addAll(map2[key]);\n        } else {\n          combined.add(map2[key]);\n        }\n        map1[key] = new ArrayList(combined);\n      }\n    } else {\n      map1[key] = map2[key];\n    }\n  }\n  return map1;\n}\ndef mergeListOfMaps(List list) {\n  def merged = new HashMap();\n  for (def map : list) {\n    merged = mergeMaps(merged, map);\n  }\n  return merged;\n}\nif (ctx.opencti?.containsKey('observable') == true) {\n  for (def key : ctx.opencti.observable.keySet()) {\n    if (ctx.opencti.observable[key] instanceof List) {\n      ctx.opencti.observable[key] = mergeListOfMaps(ctx.opencti.observable[key]);\n    }\n  }\n}\nif (ctx.opencti?.indicator?.containsKey('external_reference') == true && ctx.opencti.indicator.external_reference instanceof List) {\n  ctx.opencti.indicator.external_reference = mergeListOfMaps(ctx.opencti.indicator.external_reference);\n}\nif (ctx.threat.indicator.containsKey('file') && ctx.threat.indicator.file instanceof List) {\n  ctx.threat.indicator.file = mergeListOfMaps(ctx.threat.indicator.file);\n}\nif (ctx.threat.indicator.containsKey('as') && ctx.threat.indicator.as instanceof List) {\n  ctx.threat.indicator.as = mergeListOfMaps(ctx.threat.indicator.as);\n}\nif (ctx.threat.indicator.containsKey('url') && ctx.threat.indicator.url instanceof List) {\n  ctx.threat.indicator.url = mergeListOfMaps(ctx.threat.indicator.url);\n}\nif (ctx.threat.indicator.containsKey('registry') && ctx.threat.indicator.registry instanceof List) {\n  ctx.threat.indicator.registry = mergeListOfMaps(ctx.threat.indicator.registry);\n}\nif (ctx.threat.indicator.containsKey('x509') && ctx.threat.indicator.x509 instanceof List) {\n  ctx.threat.indicator.x509 = mergeListOfMaps(ctx.threat.indicator.x509);\n}\n"#
+                compiled_painless!(
+                    "9474fbe19b0eb9e17e7900a3847e57702bf43c96096b728e7ac9b78038dfcd07",
+                    r#"{"params":null,"known":[{"ListOfMapsMerge":{"containers":["opencti.observable"],"fields":["opencti.indicator.external_reference","threat.indicator.file","threat.indicator.as","threat.indicator.url","threat.indicator.registry","threat.indicator.x509"]}}]}"#
                 ),
             )?;
 

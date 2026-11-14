@@ -296,7 +296,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "820cb186d72b50e16b26a923fc412869132e05a3e9977ff4704685bf6505656f",
+                        r#"{"params":"FirstContainedMember","known":[]}"#,
                         r#"ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString os_type = ctx.sentinel_one.alert.agent.os.type.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_type.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\n"#
                     ),
                     cached_params!(
@@ -1154,7 +1156,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "8e54f7348807dd06d8c900a0d791e1606d73798d17149442d5dc9fb9c888f978",
+                            r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                             r#"ctx.event = ctx.event ?: [:];\nString risk_score_value = ctx.sentinel_one.alert.rule.severity;\nif (risk_score_value.equalsIgnoreCase(\"low\")) {\n  ctx.event.severity = 21;\n} else if (risk_score_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (risk_score_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (risk_score_value.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
                         ),
                     )?;

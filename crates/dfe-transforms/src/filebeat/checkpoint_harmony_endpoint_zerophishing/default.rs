@@ -243,8 +243,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.host.os.name instanceof List && ctx.host.os.name.size() == 1)\n    ctx.host.os.name = ctx.host.os.name[0];\nif (ctx.host.os.version instanceof List && ctx.host.os.version.size() == 1)\n    ctx.host.os.version = ctx.host.os.version[0];"#
+                    compiled_painless!(
+                        "9e8e3ec533b117be2ce709d23d6a427dfcd970667e786cc0b6ca1a6155f90097",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"host.os.name","target":"host.os.name","only_if_unset":false,"only_if_single":true,"consumes_array":false},{"array":"host.os.version","target":"host.os.version","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -282,8 +283,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.url.original instanceof List && ctx.url.original.size() == 1)\n    ctx.url.original = ctx.url.original[0];"#
+                    compiled_painless!(
+                        "cedd2657f48613f5eeda466f73d0cd26a4f6f09fe352b0181800b37c7da98efe",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"url.original","target":"url.original","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -383,8 +385,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.zerophishing.client.version instanceof List && ctx.checkpoint_harmony_endpoint.zerophishing.client.version.size() == 1)\n    ctx.checkpoint_harmony_endpoint.zerophishing.client.version = ctx.checkpoint_harmony_endpoint.zerophishing.client.version[0];"#
+                    compiled_painless!(
+                        "837d6748495727a26b56b6d666ac933478bbb4f8e814f29a76442846fe47f751",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.zerophishing.client.version","target":"checkpoint_harmony_endpoint.zerophishing.client.version","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -395,8 +398,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.zerophishing.web_client_type instanceof List && ctx.checkpoint_harmony_endpoint.zerophishing.web_client_type.size() == 1)\n    ctx.checkpoint_harmony_endpoint.zerophishing.web_client_type = ctx.checkpoint_harmony_endpoint.zerophishing.web_client_type[0];"#
+                    compiled_painless!(
+                        "ff69ec5e0408f11303b7f4fb88bbb095c1a271da179f50db80f050c5f1684a27",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.zerophishing.web_client_type","target":"checkpoint_harmony_endpoint.zerophishing.web_client_type","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -424,8 +428,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.zerophishing.malware.action instanceof List && ctx.checkpoint_harmony_endpoint.zerophishing.malware.action.size() == 1)\n    ctx.checkpoint_harmony_endpoint.zerophishing.malware.action = ctx.checkpoint_harmony_endpoint.zerophishing.malware.action[0];"#
+                    compiled_painless!(
+                        "9df10f516e0dcab0722b41c67b3ef16b96274aeb831db665ab32e47c1994e986",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.zerophishing.malware.action","target":"checkpoint_harmony_endpoint.zerophishing.malware.action","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }

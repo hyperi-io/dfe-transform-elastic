@@ -76,8 +76,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def flat = [:];\nctx.related = ctx.related ?: [:];\nctx.related.hash = ctx.related.hash ?: [];\nfor (h in ctx.recordedfuture.identity_detection.password.hashes) {\n  if (h.algorithm != null) {\n    def algorithm = h.algorithm.toLowerCase();\n    if (h.hash != null) {\n      flat[algorithm] = h.hash;\n      ctx.related.hash.add(h.hash);\n    } else if (h.hash_prefix != null) {\n      flat[algorithm + '_prefix'] = h.hash_prefix;\n    }\n  }\n}\nif (flat.size() > 0) {\n  ctx.recordedfuture.identity_detection.password.hashes = flat;\n} else {\n  ctx.recordedfuture.identity_detection.password.remove('hashes');\n}"#
+                        compiled_painless!(
+                            "f75f3847fe986bec0d1b86b7499cee9570f493b632b56df5bb677c99b4bf1de8",
+                            r#"{"params":null,"known":[{"RecordFold":{"list":"recordedfuture.identity_detection.password.hashes","key":"algorithm","lower":true,"arms":[{"member":"hash","suffix":"","side":"related.hash"},{"member":"hash_prefix","suffix":"_prefix","side":null}],"target":"recordedfuture.identity_detection.password.hashes","replace":true,"remove_when_empty":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -1005,7 +1006,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "fcb5c18d528a270868fd00f1e806fa707e37fa4c81e205f3ff74a598b7cb5d0f",
+                            r#"{"params":"FirstContainedMember","known":[]}"#,
                             r#"ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString os = ctx.recordedfuture.identity_detection.dump.compromise.os.toLowerCase();\nfor (String os_type: params.os_type) {\n  if (os.contains(os_type)) {\n    ctx.host.os.put('type', os_type);\n    return;\n  }\n}\n"#
                         ),
                         cached_params!(

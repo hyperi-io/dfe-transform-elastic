@@ -520,8 +520,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def dur = ctx._conf.ioc_expiration_duration; String modified_on = ctx.json.modified_on; if (dur instanceof String){\n  String time_unit = dur.substring(dur.length() -  1, dur.length());\n  String time_value = dur.substring(0, dur.length() - 1);\n  if (time_unit == 'd') {\n    ctx.json.deleted_at = ZonedDateTime.parse(modified_on).plusDays(Long.parseLong(time_value));\n  } else if (time_unit == 'h') {\n    ctx.json.deleted_at = ZonedDateTime.parse(modified_on).plusHours(Long.parseLong(time_value));\n  } else if (time_unit == 'm') {\n    ctx.json.deleted_at = ZonedDateTime.parse(modified_on).plusMinutes(Long.parseLong(time_value));\n  } else {\n    ctx.json.deleted_at = ZonedDateTime.parse(modified_on).plusDays(90L);\n  }\n}\n"#
+                        compiled_painless!(
+                            "a91c16c88d4edef0c9e6ecbdb5f8bf28cb73d35dbaea807396ca2f6e364baa28",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -748,8 +749,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"String mapping = params[ctx.ti_crowdstrike.ioc.type]; if (mapping != null) {\n  ctx.threat.indicator.type = mapping;\n  // IP values are handled below to allow conversion checks.\n  if (ctx.ti_crowdstrike.ioc.type == 'domain') {\n    ctx.threat.indicator.url = ctx.threat.indicator.url ?: [:];\n    ctx.threat.indicator.url.domain = ctx.ti_crowdstrike?.ioc.value;\n  } else if (mapping == 'file') {\n    ctx.threat.indicator.file = ctx.threat.indicator.file ?: [:];\n    ctx.threat.indicator.file.hash = ctx.threat.indicator.file.hash ?: [:];\n    if (ctx.ti_crowdstrike.ioc.type == 'md5') {\n      ctx.threat.indicator.file.hash.md5 = ctx.ti_crowdstrike?.ioc.value;\n    } else if (ctx.ti_crowdstrike.ioc.type == 'sha256') {\n      ctx.threat.indicator.file.hash.sha256 = ctx.ti_crowdstrike?.ioc.value;\n    } else if (ctx.ti_crowdstrike.ioc.type == 'sha1') {\n      ctx.threat.indicator.file.hash.sha1 = ctx.ti_crowdstrike?.ioc.value;\n    }\n  }\n}\n"#
+                        compiled_painless!(
+                            "605fb98ed9cea0256ae2a57306b745f29b40ce092b84f2c13a4080f5c23ef5e7",
+                            r#"{"params":{"NormalisedLookup":{"source":"ti_crowdstrike.ioc.type","target":"threat.indicator.type","fold":"None"}},"known":[{"GuardedCopy":{"statements":[{"If":{"test":[["Never"]],"then":[{"If":{"test":[[{"Compare":{"path":"ti_crowdstrike.ioc.type","wanted":{"Text":"domain"},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"threat.indicator.url.domain","value":{"Field":"ti_crowdstrike.ioc.value"}}}}],"alt":[{"If":{"test":[["Never"]],"then":[{"If":{"test":[[{"Compare":{"path":"ti_crowdstrike.ioc.type","wanted":{"Text":"md5"},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"threat.indicator.file.hash.md5","value":{"Field":"ti_crowdstrike.ioc.value"}}}}],"alt":[{"If":{"test":[[{"Compare":{"path":"ti_crowdstrike.ioc.type","wanted":{"Text":"sha256"},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"threat.indicator.file.hash.sha256","value":{"Field":"ti_crowdstrike.ioc.value"}}}}],"alt":[{"If":{"test":[[{"Compare":{"path":"ti_crowdstrike.ioc.type","wanted":{"Text":"sha1"},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"threat.indicator.file.hash.sha1","value":{"Field":"ti_crowdstrike.ioc.value"}}}}],"alt":[]}}]}}]}}],"alt":[]}}]}}],"alt":[]}}],"whole":false}}]}"#
                         ),
                         cached_params!(
                             "{\"ipv4\":\"ipv4-addr\",\"ipv6\":\"ipv6-addr\",\"domain\":\"domain-name\",\"md5\":\"file\",\"sha256\":\"file\",\"sha1\":\"file\"}"

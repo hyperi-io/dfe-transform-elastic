@@ -857,8 +857,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"StringBuilder sb = new StringBuilder();\nMap attributes = ctx.sublime_security.audit.data.request.query;\nfor (entry in attributes.entrySet()) {\n  sb.append(entry.getKey()).append('=').append(entry.getValue()).append('&');\n}\nif(ctx.url == null) {\n    ctx.put(\"url\", new HashMap());\n}\nctx.url.query = sb.length() > 0 ? sb.substring(0, sb.length() - 1) : null;"#
+                    compiled_painless!(
+                        "5e76a186ff93681eee6e71f34bc8a1886efa6faddb149cde3d78109663b7c013",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -934,8 +935,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"String t = ctx.sublime_security.audit.type;\nint dot = t.indexOf('.');\nString res = dot >= 0 ? t.substring(0, dot) : t;\n\nArrayList cats = new ArrayList();\nArrayList types = new ArrayList();\n\nif (params.email_resources.contains(res)) {\n  cats.add('email');\n  types.add('info');\n} else if (res == 'auth') {\n  cats.add('authentication');\n  if (t.startsWith('auth.login')) { types.add('start'); }\n  else if (t == 'auth.logout') { types.add('end'); }\n  else { types.add('info'); }\n} else if (params.iam_resources.contains(res)) {\n  cats.add('iam');\n  if (res == 'user') { types.add('user'); }\n  if (res == 'rbac') { types.add('group'); }\n  if (t.contains('create') || t.contains('connect') || t.contains('upload')) { types.add('creation'); }\n  else if (t.contains('delete')) { types.add('deletion'); }\n  else { types.add('change'); }\n} else if (params.configuration_resources.contains(res) || params.configuration_types.contains(t)) {\n  cats.add('configuration');\n  if (t.contains('create') || t.contains('connect') || t.contains('upload')) { types.add('creation'); }\n  else if (t.contains('delete')) { types.add('deletion'); }\n  else if (t == 'inline_signed_headers_retrieved') { types.add('info'); }\n  else { types.add('change'); }\n}\n\nif (!cats.isEmpty()) {\n  ctx.event = ctx.event ?: [:];\n  ctx.event.category = cats;\n  ctx.event.type = types;\n}"#
+                        compiled_painless!(
+                            "97b190dba1e498e83bfa24ce6702e83ff90c93afb2021e8cfca24234136b4258",
+                            r#"{"params":null,"known":["JoinOptional"]}"#
                         ),
                         cached_params!(
                             "{\"email_resources\":[\"message\",\"message_group\",\"email_bomb\"],\"iam_resources\":[\"user\",\"rbac\",\"api_key\",\"external_api_credential\",\"api_key_max_duration_set\",\"api_key_max_duration_cleared\",\"generate_password_reset\"],\"configuration_resources\":[\"rules\",\"list\",\"global_exclusion\",\"auth_settings\",\"org\",\"org_settings\",\"child_org\",\"descendant_org\",\"mailbox\",\"message_source\",\"abuse_mailbox\",\"quarantine_digest\",\"ip_allowlist\",\"trusted_sender_ips\",\"folder_routing\",\"github_app\",\"vendor\",\"logo_image\",\"create_child_organization\",\"dlp_toggled\",\"graymail_user_preference_changed\",\"auto_confirm_discovered_vendors_toggled\",\"synchronous_processing_monitoring_toggled\",\"dlp_alerts_webhook_deleted\",\"dlp_alerts_webhook_upserted\",\"inline_alerts_webhook_deleted\",\"inline_alerts_webhook_upserted\",\"inline_processing_toggled\",\"inline_signing_key_created\",\"inline_signing_key_deleted\",\"inline_signed_headers_retrieved\",\"inline_probe_injected\"],\"configuration_types\":[\"link_clicks.exceptions_updated\"]}"

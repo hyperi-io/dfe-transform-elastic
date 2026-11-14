@@ -1034,8 +1034,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.file.extension = ctx.file.parts[ctx.file.parts.length-1];\n"#
+                    compiled_painless!(
+                        "d37c5224e303efc76c703ef3a0aef7791343ae44c666dfccf9f5ce2dafe0e164",
+                        r#"{"params":null,"known":[{"LastElement":{"array":"file.parts","target":"file.extension"}}]}"#
                     ),
                 )?;
             }

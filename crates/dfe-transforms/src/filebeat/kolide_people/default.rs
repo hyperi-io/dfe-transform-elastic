@@ -100,8 +100,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def usernames = new ArrayList();\nfor (def u : ctx.json.usernames) {\n  if (u != null) { usernames.add(u.toString()); }\n}\nctx.json.usernames = usernames;\nif (!usernames.isEmpty()) {\n  ctx.user = ctx.user ?: [:];\n  ctx.user.name = usernames[0];\n}"#
+                    compiled_painless!(
+                        "b363af1ade4021aa0e17d10825db1cda524a2d175e062d2089b9937937f4f37f",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

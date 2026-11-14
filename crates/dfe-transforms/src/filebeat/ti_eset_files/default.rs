@@ -133,8 +133,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"for (def label : ctx.eset.labels) {\n  if (params.containsKey(label)) {\n    ctx.threat.indicator.confidence = params.get(label);\n    break;\n  }\n}\n"#
+                    compiled_painless!(
+                        "d3a04b18b27a3cd6c3559abbdd85fd66ef67e3659da765f604e409dc9f73f713",
+                        r#"{"params":{"FirstLabelInTable":{"list":"eset.labels","target":"threat.indicator.confidence"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"malicious-activity\":\"High\",\"phishing-activity\":\"High\",\"unwanted-activity\":\"Medium\",\"benign\":\"Low\"}"

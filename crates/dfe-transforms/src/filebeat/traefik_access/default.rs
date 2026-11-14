@@ -207,7 +207,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "e9e1cc9e79879d185f2ce47534ba9090a59c791e6bc8ab07ecf931979801ce56",
+                            r#"{"params":"Scale","known":[]}"#,
                             r#"ctx.event.duration = Math.round(ctx.temp.duration * params.scale)"#
                         ),
                         cached_params!("{\"scale\":1000000}"),
@@ -652,8 +654,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Map downstream_headers = new HashMap();\nMap origin_headers = new HashMap();\nMap request_headers = new HashMap();\n\n// Get the headers\nfor (fieldname in ctx?.temp?.keySet()){\n  if (fieldname.startsWith('downstream_')){\n    downstream_headers.put(fieldname.replace('downstream_', '').toLowerCase(), ctx.temp[fieldname]);\n  }\n  else if (fieldname.startsWith('request_')){\n    request_headers.put(fieldname.replace('request_', '').toLowerCase(), ctx.temp[fieldname]);\n  }\n  else if (fieldname.startsWith('origin_')){\n    origin_headers.put(fieldname.replace('origin_', '').toLowerCase(), ctx.temp[fieldname]);\n  }\n}\n\nif (!request_headers.isEmpty()){\n  // Make sure http.request object exists\n  if (ctx.http == null){\n    ctx.put('http', new HashMap());\n  }\n  if (ctx.http.request == null){\n    ctx.http.put('request', new HashMap());\n  }\n\n  // Add headers\n  ctx.http.request.put('headers', request_headers);\n}\n\nif (!downstream_headers.isEmpty()){\n  // Make sure http.response object exists\n  if (ctx.http == null){\n    ctx.put('http', new HashMap());\n  }\n  if (ctx.http.response == null){\n    ctx.http.put('response', new HashMap());\n  }\n  // Add headers\n  ctx.http.response.put('headers', downstream_headers);\n}\n\nif (!origin_headers.isEmpty()){\n  // Make sure traefik.access.origin object exists\n  if (ctx.traefik == null){\n    ctx.put('traefik', new HashMap());\n  }\n  if (ctx.traefik.access == null){\n    ctx.traefik.put('access', new HashMap());\n  }\n  if (ctx.traefik.access.origin == null){\n    ctx.traefik.access.put('origin', new HashMap());\n  }\n  // Add headers\n  ctx.traefik.access.origin.put('headers', origin_headers);\n}\n"#
+                    compiled_painless!(
+                        "3f7534f8d798c67da627477b9caab1eaab5eaea40065a7beb7d22e2ebc3eb72f",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 if event.has_value("temp.TLSCipher") {

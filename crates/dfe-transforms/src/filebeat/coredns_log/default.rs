@@ -165,8 +165,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def response_code = ctx.dns.response_code;\nctx.dns.response_code = params.codes[response_code];\n"#
+                    compiled_painless!(
+                        "5c5ef5d840ddecc699639bdc6240821c088e6b8737d05eb114372a485020623c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"codes\":[\"NOERROR\",\"FORMERR\",\"SERVFAIL\",\"NXDOMAIN\",\"NOTIMP\",\"REFUSED\",\"YXDOMAIN\",\"XRRSET\",\"NOTAUTH\",\"NOTZONE\"]}"
@@ -225,8 +226,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"for (int i=0; i<ctx.dns.header_flags.length; i++) {\n  if (ctx.dns.header_flags[i] == 'QR') {\n    ctx.dns.header_flags.remove(i);\n  }\n}\n"#
+                        compiled_painless!(
+                            "154e8bc46cfc429d4f30bce0843ae3b15e0f1c449969a299ea80e8a028792c8b",
+                            r#"{"params":null,"known":[{"RemoveListValue":{"field":"dns.header_flags","value":"QR"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -274,7 +276,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "67d5ce49242914c38b07a79e3649d975de88d98be24d2f1c1d2f9c071678a40d",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"double f = Double.parseDouble(ctx.event.duration); ctx.event.duration = f * params.S_TO_NS;"#
                     ),
                     cached_params!("{\"S_TO_NS\":1000000000}"),

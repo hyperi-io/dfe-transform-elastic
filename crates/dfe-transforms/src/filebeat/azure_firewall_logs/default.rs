@@ -821,8 +821,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def transport = ctx.network.transport;\nif (transport == 'udp') {\n    ctx.network.iana_number = '17';\n} else if (transport == 'tcp') {\n    ctx.network.iana_number = '6';\n}\n"#
+                        compiled_painless!(
+                            "232e09672cb5e826a06d5734f5fb2a1e00fdaeba155135385c5e0c00cb2f3c4d",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"network.transport","fold_case":false,"test":"Equals","arms":[{"literals":["udp"],"writes":[["network.iana_number","17"]],"removes":[]},{"literals":["tcp"],"writes":[["network.iana_number","6"]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())

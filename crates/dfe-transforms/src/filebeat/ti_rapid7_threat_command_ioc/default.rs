@@ -193,8 +193,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"void _set(Map base, def path, def value) {\n    if (path.length == 0) return;\n    for (int i = 0; i < path.length - 1; i++) {\n        String c = path[i];\n        if (base[c] == null) base[c] = new HashMap();\n        base = base[c];\n    }\n    base[path[path.length - 1]] = value;\n} void set(Map base, String path, def value) {\n    _set(base, path.splitOnToken(\".\"), value);\n} def mapping = params[ctx.json.type.toLowerCase()]; if (mapping == null) return; set(ctx, \"threat.indicator.type\", mapping.type); def value = ctx.json.value; if (value == null) return; set(ctx, mapping.target, value);\n"#
+                        compiled_painless!(
+                            "ff2c4f6154f7e8264a4cc3de2f19eab92ffe4425ddb4a5a464e43fa3c738eef0",
+                            r#"{"params":{"RowNamedTarget":{"key":"json.type","lowercase":true,"type_member":"type","literal_target":"threat.indicator.type","value_source":"json.value","target_member":"target","flag":null}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"domains\":{\"type\":\"domain-name\",\"target\":\"threat.indicator.url.domain\"},\"ipaddresses\":{\"type\":\"ipv4-addr\",\"target\":\"threat.indicator.ip\"},\"emails\":{\"type\":\"email-addr\",\"target\":\"threat.indicator.email.address\"},\"hashes\":{\"type\":\"file\",\"target\":\"json.file.hash\"}}"
@@ -770,8 +771,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def value = ctx.threat.indicator.confidence; if (value <= 0 || value > 100) {\n  ctx.threat.indicator.confidence = \"None\";\n  return;\n} else if (value >= 1 && value < 30) {\n  ctx.threat.indicator.confidence = \"Low\";\n  return;\n} else if (value >= 30 && value < 70) {\n  ctx.threat.indicator.confidence = \"Medium\";\n  return;\n} else if (value >= 70 && value <= 100) {\n  ctx.threat.indicator.confidence = \"High\";\n  return;\n}\n"#
+                        compiled_painless!(
+                            "22ca6e3e7702c508fafb33ca6496379e837401a447c24f44e211807e5a2597c5",
+                            r#"{"params":null,"known":[{"BandLadder":{"subject":"threat.indicator.confidence","arms":[[{"bounds":[{"op":"Le","scaled":0},{"op":"Gt","scaled":100000}],"all":false},{"Text":"None"}],[{"bounds":[{"op":"Ge","scaled":1000},{"op":"Lt","scaled":30000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":30000},{"op":"Lt","scaled":70000}],"all":true},{"Text":"Medium"}],[{"bounds":[{"op":"Ge","scaled":70000},{"op":"Le","scaled":100000}],"all":true},{"Text":"High"}]],"default":null,"absent":null,"target":"threat.indicator.confidence"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -789,8 +791,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_last_seen; if (ctx.rapid7.tc.ioc.status instanceof String && ctx.rapid7.tc.ioc.status.toLowerCase().contains('retire')) {\n  _tmp_deleted_at = ZonedDateTime.parse(ctx['@timestamp']);\n} else {\n    def dur = ctx._conf.ioc_expiration_duration;\n    if (ctx.threat?.indicator?.modified_at != null) {\n        _tmp_last_seen = ZonedDateTime.parse(ctx.threat.indicator.modified_at);\n    }\n    else if (ctx.threat?.indicator?.last_seen != null) {\n        _tmp_last_seen = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n    }\n    else {\n        _tmp_last_seen = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n    }\n    if (dur instanceof String){\n        String time_unit = dur.substring(dur.length() -  1);\n        String time_value = dur.substring(0, dur.length() - 1);\n        if (time_unit == 'd') {\n            _tmp_deleted_at = _tmp_last_seen.plusDays(Long.parseLong(time_value));\n        } else if (time_unit == 'h') {\n            _tmp_deleted_at = _tmp_last_seen.plusHours(Long.parseLong(time_value));\n        } else if (time_unit == 'm') {\n            _tmp_deleted_at = _tmp_last_seen.plusMinutes(Long.parseLong(time_value));\n        }\n    }\n    // Add default IOC expiration of `90 days` from last_seen if '_conf.ioc_expiration_duration' is an invalid value.\n    if (_tmp_deleted_at == null) {\n        _tmp_deleted_at = _tmp_last_seen.plusDays(90L);\n    }\n} ctx.rapid7.tc.ioc.deleted_at = _tmp_deleted_at;\n"#
+                        compiled_painless!(
+                            "294fae620d80eb6368cffeb5078b6352743e26b0b2cdee7d161df0190ff88cfb",
+                            r#"{"params":null,"known":[{"IocExpiry":{"duration":"_conf.ioc_expiration_duration","default_duration":null,"bases":["threat.indicator.modified_at","threat.indicator.last_seen","threat.indicator.first_seen"],"default_days":90,"settle_seconds":0,"invalid_message":null,"target":"rapid7.tc.ioc.deleted_at"}}]}"#
                         ),
                     )?;
                     Ok(())

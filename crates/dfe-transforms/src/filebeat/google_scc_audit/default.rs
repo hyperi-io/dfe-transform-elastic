@@ -481,8 +481,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.google_scc.audit.severity.put('code',params.get(ctx.google_scc.audit.severity.value));"#
+                        compiled_painless!(
+                            "03748b4314e9f958aafcee99c5441dedd78109601cb23b36f6fcb48de945391a",
+                            r#"{"params":{"MemberLookup":{"key":"google_scc.audit.severity.value","table":null,"fold":"None","target":"google_scc.audit.severity.code","wrap":false,"miss":"Null","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"DEFAULT\":0,\"DEBUG\":100,\"INFO\":200,\"NOTICE\":300,\"WARNING\":400,\"ERROR\":500,\"CRITICAL\":600,\"ALERT\":700,\"EMERGENCY\":800}"

@@ -260,8 +260,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.google_workspace.user_accounts == null) {\n  ctx.google_workspace.user_accounts = new HashMap();\n} for (param in ctx.json.events.parameters) {\n  if (param[\"value\"] != null) {\n    ctx.google_workspace.user_accounts[param[\"name\"]] = param[\"value\"];\n  }\n  if (param[\"intValue\"] != null) {\n    ctx.google_workspace.user_accounts[param[\"name\"]] = param[\"intValue\"];\n  }\n  if (param[\"multiValue\"] != null) {\n    ctx.google_workspace.user_accounts[param[\"name\"]] = param[\"multiValue\"];\n  }\n}\n"#
+                    compiled_painless!(
+                        "31ce68ebc4656ddd15198f197964c2f5f480183486f28b2bfcde834513d07cc5",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -280,8 +281,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.source.user.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} ctx.user.name = splitmail[0]; ctx.source.user.name = splitmail[0]; ctx.user.domain = splitmail[1]; ctx.source.user.domain = splitmail[1];\n"#
+                    compiled_painless!(
+                        "0a7b50a87773f444b7e4fec2eac1bf08fb6a7b27ab9eb53a0632da53a5a8ce8a",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"source.user.email","names":["user.name","source.user.name"],"domains":["user.domain","source.user.domain"],"emails":[],"appends":[]}}]}"#
                     ),
                 )?;
             }

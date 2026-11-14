@@ -454,8 +454,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def attachments = [];\nattachments.add(ctx.email.attachments);\nctx.email.attachments = attachments;\n"#
+                    compiled_painless!(
+                        "470260865e03bcbb8817b72c3b626458d736dd06fa90d96814925557f148f980",
+                        r#"{"params":null,"known":[{"WrapValueInList":[{"source":"email.attachments","target":"email.attachments","remove_source":false,"guards":{"not_list":false,"not_null":false,"not_empty":false}}]}]}"#
                     ),
                 )?;
             }

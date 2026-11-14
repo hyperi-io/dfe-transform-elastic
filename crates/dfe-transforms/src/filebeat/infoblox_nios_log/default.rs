@@ -501,8 +501,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.infoblox_nios == null) {\n  ctx['infoblox_nios'] = new HashMap();\n}\nif (ctx.infoblox_nios.log == null) {\n  ctx.infoblox_nios['log'] = new HashMap();\n}\nif (ctx.infoblox_nios.log.audit == null) {\n  ctx.infoblox_nios.log['audit'] = new HashMap();\n}\nfor (Map.Entry m : ctx.audit.entrySet()) {\n  def value = m.getValue();\n  if (value instanceof String) {\n    value = value.replace('\\\\040', ' ')\n  }\n  ctx.infoblox_nios.log.audit[m.getKey()] = value;\n}\n"#
+                        compiled_painless!(
+                            "5e05ba4bb9277c68ef489f0b0d9f97f7ec22efc99a8b6f43ec6d9f7bd53331e0",
+                            r#"{"params":null,"known":[{"MapEntriesInto":{"source":"audit","target":"infoblox_nios.log.audit","replace":["\\040"," "]}}]}"#
                         ),
                     )?;
                 }
@@ -513,8 +514,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"String s = ctx.infoblox_nios.log.audit.ip; StringBuilder sb = new StringBuilder(); for (int i = 0; i < s.length();) {\n    if (s.charAt(i) == (char)'\\\\') {\n        sb.append(':');\n        int b = Integer.parseInt(s.substring(i+1,i+4), 8);\n        if (b != (char)':') {\n            sb.append((char)b);\n        }\n        i+=4;\n        continue;\n    }\n    sb.append(s.charAt(i));\n    i++;\n} ctx.infoblox_nios.log.audit.ip = sb.toString();\n"#
+                            compiled_painless!(
+                                "0fe9338e03735a2cd80de48bc1ab17c049465b8df3dca27d95df48141cb1f5cb",
+                                r#"{"params":null,"known":[{"EscapeDecode":{"source":"infoblox_nios.log.audit.ip","target":"infoblox_nios.log.audit.ip","escape":"\\","prefix":":","digits":3,"base":8}}]}"#
                             ),
                         )?;
                         Ok(())
@@ -2029,7 +2031,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "4005f80043bd316a8d745c80f74bb2ecbb2a4e34c8fb2104f0cb36d2e0cba9ca",
+                            r#"{"params":null,"known":["CollectingLadder",{"SplitIntoColumns":{"source":"repeat_message","target":"dns.answers","record_sep":";","field_sep":" ","min_fields":4,"records_back":true,"columns":[{"key":"name","at":0,"to_end":false},{"key":"ttl","at":1,"to_end":false},{"key":"class","at":2,"to_end":false},{"key":"type","at":3,"to_end":false},{"key":"data","at":4,"to_end":true}]}}]}"#,
                             r#"def splitUnquoted(String input, String sep) {\n  def tokens = [];\n  def startPosition = 0;\n  def isInQuotes = false;\n  char quote = (char)\"\\\"\";\n  for (def currentPosition = 0; currentPosition < input.length(); currentPosition++) {\n      if (input.charAt(currentPosition) == quote) {\n          isInQuotes = !isInQuotes;\n      }\n      else if (input.charAt(currentPosition) == (char)sep && !isInQuotes) {\n          def token = input.substring(startPosition, currentPosition).trim();\n          if (!token.equals(\"\")) {\n            tokens.add(token);\n          }\n          startPosition = currentPosition + 1;\n      }\n  }\n\n  def lastToken = input.substring(startPosition);\n  if (!lastToken.equals(sep) && !lastToken.equals(\"\")) {\n      tokens.add(lastToken.trim());\n  }\n  return tokens;\n}\n\ndef arr = splitUnquoted(ctx.repeat_message, \";\");\nctx.repeat_message = arr;\nMap map = new HashMap();\nmap.put('name', new ArrayList());\nmap.put('ttl', new ArrayList());\nmap.put('class', new ArrayList());\nmap.put('type', new ArrayList());\nmap.put('data', new ArrayList());\n\nfor (def i = 0; i < arr.length; i++) {\n  def response = splitUnquoted(arr[i], \" \");\n  if (response.size() >= 4) {\n    map['name'].add(response[0]);\n    map['ttl'].add(response[1]);\n    map['class'].add(response[2]);\n    map['type'].add(response[3]);\n    map['data'].addAll(response.subList(4, response.length));\n  }\n}\nctx.dns.answers = map;\n"#
                         ),
                     )?;
@@ -2156,8 +2160,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def hash = new ArrayList();\nfor(data in ctx.dns.answers.data){\n  def n = data.length();\n  if(data.charAt(n-1).toString() == '.'){\n    def data_substring = data.substring(0,n-1) + data.substring(n);\n    hash.add(data_substring);\n  }\n  else{\n    hash.add(data);\n  }\n}\nctx.dns.answers.data = hash;\n"#
+                        compiled_painless!(
+                            "5a3c572100a8039e23effcb2836b68c380ece28db60c5e66c31411cc4350a015",
+                            r#"{"params":null,"known":[{"TrimListSuffix":{"source":"dns.answers.data","target":"dns.answers.data","suffix":"."}}]}"#
                         ),
                     )?;
                 }
@@ -2166,8 +2171,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def hash = new ArrayList();\nfor(name in ctx.dns.answers.name){\n  def n = name.length();\n  if(name.charAt(n-1).toString() == '.'){\n    def name_substring = name.substring(0,n-1) + name.substring(n);\n    hash.add(name_substring);\n  }\n  else{\n    hash.add(name);\n  }\n}\nctx.dns.answers.name = hash;\n"#
+                        compiled_painless!(
+                            "1f124ad008402e25c9fe93b5f80038d084a91df1710e78bea30438607d3b9d2a",
+                            r#"{"params":null,"known":[{"TrimListSuffix":{"source":"dns.answers.name","target":"dns.answers.name","suffix":"."}}]}"#
                         ),
                     )?;
                 }
@@ -2439,8 +2445,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ArrayList hf = new ArrayList();\nfor (entry in params.entrySet()) {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains(entry.getKey())) {\n    hf.add(entry.getValue());\n  }\n}\nif (ctx.dns?.response_code != null && ctx.dns.response_code != '') {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) {\n    hf.add('RA')\n  }\n} else {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) {\n    hf.add('RD')\n  }\n}\nif (hf.length == 0) {\n  return;\n}\nif (ctx.dns == null) {\n  HashMap hm = new HashMap();\n  ctx.put('dns', hm);\n}\nctx.dns.put('header_flags', hf);\n"#
+                        compiled_painless!(
+                            "56647cbc82a589cf6411a9fd171220a7b75107af8449c1d8ecb2998bab4deb49",
+                            r#"{"params":{"ContainsFlags":{"source":"infoblox_nios.log.dns.header_flags","target":"dns.header_flags","branch":{"marker":"+","witness":"dns.response_code","present":"RA","absent":"RD"}}},"known":[]}"#
                         ),
                         cached_params!("{\"A\":\"AA\",\"t\":\"TC\",\"C\":\"CD\",\"D\":\"DO\"}"),
                     )?;

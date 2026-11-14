@@ -78,8 +78,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"long t = (long)(ctx.json.CreatedAt);\nif (t > (long)(1e18)) {\n  ctx.json.CreatedAt = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.CreatedAt = t*(long)(1e3)\n}\n"#
+                        compiled_painless!(
+                            "1bbc863e16b30525593b8db31a84141e1e285aaa2d07c19341f9839427e8eec6",
+                            r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.CreatedAt",false]],"parse_strings":false}}]}"#
                         ),
                     )?;
                     Ok(())

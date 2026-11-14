@@ -65,8 +65,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def doc = ctx.json;\nSet reserved = new HashSet(['metadata', 'team_id', 'ip_address', 'user_email']);\nString eventKey = null;\nfor (def k : doc.keySet()) {\n  if (!reserved.contains(k)) {\n    eventKey = k;\n    break;\n  }\n}\nif (eventKey == null) {\n  return;\n}\ndef payload = doc.remove(eventKey);\ndoc.event_type = eventKey;\nif (payload instanceof Map) {\n  doc.event_data = payload;\n} else if (payload != null) {\n  def wrap = new HashMap();\n  wrap.put('value', payload);\n  doc.event_data = wrap;\n} else {\n  doc.event_data = new HashMap();\n}"#
+                        compiled_painless!(
+                            "e1abbc554e4933182112c726381e22a0fd3e0da3030f7b8249b00b3f4d29cfa5",
+                            r#"{"params":null,"known":[{"UnreservedKeyPayload":{"doc":"json","reserved":["metadata","team_id","ip_address","user_email"],"name_field":"event_type","payload_field":"event_data","wrap_key":"value"}}]}"#
                         ),
                     )?;
                 }
@@ -85,8 +86,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def ctxMap = ctx.json.metadata.context;\nfor (def entry : ctxMap.entrySet()) {\n  if (!ctx.json.containsKey(entry.getKey())) {\n    ctx.json[entry.getKey()] = entry.getValue();\n  }\n}"#
+                        compiled_painless!(
+                            "e385f344d1794dbf2f635b4ab3d93bd05be9ff6057c1048b24a3fecf42435904",
+                            r#"{"params":null,"known":[{"MergeMapUp":{"parent":"json","source":"json.metadata.context","take":false,"collision":"KeepExisting","drops":[]}}]}"#
                         ),
                     )?;
                 }
@@ -151,8 +153,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def action = ctx.json.event_type;\nctx.event = ctx.event ?: [:];\nctx.event.action = action;\nctx.event.kind = 'event';\ndef mapping = params.mappings.get(action);\nif (mapping == null && action.startsWith('bugbot_')) {\n  mapping = params.bugbot;\n}\nmapping = mapping ?: params.defaults;\ndef hm = new HashMap(mapping);\nhm.forEach((k, v) -> ctx.event[k] = v);"#
+                    compiled_painless!(
+                        "9fc929af5bcc6f54819ab0c2b00cd47e28f4bfbe4bdd2a5f3a5045cb4a31d5b7",
+                        r#"{"params":{"MergeRowOrFallback":{"subject":"json.event_type","table":"mappings","target":"event","prelude":[["event.kind","event"]],"key_writes":["event.action"],"prefix_row":["bugbot_","bugbot"],"default_row":"defaults"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"mappings\":{\"login\":{\"category\":[\"authentication\"],\"type\":[\"start\"]},\"logout\":{\"category\":[\"authentication\"],\"type\":[\"end\"],\"outcome\":\"success\"},\"add_user\":{\"category\":[\"iam\"],\"type\":[\"user\",\"creation\"],\"outcome\":\"success\"},\"remove_user\":{\"category\":[\"iam\"],\"type\":[\"user\",\"deletion\"],\"outcome\":\"success\"},\"update_user_role\":{\"category\":[\"iam\"],\"type\":[\"user\",\"change\"],\"outcome\":\"success\"},\"team_settings\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"team_api_key\":{\"category\":[\"iam\",\"configuration\"],\"type\":[\"admin\"],\"outcome\":\"success\"},\"user_api_key\":{\"category\":[\"iam\",\"configuration\"],\"type\":[\"admin\"],\"outcome\":\"success\"},\"organization_api_key\":{\"category\":[\"iam\",\"configuration\"],\"type\":[\"admin\"],\"outcome\":\"success\"},\"api_key\":{\"category\":[\"iam\",\"configuration\"],\"type\":[\"admin\"],\"outcome\":\"success\"},\"service_account\":{\"category\":[\"iam\"],\"type\":[\"admin\"],\"outcome\":\"success\"},\"invite_link\":{\"category\":[\"iam\"],\"type\":[\"user\",\"admin\"],\"outcome\":\"success\"},\"invite_email_sent\":{\"category\":[\"iam\"],\"type\":[\"user\",\"admin\"],\"outcome\":\"success\"},\"cloud_agent_secret\":{\"category\":[\"iam\",\"configuration\"],\"type\":[\"admin\"],\"outcome\":\"success\"},\"cloud_agent_user_settings\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"protected_git_scope\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"protected_git_scope_access_check\":{\"category\":[\"iam\"],\"type\":[\"info\"]},\"privacy_mode\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"mcp_server_config\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"user_spend_limit\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"team_rule\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"team_repo\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"team_hook\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"team_command\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"create_directory_group\":{\"category\":[\"iam\"],\"type\":[\"group\",\"creation\"],\"outcome\":\"success\"},\"delete_directory_group\":{\"category\":[\"iam\"],\"type\":[\"group\",\"deletion\"],\"outcome\":\"success\"},\"update_directory_group\":{\"category\":[\"iam\"],\"type\":[\"group\",\"change\"],\"outcome\":\"success\"},\"update_directory_group_permissions\":{\"category\":[\"iam\"],\"type\":[\"group\",\"change\"],\"outcome\":\"success\"},\"add_user_to_directory_group\":{\"category\":[\"iam\"],\"type\":[\"user\",\"change\"],\"outcome\":\"success\"},\"remove_user_from_directory_group\":{\"category\":[\"iam\"],\"type\":[\"user\",\"change\"],\"outcome\":\"success\"}},\"bugbot\":{\"category\":[\"configuration\"],\"type\":[\"change\"],\"outcome\":\"success\"},\"defaults\":{\"category\":[\"configuration\"],\"type\":[\"info\"],\"outcome\":\"unknown\"}}"

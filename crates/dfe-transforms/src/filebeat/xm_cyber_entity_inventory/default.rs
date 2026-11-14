@@ -78,8 +78,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n    def result = \"\";\n    for (int i = 0; i < str.length(); i++) {\n        char c = str.charAt(i);\n        if (Character.isUpperCase(c)) {\n            if (i > 0 && Character.isLowerCase(str.charAt(i - 1))) {\n                result += \"_\";\n            }\n            result += Character.toLowerCase(c);\n        } else {\n            result += c;\n        }\n    }\n    return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n// Apply the conversion\nif (ctx.xm_cyber?.entity_inventory != null) {\n  ctx.xm_cyber.entity_inventory = convertToSnakeCase(ctx.xm_cyber.entity_inventory);\n}"#
+                compiled_painless!(
+                    "c506b0bf39d30b472a4ba0b65eac0569381a55de15bd2481be9a298947f5c44f",
+                    r#"{"params":null,"known":[{"CamelToSnake":{"target":"xm_cyber.entity_inventory","source":"xm_cyber.entity_inventory","rule":"OnWordBreak","at_keys":"Convert","merge":false,"removes":[]}}]}"#
                 ),
             )?;
 
@@ -2679,8 +2680,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def src = ctx.xm_cyber.entity_inventory.ipv4;\ndef strings = [];\ndef objects = [];\nfor (def v : src) {\n  if (v == null) { continue; }\n  if (v instanceof String) {\n    strings.add((String) v);\n  } else if (v instanceof Map) {\n    objects.add(v);\n  }\n}\nif (strings.isEmpty()) {\n  ctx.xm_cyber.entity_inventory.remove('ipv4');\n} else {\n  ctx.xm_cyber.entity_inventory.ipv4 = strings;\n}\nif (!objects.isEmpty()) {\n  ctx.xm_cyber.entity_inventory.ipv4_buffer = objects;\n}"#
+                        compiled_painless!(
+                            "97d9d6f8238823f06bcd00b365c82c19a5ae32e7872f043e5709dacd9e5fbe52",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -2729,8 +2731,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def src = ctx.xm_cyber.entity_inventory.ipv6;\ndef strings = [];\ndef objects = [];\nfor (def v : src) {\n  if (v == null) { continue; }\n  if (v instanceof String) {\n    strings.add((String) v);\n  } else if (v instanceof Map) {\n    objects.add(v);\n  }\n}\nif (strings.isEmpty()) {\n  ctx.xm_cyber.entity_inventory.remove('ipv6');\n} else {\n  ctx.xm_cyber.entity_inventory.ipv6 = strings;\n}\nif (!objects.isEmpty()) {\n  ctx.xm_cyber.entity_inventory.ipv6_buffer = objects;\n}"#
+                        compiled_painless!(
+                            "17132318f4c4b1feeab202985b0801048b89c8f2402dd0c1407d12d514828089",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

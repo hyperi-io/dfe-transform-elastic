@@ -5,27 +5,7 @@
 //!
 //! `ti_opencti` fans an indicator's observables out by STIX entity type, so a
 //! hostname lands under `opencti.observable.hostname` and a file under
-//! `opencti.observable.file`, whatever order the vendor sent them in:
-//!
-//! ```painless
-//! if (!ctx.containsKey('opencti')) {
-//!   ctx.opencti = [:];
-//! }
-//! if (!ctx.opencti.containsKey('observable')) {
-//!   ctx.opencti.observable = [:];
-//! }
-//! ArrayList observables = ctx.observables.edges;
-//! for (int i = 0; i < observables.length; i++) {
-//!   String entity = observables[i]['node']['entity_type'];
-//!   entity = entity.replace('StixFile', 'file');
-//!   entity = entity.toLowerCase();
-//!   entity = entity.replace('-', '_');
-//!   if (!ctx.opencti.observable.containsKey(entity)) {
-//!     ctx.opencti.observable[entity] = [];
-//!   }
-//!   ctx.opencti.observable[entity].add(observables[i]['node']);
-//! }
-//! ```
+//! `opencti.observable.file`, whatever order the vendor sent them in.
 //!
 //! The bucket name is a VALUE, so it cannot be read off the script and the rest
 //! of the pipeline cannot be written without it: every processor after this one
@@ -43,7 +23,7 @@ use crate::params::{clean_path, is_ctx_path};
 use dfe_core::Event;
 
 /// What the script does to a record's member before filing under it.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum KeyStep {
     Lowercase,
     Uppercase,
@@ -56,7 +36,7 @@ pub enum KeyStep {
 }
 
 /// A list's records filed into buckets named by one of their own members.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct GroupRecords {
     /// The list walked.
     list: String,
@@ -307,174 +287,7 @@ pub fn group_records(event: &mut Event, pattern: &GroupRecords) -> bool {
     true
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/ti_opencti_indicator/default.rs`, in
-    /// the escaped one-line form a stored script reaches it in.
-    const OPENCTI_OBSERVABLES: &str = r"if (!ctx.containsKey('opencti')) {\n  ctx.opencti = [:];\n}\nif (!ctx.opencti.containsKey('observable')) {\n  ctx.opencti.observable = [:];\n}\nArrayList observables = ctx.observables.edges;\nfor (int i = 0; i < observables.length; i++) {\n  String entity = observables[i]['node']['entity_type'];\n  entity = entity.replace('StixFile', 'file');\n  entity = entity.toLowerCase();\n  entity = entity.replace('-', '_');\n  if (!ctx.opencti.observable.containsKey(entity)) {\n    ctx.opencti.observable[entity] = [];\n  }\n  ctx.opencti.observable[entity].add(observables[i]['node']);\n}\n";
-
-    #[test]
-    fn the_opencti_observables_file_under_their_entity_type() {
-        assert_eq!(
-            parse_group_records(&crate::common::normalise(OPENCTI_OBSERVABLES)),
-            Some(GroupRecords {
-                list: "observables.edges".to_owned(),
-                record: "node".to_owned(),
-                key: "entity_type".to_owned(),
-                steps: vec![
-                    KeyStep::Replace {
-                        from: "StixFile".to_owned(),
-                        to: "file".to_owned()
-                    },
-                    KeyStep::Lowercase,
-                    KeyStep::Replace {
-                        from: "-".to_owned(),
-                        to: "_".to_owned()
-                    },
-                ],
-                target: "opencti.observable".to_owned(),
-            })
-        );
-    }
-
-    /// The written document, not the parse. A hyphenated entity type takes
-    /// both replaces and the lowercase in between.
-    #[test]
-    fn a_hyphenated_entity_type_names_an_underscored_bucket() {
-        let mut event = Event::new(json!({ "observables": { "edges": [
-            { "node": { "entity_type": "IPv4-Addr", "value": "175.16.199.127" } },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_OBSERVABLES
-        ));
-        assert_eq!(
-            event.get("opencti.observable"),
-            Some(&json!({ "ipv4_addr": [
-                { "entity_type": "IPv4-Addr", "value": "175.16.199.127" },
-            ]}))
-        );
-    }
-
-    /// `StixFile` folds to `file` BEFORE the lowercase, which is the whole
-    /// reason the steps are ordered.
-    #[test]
-    fn the_stix_file_fold_runs_ahead_of_the_lowercase() {
-        let mut event = Event::new(json!({ "observables": { "edges": [
-            { "node": { "entity_type": "StixFile", "name": "ExtensionManager.exe" } },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_OBSERVABLES
-        ));
-        assert_eq!(
-            event.get("opencti.observable.file"),
-            Some(&json!([{ "entity_type": "StixFile", "name": "ExtensionManager.exe" }]))
-        );
-    }
-
-    /// Two records of one type share a bucket, in the order the list holds
-    /// them; two types get one bucket each.
-    #[test]
-    fn records_of_one_type_share_a_bucket_in_list_order() {
-        let mut event = Event::new(json!({ "observables": { "edges": [
-            { "node": { "entity_type": "Hostname", "value": "one.example.com" } },
-            { "node": { "entity_type": "Url", "value": "http://example.com/a" } },
-            { "node": { "entity_type": "Hostname", "value": "two.example.com" } },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_OBSERVABLES
-        ));
-        assert_eq!(
-            event.get("opencti.observable.hostname"),
-            Some(&json!([
-                { "entity_type": "Hostname", "value": "one.example.com" },
-                { "entity_type": "Hostname", "value": "two.example.com" },
-            ]))
-        );
-        assert_eq!(
-            event.get("opencti.observable.url"),
-            Some(&json!([{ "entity_type": "Url", "value": "http://example.com/a" }]))
-        );
-    }
-
-    /// An empty list writes NOTHING. The script's two `containsKey` guards do
-    /// create an empty container, and the vendor's next script removes it
-    /// again, so an event with no observables comes out of both engines with no
-    /// `opencti.observable` at all.
-    #[test]
-    fn an_empty_edge_list_writes_no_container() {
-        let mut event = Event::new(json!({ "observables": { "edges": [] } }));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_OBSERVABLES
-        ));
-        assert_eq!(event.get("opencti"), None);
-    }
-
-    /// A record with no entity type at all is skipped rather than filed under a
-    /// name chosen for it.
-    #[test]
-    fn a_record_with_no_key_member_is_skipped() {
-        let mut event = Event::new(json!({ "observables": { "edges": [
-            { "node": { "value": "no entity type" } },
-            { "node": { "entity_type": "Mutex", "value": "flPGdvyhPykxGvhDOAZnU" } },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_OBSERVABLES
-        ));
-        assert_eq!(
-            event.get("opencti.observable"),
-            Some(&json!({ "mutex": [
-                { "entity_type": "Mutex", "value": "flPGdvyhPykxGvhDOAZnU" },
-            ]}))
-        );
-    }
-
-    /// The list is left exactly as it was: the vendor's own `remove` processor
-    /// is what drops it, one step later.
-    #[test]
-    fn the_walked_list_is_left_alone() {
-        let mut event = Event::new(json!({ "observables": { "edges": [
-            { "node": { "entity_type": "Hostname", "value": "one.example.com" } },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_OBSERVABLES
-        ));
-        assert_eq!(
-            event.get("observables.edges"),
-            Some(&json!([{ "node": { "entity_type": "Hostname", "value": "one.example.com" } }]))
-        );
-    }
-
-    /// A second append is a second thing being filed, and reading one of them
-    /// would claim the call site while writing half the document.
-    #[test]
-    fn a_script_with_two_appends_is_declined() {
-        let script = r"ArrayList rows = ctx.a.list;\nfor (int i = 0; i < rows.length; i++) {\n  String k = rows[i]['node']['kind'];\n  if (!ctx.out.bucket.containsKey(k)) {\n    ctx.out.bucket[k] = [];\n  }\n  ctx.out.bucket[k].add(rows[i]['node']);\n  ctx.related.kinds.add(k);\n}\n";
-        assert!(parse_group_records(&crate::common::normalise(script)).is_none());
-    }
-
-    /// Without the empty-list seed the bucket is not a list, so `.add()` is a
-    /// different operation on a value an earlier processor put there.
-    #[test]
-    fn a_bucket_never_seeded_as_a_list_is_declined() {
-        let script = r"ArrayList rows = ctx.a.list;\nfor (int i = 0; i < rows.length; i++) {\n  String k = rows[i]['node']['kind'];\n  ctx.out.bucket[k].add(rows[i]['node']);\n}\n";
-        assert!(parse_group_records(&crate::common::normalise(script)).is_none());
-    }
-
-    /// A key step this cannot reproduce declines the script rather than filing
-    /// under a name the vendor never spells.
-    #[test]
-    fn an_unreadable_key_step_declines_the_script() {
-        let script = r"ArrayList rows = ctx.a.list;\nfor (int i = 0; i < rows.length; i++) {\n  String k = rows[i]['node']['kind'];\n  k = k.substring(3);\n  if (!ctx.out.bucket.containsKey(k)) {\n    ctx.out.bucket[k] = [];\n  }\n  ctx.out.bucket[k].add(rows[i]['node']);\n}\n";
-        assert!(parse_group_records(&crate::common::normalise(script)).is_none());
-    }
-}
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
+#[path = "group_records_tests.rs"]
+mod tests;

@@ -46,7 +46,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "799451f1c7dfe949f31e2baa6bbf83e9946b01a594bf38d26342c09d9587675d",
+                    r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                     r#"ctx.beyondinsight_password_safe.session.entrySet().removeIf(entry ->\n  entry.getValue() == null ||\n  (entry.getValue() instanceof String && entry.getValue().isEmpty())\n);\n"#
                 ),
             )?;
@@ -54,8 +56,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"for (field in params.numeric_ids) {\n  def value = ctx.beyondinsight_password_safe.session[field];\n  if (value instanceof Number) {\n    ctx.beyondinsight_password_safe.session[field] =\n      Integer.toString(value.intValue());\n  }\n}\n"#
+                compiled_painless!(
+                    "c54e4d7ce65c64053f2b91f0884ea9aca77dc346cdfb994ace33bd692ef414ec",
+                    r#"{"params":{"StringifyNamedFields":{"container":"beyondinsight_password_safe.session","table":"numeric_ids"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"numeric_ids\":[\"ApplicationID\",\"ArchiveStatus\",\"ManagedAccountID\",\"ManagedSystemID\",\"Protocol\",\"RequestID\",\"SessionID\",\"SessionType\",\"Status\",\"UserID\"]}"
@@ -65,8 +68,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"Map renamedFields = [:];\nfor (entry in ctx.beyondinsight_password_safe.session.entrySet()) {\n  def originalKey = entry.getKey();\n  def snakeKey = params.field_mappings[originalKey];\n  if (snakeKey != null) {\n    renamedFields[snakeKey] = entry.getValue();\n  } else {\n    renamedFields[originalKey] = entry.getValue();\n  }\n}\nctx.beyondinsight_password_safe.session = renamedFields;\n"#
+                compiled_painless!(
+                    "fb3f09dcd181afdb5638c1440ead20c75333b4c766f0cada45d7e7ab05eb9d45",
+                    r#"{"params":{"SelectRenameKeys":{"subject":"beyondinsight_password_safe.session","table":"field_mappings","keep_unmapped":true,"wrap_in_list":false}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"field_mappings\":{\"ApplicationID\":\"application_id\",\"ArchiveStatus\":\"archive_status\",\"AssetName\":\"asset_name\",\"Duration\":\"duration\",\"EndTime\":\"end_time\",\"ManagedAccountID\":\"managed_account_id\",\"ManagedAccountName\":\"managed_account_name\",\"ManagedSystemID\":\"managed_system_id\",\"NodeID\":\"node_id\",\"Protocol\":\"protocol\",\"RecordKey\":\"record_key\",\"RequestID\":\"request_id\",\"SessionID\":\"session_id\",\"SessionType\":\"session_type\",\"StartTime\":\"start_time\",\"Status\":\"status\",\"Token\":\"token\",\"UserID\":\"user_id\"}}"
@@ -173,8 +177,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def description = params.descriptions.get(ctx.beyondinsight_password_safe.session.status);\nif (description != null) {\n  ctx.beyondinsight_password_safe.session.status = description;\n}\n"#
+                    compiled_painless!(
+                        "139c6476f40a0b64dc0a953eecaa748de821a4ac973483fabef9a4c65dafcbf4",
+                        r#"{"params":{"MemberLookup":{"key":"beyondinsight_password_safe.session.status","table":"descriptions","fold":"None","target":"beyondinsight_password_safe.session.status","wrap":false,"miss":"Keep","literals":{"statements":[],"whole":true}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"descriptions\":{\"0\":\"not_started\",\"1\":\"in_progress\",\"2\":\"completed\",\"5\":\"locked\",\"7\":\"terminated\",\"8\":\"logged_off\",\"9\":\"disconnected\"}}"
@@ -187,8 +192,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def description = params.descriptions.get(ctx.beyondinsight_password_safe.session.archive_status);\nif (description != null) {\n  ctx.beyondinsight_password_safe.session.archive_status = description;\n}\n"#
+                    compiled_painless!(
+                        "86534b64ab3a570f06540406835591253d0e87b79a2615ff5fdb636f10ce8652",
+                        r#"{"params":{"MemberLookup":{"key":"beyondinsight_password_safe.session.archive_status","table":"descriptions","fold":"None","target":"beyondinsight_password_safe.session.archive_status","wrap":false,"miss":"Keep","literals":{"statements":[],"whole":true}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"descriptions\":{\"0\":\"not_archived\",\"1\":\"archived\",\"2\":\"restoring\",\"3\":\"archiving\",\"4\":\"session_not_found\",\"5\":\"repository_offline\",\"6\":\"unknown\"}}"
@@ -201,8 +207,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def description = params.descriptions.get(ctx.beyondinsight_password_safe.session.protocol);\nif (description != null) {\n  ctx.beyondinsight_password_safe.session.protocol = description;\n}\n"#
+                    compiled_painless!(
+                        "0fccd0c2bd550659788710df87a4329058dbb1a09081db82d1bc3afc7205a1ca",
+                        r#"{"params":{"MemberLookup":{"key":"beyondinsight_password_safe.session.protocol","table":"descriptions","fold":"None","target":"beyondinsight_password_safe.session.protocol","wrap":false,"miss":"Keep","literals":{"statements":[],"whole":true}}},"known":[]}"#
                     ),
                     cached_params!("{\"descriptions\":{\"0\":\"rdp\",\"1\":\"ssh\"}}"),
                 )?;
@@ -213,8 +220,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def description = params.descriptions.get(ctx.beyondinsight_password_safe.session.session_type);\nif (description != null) {\n  ctx.beyondinsight_password_safe.session.session_type = description;\n}\n"#
+                    compiled_painless!(
+                        "d80da5d0d71cd0ab903413642d494f3976773000e2ba6f60dd7440c15cc363b4",
+                        r#"{"params":{"MemberLookup":{"key":"beyondinsight_password_safe.session.session_type","table":"descriptions","fold":"None","target":"beyondinsight_password_safe.session.session_type","wrap":false,"miss":"Keep","literals":{"statements":[],"whole":true}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"descriptions\":{\"1\":\"regular\",\"2\":\"isa\",\"3\":\"admin\"}}"

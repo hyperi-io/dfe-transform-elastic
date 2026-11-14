@@ -509,7 +509,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "ec98350b337e10fb3340cbc6e35a7ffd839ea36b22954f22ee3742e707dda7b6",
+                            r#"{"params":null,"known":["JoinOptional"]}"#,
                             r#"def dur = ctx._conf.ioc_expiration_duration; def last_updated = ctx.json.last_updated; if (dur instanceof String){\n  String time_unit = dur.substring(dur.length() -  1, dur.length());\n  String time_value = dur.substring(0, dur.length() - 1);\n  if (time_unit == 'd') {\n    ctx.json.deleted_at = last_updated + Long.parseLong(time_value)*24*60*60;\n  } else if (time_unit == 'h') {\n    ctx.json.deleted_at = last_updated + Long.parseLong(time_value)*60*60;\n  } else if (time_unit == 'm') {\n    ctx.json.deleted_at = last_updated + Long.parseLong(time_value)*60;\n  } else {\n    ctx.json.deleted_at = last_updated + 90*24*60*60;\n  }\n}\n"#
                         ),
                     )?;
@@ -676,8 +678,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String temp = ctx.ti_crowdstrike.intel.malicious_confidence;\nif (['high', 'low', 'medium'].contains(temp)) {\n    ctx.threat.indicator.confidence = temp.substring(0, 1).toUpperCase() + temp.substring(1);\n}\nif (temp == 'unverified') {\n    ctx.threat.indicator.confidence = 'Not Specified';\n}"#
+                        compiled_painless!(
+                            "d818af46d8601be0402939ba3cc2ba45f662be9b3063f13f6647f09aee410cd7",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"ti_crowdstrike.intel.malicious_confidence","fold_case":false,"test":"Equals","arms":[{"literals":["high"],"writes":[["threat.indicator.confidence","High"]],"removes":[]},{"literals":["low"],"writes":[["threat.indicator.confidence","Low"]],"removes":[]},{"literals":["medium"],"writes":[["threat.indicator.confidence","Medium"]],"removes":[]},{"literals":["unverified"],"writes":[["threat.indicator.confidence","Not Specified"]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -1013,8 +1016,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"String mapping = params[ctx.ti_crowdstrike.intel.type]; if (mapping != null) {\n   ctx.threat.indicator.type = mapping;\n}\n"#
+                        compiled_painless!(
+                            "126e24afdf8f037c8b0aaaf19aeb900cd28bd88df33b5748946e1f73d7d7a8a2",
+                            r#"{"params":{"NormalisedLookup":{"source":"ti_crowdstrike.intel.type","target":"threat.indicator.type","fold":"None"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"domain\":\"domain-name\",\"email_address\":\"email-addr\",\"email_subject\":\"email-addr\",\"file_mapping\":\"file\",\"file_name\":\"file\",\"file_path\":\"file\",\"hash_ion\":\"file\",\"hash_md5\":\"file\",\"hash_sha1\":\"file\",\"hash_sha256\":\"file\",\"ip_address\":\"ipv4-addr\",\"ip_address_block\":\"ipv4-addr\",\"mutex_name\":\"mutex\",\"persona_name\":\"user-account\",\"port\":\"port\",\"url\":\"url\",\"username\":\"user-account\",\"x509_serial\":\"x509-certificate\",\"x509_subject\":\"x509-certificate\"}"

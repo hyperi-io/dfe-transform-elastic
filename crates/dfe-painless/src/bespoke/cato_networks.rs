@@ -337,7 +337,7 @@ pub const ENTRIES: &[Entry] = &[
         run: cut_fractional_scalars,
     },
     Entry {
-        hash: "6f484ffff5d6ce6d4acab2b30193a2506c6534649adcc820a435ab6fb714e084",
+        hash: "0a41a62f6b6a809281cbbcc1ca9256b5a694f17f1703679adc112a18b8c00f27",
         source: "cato_networks",
         name: "fold_numbered_maps",
         run: fold_numbered_maps,
@@ -349,7 +349,7 @@ pub const ENTRIES: &[Entry] = &[
         run: cut_fractional_in_lists,
     },
     Entry {
-        hash: "4ef0d337bb6aa00f8f45527ff1c7cae035b59d47348c888a97aebd13c4b6647f",
+        hash: "3509799b298b4d20a77c5672cc4c9e5e62c0ed298a9d7541ffe3a60d4727233f",
         source: "cato_networks",
         name: "convert_camel_case_keys",
         run: convert_camel_case_keys,

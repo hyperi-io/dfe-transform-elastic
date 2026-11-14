@@ -89,8 +89,24 @@ fn every_module_file_is_declared() {
         .canonicalize()
         .expect("the generated tree exists");
 
-    let mut reached = BTreeSet::new();
+    // The generated filebeat modules are compiled by the family crates beside
+    // this one, each declaring its share by `#[path]`.
     let mut stack = vec![root.join("lib.rs")];
+    for entry in std::fs::read_dir(root.join("../.."))
+        .expect("the crates directory reads")
+        .flatten()
+    {
+        let lib = entry.path().join("src/lib.rs");
+        if entry
+            .file_name()
+            .to_str()
+            .is_some_and(|name| name.starts_with("dfe-transforms-"))
+            && lib.is_file()
+        {
+            stack.push(lib);
+        }
+    }
+    let mut reached = BTreeSet::new();
     while let Some(file) = stack.pop() {
         let Ok(file) = file.canonicalize() else {
             continue;

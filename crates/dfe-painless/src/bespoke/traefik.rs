@@ -57,7 +57,7 @@ fn header_name(name: &str, prefix: &str) -> String {
 
 /// Every `traefik` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
-    hash: "597ef01e6f2e50f4aa63b8a4df84ce4446f6d71a8ac9883c07eeaa3dbf401ea8",
+    hash: "3f7534f8d798c67da627477b9caab1eaab5eaea40065a7beb7d22e2ebc3eb72f",
     source: "traefik",
     name: "collect_headers",
     run: collect_headers,

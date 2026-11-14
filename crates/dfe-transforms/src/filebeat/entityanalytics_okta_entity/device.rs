@@ -30,8 +30,9 @@ impl Transform for Device {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def stringified_orig = Json.dump(ctx);\nif (stringified_orig != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.original = stringified_orig;\n}\n"#
+                    compiled_painless!(
+                        "415bbaefc30d9e86558e65ebb5a4bb0b8d41b642e5e65d6a827b41345114aa77",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

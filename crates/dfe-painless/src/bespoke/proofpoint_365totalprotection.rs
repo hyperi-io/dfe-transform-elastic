@@ -92,7 +92,7 @@ fn extension_of(filename: &str) -> Option<String> {
 
 /// Every `proofpoint_365totalprotection` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
-    hash: "942ece0329387367f5edf2a99fd314510afb6effa5464434f27d10cee780aa4c",
+    hash: "1b966c2ab9a0fda4ee874724d42ef5d6dce40a24a0460a363e0db2dc9cba022f",
     source: "proofpoint_365totalprotection",
     name: "process_attachments_to_ecs",
     run: process_attachments_to_ecs,

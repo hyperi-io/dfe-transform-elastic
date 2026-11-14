@@ -253,8 +253,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\n\nif(ctx.tanium?.threat_response?.state != null) {\n  ctx.tanium.threat_response.state = keysToSnakeCase(ctx.tanium.threat_response.state);\n}\n"#
+                compiled_painless!(
+                    "32b3ced812e39609e4bd6a036087d939a137f22da07a47c9526592b1d968bd72",
+                    r#"{"params":null,"known":[{"KeysToSnakeCase":["tanium.threat_response.state","CamelBreak"]}]}"#
                 ),
             )?;
 
@@ -611,8 +612,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.tanium.threat_response.other_parameters.payload_json = ctx.tanium.threat_response.other_parameters.payload.decodeBase64()"#
+                        compiled_painless!(
+                            "e34a56e63663d3d3306b53e768ff68e57b930e2aab656588f17c2da4bd88372b",
+                            r#"{"params":null,"known":[{"DecodeBase64":{"source":"tanium.threat_response.other_parameters.payload","target":"tanium.threat_response.other_parameters.payload_json"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -690,8 +692,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.tanium.threat_response.match_details = ctx.tanium.threat_response.match_details ?: [:];\nctx.tanium.threat_response.match_details.putAll(ctx.json['Match Details']);\n"#
+                    compiled_painless!(
+                        "4c840404186829ef951c682ffe28648e62cd743dca298dbbc77b7213a521d429",
+                        r#"{"params":null,"known":[{"MergeMapUp":{"parent":"tanium.threat_response.match_details","source":"json.Match Details","take":false,"collision":"Overwrite","drops":[]}}]}"#
                     ),
                 )?;
             }
@@ -2080,8 +2083,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Map truncateMap(Map node, int depth, int maxDepth, List path, List truncations) {\n    if (depth > maxDepth) {\n        truncations.add(String.join(\".\", path));\n        return null; // Return null if max depth is exceeded\n    }\n    for (entry in node.entrySet()) {\n        List newPath = new ArrayList(path);\n        newPath.add(entry.getKey());\n        Object value = entry.getValue();\n        if (value instanceof Map) {\n            entry.setValue(truncateMap((Map) value, depth + 1, maxDepth, newPath, truncations));\n        } else if (value instanceof List) {\n            // A list in a map doesn't add depth - multiple values are treated the same as a single value\n            entry.setValue(truncateList((List) value, depth, maxDepth, newPath, truncations));\n        }\n        // Otherwise it's a plain value, so leave it\n    }\n    return node;\n\n}\nList truncateList(List node, int depth, int maxDepth, List path, List truncations) {\n    List input = new ArrayList(node);\n    node.clear();\n    if (depth > maxDepth) {\n        truncations.add(String.join(\".\", path));\n        return null;\n    }\n    for (item in input) {\n        if (item instanceof Map) {\n            node.add(truncateMap((Map) item, depth + 1, maxDepth, path, truncations));\n        } else if (item instanceof List) {\n            // A list in a list adds depth - but isn't common in our data\n            node.add(truncateList((List) item, depth + 1, maxDepth, path, truncations));\n        } else {\n            node.add(item); // It's a plain value\n        }\n    }\n    return node;\n}\nint maxDepth = 20;\nList truncations = [];\ntruncateMap(ctx, 1, maxDepth, [], truncations);\nctx.tanium.truncations = truncations;\n"#
+                compiled_painless!(
+                    "d8c3ac6d41402c052c21a59855a022f14ffeaec681016998e7a33d9970d90175",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

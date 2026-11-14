@@ -43,7 +43,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "7f12ccaa598ce71826ece24e3b1849e78f394882764fa18f83ae9ff61f5bf057",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"tychon.script.current_duration","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"tychon.script.current_duration","value":{"LongOf":"tychon.script.current_duration"}}}}],"alt":[]}}],"whole":true}}]}"#,
                     r#"if (ctx.tychon?.script?.current_duration != null)\n{\n  ctx.tychon.script.current_duration =\n    (long) Double.parseDouble(ctx.tychon.script.current_duration.toString());\n}\n"#
                 ),
             )?;
@@ -335,8 +337,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.tychon.file.attributes.removeIf(e -> !(e instanceof String));"#
+                    compiled_painless!(
+                        "336b1751d4a25649629a0ad13811e8d00bf0a9ac62ec2f6e5e1f91c4a91eaad5",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

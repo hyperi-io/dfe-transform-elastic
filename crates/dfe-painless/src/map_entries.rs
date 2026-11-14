@@ -7,32 +7,10 @@
 //! rest of the module is written against what they leave behind.
 //!
 //! The first copies ONE entry whose key is not in the script -- the key's name
-//! is held in another field:
-//!
-//! ```painless
-//! def obj = ctx.servicenow.event;
-//! if (obj.containsKey(ctx._conf.timestamp_field)) {
-//!     ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);
-//! }
-//! ```
+//! is held in another field.
 //!
 //! The second wraps every scalar under that subtree into a one-key record, the
-//! key chosen by a config flag:
-//!
-//! ```painless
-//! for (def entry: ctx.servicenow.event.entrySet()) {
-//!   if (entry.getKey() == 'table_name') { continue; }
-//!   def v = entry.getValue();
-//!   if (v instanceof Map) { continue; }
-//!   Map n = [:];
-//!   if (ctx._conf.data_has_display_values == "true") {
-//!     n.display_value = v;
-//!   } else {
-//!     n.value = v;
-//!   }
-//!   entry.setValue(n);
-//! }
-//! ```
+//! key chosen by a config flag.
 //!
 //! Both were unbound, and the wrap is what the rest of the source reads:
 //! `servicenow.event.timestamp_field.value` sets `@timestamp`,
@@ -58,7 +36,7 @@ use crate::params::{clean_path, ctx_locals as locals, ctx_path_plain, pointer_mu
 use dfe_core::Event;
 
 /// One entry copied out of a map, its key named by another field's VALUE.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct KeyNamedByField {
     /// The map the entry is read from.
     path: String,
@@ -68,7 +46,7 @@ pub struct KeyNamedByField {
 }
 
 /// Every scalar entry of a map wrapped into a one-key record.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct WrapEntries {
     /// The map whose entries are rewritten.
     path: String,
@@ -289,197 +267,7 @@ pub fn wrap_entries(event: &mut Event, pattern: &WrapEntries) -> bool {
     true
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/servicenow_event/default.rs`, in the
-    /// escaped one-line form the call site holds.
-    const SN_TIMESTAMP_FIELD: &str = r"def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}";
-
-    const SN_WRAP: &str = r#"for (def entry: ctx.servicenow.event.entrySet()) {\n  if (entry.getKey() == 'table_name') {\n    continue;\n  }\n  def v = entry.getValue();\n  if (v instanceof Map) {\n    continue;\n  }\n  Map n = [:];\n  if (ctx._conf.data_has_display_values == \"true\") {\n    n.display_value = v;\n  } else {\n    n.value = v;\n  }\n  entry.setValue(n);\n}\n"#;
-
-    #[test]
-    fn the_servicenow_copy_reads_the_key_its_config_names() {
-        assert_eq!(
-            parse_key_named_by_field(&crate::common::normalise(SN_TIMESTAMP_FIELD)),
-            Some(KeyNamedByField {
-                path: "servicenow.event".to_owned(),
-                key_from: "_conf.timestamp_field".to_owned(),
-                target: "servicenow.event.timestamp_field".to_owned(),
-            })
-        );
-
-        // The WRITTEN value: the config names `sys_updated_on`, so that entry
-        // is what lands on `timestamp_field`.
-        let mut event = Event::new(json!({
-            "_conf": { "timestamp_field": "sys_updated_on" },
-            "servicenow": { "event": {
-                "sys_updated_on": "2024-09-10 08:15:50",
-                "sys_created_on": "2023-08-31 18:16:40",
-            }},
-        }));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            SN_TIMESTAMP_FIELD
-        ));
-        assert_eq!(
-            event.get("servicenow.event.timestamp_field"),
-            Some(&json!("2024-09-10 08:15:50"))
-        );
-
-        // A config naming a key the document does not carry writes nothing.
-        let mut absent = Event::new(json!({
-            "_conf": { "timestamp_field": "closed_at" },
-            "servicenow": { "event": { "sys_updated_on": "2024-09-10 08:15:50" } },
-        }));
-        assert!(crate::common::try_known_painless(
-            &mut absent,
-            SN_TIMESTAMP_FIELD
-        ));
-        assert_eq!(absent.get("servicenow.event.timestamp_field"), None);
-    }
-
-    #[test]
-    fn the_servicenow_wrap_records_both_keys_and_the_flag_that_chooses() {
-        assert_eq!(
-            parse_wrap_entries(&crate::common::normalise(SN_WRAP)),
-            Some(WrapEntries {
-                path: "servicenow.event".to_owned(),
-                skip_keys: vec!["table_name".to_owned()],
-                flag: "_conf.data_has_display_values".to_owned(),
-                flag_value: "true".to_owned(),
-                key_when_set: "display_value".to_owned(),
-                key_when_unset: "value".to_owned(),
-            })
-        );
-    }
-
-    #[test]
-    fn the_wrap_writes_value_by_default_and_keeps_the_named_key_bare() {
-        let mut event = Event::new(json!({
-            "_conf": { "timestamp_field": "sys_updated_on" },
-            "servicenow": { "event": {
-                "table_name": "alm_hardware",
-                "asset_tag": "P1000241",
-                "cost": 699.99,
-                "nested": { "already": "a map" },
-            }},
-        }));
-        assert!(crate::common::try_known_painless(&mut event, SN_WRAP));
-
-        // Every scalar is wrapped...
-        assert_eq!(
-            event.get("servicenow.event.asset_tag"),
-            Some(&json!({ "value": "P1000241" }))
-        );
-        assert_eq!(
-            event.get("servicenow.event.cost"),
-            Some(&json!({ "value": 699.99 }))
-        );
-        // ...the script's named key is not...
-        assert_eq!(
-            event.get("servicenow.event.table_name"),
-            Some(&json!("alm_hardware"))
-        );
-        // ...and a map the vendor already built is left as it stands.
-        assert_eq!(
-            event.get("servicenow.event.nested"),
-            Some(&json!({ "already": "a map" }))
-        );
-    }
-
-    #[test]
-    fn the_flag_moves_the_wrap_to_the_display_key() {
-        let mut event = Event::new(json!({
-            "_conf": { "data_has_display_values": "true" },
-            "servicenow": { "event": { "asset_tag": "P1000241" } },
-        }));
-        assert!(crate::common::try_known_painless(&mut event, SN_WRAP));
-        assert_eq!(
-            event.get("servicenow.event.asset_tag"),
-            Some(&json!({ "display_value": "P1000241" }))
-        );
-    }
-
-    /// Key order is what servicenow's parity rests on, and an in-place rewrite
-    /// is the only way to keep it. A `Map::remove` here would drop the last key
-    /// into the freed slot under `preserve_order`.
-    #[test]
-    fn the_wrap_leaves_the_key_order_alone() {
-        let mut event = Event::new(json!({
-            "servicenow": { "event": {
-                "zeta": "1", "table_name": "t", "alpha": "2", "middle": "3", "omega": "4",
-            }},
-        }));
-        assert!(crate::common::try_known_painless(&mut event, SN_WRAP));
-        let keys: Vec<&String> = event
-            .get_object("servicenow.event")
-            .map(|subtree| subtree.keys().collect())
-            .unwrap_or_default();
-        assert_eq!(keys, ["zeta", "table_name", "alpha", "middle", "omega"]);
-    }
-
-    /// The three recursive helpers that also spell `entry.setValue(` --
-    /// `filterMassive`, `unescape` and `truncateMap` -- do a different job, and
-    /// claiming one would report it handled while writing nothing.
-    #[test]
-    fn the_wrap_declines_the_recursive_helpers_that_share_its_trigger() {
-        for (name, script) in [
-            (
-                "filterMassive",
-                r"def filterMassive(def src) {\n  if (src instanceof Map) {\n    for (def entry: src.entrySet()) {\n      entry.setValue(filterMassive(entry.getValue()));\n    }\n    return src;\n  }\n  return src;\n}\nfilterMassive(ctx);",
-            ),
-            (
-                "unescape",
-                r"void unescape(Object obj) {\n  if (obj instanceof Map) {\n    for (entry in ((Map)obj).entrySet()) {\n      Object value = entry.getValue();\n      unescape(value);\n      if (value instanceof String) {\n        entry.setValue(value.replace('a', 'b'));\n      }\n    }\n  }\n} unescape(ctx);\n",
-            ),
-        ] {
-            assert!(
-                parse_wrap_entries(&crate::common::normalise(script)).is_none(),
-                "{name} was claimed"
-            );
-        }
-    }
-
-    /// A guard spelled `!=` keeps ONE key and wraps nothing else, which is the
-    /// inverse of what this reads. Taking no skip from it would wrap the very
-    /// key the guard protects, so it is declined instead.
-    #[test]
-    fn the_wrap_declines_a_key_guard_written_the_other_way_round() {
-        let script = r#"for (def entry: ctx.a.b.entrySet()) {\n  if (entry.getKey() != 'keep') {\n    continue;\n  }\n  def v = entry.getValue();\n  if (v instanceof Map) {\n    continue;\n  }\n  Map n = [:];\n  if (ctx._conf.flag == \"true\") {\n    n.display_value = v;\n  } else {\n    n.value = v;\n  }\n  entry.setValue(n);\n}\n"#;
-        assert!(parse_wrap_entries(&crate::common::normalise(script)).is_none());
-    }
-
-    /// `params.containsKey(<field>)` is a lookup table keyed by a field, which
-    /// is not a copy out of the document. Nine call sites spell it and the
-    /// receiver is what tells them apart.
-    #[test]
-    fn the_copy_declines_a_params_lookup_keyed_by_a_field() {
-        for (name, script) in [
-            (
-                "cisco_ftd",
-                r"if (ctx.event?.action == null || !params.containsKey(ctx.event.action)) {\n  return;\n} ctx.event.kind = params.get(ctx.event.action).get('kind');",
-            ),
-            (
-                "zeek_connection",
-                r#"if (ctx.zeek?.connection?.state == null) {\n  return;\n} if (params.containsKey(ctx.zeek.connection.state)) {\n  ctx.zeek.connection.state_message = params[ctx.zeek.connection.state][\"conn_str\"];\n}"#,
-            ),
-        ] {
-            assert!(
-                parse_key_named_by_field(&crate::common::normalise(script)).is_none(),
-                "{name} was claimed"
-            );
-        }
-    }
-
-    /// A guard testing one field and a getter reading another moves the wrong
-    /// entry, so it is declined rather than half-run.
-    #[test]
-    fn the_copy_declines_a_guard_and_getter_naming_different_keys() {
-        let script = r"def obj = ctx.a.b; if (obj.containsKey(ctx._conf.one)) {\n    ctx.a.b.picked = obj.get(ctx._conf.two);\n}";
-        assert!(parse_key_named_by_field(&crate::common::normalise(script)).is_none());
-    }
-}
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
+#[path = "map_entries_tests.rs"]
+mod tests;

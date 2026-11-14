@@ -149,8 +149,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def dur = ctx.labels.interval; ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_created_at = ctx.event.ingested; long max_ingest_time_in_sec = 30L; long transform_max_age_in_min = 1L; String time_unit = dur.substring(dur.length() -  1, dur.length()); String time_value = dur.substring(0, dur.length() - 1); if (time_unit == 'd') {\n  _tmp_deleted_at = _tmp_created_at.plusDays(Long.parseLong(time_value));\n} else if (time_unit == 'h') {\n  _tmp_deleted_at = _tmp_created_at.plusHours(Long.parseLong(time_value));\n} else if (time_unit == 'm') {\n  _tmp_deleted_at = _tmp_created_at.plusMinutes(Long.parseLong(time_value));\n} else {\n  _tmp_deleted_at = _tmp_created_at.plusDays(90L);\n  if (ctx.error == null) {\n    ctx.error = new HashMap();\n  }\n  if (ctx.error.message == null) {\n    ctx.error.message = new ArrayList();\n  }\n  ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n} // Subtract transform's retention max_age and ingest time so that indicators are expire time slightly before next interval. // This ensures the indicator is deleted when the next interval starts.\n_tmp_deleted_at = _tmp_deleted_at.minusMinutes(transform_max_age_in_min).minusSeconds(max_ingest_time_in_sec); ctx.abusech.ja3_fingerprints.deleted_at = _tmp_deleted_at;\n"#
+                compiled_painless!(
+                    "9c45003feb1b31b4346c952df7a294999199d612dec96468491ef641c2216493",
+                    r#"{"params":null,"known":[{"IocExpiry":{"duration":"labels.interval","default_duration":null,"bases":["event.ingested"],"default_days":90,"settle_seconds":90,"invalid_message":"invalid ioc_expiration_duration: using default 90 days","target":"abusech.ja3_fingerprints.deleted_at"}}]}"#
                 ),
             )?;
 

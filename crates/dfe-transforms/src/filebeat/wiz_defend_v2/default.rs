@@ -95,8 +95,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      if (!entry.getKey().contains(\"@\")) {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\nctx.wiz = ctx.wiz ?: [:];\nctx.wiz.defend_v2 = convertToSnakeCase(ctx.json);\n"#
+                    compiled_painless!(
+                        "7bd0afec62674f7a5cf6dc681f982b97c5072909bf9b2cca70ff9ce3b6cf36a7",
+                        r#"{"params":null,"known":[{"CamelToSnake":{"target":"wiz.defend_v2","source":"json","rule":"AfterNonUpper","at_keys":"Drop","merge":false,"removes":[]}}]}"#
                     ),
                 )?;
             }
@@ -256,7 +257,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "6461e85465b2ebfbae44530a289335df7bb825c581f1f340adccc7a6542e9754",
+                        r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                         r#"String severity = ctx.wiz.defend_v2.severity;\nif (severity.equalsIgnoreCase(\"low\")) {\n  ctx.event.severity = 21;\n} else if (severity.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 0;\n} else if (severity.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (severity.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (severity.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
                     ),
                 )?;
@@ -1049,8 +1052,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String mapOsType(def osType) {\n  if (osType == null) {\n    return null;\n  }\n  String os = osType.toString().toLowerCase();\n  if (os.contains('windows')) {\n    return 'windows';\n  } else if (os.contains('mac') || os.contains('darwin')) {\n    return 'macos';\n  } else if (os.contains('linux') || os.contains('amazon') || os.contains('ubuntu') || os.contains('debian') || os.contains('centos') || os.contains('rhel') || os.contains('unix')) {\n    return 'linux';\n  } else if (os.contains('android')) {\n    return 'android';\n  } else if (os.contains('ios')) {\n    return 'ios';\n  }\n  return null;\n}\ndef osTypes = [];\nfor (def node : ctx.wiz.defend_v2.triggering_events.nodes) {\n  def audit = node.raw_audit_log_record;\n  if (!(audit instanceof Map)) {\n    continue;\n  }\n  def common = audit.common;\n  if (!(common instanceof Map)) {\n    continue;\n  }\n  def hostInfo = common.host_info;\n  if (!(hostInfo instanceof Map)) {\n    continue;\n  }\n  String mappedOsType = mapOsType(hostInfo.os_type);\n  if (mappedOsType != null && !osTypes.contains(mappedOsType)) {\n    osTypes.add(mappedOsType);\n  }\n}\nif (!osTypes.isEmpty()) {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.os = ctx.host.os ?: [:];\n  ctx.host.os.type = osTypes.size() == 1 ? osTypes[0] : osTypes;\n}"#
+                    compiled_painless!(
+                        "52f979c992f23b6788e0c6a20f99bf33222bbb3b1535bc861b930cb0ff848430",
+                        r#"{"params":null,"known":["CollectingLadder"]}"#
                     ),
                 )?;
             }

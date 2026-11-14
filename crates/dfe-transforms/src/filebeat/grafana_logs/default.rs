@@ -634,8 +634,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def dur = ctx._temp?.duration_str;\nif (dur == null) return;\nlong nanos;\nif (dur.endsWith('ms')) {\n  nanos = (long)(Double.parseDouble(dur.substring(0, dur.length() - 2)) * 1000000.0);\n} else if (dur.endsWith(\"µs\") || dur.endsWith('us')) {\n  nanos = (long)(Double.parseDouble(dur.substring(0, dur.length() - 2)) * 1000.0);\n} else if (dur.endsWith('ns')) {\n  nanos = (long)Double.parseDouble(dur.substring(0, dur.length() - 2));\n} else if (dur.endsWith('s')) {\n  nanos = (long)(Double.parseDouble(dur.substring(0, dur.length() - 1)) * 1000000000.0);\n} else {\n  return;\n}\nctx.event.duration = nanos;\n"#
+                    compiled_painless!(
+                        "7aacaa534b10b69ff2fce1bdbc0af3da054e5a46192e7a46bd4aa8569d312eb7",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())
@@ -657,8 +658,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def level = ctx.log?.level;\nif (level == null) return;\ndef lower = level.toLowerCase();\nif (lower == 'eror') ctx.log.level = 'error';\nelse if (lower == 'dbug') ctx.log.level = 'debug';\n"#
+                    compiled_painless!(
+                        "2b4bbdd22f61387dfc57f6a0ea2ac40ec5975e302d36b9bb04b927ddb2328b51",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"log.level","fold_case":true,"test":"Equals","arms":[{"literals":["eror"],"writes":[["log.level","error"]],"removes":[]},{"literals":["dbug"],"writes":[["log.level","debug"]],"removes":[]}]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -669,8 +671,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def level = ctx.log?.level;\nif (level == null) return;\nlevel = level.toLowerCase();\nif (level == 'critical' || level == 'crit') ctx.event.severity = 2;\nelse if (level == 'error') ctx.event.severity = 3;\nelse if (level == 'warn' || level == 'warning') ctx.event.severity = 4;\nelse if (level == 'info') ctx.event.severity = 6;\nelse if (level == 'debug') ctx.event.severity = 7;\nelse if (level == 'trace') ctx.event.severity = 8;\n"#
+                    compiled_painless!(
+                        "486901cd502e93f06c6ae1e05f6d4cfb45575d5257f24d6fcdf05e163cdb3a7e",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"log.level","fold_case":true,"test":"Equals","arms":[{"literals":["critical","crit"],"writes":[["event.severity",2]],"removes":[]},{"literals":["error"],"writes":[["event.severity",3]],"removes":[]},{"literals":["warn","warning"],"writes":[["event.severity",4]],"removes":[]},{"literals":["info"],"writes":[["event.severity",6]],"removes":[]},{"literals":["debug"],"writes":[["event.severity",7]],"removes":[]},{"literals":["trace"],"writes":[["event.severity",8]],"removes":[]}]}}]}"#
                     ),
                 )?;
                 Ok(())

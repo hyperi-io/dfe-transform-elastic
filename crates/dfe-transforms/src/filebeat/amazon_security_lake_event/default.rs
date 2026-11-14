@@ -80,8 +80,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def convertToMilliseconds(long timestamp) {\n  if ((long)1e19 - 1 < timestamp) {\n    throw new IllegalArgumentException(\"Timestamp format not recognized: \" + timestamp);\n  } else if ((long)1e16 - 1 < timestamp) {\n    return timestamp / 1000000;  // Convert nanoseconds to milliseconds\n  } else if ((long)1e13 - 1 < timestamp) {\n    return timestamp / 1000;  // Convert microseconds to milliseconds\n  } else if ((long)1e10 - 1 < timestamp) {\n    return timestamp;  // Already in milliseconds, no conversion needed\n  } else {\n    return timestamp * 1000;  // Convert seconds to milliseconds\n  }\n}\ndef processFields(Map fields) {\n  if (fields == null) {\n    return null;\n  }\n  for (entry in fields.entrySet()) {\n    def fieldName = entry.getKey();\n    def fieldValue = entry.getValue();\n    // Check if the field is a nested object (Map)\n    if (fieldValue instanceof Map) {\n      // Recursively process nested objects\n      processFields((Map) fieldValue);\n    } else if (fieldName.endsWith('time') || fieldName.endsWith('_time')) {\n      // If the field name ends with \"time\" or \"_time\" and is a number, convert it\n      if (fieldValue instanceof Number) {\n        fields[fieldName] = convertToMilliseconds(((Number) fieldValue).longValue());\n      }\n    }\n  }\n  return null;\n} processFields(ctx.ocsf);"#
+                    compiled_painless!(
+                        "8f954a1e0484521f009ed4b84ada6084aa69140da8e29de3bb71da38a4ab75bd",
+                        r#"{"params":null,"known":[{"MillisecondLadder":{"root":"ocsf","suffixes":["time","_time"]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -125,8 +126,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.ocsf.resources = [ctx.ocsf.resource];\nctx.ocsf.remove('resource');"#
+                        compiled_painless!(
+                            "f599fd14d26a9982d72a840ac5aef2e8c7ab249435664e888683e4d4a929035a",
+                            r#"{"params":null,"known":[{"WrapValueInList":[{"source":"ocsf.resource","target":"ocsf.resources","remove_source":true,"guards":{"not_list":false,"not_null":false,"not_empty":false}}]}]}"#
                         ),
                     )?;
                     Ok(())
@@ -2274,8 +2276,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"if (params.get(ctx.ocsf.actor.process.container.hash.algorithm) == null) {\n  return;\n}\nif (ctx.container == null) {\n  ctx.container = new HashMap();\n}\nif (ctx.container.image == null) {\n  ctx.container.image = new HashMap();\n}\nif (ctx.container.image.hash == null) {\n  ctx.container.image.hash = new HashMap();\n}\ndef list = new ArrayList();\ndef value = params.get(ctx.ocsf.actor.process.container.hash.algorithm) + ':' + ctx.ocsf.actor.process.container.hash.value;\nlist.add(value);\nctx.container.image.hash.all = list;"#
+                            compiled_painless!(
+                                "b20ff1d66f41b43782ae2dcbb7fc8ee6e762a2f867711bf64f56f2cd9aeb1a72",
+                                r#"{"params":{"LookupWrapList":{"source":"ocsf.actor.process.container.hash.algorithm","target":"container.image.hash.all"}},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"MD5\":\"md5\",\"SHA-1\":\"sha1\",\"SHA-256\":\"sha256\",\"SHA-512\":\"sha512\",\"CTPH\":\"ssdeep\",\"TLSH\":\"tlsh\"}"
@@ -2660,8 +2663,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.actor.process.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;"#
+                            compiled_painless!(
+                                "d86bd0c95af789bedefa07991b366e1e11c08f6508659d839172bce8f204a488",
+                                r#"{"params":"LookupColumns","known":[]}"#
                             ),
                             cached_params!(
                                 "{\"MD5\":\"md5\",\"SHA-1\":\"sha1\",\"SHA-256\":\"sha256\",\"SHA-512\":\"sha512\",\"CTPH\":\"ssdeep\",\"TLSH\":\"tlsh\"}"
@@ -4666,8 +4670,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def process = ctx.ocsf.actor.process.parent_process;\ndef count = 0;\nwhile (true) {\n  if (process != null && process.parent_process != null) {\n    count += 1;\n    process = process.parent_process;\n  } else {\n    break;\n  }\n}\nif (count >= 15) {\n  ctx.ocsf.actor.process.parent_process.put(\"parent_process_keyword\", ctx.ocsf.actor.process.parent_process.parent_process.toString());\n  ctx.ocsf.actor.process.parent_process.remove(\"parent_process\");\n}"#
+                            compiled_painless!(
+                                "c3b64eca13a8362b1f0f127745e462d16a10f1b719ff5322630423046299d6d8",
+                                r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"Literal":{"Remove":{"path":"ocsf.actor.process.parent_process.parent_process"}}}],"whole":false}}]}"#
                             ),
                         )?;
                         Ok(())
@@ -12304,8 +12309,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.ocsf.src_endpoint.intermediate_ips.removeIf(v -> v == '-');"#
+                        compiled_painless!(
+                            "670447287f9819f078dad7a6f286098550ab4962caeba24b9130cb56b6c8fe51",
+                            r#"{"params":null,"known":[{"RemoveListValue":{"field":"ocsf.src_endpoint.intermediate_ips","value":"-"}}]}"#
                         ),
                     )?;
                 }
@@ -12806,8 +12812,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.ocsf.dst_endpoint.intermediate_ips.removeIf(v -> v == '-');"#
+                        compiled_painless!(
+                            "5d1bf63f886499afdcae3d3a12c81ae77f6284cfc63790d701cdb52b32c7982d",
+                            r#"{"params":null,"known":[{"RemoveListValue":{"field":"ocsf.dst_endpoint.intermediate_ips","value":"-"}}]}"#
                         ),
                     )?;
                 }
@@ -13110,8 +13117,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"if (params.get(ctx.ocsf.process.container.hash.algorithm) == null) {\n  return;\n}\nif (ctx.container == null) {\n  ctx.container = new HashMap();\n}\nif (ctx.container.image == null) {\n  ctx.container.image = new HashMap();\n}\nif (ctx.container.image.hash == null) {\n  ctx.container.image.hash = new HashMap();\n}\ndef list = new ArrayList();\ndef value = params.get(ctx.ocsf.process.container.hash.algorithm) + ':' + ctx.ocsf.process.container.hash.value;\nlist.add(value);\nctx.container.image.hash.all = list;"#
+                            compiled_painless!(
+                                "1012ae2e8bb86538bb13d6e8a56e1f8849e9d3d9345c58520c5e4bd9e52f0618",
+                                r#"{"params":{"LookupWrapList":{"source":"ocsf.process.container.hash.algorithm","target":"container.image.hash.all"}},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"MD5\":\"md5\",\"SHA-1\":\"sha1\",\"SHA-256\":\"sha256\",\"SHA-512\":\"sha512\",\"CTPH\":\"ssdeep\",\"TLSH\":\"tlsh\"}"
@@ -13496,8 +13504,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.process.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;"#
+                            compiled_painless!(
+                                "6573e65dcdf7ffc2915429972eedf67b51580dffccbd20858a34b2f14adc7a01",
+                                r#"{"params":"LookupColumns","known":[]}"#
                             ),
                             cached_params!(
                                 "{\"MD5\":\"md5\",\"SHA-1\":\"sha1\",\"SHA-256\":\"sha256\",\"SHA-512\":\"sha512\",\"CTPH\":\"ssdeep\",\"TLSH\":\"tlsh\"}"
@@ -15392,8 +15401,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def process = ctx.ocsf.process.parent_process;\ndef count = 0;\nwhile (true) {\n  if (process != null && process.parent_process != null) {\n    count += 1;\n    process = process.parent_process;\n  } else {\n    break;\n  }\n}\nif (count >= 15) {\n  ctx.ocsf.process.parent_process.put(\"parent_process_keyword\", ctx.ocsf.process.parent_process.parent_process.toString());\n  ctx.ocsf.process.parent_process.remove(\"parent_process\");\n}"#
+                            compiled_painless!(
+                                "382d1cdbfce492a3b6f6284d62aa0774f922d5cadde6b3e212b650704ee3b044",
+                                r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"Literal":{"Remove":{"path":"ocsf.process.parent_process.parent_process"}}}],"whole":false}}]}"#
                             ),
                         )?;
                         Ok(())
@@ -18732,8 +18742,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.ocsf.proxy.intermediate_ips.removeIf(v -> v == '-');"#
+                        compiled_painless!(
+                            "74022c302569b313022c010fa31accbb184e3f5d396129fd515e0cf76e0f73b1",
+                            r#"{"params":null,"known":[{"RemoveListValue":{"field":"ocsf.proxy.intermediate_ips","value":"-"}}]}"#
                         ),
                     )?;
                 }
@@ -19531,8 +19542,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.tls == null) {\n  ctx.tls = new HashMap();\n}\nif (ctx.tls.client == null) {\n  ctx.tls.client = new HashMap();\n}\nif (ctx.tls.client.hash == null) {\n  ctx.tls.client.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.tls.certificate.get('fingerprints');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.tls.client.hash = map;"#
+                        compiled_painless!(
+                            "8dbdffa745cc049ea3fa3bd5b545e3cd4f80151afa7007e0290471ccd1728c2c",
+                            r#"{"params":"LookupColumns","known":[]}"#
                         ),
                         cached_params!(
                             "{\"MD5\":\"md5\",\"SHA-1\":\"sha1\",\"SHA-256\":\"sha256\"}"
@@ -20539,8 +20551,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;"#
+                            compiled_painless!(
+                                "9f02361c1192ebae0c43d431e65d7fbcacfb80ac3ed98b877af1a4fef7a47281",
+                                r#"{"params":"LookupColumns","known":[]}"#
                             ),
                             cached_params!(
                                 "{\"MD5\":\"md5\",\"SHA-1\":\"sha1\",\"SHA-256\":\"sha256\",\"SHA-512\":\"sha512\",\"CTPH\":\"ssdeep\",\"TLSH\":\"tlsh\"}"
@@ -23190,8 +23203,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.driver.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;"#
+                            compiled_painless!(
+                                "00e4c1fc632cfeda6387b97b297fd3559c12c7188a25dda565a97ba6f43677ff",
+                                r#"{"params":"LookupColumns","known":[]}"#
                             ),
                             cached_params!(
                                 "{\"MD5\":\"md5\",\"SHA-1\":\"sha1\",\"SHA-256\":\"sha256\",\"SHA-512\":\"sha512\",\"CTPH\":\"ssdeep\",\"TLSH\":\"tlsh\"}"
@@ -24751,8 +24765,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.module.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;"#
+                            compiled_painless!(
+                                "2e1d3ca7969b5c769c1156b9debaeaefc9e8dd9526ad9df10fe94b3f21ac85c4",
+                                r#"{"params":"LookupColumns","known":[]}"#
                             ),
                             cached_params!(
                                 "{\"MD5\":\"md5\",\"SHA-1\":\"sha1\",\"SHA-256\":\"sha256\",\"SHA-512\":\"sha512\",\"CTPH\":\"ssdeep\",\"TLSH\":\"tlsh\"}"
@@ -26307,8 +26322,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.job.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;"#
+                            compiled_painless!(
+                                "7be0849147a12d136244b089549ace262a7b687e48dd307c96d33a781df29408",
+                                r#"{"params":"LookupColumns","known":[]}"#
                             ),
                             cached_params!(
                                 "{\"MD5\":\"md5\",\"SHA-1\":\"sha1\",\"SHA-256\":\"sha256\",\"SHA-512\":\"sha512\",\"CTPH\":\"ssdeep\",\"TLSH\":\"tlsh\"}"
@@ -32506,8 +32522,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def process = ctx.ocsf.logon_process.parent_process;\ndef count = 0;\nwhile (true) {\n  if (process != null && process.parent_process != null) {\n    count += 1;\n    process = process.parent_process;\n  } else {\n    break;\n  }\n}\nif (count >= 15) {\n  ctx.ocsf.logon_process.parent_process.put(\"parent_process_keyword\", ctx.ocsf.logon_process.parent_process.parent_process.toString());\n  ctx.ocsf.logon_process.parent_process.remove(\"parent_process\");\n}"#
+                            compiled_painless!(
+                                "96c350ec2f317e9bd2f86732ad562aedfc3c12ed75a85610d5669a32cd2f6efc",
+                                r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"Literal":{"Remove":{"path":"ocsf.logon_process.parent_process.parent_process"}}}],"whole":false}}]}"#
                             ),
                         )?;
                         Ok(())
@@ -36596,8 +36613,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"if (ctx.dns == null) {\n  ctx.dns = new HashMap();\n} def list = new HashSet(); for (def answer : ctx.ocsf.answers) {\n  if (answer.flags != null)\n  {\n    for (int i = 0; i < answer.flags.length; i++) {\n      def flag = answer.flags[i];\n      if(params.containsKey(flag))\n      {\n        list.add(params.get(flag));\n      }\n    }\n  }\n} ctx.dns.put('header_flags', list);"#
+                            compiled_painless!(
+                                "330499e247d0cefb348dd4ed11aefc946d58bd9847bc7443a2ed453b4d0b8ee3",
+                                r#"{"params":{"CollectParamsRows":{"source":{"Member":{"list":"ocsf.answers","member":"flags"}},"target":"dns.header_flags","dedup":true,"seeded":false}},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"Authoritative Answer\":\"AA\",\"Authentic Data\":\"AD\",\"Recursion Desired\":\"RD\",\"Recursion Available\":\"RA\",\"Checking Disabled\":\"CD\"}"
@@ -38053,8 +38071,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.ocsf.email.x_originating_ip.removeIf(v -> v == '-');"#
+                        compiled_painless!(
+                            "fa92a5366ed03ba9c9c0092af1e4403ef314bdf96652c66051c1e92f0c491025",
+                            r#"{"params":null,"known":[{"RemoveListValue":{"field":"ocsf.email.x_originating_ip","value":"-"}}]}"#
                         ),
                     )?;
                 }

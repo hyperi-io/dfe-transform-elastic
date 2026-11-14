@@ -67,8 +67,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      newObj[camelToSnake(entry.getKey())] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    if (obj == \"\") {\n      return null;\n    }\n    return obj;\n  }\n}\nctx.trend_micro_vision_one = ctx.trend_micro_vision_one ?: [:];\nctx.trend_micro_vision_one.alert = convertToSnakeCase(ctx.json);\n"#
+                    compiled_painless!(
+                        "24cb98ee25c187322525fc09a950953cd7ecdace2bb7f407300ebe2943e8c69c",
+                        r#"{"params":null,"known":[{"CamelToSnake":{"target":"trend_micro_vision_one.alert","source":"json","rule":"AfterNonUpper","at_keys":"Convert","merge":false,"removes":[]}}]}"#
                     ),
                 )?;
             }
@@ -120,8 +121,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"for (def entity : ctx.trend_micro_vision_one.alert.impact_scope.entities) {\n  if (entity.containsKey('entity_value')) {\n    def ev = entity.remove('entity_value');\n    if (ev instanceof Map) {\n      entity.put('value', ev);\n    } else {\n      entity.put('value', ['account_value': ev]);\n    }\n  }\n}\n"#
+                        compiled_painless!(
+                            "361ad037e7da37ac1df1fb318043258e4bfd4d4ecf9b8fc2cdb32585813b7c0f",
+                            r#"{"params":null,"known":[{"MemberValueWrap":{"list":"trend_micro_vision_one.alert.impact_scope.entities","from":"entity_value","to":"value","wrap":"account_value"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -191,8 +193,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"for (def indicator : ctx.trend_micro_vision_one.alert.indicators) {\n  if (indicator.containsKey('value') && indicator.get('value') instanceof Map) {\n    indicator.put('value_object', indicator.remove('value'));\n  }\n}\n"#
+                        compiled_painless!(
+                            "21472d302abe495fff8da1ba1a22d78cb65671954e822a0cb0ce5d99bcd242e8",
+                            r#"{"params":null,"known":[{"TypedMemberRename":{"list":"trend_micro_vision_one.alert.indicators","nested":null,"renames":[{"from":"value","to":"value_object","admits":"Map"}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -306,8 +309,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"for (def indicator : ctx.trend_micro_vision_one.alert.indicators) {\n  if (indicator.fields == null) {\n    continue;\n  }\n  def fields = indicator.get('fields');\n  if (fields instanceof String) {\n    continue;\n  }\n  if (!(fields instanceof List)) {\n    indicator.fields = null;\n    continue;\n  }\n  if (fields.size() > 0 && fields[0] instanceof List) {\n    if (fields.size() == 1) {\n      Collections.sort(fields[0]);\n      indicator.put('fields', fields[0]);\n    } else {\n      def set = new HashSet();\n      for (def a : fields) {\n        if (a instanceof List) {\n          for (def e : a) {\n            set.add(e);\n          }\n        }\n      }\n      def list = new ArrayList(set);\n      Collections.sort(list);\n      indicator.put('fields', list);\n    }\n  }\n}\n"#
+                        compiled_painless!(
+                            "0ed8c5787991d96521adc68c5d835954526672e64b1e6c403151948117768cff",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -2325,8 +2329,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def eventCategory = new HashSet();\ndef eventType = new HashSet();\ndef description = ctx.trend_micro_vision_one.alert.description.toLowerCase();\nif (description.contains('logon')) {\n  eventCategory.add('authentication');\n  eventCategory.add('host');\n  eventType.add('info');\n} else if (description.contains('email')) {\n  eventCategory.add('email');\n  eventType.add('info');\n} else if (description.contains('network')) {\n  eventCategory.add('network');\n  eventType.add('info');\n} else {\n  eventCategory.add('malware');\n  eventType.add('info');\n}\nif (!eventCategory.isEmpty()) {\n  ctx.event.category = eventCategory;\n}\nif (!eventType.isEmpty()) {\n  ctx.event.type = eventType;\n}\n"#
+                        compiled_painless!(
+                            "7d55669b762f30e6ad42b11427273394a1271f53c7b4198f3ce1f003d8d9a046",
+                            r#"{"params":null,"known":[{"SetLadder":{"subjects":[{"path":"trend_micro_vision_one.alert.description","folded":true}],"targets":["event.category","event.type"],"chains":[{"arms":[{"test":{"Holds":{"subject":0,"word":"logon"}},"adds":[[0,"authentication"],[0,"host"],[1,"info"]],"nested":[]},{"test":{"Holds":{"subject":0,"word":"email"}},"adds":[[0,"email"],[1,"info"]],"nested":[]},{"test":{"Holds":{"subject":0,"word":"network"}},"adds":[[0,"network"],[1,"info"]],"nested":[]},{"test":null,"adds":[[0,"malware"],[1,"info"]],"nested":[]}]}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -2387,8 +2392,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\nString severity_value = ctx.trend_micro_vision_one.alert.severity;\nif (severity_value.equalsIgnoreCase(\"low\")) {\n  ctx.event.severity = 21;\n} else if (severity_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (severity_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (severity_value.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
+                        compiled_painless!(
+                            "d60d35ac2a0e7913dc5ea001d2d462b6b5e884cd3857d91584fb143af41e4d22",
+                            r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#
                         ),
                     )?;
                     Ok(())

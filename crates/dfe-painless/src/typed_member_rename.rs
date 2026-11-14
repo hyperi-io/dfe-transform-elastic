@@ -13,20 +13,6 @@
 //! because they are lists of MAPS, and moves only the String-typed ones onto
 //! the `_str` names.
 //!
-//! ```painless
-//! for (change in panel.changes) {
-//!     if (change.containsKey("old") && change.old instanceof String) {
-//!         change.old_str = change.old;
-//!         change.remove("old");
-//!     }
-//!     if (change.containsKey("added") && change.added instanceof List
-//!         && change.added.size() > 0 && change.added[0] instanceof String) {
-//!         change.added_str = change.added;
-//!         change.remove("added");
-//!     }
-//! }
-//! ```
-//!
 //! `trend_micro_vision_one_alert` writes the same idea the other way up --
 //! `indicator.put('value_object', indicator.remove('value'))` under an
 //! `instanceof Map` -- so both spellings are read here. A rename that ignored
@@ -45,7 +31,7 @@ use crate::params::{balanced, clean_path};
 use dfe_core::Event;
 
 /// The runtime type a guard admits.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum MemberType {
     /// `instanceof String`.
     Text,
@@ -71,7 +57,7 @@ impl MemberType {
 }
 
 /// One member moved to a new name, and the type that decides whether it moves.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct TypedRename {
     from: String,
     to: String,
@@ -79,7 +65,7 @@ struct TypedRename {
 }
 
 /// Type-gated member renames over every record of a list.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct TypedMemberRename {
     /// The `ctx.` path of the list walked.
     list: String,
@@ -383,7 +369,8 @@ fn rename_members(record: &mut Value, renames: &[TypedRename]) {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#`.
 #[allow(
@@ -392,132 +379,5 @@ fn rename_members(record: &mut Value, renames: &[TypedRename]) {
     clippy::expect_used,
     clippy::panic
 )]
-mod tests {
-    use super::*;
-    use crate::common::normalise;
-    use serde_json::json;
-
-    /// Verbatim from `ti_recordedfuture_playbook_alert/default.rs`, in the
-    /// escaped one-line form the call site holds.
-    const PANEL_LOG: &str = r#"def panel_log= ctx.recordedfuture.playbook_alert.panel_log_v2;\nfor (panel in panel_log) {\n    if (panel.containsKey(\"changes\") && panel.changes instanceof List) {\n        for (change in panel.changes) {\n            if (change.containsKey(\"old\") && change.old instanceof String) {\n                change.old_str = change.old;\n                change.remove(\"old\");\n            }\n            if (change.containsKey(\"new\") && change.new instanceof String) {\n                change.new_str = change.new;\n                change.remove(\"new\");\n            }\n            if (change.containsKey(\"added\") && change.added instanceof List && change.added.size() > 0 && change.added[0] instanceof String) {\n                change.added_str = change.added;\n                change.remove(\"added\");\n            }\n            if (change.containsKey(\"removed\") && change.removed instanceof List && change.removed.size() > 0 && change.removed[0] instanceof String) {\n                change.removed_str = change.removed;\n                change.remove(\"removed\");\n            }\n        }\n    }\n}"#;
-
-    /// Verbatim from `trend_micro_vision_one_alert/default.rs`.
-    const INDICATORS: &str = r#"for (def indicator : ctx.trend_micro_vision_one.alert.indicators) {\n  if (indicator.containsKey('value') && indicator.get('value') instanceof Map) {\n    indicator.put('value_object', indicator.remove('value'));\n  }\n}\n"#;
-
-    #[test]
-    fn a_nested_walk_reads_both_type_guards() {
-        let pattern = parse_typed_member_rename(&normalise(PANEL_LOG)).unwrap();
-        assert_eq!(
-            pattern,
-            TypedMemberRename::new(
-                "recordedfuture.playbook_alert.panel_log_v2",
-                Some("changes".to_owned()),
-                vec![
-                    ("old".into(), "old_str".into(), MemberType::Text),
-                    ("new".into(), "new_str".into(), MemberType::Text),
-                    ("added".into(), "added_str".into(), MemberType::TextList),
-                    ("removed".into(), "removed_str".into(), MemberType::TextList),
-                ],
-            )
-        );
-    }
-
-    #[test]
-    fn the_put_spelling_reads_the_same_rename() {
-        let pattern = parse_typed_member_rename(&normalise(INDICATORS)).unwrap();
-        assert_eq!(
-            pattern,
-            TypedMemberRename::new(
-                "trend_micro_vision_one.alert.indicators",
-                None,
-                vec![("value".into(), "value_object".into(), MemberType::Map)],
-            )
-        );
-    }
-
-    /// The guards are the pattern: a String moves and a Map of the same name
-    /// stays, in the SAME walk.
-    #[test]
-    fn only_the_typed_members_move() {
-        let pattern = parse_typed_member_rename(&normalise(PANEL_LOG)).unwrap();
-        let mut event = Event::new(json!({ "recordedfuture": { "playbook_alert": {
-            "panel_log_v2": [ { "changes": [
-                { "old": { "id": "uhash" }, "new": { "id": "uhash" }, "type": "assignee_change" },
-                { "old": "New", "new": "InProgress", "type": "status_change" },
-                { "removed": [ { "id": "ip:1" } ], "added": [ { "id": "ip:1" } ],
-                  "type": "entities_change" },
-                { "removed": [ "task:a" ], "added": [ "task:b" ], "type": "action_change" },
-            ] } ]
-        } } }));
-        assert!(typed_member_rename(&mut event, &pattern));
-
-        let changes = event
-            .get("recordedfuture.playbook_alert.panel_log_v2")
-            .and_then(|v| v.as_array()?.first()?.get("changes")?.as_array().cloned())
-            .unwrap();
-        let keys = |at: usize| {
-            changes[at]
-                .as_object()
-                .unwrap()
-                .keys()
-                .cloned()
-                .collect::<Vec<_>>()
-        };
-        // Maps and lists of maps keep the vendor's own names.
-        assert_eq!(keys(0), ["old", "new", "type"]);
-        assert_eq!(keys(2), ["removed", "added", "type"]);
-        // Strings and lists of strings take the `_str` name, at the END, which
-        // is where remove-then-assign leaves them -- in the order the SCRIPT
-        // renames them, not the order the record happens to carry.
-        assert_eq!(keys(1), ["type", "old_str", "new_str"]);
-        assert_eq!(keys(3), ["type", "added_str", "removed_str"]);
-    }
-
-    #[test]
-    fn a_map_member_moves_under_the_map_guard() {
-        let pattern = parse_typed_member_rename(&normalise(INDICATORS)).unwrap();
-        let mut event = Event::new(json!({ "trend_micro_vision_one": { "alert": {
-            "indicators": [
-                { "type": "host", "value": { "guid": "0F9BD1AA" } },
-                { "type": "url", "value": "https://example.com" },
-            ]
-        } } }));
-        assert!(typed_member_rename(&mut event, &pattern));
-
-        let indicators = event
-            .get("trend_micro_vision_one.alert.indicators")
-            .and_then(|v| v.as_array().cloned())
-            .unwrap();
-        assert!(indicators[0].get("value_object").is_some());
-        assert!(indicators[0].get("value").is_none());
-        // A String under a Map guard is left exactly where the vendor put it.
-        assert_eq!(
-            indicators[1].get("value").and_then(Value::as_str),
-            Some("https://example.com")
-        );
-    }
-
-    /// A block that is not a typed rename declines the WHOLE script, rather
-    /// than running the renames it could read and dropping the rest.
-    #[test]
-    fn a_walk_doing_anything_else_declines() {
-        let script = r#"for (def entity : ctx.a.b) {\n  if (entity.containsKey('entity_value')) {\n    def ev = entity.remove('entity_value');\n    if (ev instanceof Map) {\n      entity.put('value', ev);\n    } else {\n      entity.put('value', ['account_value': ev]);\n    }\n  }\n}\n"#;
-        assert!(parse_typed_member_rename(&normalise(script)).is_none());
-    }
-
-    /// A list of MAPS is what the element test exists to decline, so a guard
-    /// that stops at `instanceof List` is not read as this pattern.
-    #[test]
-    fn a_bare_list_guard_declines() {
-        let script = r#"for (def r : ctx.a.b) {\n  if (r.containsKey('x') && r.x instanceof List) {\n    r.x_str = r.x;\n    r.remove('x');\n  }\n}\n"#;
-        assert!(parse_typed_member_rename(&normalise(script)).is_none());
-    }
-
-    /// A block that copies without removing leaves the vendor's key in place,
-    /// which is a different document and a different matcher.
-    #[test]
-    fn a_copy_without_a_remove_declines() {
-        let script = r#"for (def r : ctx.a.b) {\n  if (r.containsKey('x') && r.x instanceof String) {\n    r.x_str = r.x;\n  }\n}\n"#;
-        assert!(parse_typed_member_rename(&normalise(script)).is_none());
-    }
-}
+#[path = "typed_member_rename_tests.rs"]
+mod tests;

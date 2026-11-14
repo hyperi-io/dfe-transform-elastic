@@ -140,8 +140,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"ZoneId zid = ZoneId.of(ctx.event.timezone); ZonedDateTime zdt = ZonedDateTime.parse(ctx.event.created)\n         .withMonth(ctx.timestamp_month)\n         .withDayOfMonth(ctx.timestamp_day)\n         .withHour(ctx.timestamp_hour)\n         .withMinute(ctx.timestamp_minute)\n         .withSecond(ctx.timestamp_second)\n         .withNano(ctx.timestamp_nano * 1000)\n         .withZoneSameLocal(zid);\nctx.timestamp = zdt;"#
+                compiled_painless!(
+                    "a948230537b6983b331b047ee94865be63a0fd09e3ee603dfff30b907d4ca88a",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

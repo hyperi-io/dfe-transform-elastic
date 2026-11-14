@@ -411,8 +411,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"ctx.url = new HashMap();\ndef protocol = ctx.json?.Protocol?.toLowerCase();\ndef domain = ctx.json?.Host?.toLowerCase();\ndef endpoint = ctx.json?.URL?.toLowerCase();\nif (protocol != null && domain != null && endpoint != null) {\n  ctx.url.full = protocol + '://' + domain + endpoint;\n}\n"#
+                compiled_painless!(
+                    "0a324fa4ada08d867c433aa7a9e578ace10c1cbc0c36a4c684f57ede9fc5b572",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 
@@ -1178,8 +1179,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (Map.Entry m : ctx.json.entrySet()) {\n  ctx.zscaler_zpa.browser_access[m.getKey()] = m.getValue();\n}\n"#
+                    compiled_painless!(
+                        "c03c5c12be3d3ce9dddae83b5d7b3583b1ad1238f2cdb79205214e620c7729c9",
+                        r#"{"params":null,"known":[{"MergeMapUp":{"parent":"zscaler_zpa.browser_access","source":"json","take":false,"collision":"Overwrite","drops":[]}}]}"#
                     ),
                 )?;
             }

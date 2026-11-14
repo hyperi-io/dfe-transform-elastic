@@ -23,8 +23,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def original = ctx.event; ctx.event = new HashMap(); ctx.event.original = Json.dump(original);"#
+                    compiled_painless!(
+                        "81124f4ea0a408057d01da16c842d1f7f3bf05261208e566ad8313b1cce07c37",
+                        r#"{"params":null,"known":[{"DumpIntoMap":{"path":"event","member":"original"}}]}"#
                     ),
                 )?;
             }

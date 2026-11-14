@@ -2640,8 +2640,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"String camelToSnake(String str) {\n  StringBuilder result = new StringBuilder();\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0) {\n        char prev = str.charAt(i - 1);\n        boolean nextIsLower = (i + 1 < str.length()) && Character.isLowerCase(str.charAt(i + 1));\n        boolean prevIsDigit = Character.isDigit(prev);\n        if (Character.isLowerCase(prev) || prevIsDigit || (Character.isUpperCase(prev) && nextIsLower)) {\n          result.append('_');\n        }\n      }\n      result.append(Character.toLowerCase(c));\n    } else {\n      result.append(c);\n    }\n  }\n  return result.toString();\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\nctx.beyondtrust_epm = ctx.beyondtrust_epm ?: [:];\nif (ctx.beyondtrust_epm?.audit != null) {\n  ctx.beyondtrust_epm.audit = convertToSnakeCase(ctx.beyondtrust_epm.audit);\n}"#
+                compiled_painless!(
+                    "4dbb2f201ac5f24746224ff15d2efe3542d5410397d5fe457065e0aebcfd1ed4",
+                    r#"{"params":null,"known":[{"CamelToSnake":{"target":"beyondtrust_epm.audit","source":"beyondtrust_epm.audit","rule":"AcronymRunStrict","at_keys":"Convert","merge":false,"removes":[]}}]}"#
                 ),
             )?;
 

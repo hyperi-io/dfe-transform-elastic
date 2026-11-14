@@ -370,16 +370,18 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"String gdacsRingToWkt(def ring) {\n  StringBuilder builder = new StringBuilder();\n  builder.append(\"(\");\n  for (int i = 0; i < ring.size(); i++) {\n    if (i > 0) { builder.append(\", \"); }\n    def point = ring[i];\n    builder.append(point[0].toString());\n    builder.append(\" \");\n    builder.append(point[1].toString());\n  }\n  builder.append(\")\");\n  return builder.toString();\n}\n\nString gdacsPolygonToWkt(def rings) {\n  StringBuilder builder = new StringBuilder();\n  builder.append(\"(\");\n  for (int i = 0; i < rings.size(); i++) {\n    if (i > 0) { builder.append(\", \"); }\n    builder.append(gdacsRingToWkt(rings[i]));\n  }\n  builder.append(\")\");\n  return builder.toString();\n}\n\nString gdacsShapeToWkt(def geom) {\n  if (geom == null || geom.coordinates == null || geom.type == null) {\n    return null;\n  }\n  if (geom.type == \"LineString\") {\n    return \"LINESTRING \" + gdacsRingToWkt(geom.coordinates);\n  }\n  if (geom.type == \"MultiLineString\") {\n    StringBuilder builder = new StringBuilder();\n    builder.append(\"MULTILINESTRING (\");\n    for (int i = 0; i < geom.coordinates.size(); i++) {\n      if (i > 0) { builder.append(\", \"); }\n      builder.append(gdacsRingToWkt(geom.coordinates[i]));\n    }\n    builder.append(\")\");\n    return builder.toString();\n  }\n  if (geom.type == \"Polygon\") {\n    return \"POLYGON \" + gdacsPolygonToWkt(geom.coordinates);\n  }\n  if (geom.type == \"MultiPolygon\") {\n    StringBuilder builder = new StringBuilder();\n    builder.append(\"MULTIPOLYGON (\");\n    for (int i = 0; i < geom.coordinates.size(); i++) {\n      if (i > 0) { builder.append(\", \"); }\n      builder.append(gdacsPolygonToWkt(geom.coordinates[i]));\n    }\n    builder.append(\")\");\n    return builder.toString();\n  }\n  return null;\n}\n\nif (ctx.gdacs == null) { ctx.gdacs = new HashMap(); }\nif (ctx.gdacs.geo == null) { ctx.gdacs.geo = new HashMap(); }\n\n// Extract centroid from the event-level Point geometry.\ndef geom = ctx.geometry;\nif (geom != null) {\n  String geomType = geom.type;\n  if (geomType == \"Point\" && geom.coordinates != null && geom.coordinates.size() >= 2) {\n    ctx.gdacs.geo.location = ['lon': geom.coordinates[0], 'lat': geom.coordinates[1]];\n  }\n}\n\n// Extract affected area from the enriched polygon geometry.\ndef polyGeom = ctx.polygon_geometry;\nif (polyGeom != null) {\n  String polyType = polyGeom.type;\n  if (polyType == \"Polygon\" || polyType == \"MultiPolygon\" || polyType == \"LineString\" || polyType == \"MultiLineString\") {\n    if (ctx.gdacs == null) { ctx.gdacs = new HashMap(); }\n    ctx.gdacs.affected_area = gdacsShapeToWkt(polyGeom);\n    ctx.gdacs.geometry_type = polyType;\n\n    // Update class and polygon_label from enrichment if present.\n    if (ctx.polygon_class != null) { ctx.gdacs.class = ctx.polygon_class; }\n    if (ctx.polygon_label != null && ctx.polygon_label != \"\") { ctx.gdacs.polygon_label = ctx.polygon_label; }\n  }\n}\n"#
+                compiled_painless!(
+                    "f4a44fe7332da495c7d0236f5d2fb62846e40fd8e7ef371e07d222789b22c51f",
+                    r#"{"params":null,"known":[{"WktGeometry":{"geometry":"polygon_geometry","target":"gdacs.affected_area","type_target":"gdacs.geometry_type","point":{"coordinates":"geometry.coordinates","target":"gdacs.geo.location","lon_index":0,"lat_index":1,"lon_first":true},"branches":[{"guard":"polygon_geometry.type","literal":"Polygon","copies":[["gdacs.class","polygon_class"],["gdacs.polygon_label","polygon_label"]]},{"guard":"polygon_geometry.type","literal":"MultiPolygon","copies":[["gdacs.class","polygon_class"],["gdacs.polygon_label","polygon_label"]]},{"guard":"polygon_geometry.type","literal":"LineString","copies":[["gdacs.class","polygon_class"],["gdacs.polygon_label","polygon_label"]]},{"guard":"polygon_geometry.type","literal":"MultiLineString","copies":[["gdacs.class","polygon_class"],["gdacs.polygon_label","polygon_label"]]}]}}]}"#
                 ),
             )?;
 
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def countries = ctx.gdacs?.affected_countries;\nif (countries == null || countries.size() == 0) { return; }\n\ndef names = new ArrayList();\ndef iso2_codes = new ArrayList();\ndef iso3_codes = new ArrayList();\n\nfor (def c : countries) {\n  if (c.countryname != null) { names.add(c.countryname); }\n  if (c.iso2 != null) { iso2_codes.add(c.iso2); }\n  if (c.iso3 != null) { iso3_codes.add(c.iso3); }\n}\n\nctx.gdacs.affected_country_names = names;\nctx.gdacs.affected_country_iso2 = iso2_codes;\nctx.gdacs.affected_country_iso3 = iso3_codes;\n\nif (ctx.gdacs == null) { ctx.gdacs = new HashMap(); }\nif (ctx.gdacs.geo == null) { ctx.gdacs.geo = new HashMap(); }\nif (iso2_codes.size() > 0) {\n  ctx.gdacs.geo.country_iso_code = iso2_codes[0];\n}\nif (names.size() > 0) {\n  ctx.gdacs.geo.country_name = names[0];\n}\n"#
+                compiled_painless!(
+                    "880445b9af56578681d54deda6d3cee5c6e78018b404d75f06107835d47bcfa6",
+                    r#"{"params":null,"known":[{"CollectFromList":{"source":"gdacs.affected_countries","columns":[{"member":"countryname","target":"gdacs.affected_country_names","replace":null,"upper":false},{"member":"iso2","target":"gdacs.affected_country_iso2","replace":null,"upper":false},{"member":"iso3","target":"gdacs.affected_country_iso3","replace":null,"upper":false}],"firsts":[["gdacs.geo.country_iso_code","gdacs.affected_country_iso2"],["gdacs.geo.country_name","gdacs.affected_country_names"]]}}]}"#
                 ),
             )?;
 
@@ -609,16 +611,18 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def typeMap = [\n  'EQ': 'Earthquake',\n  'TC': 'Tropical Cyclone',\n  'FL': 'Flood',\n  'VO': 'Volcano',\n  'DR': 'Drought',\n  'WF': 'Wildfire'\n];\ndef code = ctx.gdacs?.event_type;\nif (code != null && typeMap.containsKey(code)) {\n  ctx.gdacs.event_type_name = typeMap[code];\n}\n"#
+                compiled_painless!(
+                    "c1d1c9cdb6d1ae48f020876eb90f3031658f195dec09fc033b516c4dd20b79a8",
+                    r#"{"params":null,"known":[{"LocalMapLookup":{"source":"gdacs.event_type","lowered":false,"target":"gdacs.event_type_name","table":{"DR":"Drought","EQ":"Earthquake","FL":"Flood","TC":"Tropical Cyclone","VO":"Volcano","WF":"Wildfire"}}}]}"#
                 ),
             )?;
 
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def level = ctx.gdacs?.alert_level;\nif (level == null) { return; }\nlevel = level.toLowerCase();\nif (level == \"red\") {\n  ctx.event.severity = 3;\n  ctx.event.risk_score = 90.0;\n} else if (level == \"orange\") {\n  ctx.event.severity = 2;\n  ctx.event.risk_score = 60.0;\n} else if (level == \"green\") {\n  ctx.event.severity = 1;\n  ctx.event.risk_score = 30.0;\n}\n"#
+                compiled_painless!(
+                    "0b93625afd382840bee5f9a841b31f0245651659ddf719a7eaf28e2ff6d46488",
+                    r#"{"params":null,"known":[{"EqualityLadder":{"subject":"gdacs.alert_level","fold_case":true,"test":"Equals","arms":[{"literals":["red"],"writes":[["event.severity",3],["event.risk_score",90.0]],"removes":[]},{"literals":["orange"],"writes":[["event.severity",2],["event.risk_score",60.0]],"removes":[]},{"literals":["green"],"writes":[["event.severity",1],["event.risk_score",30.0]],"removes":[]}]}}]}"#
                 ),
             )?;
 

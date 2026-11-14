@@ -59,8 +59,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      newObj[camelToSnake(entry.getKey())] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    if (obj == \"\") {\n      return null;\n    }\n    return obj;\n  }\n}\nctx.trend_micro_vision_one = ctx.trend_micro_vision_one ?: [:];\nctx.trend_micro_vision_one.network_activity = convertToSnakeCase(ctx.json);\n"#
+                    compiled_painless!(
+                        "b2c6609f463f3b47ff0e8c0c0992712943b9984af8105a271fea7d1bff5d516f",
+                        r#"{"params":null,"known":[{"CamelToSnake":{"target":"trend_micro_vision_one.network_activity","source":"json","rule":"AfterNonUpper","at_keys":"Convert","merge":false,"removes":[]}}]}"#
                     ),
                 )?;
             }
@@ -335,8 +336,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def eventTime = Long.parseLong(ctx.trend_micro_vision_one.network_activity.event.time.toString()); if (eventTime < 10000000000L) {\n  ctx.trend_micro_vision_one.network_activity.event.time = eventTime * 1000L;\n}"#
+                        compiled_painless!(
+                            "fa1c96c620174673fa111403a61ae7372e1f0f8bf639fb0cd86d6abe48c391c1",
+                            r#"{"params":null,"known":[{"EpochRungs":{"fields":["trend_micro_vision_one.network_activity.event.time"],"rungs":[{"magnitude":{"Below":10000000000},"scale":{"Times":1000}}],"guard":"Numeric","always_write":false}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -484,8 +486,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def act = ctx.trend_micro_vision_one.network_activity.act;\nif (params.act.containsKey(act.toString())) {\n  ctx.trend_micro_vision_one.network_activity.act_value = params.act[act.toString()];\n}"#
+                        compiled_painless!(
+                            "236e3904f306ff30ba2044dfc266db8dd60b7ab2fc59004a41e6bbe4257d5978",
+                            r#"{"params":{"FieldTables":{"lookups":[{"StringKeyedRow":{"source":"trend_micro_vision_one.network_activity.act","table":"act","target":"trend_micro_vision_one.network_activity.act_value"}}]}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"act\":{\"0\":\"allow\",\"1\":\"monitor\",\"2\":\"block\",\"3\":\"warn\",\"4\":\"override\",\"5\":\"analyze\"}}"

@@ -50,8 +50,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.containsKey('id')) { ctx.json.id = ctx.remove('id'); }\nif (ctx.containsKey('timestamp')) { ctx.json.timestamp = ctx.remove('timestamp'); }\nif (ctx.containsKey('data')) { ctx.json.data = ctx.remove('data'); }"#
+                    compiled_painless!(
+                        "30f5dfb289e7b9cf4888a0118ad8346585c9fddfd5207cc54f6638b2cbca4ec0",
+                        r#"{"params":null,"known":[{"MoveKeys":[["id","json.id"],["timestamp","json.timestamp"],["data","json.data"]]}]}"#
                     ),
                 )?;
             }
@@ -81,8 +82,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"Map data = (Map) ctx.json.remove('data');\nfor (def entry : data.entrySet()) {\n  ctx.json[entry.getKey()] = entry.getValue();\n}\nctx.json.remove('type');"#
+                        compiled_painless!(
+                            "aa73ba16d31548340d4c786943a5ffff8813c7d1582e252e8519514e7bc795d5",
+                            r#"{"params":null,"known":[{"MergeMapUp":{"parent":"json","source":"json.data","take":true,"collision":"Overwrite","drops":["json.type"]}}]}"#
                         ),
                     )?;
                 }
@@ -613,8 +615,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def prefix = 'Downloaded package: ';\ndef packages = new ArrayList();\nfor (def ev : ctx.json.events) {\n  def desc = ev?.event_description;\n  if (desc instanceof String && desc.startsWith(prefix)) {\n    packages.add(desc.substring(prefix.length()));\n  }\n}\nif (!packages.isEmpty()) {\n  if (ctx.kolide.auth.downloaded_packages == null) {\n    ctx.kolide.auth.downloaded_packages = packages;\n  } else {\n    ctx.kolide.auth.downloaded_packages.addAll(packages);\n  }\n}"#
+                        compiled_painless!(
+                            "d94c51770c51fbeaf84ffc19b950b80a0ad331287234cc3feb93eec63d9006e3",
+                            r#"{"params":null,"known":[{"SuffixesByPrefix":{"source":"json.events","member":"event_description","prefix":"Downloaded package: ","target":"kolide.auth.downloaded_packages"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -628,7 +631,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "6e19aeb7c83815ba51f5ec49a8fda9e445de3e87287fda310390ef5c8bbee5e6",
+                        r#"{"params":{"RowOrDefaults":{"subject":"event.action","table":"exact","prelude":[["event.kind","event"]],"columns":[{"target":"event.outcome","member":"outcome","only_if_unset":true,"empty":"Verbatim"},{"target":"event.category","member":"category","only_if_unset":false,"empty":"Verbatim"},{"target":"event.type","member":"type","only_if_unset":false,"empty":"Verbatim"}],"defaults":[["event.category",["authentication"]],["event.type",["info"]]]}},"known":[{"GuardedCopy":{"statements":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}},{"If":{"test":[["Never"]],"then":[{"If":{"test":[["Never",{"Compare":{"path":"event.outcome","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}}],"alt":[{"Literal":{"Set":{"path":"event.category","value":{"Literal":["authentication"]}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}}]}}],"whole":false}}]}"#,
                         r#"def action = ctx.event.action;\nctx.event.kind = 'event';\n\ndef m = params.exact.get(action);\nif (m != null) {\n  ctx.event.category = new ArrayList(m.category);\n  ctx.event.type = new ArrayList(m.type);\n  if (m.containsKey('outcome') && ctx.event.outcome == null) {\n    ctx.event.outcome = m.outcome;\n  }\n} else {\n  ctx.event.category = ['authentication'];\n  ctx.event.type = ['info'];\n}"#
                     ),
                     cached_params!(
@@ -643,8 +648,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def evs = ctx.json.events;\ndef ts = ctx.json.timestamp;\nint idx = -1;\nfor (int i = 0; i < evs.size(); i++) {\n  if (evs[i] instanceof Map && evs[i].timestamp == ts) { idx = i; break; }\n}\nif (idx != -1) {\n  if (ctx.event == null) { ctx.event = [:]; }\n  if (idx == evs.size() - 1) {\n    ctx.event.type = ['end'];\n  } else if (idx == 0) {\n    ctx.event.type = ['start'];\n  } else {\n    ctx.event.type = ['info'];\n  }\n}"#
+                    compiled_painless!(
+                        "b8de5d4da6f496c57ab0a770b0d5653d7f8560386da99b207a54191c8ac4438e",
+                        r#"{"params":null,"known":[{"PositionInList":{"list":"json.events","key":"json.timestamp","member":"timestamp","target":"event.type","last":["end"],"first":["start"],"middle":["info"]}}]}"#
                     ),
                 )?;
             }

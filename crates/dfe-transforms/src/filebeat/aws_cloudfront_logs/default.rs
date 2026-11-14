@@ -228,8 +228,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx._tmp.timestamp = ctx._tmp.date + 'T' + ctx._tmp.time;"#
+                    compiled_painless!(
+                        "84aa1711ef7e4ffaa7ac41ede291806e33bbad2364a8c3c269744c3fefe4408a",
+                        r#"{"params":null,"known":[{"ConcatAssignment":{"target":"_tmp.timestamp","terms":[{"Field":"_tmp.date"},{"Literal":"T"},{"Field":"_tmp.time"}]}}]}"#
                     ),
                 )?;
             }
@@ -463,7 +464,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "b998034f21ecec6a2a646b546288a9078a5dbe490df44188985a4769f61d28a4",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.event.duration = (Long)(Float.parseFloat(ctx._tmp.time_taken) * params.S_TO_NS);"#
                     ),
                     cached_params!("{\"S_TO_NS\":1000000000}"),
@@ -491,8 +494,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (int i = 0; i < ctx._tmp.split_x_forwarded_for.length; i++) {\n  ctx._tmp.split_x_forwarded_for[i] = ctx._tmp.split_x_forwarded_for[i].trim();\n}\n"#
+                    compiled_painless!(
+                        "9275d941e591a29ca1c6a898e303ab25bcfa71e9e0b9c7368bd45188d81fa719",
+                        r#"{"params":null,"known":[{"TrimListInPlace":"_tmp.split_x_forwarded_for"}]}"#
                     ),
                 )?;
             }
@@ -643,8 +647,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.get('network') == null) {\n    ctx['network'] = new HashMap();\n  }\nfor (String item : ctx._tmp.split_x_forwarded_for ) {\n  // edge case observed in the wild. e.g. 'localhost:8081'\n  if (item.startsWith('localhost')) {\n  if (ctx.network.forwarded_ip == null) {\n    ctx['network']['forwarded_ip'] = new ArrayList();\n  }\n    ctx['network']['forwarded_ip'].add('127.0.0.1');\n  }\n}\n"#
+                    compiled_painless!(
+                        "6c9d04e6297569f765bf6dce0b4f60f58abe5f47a84858151fd060a33335fcde",
+                        r#"{"params":null,"known":[{"StartsWithAppend":{"source":"_tmp.split_x_forwarded_for","prefix":"localhost","target":"network.forwarded_ip","value":"127.0.0.1"}}]}"#
                     ),
                 )?;
             }
@@ -850,8 +855,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def full = \"\";\nif(ctx.network?.protocol != null && ctx.network?.protocol != \"\") {\n    full += ctx.network.protocol+\"://\";\n}\nif(ctx.destination?.domain != null && ctx.destination?.domain != \"\") {\n    full += ctx.destination.domain;\n}\nif(ctx.url?.path != null && ctx.url?.path != \"\") {\n    full += ctx.url.path;\n}\nif(ctx.url?.query != null && ctx.url?.query != \"\") {\n    full += \"?\"+ctx.url.query;\n}\nif(full != \"\") {\n    ctx._tmp.url_full = full\n}\n"#
+                compiled_painless!(
+                    "55f9fe3e0c6e696bbfb5878e4aa866293dedfe6825d7b55438ba3548f948f12b",
+                    r#"{"params":null,"known":[{"ConcatParts":{"target":"_tmp.url_full","clauses":[[{"Field":"network.protocol"},{"Literal":"://"}],[{"Field":"destination.domain"}],[{"Field":"url.path"}],[{"Literal":"?"},{"Field":"url.query"}]]}}]}"#
                 ),
             )?;
 

@@ -53,8 +53,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def bean_name = ctx.apache_spark.mbean.toString().splitOnToken(\"=\")[1]; def app_name = bean_name.splitOnToken(\".\")[0]; def executor_id = bean_name.splitOnToken(\".\")[1]; if (executor_id == \"driver\") {\n  ctx.apache_spark.driver.application_name = app_name;\n} else {\n  ctx.apache_spark.executors.application_name = app_name;\n  ctx.apache_spark.executors.id = executor_id;\n}"#
+                    compiled_painless!(
+                        "9f74444dee2ff7ade1c070a634b87599fca5bd819127e6561a4b572dcbd53a7d",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

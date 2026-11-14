@@ -11,16 +11,7 @@
 //! # Rebuilt
 //!
 //! github's dependabot stream collects one member off every entry, and its
-//! issues stream builds a record of two:
-//!
-//! ```painless
-//! List references = new ArrayList();
-//! def sa_references = ctx.github.dependabot.security_advisory.references;
-//! for (def ref: sa_references) {
-//!     references.add(ref.url);
-//! }
-//! ctx.vulnerability.reference = references;
-//! ```
+//! issues stream builds a record of two.
 //!
 //! A member the entry does not carry is written null, which is what Painless
 //! does, and the `drop_empty` every one of these pipelines runs afterwards is
@@ -29,22 +20,7 @@
 //!
 //! # Scanned
 //!
-//! The same list read for ONE entry, keyed on a tag the script excludes:
-//!
-//! ```painless
-//! def enumeration = "GHSA";
-//! def id = "";
-//! def sa_ids = ctx.github.dependabot.security_advisory.identifiers;
-//! for (def sa_id: sa_ids) {
-//!     id = sa_id.value;
-//!     if (!sa_id.type.equals("GHSA")) {
-//!         enumeration = sa_id.type;
-//!         break;
-//!     }
-//! }
-//! ctx.vulnerability.enumeration = enumeration;
-//! ctx.vulnerability.id = id;
-//! ```
+//! The same list read for ONE entry, keyed on a tag the script excludes.
 //!
 //! The value is assigned on EVERY pass, so an advisory with only a GHSA
 //! identifier keeps that one and an advisory carrying a CVE keeps the CVE --
@@ -60,7 +36,7 @@ use crate::params::{balanced, clean_path, ctx_path_term as ctx_path};
 use dfe_core::Event;
 
 /// What each entry of the list becomes.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum EntryValue {
     /// One member taken off the entry.
     Member(String),
@@ -69,7 +45,7 @@ pub enum EntryValue {
 }
 
 /// A list rebuilt from its own entries.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ListRebuild {
     /// The list the entries come from.
     list: String,
@@ -91,7 +67,7 @@ impl ListRebuild {
 }
 
 /// A list scanned for the first entry whose tag is not the default one.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ScanTaggedList {
     /// The list scanned.
     list: String,
@@ -489,140 +465,8 @@ pub fn scan_tagged_list(event: &mut Event, pattern: &ScanTaggedList) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use super::*;
-    use crate::common::try_known_painless;
-    use serde_json::json;
-
-    /// Verbatim from `github_dependabot/default.rs`, in the escaped one-line
-    /// form the call site holds -- a stored script arrives with its newlines
-    /// escaped, so a test written with real newlines passes over a defect in
-    /// the resolution step.
-    const DEPENDABOT_REFERENCES: &str = r"List references = new ArrayList();\ndef sa_references = ctx.github.dependabot.security_advisory.references;\nfor (def ref: sa_references) {\n    references.add(ref.url);\n}\nctx.vulnerability.reference = references;\n";
-
-    /// Verbatim from `github_issues/default.rs`.
-    const ISSUES_LABELS: &str = r#"Map label;\nList labels = new ArrayList();\nList labels_raw = ctx._temp_.labels;\nString label_key, label_value;\nfor (Map label_raw: labels_raw) {\n    label = new HashMap();\n    label.put(\"name\", label_raw.name);\n    label.put(\"description\", label_raw.description);\n    labels.add(label);\n}\nctx.github.issues.labels = labels;\n"#;
-
-    /// Verbatim from `github_dependabot/default.rs`.
-    const DEPENDABOT_IDENTIFIERS: &str = r#"def enumeration = \"GHSA\";\ndef id = \"\";\ndef sa_ids = ctx.github.dependabot.security_advisory.identifiers;\nfor (def sa_id: sa_ids) {\n    id = sa_id.value;\n    if (!sa_id.type.equals(\"GHSA\")) {\n        enumeration = sa_id.type;\n        break;\n    }\n}\nctx.vulnerability.enumeration = enumeration;\nctx.vulnerability.id = id;\n"#;
-
-    #[test]
-    fn one_member_of_every_entry_becomes_the_list() {
-        let mut event = Event::new(json!({ "github": { "dependabot": { "security_advisory": {
-            "references": [
-                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-9235" },
-                { "url": "https://www.npmjs.com/advisories/17" },
-            ]
-        }}}}));
-        assert!(try_known_painless(&mut event, DEPENDABOT_REFERENCES));
-        assert_eq!(
-            event.get("vulnerability.reference"),
-            Some(&json!([
-                "https://nvd.nist.gov/vuln/detail/CVE-2015-9235",
-                "https://www.npmjs.com/advisories/17",
-            ]))
-        );
-    }
-
-    /// The record form, and the member an entry does not carry.
-    ///
-    /// Painless writes it null and the `drop_empty` these pipelines run
-    /// afterwards takes it away -- github's capture carries labels both ways.
-    #[test]
-    fn a_record_of_named_members_becomes_the_list() {
-        let mut event = Event::new(json!({ "_temp_": { "labels": [
-            { "name": "bug", "description": "Something isn't working" },
-            { "name": "Integration:AWS" },
-        ]}}));
-        assert!(try_known_painless(&mut event, ISSUES_LABELS));
-        assert_eq!(
-            event.get("github.issues.labels"),
-            Some(&json!([
-                { "name": "bug", "description": "Something isn't working" },
-                { "name": "Integration:AWS", "description": null },
-            ]))
-        );
-    }
-
-    /// The scan keeps the LAST value it read and the first tag that differs.
-    #[test]
-    fn the_scan_takes_the_entry_whose_tag_is_not_the_default() {
-        let mut event = Event::new(json!({ "github": { "dependabot": { "security_advisory": {
-            "identifiers": [
-                { "type": "GHSA", "value": "GHSA-c7hr-j4mj-j2w6" },
-                { "type": "CVE", "value": "CVE-2015-9235" },
-            ]
-        }}}}));
-        assert!(try_known_painless(&mut event, DEPENDABOT_IDENTIFIERS));
-        assert_eq!(event.get("vulnerability.enumeration"), Some(&json!("CVE")));
-        assert_eq!(event.get("vulnerability.id"), Some(&json!("CVE-2015-9235")));
-
-        // Only the default tag: the advisory keeps its own identifier, which
-        // is the answer for one of github's eight dependabot captures.
-        let mut only = Event::new(json!({ "github": { "dependabot": { "security_advisory": {
-            "identifiers": [{ "type": "GHSA", "value": "GHSA-5mrr-rgp6-x4gr" }]
-        }}}}));
-        assert!(try_known_painless(&mut only, DEPENDABOT_IDENTIFIERS));
-        assert_eq!(only.get("vulnerability.enumeration"), Some(&json!("GHSA")));
-        assert_eq!(
-            only.get("vulnerability.id"),
-            Some(&json!("GHSA-5mrr-rgp6-x4gr"))
-        );
-
-        // An empty list writes both seeds, which is what the script does.
-        let mut empty = Event::new(json!({ "github": { "dependabot": {
-            "security_advisory": { "identifiers": [] }
-        }}}));
-        assert!(try_known_painless(&mut empty, DEPENDABOT_IDENTIFIERS));
-        assert_eq!(empty.get("vulnerability.enumeration"), Some(&json!("GHSA")));
-        assert_eq!(empty.get("vulnerability.id"), Some(&json!("")));
-
-        // A null tag does not stop the scan, so the entry behind it is still
-        // reached and the seed still stands where none differs.
-        let mut untagged = Event::new(json!({ "github": { "dependabot": { "security_advisory": {
-            "identifiers": [
-                { "type": null, "value": "GHSA-0000-0000-0000" },
-                { "type": "GHSA", "value": "GHSA-5mrr-rgp6-x4gr" },
-            ]
-        }}}}));
-        assert!(try_known_painless(&mut untagged, DEPENDABOT_IDENTIFIERS));
-        assert_eq!(
-            untagged.get("vulnerability.enumeration"),
-            Some(&json!("GHSA"))
-        );
-        assert_eq!(
-            untagged.get("vulnerability.id"),
-            Some(&json!("GHSA-5mrr-rgp6-x4gr"))
-        );
-    }
-
-    /// A statement neither matcher runs declines the whole script.
-    #[test]
-    fn a_loop_that_does_more_than_the_collection_is_declined() {
-        // A second write inside the loop.
-        let extra = r"List out = new ArrayList();\ndef src = ctx.a.b;\nfor (def x: src) {\n  out.add(x.url);\n  ctx.count = 1;\n}\nctx.a.c = out;\n";
-        assert!(parse_list_rebuild(&crate::common::normalise(extra)).is_none());
-
-        // The accumulator handed somewhere other than the document.
-        let elsewhere = r"List out = new ArrayList();\ndef src = ctx.a.b;\nfor (def x: src) {\n  out.add(x.url);\n}\nsrc = out;\n";
-        assert!(parse_list_rebuild(&crate::common::normalise(elsewhere)).is_none());
-
-        // Two loops, so one of them is unread.
-        let twice = r"List out = new ArrayList();\ndef src = ctx.a.b;\nfor (def x: src) {\n  out.add(x.url);\n}\nfor (def y: src) {\n  out.add(y.url);\n}\nctx.a.c = out;\n";
-        assert!(parse_list_rebuild(&crate::common::normalise(twice)).is_none());
-    }
-
-    /// The scan declines a loop whose break decides on a literal it does not
-    /// also seed, because the tag written back would be one the script never
-    /// chose.
-    #[test]
-    fn a_scan_whose_excluded_tag_is_not_its_seed_is_declined() {
-        let script = r#"def enumeration = \"GHSA\";\ndef id = \"\";\ndef ids = ctx.a.b;\nfor (def i: ids) {\n    id = i.value;\n    if (!i.type.equals(\"CVE\")) {\n        enumeration = i.type;\n        break;\n    }\n}\nctx.c.d = enumeration;\nctx.c.e = id;\n"#;
-        assert!(parse_scan_tagged_list(&crate::common::normalise(script)).is_none());
-
-        // And the rebuild declines it too -- neither seed is an accumulator.
-        assert!(parse_list_rebuild(&crate::common::normalise(script)).is_none());
-    }
-}
+#[path = "list_records_tests.rs"]
+mod tests;

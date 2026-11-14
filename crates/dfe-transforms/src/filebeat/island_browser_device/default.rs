@@ -648,8 +648,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.island_browser.device.internal_ip_address = ctx.island_browser.device.internal_ip_address.get(0);"#
+                    compiled_painless!(
+                        "7e8e47ce705df9148006a12d86de556cda83852c668fdbe1c7c186deab55afac",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -1162,8 +1163,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String macAddresses = ctx.island_browser.device.mac_addresses;\nif (macAddresses != null) {\n  String[] macArray = macAddresses.splitOnToken(\"|\");\n  String[] trimmedMacArray = new String[macArray.length];\n  for (int i = 0; i < macArray.length; i++) {\n    trimmedMacArray[i] = macArray[i].trim();\n  }\n  for (String mac: trimmedMacArray) {\n    if (mac.length() > 0) {\n      if (ctx.host?.mac == null) {\n        ctx.host = ctx.host ?: [:];\n        ctx.host.mac = [mac];\n      } else if (!ctx.host.mac.contains(mac)) {\n        ctx.host.mac.add(mac);\n      }\n    }\n  }\n}\n"#
+                    compiled_painless!(
+                        "cc404c036d65c32557c77f1bb76bd2322eb7c8a4b8d988fc4f7630cf1a0a8048",
+                        r#"{"params":null,"known":[{"AppendEach":{"source":"island_browser.device.mac_addresses","target":"host.mac","map_keys":[],"separator":"|","deduped":true}}]}"#
                     ),
                 )?;
             }
@@ -1491,7 +1493,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "07f0db347753e9ae577d17805f1a0ce95ba98e444d8be813f9b910f8cb368195",
+                            r#"{"params":"FirstContainedMember","known":[]}"#,
                             r#"ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\ndef os_platform = ctx.island_browser.device.os_platform.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\n"#
                         ),
                         cached_params!(
