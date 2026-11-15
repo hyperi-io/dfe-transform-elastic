@@ -60,8 +60,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.json.containsKey('workspace_id') && ctx.json.workspace_id == null) {\n  ctx.json.workspace_id = 'Default';\n} ctx.json.entrySet().removeIf(e -> e.getValue() == null);"#
+                    compiled_painless!(
+                        "20f909e105ccd81059eaf32797e146f533ba06a5db97c877ba9607b5b0dfcb18",
+                        r#"{"params":null,"known":["SentinelRemovalLiteral"]}"#
                     ),
                 )?;
             }
@@ -158,8 +159,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"long total = 0; if (ctx.json.cache_creation.containsKey('ephemeral_5m_input_tokens')) {\n  total += ctx.json.cache_creation.ephemeral_5m_input_tokens;\n} if (ctx.json.cache_creation.containsKey('ephemeral_1h_input_tokens')) {\n  total += ctx.json.cache_creation.ephemeral_1h_input_tokens;\n} ctx.anthropic = ctx.anthropic != null ? ctx.anthropic : new HashMap(); ctx.anthropic.usage = ctx.anthropic.usage != null ? ctx.anthropic.usage : new HashMap(); ctx.anthropic.usage.cache_creation_input_tokens = total;"#
+                    compiled_painless!(
+                        "811ca1e7c7d937af1ebac107eeaa1482f11715017461656ea3ad56c809a000e5",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

@@ -251,8 +251,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.host.os.name instanceof List && ctx.host.os.name.size() == 1)\n    ctx.host.os.name = ctx.host.os.name[0];\nif (ctx.host.os.version instanceof List && ctx.host.os.version.size() == 1)\n    ctx.host.os.version = ctx.host.os.version[0];"#
+                    compiled_painless!(
+                        "9e8e3ec533b117be2ce709d23d6a427dfcd970667e786cc0b6ca1a6155f90097",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"host.os.name","target":"host.os.name","only_if_unset":false,"only_if_single":true,"consumes_array":false},{"array":"host.os.version","target":"host.os.version","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -289,8 +290,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.file.name instanceof List && ctx.file.name.size() == 1)\n    ctx.file.name = ctx.file.name[0];"#
+                    compiled_painless!(
+                        "c3caeb469d997815720d34baf5caa5488b4b13d35fa3e13b234b6eae916824ff",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"file.name","target":"file.name","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -325,8 +327,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.file.path instanceof List && ctx.file.path.size() == 1)\n    ctx.file.path = ctx.file.path[0];"#
+                    compiled_painless!(
+                        "8cf9f518c5b8ed9935e7da0744d25c03b8390dabe0baa6427401fc0ea41c61d4",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"file.path","target":"file.path","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -352,8 +355,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.url.original instanceof List && ctx.url.original.size() == 1)\n    ctx.url.original = ctx.url.original[0];"#
+                    compiled_painless!(
+                        "cedd2657f48613f5eeda466f73d0cd26a4f6f09fe352b0181800b37c7da98efe",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"url.original","target":"url.original","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -416,8 +420,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.threatemulation.malware.action instanceof List && ctx.checkpoint_harmony_endpoint.threatemulation.malware.action.size() == 1)\n    ctx.checkpoint_harmony_endpoint.threatemulation.malware.action = ctx.checkpoint_harmony_endpoint.threatemulation.malware.action[0];"#
+                    compiled_painless!(
+                        "bbd50c1ebbe1b501ad79cb526ee19faccd76443f9774234fcf9dccacccef0e1e",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.threatemulation.malware.action","target":"checkpoint_harmony_endpoint.threatemulation.malware.action","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -452,8 +457,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.threatemulation.client.version instanceof List && ctx.checkpoint_harmony_endpoint.threatemulation.client.version.size() == 1)\n    ctx.checkpoint_harmony_endpoint.threatemulation.client.version = ctx.checkpoint_harmony_endpoint.threatemulation.client.version[0];"#
+                    compiled_painless!(
+                        "81f6e62453f0ee597dd0290ebe339634bdf1824aa8d2d72176eb0d6090fa4249",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.threatemulation.client.version","target":"checkpoint_harmony_endpoint.threatemulation.client.version","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -464,8 +470,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.threatemulation.web_client_type instanceof List && ctx.checkpoint_harmony_endpoint.threatemulation.web_client_type.size() == 1)\n    ctx.checkpoint_harmony_endpoint.threatemulation.web_client_type = ctx.checkpoint_harmony_endpoint.threatemulation.web_client_type[0];"#
+                    compiled_painless!(
+                        "1626e45448c53ea7fb124790bc47beade85e09e70fe67bf50a86b1d6c3e45f86",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.threatemulation.web_client_type","target":"checkpoint_harmony_endpoint.threatemulation.web_client_type","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }

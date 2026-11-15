@@ -93,7 +93,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "38c9da11091b50235dc39e7213bb45d5902f6e8bd58309d44775c8aafb0ed0a4",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"gitlab.api.duration_s","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.duration","value":{"Scaled":{"path":"gitlab.api.duration_s","factor":1000000,"divide":false}}}}}],"alt":[]}}],"whole":true}}]}"#,
                         r#"if (ctx.gitlab?.api?.duration_s != null) {\n  ctx.event.duration = ctx.gitlab.api.duration_s * 1000000;\n}"#
                     ),
                 )?;
@@ -201,8 +203,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def keyValuePairs = [];\nfor (item in ctx.gitlab.api.params) {\n  def key = item.key;\n  def value = item.value;\n  def keyValueObject = [key: value];\n  keyValuePairs.add(keyValueObject)\n}\nctx.gitlab.api.params = keyValuePairs;\n"#
+                    compiled_painless!(
+                        "aa2750a8675104522d2d6b16c6b53cc50e08ca11b04ec5980fb560197d4e56f8",
+                        r#"{"params":null,"known":[{"KeyValuePairs":{"path":"gitlab.api.params","into":"MapPerRecord","key_steps":[],"dump_key":null}}]}"#
                     ),
                 )?;
             }

@@ -323,8 +323,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\nctx.event.severity = params.get(ctx.abnormal_security.case.severity_level);"#
+                        compiled_painless!(
+                            "70fe9bab5fc676143c9a580dc2df8e40e6f459d23332485e52a2849e4b328b05",
+                            r#"{"params":{"LookupNormalise":[{"key":"abnormal_security.case.severity_level","fold":"None","target":"event.severity"},{"statements":[{"If":{"test":[[{"Compare":{"path":"event","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}}],"whole":false}]},"known":[]}"#
                         ),
                         cached_params!("{\"NONE\":0,\"LOW\":1,\"MEDIUM\":2,\"HIGH\":3}"),
                     )?;

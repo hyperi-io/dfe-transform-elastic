@@ -99,8 +99,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"for (component in ctx.json.triggeredComponents) { if (component?.metric?.label?.toLowerCase().contains('connection')) { ctx.event?.type?.add('connection'); if (ctx.event.category == null) { ctx.event.category = new ArrayList(); } ctx.event.category.add('network'); } }"#
+                        compiled_painless!(
+                            "5ab3dcfc289d4ea8b64234f3a32c8beb2449732ca5428e12c117a8d6014dda9f",
+                            r#"{"params":null,"known":[{"MemberTags":{"list":"json.triggeredComponents","member":"metric.label","word":"connection","lower":true,"appends":[{"target":"event.type","value":"connection","create":false,"null_safe":true},{"target":"event.category","value":"network","create":true,"null_safe":false}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -3238,7 +3239,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "b50c7e4f71e7a7be48e8c991927a671fa47c85bc28e374200bfea109cf47f60f",
+                            r#"{"params":{"RenameMemberByLookup":{"container":"json.model.logic","source":"json.model.logic.data","key":"json.model.logic.type","listed":["componentList","weightedComponentList"],"prefix":"data_"}},"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"json.model.logic.type","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[[{"ListContains":{"members":["componentList","weightedComponentList"],"argument":{"Field":"json.model.logic.type"}}}]],"then":[],"alt":[]}}],"alt":[]}},{"Literal":{"Remove":{"path":"json.model.logic.ctx.json.model.logic.data"}}}],"whole":false}}]}"#,
                             r#"def data = ctx.json.model.logic.data; if (ctx.json.model.logic?.type != null) { if (['componentList', 'weightedComponentList'].contains(ctx.json.model.logic?.type)) { ctx[\"json\"][\"model\"][\"logic\"][params.get(ctx.json.model.logic?.type)] = data; } else { ctx[\"json\"][\"model\"][\"logic\"][\"data_\" + ctx.json.model.logic?.type] = data; } } ctx.json.model.logic.remove(\"data\");"#
                         ),
                         cached_params!(
@@ -4056,8 +4059,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.darktrace = ctx.darktrace ?: [:];\nctx.darktrace.model_breach_alert = ctx.darktrace?.model_breach_alert ?: [:];\nif (ctx.darktrace?.model_breach_alert?.acknowledged == null) {\n  ctx.darktrace.model_breach_alert.is_acknowledged = false;\n  return;\n}\nif (!(ctx.darktrace.model_breach_alert.acknowledged instanceof Map)) {\n  // It appears that some versions of the data from Darktrace\n  // have the value at acknowledged as a boolean. Don't handle\n  // that here. Rename it to is_acknowledged below.\n  return;\n}\nif (ctx.darktrace.model_breach_alert.acknowledged.time == null) {\n  // No time, so be non-commital.\n  return;\n}\nif (ctx.darktrace.model_breach_alert.time == null) {\n  // Assume any time noted in json.acknowledged.time\n  // is in the past.\n  ctx.darktrace.model_breach_alert.is_acknowledged = true;\n  return;\n}\ndef time = ctx.darktrace.model_breach_alert.time;\ndef acknowledged = ctx.darktrace.model_breach_alert.acknowledged.time;\nctx.darktrace.model_breach_alert.is_acknowledged = ZonedDateTime.parse(acknowledged).isBefore(ZonedDateTime.parse(time));\n"#
+                    compiled_painless!(
+                        "2de65619ba582f1b9a12e33774654f320be241c3ccdca094d0c18d1c0f3909a3",
+                        r#"{"params":null,"known":[{"TimeOrderFlag":{"ensure":["darktrace","darktrace.model_breach_alert"],"container":"darktrace.model_breach_alert.acknowledged","earlier":"darktrace.model_breach_alert.acknowledged.time","later":"darktrace.model_breach_alert.time","flag":"darktrace.model_breach_alert.is_acknowledged"}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -4572,8 +4576,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"for (component in ctx.json.triggeredComponents) { component.logic.data = component?.logic?.data.toString(); }"#
+                        compiled_painless!(
+                            "e346ea5ca64ba9b9b50c178cbfd533417e9593d9de238790c7c0f0144f29ce16",
+                            r#"{"params":null,"known":[{"StringifyMember":{"list":"json.triggeredComponents","member":"logic.data"}}]}"#
                         ),
                     )?;
                     Ok(())

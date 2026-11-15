@@ -122,7 +122,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "c58261190e7db016017a1ea69d0da2cd59a8da4babdce0d11a5e77e256ca0c04",
+                        r#"{"params":"FiletimeFieldList","known":[]}"#,
                         r#"def convertToUnix(def longValue) {\n    if (longValue > 0x0100000000000000L) {\n        return (longValue / 10000) - 11644473600000L;\n    }\n    return longValue;\n}\n\nfor (def field : params.values) {\n    def fieldValue = ctx.crowdstrike.event[field];\n    if (fieldValue != null) {\n        if (fieldValue instanceof long) {\n             ctx.crowdstrike.event[field] = convertToUnix(fieldValue);\n        } else if (fieldValue instanceof String) {\n            if (!fieldValue.contains('.')) {\n               def timestamp = Long.parseLong(fieldValue);\n                ctx.crowdstrike.event[field] = convertToUnix(timestamp);\n            }\n        }\n    } \n}\n"#
                     ),
                     cached_params!(
@@ -136,8 +138,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.crowdstrike.event.Tags instanceof List) {\n    for (tag in ctx.crowdstrike.event.Tags) {\n        if (tag instanceof Map) {\n          ctx.tags.add(tag[\"Key\"] + \":\" + tag[\"ValueString\"]);\n        }\n    }\n} else if (ctx.crowdstrike.event.Tags instanceof String) {\n    def values = ctx.crowdstrike.event.Tags.splitOnToken(',');\n    for (value in values) {\n        ctx.tags.add(value.trim());\n    }\n}\n"#
+                    compiled_painless!(
+                        "e2fb1b7c6ada6108e8ad9f7e933ab19952d1134a826f77f1b79f0b517d39637e",
+                        r#"{"params":null,"known":[{"AppendEach":{"source":"crowdstrike.event.Tags","target":"tags","map_keys":["Key","ValueString"],"separator":",","deduped":false}}]}"#
                     ),
                 )?;
             }
@@ -245,7 +248,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "69d47913580053b3d6e203033ecdd42eab0c270fed158eae50ae8e0441f89ca0",
+                        r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                         r#"ctx.event = ctx.event ?: [:];\nString name = ctx.crowdstrike.event.SeverityName;\nif (name.equalsIgnoreCase(\"low\") || name.equalsIgnoreCase(\"info\") || name.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (name.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (name.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (name.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
                     ),
                 )?;
@@ -260,7 +265,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "4d5e726c166b9f1ae413a9de41a08b352a8634d6bc8f343ac02a3fd272461d22",
+                        r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                         r#"ctx.crowdstrike.event.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n"#
                     ),
                     cached_params!("{\"values\":[null,\"\",\"-\",\"N/A\",\"NA\",0]}"),
@@ -276,7 +283,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "e7ebc76b6f2734d8ca6c1db80094223f259537990b405dab051aedd40ddf88ba",
+                        r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                         r#"ctx.crowdstrike.metadata.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n"#
                     ),
                     cached_params!("{\"values\":[null,\"\",\"-\",\"N/A\",\"NA\"]}"),
@@ -288,8 +297,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def commandLine = ctx.crowdstrike?.event?.CommandLine;\ncommandLine = commandLine.trim();\n\nif (commandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(commandLine)));\n  args.removeIf(arg -> arg == \"\");\n\n  ctx.process = [\n    'command_line': commandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n"#
+                    compiled_painless!(
+                        "7dcbab122eb6612096cbe9da118c00e382e49f2ab815230af7f78b66da051415",
+                        r#"{"params":null,"known":[{"CommandLine":{"parent":false}}]}"#
                     ),
                 )?;
             }
@@ -299,8 +309,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def parentCommandLine = ctx.crowdstrike?.event?.ParentCommandLine;\nparentCommandLine = parentCommandLine.trim();\n\nif (parentCommandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(parentCommandLine)));\n  args.removeIf(arg -> arg == \"\");\n  if (ctx.process == null) {\n    ctx.process = new HashMap();\n  }\n  ctx.process.parent = [\n    'command_line': parentCommandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n"#
+                    compiled_painless!(
+                        "de418899ea790096abe800e1bf367b08812138ffd26b33749b98e857e8ea50d7",
+                        r#"{"params":null,"known":[{"CommandLine":{"parent":true}}]}"#
                     ),
                 )?;
             }
@@ -611,8 +622,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"long score = ctx.crowdstrike.event.Score;\nctx.event = ctx.event ?: [:];\nctx.event.risk_score = (double) score;\nif (score < 40) {\n  ctx.event.severity = 21;\n} else if (score < 60) {\n  ctx.event.severity = 47;\n} else if (score < 80) {\n  ctx.event.severity = 73;\n} else {\n  ctx.event.severity = 99;\n}"#
+                        compiled_painless!(
+                            "1e42023656762614df9dd32e75a925c24c005194513ccdb2a3eae21e08f9231c",
+                            r#"{"params":null,"known":[{"ScoreSeverityBands":{"source":"crowdstrike.event.Score","risk_score_target":"event.risk_score","severity_target":"event.severity","bands":[[40,21],[60,47],[80,73],[null,99]]}}]}"#
                         ),
                     )?;
                 }
@@ -820,8 +832,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def indicator = ctx.crowdstrike.event.ThreatgraphIndicators[0];\nif (indicator.HostId != null && indicator.HostId != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.id = indicator.HostId;\n}\nif (indicator.Hostname != null && indicator.Hostname != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.name = indicator.Hostname;\n}\nif (indicator.ProcessId != null && indicator.ProcessId != '') {\n  ctx.process = ctx.process ?: [:];\n  ctx.process.entity_id = indicator.ProcessId;\n}"#
+                        compiled_painless!(
+                            "e72dfc99390a815ab94047984099948b7b729d2581f123d4e4d3a32e231638ea",
+                            r#"{"params":null,"known":[{"IndexedFieldCopies":{"list":"crowdstrike.event.ThreatgraphIndicators","index":0,"copies":[["HostId","host.id"],["Hostname","host.name"],["ProcessId","process.entity_id"]]}}]}"#
                         ),
                     )?;
                 }
@@ -1764,8 +1777,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"Instant event_start = ZonedDateTime.parse(ctx.event.start).toInstant();\nInstant event_end = ZonedDateTime.parse(ctx.event.end).toInstant();\nctx.event['duration'] = ChronoUnit.NANOS.between(event_start, event_end);\n"#
+                            compiled_painless!(
+                                "1496daf8f08c6652a2df3a98d37315861f71afac938495737d22336a18d16689",
+                                r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                             ),
                         )?;
                         Ok(())
@@ -1875,8 +1889,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def idx = ctx.crowdstrike.event.Filename.lastIndexOf('.');\nif (idx != -1) {\n  ctx.file = ctx.file ?: [:];\n  ctx.file.extension = ctx.crowdstrike.event.Filename.substring(idx + 1).toLowerCase();\n}"#
+                            compiled_painless!(
+                                "9a72b3b61b62f76ff327d25e426b686cdbd9f3f072358d568a2258cf0247e5d5",
+                                r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"crowdstrike.event.Filename","target":"file.extension","separator":".","whole_when_absent":true}}]}"#
                             ),
                         )?;
                         Ok(())
@@ -5260,7 +5275,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "bd10b373e4f017423de6170cd9623c4c6e8e7852ee260ce9c92ddf980db01070",
+                            r#"{"params":null,"known":["CollectingLadder"]}"#,
                             r#"def result = [];\nif (ctx.crowdstrike.event.ConnectionDirection == \"0\") {\n  result.add('egress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"1\") {\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"3\") {\n  result.add('egress');\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"4\") {\n  result.add('unknown');\n}\nif (result.size() > 0) {\n  ctx.network = ctx.network ?: [:];\n}\nif (result.size() == 1) {\n  ctx.network.direction = result[0];\n} else if (result.size() > 1) {\n  ctx.network.direction = result;\n}\n"#
                         ),
                     )?;
@@ -6158,7 +6175,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "abce59f78d181fcad5ddabf0cf32a34d5743d8b49a895ecc815fa9f2041893ae",
+                            r#"{"params":"FrameworkPreference","known":["CollectingLadder"]}"#,
                             r#"def tid = ctx.threat.tactic?.id;\ndef nid = ctx.threat.technique?.id;\ndef tname = ctx.threat.tactic?.name;\nif ((tid == null || tid.isEmpty()) && (nid == null || nid.isEmpty()) && (tname == null || tname.isEmpty())) {\n  return;\n}\nSet frameworks = new HashSet();\n// Handling tactics prefixed with \"CS\" or \"TA\".\nif (tid != null && !tid.isEmpty()) {\n  for (String t: tid) {\n    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n    else if (t.startsWith(\"TA\")) {\n      frameworks.add(params.framework_ma);\n    }\n  }\n}\n// Handling techniques prefixed with \"CS\".\nif (nid != null && !nid.isEmpty()) {\n  for (String t: nid) {\n    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\n// Handling falcon specific tactics.\nif (tname != null && !tname.isEmpty()) {\n  for (String t: tname) {\n    if (params.falcon_tactic_names.contains(t.toLowerCase())) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\n\nif (frameworks.isEmpty()) {\n  return;\n}\nif (frameworks.size() == 1) {\n  ctx.threat.framework = frameworks.iterator().next();\n  return;\n}\n\nfor (def preferred : params.framework_preference) {\n  if (frameworks.contains(preferred)) {\n    ctx.threat.framework = preferred;\n    return;\n  }\n}\n\n// fallback when new frameworks are added and not yet in preference list\nctx.threat.framework = frameworks.iterator().next();\n"#
                         ),
                         cached_params!(

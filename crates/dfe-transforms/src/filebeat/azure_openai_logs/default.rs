@@ -99,8 +99,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['open_ai'] = keysToSnakeCase(ctx.azure.open_ai);\n"#
+                compiled_painless!(
+                    "891ec7306240546833e7cc71b1eed08383bc2aef2fd446d263d8d2485c4632b0",
+                    r#"{"params":null,"known":[{"KeysToSnakeCase":["azure.open_ai","CamelBreak"]}]}"#
                 ),
             )?;
 
@@ -120,7 +121,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "cf73d894c573117bc0f06dfb04e797b02aa0ba4a047cacbabcdc4f3b2befe6e7",
+                    r#"{"params":null,"known":["ReplaceDotsInKeys"]}"#,
                     r#"if (ctx.azure.open_ai.properties.backend_request != null) {\n  ctx.temp_request = new HashMap();\n  for (String key : ctx.azure.open_ai.properties.backend_request.keySet()) {\n    ctx.temp_request[key.replace('.', '_')] = ctx.azure.open_ai.properties.backend_request.get(key);\n  }\n  ctx.azure.open_ai.properties.backend_request = ctx.temp_request; ctx.remove('temp_request');\n}"#
                 ),
             )?;
@@ -147,7 +150,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "918185ae026adbd67164cfc4fe00720e1564f85c4b64fa09be88c52e4d5d91a8",
+                        r#"{"params":null,"known":["ReplaceDotsInKeys"]}"#,
                         r#"if (ctx.azure.open_ai.properties.backend_response != null) {\n  ctx.temp_response = new HashMap();\n  for (String key : ctx.azure.open_ai.properties.backend_response.keySet()) {\n    ctx.temp_response[key.replace('.', '_')] = ctx.azure.open_ai.properties.backend_response.get(key);\n  }\n  ctx.azure.open_ai.properties.backend_response = ctx.temp_response; ctx.remove('temp_response');\n}"#
                     ),
                 )?;
@@ -394,8 +399,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"List prompt_categories = new ArrayList(); Map self_harm_category = new HashMap(); if(ctx.azure?.open_ai?.properties?.backend_response_body?.error?.innererror?.content_filter_result?.self_harm?.filtered == true) {\n  self_harm_category.put(\"category_name\", \"self_harm\");\n  self_harm_category.put(\"severity\", ctx.azure.open_ai.properties.backend_response_body.error.innererror.content_filter_result.self_harm.severity);\n} prompt_categories.add(self_harm_category); Map sexual_category = new HashMap(); if(ctx.azure?.open_ai?.properties?.backend_response_body?.error?.innererror?.content_filter_result?.sexual?.filtered == true) {\n  sexual_category.put(\"category_name\", \"sexual\");\n  sexual_category.put(\"severity\", ctx.azure.open_ai.properties.backend_response_body.error.innererror.content_filter_result.sexual.severity);\n} prompt_categories.add(sexual_category); Map hate_category = new HashMap(); if(ctx.azure?.open_ai?.properties?.backend_response_body?.error?.innererror?.content_filter_result?.hate?.filtered == true) {\n  hate_category.put(\"category_name\", \"hate\");\n  hate_category.put(\"severity\", ctx.azure.open_ai.properties.backend_response_body.error.innererror.content_filter_result.hate.severity);\n} prompt_categories.add(hate_category); Map violence_category = new HashMap(); if(ctx.azure?.open_ai?.properties?.backend_response_body?.error?.innererror?.content_filter_result?.violence?.filtered == true) {\n  violence_category.put(\"category_name\", \"violence\");\n  violence_category.put(\"severity\", ctx.azure.open_ai.properties.backend_response_body.error.innererror.content_filter_result.violence.severity);\n} prompt_categories.add(violence_category);\nctx.azure.open_ai.properties.backend_response_body.error.innererror.content_filtered_categories = prompt_categories;"#
+                    compiled_painless!(
+                        "b061a2c053dc2f2c0920eb44f3c2f7eded31cbb183da087ffea6edb3655ba2c1",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())
@@ -409,8 +415,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"List response_categories = new ArrayList(); for(choice in ctx.azure.open_ai.properties.backend_response_body.choices)\n  {\n    if(choice.content_filter_results?.self_harm?.filtered == true) {\n      Map self_harm_category = new HashMap();\n      self_harm_category.put(\"category_name\", \"self_harm\");\n      self_harm_category.put(\"severity\", choice.content_filter_results.self_harm.severity);\n      response_categories.add(self_harm_category);\n    }\n    if(choice.content_filter_results?.sexual?.filtered == true) {\n      Map sexual_category = new HashMap();\n      sexual_category.put(\"category_name\", \"sexual\");\n      sexual_category.put(\"severity\", choice.content_filter_results.sexual.severity);\n      response_categories.add(sexual_category);\n    }\n    if(choice.content_filter_results?.hate?.filtered == true) {\n      Map hate_category = new HashMap();\n      hate_category.put(\"category_name\", \"hate\");\n      hate_category.put(\"severity\", choice.content_filter_results.hate.severity);\n      response_categories.add(hate_category);\n    }\n    if(choice.content_filter_results?.violence?.filtered == true) {\n      Map violence_category = new HashMap();\n      violence_category.put(\"category_name\", \"violence\");\n      violence_category.put(\"severity\", choice.content_filter_results.violence.severity);\n      response_categories.add(violence_category);\n    }\n} ctx.azure.open_ai.properties.backend_response_body.content_filtered_categories = response_categories;"#
+                        compiled_painless!(
+                            "9789e2dfe5ab29131825524554984a8c704735ce5edf7f855122cf2affb2645c",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -490,7 +497,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "9f9c90e4f91775fe67ee2632e8c138fcb8957f6e350220f240467745e1aed012",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#
                     ),
                     cached_params!("{\"param_nano\":1000000}"),

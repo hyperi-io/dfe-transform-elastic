@@ -1010,7 +1010,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "6cfa75707befce912c31b76e3a90b2f50ebaf426b29f2b1cf82fcbc074da2d0e",
+                        r#"{"params":"IndexedLookup","known":[]}"#,
                         r#"def severityValue = ctx.checkpoint_email.event.severity;\nif (severityValue > 0 && severityValue <= params.severity.length) {\n  ctx.checkpoint_email.event.put('severity_enum', params['severity'][(int)severityValue-1]);\n}"#
                     ),
                     cached_params!(

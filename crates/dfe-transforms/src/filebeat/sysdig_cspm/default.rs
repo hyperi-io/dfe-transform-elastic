@@ -46,8 +46,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      // Skip fields that contain '@' in their name\n      if (!entry.getKey().contains(\"@\")) {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n// Apply the conversion\nctx.sysdig = ctx.sysdig ?: [:];\nctx.sysdig.cspm = convertToSnakeCase(ctx.json);\n"#
+                    compiled_painless!(
+                        "31fedb07045a262a1b8395dacd9257a90e47b6f4e734d4e09123d9dd6f156489",
+                        r#"{"params":null,"known":[{"CamelToSnake":{"target":"sysdig.cspm","source":"json","rule":"AfterNonUpper","at_keys":"Drop","merge":false,"removes":[]}}]}"#
                     ),
                 )?;
             }
@@ -925,8 +926,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\nctx.event.severity = params.get(ctx.sysdig.cspm.control.severity.toLowerCase());"#
+                        compiled_painless!(
+                            "c5b35dcb30c7fc7e7866e260d6e614d283b83e73638a72119a90a2223b8b49e0",
+                            r#"{"params":{"LookupNormalise":[{"key":"sysdig.cspm.control.severity","fold":"Lower","target":"event.severity"},{"statements":[],"whole":false}]},"known":[]}"#
                         ),
                         cached_params!("{\"info\":21,\"low\":21,\"medium\":47,\"high\":73}"),
                     )?;

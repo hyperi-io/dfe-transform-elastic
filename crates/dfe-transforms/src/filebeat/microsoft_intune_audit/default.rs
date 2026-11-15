@@ -473,8 +473,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def content = ctx.microsoft_intune.audit.properties.additional_detail;\ndef parsed = new HashMap();\ndef lines = /\\r\\n/.split(content);\nfor (int i = 0; i < lines.length; i++) {\n  def line = lines[i];\n  if (line.contains('Key = ') && line.contains('Value = ')) {\n    def parts = /Value = /.split(line, 2);\n    if (parts.length == 2) {\n      def key = parts[0].replace('Key = ', '').trim();\n      def value = parts[1].trim();\n      parsed.put(key, value);\n    }\n  }\n}\nif (ctx.microsoft_intune.audit.properties.additional_detail instanceof String) {\n  def temp = new HashMap();\n  temp.put('original', ctx.microsoft_intune.audit.properties.additional_detail);\n  temp.put('parsed', parsed);\n  ctx.microsoft_intune.audit.properties.additional_detail = temp;\n} else {\n  ctx.microsoft_intune.audit.properties.additional_detail.parsed = parsed;\n}\n"#
+                    compiled_painless!(
+                        "316d1eae5cb6f99bfdad0f9393d4ec1d17edc1cea9dd0d2baa2372b31d6a79f9",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

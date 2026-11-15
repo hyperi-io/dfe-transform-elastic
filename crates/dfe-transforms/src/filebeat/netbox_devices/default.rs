@@ -128,8 +128,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.netbox.device.coordinates = [\n  ctx.netbox.device.longitude,\n  ctx.netbox.device.latitude\n]\n"#
+                    compiled_painless!(
+                        "a351927eeb0597b4007f5e4eb50667c6572dfc68a86700af5d06010c4561c0be",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

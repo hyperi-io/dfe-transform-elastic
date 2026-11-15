@@ -77,8 +77,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"long t = (long)(ctx.json.Datetime);\nif (t > (long)(1e18)) {\n  ctx.json.Datetime = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.Datetime = t*(long)(1e3)\n}\n"#
+                        compiled_painless!(
+                            "12fe29048efc070947705004feaf8aef972c00f1ab2df7b685d6af6f54bb713b",
+                            r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.Datetime",false]],"parse_strings":false}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -510,8 +511,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"ctx.dns = ctx.dns ?: [:];\ndef code = ctx.cloudflare_logpush?.gateway_dns?.response_code;\nif (code != null && params.containsKey(code)) {\n  ctx.dns.response_code = params[code];\n}\n"#
+                    compiled_painless!(
+                        "412edb8b5b9ce751788a33da61c1c077f16f11d6e207854663883fad134038db",
+                        r#"{"params":{"GuardedLookup":{"key":"cloudflare_logpush.gateway_dns.response_code","target":"dns.response_code"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"0\":\"NoError\",\"1\":\"FormErr\",\"2\":\"ServFail\",\"3\":\"NXDomain\",\"4\":\"NotImp\",\"5\":\"Refused\",\"6\":\"YXDomain\",\"7\":\"YXRRSet\",\"8\":\"NXRRSet\",\"9\":\"NotAuth\",\"10\":\"NotZone\",\"11\":\"DSOTYPENI\",\"16\":\"BADVERS\",\"17\":\"BADKEY\",\"18\":\"BADTIME\",\"19\":\"BADMODE\",\"20\":\"BADNAME\",\"21\":\"BADALG\",\"22\":\"BADTRUNC\",\"23\":\"BADCOOKIE\"}"

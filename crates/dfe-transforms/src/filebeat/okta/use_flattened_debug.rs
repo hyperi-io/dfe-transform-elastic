@@ -554,8 +554,9 @@ impl Transform for UseFlattenedDebug {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n"#
+                compiled_painless!(
+                    "e975a5e991d66a54988e1459be15710ca1bd31f7bcf8472f06f18be1486e5b0d",
+                    r#"{"params":null,"known":["RiskBehaviors"]}"#
                 ),
             )?;
 

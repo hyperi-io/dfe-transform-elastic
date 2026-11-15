@@ -357,8 +357,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"// Flatten ctx.parsed.stackTrace if it's a list\nif (ctx.parsed.containsKey('stackTrace') && ctx.parsed.stackTrace instanceof List) {\n    def completionText = new StringBuilder();\n    for (int i = 0; i < ctx.parsed.stackTrace.length; i++) {\n        completionText.append(ctx.parsed.stackTrace[i]);\n        if (i != ctx.parsed.stackTrace.length - 1) {\n            completionText.append(\"\\\\n\");\n        }\n    }\n    ctx.parsed.stack_trace_flattened = completionText.toString();\n}\n// Flatten ctx.parsed.message.stackTrace if message is a map and contains a list\nif (ctx.parsed.containsKey('message') && ctx.parsed.message instanceof Map && ctx.parsed.message.containsKey('stackTrace') && ctx.parsed.message.stackTrace instanceof List) {\n    def completionText = new StringBuilder();\n    for (int i = 0; i < ctx.parsed.message.stackTrace.length; i++) {\n        completionText.append(ctx.parsed.message.stackTrace[i]);\n        if (i != ctx.parsed.message.stackTrace.length - 1) {\n            completionText.append(\"\\\\n\");\n        }\n    }\n    ctx.parsed.message.stack_trace_flattened = completionText.toString();\n}\n"#
+                        compiled_painless!(
+                            "cfdf01966602a105ea68bd97c24db38c1afee64ce911d81c223e1f13c0683695",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }

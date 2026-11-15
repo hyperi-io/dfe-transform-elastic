@@ -41,7 +41,7 @@ fn split_audit_details(event: &mut Event, _params: &Value) {
 
 /// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
-    hash: "50178a81c7c727038d28b38963b2a540e2ce10566a9bf56475d4fb7978c01359",
+    hash: "c5e3536c61d37266e8af26893f715a10dee552f24c3d1a99c3b4a22765439e85",
     source: "modsecurity",
     name: "split_audit_details",
     run: split_audit_details,

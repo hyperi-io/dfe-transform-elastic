@@ -475,7 +475,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "b907613780f43c3038ce3eaaa3675b1b7985ee515e2d89a755b6887b8166afcb",
+                        r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                         r#"if (!(ctx._conf.local_domains instanceof List)) {ctx._conf.local_domains = [ctx._conf.local_domains]}\ndef destination_internal = 0;\ndef source_internal = 0;\nfor (local_domain in ctx._conf.local_domains) {\n  if (ctx.destination?.domain instanceof String && ctx.destination.domain.equalsIgnoreCase(local_domain)){\n    destination_internal = 1;\n  }\n  if (ctx.source?.domain instanceof String && ctx.source.domain.equalsIgnoreCase(local_domain)){\n    source_internal = 1;\n  }\n}\nif (source_internal == 1 && destination_internal == 1){ctx.email.direction = \"internal\";}\nelse if (source_internal == 0 && destination_internal == 0){ctx.email.direction = \"external\";}\nelse if (source_internal == 1 && destination_internal == 0){ctx.email.direction = \"outbound\";}\nelse if (source_internal == 0 && destination_internal == 1){ctx.email.direction = \"inbound\";}\nelse {ctx.email.direction = \"unknown\";}\n"#
                     ),
                 )?;
@@ -706,8 +708,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.user?.name != null && ctx.user.name.length == 1) {\n  ctx.user.name = ctx.user.name[0];\n}\nif (ctx.user?.email != null && ctx.user.email.length == 1) {\n  ctx.user.email = ctx.user.email[0];\n}\nif (ctx.user?.id != null && ctx.user.id.length == 1) {\n  ctx.user.id = ctx.user.id[0];\n}\n"#
+                compiled_painless!(
+                    "5491fe88f3b11fe63dd61b1faf379e5c401304afa26abe90817c4534cd265ce0",
+                    r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"user.name","target":"user.name","only_if_unset":false,"only_if_single":false,"consumes_array":false},{"array":"user.email","target":"user.email","only_if_unset":false,"only_if_single":false,"consumes_array":false},{"array":"user.id","target":"user.id","only_if_unset":false,"only_if_single":false,"consumes_array":false}]}}]}"#
                 ),
             )?;
 

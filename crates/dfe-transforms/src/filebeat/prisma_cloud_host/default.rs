@@ -220,8 +220,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def cves = [];\ndef data = ctx.prisma_cloud.host.all_compliance.data;\nctx.prisma_cloud.host.all_compliance.data = [\"cve\": cves];\nfor (item in data) {\n  if (item.cve != null && item.cve != \"\") {\n    cves.add(item.cve)\n  }\n}"#
+                    compiled_painless!(
+                        "41812d345b101d9df08a93a101a038837a44355c0daee1a03abe32aba92eb1d4",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -1460,8 +1461,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def cves = [];\ndef data = ctx.prisma_cloud.host.compliance_issues.data;\nctx.prisma_cloud.host.compliance_issues.data = [\"cve\": cves];\nfor (item in data) {\n  if (item.cve != null && item.cve != \"\") {\n    cves.add(item.cve)\n  }\n}"#
+                    compiled_painless!(
+                        "1d8da9bce66dbb251ccba2952baa7222d8d309e033091d13e6b6e9ff942113b4",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -2644,8 +2646,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (historyItem in ctx.prisma_cloud.host.history) {\n  def cves = [];\n  def data = historyItem.vulnerabilities;\n  historyItem.vulnerabilities = [\"cve\": cves];\n  for (item in data) {\n    if (item.cve != null && item.cve != \"\") {\n      cves.add(item.cve)\n    }\n  }\n}"#
+                    compiled_painless!(
+                        "043a319a16538ca40254532d90bd68b08ebdf2a585b9fbb6ded2cbd290e016d5",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -3338,8 +3341,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (historyItem in ctx.prisma_cloud.host.image.history) {\n  def cves = [];\n  def data = historyItem.vulnerabilities;\n  historyItem.vulnerabilities = [\"cve\": cves];\n  for (item in data) {\n    if (item.cve != null && item.cve != \"\") {\n      cves.add(item.cve)\n    }\n  }\n}"#
+                    compiled_painless!(
+                        "5d4e47230f52be531701cd0b0bc56b1f817817b234c61766108b716f06900493",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -6609,8 +6613,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def cves = [];\ndef data = ctx.prisma_cloud.host.vulnerabilities.data;\nctx.prisma_cloud.host.vulnerabilities.data = [\"cve\": cves];\nfor (item in data) {\n  if (item.cve != null && item.cve != \"\") {\n    cves.add(item.cve)\n  }\n}"#
+                    compiled_painless!(
+                        "8f8a686187db4cf425b794d772527a4990aa177b242016dffa95c92a5c230d1c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

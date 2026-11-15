@@ -780,8 +780,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (Map.Entry m : ctx.json.entrySet()) {\n  ctx.zscaler_zpa.app_connector_status[m.getKey()] = m.getValue();\n}\n"#
+                    compiled_painless!(
+                        "cd6bcc42baa65e001c4d189b62644223361f2166927e18b3dd85335285a05621",
+                        r#"{"params":null,"known":[{"MergeMapUp":{"parent":"zscaler_zpa.app_connector_status","source":"json","take":false,"collision":"Overwrite","drops":[]}}]}"#
                     ),
                 )?;
             }

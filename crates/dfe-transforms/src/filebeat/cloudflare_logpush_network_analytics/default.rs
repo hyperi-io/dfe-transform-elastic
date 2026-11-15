@@ -77,8 +77,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"long t = (long)(ctx.json.Datetime);\nif (t > (long)(1e18)) {\n  ctx.json.Datetime = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.Datetime = t*(long)(1e3)\n}\n"#
+                        compiled_painless!(
+                            "12fe29048efc070947705004feaf8aef972c00f1ab2df7b685d6af6f54bb713b",
+                            r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.Datetime",false]],"parse_strings":false}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -3267,8 +3268,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.json?.TCPSACKBlocks != null && ctx.json.TCPSACKBlocks != '' && !(ctx.json.TCPSACKBlocks instanceof List)) {\n  ctx.json.TCPSACKBlocks = [ctx.json.TCPSACKBlocks];\n}\nif (ctx.json?.TCPSackBlocks != null && ctx.json.TCPSackBlocks != '' && !(ctx.json.TCPSackBlocks instanceof List)) {\n  ctx.json.TCPSackBlocks = [ctx.json.TCPSackBlocks];\n}"#
+                    compiled_painless!(
+                        "2b0d2cc25f59fa898d35178e0644bea20b88accea6a5b9f15d241abfa031ed91",
+                        r#"{"params":null,"known":[{"WrapValueInList":[{"source":"json.TCPSACKBlocks","target":"json.TCPSACKBlocks","remove_source":false,"guards":{"not_list":true,"not_null":true,"not_empty":true}},{"source":"json.TCPSackBlocks","target":"json.TCPSackBlocks","remove_source":false,"guards":{"not_list":true,"not_null":true,"not_empty":true}}]}]}"#
                     ),
                 )?;
                 Ok(())

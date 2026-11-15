@@ -42,7 +42,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "0dec42a426179d72b225632fd9bf5a7c0615a6c1c9fb3ae4ca92f0609af918e6",
+                    r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                     r#"ctx.beyondinsight_password_safe.asset.entrySet().removeIf(entry ->\n  entry.getValue() == null ||\n  (entry.getValue() instanceof String && entry.getValue().isEmpty())\n);\n"#
                 ),
             )?;
@@ -50,8 +52,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"for (field in params.numeric_ids) {\n  def value = ctx.beyondinsight_password_safe.asset[field];\n  if (value instanceof Number) {\n    ctx.beyondinsight_password_safe.asset[field] =\n      Integer.toString(value.intValue());\n  }\n}\n"#
+                compiled_painless!(
+                    "efe9461e087ab80eeea29cf043d9b6f9b527feadffea422b13f4fe5df1217964",
+                    r#"{"params":{"StringifyNamedFields":{"container":"beyondinsight_password_safe.asset","table":"numeric_ids"}},"known":[]}"#
                 ),
                 cached_params!("{\"numeric_ids\":[\"AssetID\",\"WorkgroupID\"]}"),
             )?;
@@ -59,8 +62,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"Map renamedFields = [:];\nfor (entry in ctx.beyondinsight_password_safe.asset.entrySet()) {\n  def originalKey = entry.getKey();\n  def snakeKey = params.field_mappings[originalKey];\n  if (snakeKey != null) {\n    renamedFields[snakeKey] = entry.getValue();\n  } else {\n    renamedFields[originalKey] = entry.getValue();\n  }\n}\nctx.beyondinsight_password_safe.asset = renamedFields;\n"#
+                compiled_painless!(
+                    "1dba6ddfd36e1995dae4e64d7e9c72758869cbcc00c0d2d7ab3e117035b2f1a0",
+                    r#"{"params":{"SelectRenameKeys":{"subject":"beyondinsight_password_safe.asset","table":"field_mappings","keep_unmapped":true,"wrap_in_list":false}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"field_mappings\":{\"AssetID\":\"asset_id\",\"AssetName\":\"asset_name\",\"AssetType\":\"asset_type\",\"CreateDate\":\"create_date\",\"DnsName\":\"dns_name\",\"DomainName\":\"domain_name\",\"IPAddress\":\"ip_address\",\"LastUpdateDate\":\"last_update_date\",\"MacAddress\":\"mac_address\",\"OperatingSystem\":\"operating_system\",\"WorkgroupID\":\"workgroup_id\"}}"

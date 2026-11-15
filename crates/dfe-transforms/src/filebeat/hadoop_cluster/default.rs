@@ -38,8 +38,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.hadoop.cluster.temp = ctx.hadoop.cluster.beans[0]; ctx.hadoop.cluster.remove(\"beans\")\n"#
+                    compiled_painless!(
+                        "d0df3a4ebe93f50a1c2fa7cfa3ac97f1f2080c70c8d94152ae0b2f75693e33c5",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"hadoop.cluster.beans","target":"hadoop.cluster.temp","only_if_unset":false,"only_if_single":false,"consumes_array":true}]}}]}"#
                     ),
                 )?;
                 // ignore_failure: true
@@ -146,8 +147,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.hadoop.cluster.temp = ctx.hadoop.cluster.clusterMetrics; ctx.hadoop.cluster.remove(\"clusterMetrics\")\n"#
+                    compiled_painless!(
+                        "64b9572ed2a6c8f6d2814bbf2458db89ca7b8c055ca72162eebb5ec6b721db61",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Set":{"path":"hadoop.cluster.temp","value":{"Field":"hadoop.cluster.clusterMetrics"}}}},{"Literal":{"Remove":{"path":"hadoop.cluster.clusterMetrics"}}}],"whole":true}}]}"#
                     ),
                 )?;
                 // ignore_failure: true

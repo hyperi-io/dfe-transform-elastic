@@ -10,25 +10,6 @@
 //! one label, writes that back over the field, and looks the label up again in a
 //! second table for the 0-100 `event.severity` score.
 //!
-//! ```painless
-//! def severity = ctx.beyondtrust_isi.incident.severity;
-//! String label = null;
-//! if (severity instanceof Long) {
-//!   label = params.number_to_label.get(String.valueOf(severity));
-//! } else if (severity instanceof String) {
-//!   label = (String) severity;
-//! }
-//! if (label == null) {
-//!   ctx.beyondtrust_isi.incident.remove('severity');
-//!   return;
-//! }
-//! ctx.beyondtrust_isi.incident.severity = label;
-//! def score = params.label_to_score.get(label.toLowerCase());
-//! if (score != null) {
-//!   ctx.event.severity = score;
-//! }
-//! ```
-//!
 //! Two tables and two writes, and BOTH writes are the point: the label table
 //! answers a number, and the score table answers a word whichever way the label
 //! was reached. A number outside the first table is not a severity at all, and
@@ -40,7 +21,7 @@ use crate::params::clean_path;
 use dfe_core::event::Event;
 
 /// The field, the two tables it is read through, and where the score lands.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct LabelledScore {
     /// The field holding either the number or the label, and where the
     /// resolved label is written back.
@@ -183,107 +164,8 @@ pub fn run_labelled_score(
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::panic)]
-mod tests {
-    use serde_json::json;
-
-    use super::*;
-
-    /// `beyondtrust_isi`'s script as the GENERATED call site carries it, one
-    /// line with its newlines escaped. Resolving those is the dispatch's first
-    /// step, so the parse is exercised on what production actually hands it.
-    const RAW: &str = r"// Severity can arrive either as a number (1-4) or as a textual label,\n// so first resolve it to a canonical label before deriving a score.\ndef severity = ctx.beyondtrust_isi.incident.severity;\nString label = null;\n\nif (severity instanceof Long) {\n  label = params.number_to_label.get(String.valueOf(severity));\n} else if (severity instanceof String) {\n  label = (String) severity;\n}\n\n// Drop unrecognized or out-of-range values so only valid labels remain.\nif (label == null) {\n  ctx.beyondtrust_isi.incident.remove('severity');\n  return;\n}\n\nctx.beyondtrust_isi.incident.severity = label;\n\ndef score = params.label_to_score.get(label.toLowerCase());\nif (score != null) {\n  ctx.event.severity = score;\n}";
-
-    fn script() -> String {
-        crate::common::normalise(RAW).into_owned()
-    }
-
-    fn params() -> Map<String, Value> {
-        json!({
-            "number_to_label": { "1": "Low", "2": "Medium", "3": "High", "4": "Critical" },
-            "label_to_score": { "low": 21, "medium": 47, "high": 73, "critical": 99 }
-        })
-        .as_object()
-        .unwrap()
-        .clone()
-    }
-
-    #[test]
-    fn the_script_names_both_tables_and_both_writes() {
-        let pattern = parse_labelled_score(&script()).unwrap();
-        assert_eq!(pattern.source, "beyondtrust_isi.incident.severity");
-        assert_eq!(pattern.labels, "number_to_label");
-        assert_eq!(pattern.scores, "label_to_score");
-        assert_eq!(pattern.target, "event.severity");
-    }
-
-    #[test]
-    fn a_number_becomes_its_label_and_then_its_score() {
-        let pattern = parse_labelled_score(&script()).unwrap();
-        let mut event = Event::new(json!({"beyondtrust_isi": {"incident": {"severity": 3}}}));
-        assert!(run_labelled_score(&mut event, &pattern, &params()));
-        assert_eq!(
-            event.get("beyondtrust_isi.incident.severity"),
-            Some(&json!("High"))
-        );
-        assert_eq!(event.get("event.severity"), Some(&json!(73)));
-    }
-
-    /// A word arrives as its own label, and the score table folds its case.
-    #[test]
-    fn a_word_keeps_itself_and_still_scores() {
-        let pattern = parse_labelled_score(&script()).unwrap();
-        let mut event =
-            Event::new(json!({"beyondtrust_isi": {"incident": {"severity": "Medium"}}}));
-        assert!(run_labelled_score(&mut event, &pattern, &params()));
-        assert_eq!(
-            event.get("beyondtrust_isi.incident.severity"),
-            Some(&json!("Medium"))
-        );
-        assert_eq!(event.get("event.severity"), Some(&json!(47)));
-    }
-
-    /// A number the label table does not carry is not a severity, and the
-    /// script deletes it rather than leaving a digit behind.
-    #[test]
-    fn an_unlisted_number_is_removed_rather_than_kept() {
-        let pattern = parse_labelled_score(&script()).unwrap();
-        let mut event = Event::new(json!({"beyondtrust_isi": {"incident": {"severity": 9}}}));
-        assert!(run_labelled_score(&mut event, &pattern, &params()));
-        assert_eq!(event.get("beyondtrust_isi.incident.severity"), None);
-        assert_eq!(event.get("event.severity"), None);
-    }
-
-    /// A label no score covers keeps the label and leaves the target alone.
-    #[test]
-    fn an_unscored_label_writes_no_score() {
-        let pattern = parse_labelled_score(&script()).unwrap();
-        let mut event = Event::new(json!({"beyondtrust_isi": {"incident": {"severity": "Novel"}}}));
-        assert!(run_labelled_score(&mut event, &pattern, &params()));
-        assert_eq!(
-            event.get("beyondtrust_isi.incident.severity"),
-            Some(&json!("Novel"))
-        );
-        assert_eq!(event.get("event.severity"), None);
-    }
-
-    /// Every part is demanded: a script missing the number branch, the
-    /// write-back or the second lookup is a different script.
-    #[test]
-    fn a_script_missing_a_part_declines() {
-        let script = script();
-        for missing in [
-            script.replace("severity instanceof Long", "severity instanceof Integer"),
-            script.replace("severity instanceof String", "severity instanceof Map"),
-            script.replace("ctx.beyondtrust_isi.incident.severity = label;", ""),
-            script.replace(".remove('severity')", ".clear()"),
-            script.replace("label.toLowerCase()", "label"),
-        ] {
-            assert!(
-                parse_labelled_score(&missing).is_none(),
-                "claimed a script it cannot serve: {missing}"
-            );
-        }
-    }
-}
+#[path = "labelled_score_tests.rs"]
+mod tests;

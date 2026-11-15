@@ -176,8 +176,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.ti_socradar_taxii.stix?.confidence == null) {\n  ctx.threat.indicator.confidence = \"Low\";\n} else {\n  def value = ctx.ti_socradar_taxii.stix.confidence;\n  if (value == 0) {\n    ctx.threat.indicator.confidence = \"None\";\n  } else if (value >= 1 && value <= 25) {\n    ctx.threat.indicator.confidence = \"Low\";\n  } else if (value >= 26 && value <= 49) {\n    ctx.threat.indicator.confidence = \"Medium\";\n  } else if (value >= 50 && value <= 100) {\n    ctx.threat.indicator.confidence = \"High\";\n  } else {\n    ctx.threat.indicator.confidence = \"Not Specified\";\n  }\n}\n"#
+                compiled_painless!(
+                    "6059ab38591d13992497380525d5cce7aa12c77b756698021f30998ced68dbc1",
+                    r#"{"params":null,"known":[{"BandLadder":{"subject":"ti_socradar_taxii.stix.confidence","arms":[[{"bounds":[{"op":"Eq","scaled":0}],"all":true},{"Text":"None"}],[{"bounds":[{"op":"Ge","scaled":1000},{"op":"Le","scaled":25000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":26000},{"op":"Le","scaled":49000}],"all":true},{"Text":"Medium"}],[{"bounds":[{"op":"Ge","scaled":50000},{"op":"Le","scaled":100000}],"all":true},{"Text":"High"}]],"default":{"Text":"Not Specified"},"absent":null,"target":"threat.indicator.confidence"}}]}"#
                 ),
             )?;
 
@@ -209,8 +210,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"for (def ref : ctx.ti_socradar_taxii.stix.object_marking_refs) {\n  if (params.tlp_map.containsKey(ref)) {\n    if (ctx.threat.indicator.marking == null) {\n      ctx.threat.indicator.marking = new HashMap();\n    }\n    ctx.threat.indicator.marking.tlp = params.tlp_map[ref];\n    break;\n  }\n}\n"#
+                    compiled_painless!(
+                        "ebbcacc9ba3806c2c16f2215fec6bee138b5221e57fee58d0d019aa19009d97e",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"tlp_map\":{\"marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9\":\"WHITE\",\"marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da\":\"GREEN\",\"marking-definition--f88d31f6-486f-44da-b317-01333bde0b82\":\"AMBER\",\"marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed\":\"RED\"}}"
@@ -263,8 +265,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ZonedDateTime ioc_expiration_date; ZonedDateTime updated_at; def dur = ctx._conf.ioc_expiration_duration;\nif (ctx.threat.indicator.last_seen != null) {\n  updated_at = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n} else {\n  updated_at = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n}\nif (dur instanceof String){\n  String time_unit = dur.substring(dur.length() -  1, dur.length());\n  String time_value = dur.substring(0, dur.length() - 1);\n  if (time_unit == 'd') {\n    ioc_expiration_date = updated_at.plusDays(Long.parseLong(time_value));\n  } else if (time_unit == 'h') {\n    ioc_expiration_date = updated_at.plusHours(Long.parseLong(time_value));\n  } else if (time_unit == 'm') {\n    ioc_expiration_date = updated_at.plusMinutes(Long.parseLong(time_value));\n  } else {\n    if (ctx.error == null) {\n      ctx.error = new HashMap();\n    }\n    if (ctx.error.message == null) {\n      ctx.error.message = new ArrayList();\n    }\n    ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n    ioc_expiration_date = updated_at.plusDays(90L);\n  }\n} else {\n    ioc_expiration_date = updated_at.plusDays(90L);\n}\nctx.ti_socradar_taxii.stix.ioc_expiration_date = ioc_expiration_date;\n"#
+                        compiled_painless!(
+                            "c18c5434554d49018fadd31ef388ca4bb19b716bf8836b00cff8b7ae0c6f9edf",
+                            r#"{"params":null,"known":[{"IocExpiry":{"duration":"_conf.ioc_expiration_duration","default_duration":null,"bases":["threat.indicator.last_seen","threat.indicator.first_seen"],"default_days":90,"settle_seconds":0,"invalid_message":"invalid ioc_expiration_duration: using default 90 days","target":"ti_socradar_taxii.stix.ioc_expiration_date"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -307,8 +310,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.ti_socradar_taxii.stix.valid_until != null) {\n  ctx.ti_socradar_taxii.stix.ioc_expiration_reason = params.valid_until;\n} else if (ctx.ti_socradar_taxii.stix.revoked != null && ctx.ti_socradar_taxii.stix.revoked == true) {\n  ctx.ti_socradar_taxii.stix.ioc_expiration_reason = params.revoked;\n} else {\n  ctx.ti_socradar_taxii.stix.ioc_expiration_reason = params.default;\n}\n"#
+                    compiled_painless!(
+                        "f0e210c970653db693ede7475154d5637326e714d36ea133c085f86f5cc3fd34",
+                        r#"{"params":{"GuardedParamsRow":{"target":"ti_socradar_taxii.stix.ioc_expiration_reason","arms":[["ti_socradar_taxii.stix.valid_until",null,"valid_until"],["ti_socradar_taxii.stix.revoked",true,"revoked"]],"fallback":"default"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"valid_until\":\"Expiration set from valid_until field\",\"revoked\":\"Expiration set from revoked field\",\"default\":\"Expiration set by Elastic from the integration's parameter `IOC Expiration Duration`\"}"
@@ -2079,8 +2083,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"String saved_original = ctx.event?.original; if (ctx.event != null) ctx.event.remove('original'); ArrayList stack = new ArrayList(); stack.add(ctx); while (!stack.isEmpty()) {\n  Object obj = stack.remove(stack.size() - 1);\n  if (obj instanceof Map) {\n    for (entry in ((Map)obj).entrySet()) {\n      Object value = entry.getValue();\n      if (value instanceof String) {\n        entry.setValue(((String)value).replace('\\\\\\\\', '\\\\'));\n      } else if (value instanceof Map || value instanceof List) {\n        stack.add(value);\n      }\n    }\n  } else if (obj instanceof List) {\n    for (int i = 0; i < ((List)obj).size(); i++) {\n      Object value = ((List)obj).get(i);\n      if (value instanceof String) {\n        ((List)obj).set(i, ((String)value).replace('\\\\\\\\', '\\\\'));\n      } else if (value instanceof Map || value instanceof List) {\n        stack.add(value);\n      }\n    }\n  }\n} if (ctx.event != null && saved_original != null) ctx.event['original'] = saved_original;\n"#
+                compiled_painless!(
+                    "d93cb354343f2410769a7949780d2870b7f027168ee1285665772f78378424e4",
+                    r#"{"params":null,"known":["CollectingLadder"]}"#
                 ),
             )?;
 

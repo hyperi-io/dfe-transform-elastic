@@ -59,8 +59,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def convertToMilliseconds(long timestamp) {\n  if ((long)1e19 - 1 < timestamp) {\n    throw new IllegalArgumentException(\"Timestamp format not recognized: \" + timestamp);\n  } else if ((long)1e16 - 1 < timestamp) {\n    return timestamp / 1000000;  // Convert nanoseconds to milliseconds\n  } else if ((long)1e13 - 1 < timestamp) {\n    return timestamp / 1000;  // Convert microseconds to milliseconds\n  } else if ((long)1e10 - 1 < timestamp) {\n    return timestamp;  // Already in milliseconds, no conversion needed\n  } else {\n    return timestamp * 1000;  // Convert seconds to milliseconds\n  }\n}\ndef processFields(Map fields) {\n  if (fields == null) {\n    return null;\n  }\n  for (entry in fields.entrySet()) {\n    def fieldName = entry.getKey();\n    def fieldValue = entry.getValue();\n    // Check if the field is a nested object (Map)\n    if (fieldValue instanceof Map) {\n      // Recursively process nested objects\n      processFields((Map) fieldValue);\n    } else if (fieldName.endsWith('time') || fieldName.endsWith('_time')) {\n      // If the field name ends with \"time\" or \"_time\" and is a number, convert it\n      if (fieldValue instanceof Number) {\n        fields[fieldName] = convertToMilliseconds(((Number) fieldValue).longValue());\n      }\n    }\n  }\n  return null;\n} processFields(ctx.aws_securityhub.finding);"#
+                        compiled_painless!(
+                            "ddde0b34ce432485e56216ff91675c5176fe587b4e282190ab74821457f940f4",
+                            r#"{"params":null,"known":[{"MillisecondLadder":{"root":"aws_securityhub.finding","suffixes":["time","_time"]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -25926,8 +25927,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"// Arrays won't work in general in current UI of Cloud Security Posture workflow. In AWS SecurityHub, a finding may contain multiple resources, but rarely.\n// When a finding has single-resource, we extract ECS fields as single-value so that the Findings UI behaves as expected for almost all cases.\n// But in the rare multi-resource case, we extract the ECS fields from the primary resource. \n\ndef res;\n\nif (ctx.aws_securityhub.finding.resources.size() == 1) {\n  res = ctx.aws_securityhub.finding.resources[0];\n} else {\n  for (def resource: ctx.aws_securityhub.finding.resources) {\n    if (resource.labels?.contains('primary_resource') == true) {\n      res = resource;\n      break;\n    }\n  }\n}\n\n// Define fields to be extracted. \nctx.resource = ctx.resource ?: [:];\nctx.user = ctx.user ?: [:];\nctx.group = ctx.group ?: [:];\nctx.host = ctx.host ?: [:];\nctx.host.ip = ctx.host.ip ?: [];\nctx.orchestrator = ctx.orchestrator ?: [:];\nctx.orchestrator.cluster = ctx.orchestrator.cluster ?: [:];\nctx.cloud = ctx.cloud ?: [:];\nctx.cloud.instance = ctx.cloud.instance ?: [:];\nctx.cloud.service = ctx.cloud.service ?: [:];\nctx.cloud.machine = ctx.cloud.machine ?: [:];\n\n// Extract resource field\nctx.resource.type = res.type;\nctx.resource.id = res.uid;\nif (res.tags instanceof List) {\n  for (def tag: res.tags) {\n    if (tag.name == 'Name') {\n      ctx.resource.name = tag.value;\n      break;\n    }\n  }\n}\n\n// Extract ECS user field\nif (res.type == 'AWS::IAM::User') {\n  ctx.user.id = res.uid;\n}\n\n// Extract ECS group field\nif (res.type == 'AWS::IAM::Group') {\n  ctx.group.id = res.uid;\n}\n\n// Extract ECS host field\nif (res.type == 'AWS::EC2::Instance' && res.uid != null) {\n  ctx.host.id = res.uid;\n  ctx.host.name = res.uid;\n}\nif (res.type == 'AWS::EC2::Instance' && res.data?.awsEc2InstanceDetails?.type != null) {\n  ctx.host.type = res.data.awsEc2InstanceDetails.type;\n}\nif (res.type == 'AWS::EC2::Instance' && res.data?.awsEc2InstanceDetails?.ipV4Addresses instanceof List) {\n  for (def ipv4: res.data.awsEc2InstanceDetails.ipV4Addresses) {\n    if (ipv4 instanceof String) {\n      ctx.host.ip.add(ipv4);\n    }\n  }\n}\nif (res.type == 'AWS::EC2::Instance' && res.data?.awsEc2InstanceDetails?.ipV6Addresses instanceof List) {\n  for (def ipv6: res.data.awsEc2InstanceDetails.ipV6Addresses) {\n    if (ipv6 instanceof String) {\n      ctx.host.ip.add(ipv6);\n    }\n  }\n}\n\n// Extract ECS orchestrator field\nif (res.tags instanceof List) {\n  for (def tag: res.tags) {\n    if (tag.name == 'aws:eks:cluster-name') {\n      ctx.orchestrator.cluster.name = tag.value;\n    }\n  }\n}\nif (res.type == 'AWS::EKS::Cluster') {\n  ctx.orchestrator.cluster.id = res.uid;\n  ctx.orchestrator.type = 'kubernetes';\n}\n\n// Extract ECS cloud field\nctx.cloud.region = res.region;\nctx.cloud.service.name = res.type;\nif (res.type == 'AWS::EC2::Instance' && res.data?.awsEc2InstanceDetails?.type != null) {\n  ctx.cloud.machine.type = res.data.awsEc2InstanceDetails.type;\n}\nif (res.type == 'AWS::EC2::Instance') {\n  ctx.cloud.instance.id = res.uid;\n  ctx.cloud.instance.name = res.name;\n}\n\n// Convert key:value tags into object for better searchability.\nfor (def resource: ctx.aws_securityhub.finding.resources) {\n  if (resource.tags instanceof List) {\n    def tags = [:];\n    for (def tag: resource.tags) {\n      tags[tag.name] = tag.value;\n    }\n    resource.tags = tags;\n  }\n}"#
+                        compiled_painless!(
+                            "306893f4a1f499f705aabf3ac00f0577b9bb1931164dba57454f7563cce2cb2b",
+                            r#"{"params":null,"known":[{"SecurityhubOcsfResource":{"source":"aws_securityhub.finding.resources"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -26088,8 +26090,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.rule = ctx.rule ?: [:];\n\ndef remediation = ctx.aws_securityhub?.finding?.remediation;\nif (remediation == null && ctx.aws_securityhub?.finding?.vulnerabilities instanceof List && ctx.aws_securityhub.finding.vulnerabilities.size() > 0) {\n  remediation = ctx.aws_securityhub.finding.vulnerabilities[0].remediation;\n}\n\ndef desc = remediation?.desc;\nif (remediation?.references instanceof List) {\n  def separator = String.valueOf((char)10);\n  for (def ref: remediation.references) {\n    desc += separator + ref;\n  }\n}\n\nctx.rule.remediation = desc;\nctx.rule.reference = remediation?.references;"#
+                    compiled_painless!(
+                        "0af4f896f9ee38d178665faafc88147eb6fc8fae17bbea2fed1c2044360dbeaa",
+                        r#"{"params":null,"known":[{"SecurityhubOcsfRemediation":{"finding":"aws_securityhub.finding"}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -26163,8 +26166,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def vuln = ctx.aws_securityhub.finding.vulnerabilities[0];\n\n// Define fields to be extracted. \nctx.package = ctx.package ?: [:];\nctx.package.name = ctx.package.name ?: [];\nctx.package.version = ctx.package.version ?: [];\nctx.package.fixed_version = ctx.package.fixed_version ?: [];\nctx.vulnerability = ctx.vulnerability ?: [:];\nctx.vulnerability.scanner = ctx.vulnerability.scanner ?: [:];\nctx.vulnerability.score = ctx.vulnerability.score ?: [:];\n\nif (vuln.affected_packages instanceof List) {\n  for (def pkg: vuln.affected_packages) {\n    if (pkg.name != null) {\n      ctx.package.name.add(pkg.name);\n    }\n    if (pkg.version != null) {\n      ctx.package.version.add(pkg.version);\n    }\n    if (pkg.fixed_in_version != null) {\n      ctx.package.fixed_version.add(pkg.fixed_in_version);\n    }\n  }\n}\n\nctx.vulnerability.description = vuln.cve?.desc;\nctx.vulnerability.id = vuln.cve?.uid;\nctx.vulnerability.reference = vuln.references;\nctx.vulnerability.published_date = vuln.cve?.created_time_dt;\nif (ctx.vulnerability.published_date == null) {\n  ctx.vulnerability.published_date = vuln.cve?.created_time;\n}\n\nif (vuln.cve?.uid != null) {\n  String[] tokenList = vuln.cve.uid.splitOnToken(\"-\");\n  ctx.vulnerability.enumeration = tokenList[0];\n  if (tokenList[0] == 'CVE') {\n    ctx.vulnerability.cve = vuln.cve.uid;\n  }\n}\n\nif (vuln.cve?.cvss instanceof List && vuln.cve.cvss.size() > 0) {\n  def cvss = vuln.cve.cvss[0];\n  ctx.vulnerability.score.base = cvss.base_score;\n  ctx.vulnerability.score.version = cvss.version;\n  ctx.vulnerability.classification = 'CVSS';\n}\n\nif (ctx.aws_securityhub.finding.finding_info?.title != null) {\n  ctx.vulnerability.title = ctx.aws_securityhub.finding.finding_info.title;\n}\nif (ctx.aws_securityhub.finding.metadata?.product?.name != null) {\n  ctx.vulnerability.scanner.vendor = ctx.aws_securityhub.finding.metadata.product.name;\n}"#
+                        compiled_painless!(
+                            "120dddcf3da2b08f2e2e6d6a388e94916b1dc9ba8e3c69287577be1c4bdeaed1",
+                            r#"{"params":null,"known":[{"SecurityhubOcsfVulnerability":{"finding":"aws_securityhub.finding"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -26213,8 +26217,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String severity = ctx.aws_securityhub.finding.severity_id;\nString vulnerability_severity;\nif (severity == \"1\" || severity == \"2\") { // Informational and Low\n  ctx.event.severity = 21;\n  vulnerability_severity = 'Low';\n} else if (severity == \"3\") { // Medium\n  ctx.event.severity = 47;\n  vulnerability_severity = 'Medium';\n} else if (severity == \"4\") { // High\n  ctx.event.severity = 73;\n  vulnerability_severity = 'High';\n} else if (severity == \"5\" || severity == \"6\") { // Critical and Fatal\n  ctx.event.severity = 99;\n  vulnerability_severity = 'Critical';\n}\nctx.vulnerability = ctx.vulnerability ?: [:];\nif (ctx.aws_securityhub?.finding?.vulnerabilities instanceof List && ctx.aws_securityhub.finding.vulnerabilities.size() > 0) {\n  ctx.vulnerability.severity = vulnerability_severity;\n}"#
+                        compiled_painless!(
+                            "dd1b92cbb75724c9030132c7df7816cbf241be926f1504ebd6c87a8c82f7746d",
+                            r#"{"params":null,"known":[{"SecurityhubOcsfSeverity":{"finding":"aws_securityhub.finding"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -26840,8 +26845,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.related = ctx.related ?: [:];\nctx.related.ip = ctx.related.ip ?: [];\nctx.related.hosts = ctx.related.hosts ?: [];\nctx.related.hash = ctx.related.hash ?: [];\nfor (def o: ctx.aws_securityhub.finding.osint) {\n  if (o.type_id == '1') { // IP Address\n    ctx.related.ip.add(o.value);\n  } else if (o.type_id == '2' || o.type_id == '3') { // Domain, Hostname\n    ctx.related.hosts.add(o.value);\n  } else if (o.type_id == '4') { // Hash\n    ctx.related.hash.add(o.value);\n  } else if (o.type_id == '9') { // Email Address\n    ctx.related.user.add(o.value);\n  }\n}"#
+                        compiled_painless!(
+                            "649d23a489c0f13835d19049f4bc7af826469ad9e0bc9c4ec322c27f8ef029a3",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

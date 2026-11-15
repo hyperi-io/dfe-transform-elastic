@@ -1858,8 +1858,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def severity = ctx.nozomi_networks.alert.severity;\n  if (severity >= 0 && severity <= 3) {\n    ctx.nozomi_networks.alert.severity_label = 'low';\n    ctx.event.severity = 21;\n  } else if (severity >= 4 && severity <= 6) {\n    ctx.nozomi_networks.alert.severity_label = 'medium';\n    ctx.event.severity = 47;\n  } else if (severity >= 7 && severity <= 10) {\n    ctx.nozomi_networks.alert.severity_label = 'high';\n    ctx.event.severity = 73;\n  }"#
+                    compiled_painless!(
+                        "211f6c75d1410b7124ab8c1e2eb8856ea465124ec39d20a8b3766544c98e6021",
+                        r#"{"params":null,"known":[{"BandLadder":{"subject":"nozomi_networks.alert.severity","arms":[[{"bounds":[{"op":"Ge","scaled":0},{"op":"Le","scaled":3000}],"all":true},{"Text":"low"}],[{"bounds":[{"op":"Ge","scaled":4000},{"op":"Le","scaled":6000}],"all":true},{"Text":"medium"}],[{"bounds":[{"op":"Ge","scaled":7000},{"op":"Le","scaled":10000}],"all":true},{"Text":"high"}]],"default":null,"absent":null,"target":"nozomi_networks.alert.severity_label"}}]}"#
                     ),
                 )?;
             }

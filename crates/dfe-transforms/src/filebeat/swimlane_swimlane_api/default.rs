@@ -284,7 +284,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "0b81247eeb281ba9ea475dc5f840aa3ce987bd43cd67fc3aab5cd4abd767e295",
+                    r#"{"params":{"LookupMerge":{"statements":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}},{"If":{"test":[[{"Compare":{"path":"swimlane.audit_log.ActionType","wanted":"Null","negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                     r#"ctx.event.kind = 'event'; ctx.event.type = ['info']; if (ctx.swimlane?.audit_log?.ActionType == null) {\n    return;\n} if (params.get(ctx.swimlane?.audit_log?.ActionType) == null) {\n    return;\n} def hm = new HashMap(params.get(ctx.swimlane?.audit_log?.ActionType)); hm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(

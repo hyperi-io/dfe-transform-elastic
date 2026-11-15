@@ -444,7 +444,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "5a1e99d15baa1329f7ee77cd09d44bf1afb8902169aa73844e59eb3e06f7aeb8",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.event.duration = Math.round(ctx.istio.access.upstream.service_time * params.scale)"#
                     ),
                     cached_params!("{\"scale\":1000000}"),

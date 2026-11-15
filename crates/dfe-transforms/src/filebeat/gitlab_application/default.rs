@@ -148,8 +148,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def keyValuePairs = [];\nfor (item in ctx.gitlab.application.params) {\n  def key = item.key;\n  def value = item.value;\n  def keyValueObject = [key: value];\n  keyValuePairs.add(keyValueObject)\n}\nctx.gitlab.application.params = keyValuePairs;\n"#
+                    compiled_painless!(
+                        "debc2d1d31db90c8c500ae4c7a3f2e9b4718fcdcced3cf68052e0d8d68efe0b4",
+                        r#"{"params":null,"known":[{"KeyValuePairs":{"path":"gitlab.application.params","into":"MapPerRecord","key_steps":[],"dump_key":null}}]}"#
                     ),
                 )?;
             }

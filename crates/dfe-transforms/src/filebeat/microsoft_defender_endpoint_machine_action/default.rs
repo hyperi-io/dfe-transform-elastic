@@ -113,7 +113,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "a3a15732e31c88ae1d28285566c593aec169d4864aa08c73744d5e424121b26b",
+                        r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                         r#"if (params.get(ctx.microsoft_defender_endpoint.machine_action.type) == null) {\n  return;\n} params.get(ctx.microsoft_defender_endpoint.machine_action.type).forEach((k, v) -> {\n  ctx.event[k] = v\n});"#
                     ),
                     cached_params!(
@@ -559,8 +561,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.file = ctx.file ?: [:]; ctx.file.hash = ctx.file.hash ?: [:]; String fileType = ctx.microsoft_defender_endpoint.machine_action.related_file_info.file_identifier_type.toLowerCase(); String fileHash = ctx.microsoft_defender_endpoint.machine_action.related_file_info.file_identifier; if (fileType.contains('sha1')) {\n  ctx.file.hash.sha1 = fileHash;\n} else if (fileType.contains('md5')) {\n  ctx.file.hash.md5 = fileHash;\n} else if (fileType.contains('sha256')) {\n  ctx.file.hash.sha256 = fileHash;\n}\n"#
+                        compiled_painless!(
+                            "0b2989e4afb303e1ed6766e119d868bea5dfb39ce72737449749ed7162c82f2a",
+                            r#"{"params":null,"known":[{"ContainsLadder":{"subject":"microsoft_defender_endpoint.machine_action.related_file_info.file_identifier_type","value":"microsoft_defender_endpoint.machine_action.related_file_info.file_identifier","lower":true,"arms":[["sha1","file.hash.sha1"],["md5","file.hash.md5"],["sha256","file.hash.sha256"]]}}]}"#
                         ),
                     )?;
                     Ok(())

@@ -64,8 +64,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.log.level == params.dot) {\n  ctx.log.level = params.debug;\n} else if (ctx.log.level == params.dash) {\n  ctx.log.level = params.verbose;\n} else if (ctx.log.level == params.asterisk) {\n  ctx.log.level = params.notice;\n} else if (ctx.log.level == params.hash) {\n  ctx.log.level = params.warning;\n}"#
+                    compiled_painless!(
+                        "2d223de2ae631980de2ebb9581da6dd31a874a77eaf88ad76094530d983bb162",
+                        r#"{"params":{"ParamRenameLadder":{"path":"log.level","arms":[["dot","debug"],["dash","verbose"],["asterisk","notice"],["hash","warning"]]}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"dot\":\".\",\"debug\":\"debug\",\"dash\":\"-\",\"verbose\":\"verbose\",\"asterisk\":\"*\",\"notice\":\"notice\",\"hash\":\"#\",\"warning\":\"warning\"}"
@@ -78,8 +79,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.redis.log.role == params.master_abbrev) {\n  ctx.redis.log.role = params.master;\n} else if (ctx.redis.log.role == params.slave_abbrev) {\n  ctx.redis.log.role = params.slave;\n} else if (ctx.redis.log.role == params.child_abbrev) {\n  ctx.redis.log.role = params.child;\n} else if (ctx.redis.log.role == params.sentinel_abbrev) {\n  ctx.redis.log.role = params.sentinel;\n}"#
+                    compiled_painless!(
+                        "94c439e36aab851706d23afc56eeacf792a02320a40bca3bdd4b56ec1710b6f8",
+                        r#"{"params":{"ParamRenameLadder":{"path":"redis.log.role","arms":[["master_abbrev","master"],["slave_abbrev","slave"],["child_abbrev","child"],["sentinel_abbrev","sentinel"]]}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"master_abbrev\":\"M\",\"master\":\"master\",\"slave_abbrev\":\"S\",\"slave\":\"slave\",\"child_abbrev\":\"C\",\"child\":\"child\",\"sentinel_abbrev\":\"X\",\"sentinel\":\"sentinel\"}"

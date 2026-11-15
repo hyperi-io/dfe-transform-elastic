@@ -43,7 +43,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "7f12ccaa598ce71826ece24e3b1849e78f394882764fa18f83ae9ff61f5bf057",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"tychon.script.current_duration","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"tychon.script.current_duration","value":{"LongOf":"tychon.script.current_duration"}}}}],"alt":[]}}],"whole":true}}]}"#,
                     r#"if (ctx.tychon?.script?.current_duration != null)\n{\n  ctx.tychon.script.current_duration =\n    (long) Double.parseDouble(ctx.tychon.script.current_duration.toString());\n}\n"#
                 ),
             )?;
@@ -351,8 +353,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def result = [];\nfor (def v : ctx.tychon.file.attributes) {\n  if (v instanceof String) {\n    result.add(v);\n  }\n}\nctx.tychon.file.attributes = result;\n"#
+                    compiled_painless!(
+                        "876124fc95551302e2783d9931bc83a8d7890673c0e98face3b30ba1ef10f6d3",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -454,8 +457,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"def fieldset = ctx.tychon.x509;\nif (fieldset != null) {\n  for (String partyName : params.party_names) {\n    def party = fieldset[partyName];\n    if (party != null) {\n      for (String fieldName : params.field_names) {\n        def value = party[fieldName];\n        if (value == \"\") {\n          party.remove(fieldName);\n        } else if (value instanceof String) {\n          party[fieldName] = [value];\n        }\n      }\n    }\n  }\n}\n"#
+                compiled_painless!(
+                    "1d88a383a4f792e064058a0dc70648068ec579e9f0779f803ae450a430d8df39",
+                    r#"{"params":null,"known":["JoinOptional"]}"#
                 ),
                 cached_params!(
                     "{\"party_names\":[\"issuer\",\"subject\"],\"field_names\":[\"common_name\",\"country\",\"distinguished_name\",\"locality\",\"organizational_unit\",\"organization\",\"state_or_province\"]}"

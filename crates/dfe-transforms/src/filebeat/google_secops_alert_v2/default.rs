@@ -89,8 +89,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      // Skip fields that contain '@' in their name\n      if (!entry.getKey().contains(\"@\")) {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n// Apply the conversion\nctx.google_secops = ctx.google_secops ?: [:];\nctx.google_secops.alert_v2 = convertToSnakeCase(ctx.json);\n"#
+                    compiled_painless!(
+                        "4b2ef0d7c87e660c87f7a70e2c3317d2b1ef22534bc3c7d4b3f8efaeafabc03a",
+                        r#"{"params":null,"known":[{"CamelToSnake":{"target":"google_secops.alert_v2","source":"json","rule":"AfterNonUpper","at_keys":"Drop","merge":false,"removes":[]}}]}"#
                     ),
                 )?;
             }
@@ -106,8 +107,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] kvFields = new String[] {\"detection_fields\", \"outcomes\", \"rule_labels\"};\nfor (def detection : ctx.google_secops.alert_v2.detection) {\n  for (def fieldName : kvFields) {\n    if (!(detection[fieldName] instanceof List)) {\n      continue;\n    }\n    def flat = new HashMap();\n    for (def entry : detection[fieldName]) {\n      if (entry?.key == null || entry.key == '') {\n        continue;\n      }\n      if (entry.value != null && entry.value != '') {\n        flat[entry.key] = entry.value;\n      } else if (entry.source != null && entry.source != '') {\n        flat[entry.key] = entry.source;\n      }\n    }\n    if (flat.isEmpty()) {\n      detection.remove(fieldName);\n    } else {\n      detection[fieldName] = flat;\n    }\n  }\n}\n"#
+                    compiled_painless!(
+                        "1597e8e5806cc854ebe8b5ea56e9279b376026cd46dedfe1e655f619a56fd0d0",
+                        r#"{"params":null,"known":[{"MemberKvFold":{"list":"google_secops.alert_v2.detection","members":["detection_fields","outcomes","rule_labels"],"key":"key","values":["value","source"]}}]}"#
                     ),
                 )?;
             }
@@ -220,8 +222,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.google_secops?.alert_v2?.event?.security_result instanceof List) {\n  for (list in ctx.google_secops?.alert_v2?.event.security_result) {\n    if (list[\"severity\"] != null && list[\"severity\"] != '') {\n      if (list[\"severity\"].equalsIgnoreCase('critical')) {\n        ctx.event.severity = 99\n      } else if (list[\"severity\"].equalsIgnoreCase('error')) {\n        ctx.event.severity = 99\n      } else if (list[\"severity\"].equalsIgnoreCase('high')) {\n        ctx.event.severity = 73\n      } else if (list[\"severity\"].equalsIgnoreCase('informational')) {\n        ctx.event.severity = 21\n      }  else if (list[\"severity\"].equalsIgnoreCase('low')) {\n        ctx.event.severity = 21\n      } else if (list[\"severity\"].equalsIgnoreCase('medium')) {\n        ctx.event.severity = 47\n      } else if (list[\"severity\"].equalsIgnoreCase('none')) {\n        ctx.event.severity = 21\n      } else if (list[\"severity\"].equalsIgnoreCase('unknown_severity')) {\n        ctx.event.severity = 21\n      }\n    }\n  }\n}"#
+                    compiled_painless!(
+                        "b0c780bb0dbef4fd170f79f60df2305483549188204a57414c32a31c8c33d73b",
+                        r#"{"params":null,"known":[{"MemberLadder":{"list":"google_secops.alert_v2.event.security_result","key":"severity","target":"event.severity","bands":[["critical",99],["error",99],["high",73],["informational",21],["low",21],["medium",47],["none",21],["unknown_severity",21]]}}]}"#
                     ),
                 )?;
                 Ok(())

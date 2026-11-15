@@ -79,8 +79,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (limit in ctx.anthropic.rate_limit.limits) {\n  ctx.anthropic.rate_limit[limit.type] = limit.value;\n}"#
+                    compiled_painless!(
+                        "bd277a1cb9e2812d07c0acfd594dc944e180485e8728c0ea3f11583aea76c160",
+                        r#"{"params":null,"known":[{"RecordFold":{"list":"anthropic.rate_limit.limits","key":"type","lower":false,"arms":[{"member":"value","suffix":"","side":null}],"target":"anthropic.rate_limit","replace":false,"remove_when_empty":false}}]}"#
                     ),
                 )?;
             }

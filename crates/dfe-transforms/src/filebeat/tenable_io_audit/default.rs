@@ -754,8 +754,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def fields = new HashMap();\nfor (f in ctx.tenable_io.audit.fields) {\n  fields.put(f.key.toLowerCase(), f.value);\n}\nctx.tenable_io.audit.fields = fields;"#
+                        compiled_painless!(
+                            "4f95ce62429ed5754d09acce409aa79837331a8424bd4011e74f209225a76053",
+                            r#"{"params":null,"known":[{"KeyValuePairs":{"path":"tenable_io.audit.fields","into":"OneMap","key_steps":["Lowercase"],"dump_key":null}}]}"#
                         ),
                     )?;
                     Ok(())

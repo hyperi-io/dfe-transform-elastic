@@ -66,8 +66,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def getLastElement(def x) {\n  def index = x.length - 1;\n  return x[index];\n}\nif (ctx.http?.xdcr?.op?.samples != null) {\n  if (ctx.http.xdcr.op.samples.ep_dcp_xdcr_backoff != null) {\n    ctx.backoff = getLastElement(ctx.http.xdcr.op.samples.ep_dcp_xdcr_backoff);\n  }\n  if (ctx.http.xdcr.op.samples.ep_dcp_xdcr_total_bytes != null) {\n    ctx.bytes_total = getLastElement(ctx.http.xdcr.op.samples.ep_dcp_xdcr_total_bytes);\n  }\n  if (ctx.http.xdcr.op.samples.ep_dcp_xdcr_count != null) {\n    ctx.count = getLastElement(ctx.http.xdcr.op.samples.ep_dcp_xdcr_count);\n  }\n  if (ctx.http.xdcr.op.samples.ep_dcp_xdcr_items_remaining != null) {\n    ctx.items_remaining = getLastElement(ctx.http.xdcr.op.samples.ep_dcp_xdcr_items_remaining);\n  }\n  if (ctx.http.xdcr.op.samples.ep_dcp_xdcr_items_sent != null) {\n    ctx.items_sent = getLastElement(ctx.http.xdcr.op.samples.ep_dcp_xdcr_items_sent);\n  }\n  if (ctx.http.xdcr.op.samples.ep_oom_errors != null) {\n    ctx.oom_errors = getLastElement(ctx.http.xdcr.op.samples.ep_oom_errors);\n  }\n  if (ctx.http.xdcr.op.samples.ep_dcp_xdcr_producer_count != null) {\n    ctx.producer_count = getLastElement(ctx.http.xdcr.op.samples.ep_dcp_xdcr_producer_count);\n  }\n}"#
+                    compiled_painless!(
+                        "aad5025020d1f4996215b6081d52562f2bdb99afb31a0b81f1989fceef8a2ac3",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())

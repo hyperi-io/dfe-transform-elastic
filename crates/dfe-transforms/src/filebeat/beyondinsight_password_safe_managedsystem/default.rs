@@ -46,7 +46,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "43b43b68590a2015bea125959321261fffd3be6c266e83dd96f8427f94f90129",
+                    r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                     r#"ctx.beyondinsight_password_safe.managedsystem.entrySet().removeIf(entry ->\n  entry.getValue() == null ||\n  (entry.getValue() instanceof String && entry.getValue().isEmpty())\n);\n"#
                 ),
             )?;
@@ -54,8 +56,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"for (field in params.numeric_ids) {\n  def value = ctx.beyondinsight_password_safe.managedsystem[field];\n  if (value instanceof Number) {\n    ctx.beyondinsight_password_safe.managedsystem[field] =\n      Integer.toString(value.intValue());\n  }\n}\n"#
+                compiled_painless!(
+                    "f06fa966cc7098f27917947fcfbe6cc2fae4143ec6d21d9939d7860689b15e42",
+                    r#"{"params":{"StringifyNamedFields":{"container":"beyondinsight_password_safe.managedsystem","table":"numeric_ids"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"numeric_ids\":[\"ApplicationHostID\",\"AssetID\",\"CloudID\",\"DatabaseID\",\"DirectoryID\",\"DSSKeyRuleID\",\"EntityTypeID\",\"FunctionalAccountID\",\"LoginAccountID\",\"ManagedSystemID\",\"PasswordRuleID\",\"PlatformID\",\"SshKeyEnforcementMode\",\"WorkgroupID\"]}"
@@ -65,8 +68,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"Map renamedFields = [:];\nfor (entry in ctx.beyondinsight_password_safe.managedsystem.entrySet()) {\n  def originalKey = entry.getKey();\n  def snakeKey = params.field_mappings[originalKey];\n  if (snakeKey != null) {\n    renamedFields[snakeKey] = entry.getValue();\n  } else {\n    renamedFields[originalKey] = entry.getValue();\n  }\n}\nctx.beyondinsight_password_safe.managedsystem = renamedFields;\n"#
+                compiled_painless!(
+                    "49a777806a68691873de2da9da08bea63f6d7618be9ff77bd9995f05d092fdf1",
+                    r#"{"params":{"SelectRenameKeys":{"subject":"beyondinsight_password_safe.managedsystem","table":"field_mappings","keep_unmapped":true,"wrap_in_list":false}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"field_mappings\":{\"AccessURL\":\"access_url\",\"AccountNameFormat\":\"account_name_format\",\"ApplicationHostID\":\"application_host_id\",\"AssetID\":\"asset_id\",\"AutoManagementFlag\":\"auto_management_flag\",\"ChangeFrequencyDays\":\"change_frequency_days\",\"ChangeFrequencyType\":\"change_frequency_type\",\"ChangePasswordAfterAnyReleaseFlag\":\"change_password_after_any_release_flag\",\"ChangeTime\":\"change_time\",\"CheckPasswordFlag\":\"check_password_flag\",\"CloudID\":\"cloud_id\",\"ContactEmail\":\"contact_email\",\"DNSName\":\"dns_name\",\"DSSKeyRuleID\":\"dss_key_rule_id\",\"DatabaseID\":\"database_id\",\"Description\":\"description\",\"DirectoryID\":\"directory_id\",\"ElevationCommand\":\"elevation_command\",\"EntityTypeID\":\"entity_type_id\",\"ForestName\":\"forest_name\",\"FunctionalAccountID\":\"functional_account_id\",\"HostName\":\"host_name\",\"IPAddress\":\"ip_address\",\"ISAReleaseDuration\":\"isa_release_duration\",\"InstanceName\":\"instance_name\",\"IsApplicationHost\":\"is_application_host\",\"IsDefaultInstance\":\"is_default_instance\",\"LoginAccountID\":\"login_account_id\",\"ManagedSystemID\":\"managed_system_id\",\"MaxReleaseDuration\":\"max_release_duration\",\"NetBiosName\":\"net_bios_name\",\"OracleInternetDirectoryID\":\"oracle_internet_directory_id\",\"OracleInternetDirectoryServiceName\":\"oracle_internet_directory_service_name\",\"PasswordRuleID\":\"password_rule_id\",\"PlatformID\":\"platform_id\",\"Port\":\"port\",\"ReleaseDuration\":\"release_duration\",\"RemoteClientType\":\"remote_client_type\",\"ResetPasswordOnMismatchFlag\":\"reset_password_on_mismatch_flag\",\"SshKeyEnforcementMode\":\"ssh_key_enforcement_mode\",\"SystemName\":\"system_name\",\"Template\":\"template\",\"Timeout\":\"timeout\",\"UseSSL\":\"use_ssl\",\"WorkgroupID\":\"workgroup_id\"}}"
@@ -143,8 +147,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def description = params.descriptions.get(ctx.beyondinsight_password_safe.managedsystem.ssh_key_enforcement_mode);\nif (description != null) {\n  ctx.beyondinsight_password_safe.managedsystem.ssh_key_enforcement_mode = description;\n}\n"#
+                    compiled_painless!(
+                        "e5ca7d76a67ec9433bb443888eea2cee5b47a50e0368652856ce04e099b526b3",
+                        r#"{"params":{"MemberLookup":{"key":"beyondinsight_password_safe.managedsystem.ssh_key_enforcement_mode","table":"descriptions","fold":"None","target":"beyondinsight_password_safe.managedsystem.ssh_key_enforcement_mode","wrap":false,"miss":"Keep","literals":{"statements":[],"whole":true}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"descriptions\":{\"0\":\"None\",\"1\":\"Auto\",\"2\":\"Strict\"}}"

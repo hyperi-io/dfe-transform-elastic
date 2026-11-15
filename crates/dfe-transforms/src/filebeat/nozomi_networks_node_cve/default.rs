@@ -274,7 +274,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "4aecbc0f134cefa3dc8eb91d1c84dea53cf33032587cf0ba977fadab8b616dd8",
+                        r#"{"params":"FirstContainedMember","known":[]}"#,
                         r#"String vulnerability_id = ctx.vulnerability.id.toUpperCase();\nfor (String enum: params.vulnerability_enumeration) {\n  if (vulnerability_id.contains(enum)) {\n    ctx.vulnerability.put('enumeration', enum);\n    return;\n  }\n}\n"#
                     ),
                     cached_params!("{\"vulnerability_enumeration\":[\"CVE\",\"TVM\"]}"),

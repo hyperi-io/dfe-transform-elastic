@@ -683,9 +683,9 @@ version = "0.1.0"
 dependencies = [
  "base64 0.23.1",
  "chrono",
- "criterion",
  "dfe-core",
  "regex",
+ "serde",
  "serde_json",
  "sha1",
  "sha2",
@@ -762,10 +762,205 @@ dependencies = [
  "criterion",
  "csv",
  "dfe-runtime",
+ "dfe-transforms-1password-authentik",
+ "dfe-transforms-aws-axonius",
+ "dfe-transforms-azure-cisa",
+ "dfe-transforms-cisco-cloud",
+ "dfe-transforms-cloudflare-extrahop",
+ "dfe-transforms-f5-hid",
+ "dfe-transforms-hpe-lyve",
+ "dfe-transforms-m365-nvidia",
+ "dfe-transforms-o365-qnap",
+ "dfe-transforms-qualys-stan",
+ "dfe-transforms-stormshield-swimlane",
+ "dfe-transforms-symantec",
+ "dfe-transforms-sysdig-traefik",
+ "dfe-transforms-trellix-zoom",
+ "dfe-transforms-zscaler",
  "fancy-regex",
  "rayon",
  "regex",
  "scalo",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-1password-authentik"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-aws-axonius"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-azure-cisa"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-cisco-cloud"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-cloudflare-extrahop"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-f5-hid"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-hpe-lyve"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-m365-nvidia"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-o365-qnap"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-qualys-stan"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-stormshield-swimlane"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-symantec"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-sysdig-traefik"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-trellix-zoom"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "dfe-transforms-zscaler"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "dfe-runtime",
+ "regex",
  "serde",
  "serde_json",
  "sha2",

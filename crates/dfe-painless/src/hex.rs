@@ -20,7 +20,7 @@ use serde_json::{Value, json};
 use dfe_core::Event;
 
 /// The map whose named members are hex strings, and where the names come from.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct HexFields {
     /// The map holding the fields, `iptables` here.
     container: String,
@@ -110,78 +110,8 @@ pub fn parse_hex_fields(script: &str) -> Option<HexFields> {
         .then(|| HexFields::new(container, table))
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from `pipelines/iptables/log/default.yml`.
-    fn script() -> &'static str {
-        "def iptables = ctx['iptables']; if (iptables != null) {\n  \
-         for (key in params.hex_fields_to_convert) {\n    long value = 0;\n    \
-         def field = iptables[key];\n    if (field == null) continue;\n    \
-         char[] hex = field.toLowerCase().toCharArray();\n    for (chr in hex) {\n      \
-         long v = -1;\n      if (chr >= (char) 'a' && chr <= (char) 'f') \
-         v = (long) chr - (char) 'a' + 10;\n      else if (chr >= (char) '0' && \
-         chr <= (char) '9') v = (long) chr - (char) '0';\n      if (v >= 0) {\n        \
-         value = value * 16 + v;\n      }\n      iptables[key] = value;\n    }\n  }\n}"
-    }
-
-    fn table() -> serde_json::Map<String, Value> {
-        json!({ "hex_fields_to_convert": ["ether_type", "tos", "precedence_bits"] })
-            .as_object()
-            .expect("a params table")
-            .clone()
-    }
-
-    /// The captured output carries numbers: `"ether_type": 2048`, from `0800`.
-    #[test]
-    fn each_named_field_becomes_its_number() {
-        let pattern = parse_hex_fields(script()).expect("the conversion is recognised");
-        let mut event = Event::new(json!({
-            "iptables": { "ether_type": "0800", "tos": "00", "other": "ff" }
-        }));
-        assert!(hex_fields(&mut event, &pattern, &table()));
-
-        assert_eq!(event.get("iptables.ether_type"), Some(&json!(2048)));
-        assert_eq!(event.get("iptables.tos"), Some(&json!(0)));
-        // A field the table does not name is left as it was.
-        assert_eq!(event.get_str("iptables.other"), Some("ff"));
-    }
-
-    /// Upper case reads the same, since the script lower-cases first.
-    #[test]
-    fn case_does_not_matter() {
-        let pattern = parse_hex_fields(script()).expect("recognised");
-        let mut event = Event::new(json!({ "iptables": { "ether_type": "08FF" } }));
-        assert!(hex_fields(&mut event, &pattern, &table()));
-        assert_eq!(event.get("iptables.ether_type"), Some(&json!(2303)));
-    }
-
-    /// An absent field is skipped and an EMPTY one is left alone -- the script
-    /// writes back inside its per-character loop, which an empty string never
-    /// enters.
-    #[test]
-    fn absent_and_empty_are_both_left_alone() {
-        let pattern = parse_hex_fields(script()).expect("recognised");
-        let mut event = Event::new(json!({ "iptables": { "ether_type": "" } }));
-        assert!(hex_fields(&mut event, &pattern, &table()));
-        assert_eq!(event.get_str("iptables.ether_type"), Some(""));
-        assert!(!event.has("iptables.tos"));
-    }
-
-    /// The container and the table name are read OFF the script.
-    #[test]
-    fn the_names_come_from_the_script() {
-        let pattern = parse_hex_fields(script()).expect("recognised");
-        assert_eq!(pattern, HexFields::new("iptables", "hex_fields_to_convert"));
-    }
-
-    /// A loop over a params list that is not accumulating hex is declined.
-    #[test]
-    fn a_loop_that_is_not_a_hex_parse_is_declined() {
-        let script = "def m = ctx['m']; for (key in params.fields) { m[key] = m[key].trim(); }";
-        assert!(parse_hex_fields(script).is_none());
-    }
-}
+#[path = "hex_tests.rs"]
+mod tests;

@@ -302,7 +302,7 @@ fn is_ipv6ish(text: &str) -> bool {
 /// Every `tenable_io` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
-        hash: "ecfa216d46bf7e0315890933156a61758f5f2fff10d34adaf0c7034c9cf8867b",
+        hash: "d4024464033505cbc0d26d00a81b7b0d8727b969a6dfba720bc07207f7e0a045",
         source: "tenable_io",
         name: "extract_package_fields",
         run: extract_package_fields,

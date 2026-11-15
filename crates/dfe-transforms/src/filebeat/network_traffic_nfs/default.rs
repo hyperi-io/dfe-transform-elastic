@@ -41,8 +41,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx['host.hostname'] == null) {\n  return;\n}\nif (ctx.network_traffic == null) {\n  ctx.network_traffic = new HashMap();\n}\nif (ctx.network_traffic.nfs == null) {\n  ctx.network_traffic.nfs = new HashMap();\n}\nif (ctx.network_traffic.nfs.host == null) {\n  ctx.network_traffic.nfs.host = new HashMap();\n}\nctx.network_traffic.nfs.host['hostname'] = ctx['host.hostname'];\nctx.remove('host.hostname');\n"#
+                    compiled_painless!(
+                        "3684327198a59a501cfc0969133d1b78aa5f9302c9d91a93e6181bb664952685",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 let _cond = {

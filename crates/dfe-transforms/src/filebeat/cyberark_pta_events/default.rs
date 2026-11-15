@@ -120,8 +120,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.observer.ip = Collections.singletonList(ctx.observer.ip);"#
+                    compiled_painless!(
+                        "df53f3fdec838ed3b00105132a0d6f48bc6b03fe19e47460cf57b4824df0e6fd",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

@@ -1574,8 +1574,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (!(ctx.json?.SEVERITY_LEVEL instanceof String)) {\n  return;\n} def vuln_type = ctx.qualys_vmdr?.knowledge_base?.vuln_type; if (!(vuln_type instanceof String)) {\n  return;\n} def level = Long.parseLong(ctx.json.SEVERITY_LEVEL); if (['Potential Vulnerability', 'Vulnerability', 'Vulnerability or Potential Vulnerability'].contains(vuln_type)) {\n  if (level == 1){\n      ctx.json.SEVERITY_LEVEL = \"Minimal\";\n  } else if (level == 2) {\n      ctx.json.SEVERITY_LEVEL = \"Medium\";\n  } else if (level == 3) {\n      ctx.json.SEVERITY_LEVEL = \"Serious\";\n  } else if (level == 4) {\n      ctx.json.SEVERITY_LEVEL = \"Critical\";\n  } else if (level == 5) {\n      ctx.json.SEVERITY_LEVEL = \"Urgent\";\n  }\n} else if (vuln_type == \"Information Gathered\") {\n  if (level == 1) {\n      ctx.json.SEVERITY_LEVEL = \"Minimal\";\n  } else if (level == 2) {\n      ctx.json.SEVERITY_LEVEL = \"Medium\";\n  } else if (level == 3) {\n      ctx.json.SEVERITY_LEVEL = \"Serious\";\n  }\n}"#
+                    compiled_painless!(
+                        "898b3c575470292c3191d538800ded16105382ccac0a99aac41a4cec02b856ea",
+                        r#"{"params":null,"known":[{"LevelLabels":{"level":"json.SEVERITY_LEVEL","kind":"qualys_vmdr.knowledge_base.vuln_type","target":"json.SEVERITY_LEVEL","groups":[{"kinds":["Potential Vulnerability","Vulnerability","Vulnerability or Potential Vulnerability"],"bands":[[1,"Minimal"],[2,"Medium"],[3,"Serious"],[4,"Critical"],[5,"Urgent"]]},{"kinds":["Information Gathered"],"bands":[[1,"Minimal"],[2,"Medium"],[3,"Serious"]]}]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -1716,8 +1717,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def filterMassive(def src) {\n  if (src instanceof Map) {\n    for (def entry: src.entrySet()) {\n      entry.setValue(filterMassive(entry.getValue()));\n    }\n    return src;\n  } else if (src instanceof List) {\n    for (int i = 0; i < src.length; i++) {\n      src[i] = filterMassive(src[i]);\n    }\n    return src;\n  } else if (src instanceof String && src.length() > 32766) {\n    return src.substring(0, 32700)+' (truncated)';\n  }\n  return src;\n}\nfilterMassive(ctx);"#
+                compiled_painless!(
+                    "d8ba8ac79df9c02625cd5a1ec454a2adcc3895cdd71ccd12e4822a6d1a17819e",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

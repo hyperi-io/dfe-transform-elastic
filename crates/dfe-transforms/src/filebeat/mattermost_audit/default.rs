@@ -362,7 +362,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "f24ec64ff20713cf65a41d10da5b3d5fd7c8ca8065503c5a4d488768b90a18d8",
+                    r#"{"params":{"LookupMerge":{"statements":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}},{"Literal":{"Set":{"path":"event.category","value":{"Literal":["configuration"]}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}},{"If":{"test":[[{"Compare":{"path":"event.action","wanted":"Null","negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                     r#"ctx.event.kind = 'event'; ctx.event.category = ['configuration']; ctx.event.type = ['info']; if (ctx.event.action == null) {\n    return;\n} if (params.get(ctx.event.action) == null) {\n    return;\n} def hm = new HashMap(params.get(ctx.event.action)); hm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(
@@ -381,8 +383,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.event.action == null) {\n    return;\n} if (ctx.group == null) {\n  Map map = new HashMap();\n  ctx.put(\"group\", map);\n} if (ctx.user == null) {\n  Map map = new HashMap();\n  ctx.put(\"user\", map);\n} if (ctx.user.target == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"target\", map);\n} if (ctx.user.changes == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"changes\", map);\n} if (ctx.user.target.group == null) {\n  Map map = new HashMap();\n  ctx.user.target.put(\"group\", map);\n} if (['patchUser'].contains(ctx.event.action)) {\n  if(ctx.user.target.name != ctx.mattermost?.audit?.patch?.name) {\n    ctx.user.changes.put(\"name\", ctx.mattermost?.audit?.patch?.name);\n  }\n} else if (['createTeam','patchTeam','deleteTeam'].contains(ctx.event.action)) {\n  ctx.group.put(\"name\", ctx.mattermost?.audit?.team?.name);\n  ctx.group.put(\"id\", ctx.mattermost?.audit?.team?.id);\n} else if (['addTeamMembers','removeTeamMember'].contains(ctx.event.action)) {\n  ctx.user.target.group.put(\"name\", ctx.mattermost?.audit?.team?.name);\n  ctx.user.target.group.put(\"id\", ctx.mattermost?.audit?.team?.id);\n}"#
+                    compiled_painless!(
+                        "2254bd17dbd73d2f68415575a373e463b5832491c3570e2bb5392b8b704c43cc",
+                        r#"{"params":null,"known":[{"VocabularyBranchCopies":{"require":"event.action","branches":[{"subject":"event.action","literals":["patchUser"],"unless_equal":["user.target.name","mattermost.audit.patch.name"],"copies":[["user.changes.name","mattermost.audit.patch.name"]]},{"subject":"event.action","literals":["createTeam","patchTeam","deleteTeam"],"unless_equal":null,"copies":[["group.name","mattermost.audit.team.name"],["group.id","mattermost.audit.team.id"]]},{"subject":"event.action","literals":["addTeamMembers","removeTeamMember"],"unless_equal":null,"copies":[["user.target.group.name","mattermost.audit.team.name"],["user.target.group.id","mattermost.audit.team.id"]]}]}}]}"#
                     ),
                 )?;
             }

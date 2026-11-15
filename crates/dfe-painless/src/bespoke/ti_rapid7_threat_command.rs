@@ -69,7 +69,7 @@ fn split_span(span: &str) -> Option<(char, Result<i64, std::num::ParseIntError>)
 
 /// The script equivalent this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
-    hash: "56369e1eccf514805fe993224048e8d2c7a9a5f76867ea867908cf67a2ba06d1",
+    hash: "294fae620d80eb6368cffeb5078b6352743e26b0b2cdee7d161df0190ff88cfb",
     source: "ti_rapid7_threat_command",
     name: "ioc_deleted_at",
     run: ioc_deleted_at,

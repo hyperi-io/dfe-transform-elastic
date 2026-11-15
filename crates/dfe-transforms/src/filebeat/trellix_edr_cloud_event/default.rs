@@ -68,8 +68,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def event_category = ctx.json._eventType.toLowerCase(); ArrayList items = new ArrayList(['process', 'file', 'api', 'network', 'registry','authentication']); for (def j = 0; j < items.length; j++) {\n    String key = items[j];\n    if (event_category.contains('user')){\n        ctx.event.category = [items[5]];\n    } else if (event_category.contains('reg')){\n        ctx.event.category = [items[4]];\n    } else if (event_category.contains('dns')){\n        ctx.event.category = [items[3]];\n    } else if (event_category.contains(key)){\n        ctx.event.category = [key];\n    }\n}"#
+                        compiled_painless!(
+                            "ad57a5edd02fe87118e98c68ba9e5d4b6ce19fc0ce0912e9d3d26702c4b229dc",
+                            r#"{"params":null,"known":[{"NeedleTable":{"subject":"json._eventType","fold_case":true,"target":"event.category","fallback":null,"passes":[[{"needle":"user","unless":null,"label":"authentication"},{"needle":"reg","unless":null,"label":"registry"},{"needle":"dns","unless":null,"label":"network"},{"needle":"process","unless":null,"label":"process"}],[{"needle":"user","unless":null,"label":"authentication"},{"needle":"reg","unless":null,"label":"registry"},{"needle":"dns","unless":null,"label":"network"},{"needle":"file","unless":null,"label":"file"}],[{"needle":"user","unless":null,"label":"authentication"},{"needle":"reg","unless":null,"label":"registry"},{"needle":"dns","unless":null,"label":"network"},{"needle":"api","unless":null,"label":"api"}],[{"needle":"user","unless":null,"label":"authentication"},{"needle":"reg","unless":null,"label":"registry"},{"needle":"dns","unless":null,"label":"network"},{"needle":"network","unless":null,"label":"network"}],[{"needle":"user","unless":null,"label":"authentication"},{"needle":"reg","unless":null,"label":"registry"},{"needle":"dns","unless":null,"label":"network"},{"needle":"registry","unless":null,"label":"registry"}],[{"needle":"user","unless":null,"label":"authentication"},{"needle":"reg","unless":null,"label":"registry"},{"needle":"dns","unless":null,"label":"network"},{"needle":"authentication","unless":null,"label":"authentication"}]]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -114,8 +115,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def event_type = ctx.json._eventType.toLowerCase(); if (!ctx.event.category.contains('registry')){\n\n\n  ctx.event.type = ['info']\n} ArrayList items = new ArrayList(['access', 'creat', 'delet', 'modif', 'change']); ArrayList set_items = new ArrayList(['access', 'creation', 'deletion', 'change', 'change']); for (def j = 0; j < items.length; j++) {\n\n\n    if (event_type.contains(items[j]) && (!event_type.contains('process created'))){\n        ctx.event.type = [set_items[j]];\n    }\n}"#
+                        compiled_painless!(
+                            "0c507ec546f735405c4974bd530d4ca10f860510faaa87f08d31f83c5fa490cf",
+                            r#"{"params":null,"known":[{"NeedleTable":{"subject":"json._eventType","fold_case":true,"target":"event.type","fallback":{"label":"info","unless":["event.category","registry"]},"passes":[[{"needle":"access","unless":"process created","label":"access"}],[{"needle":"creat","unless":"process created","label":"creation"}],[{"needle":"delet","unless":"process created","label":"deletion"}],[{"needle":"modif","unless":"process created","label":"change"}],[{"needle":"change","unless":"process created","label":"change"}]]}}]}"#
                         ),
                     )?;
                     Ok(())

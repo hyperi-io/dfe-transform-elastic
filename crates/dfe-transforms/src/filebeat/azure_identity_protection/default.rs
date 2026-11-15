@@ -27,7 +27,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "46de568aa0d0bae7f2c7f161130f7bdd17645af1e92d11bc8e69106d916618a2",
+                        r#"{"params":"Replace","known":[]}"#,
                         r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#
                     ),
                     cached_params!("{\"empty_field_name\":\"\\\"\\\":\\\"\\\",\"}"),
@@ -197,7 +199,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "9f9c90e4f91775fe67ee2632e8c138fcb8957f6e350220f240467745e1aed012",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#
                     ),
                     cached_params!("{\"param_nano\":1000000}"),

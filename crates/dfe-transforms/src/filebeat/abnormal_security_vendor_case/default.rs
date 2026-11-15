@@ -255,8 +255,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"List keysToCopy = params.keysToCopy;\nList insights = new ArrayList();\n\nfor (insight in ctx.json.insights) {\n  Map new_insight = new HashMap();\n  for (key in keysToCopy) {\n    if (insight.containsKey(key)) {\n      new_insight[key] = insight[key];\n    }\n  }\n  insights.add(new_insight);\n}\nctx.abnormal_security.vendor_case.insights = insights;"#
+                    compiled_painless!(
+                        "886d9ee266a20993ef5c72dcfbf358357f54693dd1d886bd73218cf9c2f08e94",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!("{\"keysToCopy\":[\"highlight\",\"description\"]}"),
                 )?;
@@ -269,8 +270,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"List keysToCopy = params.keysToCopy; List timeline = new ArrayList(); for (event in ctx.json.timeline) {\n  Map new_event = new HashMap();\n  for (key in keysToCopy) {\n    if (event.containsKey(key)) {\n     // Inline snake_case conversion logic\n      StringBuilder sb = new StringBuilder();\n      for (int i = 0; i < key.length(); i++) {\n        char c = key.charAt(i);\n        if (Character.isUpperCase(c)) {\n          if (i > 0) {\n            sb.append('_');\n          }\n          sb.append(Character.toLowerCase(c));\n        } else {\n          sb.append(c);\n        }\n      }\n      String snake_key = sb.toString();\n      new_event[snake_key] = event[key];\n    }\n  }\n  timeline.add(new_event);\n} ctx.abnormal_security.vendor_case.timeline = timeline;"#
+                    compiled_painless!(
+                        "edd1695731a86a2a658d88a09559935ff0aae003c69008e1e7c812303ac3eed3",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"keysToCopy\":[\"eventTimestamp\",\"senderAddress\",\"recipientAddress\",\"subject\",\"markedAs\",\"threatId\"]}"

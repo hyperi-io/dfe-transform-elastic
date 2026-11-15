@@ -181,8 +181,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\ndef type = params.get(ctx.google_workspace.keep.name);\nif (type == null) {\n  ctx.event.remove('type');\n} else {\n  ctx.event.type = [type];\n}"#
+                        compiled_painless!(
+                            "30ceb24e3a10a7d1933ad6a1e1a2c8d5e5e88a418749000f932361dd60cfc408",
+                            r#"{"params":{"MemberLookup":{"key":"google_workspace.keep.name","table":null,"fold":"None","target":"event.type","wrap":true,"miss":"Remove","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"deleted_attachment\":\"deletion\",\"uploaded_attachment\":\"change\",\"edited_note_content\":\"change\",\"created_note\":\"creation\",\"deleted_note\":\"deletion\",\"modified_acl\":\"change\"}"

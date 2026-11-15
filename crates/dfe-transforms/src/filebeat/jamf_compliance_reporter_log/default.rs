@@ -373,8 +373,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.host.cpu = new HashMap();\nctx.host.cpu.usage = Math.round(ctx.json.app_metric_info.cpu_percentage * 10) / 1000.0;\n"#
+                        compiled_painless!(
+                            "3b0305c46580621e66d374a7653699949ef70fb74f2776d014f21ded1d8bcf29",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }
@@ -468,8 +469,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.json.time_milliseconds = (long)ctx.json.header.time_seconds_epoch * 1000;\nif (ctx.json?.header?.time_milliseconds_offset != null && ctx.json.header.time_milliseconds_offset != 0) {\n  ctx.json.time_milliseconds = ctx.json.time_milliseconds + (long)ctx.json.header.time_milliseconds_offset;\n}\n"#
+                        compiled_painless!(
+                            "2271af75b9e99fdcd92d62fa29fd3ecace6f99e5d0d10a2be82003ca7bb3640b",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }
@@ -1085,8 +1087,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"Map map = new HashMap();\nmap.put('0', 'AF_UNSPEC');\nmap.put('1', 'AF_LOCAL');\nmap.put('AF_LOCAL', 'AF_UNIX');\nmap.put('2', 'AF_INET');\nmap.put('3', 'AF_ImapPLINK');\nmap.put('4', 'AF_PUP');\nmap.put('5', 'AF_CHAOS');\nmap.put('6', 'AF_NS');\nmap.put('7', 'AF_ISO');\nmap.put('AF_ISO', 'AF_OSI');\nmap.put('8', 'AF_ECmapA');\nmap.put('9', 'AF_DATAKIT');\nmap.put('10', 'AF_CCITT');\nmap.put('11', 'AF_SNA');\nmap.put('12', 'AF_DECnet');\nmap.put('13', 'AF_DLI');\nmap.put('14', 'AF_LAT');\nmap.put('15', 'AF_HYLINK');\nmap.put('16', 'AF_APPLETALK');\nmap.put('17', 'AF_ROUTE');\nmap.put('18', 'AF_LINK');\nmap.put('19', 'pseudo_AF_XTP');\nmap.put('20', 'AF_COIP');\nmap.put('21', 'AF_CNT');\nmap.put('22', 'pseudo_AF_RTIP');\nmap.put('23', 'AF_IPX');\nmap.put('24', 'AF_SIP');\nmap.put('25', 'pseudo_AF_PIP');\nctx.jamf_compliance_reporter.log.socket.unix.family = map.get(ctx.json.inet_family);\n"#
+                            compiled_painless!(
+                                "4ddcaacb63de59e8db666bd6ab6c1e66c164d79f75008bf91b9fdcc271c9bfa3",
+                                r#"{"params":null,"known":[]}"#
                             ),
                         )?;
                     }
@@ -1451,8 +1454,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"Map map = new HashMap();\nmap.put('0', 'AF_UNSPEC');\nmap.put('1', 'AF_LOCAL');\nmap.put('AF_LOCAL', 'AF_UNIX');\nmap.put('2', 'AF_INET');\nmap.put('3', 'AF_ImapPLINK');\nmap.put('4', 'AF_PUP');\nmap.put('5', 'AF_CHAOS');\nmap.put('6', 'AF_NS');\nmap.put('7', 'AF_ISO');\nmap.put('AF_ISO', 'AF_OSI');\nmap.put('8', 'AF_ECmapA');\nmap.put('9', 'AF_DATAKIT');\nmap.put('10', 'AF_CCITT');\nmap.put('11', 'AF_SNA');\nmap.put('12', 'AF_DECnet');\nmap.put('13', 'AF_DLI');\nmap.put('14', 'AF_LAT');\nmap.put('15', 'AF_HYLINK');\nmap.put('16', 'AF_APPLETALK');\nmap.put('17', 'AF_ROUTE');\nmap.put('18', 'AF_LINK');\nmap.put('19', 'pseudo_AF_XTP');\nmap.put('20', 'AF_COIP');\nmap.put('21', 'AF_CNT');\nmap.put('22', 'pseudo_AF_RTIP');\nmap.put('23', 'AF_IPX');\nmap.put('24', 'AF_SIP');\nmap.put('25', 'pseudo_AF_PIP');\nctx.jamf_compliance_reporter.log.socket.inet.family = map.get(ctx.json.inet_family);\n"#
+                            compiled_painless!(
+                                "8d15339af1691a0fc4697712285be3e7a3c19ff3747264b0062a1ee5d353776d",
+                                r#"{"params":null,"known":[]}"#
                             ),
                         )?;
                     }
@@ -2410,8 +2414,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"for (entry in params.replacements.entrySet()) {\n  if (ctx.json.exec_env.env.ARCH == entry.getKey()) {\n    ctx.json.exec_env.env.put('ARCH', entry.getValue());\n  }\n}\nif (!params.allowed.contains(ctx.json.exec_env.env.ARCH)) {\n  return;\n}\nif (ctx.host == null) {\n  HashMap hm = new HashMap();\n  ctx.put('host', hm);\n}\nif (ctx.host.os == null) {\n  HashMap hm = new HashMap();\n  ctx.host.put('os', hm);\n}\nctx.host.os.put('type', ctx.json.exec_env.env.ARCH);\nctx.json.exec_env.env.remove('ARCH');\n"#
+                            compiled_painless!(
+                                "35fdc6c0fa8eb1c48c1b42e4a76d129fe0bf1e49dd3a2cbcc7c2c9dd94e2a4ff",
+                                r#"{"params":"IndexedLookup","known":[]}"#
                             ),
                             cached_params!(
                                 "{\"allowed\":[\"linux\",\"macos\",\"unix\",\"windows\",\"ios\",\"android\"],\"replacements\":{\"macintosh\":\"macos\"}}"
@@ -2454,8 +2459,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def args_list = new ArrayList();\nctx.process.args = args_list;\nif (ctx.json?.args != null) {\n  for (Map.Entry m : ctx.json.args.entrySet()) {\n    ctx.process.args.add(m.getValue());\n  }\n}\n"#
+                        compiled_painless!(
+                            "f6892470e60c11b72f56cc6f5a5fe237eec6f7d46c498ab7ad95cc3144bc11e1",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     let _cond = { event.has_value("json.file_access_mode") };
@@ -3576,8 +3582,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def args_list = new ArrayList();\nctx.process.args = args_list;\nif (ctx.json?.args != null) {\n  for (Map.Entry m : ctx.json.args.entrySet()) {\n    ctx.process.args.add(m.getValue());\n  }\n}\n"#
+                        compiled_painless!(
+                            "f6892470e60c11b72f56cc6f5a5fe237eec6f7d46c498ab7ad95cc3144bc11e1",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     // Begin nested pipeline: "pipeline_identity_object"
@@ -9593,8 +9600,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def args_list = new ArrayList();\nctx.process.args = args_list;\nif (ctx.json?.args != null) {\n  for (Map.Entry m : ctx.json.args.entrySet()) {\n    ctx.process.args.add(m.getValue());\n  }\n}\n"#
+                        compiled_painless!(
+                            "f6892470e60c11b72f56cc6f5a5fe237eec6f7d46c498ab7ad95cc3144bc11e1",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     // End nested pipeline: "pipeline_prohibited_app_blocked"

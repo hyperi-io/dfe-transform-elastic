@@ -316,8 +316,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def parts = ctx.aws.elb.ssl_protocol.splitOnToken(\"v\"); if (parts.length != 2) {\n  return;\n} if (parts[1].contains(\".\")) {\n  ctx.tls.version = parts[1];\n} else {\n  ctx.tls.version = parts[1].substring(0,1) + \".\" + parts[1].substring(1);\n} ctx.tls.version_protocol = parts[0].toLowerCase();"#
+                    compiled_painless!(
+                        "691402ee5856b8bd3ddc25f2577c4eab42388c2e2ce0d08219a1629d9bb629a0",
+                        r#"{"params":null,"known":[{"TlsVersionSplit":{"source":"aws.elb.ssl_protocol"}}]}"#
                     ),
                 )?;
             }

@@ -81,7 +81,7 @@ fn process_args_count(event: &mut Event, _params: &Value) {
 /// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
-        hash: "c8255593b2075af7a5825fda5385cf422cc336f190ae8b38e2b4163e9be38581",
+        hash: "295a7a73633b659f12db40f18b056ba4b019507a72f277b8738fb1605fa22b97",
         source: "auditd",
         name: "execve_process_args",
         run: execve_process_args,

@@ -24,7 +24,7 @@ use serde_json::{Value, json};
 use dfe_core::Event;
 
 /// One total: where it lands, and the two fields summed into it.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct Total {
     /// The dotted path the total is written to.
     target: String,
@@ -50,7 +50,7 @@ impl Total {
 }
 
 /// Every total one script writes.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct SumTotals {
     /// In the order the script writes them.
     totals: Vec<Total>,
@@ -214,89 +214,8 @@ pub fn parse_sum_totals(script: &str) -> Option<SumTotals> {
     (!totals.is_empty()).then(|| SumTotals::new(totals))
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use super::*;
-
-    /// suricata's flow totals, verbatim from
-    /// `pipelines/suricata/eve/default.yml`.
-    fn script() -> &'static str {
-        "long getOrZero(def map, def key) {\n  if (map!=null && map[key]!=null) {\n    \
-         return map[key];\n  }\n  return 0;\n}\n\
-         def network=ctx['network'], source=ctx['source'], dest=ctx['destination'];\n\
-         def sp=getOrZero(source,'packets'), sb=getOrZero(source,'bytes'), \
-         dp=getOrZero(dest,'packets'), db=getOrZero(dest,'bytes');\n\
-         if (sb+db+sp+dp > 0) {\n  if (network == null) {\n    network=new HashMap();\n    \
-         ctx['network']=network;\n  }\n  if (sb+db > 0) {\n    network['bytes'] = sb+db;\n  }\n  \
-         if(sp+dp>0) {\n    network['packets'] = sp+dp;\n  }\n}"
-    }
-
-    /// The whole point: one direction reporting is enough for a total, which
-    /// is where `sum_directions` gives up and Elasticsearch does not.
-    #[test]
-    fn one_side_alone_still_makes_a_total() {
-        let pattern = parse_sum_totals(script()).expect("the totals are recognised");
-        let mut event = Event::new(serde_json::json!({
-            "source": { "packets": 7, "bytes": 100 }
-        }));
-        assert!(sum_totals(&mut event, &pattern));
-        assert_eq!(event.get("network.bytes"), Some(&serde_json::json!(100)));
-        assert_eq!(event.get("network.packets"), Some(&serde_json::json!(7)));
-    }
-
-    /// Both sides add, which is the ordinary case.
-    #[test]
-    fn both_sides_add() {
-        let pattern = parse_sum_totals(script()).expect("recognised");
-        let mut event = Event::new(serde_json::json!({
-            "source": { "packets": 7, "bytes": 100 },
-            "destination": { "packets": 3, "bytes": 50 }
-        }));
-        assert!(sum_totals(&mut event, &pattern));
-        assert_eq!(event.get("network.bytes"), Some(&serde_json::json!(150)));
-        assert_eq!(event.get("network.packets"), Some(&serde_json::json!(10)));
-    }
-
-    /// A zero total writes NOTHING. The script guards every write on `> 0`, and
-    /// a zero there would be a field Elasticsearch does not emit.
-    #[test]
-    fn a_zero_total_is_not_written() {
-        let pattern = parse_sum_totals(script()).expect("recognised");
-        let mut event = Event::new(serde_json::json!({
-            "source": { "packets": 0, "bytes": 0 }
-        }));
-        assert!(sum_totals(&mut event, &pattern));
-        assert!(!event.has("network.bytes"));
-        assert!(!event.has("network.packets"));
-    }
-
-    /// A side that is present and not a number writes nothing AT ALL. The
-    /// script reads every side into a local before it writes, so a value the
-    /// `long` helper cannot return throws and the processor fails whole.
-    #[test]
-    fn a_non_numeric_side_writes_nothing_at_all() {
-        let pattern = parse_sum_totals(script()).expect("recognised");
-        let mut event = Event::new(serde_json::json!({
-            "source": { "packets": 7, "bytes": "lots" },
-            "destination": { "packets": 3, "bytes": 50 }
-        }));
-        assert!(sum_totals(&mut event, &pattern));
-        assert!(!event.has("network.bytes"));
-        assert!(!event.has("network.packets"));
-    }
-
-    /// The paths are read OFF the script, not assumed to be source and
-    /// destination into network.
-    #[test]
-    fn the_paths_come_from_the_script() {
-        let pattern = parse_sum_totals(script()).expect("recognised");
-        assert_eq!(
-            pattern.totals,
-            vec![
-                Total::new("network.bytes", "source.bytes", "destination.bytes"),
-                Total::new("network.packets", "source.packets", "destination.packets"),
-            ]
-        );
-    }
-}
+#[path = "totals_tests.rs"]
+mod tests;

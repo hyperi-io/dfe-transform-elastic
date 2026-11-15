@@ -306,8 +306,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"List metricNames = new ArrayList(); if (ctx.aws != null && ctx.aws instanceof Map) {\n    for (entry in ctx.aws.entrySet()) {\n        def nestedMap = entry.getValue();\n        if (nestedMap instanceof Map) { // Get the top-level key (firehose, cloudwatch, etc.)\n            def metricsMap = nestedMap.get(\"metrics\"); // Get aws.*.metrics.*\n            if (metricsMap instanceof Map) {\n                metricNames.addAll(metricsMap.keySet());\n                break;\n            }\n        }\n    }\n} Collections.sort(metricNames); ctx.aws.metrics_names = metricNames;"#
+                compiled_painless!(
+                    "d65b772682e3aa8127e918f60cf675f24d2fdd93c59718d3897d51dea1b770ec",
+                    r#"{"params":null,"known":[{"NestedKeyNames":{"source":"aws","inner":"metrics","target":"aws.metrics_names"}}]}"#
                 ),
             )?;
 

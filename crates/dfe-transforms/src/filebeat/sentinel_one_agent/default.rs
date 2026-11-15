@@ -2087,7 +2087,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "e51424108d3466a251127c0cc9ea994adfb53caa38c0f6e4a1bfcb545fd17af6",
+                        r#"{"params":"FirstContainedMember","known":[]}"#,
                         r#"ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString os_type = ctx.json.osType.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_type.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\n"#
                     ),
                     cached_params!(

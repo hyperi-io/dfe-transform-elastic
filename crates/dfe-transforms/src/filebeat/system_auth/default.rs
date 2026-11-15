@@ -1289,8 +1289,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.system.auth.ssh.event == \"Accepted\") {\n  ctx.event.type = [\"info\"];\n  ctx.event.category = [\"authentication\", \"session\"];\n  ctx.event.action = \"ssh_login\";\n  ctx.event.outcome = \"success\";\n} else if (ctx.system.auth.ssh.event == \"Invalid\" || ctx.system.auth.ssh.event == \"Failed\") {\n  ctx.event.type = [\"info\"];\n  ctx.event.category = [\"authentication\"];\n  ctx.event.action = \"ssh_login\";\n  ctx.event.outcome = \"failure\";\n}"#
+                        compiled_painless!(
+                            "1ac57d1f5767869572b02442c3827e28c694d65e1195a5c7e2cd1526b36b2a83",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"system.auth.ssh.event","fold_case":false,"test":"Equals","arms":[{"literals":["Accepted"],"writes":[["event.type",["info"]],["event.category",["authentication","session"]],["event.action","ssh_login"],["event.outcome","success"]],"removes":[]},{"literals":["Invalid","Failed"],"writes":[["event.type",["info"]],["event.category",["authentication"]],["event.action","ssh_login"],["event.outcome","failure"]],"removes":[]}]}}]}"#
                         ),
                     )?;
                 }
@@ -2722,8 +2723,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.system.auth.ssh.event == \"Accepted\") {\n  ctx.event.type = [\"info\"];\n  ctx.event.category = [\"authentication\", \"session\"];\n  ctx.event.action = \"ssh_login\";\n  ctx.event.outcome = \"success\";\n} else if (ctx.system.auth.ssh.event == \"Invalid\" || ctx.system.auth.ssh.event == \"Failed\") {\n  ctx.event.type = [\"info\"];\n  ctx.event.category = [\"authentication\"];\n  ctx.event.action = \"ssh_login\";\n  ctx.event.outcome = \"failure\";\n}"#
+                        compiled_painless!(
+                            "1ac57d1f5767869572b02442c3827e28c694d65e1195a5c7e2cd1526b36b2a83",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"system.auth.ssh.event","fold_case":false,"test":"Equals","arms":[{"literals":["Accepted"],"writes":[["event.type",["info"]],["event.category",["authentication","session"]],["event.action","ssh_login"],["event.outcome","success"]],"removes":[]},{"literals":["Invalid","Failed"],"writes":[["event.type",["info"]],["event.category",["authentication"]],["event.action","ssh_login"],["event.outcome","failure"]],"removes":[]}]}}]}"#
                         ),
                     )?;
                 }

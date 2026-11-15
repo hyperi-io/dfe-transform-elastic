@@ -781,8 +781,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def tags = ctx.misp.tag.stream()\n   .map(t -> t.name.replace('\\\\', '').replace('\"', ''))\n   .collect(Collectors.toList());\ndef tlpTags = tags.stream()\n   .filter(t -> t.startsWith('tlp:'))\n   .map(t -> t.replace('tlp:', '').toUpperCase())\n   .collect(Collectors.toList());\n\nif (ctx.tags == null) {\n  ctx.tags = new ArrayList();\n}\nctx.tags.addAll(tags);\nctx.threat.indicator.marking = [ 'tlp': tlpTags ];\n"#
+                    compiled_painless!(
+                        "22ed1266a44c439d433fcd1b6a5af4619dc084b0418dca84630d2b78a54a22b9",
+                        r#"{"params":null,"known":[{"TagsAndMarking":{"source":"misp.tag","member":"name","strip":["\\","\""],"scrubbed":"tags","append":true,"marking":"threat.indicator.marking","key":"tlp","prefix":"tlp:"}}]}"#
                     ),
                 )?;
             }

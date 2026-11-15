@@ -23,8 +23,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def alerts = []; def warnings = []; for (alarm in ctx.vsphere.resourcepool.triggered_alarms) {\n    if (alarm.status == 'red') {\n    alerts.add(alarm.name);\n    }\n    if (alarm.status == 'yellow') {\n    warnings.add(alarm.name);\n    }\n} ctx.alerts = alerts; ctx.warnings = warnings\n"#
+                    compiled_painless!(
+                        "89a79b014e93ced0a3c5c2123cdc281157e75cdaccefabadf896b644a3e7a4d3",
+                        r#"{"params":null,"known":[{"CollectByLiteral":{"list":"vsphere.resourcepool.triggered_alarms","tested":"status","arms":[{"literal":"red","member":"name","target":"alerts"},{"literal":"yellow","member":"name","target":"warnings"}]}}]}"#
                     ),
                 )?;
             }

@@ -515,8 +515,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def temp = ctx.microsoft_sentinel.alert.properties.severity.toLowerCase(); if (temp == 'informational') {\n  ctx.event.severity = 21;\n} else if (temp == 'low') {\n  ctx.event.severity = 21;\n} else if (temp == 'medium') {\n  ctx.event.severity = 47;\n} else if (temp == 'high') {\n  ctx.event.severity = 73;\n}"#
+                        compiled_painless!(
+                            "199e7a728301badc3528cbb330e2b9c71af8cd05462dc854a1e0ea865cc882d6",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"microsoft_sentinel.alert.properties.severity","fold_case":true,"test":"Equals","arms":[{"literals":["informational"],"writes":[["event.severity",21]],"removes":[]},{"literals":["low"],"writes":[["event.severity",21]],"removes":[]},{"literals":["medium"],"writes":[["event.severity",47]],"removes":[]},{"literals":["high"],"writes":[["event.severity",73]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -625,8 +626,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"Instant event_start = ZonedDateTime.parse(ctx.event.start).toInstant();\nInstant event_end = ZonedDateTime.parse(ctx.event.end).toInstant();\nctx.event['duration'] = ChronoUnit.NANOS.between(event_start, event_end);\n"#
+                        compiled_painless!(
+                            "1496daf8f08c6652a2df3a98d37315861f71afac938495737d22336a18d16689",
+                            r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                         ),
                     )?;
                     Ok(())

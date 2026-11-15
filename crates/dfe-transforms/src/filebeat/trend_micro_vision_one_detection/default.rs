@@ -73,8 +73,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      newObj[camelToSnake(entry.getKey())] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    if (obj == \"\") {\n      return null;\n    }\n    return obj;\n  }\n}\nctx.trend_micro_vision_one = ctx.trend_micro_vision_one ?: [:];\nctx.trend_micro_vision_one.detection = convertToSnakeCase(ctx.json);\n"#
+                    compiled_painless!(
+                        "86cfd9f4e3e2c9d712aa598887242efc499f37982900ef28d792a9fc3a4cee4e",
+                        r#"{"params":null,"known":[{"CamelToSnake":{"target":"trend_micro_vision_one.detection","source":"json","rule":"AfterNonUpper","at_keys":"Convert","merge":false,"removes":[]}}]}"#
                     ),
                 )?;
             }
@@ -1883,8 +1884,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def cccaRiskLevel = ctx.trend_micro_vision_one.detection.risk_level;\nif (params.cccaRiskLevel.containsKey(cccaRiskLevel.toString())) {\n  ctx.trend_micro_vision_one.detection.risk_level_value = params.cccaRiskLevel[cccaRiskLevel.toString()];\n}"#
+                        compiled_painless!(
+                            "1f249c6b76c6629fb68d804498c9c24e1c083368ab989715a49e7b69330e6fc1",
+                            r#"{"params":{"FieldTables":{"lookups":[{"StringKeyedRow":{"source":"trend_micro_vision_one.detection.risk_level","table":"cccaRiskLevel","target":"trend_micro_vision_one.detection.risk_level_value"}}]}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"cccaRiskLevel\":{\"0\":\"SLF_CCCA_RISKLEVEL_UNKNOWN\",\"1\":\"SLF_CCCA_RISKLEVEL_LOW\",\"2\":\"SLF_CCCA_RISKLEVEL_MEDIUM\",\"3\":\"SLF_CCCA_RISKLEVEL_HIGH\"}}"

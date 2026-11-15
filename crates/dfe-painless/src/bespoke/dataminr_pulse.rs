@@ -482,7 +482,7 @@ pub const ENTRIES: &[Entry] = &[
         run: intel_agents_summary,
     },
     Entry {
-        hash: "47731f70bb857e68bdc31540e6d157a95ee4ad398ff014dd975c6c508128b86c",
+        hash: "70dfddc9a47446c4dee335ff76936cb2c8f157b16fe77d3e3e1d9c1891f438f1",
         source: "dataminr_pulse",
         name: "event_category",
         run: event_category,

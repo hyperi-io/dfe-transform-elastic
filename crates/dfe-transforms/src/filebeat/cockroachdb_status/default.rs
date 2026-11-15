@@ -30,8 +30,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.cockroachdb.status.up.value == 1){\n  ctx.cockroachdb.status.up.value_description = \"up\"\n  } else if(ctx.cockroachdb.status.up.value == 0){\n  ctx.cockroachdb.status.up.value_description = \"down\"\n}\n"#
+                    compiled_painless!(
+                        "33b1866cfb5e3db2e62959e5cbc43378180770d2f8605b7bddbf9842f05ddc5d",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

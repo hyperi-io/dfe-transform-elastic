@@ -230,8 +230,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.url = \"https://app.wiz.io/issues#~(filters~(status~())~issue~'\" + ctx.event.id + \")\";\n"#
+                    compiled_painless!(
+                        "5daf6ef5f6c3e48734b7287b1a5256090047f243f7c57e7444ca5e4696e71de8",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Set":{"path":"event.url","value":{"Concat":{"pieces":[{"Literal":"https://app.wiz.io/issues#~(filters~(status~())~issue~'"},{"Field":"event.id"},{"Literal":")"}],"fold":"None"}}}}}],"whole":true}}]}"#
                     ),
                 )?;
             }
@@ -862,8 +863,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def sourceRulesList = new ArrayList();\nfor (def rule : ctx.json.sourceRules) {\n  def mappedRule = new HashMap();\n  if (rule.__typename != null) {\n    mappedRule.put('__typename', rule.__typename);\n  }\n  if (rule.id != null) {\n    mappedRule.put('id', rule.id);\n  }\n  if (rule.name != null) {\n    mappedRule.put('name', rule.name);\n  }\n  if (rule.description != null) {\n    mappedRule.put('description', rule.description);\n    if (ctx.message == null) {\n      ctx.message = rule.description;\n    }\n  }\n  if (rule.resolutionRecommendation != null) {\n    mappedRule.put('resolution_recommendation', rule.resolutionRecommendation);\n  }\n  if (rule.remediationInstructions != null) {\n    mappedRule.put('remediation_instructions', rule.remediationInstructions);\n  }\n  if (rule.risks != null && rule.risks.size() > 0) {\n    def risksList = new ArrayList();\n    risksList.addAll(rule.risks);\n    mappedRule.put('risks', risksList);\n  }\n  if (rule.securitySubCategories != null) {\n    mappedRule.put('security_sub_categories', rule.securitySubCategories);\n  }\n  if (rule.type != null) {\n    mappedRule.put('type', rule.type);\n  }\n  if (rule.serviceType != null) {\n    mappedRule.put('service_type', rule.serviceType);\n  }\n  if (rule.sourceType != null) {\n    mappedRule.put('source_type', rule.sourceType);\n  }\n  sourceRulesList.add(mappedRule);\n}\n\nctx.wiz.issue.source_rules = sourceRulesList;\n"#
+                        compiled_painless!(
+                            "9907c0ddf3c1b68f363b8153644f6cd96a23d027297889f19b335f80359f8e80",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

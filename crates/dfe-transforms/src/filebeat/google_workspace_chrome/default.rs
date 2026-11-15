@@ -183,8 +183,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\nctx.event.outcome = params.get(ctx.google_workspace.chrome.event_result.toLowerCase());"#
+                        compiled_painless!(
+                            "53beee046155588b1e37074fea8361d95f1396574b79f88b89fff20c58ffb998",
+                            r#"{"params":{"LookupNormalise":[{"key":"google_workspace.chrome.event_result","fold":"Lower","target":"event.outcome"},{"statements":[{"If":{"test":[[{"Compare":{"path":"event","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}}],"whole":false}]},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"allowed\":\"success\",\"blocked\":\"failure\",\"bypassed\":\"success\",\"detected\":\"success\",\"reported\":\"success\",\"warned\":\"unknown\"}"
@@ -246,8 +247,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\ndef category = params.get(ctx.google_workspace.chrome.name.toLowerCase());\nif (category == null) {\n  ctx.event.remove('category');\n} else {\n  ctx.event.put('category', [category]);\n}"#
+                        compiled_painless!(
+                            "176057eae993d3839ff3f80105604595faa474197d6d3a849f9b89ad5fc111d6",
+                            r#"{"params":{"MemberLookup":{"key":"google_workspace.chrome.name","table":null,"fold":"Lower","target":"event.category","wrap":true,"miss":"Remove","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"browser_extension_install\":\"package\",\"chrome_os_add_user\":\"iam\",\"chrome_os_remove_user\":\"iam\",\"chrome_os_login_failure_event\":\"authentication\",\"chrome_os_login_logout_event\":\"authentication\",\"chrome_os_login_event\":\"authentication\",\"chrome_os_logout_event\":\"authentication\",\"content_transfer\":\"file\",\"device_boot_state_change\":\"configuration\",\"extension_request\":\"configuration\",\"login_event\":\"authentication\",\"malware_transfer\":\"malware\",\"sensitive_data_transfer\":\"file\",\"unsafe_site_visit\":\"web\"}"
@@ -295,8 +297,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\ndef type = params.get(ctx.google_workspace.chrome.name.toLowerCase());\nif (type == null) {\n  ctx.event.remove('type');\n} else {\n  ctx.event.put('type', [type]);\n}"#
+                        compiled_painless!(
+                            "0990b8d444186fc1e407a60f8f434bf4dadf952dcbdb8da4069f7d4a31298ce9",
+                            r#"{"params":{"MemberLookup":{"key":"google_workspace.chrome.name","table":null,"fold":"Lower","target":"event.type","wrap":true,"miss":"Remove","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"browser_extension_install\":\"installation\",\"chrome_os_add_user\":\"creation\",\"chrome_os_remove_user\":\"deletion\",\"chrome_os_login_failure_event\":\"info\",\"chrome_os_login_logout_event\":\"info\",\"chrome_os_login_event\":\"start\",\"chrome_os_logout_event\":\"end\",\"content_transfer\":\"info\",\"device_boot_state_change\":\"change\",\"extension_request\":\"info\",\"login_event\":\"info\",\"malware_transfer\":\"info\",\"password_breach\":\"info\",\"sensitive_data_transfer\":\"info\",\"unsafe_site_visit\":\"info\"}"
@@ -1453,8 +1456,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.source.user.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} ctx.source.user.name = splitmail[0]; ctx.source.user.domain = splitmail[1];\n"#
+                    compiled_painless!(
+                        "cb0b4f6e92b6ee707930bf395beb1707c4fbcb3f1801c0b06bd2c73bfbefe113",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"source.user.email","names":["source.user.name"],"domains":["source.user.domain"],"emails":[],"appends":[]}}]}"#
                     ),
                 )?;
             }

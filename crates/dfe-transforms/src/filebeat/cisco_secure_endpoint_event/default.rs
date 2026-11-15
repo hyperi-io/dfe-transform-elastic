@@ -218,8 +218,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.threat == null) {\n    ctx.threat = new HashMap();\n}\nif (ctx.threat.technique == null) {\n    ctx.threat.technique = new HashMap();\n}\nif (ctx.threat.technique.id == null) {\n    ctx.threat.technique.id = new ArrayList();\n}\nif (ctx.threat.technique.name == null) {\n    ctx.threat.technique.name = new ArrayList();\n}\nif (ctx.threat.technique.reference == null) {\n    ctx.threat.technique.reference = new ArrayList();\n}\nfor (technique in ctx.cisco?.secure_endpoint?.techniques) {\n    if (technique.name != null) {\n        if (!ctx.threat.technique.name.contains(technique.name)) {\n            ctx.threat.technique.name.add(technique.name);  \n        }\n    }\n    if (technique.external_id != null) {\n        if (!ctx.threat.technique.id.contains(technique.external_id)) {\n            ctx.threat.technique.id.add(technique.external_id);  \n        }\n    }\n    if (technique.mitre_url != null) {\n        if (!ctx.threat.technique.reference.contains(technique.mitre_url)) {\n            ctx.threat.technique.reference.add(technique.mitre_url);  \n        }\n    }\n}\n"#
+                    compiled_painless!(
+                        "4633917cf24135a5046ad66061e9c9c9e751ba64e925472f3592ceba1405feda",
+                        r#"{"params":null,"known":[{"CollectFromList":{"source":"cisco.secure_endpoint.techniques","columns":[{"member":"name","target":"threat.technique.name","replace":null,"upper":false},{"member":"external_id","target":"threat.technique.id","replace":null,"upper":false},{"member":"mitre_url","target":"threat.technique.reference","replace":null,"upper":false}],"firsts":[]}}]}"#
                     ),
                 )?;
             }
@@ -229,8 +230,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.threat == null) {\n    ctx.threat = new HashMap();\n}\nif (ctx.threat.tactic == null) {\n    ctx.threat.tactic = new HashMap();\n}\nif (ctx.threat.tactic.id == null) {\n    ctx.threat.tactic.id = new ArrayList();\n}\nif (ctx.threat.tactic.name == null) {\n    ctx.threat.tactic.name = new ArrayList();\n}\nif (ctx.threat.tactic.reference == null) {\n    ctx.threat.tactic.reference = new ArrayList();\n}\nfor (tactic in ctx.cisco?.secure_endpoint?.tactics) {\n    if (tactic.name != null) {\n        if (!ctx.threat.tactic.name.contains(tactic.name)) {\n            ctx.threat.tactic.name.add(tactic.name);  \n        }\n    }\n    if (tactic.external_id != null) {\n        if (!ctx.threat.tactic.id.contains(tactic.external_id)) {\n            ctx.threat.tactic.id.add(tactic.external_id);  \n        }\n    }\n    if (tactic.mitre_url != null) {\n        if (!ctx.threat.tactic.reference.contains(tactic.mitre_url)) {\n            ctx.threat.tactic.reference.add(tactic.mitre_url);  \n        }\n    }\n}\n"#
+                    compiled_painless!(
+                        "7cafae657194e52e35a424b3d7737eb5baedd0c0dd906ff188bec4f5c69db804",
+                        r#"{"params":null,"known":[{"CollectFromList":{"source":"cisco.secure_endpoint.tactics","columns":[{"member":"name","target":"threat.tactic.name","replace":null,"upper":false},{"member":"external_id","target":"threat.tactic.id","replace":null,"upper":false},{"member":"mitre_url","target":"threat.tactic.reference","replace":null,"upper":false}],"firsts":[]}}]}"#
                     ),
                 )?;
             }
@@ -262,8 +264,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def domain = \"\";\ndef nameArray = ctx.host.name.toString().splitOnToken(\".\");\nif (ctx.host == null) {\n    ctx.host = new HashMap();\n}\nif (nameArray.length > 0) {\n    for (int i = 1; i < nameArray.length; i++) {\n    domain += nameArray[i] + (i < nameArray.length - 1 ? \".\" : \"\");\n    }\n    ctx.host.hostname = nameArray[0];\n    ctx.host.domain = domain; \n}\n"#
+                    compiled_painless!(
+                        "8dc48eddcf27ca72c56b0ef51c4e27913c6a4a93cd3c8642319ae404f1d1aaf7",
+                        r#"{"params":null,"known":[{"SplitFirstLabel":{"source":"host.name","separator":".","head":"host.hostname","tail":"host.domain"}}]}"#
                     ),
                 )?;
             }
@@ -289,8 +292,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.host == null) {\n    ctx.host = new HashMap();\n}\nif (ctx.host.ip == null) {\n    ctx.host.ip = new ArrayList();\n}\nif (ctx.host.mac == null) {\n    ctx.host.mac = new ArrayList();\n}\nfor (addr in ctx.cisco.secure_endpoint.computer.network_addresses) {\n    if (addr.ip != null && !addr.ip.isEmpty()) {\n        if (!ctx.host.ip.contains(addr.ip)) {\n            ctx.host.ip.add(addr.ip);\n        }\n    }\n    if (addr.mac != null && !addr.mac.isEmpty()) {\n        def mac_addr = addr.mac.replace(\":\",\"-\").toUpperCase();\n        if (!ctx.host.mac.contains(mac_addr)) {\n            ctx.host.mac.add(mac_addr);\n        }\n    }\n}\n"#
+                    compiled_painless!(
+                        "38358a297be27cdd7222266e171855d611d04635204abd1077a7f975c5e693cf",
+                        r#"{"params":null,"known":[{"CollectFromList":{"source":"cisco.secure_endpoint.computer.network_addresses","columns":[{"member":"ip","target":"host.ip","replace":null,"upper":false},{"member":"mac","target":"host.mac","replace":[":","-"],"upper":true}],"firsts":[]}}]}"#
                     ),
                 )?;
             }
@@ -542,8 +546,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def commandLine = ctx.cisco?.secure_endpoint?.command_line?.arguments;\nif (commandLine != null) {\n  commandLine = commandLine.trim();\n  if (commandLine != \"\") {\n    ctx.process.command_line = commandLine;\n\n    def args = [];\n    for (def v : / /.split(commandLine)) {\n      if (v != \"\") {\n        args.add(v);\n      }\n    }\n    if (args.size() > 0) {\n      ctx.process.args = args;\n    }\n  }\n}\n"#
+                compiled_painless!(
+                    "e3157abd37781afa0bde9bc562a8dda653693e3c72b804c721bb7f6b018d4973",
+                    r#"{"params":null,"known":[{"TrimThenSplit":{"source":"cisco.secure_endpoint.command_line.arguments","text":"process.command_line","list":"process.args","separator":" "}}]}"#
                 ),
             )?;
 
@@ -552,8 +557,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.process.args_count = ctx.process.args.length;\nif (ctx.process.args.length > 0) {\n  ctx.process.executable = ctx.process.args[0];\n}\n"#
+                    compiled_painless!(
+                        "f5b39befedd4c90a4916a5cbbc74a54e658ea8f1a5b201a317e844581bdadfd6",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"process.args","target":"process.executable","only_if_unset":false,"only_if_single":false,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -746,8 +752,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.related == null) {\n    ctx.related = new HashMap();\n}\nif (ctx.related?.ip == null) {\n    ctx.related.ip = new ArrayList();\n}\nfor (addr in ctx.cisco?.secure_endpoint?.computer?.network_addresses) {\n    if (addr.ip != null && !addr.ip.isEmpty()) {\n        if (!ctx.related.ip.contains(addr.ip)) {\n            ctx.related.ip.add(addr.ip);  \n        }\n    }\n}\n"#
+                    compiled_painless!(
+                        "1a54a513ac6236de0fd572920f0835efb1f4eaa54ae323947b7b42e8946c80ad",
+                        r#"{"params":null,"known":[{"CollectFromList":{"source":"cisco.secure_endpoint.computer.network_addresses","columns":[{"member":"ip","target":"related.ip","replace":null,"upper":false}],"firsts":[]}}]}"#
                     ),
                 )?;
             }
@@ -757,8 +764,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.cisco?.secure_endpoint?.related == null) {\n    ctx.cisco.secure_endpoint.related = new HashMap();\n}\nif (ctx.cisco?.secure_endpoint?.related?.mac == null) {\n    ctx.cisco.secure_endpoint.related.mac = new ArrayList();\n}\nfor (addr in ctx.cisco?.secure_endpoint?.computer?.network_addresses) {\n    if (addr.mac != null && !addr.mac.isEmpty()) {\n        if (!ctx.cisco.secure_endpoint.related.mac.contains(addr.mac)) {\n            def mac_addr = addr.mac.replace(\":\",\"-\").toUpperCase();\n            ctx.cisco.secure_endpoint.related.mac.add(mac_addr);\n        }\n    }\n}\n"#
+                    compiled_painless!(
+                        "a0f74c7c44252bb7cba389b121dea5be305e79c8f822fc2597993dd1d3f89e05",
+                        r#"{"params":null,"known":[{"CollectFromList":{"source":"cisco.secure_endpoint.computer.network_addresses","columns":[{"member":"mac","target":"cisco.secure_endpoint.related.mac","replace":[":","-"],"upper":true}],"firsts":[]}}]}"#
                     ),
                 )?;
             }

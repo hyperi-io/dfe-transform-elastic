@@ -51,8 +51,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def parts = ctx.aws.dimensions.Name.splitOnToken('::');\nif (parts.length == 2) {\n  if (ctx.aws.bedrock_agentcore == null) {\n    ctx.aws.bedrock_agentcore = new HashMap();\n  }\n  ctx.aws.bedrock_agentcore.agent_name = parts[0];\n  ctx.aws.bedrock_agentcore.endpoint_name = parts[1];\n}\n"#
+                        compiled_painless!(
+                            "cd587055345d02333e83cbfad01b3f615a2838e1ad10549696122a41f4708044",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

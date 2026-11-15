@@ -164,7 +164,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "6aec0efe06c46ccbbc6b8f28f37c629e385b4a6166c357e10a2a9d9736a3690a",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.event.duration = Math.round(ctx._temp_.duration * params.scale)"#
                     ),
                     cached_params!("{\"scale\":1000000}"),
@@ -222,8 +224,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"for (field in params.fields) {\n    if (ctx.source[field] instanceof List) {\n        def vals = ctx.source[field];\n        vals = vals.stream().distinct().collect(Collectors.toList());\n        if (vals.size() == 1) {\n            ctx.source[field] = vals[0]\n        } else {\n            ctx.source[field] = vals\n        }\n    }\n}\n"#
+                    compiled_painless!(
+                        "001b0ea750503d8ff12395d4a14c3c3ca8d40aa580b88dac124c7e493519c5aa",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!("{\"fields\":[\"address\"]}"),
                 )?;
@@ -234,8 +237,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"for (field in params.fields) {\n    if (ctx.destination[field] instanceof List) {\n        def vals = ctx.destination[field];\n        vals = vals.stream().distinct().collect(Collectors.toList());\n        if (vals.size() == 1) {\n            ctx.destination[field] = vals[0]\n        } else {\n            ctx.destination[field] = vals\n        }\n    }\n}\n"#
+                    compiled_painless!(
+                        "da8d489184e8a68b1e3e7ea771bf3f02540b827c043603e92333cc0bbaa5f43c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!("{\"fields\":[\"address\"]}"),
                 )?;

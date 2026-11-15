@@ -309,7 +309,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "8962e8a3469ba484d66dfb2281161eb5b508071fb5f57aa48aabf2cc8e2ad7c2",
+                        r#"{"params":"AddUniqueRow","known":[]}"#,
                         r#"def addUnique(List dst, List src) {\n  src = src ?: [];\n  if (src.length == 0) {\n    return dst ?: [];\n  }\n  HashSet s = new HashSet(dst ?: []);\n  s.addAll(src);\n  return new ArrayList(s);\n}\ndef p = params[ctx.okta.event_type];\nctx.event.type = addUnique(ctx.event.type, p.type);\nctx.event.category = addUnique(ctx.event.category, p.category);\nctx.tags = addUnique(ctx.tags, p.tags);"#
                     ),
                     cached_params!(
@@ -1131,8 +1133,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n"#
+                    compiled_painless!(
+                        "e975a5e991d66a54988e1459be15710ca1bd31f7bcf8472f06f18be1486e5b0d",
+                        r#"{"params":null,"known":["RiskBehaviors"]}"#
                     ),
                 )?;
                 // End nested pipeline: "use_flattened_debug"
@@ -1553,8 +1556,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def src = ctx.okta?.debug_context?.debug_data?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n"#
+                    compiled_painless!(
+                        "105f43dfa3c14f2143f6becb7972f240f8b99adf45a62f3201fb10d8028449be",
+                        r#"{"params":null,"known":["RiskBehaviors"]}"#
                     ),
                 )?;
                 // ignore_failure: true
@@ -1652,7 +1656,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "3d6b8535a233ffaa40ffeb52baeaaa6d0053893ba235198481626a228e959c93",
+                            r#"{"params":null,"known":["JoinOptional"]}"#,
                             r#"String underscore(String s) {\n  return /[ -]/.matcher(s).replaceAll('_');\n}\ndef renameKeys(Map src) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      dst[underscore(key)] = renameKeys(value);\n    } else if (value instanceof List) {\n      for (int i = 0; i < value.length; i++) {\n        if (value[i] instanceof Map) {\n          value[i] = renameKeys(value[i]);\n        }\n      }\n      dst[underscore(key)] = value;\n    } else {\n      dst[underscore(key)] = value;\n    }\n  }\n  return dst;\n}\nctx.okta.debug_context.debug_data = renameKeys(ctx.okta.debug_context.debug_data)\n"#
                         ),
                     )?;
@@ -1971,8 +1977,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def arr = ctx.okta?.target;\nif (arr != null) {\n  for (def i = 0; i < arr.length; i++) {\n    arr[i][\"alternate_id\"] = arr[i][\"alternateId\"];\n    arr[i].remove(\"alternateId\");\n    arr[i][\"display_name\"] = arr[i][\"displayName\"];\n    arr[i].remove(\"displayName\");\n    def de = arr[i].get(\"detailEntry\");\n    if (de != null) {\n      de.entrySet().removeIf(entry -> \n        entry.getKey() != \"methodTypeUsed\" && \n        entry.getKey() != \"methodUsedVerifiedProperties\");\n      if (de.size() == 0) {\n        arr[i].remove(\"detailEntry\");\n      }\n    }\n\n    // Ensure that all entries in changeDetails.{from,to}.* are strings.\n    def cd = arr[i].get(\"changeDetails\");\n    if (cd != null) {\n      if (cd.from instanceof Map) {\n        for (def f: cd.from.entrySet()) {\n          def v = f.getValue();\n          if (v != null && !(v instanceof String)) {\n            cd.from[f.getKey()] = Json.dump(v);\n          }\n        }\n      }\n      if (cd.to instanceof Map) {\n        for (def t: cd.to.entrySet()) {\n          def v = t.getValue();\n          if (v != null && !(v instanceof String)) {\n            cd.to[t.getKey()] = Json.dump(v);\n          }\n        }\n      }\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"user\") {\n      ctx[\"okta_target_user\"] = arr[i];\n      break;\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"usergroup\") {\n      ctx[\"okta_target_group\"] = arr[i];\n      break;\n    }\n  }\n}\n"#
+                compiled_painless!(
+                    "de2079626ec6bcba946aea5044228c1685c7e3c03c291c3d7624a5371f357612",
+                    r#"{"params":null,"known":["OktaTargetRename"]}"#
                 ),
             )?;
 

@@ -54,8 +54,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"try {\n  long t;\n  if (ctx.json.EdgeStartTimestamp instanceof String) {\n    t = Long.parseLong(ctx.json.EdgeStartTimestamp);\n  } else if (ctx.json.EdgeStartTimestamp instanceof Number) {\n    t = (long)(ctx.json.EdgeStartTimestamp);\n  } else {\n    return;\n  }\n  if (t > (long)(1e18)) {\n    ctx.json.EdgeStartTimestamp = t/(long)(1e6)\n  } else if (t < (long)(1e10))  {\n    ctx.json.EdgeStartTimestamp = t*(long)(1e3)\n  }\n}\ncatch (Exception e) {}\n"#
+                        compiled_painless!(
+                            "757445e2c81070d6eb5b9812fbe81a35ab8ab82576065416d2fd7d8ad85fd00e",
+                            r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.EdgeStartTimestamp",false]],"parse_strings":true}}]}"#
                         ),
                     )?;
                 }
@@ -64,8 +65,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"try {\n  long t;\n  if (ctx.json.EdgeEndTimestamp instanceof String) {\n    t = Long.parseLong(ctx.json.EdgeEndTimestamp);\n  } else if (ctx.json.EdgeEndTimestamp instanceof Number) {\n    t = (long)(ctx.json.EdgeEndTimestamp);\n  } else {\n    return;\n  }\n  if (t > (long)(1e18)) {\n    ctx.json.EdgeEndTimestamp = t/(long)(1e6)\n  } else if (t < (long)(1e10))  {\n    ctx.json.EdgeEndTimestamp = t*(long)(1e3)\n  }\n}\ncatch (Exception e) {}\n"#
+                        compiled_painless!(
+                            "702cd20a706ab57ef748d10cec83f8b6612b3902e9d7578891f703847cdb0661",
+                            r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.EdgeEndTimestamp",false]],"parse_strings":true}}]}"#
                         ),
                     )?;
                 }
@@ -126,8 +128,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ZonedDateTime end = ZonedDateTime.parse(ctx.event.end); ctx.event.duration = ChronoUnit.NANOS.between(start, end);"#
+                        compiled_painless!(
+                            "394b33a528b0a7715d1280fdd377528126d2fcbd7143b24d28469bcce85ff84f",
+                            r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                         ),
                     )?;
                 }
@@ -245,8 +248,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def full = \"\";\nif(ctx.url.scheme != null && ctx.url.scheme != \"\") {\n    full += ctx.url.scheme+\"://\";\n}\nif(ctx.url.domain != null && ctx.url.domain != \"\") {\n    full += ctx.url.domain;\n}\nif(ctx.url.path != null && ctx.url.path != \"\") {\n    full += ctx.url.path;\n}\nif(ctx.url.query != null && ctx.url.query != \"\") {\n    full += \"?\"+ctx.url.query;\n}\nif(full != \"\") {\n    ctx.url.full = full\n}\n"#
+                    compiled_painless!(
+                        "340500ed63f67552c13117eea72122254b18f23e6201cdc56d3f252726dc1f66",
+                        r#"{"params":null,"known":[{"ConcatParts":{"target":"url.full","clauses":[[{"Field":"url.scheme"},{"Literal":"://"}],[{"Field":"url.domain"}],[{"Field":"url.path"}],[{"Literal":"?"},{"Field":"url.query"}]]}}]}"#
                     ),
                 )?;
                 if event.has_value("json.ClientRequestUserAgent") {

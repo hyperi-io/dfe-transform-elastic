@@ -83,8 +83,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx._temp_ = new HashMap(); ctx._temp_.message_token_count = ctx.event?.original.splitOnToken(\" \").length;"#
+                    compiled_painless!(
+                        "ce10381c1dd0a914712755f519ec8ea4068baa4eacdb154b39dfc59166f8ce51",
+                        r#"{"params":null,"known":[{"TokenCount":{"source":"event.original","separator":" ","target":"_temp_.message_token_count"}}]}"#
                     ),
                 )?;
             }
@@ -2247,8 +2248,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def iana_number = ctx.network.iana_number;\nif (iana_number == '0') {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number == '2') {\n    ctx.network.transport = 'igmp';\n} else if (iana_number == '6') {\n    ctx.network.transport = 'tcp';\n} else if (iana_number == '8') {\n    ctx.network.transport = 'egp';\n} else if (iana_number == '17') {\n    ctx.network.transport = 'udp';\n} else if (iana_number == '47') {\n    ctx.network.transport = 'gre';\n} else if (iana_number == '50') {\n    ctx.network.transport = 'esp';\n} else if (iana_number == '58') {\n    ctx.network.transport = 'ipv6-icmp';\n} else if (iana_number == '112') {\n    ctx.network.transport = 'vrrp';\n} else if (iana_number == '132') {\n    ctx.network.transport = 'sctp';\n}\n"#
+                        compiled_painless!(
+                            "545279c4d643ce7d4d0abdf23cb5da7630f5a05e1c60d163acfd1103faf4785f",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"network.iana_number","fold_case":false,"test":"Equals","arms":[{"literals":["0"],"writes":[["network.transport","hopopt"]],"removes":[]},{"literals":["1"],"writes":[["network.transport","icmp"]],"removes":[]},{"literals":["2"],"writes":[["network.transport","igmp"]],"removes":[]},{"literals":["6"],"writes":[["network.transport","tcp"]],"removes":[]},{"literals":["8"],"writes":[["network.transport","egp"]],"removes":[]},{"literals":["17"],"writes":[["network.transport","udp"]],"removes":[]},{"literals":["47"],"writes":[["network.transport","gre"]],"removes":[]},{"literals":["50"],"writes":[["network.transport","esp"]],"removes":[]},{"literals":["58"],"writes":[["network.transport","ipv6-icmp"]],"removes":[]},{"literals":["112"],"writes":[["network.transport","vrrp"]],"removes":[]},{"literals":["132"],"writes":[["network.transport","sctp"]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -2651,8 +2653,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.aws.vpcflow.tcp_flags_array == null) {\n  ArrayList al = new ArrayList();\n  ctx.aws.vpcflow.put(\"tcp_flags_array\", al);\n}\n\ndef flags = Integer.parseUnsignedInt(ctx.aws.vpcflow.tcp_flags);\n\nif ((flags & 0x01) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('fin');\n}\nif ((flags & 0x02) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('syn');\n}\nif ((flags & 0x04) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('rst');\n}\nif ((flags & 0x08) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('psh');\n}\nif ((flags & 0x10) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('ack');\n}\nif ((flags & 0x20) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('urg');\n}\n"#
+                        compiled_painless!(
+                            "e14a81d6b5dbcba8bc56b0b979d7a24e16ceacc0106b285b6a8584e31cc7e493",
+                            r#"{"params":null,"known":[{"BitFlagNames":{"source":"aws.vpcflow.tcp_flags","target":"aws.vpcflow.tcp_flags_array","flags":[[1,"fin"],[2,"syn"],[4,"rst"],[8,"psh"],[16,"ack"],[32,"urg"]]}}]}"#
                         ),
                     )?;
                     Ok(())

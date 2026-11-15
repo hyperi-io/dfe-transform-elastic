@@ -75,8 +75,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"long t = 0; if (ctx.openai?.completions?.input_tokens != null) { t += ((Number)ctx.openai.completions.input_tokens).longValue(); } if (ctx.openai?.completions?.output_tokens != null) { t += ((Number)ctx.openai.completions.output_tokens).longValue(); } if (ctx.openai?.completions?.input_audio_tokens != null) { t += ((Number)ctx.openai.completions.input_audio_tokens).longValue(); } if (ctx.openai?.completions?.output_audio_tokens != null) { t += ((Number)ctx.openai.completions.output_audio_tokens).longValue(); } if (ctx.openai == null) { ctx.openai = [:]; } if (ctx.openai.base == null) { ctx.openai.base = [:]; } ctx.openai.base.usage_tokens = t;"#
+                compiled_painless!(
+                    "18e1d43881f748191dda7afea1c58374402038645dcd3d146af8e785702995fb",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

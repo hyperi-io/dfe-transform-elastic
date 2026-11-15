@@ -111,8 +111,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\nif (ctx.infoblox_threat_defense.event.severity >= 0 && ctx.infoblox_threat_defense.event.severity <= 3 ) { // Severity level - 0,1,2,3 denotes Low severity\n  ctx.event.severity = 21;\n} else if (ctx.infoblox_threat_defense.event.severity >= 4 && ctx.infoblox_threat_defense.event.severity <= 6) { // Severity level - 4,5,6 denotes Medium severity\n  ctx.event.severity = 47;\n} else if (ctx.infoblox_threat_defense.event.severity == 7 || ctx.infoblox_threat_defense.event.severity == 8) { // Severity level - 7 and 8 denotes High severity\n  ctx.event.severity = 73;\n} else if (ctx.infoblox_threat_defense.event.severity == 9 || ctx.infoblox_threat_defense.event.severity == 10) { // Severity level - 9 and 10 denotes Critical severity\n  ctx.event.severity = 99;\n}"#
+                        compiled_painless!(
+                            "3802ac962dc9cc5e2407026dce956cc0f6b47c0f217f43ddf5922ae06b7cef75",
+                            r#"{"params":null,"known":[{"BandLadder":{"subject":"infoblox_threat_defense.event.severity","arms":[[{"bounds":[{"op":"Ge","scaled":0},{"op":"Le","scaled":3000}],"all":true},{"Number":21}],[{"bounds":[{"op":"Ge","scaled":4000},{"op":"Le","scaled":6000}],"all":true},{"Number":47}],[{"bounds":[{"op":"Eq","scaled":7000},{"op":"Eq","scaled":8000}],"all":false},{"Number":73}],[{"bounds":[{"op":"Eq","scaled":9000},{"op":"Eq","scaled":10000}],"all":false},{"Number":99}]],"default":null,"absent":null,"target":"event.severity"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -152,8 +153,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.cef.extensions.containsKey('message') && ctx.cef.extensions.message != null && ctx.cef.extensions.message instanceof String) {\n  if (ctx.cef.extensions.message.startsWith('\"') && ctx.cef.extensions.message.endsWith('\"') && ctx.cef.extensions.message.length() >= 2) {\n    ctx.cef.extensions.message = ctx.cef.extensions.message.substring(1, ctx.cef.extensions.message.length() - 1);\n  }\n}\n"#
+                    compiled_painless!(
+                        "300b81a0cf07654247c83c564ea10e8a950f497a0f9123b8b9e958ae2ee7ea5c",
+                        r#"{"params":null,"known":[{"StripSurroundingPair":{"field":"cef.extensions.message","open":"\"","close":"\""}}]}"#
                     ),
                 )?;
                 Ok(())

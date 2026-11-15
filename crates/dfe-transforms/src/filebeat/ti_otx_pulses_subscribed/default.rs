@@ -52,7 +52,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "507d03709367d0bf10947c2311586cbe50e24853e8548756463fb8b3ae58fe1b",
+                            r#"{"params":null,"known":["JoinOptional"]}"#,
                             r#"def dur = ctx._conf.ioc_expiration_duration; String created = ctx.otx.created; ZonedDateTime _tmp_expiration; if (dur instanceof String) {\n  char time_unit;\n  String time_value;\n  if (dur.length() != 0) {\n    time_unit = dur.charAt(dur.length() - 1);\n    time_value = dur.substring(0, dur.length() - 1);\n  }\n  if (time_unit == (char)'d') {\n    _tmp_expiration = ZonedDateTime.parse(created, DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.of('Z'))).plusDays(Long.parseLong(time_value));\n  } else if (time_unit == (char)'h') {\n    _tmp_expiration = ZonedDateTime.parse(created, DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.of('Z'))).plusHours(Long.parseLong(time_value));\n  } else if (time_unit == (char)'m') {\n    _tmp_expiration = ZonedDateTime.parse(created, DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.of('Z'))).plusMinutes(Long.parseLong(time_value));\n  } else {\n    if (ctx.error == null) {\n      ctx.error = new HashMap();\n    }\n    if (ctx.error.message == null) {\n      ctx.error.message = new ArrayList();\n    }\n    ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n    _tmp_expiration = ZonedDateTime.parse(created, DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.of('Z'))).plusDays(90L);\n  }\n  ctx.otx.expiration = _tmp_expiration;\n}\n"#
                         ),
                     )?;

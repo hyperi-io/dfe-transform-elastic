@@ -10,22 +10,6 @@
 //! plus `params` with no parse behind it, so it took them and its runner then
 //! declined, because the table here is a MAP and that runner wants an array.
 //!
-//! ```painless
-//! def var = new HashSet();
-//! if (ctx.email != null && ctx.email.direction != null) {
-//!     var = ctx.email.direction;
-//! } else {
-//!     if (ctx.email == null) { ctx.email = new HashMap(); }
-//! }
-//! for (def email : ctx.ses.cybox.emails) {
-//!   def direction = email.direction_id;
-//!   if (params.containsKey(direction.toString())) {
-//!     var.add(params.get(direction.toString()));
-//!   }
-//! }
-//! ctx.email.put('direction', var)
-//! ```
-//!
 //! Five things vary and the reader takes all five: `new HashSet()` against
 //! `new ArrayList()`, seeded from the target against overwriting it, a scalar
 //! id against a list of them against a member of every element of a list,
@@ -39,7 +23,7 @@ use dfe_core::Event;
 use serde_json::{Map, Value};
 
 /// Where the ids come from.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum RowSource {
     /// Every id under one path -- a scalar, or a list of them.
     Path(String),
@@ -48,7 +32,7 @@ pub enum RowSource {
 }
 
 /// A params row per id, collected into one field.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct CollectParamsRows {
     source: RowSource,
     /// The field the collection is written back to.
@@ -245,7 +229,8 @@ fn flatten(value: &Value) -> Vec<String> {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#`.
 #[allow(

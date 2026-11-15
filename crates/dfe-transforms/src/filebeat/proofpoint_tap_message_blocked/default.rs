@@ -494,8 +494,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.json?.threatsInfoMap instanceof List) {\n    for (artifact in ctx.json.threatsInfoMap) {\n        def flag = true;\n        def str = artifact.threat.toLowerCase();\n        if (str?.length() == 64) {\n            for (int i = 0; i < str.length(); i++) {\n                def ch = str.charAt(i);\n                if ((ch < (char)'0' || ch > (char)'9') && (ch < (char)'a' || ch > (char)'f')) {\n                    flag = false;\n                    break;\n                }\n            }\n            if (flag && !ctx['related']['hash'].contains(str)) {\n                ctx['related']['hash'].add(str);\n            }\n        }\n    }\n}\n"#
+                    compiled_painless!(
+                        "ead921d0c6808250b532e6dd3a3e7c93d8a42339a1ef7e568fb5a6095954aa73",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())
@@ -1181,8 +1182,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def ts = Instant.parse(ctx['@timestamp']);\nfor (item in ctx.proofpoint_tap.message_blocked.threat_info_map) {\n  if (item?.threat?.time instanceof String && Instant.parse(item.threat.time).isAfter(ts)) {\n    ctx['@timestamp'] = item.threat.time;\n  }\n}\n"#
+                        compiled_painless!(
+                            "010d2bf07f15844dca4a4e505afa3919df4478fa08572486f193df5c6477caa0",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

@@ -385,7 +385,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "d68ba46ed78a23f1f5ed270437086ef805bbf69074ba62d078702865189a6f2b",
+                        r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                         r#"ctx.zerofox.perpetrator?.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().equals(\"\") || (entry.getValue() instanceof List && entry.getValue().length == 0) || (entry.getValue() instanceof Map && entry.getValue().size() == 0));"#
                     ),
                 )?;
@@ -396,7 +398,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "4a569d6c739c36c05eca708dde02edf30ca2f3ae2e0d040d72d6ef55cd1823f6",
+                        r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                         r#"ctx?.zerofox?.metadata?.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().equals(\"\") || (entry.getValue() instanceof List && entry.getValue().length == 0) || (entry.getValue() instanceof Map && entry.getValue().size() == 0));"#
                     ),
                 )?;
@@ -407,7 +411,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "69620e5a85cc4ced5d7fa53e1529942db04af296093877d39c91761d177023f5",
+                        r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                         r#"ctx?.zerofox?.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().equals(\"\") || (entry.getValue() instanceof List && entry.getValue().length == 0) || (entry.getValue() instanceof Map && entry.getValue().size() == 0));"#
                     ),
                 )?;

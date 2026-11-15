@@ -1609,8 +1609,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.json.acr_score instanceof String) {\n  try {\n    long acr_score = Long.parseLong(ctx.json.acr_score);\n    ctx.tenable_io.asset.acr_score = acr_score;\n  } catch (NumberFormatException e) {\n    double acr_score = Double.parseDouble(ctx.json.acr_score);\n    ctx.tenable_io.asset.acr_score = (long) acr_score; \n  }\n  return;\n} if (ctx.json.acr_score instanceof int || ctx.json.acr_score instanceof long) {\n  ctx.tenable_io.asset.acr_score = (long) ctx.json.acr_score;\n  return;\n} if (ctx.json.acr_score instanceof double) {\n  ctx.tenable_io.asset.acr_score = (long) ctx.json.acr_score;\n  return;\n} \n"#
+                        compiled_painless!(
+                            "ea6982a3d6320399afb6f305e88a1df28b18ef0ae00d338aa3650b936340ca69",
+                            r#"{"params":null,"known":[{"LongLadder":{"source":"json.acr_score","target":"tenable_io.asset.acr_score","floating":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -1655,8 +1656,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.json.exposure_score instanceof String) {\n  try {\n    long exposure_score = Long.parseLong(ctx.json.exposure_score);\n    ctx.tenable_io.asset.exposure_score = exposure_score;\n  } catch (Exception e) {\n    double exposure_score = Double.parseDouble(ctx.json.exposure_score);\n    ctx.tenable_io.asset.exposure_score = (long) exposure_score;\n  }\n  return;\n} if (ctx.json.exposure_score instanceof int || ctx.json.exposure_score instanceof long) {\n  ctx.tenable_io.asset.exposure_score = (long) ctx.json.exposure_score;\n  return;\n}  if (ctx.json.exposure_score instanceof double) {\n  ctx.tenable_io.asset.exposure_score = (long) ctx.json.exposure_score;\n  return;\n}\n"#
+                        compiled_painless!(
+                            "545db3b7d4f7bb546e5d2a102b3ef49cf1ece9ad6d861b8b5b83204240bea2c0",
+                            r#"{"params":null,"known":[{"LongLadder":{"source":"json.exposure_score","target":"tenable_io.asset.exposure_score","floating":true}}]}"#
                         ),
                     )?;
                     Ok(())

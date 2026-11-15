@@ -199,6 +199,11 @@ hand-written runner from `crates/dfe-painless/src/bespoke/` first, then the para
 in `params.rs`, then the `known_patterns` ladder in `common.rs`, and records the outcome
 through `crates/dfe-painless/src/stats.rs`.
 
+A generated call site holds no script. The generator resolves the dispatch and emits
+`compiled_painless!` with the script's hash and that plan as JSON, plus the text only where a
+bound runner still reads it. The runtime looks bespoke runners up by the hash, and the counters
+key each script by it.
+
 **Two measurements, and only the second is honest about reach.**
 
 `crates/dfe-transforms/tests/painless_coverage.rs` drives a few dozen fixture files and holds a

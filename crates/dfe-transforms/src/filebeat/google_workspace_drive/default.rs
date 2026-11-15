@@ -250,8 +250,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.source.user.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} ctx.user.name = splitmail[0]; ctx.source.user.name = splitmail[0]; ctx.user.domain = splitmail[1]; ctx.source.user.domain = splitmail[1];\n"#
+                    compiled_painless!(
+                        "0a7b50a87773f444b7e4fec2eac1bf08fb6a7b27ab9eb53a0632da53a5a8ce8a",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"source.user.email","names":["user.name","source.user.name"],"domains":["user.domain","source.user.domain"],"emails":[],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -356,8 +357,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.google_workspace.drive == null) {\n  ctx.google_workspace.drive = new HashMap();\n} for (int i = 0; i < ctx.json.events.parameters.length; ++i) {\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"] != null) {\n    ctx.google_workspace.drive[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"] != null) {\n    ctx.google_workspace.drive[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"boolValue\"] != null) {\n    ctx.google_workspace.drive[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"boolValue\"];\n  }\n}\n"#
+                    compiled_painless!(
+                        "b0b1268421696ca56af8dc69b035b1758826414c34c6c603e8080d3871f043d1",
+                        r#"{"params":null,"known":[{"ParameterFanOut":{"list":"json.events.parameters","target":"google_workspace.drive","values":["value","multiValue","boolValue"],"strip":null,"folds":[]}}]}"#
                     ),
                 )?;
             }
@@ -439,8 +441,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def path = ctx.file.name; def extIdx = path.lastIndexOf(\".\"); if (extIdx > -1) {\n    ctx.file.extension = path.substring(extIdx+1);\n}\n"#
+                    compiled_painless!(
+                        "1f792fd4813c0751f6075143136cb24431fa4d7c86b519aeab5ec76c7378765c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -461,8 +464,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.google_workspace.drive.target.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} ctx.related.user.add(splitmail[0]);\n"#
+                    compiled_painless!(
+                        "c579537a1c061db857e9c94c0864f961f5519a9f00f8e87bb4faf35cec4dd034",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"google_workspace.drive.target","names":[],"domains":[],"emails":[],"appends":[["related.user",0]]}}]}"#
                     ),
                 )?;
             }
@@ -483,8 +487,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.google_workspace.drive.file.owner.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.file == null) {\n  ctx.file = new HashMap();\n} ctx.file.owner = splitmail[0];\n"#
+                    compiled_painless!(
+                        "1660dd058adff707c9a517d8d5fed20dc5c9176e39492df13ddb9a6c508d0601",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"google_workspace.drive.file.owner.email","names":["file.owner"],"domains":[],"emails":[],"appends":[]}}]}"#
                     ),
                 )?;
             }

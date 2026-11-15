@@ -189,7 +189,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "58be54f90d80fae229b6cea7de65257a377d31f35d2d036ee3a08f0421b91772",
+                        r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                         r#"ctx?.juniper?.srx.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));"#
                     ),
                     cached_params!("{\"values\":[\"None\",\"UNKNOWN\",\"N/A\",\"-\"]}"),
@@ -1178,8 +1180,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"ctx.network.packets = ctx.client.packets + ctx.server.packets"#
+                            compiled_painless!(
+                                "1b7b1d5c380ee65fedc938566b1b03936a40f9b8923dbe4d32cc375105e1c936",
+                                r#"{"params":null,"known":[{"CombineFields":{"target":"network.packets","op":"Add","left":{"path":"client.packets","divisor":null},"right":{"path":"server.packets","divisor":null}}},{"ScalarExpression":{"target":"network.packets","expr":{"Binary":[{"Field":"client.packets"},"Add",{"Field":"server.packets"}]}}}]}"#
                             ),
                         )?;
                         Ok(())
@@ -6375,7 +6378,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "2dc1eb7fe12d47718e3278df398eea35f72ac0059da360202c18e70b96d0696d",
+                            r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                             r#"ctx?.juniper?.srx?.system.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));"#
                         ),
                         cached_params!(
@@ -7672,8 +7677,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def iana_number = ctx.network.iana_number;\nif (iana_number == '0') {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number == '2') {\n    ctx.network.transport = 'igmp';\n} else if (iana_number == '6') {\n    ctx.network.transport = 'tcp';\n} else if (iana_number == '8') {\n    ctx.network.transport = 'egp';\n} else if (iana_number == '17') {\n    ctx.network.transport = 'udp';\n} else if (iana_number == '47') {\n    ctx.network.transport = 'gre';\n} else if (iana_number == '50') {\n    ctx.network.transport = 'esp';\n} else if (iana_number == '58') {\n    ctx.network.transport = 'ipv6-icmp';\n} else if (iana_number == '112') {\n    ctx.network.transport = 'vrrp';\n} else if (iana_number == '132') {\n    ctx.network.transport = 'sctp';\n}\n"#
+                        compiled_painless!(
+                            "545279c4d643ce7d4d0abdf23cb5da7630f5a05e1c60d163acfd1103faf4785f",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"network.iana_number","fold_case":false,"test":"Equals","arms":[{"literals":["0"],"writes":[["network.transport","hopopt"]],"removes":[]},{"literals":["1"],"writes":[["network.transport","icmp"]],"removes":[]},{"literals":["2"],"writes":[["network.transport","igmp"]],"removes":[]},{"literals":["6"],"writes":[["network.transport","tcp"]],"removes":[]},{"literals":["8"],"writes":[["network.transport","egp"]],"removes":[]},{"literals":["17"],"writes":[["network.transport","udp"]],"removes":[]},{"literals":["47"],"writes":[["network.transport","gre"]],"removes":[]},{"literals":["50"],"writes":[["network.transport","esp"]],"removes":[]},{"literals":["58"],"writes":[["network.transport","ipv6-icmp"]],"removes":[]},{"literals":["112"],"writes":[["network.transport","vrrp"]],"removes":[]},{"literals":["132"],"writes":[["network.transport","sctp"]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())

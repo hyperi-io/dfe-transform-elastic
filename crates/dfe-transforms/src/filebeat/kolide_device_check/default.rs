@@ -207,7 +207,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "d0a9a576584b3cb00a351a1cb4739d7bbbb089e4647c43a65a38c45bb565cabd",
+                        r#"{"params":{"RowOrDefaults":{"subject":"event.action","table":"exact","prelude":[],"columns":[{"target":"event.kind","member":"kind","only_if_unset":false,"empty":"Verbatim"},{"target":"event.category","member":"category","only_if_unset":false,"empty":"Verbatim"},{"target":"event.type","member":"type","only_if_unset":false,"empty":"Verbatim"}],"defaults":[["event.kind","state"],["event.category",["host"]],["event.type",["info"]]]}},"known":[{"GuardedCopy":{"statements":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"state"}}}},{"Literal":{"Set":{"path":"event.category","value":{"Literal":["host"]}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}}]}}],"whole":false}}]}"#,
                         r#"def action = ctx.event.action;\ndef m = params.exact.get(action);\nif (m != null) {\n  ctx.event.kind = m.kind;\n  ctx.event.category = new ArrayList(m.category);\n  ctx.event.type = new ArrayList(m.type);\n} else {\n  ctx.event.kind = 'state';\n  ctx.event.category = ['host'];\n  ctx.event.type = ['info'];\n}"#
                     ),
                     cached_params!(

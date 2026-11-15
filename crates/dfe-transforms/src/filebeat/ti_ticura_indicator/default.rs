@@ -75,8 +75,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (!(ctx.threat.indicator.id instanceof List)) {\n  ctx.threat.indicator.id = [ctx.threat.indicator.id];\n}\n"#
+                    compiled_painless!(
+                        "fa646a9e7ee123342aff3b254b05f3e0604c6d792cc013757dbf9350338d6348",
+                        r#"{"params":null,"known":[{"WrapValueInList":[{"source":"threat.indicator.id","target":"threat.indicator.id","remove_source":false,"guards":{"not_list":true,"not_null":false,"not_empty":false}}]}]}"#
                     ),
                 )?;
             }
@@ -502,8 +503,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.ticura.indicator.merged == null || !(ctx.ticura.indicator.merged instanceof Map)) {\n    ctx.ticura.indicator.merged = [:];\n}\n\nList mergedCountries = [];\nif (ctx.ticura?.indicator?.countries != null) {\n    if (ctx.ticura.indicator.countries instanceof List) {\n        mergedCountries.addAll(ctx.ticura.indicator.countries);\n    } else {\n        mergedCountries.add(ctx.ticura.indicator.countries);\n    }\n}\nif (ctx.ticura?.indicator?.additional_info?.countries != null) {\n    if (ctx.ticura.indicator.additional_info.countries instanceof List) {\n        mergedCountries.addAll(ctx.ticura.indicator.additional_info.countries);\n    } else {\n        mergedCountries.add(ctx.ticura.indicator.additional_info.countries);\n    }\n}\nctx.ticura.indicator.merged.countries = new ArrayList(new HashSet(mergedCountries));\nctx.ticura.indicator.merged.countries.sort(null);\n\nList mergedIndustries = [];\nif (ctx.ticura?.indicator?.industries != null) {\n    if (ctx.ticura.indicator.industries instanceof List) {\n        mergedIndustries.addAll(ctx.ticura.indicator.industries);\n    } else {\n        mergedIndustries.add(ctx.ticura.indicator.industries);\n    }\n}\nif (ctx.ticura?.indicator?.additional_info?.industries != null) {\n    if (ctx.ticura.indicator.additional_info.industries instanceof List) {\n        mergedIndustries.addAll(ctx.ticura.indicator.additional_info.industries);\n    } else {\n        mergedIndustries.add(ctx.ticura.indicator.additional_info.industries);\n    }\n}\nctx.ticura.indicator.merged.industries = new ArrayList(new HashSet(mergedIndustries));\nctx.ticura.indicator.merged.industries.sort(null);\n\nList mergedActors = [];\nif (ctx.ticura?.indicator?.actors != null) {\n    if (ctx.ticura.indicator.actors instanceof List) {\n        mergedActors.addAll(ctx.ticura.indicator.actors);\n    } else {\n        mergedActors.add(ctx.ticura.indicator.actors);\n    }\n}\nif (ctx.ticura?.indicator?.additional_info?.actors != null) {\n    if (ctx.ticura.indicator.additional_info.actors instanceof List) {\n        mergedActors.addAll(ctx.ticura.indicator.additional_info.actors);\n    } else {\n        mergedActors.add(ctx.ticura.indicator.additional_info.actors);\n    }\n}\nctx.ticura.indicator.merged.actors = new ArrayList(new HashSet(mergedActors));\nctx.ticura.indicator.merged.actors.sort(null);\n"#
+                    compiled_painless!(
+                        "c7d0c4616684f1d92d3d47b6860e27fe6e23808f4030cb808d9c39c65356ed49",
+                        r#"{"params":null,"known":[{"AppendEach":{"source":"ticura.indicator.countries","target":"ticura.indicator.countries","map_keys":[],"separator":",","deduped":false}}]}"#
                     ),
                 )?;
                 Ok(())

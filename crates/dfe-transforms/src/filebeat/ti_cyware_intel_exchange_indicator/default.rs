@@ -420,8 +420,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event = ctx.event ?: [:];\nif (ctx.ti_cyware_intel_exchange.indicator.ctix_score <= 21 ) {\n  ctx.event.severity = 21;\n} else if (ctx.ti_cyware_intel_exchange.indicator.ctix_score >= 22 && ctx.ti_cyware_intel_exchange.indicator.ctix_score <= 47) {\n  ctx.event.severity = 47;\n} else if (ctx.ti_cyware_intel_exchange.indicator.ctix_score >= 48 && ctx.ti_cyware_intel_exchange.indicator.ctix_score <= 73) {\n  ctx.event.severity = 73;\n} else if (ctx.ti_cyware_intel_exchange.indicator.ctix_score >= 74 && ctx.ti_cyware_intel_exchange.indicator.ctix_score <= 100) {\n  ctx.event.severity = 99;\n}"#
+                    compiled_painless!(
+                        "6ffc5993aee06baab7da4eb0e3b76852a79995d2d20699e53ef494fd5d2d444c",
+                        r#"{"params":null,"known":[{"BandLadder":{"subject":"ti_cyware_intel_exchange.indicator.ctix_score","arms":[[{"bounds":[{"op":"Le","scaled":21000}],"all":true},{"Number":21}],[{"bounds":[{"op":"Ge","scaled":22000},{"op":"Le","scaled":47000}],"all":true},{"Number":47}],[{"bounds":[{"op":"Ge","scaled":48000},{"op":"Le","scaled":73000}],"all":true},{"Number":73}],[{"bounds":[{"op":"Ge","scaled":74000},{"op":"Le","scaled":100000}],"all":true},{"Number":99}]],"default":null,"absent":null,"target":"event.severity"}}]}"#
                     ),
                 )?;
             }
@@ -1477,8 +1478,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def dur = ctx._conf.ioc_expiration_duration; ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_updated_at; _tmp_updated_at = ZonedDateTime.parse(ctx.ti_cyware_intel_exchange.indicator.ctix_modified); String time_unit = dur.substring(dur.length() -  1, dur.length()); String time_value = dur.substring(0, dur.length() - 1); if (time_unit == 'd') {\n  _tmp_deleted_at = _tmp_updated_at.plusDays(Long.parseLong(time_value));\n} else if (time_unit == 'h') {\n  _tmp_deleted_at = _tmp_updated_at.plusHours(Long.parseLong(time_value));\n} else if (time_unit == 'm') {\n  _tmp_deleted_at = _tmp_updated_at.plusMinutes(Long.parseLong(time_value));\n} else {\n  _tmp_deleted_at = _tmp_updated_at.plusDays(90L);\n  if (ctx.error == null) {\n    ctx.error = new HashMap();\n  }\n  if (ctx.error.message == null) {\n    ctx.error.message = new ArrayList();\n  }\n  ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n} ctx.ti_cyware_intel_exchange.indicator.deleted_at = _tmp_deleted_at;\n"#
+                        compiled_painless!(
+                            "ac038927971710c5cec5bea499a0b40d4f462d12b5b26dbbb622766fa8bb2cf0",
+                            r#"{"params":null,"known":[{"IocExpiry":{"duration":"_conf.ioc_expiration_duration","default_duration":null,"bases":["ti_cyware_intel_exchange.indicator.ctix_modified"],"default_days":90,"settle_seconds":0,"invalid_message":"invalid ioc_expiration_duration: using default 90 days","target":"ti_cyware_intel_exchange.indicator.deleted_at"}}]}"#
                         ),
                     )?;
                     Ok(())

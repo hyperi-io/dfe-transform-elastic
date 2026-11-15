@@ -166,8 +166,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def value = ctx.abusech.threatfox.confidence_level; def confidence = \"None\"; if (value > 0 && value < 30) {\n  confidence = \"Low\";\n} if (value >= 30.0 && value < 70) {\n  confidence = \"Medium\";\n} else if (value >= 70 && value <= 100) {\n  confidence = \"High\";\n} ctx.threat.indicator.put(\"confidence\", confidence)\n"#
+                    compiled_painless!(
+                        "8165434f107c0eb83cefe5fe09d13effc8123706910994128855c8e51315f994",
+                        r#"{"params":null,"known":[{"BandLadder":{"subject":"abusech.threatfox.confidence_level","arms":[[{"bounds":[{"op":"Gt","scaled":0},{"op":"Lt","scaled":30000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":30000},{"op":"Lt","scaled":70000}],"all":true},{"Text":"Medium"}],[{"bounds":[{"op":"Ge","scaled":70000},{"op":"Le","scaled":100000}],"all":true},{"Text":"High"}]],"default":{"Text":"None"},"absent":null,"target":"threat.indicator.confidence"}}]}"#
                     ),
                 )?;
             }
@@ -323,8 +324,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def dur = (ctx._conf?.ioc_expiration_duration != null && ctx._conf.ioc_expiration_duration instanceof String && ctx._conf.ioc_expiration_duration != '') ? ctx._conf.ioc_expiration_duration : '90d'; ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_updated_at; if (ctx.threat.indicator.last_seen != null) {\n  _tmp_updated_at = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n} else {\n  _tmp_updated_at = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n} String time_unit = dur.substring(dur.length() -  1, dur.length()); String time_value = dur.substring(0, dur.length() - 1); if (time_unit == 'd') {\n  _tmp_deleted_at = _tmp_updated_at.plusDays(Long.parseLong(time_value));\n} else if (time_unit == 'h') {\n  _tmp_deleted_at = _tmp_updated_at.plusHours(Long.parseLong(time_value));\n} else if (time_unit == 'm') {\n  _tmp_deleted_at = _tmp_updated_at.plusMinutes(Long.parseLong(time_value));\n} else {\n  _tmp_deleted_at = _tmp_updated_at.plusDays(90L);\n  if (ctx.error == null) {\n    ctx.error = new HashMap();\n  }\n  if (ctx.error.message == null) {\n    ctx.error.message = new ArrayList();\n  }\n  ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n} ctx.abusech.threatfox.deleted_at = _tmp_deleted_at;\n"#
+                    compiled_painless!(
+                        "2b6c668bafc9ef3298fb98f81a729c3d7b29e71581cc7efb505e2a40b850ad5e",
+                        r#"{"params":null,"known":[{"IocExpiry":{"duration":"_conf.ioc_expiration_duration","default_duration":"90d","bases":["threat.indicator.last_seen","threat.indicator.first_seen"],"default_days":90,"settle_seconds":0,"invalid_message":"invalid ioc_expiration_duration: using default 90 days","target":"abusech.threatfox.deleted_at"}}]}"#
                     ),
                 )?;
             }

@@ -212,8 +212,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Map map = [:];\nfor (item in ctx.gitlab.production.params) {\n  def key = item.key;\n  def value = item.value;\n  if (key == \"variables\" && value instanceof Map) {\n    map[key] = Json.dump(value);\n  } else {\n    map[key] = value;\n  }\n}\nctx.gitlab.production.params = map;\n"#
+                    compiled_painless!(
+                        "8e0fa49584feb9d2120ef0cd949f1f1c53d8bb11570b34b4e7ee4bb2f43ebe9e",
+                        r#"{"params":null,"known":[{"KeyValuePairs":{"path":"gitlab.production.params","into":"OneMap","key_steps":[],"dump_key":"variables"}}]}"#
                     ),
                 )?;
             }
@@ -223,8 +224,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.gitlab?.production?.graphql instanceof List) {\n  for (int i = 0; i < ctx.gitlab.production.graphql.size(); i++) {\n    def item = ctx.gitlab.production.graphql[i];\n    if (item.containsKey(\"variables\") && item.variables instanceof Map) {\n      item.variables = Json.dump(item.variables);\n    }\n  }\n} else if (ctx.gitlab.production.graphql instanceof Map) {\n  def vars = ctx.gitlab.production.graphql.variables;\n  if (vars instanceof Map) {\n    ctx.gitlab.production.graphql.variables = Json.dump(vars);\n  }\n}\n"#
+                    compiled_painless!(
+                        "86906957b229d963fbdd60b0a8146820ac49c05ac87a5e35ad912cfd601ad1a5",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -239,8 +241,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def vars = ctx.gitlab.production.params.graphql.variables;\nctx.gitlab.production.params.graphql.variables = Json.dump(vars);\n"#
+                    compiled_painless!(
+                        "79066a30f5f42ddac23bfb370b9f7ae7537d730902c210a2e6945305abbed995",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

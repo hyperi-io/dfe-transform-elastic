@@ -89,8 +89,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect.telemetry.containsKey('event')) {\n  def eventObject = ctx.jamf_protect.telemetry.event;\n  for (def key : eventObject.keySet()) {\n    if (eventObject[key] != null) {\n      if (!ctx.containsKey('event')) {\n        ctx.event = new HashMap();\n      }\n      ctx.event.action = key;\n      break;\n    }\n  }\n}\n"#
+                    compiled_painless!(
+                        "9e437a447d5f2c5f1eac79344a8f12d94c695eedda31e0239324d71cf4661cf3",
+                        r#"{"params":null,"known":[{"FirstPresentKeyName":{"source":"jamf_protect.telemetry.event","target":"event.action"}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -99,8 +100,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"if (ctx.jamf_protect?.telemetry?.action?.result?.result?.auth != null) {\n    def authValue = ctx.jamf_protect.telemetry.action.result.result.auth.toString();\n    def authTypeBoolean = params.authTypeMap.containsKey(authValue) ? params.authTypeMap[authValue] : 'Unknown';\n    ctx.jamf_protect.telemetry = ctx.jamf_protect.telemetry != null ? ctx.jamf_protect.telemetry : new HashMap();\n    ctx.jamf_protect.telemetry.event_allowed_by_esclient = authTypeBoolean;\n}\n"#
+                compiled_painless!(
+                    "808e4a91ff9fc6bad07bbe0f84fecff8b9055a60ce3bba778ffc0228f72ce2c6",
+                    r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.action.result.result.auth","table":"authTypeMap","target":"jamf_protect.telemetry.event_allowed_by_esclient","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                 ),
                 cached_params!("{\"authTypeMap\":{\"0\":true,\"1\":false}}"),
             )?;
@@ -427,7 +429,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -448,7 +452,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "942185dcd90db0cd5a2a400af508b24952b62aac87199264ee5a63af461d3ac6",
+                            r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"InstanceOf":{"path":"process.args","kind":"List"}}]],"then":[{"Literal":{"Set":{"path":"process.args_count","value":{"SizeOf":"process.args"}}}}],"alt":[]}}],"whole":false}}]}"#,
                             r#"if (ctx.process.args instanceof List) {\n  ctx.process.args_count = ctx.process.args.size();\n} else {\n  ctx.process = ctx.process != null ? ctx.process : new HashMap();\n  ctx.process.args_count = 0;\n}\n"#
                         ),
                     )?;
@@ -848,7 +854,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -1232,7 +1240,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -1677,7 +1687,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -2122,7 +2134,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -2495,7 +2509,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -2866,7 +2882,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -3232,7 +3250,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -3677,7 +3697,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -4063,7 +4085,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -4258,7 +4282,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "2eee6478b1c064f57eac8f1c81ba1e67b583e32dc147851ff675915af1c65022",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"InstanceOf":{"path":"jamf_protect.telemetry.event.xp_malware_remediated.success","kind":"Bool"}}]],"then":[{"If":{"test":[[{"Truthy":"jamf_protect.telemetry.event.xp_malware_remediated.success"}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}]}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"event.outcome","wanted":"Null","negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"unknown"}}}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"ctx.event = ctx.event != null ? ctx.event : new HashMap(); if (ctx.jamf_protect?.telemetry?.event?.xp_malware_remediated?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.xp_malware_remediated.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n} if (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n"#
                     ),
                 )?;
@@ -4465,7 +4491,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -4860,7 +4888,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -5255,7 +5285,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -5647,7 +5679,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -6042,7 +6076,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -6238,7 +6274,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "201351637ecd22be19af29de8513af8062416b6a583582b92446147d235c8f23",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"InstanceOf":{"path":"jamf_protect.telemetry.event.screensharing_attach.success","kind":"Bool"}}]],"then":[{"If":{"test":[[{"Truthy":"jamf_protect.telemetry.event.screensharing_attach.success"}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}]}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"event.outcome","wanted":"Null","negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"unknown"}}}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"ctx.event = ctx.event != null ? ctx.event : new HashMap();\nif (ctx.jamf_protect?.telemetry?.event?.screensharing_attach?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.screensharing_attach.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n}\nif (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n"#
                     ),
                 )?;
@@ -6398,8 +6436,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.screensharing_attach?.source_address_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.screensharing_attach.source_address_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.source_address_type = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "04a914449290daabdd6767864fe134788577e0aa2f3b09db1b451f022081158a",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.screensharing_attach.source_address_type","table":"itemTypeMap","target":"jamf_protect.telemetry.source_address_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"Unknown\",\"1\":\"IPv4\",\"2\":\"IPv6\",\"3\":\"UNIX Socket\"}}"
@@ -6583,7 +6622,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -6779,7 +6820,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "bafeb89748f7c295bc2fbb5ed60ea65ad8a3e49753fbb737be8da65b161c3622",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"InstanceOf":{"path":"jamf_protect.telemetry.event.screensharing_detach.success","kind":"Bool"}}]],"then":[{"If":{"test":[[{"Truthy":"jamf_protect.telemetry.event.screensharing_detach.success"}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}]}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"event.outcome","wanted":"Null","negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"unknown"}}}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"ctx.event = ctx.event != null ? ctx.event : new HashMap();\nif (ctx.jamf_protect?.telemetry?.event?.screensharing_detach?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.screensharing_detach.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n}\nif (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n"#
                     ),
                 )?;
@@ -6838,8 +6881,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.screensharing_detach?.source_address_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.screen?.screensharing_detach.source_address_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.source_address_type = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "26e5d7cadb7d9cc3282a4df11564a9a2d52f34e390028b47d9e4c4d60335e9df",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.screen.screensharing_detach.source_address_type","table":"itemTypeMap","target":"jamf_protect.telemetry.source_address_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"Unknown\",\"1\":\"IPv4\",\"2\":\"IPv6\",\"3\":\"UNIX Socket\"}}"
@@ -7023,7 +7067,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -7220,7 +7266,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "fd9ac8c4e45844227646098029d06ad237cb1f0f1686c0094e1471b6639eb112",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"InstanceOf":{"path":"jamf_protect.telemetry.event.openssh_login.success","kind":"Bool"}}]],"then":[{"If":{"test":[[{"Truthy":"jamf_protect.telemetry.event.openssh_login.success"}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}]}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"event.outcome","wanted":"Null","negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"unknown"}}}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"ctx.event = ctx.event != null ? ctx.event : new HashMap();\nif (ctx.jamf_protect?.telemetry?.event?.openssh_login?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.openssh_login.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n}\nif (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n"#
                     ),
                 )?;
@@ -7257,8 +7305,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.openssh_login?.source_address_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.openssh_login.source_address_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.source_address_type = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "66689f6f6597301af3bf0e12d85ada04e5d2fa275317d28b722623b37ca864d4",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.openssh_login.source_address_type","table":"itemTypeMap","target":"jamf_protect.telemetry.source_address_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"Unknown\",\"1\":\"IPv4\",\"2\":\"IPv6\",\"3\":\"UNIX Socket\"}}"
@@ -7267,8 +7316,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.openssh_login?.result_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.openssh_login.result_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.authentication_result_type = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "ae79828f88d5677078decdd70fd3139f617de9dc3e91350f066486240fb61486",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.openssh_login.result_type","table":"itemTypeMap","target":"jamf_protect.telemetry.authentication_result_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"Exceeded maximum attempts\",\"1\":\"Denied by root\",\"2\":\"Success\",\"3\":\"no reason\",\"4\":\"Password\",\"5\":\"kbdint\",\"6\":\"public key\",\"7\":\"Host based\",\"8\":\"gss api\",\"9\":\"invalid user\"}}"
@@ -7452,7 +7502,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -7691,8 +7743,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.openssh_logout?.source_address_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.openssh_logout.source_address_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.source_address_type = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "f20685219e58fc9305dd927629103d0e6fdcec778a58c69d852fc10f13188bef",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.openssh_logout.source_address_type","table":"itemTypeMap","target":"jamf_protect.telemetry.source_address_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"Unknown\",\"1\":\"IPv4\",\"2\":\"IPv6\",\"3\":\"UNIX Socket\"}}"
@@ -7876,7 +7929,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -8072,7 +8127,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "396e95e2dac728fdf0090cbab5195dc65a8ce8039b0559df4233e37ef77082a1",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"InstanceOf":{"path":"jamf_protect.telemetry.event.login_login.success","kind":"Bool"}}]],"then":[{"If":{"test":[[{"Truthy":"jamf_protect.telemetry.event.login_login.success"}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}]}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"event.outcome","wanted":"Null","negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"unknown"}}}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"ctx.event = ctx.event != null ? ctx.event : new HashMap(); if (ctx.jamf_protect?.telemetry?.event?.login_login?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.login_login.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n} if (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n"#
                     ),
                 )?;
@@ -8271,7 +8328,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -8659,7 +8718,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -8952,8 +9013,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.btm_launch_item_add?.item?.item_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.btm_launch_item_add.item.item_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.btm_item_type = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "131d5d027d24611a976555a86cd8d815b2488efe8523e1c9cd2ddd10d14eb067",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.btm_launch_item_add.item.item_type","table":"itemTypeMap","target":"jamf_protect.telemetry.btm_item_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"User_Item\",\"1\":\"App\",\"2\":\"LoginItem\",\"3\":\"LaunchAgent\",\"4\":\"LaunchDaemon\"}}"
@@ -9304,7 +9366,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -9748,7 +9812,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                            r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                             r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                         ),
                     )?;
@@ -10034,8 +10100,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.btm_launch_item_remove?.item?.item_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.btm_launch_item_remove.item.item_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.btm_item_type = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "d1dfc16365d06c5fe24026834d5f7e7bf7ba236829a85d688ac9368b14b3a294",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.btm_launch_item_remove.item.item_type","table":"itemTypeMap","target":"jamf_protect.telemetry.btm_item_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"User_Item\",\"1\":\"App\",\"2\":\"LoginItem\",\"3\":\"LaunchAgent\",\"4\":\"LaunchDaemon\"}}"
@@ -10415,7 +10482,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -10890,7 +10959,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                            r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                             r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                         ),
                     )?;
@@ -11154,8 +11225,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.profile_add?.profile?.install_source != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.profile_add.profile.install_source.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.profile_install_source = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "102261a642c98c6a5e0ba694737a2cb601a452b3f80f2c78ba8138232f6b2a2e",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.profile_add.profile.install_source","table":"itemTypeMap","target":"jamf_protect.telemetry.profile_install_source","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!("{\"itemTypeMap\":{\"0\":\"mdm\",\"1\":\"manual\"}}"),
                 )?;
@@ -11397,7 +11469,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -11610,8 +11684,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.profile_remove?.profile?.install_source != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.profile_remove.profile.install_source.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.profile_install_source = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "f058466eefb7ab0f161d6f7fb17cc22bf7906b7ec0c511d419ea03d6c82e4c3a",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.profile_remove.profile.install_source","table":"itemTypeMap","target":"jamf_protect.telemetry.profile_install_source","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!("{\"itemTypeMap\":{\"0\":\"mdm\",\"1\":\"manual\"}}"),
                 )?;
@@ -11830,7 +11905,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -11980,7 +12057,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "9f20d322c1b3f81bca4e97753868fbd601a91b0d98d5fce5017c85f5e403481c",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"InstanceOf":{"path":"jamf_protect.telemetry.event.su.success","kind":"Bool"}}]],"then":[{"If":{"test":[[{"Truthy":"jamf_protect.telemetry.event.su.success"}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}]}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"event.outcome","wanted":"Null","negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"unknown"}}}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"ctx.event = ctx.event != null ? ctx.event : new HashMap(); if (ctx.jamf_protect?.telemetry?.event?.su?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.su.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n} if (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n"#
                     ),
                 )?;
@@ -12009,7 +12088,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "942185dcd90db0cd5a2a400af508b24952b62aac87199264ee5a63af461d3ac6",
+                            r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"InstanceOf":{"path":"process.args","kind":"List"}}]],"then":[{"Literal":{"Set":{"path":"process.args_count","value":{"SizeOf":"process.args"}}}}],"alt":[]}}],"whole":false}}]}"#,
                             r#"if (ctx.process.args instanceof List) {            \n    ctx.process.args_count = ctx.process.args.size();\n} else {\n    ctx.process = ctx.process != null ? ctx.process : new HashMap();\n    ctx.process.args_count = 0;\n}\n"#
                         ),
                     )?;
@@ -12277,7 +12358,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -12470,8 +12553,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.jamf_protect?.telemetry?.event?.authentication?.type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.authentication.type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.authentication_method = itemTypeString;\n}\n"#
+                        compiled_painless!(
+                            "8be339e1e268be60a49453fc7d490b7d189ee52b05c3808ff064ae11d1ab6e72",
+                            r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.authentication.type","table":"itemTypeMap","target":"jamf_protect.telemetry.authentication_method","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"itemTypeMap\":{\"0\":\"Open Directory\",\"1\":\"TouchID\",\"2\":\"Physical Token\",\"3\":\"Apple Watch\"}}"
@@ -12482,8 +12566,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.reason = 'A user authentication happened using ' + ctx.jamf_protect.telemetry.authentication_method;\n"#
+                    compiled_painless!(
+                        "9a88c8eec63e14ce55ebd3123ee4ed3cd306adc30a848dd9ec703e8d313144d7",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Set":{"path":"event.reason","value":{"Concat":{"pieces":[{"Literal":"A user authentication happened using "},{"Field":"jamf_protect.telemetry.authentication_method"}],"fold":"None"}}}}}],"whole":true}}]}"#
                     ),
                 )?;
                 // ignore_failure: true
@@ -12491,7 +12576,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "f02c95917ad33f552069ee6ff25eb1f6c2c3b92f132414725388cd890c640914",
+                            r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"InstanceOf":{"path":"jamf_protect.telemetry.event.authentication.success","kind":"Bool"}}]],"then":[{"If":{"test":[[{"Truthy":"jamf_protect.telemetry.event.authentication.success"}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}]}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"event.outcome","wanted":"Null","negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"unknown"}}}}],"alt":[]}}],"whole":false}}]}"#,
                             r#"ctx.event = ctx.event != null ? ctx.event : new HashMap();\nif (ctx.jamf_protect?.telemetry?.event?.authentication?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.authentication.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n}\nif (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n"#
                         ),
                     )?;
@@ -12502,8 +12589,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.jamf_protect?.telemetry?.event?.authentication?.data?.auto_unlock != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.authentication.data.auto_unlock.type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.authentication_auto_unlock_type = itemTypeString;\n}\n"#
+                        compiled_painless!(
+                            "35675d88788c99dc92605d597bda13d661315fc2c385a736018aa109b60ccc01",
+                            r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.authentication.data.auto_unlock.type","table":"itemTypeMap","target":"jamf_protect.telemetry.authentication_auto_unlock_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"itemTypeMap\":{\"1\":\"machine_unlock\",\"2\":\"auth_prompt\"}}"
@@ -12570,8 +12658,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.jamf_protect?.telemetry?.event?.authentication?.data?.touchid != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.authentication.data.touchid.touchid_mode.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.authentication_touchid_mode = itemTypeString;\n}\n"#
+                        compiled_painless!(
+                            "dba35a6e0f976e30eeff7f57dcf7a30a4b127a28525396fbc703a99bcd43df4d",
+                            r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.authentication.data.touchid.touchid_mode","table":"itemTypeMap","target":"jamf_protect.telemetry.authentication_touchid_mode","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"itemTypeMap\":{\"0\":\"verification\",\"1\":\"identification\"}}"
@@ -13079,7 +13168,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -13697,7 +13788,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                            r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                             r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                         ),
                     )?;
@@ -14106,7 +14199,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -14525,7 +14620,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -14895,7 +14992,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -15266,7 +15365,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -15441,16 +15542,18 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.od_modify_password?.account_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.od_modify_password.account_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.account_type = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "8d0020048f7abd7767fec4eb3d76cd960cc667b37ee01b5fb6b56c39e7a0eb3a",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.od_modify_password.account_type","table":"itemTypeMap","target":"jamf_protect.telemetry.account_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!("{\"itemTypeMap\":{\"0\":\"User\",\"1\":\"Computer\"}}"),
                 )?;
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.od_modify_password?.error_code != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.od_modify_password.error_code.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.error_message = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "15f5e588f58b4c9cc5d8410d3ca66a46c846691a3f5ffbb993ac7f117e3196cf",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.od_modify_password.error_code","table":"itemTypeMap","target":"jamf_protect.telemetry.error_message","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"kODErrorSuccess\",\"1000\":\"kODErrorSessionLocalOnlyDaemonInUse\",\"1001\":\"kODErrorSessionNormalDaemonInUse\",\"1002\":\"kODErrorSessionDaemonNotRunning\",\"1003\":\"kODErrorSessionDaemonRefused\",\"1100\":\"kODErrorSessionProxyCommunicationError\",\"1101\":\"kODErrorSessionProxyVersionMismatch\",\"1102\":\"kODErrorSessionProxyIPUnreachable\",\"1103\":\"kODErrorSessionProxyUnknownHost\",\"2000\":\"kODErrorNodeUnknownName\",\"2001\":\"kODErrorNodeUnknownType\",\"2002\":\"kODErrorNodeDisabled\",\"2100\":\"kODErrorNodeConnectionFailed\",\"2200\":\"kODErrorNodeUnknownHost\",\"3000\":\"kODErrorQuerySynchronize\",\"3100\":\"kODErrorQueryInvalidMatchType\",\"3101\":\"kODErrorQueryUnsupportedMatchType\",\"3102\":\"kODErrorQueryTimeout\",\"4000\":\"kODErrorRecordReadOnlyNode\",\"4001\":\"kODErrorRecordPermissionError\",\"4100\":\"kODErrorRecordParameterError\",\"4101\":\"kODErrorRecordInvalidType\",\"4102\":\"kODErrorRecordAlreadyExists\",\"4103\":\"kODErrorRecordTypeDisabled\",\"4104\":\"kODErrorRecordNoLongerExists\",\"4200\":\"kODErrorRecordAttributeUnknownType\",\"4201\":\"kODErrorRecordAttributeNotFound\",\"4202\":\"kODErrorRecordAttributeValueSchemaError\",\"4203\":\"kODErrorRecordAttributeValueNotFound\",\"5000\":\"kODErrorCredentialsInvalid\",\"5100\":\"kODErrorCredentialsMethodNotSupported\",\"5101\":\"kODErrorCredentialsNotAuthorized\",\"5102\":\"kODErrorCredentialsParameterError\",\"5103\":\"kODErrorCredentialsOperationFailed\",\"5200\":\"kODErrorCredentialsServerUnreachable\",\"5201\":\"kODErrorCredentialsServerNotFound\",\"5202\":\"kODErrorCredentialsServerError\",\"5203\":\"kODErrorCredentialsServerTimeout\",\"5204\":\"kODErrorCredentialsContactPrimary\",\"5205\":\"kODErrorCredentialsContactPrimary\",\"5206\":\"kODErrorCredentialsServerCommunicationError\",\"5300\":\"kODErrorCredentialsAccountNotFound\",\"5301\":\"kODErrorCredentialsAccountDisabled\",\"5302\":\"kODErrorCredentialsAccountExpired\",\"5303\":\"kODErrorCredentialsAccountInactive\",\"5304\":\"kODErrorCredentialsAccountTemporarilyLocked\",\"5305\":\"kODErrorCredentialsAccountLocked\",\"5400\":\"kODErrorCredentialsPasswordExpired\",\"5401\":\"kODErrorCredentialsPasswordChangeRequired\",\"5402\":\"kODErrorCredentialsPasswordQualityFailed\",\"5403\":\"kODErrorCredentialsPasswordTooShort\",\"5404\":\"kODErrorCredentialsPasswordTooLong\",\"5405\":\"kODErrorCredentialsPasswordNeedsLetter\",\"5406\":\"kODErrorCredentialsPasswordNeedsDigit\",\"5407\":\"kODErrorCredentialsPasswordChangeTooSoon\",\"5408\":\"kODErrorCredentialsPasswordUnrecoverable\",\"5500\":\"kODErrorCredentialsInvalidLogonHours\",\"5501\":\"kODErrorCredentialsInvalidComputer\",\"6000\":\"kODErrorPolicyUnsupported\",\"6001\":\"kODErrorPolicyOutOfRange\",\"10000\":\"kODErrorPluginOperationNotSupported\",\"10001\":\"kODErrorPluginError\",\"10002\":\"kODErrorDaemonError\",\"10003\":\"kODErrorPluginOperationTimeout\"}}"
@@ -15634,7 +15737,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -15990,7 +16095,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -16354,7 +16461,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -16715,7 +16824,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -17065,7 +17176,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -17455,7 +17568,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -17814,7 +17929,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -18176,7 +18293,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -18540,7 +18659,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -18902,7 +19023,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -19423,7 +19546,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -19687,8 +19812,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.network_connect?.socket_protocol != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.network_connect.socket_protocol.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'unknown';\n\n    if (ctx.network == null) {\n        ctx.network = new HashMap();\n    }\n    \n    ctx.network.transport = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "ff3a6cae4c60cc777861abf229ad8188e5eaf07ba0fe8707ca90790a98833681",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.network_connect.socket_protocol","table":"itemTypeMap","target":"network.transport","default":{"Literal":"unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"1\":\"icmp\",\"6\":\"tcp\",\"17\":\"udp\",\"41\":\"ip6in4\",\"58\":\"icmp6\",\"255\":\"ipproto_raw\"}}"
@@ -19697,8 +19823,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.network_connect?.socket_family != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.network_connect.socket_family.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.network_socket_family = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "0d09696ea3ad6d25a9321fd8c10a2a694b957f0fb117bbe83c7fba05a70d3b5d",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.network_connect.socket_family","table":"itemTypeMap","target":"jamf_protect.telemetry.network_socket_family","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"1\":\"af_unix\",\"2\":\"af_inet\",\"30\":\"af_inet6\"}}"
@@ -19707,8 +19834,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.network_connect?.socket_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.network_connect.socket_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.network_socket_type = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "83ebcb44ff52e4de1f2a2a196b8dc1ecaa54b42faa2ddaa46c7f8c867591c5fe",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.network_connect.socket_type","table":"itemTypeMap","target":"jamf_protect.telemetry.network_socket_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"1\":\"sock_stream\",\"2\":\"sock_dgram\",\"3\":\"sock_raw\",\"4\":\"sock_rdm\",\"5\":\"sock_seqpacket\"}}"
@@ -19909,7 +20037,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -20078,8 +20208,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.tcc_modify?.right != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.tcc_modify.right.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.tcc_right = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "6324761f502db96a5aecde078e8e149917e3cf652b17718403db08530cfafaa0",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.tcc_modify.right","table":"itemTypeMap","target":"jamf_protect.telemetry.tcc_right","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"denied\",\"1\":\"unknown\",\"2\":\"allowed\",\"3\":\"limited\",\"4\":\"add_modify_added\",\"5\":\"session_pid\",\"6\":\"learn_more\"}}"
@@ -20088,8 +20219,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.tcc_modify?.reason != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.tcc_modify.reason.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.tcc_reason = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "04b9bf7345009b99eaf770e19cc9b74d426095f4363914e84693b4b14d1208a9",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.tcc_modify.reason","table":"itemTypeMap","target":"jamf_protect.telemetry.tcc_reason","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"none\",\"1\":\"error\",\"2\":\"user_consent\",\"3\":\"user_set\",\"4\":\"system_set\",\"5\":\"service_policy\",\"6\":\"mdm_policy\",\"7\":\"service_override_policy\",\"8\":\"missing_usage_string\",\"9\":\"prompt_timeout\",\"10\":\"preflight_unknown\",\"11\":\"entitled\",\"12\":\"app_type_policy\",\"13\":\"prompt_cancel\"}}"
@@ -20098,8 +20230,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.jamf_protect?.telemetry?.event?.tcc_modify?.update_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.tcc_modify.update_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.tcc_update_type = itemTypeString;\n}\n"#
+                    compiled_painless!(
+                        "6ccd5ff337e30e6c37024daf3d1533e422879418faa261e50339d7d9cd93ab87",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"jamf_protect.telemetry.event.tcc_modify.update_type","table":"itemTypeMap","target":"jamf_protect.telemetry.tcc_update_type","default":{"Literal":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"itemTypeMap\":{\"0\":\"unknown\",\"1\":\"create\",\"2\":\"modify\",\"3\":\"delete\"}}"
@@ -20313,7 +20446,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -20651,7 +20786,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;
@@ -21027,7 +21164,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "95021b056ecbdb58ddb691f4baf0c8c48d273104acb9170d3b4634d4a4e04e7a",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"process.executable","target":"process.name","separator":"/","whole_when_absent":true}},{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"process.executable","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"process.name","value":{"Field":"process.executable"}}}}]}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n"#
                     ),
                 )?;

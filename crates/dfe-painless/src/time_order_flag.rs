@@ -4,24 +4,7 @@
 //! A flag written from whether one recorded instant precedes another.
 //!
 //! `darktrace` decides whether a model breach was acknowledged BEFORE it fired,
-//! and spells out every way the answer can fail to be a comparison:
-//!
-//! ```painless
-//! ctx.darktrace = ctx.darktrace ?: [:];
-//! ctx.darktrace.model_breach_alert = ctx.darktrace?.model_breach_alert ?: [:];
-//! if (ctx.darktrace?.model_breach_alert?.acknowledged == null) {
-//!   ctx.darktrace.model_breach_alert.is_acknowledged = false; return;
-//! }
-//! if (!(ctx.darktrace.model_breach_alert.acknowledged instanceof Map)) { return; }
-//! if (ctx.darktrace.model_breach_alert.acknowledged.time == null) { return; }
-//! if (ctx.darktrace.model_breach_alert.time == null) {
-//!   ctx.darktrace.model_breach_alert.is_acknowledged = true; return;
-//! }
-//! def time = ctx.darktrace.model_breach_alert.time;
-//! def acknowledged = ctx.darktrace.model_breach_alert.acknowledged.time;
-//! ctx.darktrace.model_breach_alert.is_acknowledged =
-//!   ZonedDateTime.parse(acknowledged).isBefore(ZonedDateTime.parse(time));
-//! ```
+//! and spells out every way the answer can fail to be a comparison.
 //!
 //! Unclaimed it costs `is_acknowledged` on 9 of the stream's 11 events.
 //!
@@ -42,7 +25,7 @@ use dfe_core::Event;
 use crate::common::{block_statements, ctx_path_bound_to, if_block, painless_path};
 
 /// The paths a time-ordered flag is decided from.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct TimeOrderFlag {
     /// Maps the script builds before it reads anything, in the order it builds
     /// them.
@@ -251,7 +234,8 @@ fn instant(event: &Event, path: &str) -> Option<DateTime<FixedOffset>> {
     DateTime::parse_from_rfc3339(event.get_str(path)?).ok()
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "time_order_flag_tests.rs"]
 #[allow(
     clippy::unwrap_used,

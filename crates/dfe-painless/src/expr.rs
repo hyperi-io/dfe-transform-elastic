@@ -35,7 +35,7 @@ use dfe_core::Event;
 /// NaN breaks reflexivity. A Painless literal is a decimal written in the
 /// source and is never a NaN, so the bits are its identity and comparing them
 /// is exact.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct FloatLit(u64);
 
 impl FloatLit {
@@ -53,7 +53,7 @@ impl FloatLit {
 }
 
 /// A scalar written from an expression over other fields.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ScalarExpression {
     /// The dotted path the result is written to.
     target: String,
@@ -97,7 +97,7 @@ fn rust_str(value: &str) -> String {
 }
 
 /// One node of a parsed expression.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum Expr {
     /// A dotted path read from the document.
     Field(String),
@@ -127,7 +127,7 @@ pub enum Expr {
 }
 
 /// The four operators these scripts use.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum Op {
     /// `+`, which is CONCATENATION whenever either side is a string.
     Add,
@@ -185,7 +185,7 @@ impl Expr {
 }
 
 /// A value mid-evaluation, carrying the distinction Painless carries.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 enum Scalar {
     /// An integral value. Two of these divide as integers.
     Int(i64),
@@ -589,167 +589,8 @@ const CASTS: &[(&str, fn(Box<Expr>) -> Expr)] = &[
     ("(float)", Expr::ToDouble),
 ];
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use super::*;
-
-    fn run(script: &str, document: Value) -> Event {
-        let pattern = parse_scalar_expression(script).expect("the expression is recognised");
-        let mut event = Event::new(document);
-        assert!(scalar_expression(&mut event, &pattern));
-        event
-    }
-
-    /// goflow2's timestamp: an integral divide, and the `date` processor after
-    /// it reads `UNIX_MS`. A double here dates every event to the wrong
-    /// century.
-    #[test]
-    fn two_integers_divide_as_integers() {
-        let event = run(
-            "ctx.goflow2.time_flow_start_ns = (ctx.goflow2?.time_flow_start_ns / 1000000);",
-            json!({ "goflow2": { "time_flow_start_ns": 1_722_384_059_314_899_647_i64 } }),
-        );
-        assert_eq!(
-            event.get("goflow2.time_flow_start_ns"),
-            Some(&json!(1_722_384_059_314_i64))
-        );
-    }
-
-    /// The other half of the same rule: a fractional operand keeps the result
-    /// fractional, so a percentage does not truncate to zero.
-    #[test]
-    fn a_fractional_operand_keeps_the_result_fractional() {
-        let event = run(
-            "ctx.host.cpu.usage = ctx.cyberarkpas.monitor.cpu_usage/100.0;",
-            json!({ "cyberarkpas": { "monitor": { "cpu_usage": 37 } } }),
-        );
-        assert_eq!(event.get("host.cpu.usage"), Some(&json!(0.37)));
-    }
-
-    /// A value the DOCUMENT holds as a double is a double, whatever its digits
-    /// -- `as_i64` answers for a whole float and would turn this integral.
-    #[test]
-    fn a_whole_double_is_still_a_double() {
-        let event = run("ctx.a = ctx.b / 3;", json!({ "b": 10.0 }));
-        let got = event.get("a").and_then(Value::as_f64).expect("a float");
-        assert!((got - 3.333_333_333_333_333_5).abs() < 1e-12, "{got}");
-    }
-
-    /// goflow2's other script, and the one that carries `network.bytes`.
-    #[test]
-    fn two_fields_multiply() {
-        let event = run(
-            "ctx.goflow2.flow_size = ctx.goflow2?.bytes * ctx.goflow2?.sampling_rate;",
-            json!({ "goflow2": { "bytes": 70, "sampling_rate": 1000 } }),
-        );
-        assert_eq!(event.get("goflow2.flow_size"), Some(&json!(70_000)));
-    }
-
-    /// zeek's certificate window: a subtraction inside a divide inside a round.
-    #[test]
-    fn a_round_wraps_a_whole_expression() {
-        let event = run(
-            "ctx.zeek.kerberos.valid.days = Math.round( (ctx.zeek.kerberos.valid.until \
-             - ctx.zeek.kerberos.valid.from) / 86400 )",
-            json!({ "zeek": { "kerberos": { "valid": { "until": 1_700_086_400_i64, "from": 1_699_000_000_i64 } } } }),
-        );
-        assert_eq!(event.get("zeek.kerberos.valid.days"), Some(&json!(12)));
-    }
-
-    /// A cast truncates where a round would not, and the two appear in the
-    /// same catalogue.
-    #[test]
-    fn a_cast_truncates_and_a_round_does_not() {
-        let truncated = run(
-            "ctx.a = (Long)(Float.parseFloat(ctx.t) * 1000);",
-            json!({ "t": "1.9995" }),
-        );
-        assert_eq!(truncated.get("a"), Some(&json!(1999)));
-
-        let rounded = run("ctx.a = Math.round(ctx.t * 1000)", json!({ "t": 1.9995 }));
-        assert_eq!(rounded.get("a"), Some(&json!(2000)));
-    }
-
-    /// Precedence, because these scripts mix the two tiers without brackets.
-    #[test]
-    fn multiplication_binds_tighter_than_addition() {
-        let event = run("ctx.a = ctx.b + ctx.c * 10", json!({ "b": 5, "c": 3 }));
-        assert_eq!(event.get("a"), Some(&json!(35)));
-    }
-
-    /// Java's `+` is concatenation the moment either side is a String, which is
-    /// how four of these build a message or a URL.
-    #[test]
-    fn a_string_operand_makes_the_plus_a_concatenation() {
-        let event = run(
-            "ctx.vulnerability.reference = 'https://example.test/?cve=' + ctx.vulnerability.id;",
-            json!({ "vulnerability": { "id": "CVE-2026-1" } }),
-        );
-        assert_eq!(
-            event.get_str("vulnerability.reference"),
-            Some("https://example.test/?cve=CVE-2026-1")
-        );
-    }
-
-    /// A `params` member resolves from the block, and the same expression
-    /// declines on the text-only lane rather than reading nothing.
-    #[test]
-    fn a_params_member_resolves_from_its_block() {
-        let pattern =
-            parse_scalar_expression("ctx.event.duration = ctx.ses.duration * params.S_TO_NS;")
-                .expect("the expression is recognised");
-        assert!(pattern.reads_params());
-
-        let mut event = Event::new(json!({ "ses": { "duration": 3 } }));
-        let params = json!({ "S_TO_NS": 1_000_000_000_i64 });
-        let params = params.as_object().expect("a params block");
-        assert!(scalar_expression_params(&mut event, &pattern, params));
-        assert_eq!(event.get("event.duration"), Some(&json!(3_000_000_000_i64)));
-    }
-
-    /// A field the document does not carry leaves the target ALONE. Painless
-    /// would have thrown, so writing anything is inventing a value.
-    #[test]
-    fn an_absent_field_writes_nothing() {
-        let pattern = parse_scalar_expression("ctx.a = ctx.b * 2").expect("recognised");
-        let mut event = Event::new(json!({ "c": 1 }));
-        assert!(scalar_expression(&mut event, &pattern));
-        assert_eq!(event.get("a"), None);
-    }
-
-    /// A divide by zero throws in Painless rather than yielding infinity, so
-    /// the integral path declines instead of panicking.
-    #[test]
-    fn an_integer_divide_by_zero_writes_nothing() {
-        let pattern = parse_scalar_expression("ctx.a = ctx.b / ctx.c").expect("recognised");
-        let mut event = Event::new(json!({ "b": 1, "c": 0 }));
-        assert!(scalar_expression(&mut event, &pattern));
-        assert_eq!(event.get("a"), None);
-    }
-
-    /// What it must NOT claim. Each of these is a different pattern, and
-    /// reading the part that looks arithmetic would write a wrong value.
-    #[test]
-    fn anything_it_does_not_fully_understand_is_declined() {
-        for script in [
-            // A preamble, so the assignment is not the whole script.
-            "ctx.network = new HashMap();\nctx.network.bytes = ctx.a + ctx.b;",
-            // A method call it has no evaluation for.
-            "ctx.message = ctx.message.substring(0, ctx.message.length() - 1);",
-            // A comparison, not an assignment.
-            "ctx.a == ctx.b + 1",
-            // A plain copy, which the `set` processor expresses.
-            "ctx.a = ctx.b;",
-            // A target that is not a ctx path.
-            "def total = ctx.a + ctx.b;",
-            // An operand that is neither a path, a literal, nor a call.
-            "ctx.a = ctx.b + someLocal;",
-        ] {
-            assert!(
-                parse_scalar_expression(script).is_none(),
-                "claimed a script it cannot evaluate: {script}"
-            );
-        }
-    }
-}
+#[path = "expr_tests.rs"]
+mod tests;

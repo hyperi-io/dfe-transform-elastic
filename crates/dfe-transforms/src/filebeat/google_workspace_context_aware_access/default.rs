@@ -447,8 +447,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.source.user.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} ctx.user.name = splitmail[0]; ctx.source.user.name = splitmail[0]; ctx.user.domain = splitmail[1]; ctx.source.user.domain = splitmail[1];\n"#
+                    compiled_painless!(
+                        "0a7b50a87773f444b7e4fec2eac1bf08fb6a7b27ab9eb53a0632da53a5a8ce8a",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"source.user.email","names":["user.name","source.user.name"],"domains":["user.domain","source.user.domain"],"emails":[],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -535,8 +536,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def context_aware_access = ctx.google_workspace.context_aware_access; if (context_aware_access == null) {\n  context_aware_access = new HashMap();\n}\ndef fields = new String[] {\n  \"value\",\n  \"multiValue\",\n  \"messageValue\",\n  \"multiMessageValue\",\n  \"intValue\",\n  \"multiIntValue\",\n  \"boolValue\",\n  \"multiBoolValue\"\n};\ndef parameters = ctx.json.events.parameters; for (int i = 0; i < parameters.length; ++i) {\n  if (parameters[i][\"messageValue\"] != null) {\n    for (int j = 0;j < parameters[i][\"messageValue\"][\"parameter\"].length; ++j ){\n      for (def f: fields) {\n        if (parameters[i][\"messageValue\"][\"parameter\"][j][f] != null) {\n          parameters[i].messageValue[parameters[i][\"messageValue\"][\"parameter\"][j][\"name\"]] = parameters[i][\"messageValue\"][\"parameter\"][j][f];\n        }\n      }\n    }\n  }\n} for (int i = 0; i < parameters.length; ++i) {\n  if (parameters[i][\"messageValue\"] != null) {\n    parameters[i][\"messageValue\"].remove('parameter');\n  }\n} for (int i = 0; i < parameters.length; ++i) {\n  if (parameters[i][\"multiMessageValue\"] != null) {\n    for (int j = 0;j < parameters[i][\"multiMessageValue\"].length; ++j ){\n      if (parameters[i][\"multiMessageValue\"][j][\"parameter\"] != null) {\n        for (int k = 0;k < parameters[i][\"multiMessageValue\"][j][\"parameter\"].length; ++k ){\n          for (def f: fields) {\n            if (parameters[i][\"multiMessageValue\"][j][\"parameter\"][k][f] != null) {\n              parameters[i].multiMessageValue[j][parameters[i][\"multiMessageValue\"][j][\"parameter\"][k][\"name\"]] = parameters[i][\"multiMessageValue\"][j][\"parameter\"][k][f];\n            }\n          }\n        }\n      }\n    }\n  }\n} for (int i = 0; i < parameters.length; ++i) {\n  if (parameters[i][\"multiMessageValue\"] != null) {\n    for (int j = 0;j < parameters[i][\"multiMessageValue\"].length; ++j ){\n      if (parameters[i][\"multiMessageValue\"][j][\"parameter\"] != null) {\n        parameters[i][\"multiMessageValue\"][j].remove('parameter');\n      }\n    }\n  }\n} for (int i = 0; i < parameters.length; ++i) {\n  for (def f: fields) {\n    if (parameters[i][f] != null) {\n      context_aware_access[parameters[i][\"name\"]] = parameters[i][f];\n    }\n  }\n  ctx.google_workspace.context_aware_access = context_aware_access;\n  ctx.json.events.parameters = parameters;\n}\n"#
+                    compiled_painless!(
+                        "48e97b70b3cadb112d1860a20178b57f8085cd1d1ba0a6c19c6f082ca3b403c1",
+                        r#"{"params":null,"known":[{"ParameterFanOut":{"list":"json.events.parameters","target":"google_workspace.context_aware_access","values":["value","multiValue","messageValue","multiMessageValue","intValue","multiIntValue","boolValue","multiBoolValue"],"strip":null,"folds":[{"member":"messageValue","each":false,"key":"parameter"},{"member":"multiMessageValue","each":true,"key":"parameter"}]}}]}"#
                     ),
                 )?;
             }

@@ -1166,8 +1166,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.type = params[ctx.ti_flashpoint.indicator.type];"#
+                    compiled_painless!(
+                        "454d2d711e29983abbb2ee063def339a0d13f40c81b86d45a997451d22753679",
+                        r#"{"params":{"LookupNormalise":[{"key":"ti_flashpoint.indicator.type","fold":"None","target":"threat.indicator.type"},{"statements":[],"whole":false}]},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"domain\":\"domain-name\",\"file\":\"file\",\"ipv4\":\"ipv4-addr\",\"url\":\"url\"}"

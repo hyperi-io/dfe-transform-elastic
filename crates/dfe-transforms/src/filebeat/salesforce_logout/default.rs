@@ -271,8 +271,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def sessionTypes = [\n  \"A\": \"API\",\n  \"I\": \"APIOnlyUser\",\n  \"N\": \"ChatterNetworks\",\n  \"Z\": \"ChatterNetworksAPIOnly\",\n  \"C\": \"Content\",\n  \"P\": \"OauthApprovalUI\",\n  \"O\": \"Oauth2\",\n  \"T\": \"SiteStudio\",\n  \"R\": \"SitePreview\",\n  \"S\": \"SubstituteUser\",\n  \"B\": \"TempContentExchange\",\n  \"G\": \"TempOauthAccessTokenFrontdoor\",\n  \"Y\": \"TempVisualforceExchange\",\n  \"F\": \"TempUIFrontdoor\",\n  \"U\": \"UI\",\n  \"E\": \"UserSite\",\n  \"V\": \"Visualforce\",\n  \"W\": \"WDC_API\"\n];\ndef type = ctx.salesforce?.logout?.session?.type;\nif (type != null && sessionTypes.containsKey(type)) {\n  ctx.salesforce.logout.session.type = sessionTypes.get(type);\n}\n"#
+                        compiled_painless!(
+                            "eaa69b0bcb508291c61dd885d50730962ee737aabcd80ac6ca12210a79b535a6",
+                            r#"{"params":null,"known":[{"LocalMapLookup":{"source":"salesforce.logout.session.type","lowered":false,"target":"salesforce.logout.session.type","table":{"A":"API","B":"TempContentExchange","C":"Content","E":"UserSite","F":"TempUIFrontdoor","G":"TempOauthAccessTokenFrontdoor","I":"APIOnlyUser","N":"ChatterNetworks","O":"Oauth2","P":"OauthApprovalUI","R":"SitePreview","S":"SubstituteUser","T":"SiteStudio","U":"UI","V":"Visualforce","W":"WDC_API","Y":"TempVisualforceExchange","Z":"ChatterNetworksAPIOnly"}}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -314,8 +315,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def levels = [\"1\": \"Standard Session\", \"2\": \"High-Assurance Session\"];\ndef level = ctx.salesforce?.logout?.session?.level;\nif (level != null && levels.containsKey(level)) {\n  ctx.salesforce.logout.session.level = levels.get(level);\n}\n"#
+                        compiled_painless!(
+                            "24e3cf9f8e340159f182e695bcab656a32f51ed4742a956e352326f798d6e3af",
+                            r#"{"params":null,"known":[{"LocalMapLookup":{"source":"salesforce.logout.session.level","lowered":false,"target":"salesforce.logout.session.level","table":{"1":"Standard Session","2":"High-Assurance Session"}}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -357,8 +359,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def platform = ctx.salesforce?.logout?.platform_type;\nif (platform != null && params.platforms.containsKey(platform)) {\n  ctx.salesforce.logout.platform_type = params.platforms.get(platform);\n}\n"#
+                        compiled_painless!(
+                            "1d848702932da0147a7424fb82d65762085f906a11b26b83eb7b7e81a7ad76de",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"platforms\":{\"1000\":\"Windows\",\"1008\":\"Windows 2003\",\"1013\":\"Windows 8.1\",\"1015\":\"Windows 10\",\"2003\":\"Macintosh/Apple OSX\",\"4000\":\"Linux\",\"5005\":\"Android\",\"5006\":\"iPhone\",\"5007\":\"iPad\",\"5200\":\"Android 10.0\"}}"
@@ -404,8 +407,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def type = ctx.salesforce?.logout?.app_type;\nif (type != null && params.appTypes.containsKey(type)) {\n  ctx.salesforce.logout.app_type = params.appTypes.get(type);\n}\n"#
+                        compiled_painless!(
+                            "89fc53a900227120a9eb2494f3b9066cb147d2404c1514b7d4dee0e9de5ecb03",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"appTypes\":{\"1000\":\"Application\",\"1007\":\"SFDC Application\",\"1014\":\"Chat\",\"2501\":\"CTI\",\"2514\":\"OAuth\",\"3475\":\"SFDC Partner Portal\"}}"
@@ -450,8 +454,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def type = ctx.salesforce?.logout?.api?.type;\nif (type != null && params.apiTypes.containsKey(type)) {\n  ctx.salesforce.logout.api.type = params.apiTypes.get(type);\n}\n"#
+                        compiled_painless!(
+                            "59d081e2b0bc39c0055577f1553207fbcf97a42fb5403250f194ff9509bf5905",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"apiTypes\":{\"D\":\"Apex Class\",\"E\":\"SOAP Enterprise\",\"I\":\"SOAP Cross Instance\",\"M\":\"SOAP Metadata\",\"O\":\"Old SOAP\",\"P\":\"SOAP Partner\",\"S\":\"SOAP Apex\",\"T\":\"SOAP Tooling\",\"X\":\"XmlRPC\",\"f\":\"Feed\",\"l\":\"Live Agent\",\"p\":\"SOAP ClientSync\"}}"
@@ -541,8 +546,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def role = ctx.salesforce?.logout?.user?.roles;\nif (role != null && params.userRoles.containsKey(role)) {\n  ctx.salesforce.logout.user.roles = [params.userRoles.get(role)];\n}\n"#
+                        compiled_painless!(
+                            "e4bdb0750b1c66899cbf084bd4a7a36d143a39eb5e860a405087119c356865a3",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"userRoles\":{\"A\":\"Automated Process\",\"b\":\"High Volume Portal\",\"C\":\"Customer Portal User\",\"D\":\"External Who\",\"F\":\"Self-Service\",\"G\":\"Guest\",\"L\":\"Package License Manager\",\"N\":\"Salesforce to Salesforce\",\"n\":\"CSN Only\",\"O\":\"Power Custom\",\"o\":\"Custom\",\"P\":\"Partner\",\"p\":\"Customer Portal Manager\",\"S\":\"Standard\",\"X\":\"Salesforce Administrator\"}}"

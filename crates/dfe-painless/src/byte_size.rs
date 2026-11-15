@@ -14,7 +14,7 @@ use crate::params::clean_path;
 use dfe_core::event::Event;
 
 /// The helper's unit table and every field it is applied to.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ByteSizeFields {
     /// `(unit, multiplier)`, in the order the script lists them.
     factors: Vec<(String, i64)>,
@@ -121,92 +121,8 @@ pub fn run_byte_size_fields(event: &mut Event, pattern: &ByteSizeFields) -> bool
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::expect_used)]
-mod tests {
-    use super::*;
-    use crate::common::normalise;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/digital_guardian_arc/default.rs`,
-    /// in the escaped one-line form a stored script arrives in.
-    const SCRIPT: &str = r#"long bytesFromStr(String str) {\n  def factors = [\n    \"KB\": 1000L,\n    \"MB\": 1000000L,\n    \"GB\": 1000000000L,\n    \"TB\": 1000000000000L\n  ];\n  def parts = str.splitOnToken(' ');\n  double num = Double.parseDouble(parts[0]);\n  String unit = parts.length > 1 ? parts[1] : null;\n  if (factors.containsKey(unit)) {\n    return (long) (num * factors[unit]);\n  } else {\n    return (long) num;\n  }\n}\nif (ctx.digital_guardian?.arc?.dg_attachments?.dg_file_size instanceof String) {\n  ctx.digital_guardian.arc.dg_attachments.dg_file_size_bytes = bytesFromStr(ctx.digital_guardian.arc.dg_attachments.dg_file_size);\n}\nif (ctx.digital_guardian?.arc?.dg_file_size instanceof String) {\n  ctx.digital_guardian.arc.dg_file_size_bytes = bytesFromStr(ctx.digital_guardian.arc.dg_file_size);\n}\nif (ctx.digital_guardian?.arc?.pi_fs instanceof String) {\n  ctx.digital_guardian.arc.pi_fs_bytes = bytesFromStr(ctx.digital_guardian.arc.pi_fs);\n}\nif (ctx.digital_guardian?.arc?.uad_br instanceof String) {\n  ctx.digital_guardian.arc.uad_br_bytes = bytesFromStr(ctx.digital_guardian.arc.uad_br);\n}\nif (ctx.digital_guardian?.arc?.uad_bw instanceof String) {\n  ctx.digital_guardian.arc.uad_bw_bytes = bytesFromStr(ctx.digital_guardian.arc.uad_bw);\n}"#;
-
-    #[test]
-    fn the_factor_table_and_every_applied_field_are_read() {
-        let pattern = parse_byte_size_fields(&normalise(SCRIPT)).expect("the helper is applied");
-        assert_eq!(
-            pattern.factors,
-            vec![
-                ("KB".to_string(), 1_000),
-                ("MB".to_string(), 1_000_000),
-                ("GB".to_string(), 1_000_000_000),
-                ("TB".to_string(), 1_000_000_000_000),
-            ]
-        );
-        assert_eq!(pattern.fields.len(), 5);
-        assert_eq!(
-            pattern.fields[0],
-            (
-                "digital_guardian.arc.dg_attachments.dg_file_size".to_string(),
-                "digital_guardian.arc.dg_attachments.dg_file_size_bytes".to_string()
-            )
-        );
-    }
-
-    /// The captured values, and the decimal factors they prove.
-    #[test]
-    fn a_fractional_size_scales_by_a_thousand_not_by_a_kibibyte() {
-        let pattern = parse_byte_size_fields(&normalise(SCRIPT)).expect("the helper is applied");
-        let mut event = Event::new(serde_json::json!({ "digital_guardian": { "arc": {
-            "dg_file_size": "10.4 KB",
-            "dg_attachments": { "dg_file_size": "1.8 MB" }
-        } } }));
-        assert!(run_byte_size_fields(&mut event, &pattern));
-        assert_eq!(
-            event.get("digital_guardian.arc.dg_file_size_bytes"),
-            Some(&serde_json::json!(10_400))
-        );
-        assert_eq!(
-            event.get("digital_guardian.arc.dg_attachments.dg_file_size_bytes"),
-            Some(&serde_json::json!(1_800_000))
-        );
-    }
-
-    #[test]
-    fn a_bare_number_and_an_unknown_unit_both_take_the_number_alone() {
-        let pattern = parse_byte_size_fields(&normalise(SCRIPT)).expect("the helper is applied");
-        let mut event = Event::new(serde_json::json!({ "digital_guardian": { "arc": {
-            "dg_file_size": "512",
-            "pi_fs": "7.9 PB"
-        } } }));
-        assert!(run_byte_size_fields(&mut event, &pattern));
-        assert_eq!(
-            event.get("digital_guardian.arc.dg_file_size_bytes"),
-            Some(&serde_json::json!(512))
-        );
-        // Truncated toward zero, as Java's `(long)` cast does.
-        assert_eq!(
-            event.get("digital_guardian.arc.pi_fs_bytes"),
-            Some(&serde_json::json!(7))
-        );
-    }
-
-    #[test]
-    fn a_field_that_is_absent_or_unparseable_is_left_alone() {
-        let pattern = parse_byte_size_fields(&normalise(SCRIPT)).expect("the helper is applied");
-        let mut event = Event::new(serde_json::json!({ "digital_guardian": { "arc": {
-            "dg_file_size": "unknown",
-            "uad_br": 4096
-        } } }));
-        assert!(run_byte_size_fields(&mut event, &pattern));
-        assert!(!event.has("digital_guardian.arc.dg_file_size_bytes"));
-        // A number is not a String, so the script's guard skips it.
-        assert!(!event.has("digital_guardian.arc.uad_br_bytes"));
-    }
-
-    #[test]
-    fn a_script_with_no_factor_table_is_declined() {
-        assert!(parse_byte_size_fields("ctx.a = ctx.b;").is_none());
-    }
-}
+#[path = "byte_size_tests.rs"]
+mod tests;

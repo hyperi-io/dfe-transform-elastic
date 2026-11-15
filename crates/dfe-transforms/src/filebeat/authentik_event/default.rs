@@ -90,7 +90,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "d03bb8c54843186c4dcf04c52715723ea6ce372e513c78f489a0c3df04212c88",
+                        r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Compare":{"path":"authentik.event.action","wanted":"Null","negated":false,"lowered":false}}],["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                         r#"if (ctx.authentik?.event?.action == null || params.get(ctx.authentik.event.action) == null) {\n  return;\n}\nparams.get(ctx.authentik.event.action).forEach((k, v) -> {\n  if (v instanceof List) {\n    ctx.event[k] = new ArrayList(v);\n  } else {\n    ctx.event[k] = v;\n  }\n});"#
                     ),
                     cached_params!(

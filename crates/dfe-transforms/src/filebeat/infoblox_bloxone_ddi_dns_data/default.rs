@@ -1135,8 +1135,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def a = new ArrayList();\na.add(ctx.dns.answers);\nctx.dns.answers = a;\n"#
+                    compiled_painless!(
+                        "26da2d56c9a22f2b8d7af51d5fe967b80cdbff1757094479227a61b08058a3bf",
+                        r#"{"params":null,"known":[{"WrapValueInList":[{"source":"dns.answers","target":"dns.answers","remove_source":false,"guards":{"not_list":false,"not_null":false,"not_empty":false}}]}]}"#
                     ),
                 )?;
             }

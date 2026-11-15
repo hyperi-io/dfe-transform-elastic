@@ -227,7 +227,11 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(r#"ctx.event.duration *= params.MS_TO_NS;"#),
+                    compiled_painless!(
+                        "b4315345f6c63d4cd48864a3c785f53584103e4da490bb7b709b523452dd0f07",
+                        r#"{"params":"Scale","known":[]}"#,
+                        r#"ctx.event.duration *= params.MS_TO_NS;"#
+                    ),
                     cached_params!("{\"MS_TO_NS\":1000000}"),
                 )?;
             }

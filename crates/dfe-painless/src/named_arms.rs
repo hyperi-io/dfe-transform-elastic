@@ -5,27 +5,7 @@
 //! table does not carry.
 //!
 //! `claude_code` and `claude_cowork` classify their events this way -- two names
-//! answered inline, one answered with no write at all, and the rest looked up:
-//!
-//! ```painless
-//! def name = ctx.event_name;
-//! ctx.event = ctx.event ?: new HashMap();
-//! ctx.event.kind = 'event';
-//! if (name == 'user_prompt' || name == 'skill_activated') { return; }
-//! if (name == 'tool_decision') {
-//!   ctx.event.category = ['iam'];
-//!   ctx.event.type = ['info'];
-//!   return;
-//! }
-//! def entry = params.categories.getOrDefault(name, null);
-//! if (entry != null) {
-//!   ctx.event.category = entry.category;
-//!   ctx.event.type = entry.type;
-//! } else {
-//!   ctx.event.category = ['host'];
-//!   ctx.event.type = ['info'];
-//! }
-//! ```
+//! answered inline, one answered with no write at all, and the rest looked up.
 //!
 //! `GuardedCopy` claims the script and reads the arms correctly, then meets a
 //! guard on a local it cannot resolve and takes the ELSE branch every time --
@@ -42,7 +22,7 @@ use crate::params::{balanced, clean_path, literal_writes, skip_trivia};
 use dfe_core::Event;
 
 /// One literal arm, and what it writes before returning.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct NamedArm {
     /// The subject values this arm answers.
     values: Vec<String>,
@@ -50,14 +30,14 @@ pub struct NamedArm {
 }
 
 /// A column taken off the row the table returns.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ArmedColumn {
     target: String,
     member: String,
 }
 
 /// Literal arms first, then a params table, then literal defaults.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ArmedTable {
     /// The `ctx.` path the key is read from.
     subject: String,
@@ -239,111 +219,10 @@ pub fn armed_table(event: &mut Event, pattern: &ArmedTable, params: &Map<String,
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#`.
 #[allow(clippy::needless_raw_string_hashes)]
-mod tests {
-    use super::*;
-    use crate::plan::{PainlessPlan, painless_exec_plan_params};
-    use serde_json::json;
-
-    /// Verbatim from the generated call sites in
-    /// `crates/dfe-transforms/src/filebeat/claude_code_events/default.rs` and
-    /// `.../claude_cowork_events/default.rs`, which ship the same text.
-    const CLAUDE_CODE_CATEGORIES: &str = r#"def name = ctx.event_name; ctx.event = ctx.event ?: new HashMap(); ctx.event.kind = 'event'; if (name == 'user_prompt' || name == 'skill_activated') {\n  return;\n} if (name == 'tool_decision') {\n  ctx.event.category = ['iam'];\n  ctx.event.type = ['info'];\n  return;\n} def entry = params.categories.getOrDefault(name, null); if (entry != null) {\n  ctx.event.category = entry.category;\n  ctx.event.type = entry.type;\n} else {\n  ctx.event.category = ['host'];\n  ctx.event.type = ['info'];\n}\n"#;
-
-    /// The params block the call site holds, cut to the rows the tests read.
-    fn params() -> Value {
-        json!({ "categories": {
-            "tool_result": { "category": ["process"], "type": ["info"] },
-            "api_refusal": { "category": ["api"], "type": ["denied"] },
-            "mcp_server_connection": { "category": ["network"], "type": ["connection"] },
-        }})
-    }
-
-    fn classify(name: &str) -> Event {
-        let mut event = Event::new(json!({ "event_name": name }));
-        let plan = PainlessPlan::new(CLAUDE_CODE_CATEGORIES);
-        assert!(painless_exec_plan_params(&mut event, &plan, &params()).is_ok());
-        event
-    }
-
-    #[test]
-    fn the_claude_categories_read_the_table_the_arms_do_not_answer() {
-        assert_eq!(
-            parse_armed_table(&crate::common::normalise(CLAUDE_CODE_CATEGORIES)),
-            Some(ArmedTable {
-                subject: "event_name".to_owned(),
-                prelude: vec![("event.kind".to_owned(), json!("event"))],
-                arms: vec![
-                    NamedArm {
-                        values: vec!["user_prompt".to_owned(), "skill_activated".to_owned()],
-                        writes: Vec::new(),
-                    },
-                    NamedArm {
-                        values: vec!["tool_decision".to_owned()],
-                        writes: vec![
-                            ("event.category".to_owned(), json!(["iam"])),
-                            ("event.type".to_owned(), json!(["info"])),
-                        ],
-                    },
-                ],
-                table: "categories".to_owned(),
-                columns: vec![
-                    ArmedColumn {
-                        target: "event.category".to_owned(),
-                        member: "category".to_owned(),
-                    },
-                    ArmedColumn {
-                        target: "event.type".to_owned(),
-                        member: "type".to_owned(),
-                    },
-                ],
-                defaults: vec![
-                    ("event.category".to_owned(), json!(["host"])),
-                    ("event.type".to_owned(), json!(["info"])),
-                ],
-            })
-        );
-    }
-
-    /// The WRITTEN values, one per branch of the script.
-    #[test]
-    fn each_branch_writes_what_the_script_says() {
-        // A name the table carries -- the branch that wrote `host`/`info` for
-        // every one of them.
-        let event = classify("tool_result");
-        assert_eq!(event.get("event.kind"), Some(&json!("event")));
-        assert_eq!(event.get("event.category"), Some(&json!(["process"])));
-        assert_eq!(event.get("event.type"), Some(&json!(["info"])));
-
-        let event = classify("api_refusal");
-        assert_eq!(event.get("event.category"), Some(&json!(["api"])));
-        assert_eq!(event.get("event.type"), Some(&json!(["denied"])));
-
-        // The arm that writes nothing but the kind.
-        let event = classify("user_prompt");
-        assert_eq!(event.get("event.kind"), Some(&json!("event")));
-        assert_eq!(event.get("event.category"), None);
-        assert_eq!(event.get("event.type"), None);
-
-        // The arm that answers inline.
-        let event = classify("tool_decision");
-        assert_eq!(event.get("event.category"), Some(&json!(["iam"])));
-        assert_eq!(event.get("event.type"), Some(&json!(["info"])));
-
-        // A name neither the arms nor the table carry.
-        let event = classify("something_new");
-        assert_eq!(event.get("event.category"), Some(&json!(["host"])));
-        assert_eq!(event.get("event.type"), Some(&json!(["info"])));
-    }
-
-    /// An arm that falls through instead of returning lets the lookup below
-    /// overwrite it, so the pair is a different script.
-    #[test]
-    fn an_arm_that_does_not_return_is_declined() {
-        let script = r"def name = ctx.n; if (name == 'a') {\n  ctx.x = 'y';\n} def e = params.t.getOrDefault(name, null); if (e != null) {\n  ctx.x = e.m;\n} else {\n  ctx.x = 'z';\n}";
-        assert!(parse_armed_table(&crate::common::normalise(script)).is_none());
-    }
-}
+#[path = "named_arms_tests.rs"]
+mod tests;

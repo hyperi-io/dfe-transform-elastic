@@ -125,7 +125,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "514ab533653fc715a85c4dc32fc60aef5dfcfa775d1d36bd4a8347b6f9bfb251",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.mssql.metrics.log_since_last_checkpoint = Math.round(ctx.mssql.metrics.log_since_last_checkpoint * params.scale)"#
                     ),
                     cached_params!("{\"scale\":1048576}"),
@@ -137,7 +139,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "b2123168ae4ae8225b31de37079b6eaea3b0290e07edd92ed35a55c9c624e543",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.mssql.metrics.log_recovery_size = Math.round(ctx.mssql.metrics.log_recovery_size * params.scale)"#
                     ),
                     cached_params!("{\"scale\":1048576}"),
@@ -149,7 +153,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "d2294624da27a94123825d0799f7718861d25de5bf1ae79423bd650f642134fe",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.mssql.metrics.total_log_size = Math.round(ctx.mssql.metrics.total_log_size * params.scale)"#
                     ),
                     cached_params!("{\"scale\":1048576}"),
@@ -161,7 +167,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "bb4db8cd55f46e4597e30040e0bd42a11797d08995481b0be4bad4791774ee72",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.mssql.metrics.active_log_size = Math.round(ctx.mssql.metrics.active_log_size * params.scale)"#
                     ),
                     cached_params!("{\"scale\":1048576}"),
@@ -173,7 +181,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "4459b8156d5b5e4d0835828d9e1723cd3b8f97bf2ebc409aafc6ebe7f1a263a2",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.mssql.metrics.log_since_last_log_backup = Math.round(ctx.mssql.metrics.log_since_last_log_backup * params.scale)"#
                     ),
                     cached_params!("{\"scale\":1048576}"),

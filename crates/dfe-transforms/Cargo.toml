@@ -24,6 +24,21 @@ all = "warn"
 
 [dependencies]
 dfe-runtime = { workspace = true }
+dfe-transforms-1password-authentik = { workspace = true }
+dfe-transforms-aws-axonius = { workspace = true }
+dfe-transforms-azure-cisa = { workspace = true }
+dfe-transforms-cisco-cloud = { workspace = true }
+dfe-transforms-cloudflare-extrahop = { workspace = true }
+dfe-transforms-f5-hid = { workspace = true }
+dfe-transforms-hpe-lyve = { workspace = true }
+dfe-transforms-m365-nvidia = { workspace = true }
+dfe-transforms-o365-qnap = { workspace = true }
+dfe-transforms-qualys-stan = { workspace = true }
+dfe-transforms-stormshield-swimlane = { workspace = true }
+dfe-transforms-symantec = { workspace = true }
+dfe-transforms-sysdig-traefik = { workspace = true }
+dfe-transforms-trellix-zoom = { workspace = true }
+dfe-transforms-zscaler = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 regex = { workspace = true }

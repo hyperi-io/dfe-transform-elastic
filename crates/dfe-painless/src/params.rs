@@ -67,7 +67,7 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
 /// Painless folds the key, never the table, so a fold the parse misses does
 /// not merely mis-case a lookup -- it misses every row and the pattern resolves
 /// nothing.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum Fold {
     None,
     Lower,
@@ -97,7 +97,7 @@ impl Fold {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) enum ParamsPattern {
     /// A scalar written from arithmetic that reads a scale out of `params`.
     ScalarExpression(Box<crate::expr::ScalarExpression>),
@@ -355,7 +355,7 @@ pub(crate) enum ParamsPattern {
 /// `qualys_vmdr` maps `SEVERITY_LEVEL` to a word only for the vulnerability types
 /// its table covers, and running the lookup regardless would rewrite every other
 /// type's severity with a row that was never meant for it.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct TableGate {
     /// The field whose value has to be in the list.
     pub(crate) field: String,
@@ -364,7 +364,7 @@ pub(crate) struct TableGate {
 }
 
 /// What a table lookup falls back to when the key has no row.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) enum TableDefault {
     /// A quoted literal, frozen into the script.
     Literal(String),
@@ -1246,16 +1246,6 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
 
 /// A delimited string's tokens named by POSITION out of the params table.
 ///
-/// ```painless
-/// def headers = ctx._temp.raw_custom_headers.splitOnToken(' ');
-/// if (ctx.barracuda.waf.custom_header == null) {
-///     ctx.barracuda.waf.custom_header = new HashMap();
-/// }
-/// for (int i = 0; i < headers.length; i++) {
-///   ctx.barracuda.waf.custom_header[params[(i+1).toString()]] = headers[i];
-/// }
-/// ```
-///
 /// The table names each POSITION rather than each value, so the script says
 /// only that a header list arrives in a fixed order -- `barracuda_waf` ships
 /// `{"1":"accept_encoding","2":"host","3":"connection", ...}` and its access
@@ -1266,7 +1256,7 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
 /// written and the `drop_empty` at the end of the pipeline takes them back out
 /// -- which is why the runner writes every named position rather than trying
 /// to decide which ones mean anything.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct SplitNamedByPosition {
     /// The `ctx.` path holding the delimited text.
     source: String,
@@ -1368,24 +1358,11 @@ fn run_split_named_by_position(
 
 /// Several scratch fields reparsed with a date pattern the document supplies.
 ///
-/// ```painless
-/// def zone = ctx.event?.timezone != null ? ZoneId.of(ctx.event.timezone) : null;
-/// def formatter = DateTimeFormatter.ofPattern(ctx._conf.custom_date_format);
-/// def outFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-/// params.fields.forEach(field -> {
-///   if (!ctx._tmp?.containsKey(field)) { return true; }
-///   try {
-///     def localDateTime = LocalDateTime.parse(ctx._tmp[field], formatter);
-///     ctx.citrix_adc.log[field] = outFormatter.format(ZonedDateTime.of(localDateTime, zone));
-///   } catch (Exception e) { return true; }
-/// });
-/// ```
-///
 /// `citrix_adc` ships this over five fields at once, and its `_conf` carries
 /// `dd/MM/yyyy:HH:mm:ss`. Unclaimed, the fallback date processors behind it
 /// read `10/08/2024` with their own hard-coded `MM/dd/yyyy` and every such
 /// event landed in October.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct ConfiguredDateFormat {
     /// The params key listing the field names.
     names: String,
@@ -1495,25 +1472,6 @@ fn run_configured_date_format(
 }
 
 /// The params key holding a list of mapping specs, or `None`.
-///
-/// ```painless
-/// for (action in params.mappings) {
-///   def src = ctx[action.source.object];
-///   if (src != null) {
-///     Map map = action.map;
-///     String key = src[action.source.key];
-///     String mapping = map[key];
-///     if (mapping != null) {
-///       Map dst = ctx[action.destination.object];
-///       if (dst == null) {
-///           dst = new HashMap();
-///           ctx[action.destination.object] = dst;
-///       }
-///       dst[action.destination.key] = mapping;
-///     }
-///   }
-/// }
-/// ```
 ///
 /// The loop's local is read off the `in params.` it binds over, and every one
 /// of the five accessors the body needs is required against that local. A loop
@@ -1631,13 +1589,6 @@ fn run_member_mappings(event: &mut Event, list: &str, params: &Map<String, Value
 
 /// A one-entry map whose KEY comes from a params lookup.
 ///
-/// ```painless
-/// def key = params[ctx.json.Algorithm];
-/// if (key == null) { throw new Exception("Unsupported hash algorithm ..."); }
-/// def hashes = [key:ctx.json.Name];
-/// ctx["_hashes"] = hashes;
-/// ```
-///
 /// The subtlety is Painless's map literal: `[key: value]` evaluates `key` as an
 /// EXPRESSION, so the map's key is the params row's value, not the word "key".
 /// `ti_recordedfuture` turns `SHA-256` into `sha256` that way and the captured
@@ -1645,7 +1596,7 @@ fn run_member_mappings(event: &mut Event, list: &str, params: &Map<String, Value
 /// map to `threat.indicator.file.hash`.
 ///
 /// Unmatched it costs 17 of its 98 events, all on that one field.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct KeyedByLookup {
     /// The field whose value selects the params row.
     selector: String,
@@ -2142,7 +2093,7 @@ fn run_csv_fingerprint_provider(
 /// `LookupNormalise` is the same idea with a fallback: it writes the KEY back
 /// when the table misses. This one writes nothing, so they cannot share a
 /// runner -- a miss here must leave the target absent.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct GuardedLookupScript {
     key: String,
     target: String,
@@ -2879,17 +2830,7 @@ struct TableLookup {
 /// `params.<table>.containsKey(k) ? params.<table>[k] : '<default>'`, written
 /// to a target and guarded on the source being present.
 ///
-/// The whole script, as `jamf_protect` writes it forty times over:
-///
-/// ```painless
-/// if (ctx.<source> != null) {
-///     String itemType = ctx.<source>.toString();
-///     def itemTypeString = params.<table>.containsKey(itemType)
-///         ? params.<table>[itemType] : 'Unknown';
-///     ctx.<root> = ctx.<root> != null ? ctx.<root> : new HashMap();
-///     ctx.<target> = itemTypeString;
-/// }
-/// ```
+/// `jamf_protect` writes it forty times over.
 ///
 /// The allocation line is noise: `Event::set` builds the parents anyway.
 fn parse_ternary_table_lookup(script: &str) -> Option<TableLookup> {
@@ -2936,13 +2877,7 @@ fn parse_ternary_table_lookup(script: &str) -> Option<TableLookup> {
 /// The same NAMED table, spelled `getOrDefault`, falling back to another ROW
 /// of itself rather than to a literal.
 ///
-/// The whole script, as qualys writes it over its severity table:
-///
-/// ```painless
-/// if (!(ctx.<source> instanceof String)) { return; }
-/// String level = ctx.<source>;
-/// ctx.<target> = params.<table>.getOrDefault(level, params.<table>["0"]);
-/// ```
+/// qualys writes it over its severity table.
 ///
 /// The fallback has to name the SAME table and subscript it with a literal.
 /// Every other `getOrDefault` in the tree defaults to `null`, to the key, or to
@@ -3121,7 +3056,7 @@ fn parse_put_target(script: &str) -> Option<(String, String)> {
 
 /// One `ctx.<container>.put("<member>", <value>)`, the value read from the
 /// event either directly or through the params table.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct PutWrite {
     container: String,
     member: String,
@@ -3323,11 +3258,6 @@ fn run_stringified_lookup(
     true
 }
 
-/// ```painless
-/// def <local> = (ctx.<source> ?: '<absent>').toString();
-/// if (params.containsKey(<local>)) { ctx.<target> = params[<local>]; }
-/// else { ctx.<target> = <default>; }
-/// ```
 ///
 /// The `?:` is what separates this from [`parse_stringified_lookup`]: an
 /// absent source is the elvis literal rather than a null, so the script always
@@ -3558,7 +3488,7 @@ fn parse_put_flag_names(script: &str) -> Option<ParamsPattern> {
 }
 
 /// A params ROW looked up by a normalised key, some of its members put back.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct KeyedRowMembers {
     /// The field holding the raw key.
     source: String,
@@ -3671,7 +3601,7 @@ impl KeyedRowMembers {
 /// copied to the field it names -- and a whole set of literal defaults where
 /// the subject is not in the table. zscaler's saas-security activity types
 /// read this way, and without it every event took the fallback.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct MappingRow {
     subject: String,
     table: String,
@@ -3779,7 +3709,7 @@ fn run_mapping_row(event: &mut Event, pattern: &MappingRow, params: &Map<String,
 /// through a list accumulator instead, three more answers become possible and
 /// the difference is the whole value written: `jamf_pro`'s `event.type` reads
 /// `['info']` from an EMPTY column and `event.category` is not written at all.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum EmptyColumn {
     /// Not accumulated: write the member as it stands, skip an explicit null.
     Verbatim,
@@ -3794,7 +3724,7 @@ enum EmptyColumn {
 }
 
 /// One column a row fans out, and where it lands.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct RowColumn {
     target: String,
     member: String,
@@ -3808,27 +3738,11 @@ pub struct RowColumn {
 /// A row of a NAMED params table fanned onto ctx, with a whole set of literal
 /// defaults where the key has no row.
 ///
-/// ```painless
-/// def action = ctx.event.action;
-/// ctx.event.kind = 'event';
-/// def m = params.exact.get(action);
-/// if (m != null) {
-///   ctx.event.category = new ArrayList(m.category);
-///   ctx.event.type = new ArrayList(m.type);
-///   if (m.containsKey('outcome') && ctx.event.outcome == null) {
-///     ctx.event.outcome = m.outcome;
-///   }
-/// } else {
-///   ctx.event.category = ['authentication'];
-///   ctx.event.type = ['info'];
-/// }
-/// ```
-///
 /// The whole kolide package categorises this way. Without the pattern the
 /// `!= null` catch-all claims the script and runs only the ELSE branch, so
 /// every event with a row comes out carrying the fallback's `kind`,
 /// `category` and `type`.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct RowOrDefaults {
     /// The `ctx.` path the lookup key is read from.
     subject: String,
@@ -3868,15 +3782,6 @@ fn null_branch_at(script: &str, row: &str) -> Option<usize> {
 }
 
 /// A params row whose members are selected by INDEX, one field each.
-///
-/// ```painless
-/// def settings = params.get(ctx.event.code);
-/// if (settings != null) {
-///   if (settings[0] != null) { ctx.event.type = settings[0]; }
-///   if (settings[1] != null) { ctx.event.kind = settings[1]; }
-///   if (settings[2] != null) { ctx.event.outcome = settings[2]; }
-/// }
-/// ```
 ///
 /// `hpe_aruba_cx` classifies 1,871 events this way, and read as a plain
 /// lookup-put the WHOLE row landed in the last field the script names --
@@ -3944,17 +3849,6 @@ fn run_indexed_row_columns(
 }
 
 /// Empty-string members dropped from each sub-map params names.
-///
-/// ```painless
-/// for (key in params.keys) {
-///   if (ctx['osquery']['result'][key] == null) { continue; }
-///   def dict = new HashMap();
-///   for (entry in ctx['osquery']['result'][key].entrySet()) {
-///     if (entry.getValue() != '') { dict[entry.getKey()] = entry.getValue(); }
-///   }
-///   ctx['osquery']['result'][key] = dict;
-/// }
-/// ```
 ///
 /// osquery ships one column per table field whether the row filled it or not,
 /// so the empty ones are the difference between 666 matching events and 2,213.
@@ -4126,16 +4020,6 @@ fn added_literals(block: &str, local: &str) -> Option<Value> {
 }
 
 /// The columns a script accumulates into a list local before writing them.
-///
-/// ```painless
-/// def cats = new ArrayList();
-/// def types = new ArrayList();
-/// if (entry.category != null) { cats.addAll(entry.category); }
-/// if (entry.type != null) { types.addAll(entry.type); }
-/// if (types.isEmpty()) { types.add('info'); }
-/// if (!cats.isEmpty()) { ctx.event.category = cats; }
-/// ctx.event.type = types;
-/// ```
 ///
 /// Every statement this reads is cut out of the returned block, so the plain
 /// scan after it neither takes a write without its guard nor trips the
@@ -4483,19 +4367,6 @@ fn accumulated_value(held: Option<&Value>, rule: &EmptyColumn) -> Option<Value> 
 /// A row of a NAMED params table merged WHOLE onto ctx, with further params
 /// rows standing in where the key has none.
 ///
-/// ```painless
-/// def action = ctx.json.event_type;
-/// ctx.event.action = action;
-/// ctx.event.kind = 'event';
-/// def mapping = params.mappings.get(action);
-/// if (mapping == null && action.startsWith('bugbot_')) {
-///   mapping = params.bugbot;
-/// }
-/// mapping = mapping ?: params.defaults;
-/// def hm = new HashMap(mapping);
-/// hm.forEach((k, v) -> ctx.event[k] = v);
-/// ```
-///
 /// [`RowOrDefaults`] is the same lookup fanned COLUMN BY COLUMN with literal
 /// fallbacks; this one names its columns nowhere and its fallbacks are rows of
 /// the same table. cursor's audit stream is the whole of it, and the five
@@ -4503,7 +4374,7 @@ fn accumulated_value(held: Option<&Value>, rule: &EmptyColumn) -> Option<Value> 
 /// per-action renames, the lowercase, `user.target.email` and through that
 /// `related.user` -- so an unclaimed script here cost the source all 30 events
 /// rather than five fields.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct MergeRowOrFallback {
     /// The `ctx.` path the lookup key is read from.
     subject: String,
@@ -4637,12 +4508,7 @@ fn run_merge_row_or_fallback(
 }
 
 /// Read an if/else-if ladder that rewrites ONE field, both sides named by
-/// params members:
-///
-/// ```text
-/// if (ctx.<p> == params.<a1>) { ctx.<p> = params.<b1>; }
-/// else if (ctx.<p> == params.<a2>) { ctx.<p> = params.<b2>; } ...
-/// ```
+/// params members.
 ///
 /// The vendor keeps the abbreviations and their expansions in params so the
 /// table is editable without touching the script. Nothing about it is
@@ -4719,19 +4585,7 @@ fn run_param_rename_ladder(
 /// unlisted fields land.
 ///
 /// Every name in the script is a LOCAL, so all six are read off the text rather
-/// than assumed. The pattern is:
-///
-/// ```text
-/// Map <map> = ctx.<subject>;
-/// params.entrySet().stream().filter(e -> <map>.containsKey(e.getKey())).forEach(<lst> -> {
-///   Map <base> = <map>[<lst>.getKey()], <sel> = new HashMap();
-///   <lst>.getValue().stream().filter(f -> <base>.containsKey(f)).forEach(f -> {
-///     <sel>[f] = <base>.remove(f);
-///   });
-///   <sel>['<rest>'] = <base>;
-///   <map>[<lst>.getKey()] = <sel>;
-/// });
-/// ```
+/// than assumed.
 fn parse_select_members(script: &str) -> Option<ParamsPattern> {
     let (head, body) = script.split_once("params.entrySet()")?;
     let subject = ctx_path_before(head, ";")?;
@@ -5264,7 +5118,7 @@ fn try_mimecast_log_type(event: &mut Event, params: &Map<String, Value>) -> bool
 /// `logtype`, falls back to a bare `kind` when the table has no entry, and
 /// then appends one more type for a subset of log types whose `event.action`
 /// names it. All 44 of its events carry the block, and none of it was written.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct EventBlockTable {
     subject: String,
     target: String,
@@ -5359,7 +5213,7 @@ fn parse_event_block_table(script: &str) -> Option<EventBlockTable> {
 ///
 /// Without it the columns never become `json.Name` and the next processor
 /// raises `field not found`, taking the whole event down the error path.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct RemapKeysThroughTable {
     source: String,
     target: String,
@@ -5398,7 +5252,14 @@ fn parse_remap_keys_through_table(script: &str) -> Option<RemapKeysThroughTable>
             .trim()
             .trim_matches(['\'', '"']),
     );
-    if source.is_empty() || target.is_empty() {
+    // A target the subscript walk could not isolate is script text, not a path.
+    let is_path = |path: &str| {
+        !path.is_empty()
+            && path
+                .chars()
+                .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '@' | '-'))
+    };
+    if !is_path(&source) || !is_path(&target) {
         return None;
     }
     Some(RemapKeysThroughTable {
@@ -5461,7 +5322,7 @@ fn run_remap_keys_through_table(
 /// carries `apparmor`. The chosen entry writes the ECS event block, and stages
 /// a list of `{target, value}` pairs that a later `foreach` renders into
 /// fields. All 83 of auditd's events go through it, and none of it was written.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct RecordActionTable {
     /// The container the candidates' fields are read from.
     base: String,
@@ -5567,7 +5428,7 @@ fn subject_under(argument: &str, local: &str, base: &str) -> Option<String> {
 /// byte lands above `"` and below DEL, the ORIGINAL hex is returned. A path
 /// like `/home` survives as `2F686F6D65`, and only a value with a space, a
 /// quote or a control character is actually decoded.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct NormaliseMapValues {
     /// The map whose values are rewritten.
     container: String,
@@ -5768,7 +5629,7 @@ fn run_normalise_map_values(
 /// and each one found is copied under `stormshield.metadata` and removed from
 /// where it was. The remove is half the point: leaving the original behind
 /// would emit a field Elasticsearch does not.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct MoveKeysIntoChild {
     parent: String,
     child: String,
@@ -6030,11 +5891,7 @@ fn parse_protocol_prefix(script: &str) -> Option<ParamsPattern> {
 /// Split sysmon's `QueryResults` into `dns.answers`, `dns.resolved_ip` and
 /// `related.hosts`.
 ///
-/// Event 22 packs the whole DNS response into one semicolon-separated string:
-///
-/// ```text
-/// type:  5 f2.taboola.map.fastly.net;::ffff:151.101.66.2;::ffff:151.101.2.2;
-/// ```
+/// Event 22 packs the whole DNS response into one semicolon-separated string.
 ///
 /// An entry opening `type:` is a record whose middle token is the IANA RR
 /// NUMBER -- `params` is the number-to-name table and is read rather than
@@ -6908,7 +6765,7 @@ pub(crate) fn lookup_normalise(
 }
 
 /// Where a normalise-through-a-table reads its key and writes its answer.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct LookupNormaliseScript {
     /// The `ctx.` path the lookup key comes from, already unwrapped from
     /// whatever local the script bound it to.
@@ -6954,25 +6811,13 @@ fn parse_lookup_normalise(script: &str) -> Option<LookupNormaliseScript> {
 
 /// A member MOVED to a sibling the params table NAMES.
 ///
-/// ```painless
-/// def data = ctx.json.model.logic.data;
-/// if (ctx.json.model.logic?.type != null) {
-///   if (['componentList', 'weightedComponentList'].contains(ctx.json.model.logic?.type)) {
-///     ctx["json"]["model"]["logic"][params.get(ctx.json.model.logic?.type)] = data;
-///   } else {
-///     ctx["json"]["model"]["logic"]["data_" + ctx.json.model.logic?.type] = data;
-///   }
-/// }
-/// ctx.json.model.logic.remove("data");
-/// ```
-///
 /// No lookup matcher in this ladder can express it, because the row is not the
 /// VALUE written -- it is the NAME written under. Every one of them takes a path
 /// the script spells and stores the row there, and here the path is what the
 /// table decides. darktrace's model logic carries its payload under `data` and
 /// names the column beside it, so one event holds a list of component ids and
 /// the next a list of weighted components.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct RenameMemberByLookup {
     /// The container holding both the member read and the member written.
     container: String,
@@ -7152,7 +6997,7 @@ fn run_rename_member_by_lookup(
 /// ctx.event ?: [:]`, or the `new HashMap()` spelling) is not a write, and the
 /// member the row lands on is often ECS's array-typed `event.type` or
 /// `event.category`, so the row is wrapped in a one-element list.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct MemberLookupScript {
     /// The `ctx.` path the lookup key comes from.
     key: String,
@@ -7173,7 +7018,7 @@ pub(crate) struct MemberLookupScript {
 }
 
 /// What a script does where the params table holds no row for its key.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) enum LookupMiss {
     /// `ctx.<container>.remove('<leaf>')` -- the member goes.
     Remove,
@@ -7636,7 +7481,7 @@ fn put_target(script: &str) -> Option<String> {
 /// Every script shipping the helper spells the same recursion and differs only
 /// in what it does with the result, so the whole reading happens ONCE per call
 /// site and the runner reads this rather than the text.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct RenameKeys {
     /// Where the name table comes from.
     names: NameTable,
@@ -7648,7 +7493,7 @@ pub(crate) struct RenameKeys {
 }
 
 /// The block a call reads its name table out of.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum NameTable {
     /// The whole `params` block, which the two-argument call passes bare.
     Params,
@@ -7661,7 +7506,7 @@ enum NameTable {
 /// claroty's asset feed is the only spelling. The lists are keyed by the
 /// RENAMED name, and a key the table does not name is never retyped -- the
 /// retyping arms sit inside the helper's `containsKey` branch.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct Coercions {
     longs: String,
     strings: String,
@@ -7669,7 +7514,7 @@ struct Coercions {
 }
 
 /// Where the renamed value goes.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum RenameWrite {
     /// `ctx.<path> = renameKeys(ctx.<path>, params)` -- the map in place.
     InPlace(String),
@@ -7682,7 +7527,7 @@ enum RenameWrite {
 }
 
 /// The list fan-out: read a ctx list, rename each member, store the result.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct FanOut {
     /// The ctx list each element is read from.
     source: String,
@@ -8147,15 +7992,6 @@ fn as_boolean(value: &Value) -> Option<Value> {
 
 /// Named fields rendered as TEXT in place, the names coming from a params list.
 ///
-/// ```text
-/// for (<field> in params.<table>) {
-///   def <value> = ctx.<container>[<field>];
-///   if (<value> instanceof Number) {
-///     ctx.<container>[<field>] = Integer.toString(<value>.intValue());
-///   }
-/// }
-/// ```
-///
 /// The same walk as [`crate::hex::HexFields`] and the opposite conversion: the
 /// names come from the params so a sixth id added upstream needs no change
 /// here.
@@ -8165,7 +8001,7 @@ fn as_boolean(value: &Value) -> Option<Value> {
 /// Elasticsearch's own output carries `"asset_id": "22"`, and a `set` copying
 /// `user_id` onto `user.id` carries the type across with it -- so unclaimed the
 /// source loses 45 fields and four of its seven events on the type alone.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct StringifyNamedFields {
     /// The map holding the fields.
     container: String,
@@ -8260,7 +8096,7 @@ fn run_stringify_named_fields(
 /// either way is a whole source -- dropping writes an empty map over the
 /// vendor's payload, keeping carries the vendor's spelling into ECS beside the
 /// renamed one.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct SelectRenameKeys {
     /// The `ctx.` map read and written back in place.
     subject: String,
@@ -8285,20 +8121,6 @@ fn parse_select_rename_keys(script: &str) -> Option<SelectRenameKeys> {
 
 /// Read the select-and-rename fold: the map walked, and whether each value is
 /// wrapped in a list on the way.
-///
-/// The spelling, from `pipelines/cisco/asa/default.yml`:
-///
-/// ```text
-/// def <out> = [:];
-/// ctx.<subject>.forEach((k,v) -> {
-///   if (params.containsKey(k)) {
-///     <out>[params[k]] = (v instanceof List) ? v : [v];
-///   } else {
-///     return false;
-///   }
-/// });
-/// ctx.<subject> = <out>;
-/// ```
 ///
 /// The stored expression is READ rather than assumed: `v` and
 /// `(v instanceof List) ? v : [v]` store different things, and a third
@@ -8349,20 +8171,6 @@ fn parse_foreach_rename_keys(script: &str) -> Option<SelectRenameKeys> {
 /// The same rebuild written as a LOOP over the map's entries, through a table
 /// the params block NAMES, with an `else` arm that keeps a key the table
 /// misses.
-///
-/// ```text
-/// Map <out> = [:];
-/// for (<entry> in ctx.<subject>.entrySet()) {
-///   def <key> = <entry>.getKey();
-///   def <renamed> = params.<table>[<key>];
-///   if (<renamed> != null) {
-///     <out>[<renamed>] = <entry>.getValue();
-///   } else {
-///     <out>[<key>] = <entry>.getValue();
-///   }
-/// }
-/// ctx.<subject> = <out>;
-/// ```
 ///
 /// `beyondinsight_password_safe` ships it in all five of its data streams, and
 /// every processor after it names the renamed key. Unclaimed, the vendor's own
@@ -8653,18 +8461,9 @@ fn row_columns_tail(script: &str) -> &str {
 /// A table row whose named columns are LISTS appended to array fields, with
 /// one copy that runs whether or not the key has a row.
 ///
-/// ```painless
-/// def alertTypeId = ctx.json.alertTypeId;
-/// def eventData = params.get('eventmap').get(alertTypeId);
-/// ctx.event.action = ctx.json.alertType;
-/// if (eventData == null) { return; }
-/// def eventCategory = eventData.get('category');
-/// if (eventCategory != null) { for (def c : eventCategory) { ctx.event.category.add(c); } }
-/// ```
-///
 /// The copy sits ABOVE the early return, so the eleven unclassified alert
 /// types `cisco_meraki` ships still get an `event.action`.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct KeyedRowAppends {
     table: String,
     key: String,
@@ -8832,14 +8631,14 @@ fn run_keyed_action_row(
 /// decision the text alone settles -- which pattern a statement is, which path it
 /// writes, which literal it compares against -- is resolved into this tree, so
 /// the per-event walk only ever reads the event.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct Program {
     statements: Vec<Stmt>,
     whole: bool,
 }
 
 /// One statement of that grammar.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Stmt {
     /// Ends the SCRIPT, not the block. The flag has to travel out of the
     /// recursion: letting the enclosing walk carry on ran the whole body of
@@ -8858,7 +8657,7 @@ enum Stmt {
 ///
 /// `ctx.a.put('k', v)` and `ctx.a.k = v` name the same write once the key is
 /// folded into the path, so they share a variant.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Literal {
     Append {
         path: String,
@@ -8897,7 +8696,7 @@ impl Literal {
 }
 
 /// Where a write's value comes from.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Rhs {
     /// `String.valueOf(ctx.a.b)` is the vendors' spelling of "write this as
     /// text", and aws stamps `management_event` with it.
@@ -8979,7 +8778,7 @@ enum Rhs {
 /// [`crate::common`] holds the same two cases for cloudfront's `+=`
 /// assembly. They are not one type because that one is a run of `+=`
 /// statements each guarded by its own `if`, and this is a single expression.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum ConcatPiece {
     Literal(String),
     /// Read off the event and rendered as text. A field the event does not
@@ -9392,11 +9191,6 @@ fn inline_local_lists(body: &str) -> Cow<'_, str> {
 
 /// Substitute a local bound to a `splitOnToken` call, where every use of it is
 /// a subscript.
-///
-/// ```painless
-/// def parts = ctx.process.executable.splitOnToken("\\");
-/// ctx.process.put("name", parts[-1]);
-/// ```
 ///
 /// Windows takes the leaf of a path this way, for `process.name` and
 /// `process.parent.name`, across its security streams. Until the local is
@@ -9866,11 +9660,11 @@ pub(crate) fn subject_path(term: &str) -> String {
 }
 
 /// An `if` test: `||` of `&&` of comparisons, resolved as far as the text goes.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct Guard(Vec<Vec<Term>>);
 
 /// One comparison, with everything the text settles already settled.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Term {
     /// A leading `!`, inverting what it wraps.
     Not(Box<Term>),
@@ -9934,7 +9728,7 @@ enum Term {
 }
 
 /// The JSON kinds an `instanceof` can be answered from.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum JsonKind {
     List,
     Map,
@@ -9971,7 +9765,7 @@ impl JsonKind {
 }
 
 /// What a `.contains(` is asked about.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Argument {
     Literal(String),
     Field(String),
@@ -9981,7 +9775,7 @@ enum Argument {
 }
 
 /// The right-hand side of an `==` or `!=`.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Wanted {
     Null,
     Text(String),
@@ -10686,21 +10480,13 @@ fn parse_folded_concat(text: &str) -> Option<(Vec<ConcatPiece>, Fold)> {
 /// Named MEMBERS of a params row, each written to its own target.
 ///
 /// zeek expands a connection state code through a table whose rows carry two
-/// members, and takes one for the vendor field and the other for ECS:
-///
-/// ```painless
-/// if (ctx.zeek?.connection?.state == null) { return; }
-/// if (params.containsKey(ctx.zeek.connection.state)) {
-///   ctx.zeek.connection.state_message = params[ctx.zeek.connection.state]["conn_str"];
-///   ctx.event.type = params[ctx.zeek.connection.state]["types"];
-/// }
-/// ```
+/// members, and takes one for the vendor field and the other for ECS.
 ///
 /// A reader that takes the row WHOLE writes both members as children of the
 /// first target, which is why `state_message.conn_str` and
 /// `state_message.types` read as wrong on 18 events beside `state_message`
 /// itself.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct RowMembers {
     /// The `ctx` path holding the row's key.
     key: String,
@@ -10760,18 +10546,8 @@ fn parse_row_members(script: &str) -> Option<RowMembers> {
 /// A guard chain choosing ONE params row to write to a single target.
 ///
 /// Every threat-intel package decides an expiry reason the same way, and the
-/// params block is three sentences rather than a table keyed by a field:
-///
-/// ```painless
-/// if (ctx.<ns>.valid_until != null) {
-///   ctx.<ns>.ioc_expiration_reason = params.valid_until;
-/// } else if (ctx.<ns>.revoked != null && ctx.<ns>.revoked == true) {
-///   ctx.<ns>.ioc_expiration_reason = params.revoked;
-/// } else {
-///   ctx.<ns>.ioc_expiration_reason = params.default;
-/// }
-/// ```
-#[derive(Debug, Clone, PartialEq, Eq)]
+/// params block is three sentences rather than a table keyed by a field.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct GuardedParamsRow {
     target: String,
     /// In order: the field that must be present, the literal it must equal
@@ -11389,7 +11165,7 @@ fn local_indexed_by(script: &str, marker: &str) -> Option<String> {
 }
 
 /// The flag whose name depends on another field carrying a value.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct ContainsFlagsBranch {
     /// The literal the source is tested for.
     marker: String,
@@ -11402,23 +11178,6 @@ pub(crate) struct ContainsFlagsBranch {
 
 /// Flags named by which of a params table's KEYS a field CONTAINS.
 ///
-/// ```painless
-/// ArrayList hf = new ArrayList();
-/// for (entry in params.entrySet()) {
-///   if (ctx.infoblox_nios.log.dns.header_flags.contains(entry.getKey())) {
-///     hf.add(entry.getValue());
-///   }
-/// }
-/// if (ctx.dns?.response_code != null && ctx.dns.response_code != '') {
-///   if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) { hf.add('RA') }
-/// } else {
-///   if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) { hf.add('RD') }
-/// }
-/// if (hf.length == 0) { return; }
-/// if (ctx.dns == null) { HashMap hm = new HashMap(); ctx.put('dns', hm); }
-/// ctx.dns.put('header_flags', hf);
-/// ```
-///
 /// `infoblox_nios`'s named(8) log packs the DNS header flags into one token --
 /// `+AED` -- and the table turns each character into its ECS name. The `+` is
 /// the odd one out: it means recursion DESIRED on a query and recursion
@@ -11428,7 +11187,7 @@ pub(crate) struct ContainsFlagsBranch {
 /// The table is read as a SUBSTRING test rather than a lookup, which is what
 /// separates it from the lookups below: they index `params` by the field's
 /// whole value, and this one asks which of the params keys the value holds.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct ContainsFlags {
     /// The string tested against every params key.
     source: String,
@@ -11650,7 +11409,7 @@ fn expand_locals(script: &str) -> String {
 /// fan-out -- `event.category`, `event.outcome`, `user.target.name` -- hangs
 /// off this one script. The member names are the helper's own and are required
 /// here, so a package that diverged declines rather than being mis-read.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct InstructionRows {
     /// The field whose value keys the table.
     key: String,
@@ -11745,7 +11504,7 @@ fn run_instruction_rows(
 /// `box_events` keys the whole params block by its event type and puts the two
 /// columns under a `map` member. Nothing claimed it, so `event.category` and
 /// `event.type` were never written on 147 of its 148 events.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub(crate) struct RowColumnAppends {
     /// The field whose value keys the table.
     key: String,
@@ -12486,7 +12245,35 @@ pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mu
     event.as_value_mut().pointer_mut(&pointer)
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 #[path = "params_tests.rs"]
 mod tests;
+
+impl ParamsPattern {
+    /// Whether this pattern's runner reads the script text on every call, so a
+    /// generated site must still carry it.
+    #[must_use]
+    pub(crate) fn reads_text(&self) -> bool {
+        matches!(
+            self,
+            Self::AddUniqueRow
+                | Self::BitFlags
+                | Self::FiletimeFieldList
+                | Self::FirstContainedMember
+                | Self::FrameworkPreference
+                | Self::IndexedLookup
+                | Self::KeyedMessageTable
+                | Self::LookupColumns
+                | Self::LookupMerge(..)
+                | Self::Replace
+                | Self::ReversibleLookup
+                | Self::RowColumns(..)
+                | Self::Scale
+                | Self::SentinelRemoval
+                | Self::SysmonQueryResults
+                | Self::ValueMaps
+        )
+    }
+}

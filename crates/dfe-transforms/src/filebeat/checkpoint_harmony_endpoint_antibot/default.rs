@@ -257,8 +257,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.destination.geo.country_name instanceof List && ctx.destination.geo.country_name.size() == 1)\n    ctx.destination.geo.country_name = ctx.destination.geo.country_name[0];"#
+                    compiled_painless!(
+                        "76fd134d8c80a1a841f74a40e60501faee8fb3c33fe3a9ca1a83dae49b688557",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"destination.geo.country_name","target":"destination.geo.country_name","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -282,8 +283,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.host.os.name instanceof List && ctx.host.os.name.size() == 1)\n    ctx.host.os.name = ctx.host.os.name[0];\nif (ctx.host.os.version instanceof List && ctx.host.os.version.size() == 1)\n    ctx.host.os.version = ctx.host.os.version[0];"#
+                    compiled_painless!(
+                        "9e8e3ec533b117be2ce709d23d6a427dfcd970667e786cc0b6ca1a6155f90097",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"host.os.name","target":"host.os.name","only_if_unset":false,"only_if_single":true,"consumes_array":false},{"array":"host.os.version","target":"host.os.version","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -320,8 +322,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.file.name instanceof List && ctx.file.name.size() == 1)\n    ctx.file.name = ctx.file.name[0];"#
+                    compiled_painless!(
+                        "c3caeb469d997815720d34baf5caa5488b4b13d35fa3e13b234b6eae916824ff",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"file.name","target":"file.name","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -356,8 +359,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.file.path instanceof List && ctx.file.path.size() == 1)\n    ctx.file.path = ctx.file.path[0];"#
+                    compiled_painless!(
+                        "8cf9f518c5b8ed9935e7da0744d25c03b8390dabe0baa6427401fc0ea41c61d4",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"file.path","target":"file.path","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -383,8 +387,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.url.original instanceof List && ctx.url.original.size() == 1)\n    ctx.url.original = ctx.url.original[0];"#
+                    compiled_painless!(
+                        "cedd2657f48613f5eeda466f73d0cd26a4f6f09fe352b0181800b37c7da98efe",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"url.original","target":"url.original","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -445,8 +450,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.antibot.malware.action instanceof List && ctx.checkpoint_harmony_endpoint.antibot.malware.action.size() == 1)\n    ctx.checkpoint_harmony_endpoint.antibot.malware.action = ctx.checkpoint_harmony_endpoint.antibot.malware.action[0];"#
+                    compiled_painless!(
+                        "e1b1ddd4065e1e31c592b32dc1b7fd6c232109fe95c4c1926aac9cd9c1057b30",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.antibot.malware.action","target":"checkpoint_harmony_endpoint.antibot.malware.action","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -471,8 +477,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.antibot.client.version instanceof List && ctx.checkpoint_harmony_endpoint.antibot.client.version.size() == 1)\n    ctx.checkpoint_harmony_endpoint.antibot.client.version = ctx.checkpoint_harmony_endpoint.antibot.client.version[0];"#
+                    compiled_painless!(
+                        "a968e077f823ac4c5de834240670a99e89bf0b3cbb8d6d8d08b6ae4a300bd24a",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.antibot.client.version","target":"checkpoint_harmony_endpoint.antibot.client.version","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -517,8 +524,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.antibot.web_client_type instanceof List && ctx.checkpoint_harmony_endpoint.antibot.web_client_type.size() == 1)\n    ctx.checkpoint_harmony_endpoint.antibot.web_client_type = ctx.checkpoint_harmony_endpoint.antibot.web_client_type[0];"#
+                    compiled_painless!(
+                        "01df20e8e509e465a5d1164b4cf7ba1db2d269d998f6f67f1a08890658c4810a",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.antibot.web_client_type","target":"checkpoint_harmony_endpoint.antibot.web_client_type","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }

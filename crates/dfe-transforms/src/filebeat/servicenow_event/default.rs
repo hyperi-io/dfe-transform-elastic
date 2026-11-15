@@ -90,8 +90,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}"#
+                    compiled_painless!(
+                        "5b62c00552249aa06c8ff08b611def6be0c0c10ce58f1ed6605a1d3a1048eb1c",
+                        r#"{"params":null,"known":[{"KeyNamedByField":{"path":"servicenow.event","key_from":"_conf.timestamp_field","target":"servicenow.event.timestamp_field"}}]}"#
                     ),
                 )?;
             }
@@ -101,8 +102,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (def entry: ctx.servicenow.event.entrySet()) {\n  if (entry.getKey() == 'table_name') {\n    continue;\n  }\n  def v = entry.getValue();\n  if (v instanceof Map) {\n    continue;\n  }\n  Map n = [:];\n  if (ctx._conf.data_has_display_values == \"true\") {\n    n.display_value = v;\n  } else {\n    n.value = v;\n  }\n  entry.setValue(n);\n}\n"#
+                    compiled_painless!(
+                        "c5dd3489565525d84e3b9c73ae8b3cf10d84897aec4f4fdb60d54d3f9d5a9585",
+                        r#"{"params":null,"known":[{"WrapEntries":{"path":"servicenow.event","skip_keys":["table_name"],"flag":"_conf.data_has_display_values","flag_value":"true","key_when_set":"display_value","key_when_unset":"value"}}]}"#
                     ),
                 )?;
             }
@@ -13713,8 +13715,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String encode(String path) {\nStringBuilder sb = new StringBuilder();\nfor (int i = 0; i < path.length(); i++) {\n  char c = path.charAt(i);\n  if (\n    (c >= (char)'a' && c <= (char)'z') ||\n    (c >= (char)'A' && c <= (char)'Z') ||\n    (c >= (char)'0' && c <= (char)'9') ||\n    c != (char)' ' && c != (char)'^'\n  ) {\n      sb.append(c);\n      continue;\n    }\n    sb.append('%');\n    sb.append(Integer.toHexString((int)c));\n  }\n  return sb.toString();\n}\nctx._tmp_url = encode(ctx.servicenow.event.url.display_value);"#
+                        compiled_painless!(
+                            "87628cef8192eb1a35da23964eff32ce29f6c7a66b2522ce28693d82ab0fc76a",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     // on_failure: 1 handler(s)
@@ -28474,8 +28477,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def filterMassive(def src) {\n  if (src instanceof Map) {\n    for (def entry: src.entrySet()) {\n      entry.setValue(filterMassive(entry.getValue()));\n    }\n    return src;\n  } else if (src instanceof List) {\n    for (int i = 0; i < src.length; i++) {\n      src[i] = filterMassive(src[i]);\n    }\n    return src;\n  } else if (src instanceof String && src.length() > 32766) {\n    return src.substring(0, 32700)+' (truncated)';\n  }\n  return src;\n}\nfilterMassive(ctx);"#
+                compiled_painless!(
+                    "d8ba8ac79df9c02625cd5a1ec454a2adcc3895cdd71ccd12e4822a6d1a17819e",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

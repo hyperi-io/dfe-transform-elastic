@@ -34,8 +34,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\n\nif (ctx.jamf_pro.inventory != null) {\n  ctx.jamf_pro.inventory = keysToSnakeCase(ctx.jamf_pro.inventory);\n}\n"#
+                compiled_painless!(
+                    "85b8b2b82fe1b54b08c68662588e8c5708e9e9545f403d270ac8dcedb11ed8b2",
+                    r#"{"params":null,"known":[{"KeysToSnakeCase":["jamf_pro.inventory","CamelBreak"]}]}"#
                 ),
             )?;
 
@@ -303,8 +304,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String normalize(String s) {\n  int n = 0;\n  for (int i = 0; i < s.length(); i++){\n      char c = s.charAt(i);\n      if (c == (char)'.') {\n        n++;\n        continue;\n      }\n      if (c < (char)'0' || (char)'9' < c) {\n        // If we have non-numeric parts, bail.\n        return s;\n      }\n  }\n  if (n >= 2) {\n      return s;\n  }\n  if (n == 1) {\n      return s + \".0\";\n  }\n  return s + \".0.0\";\n}\nString full_name(String s) {\n  if (s.startsWith('15.')) {\n    return 'sequoia';\n  }\n  if (s.startsWith('14.')) {\n    return 'sonoma';\n  }\n  if (s.startsWith('13.')) {\n    return 'ventura';\n  }\n  if (s.startsWith('12.')) {\n    return 'monterey';\n  }\n  if (s.startsWith('11.')) {\n    return 'big sur';\n  }\n  if (s.startsWith('10.15.')) {\n    return 'catalina';\n  }\n  if (s.startsWith('10.14.')) {\n    return 'mojave';\n  }\n  if (s.startsWith('10.13.')) {\n    return 'high sierra';\n  }\n  if (s.startsWith('10.12.')) {\n    return 'sierra';\n  }\n  if (s.startsWith('10.11.')) {\n    return 'el capitan';\n  }\n  if (s.startsWith('10.10.')) {\n    return 'yosemite';\n  }\n  if (s.startsWith('10.9.')) {\n    return 'mavericks';\n  }\n  return '';\n}\nctx.jamf_pro.inventory.operating_system.version = normalize(ctx.jamf_pro.inventory.operating_system.version);\nString name = full_name(ctx.jamf_pro.inventory.operating_system.version);\nif (name != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.os = ctx.host.os ?: [:];\n  ctx.host.os.full = name;\n}"#
+                    compiled_painless!(
+                        "aa4db20139c98f4f9c78f88bd99c1537b5d3c6e0af7064202ea44d68382e9ffc",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

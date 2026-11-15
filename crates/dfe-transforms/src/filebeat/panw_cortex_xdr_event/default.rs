@@ -3461,8 +3461,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.host = ctx.host ?: [:];\nString hostname = ctx.host.hostname.toLowerCase() + '.' + ctx.host.domain.toLowerCase();\nctx.host.put(\"name\", hostname);\n"#
+                        compiled_painless!(
+                            "6fa18bcc5480772247a96e4e3ee7b258dc41a27af2efb19a74ebe57cb79af025",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

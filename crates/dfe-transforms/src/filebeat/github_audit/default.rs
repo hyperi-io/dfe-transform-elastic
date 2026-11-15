@@ -768,8 +768,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if(ctx.github.events instanceof List) {\n  if(ctx.github.events.size() > 0 && ctx.github.events[0] instanceof Map) {\n    ctx.github.events_object = ctx.github.events;\n    ctx.github.remove(\"events\");\n  }\n}\n"#
+                    compiled_painless!(
+                        "e92a500bd4ca92b74ba288556a79ad0b425a9eb691a9facccf3cc58dd8651a3f",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

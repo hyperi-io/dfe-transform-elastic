@@ -8,14 +8,6 @@
 //! name for a call proxied through to Elasticsearch, and a computed
 //! `<method>_<first segment>` where neither answers.
 //!
-//! ```painless
-//! def temp = params.get(ctx.http.request.method.toLowerCase());
-//! String url_parts = ctx.url.original.splitOnToken("/api/v1/")[1];
-//! if (url_parts.contains('elasticsearch/elasticsearch/proxy/')){ ... }
-//! else if (temp != null){ if (temp.get(url_parts) != null){ ... } }
-//! if (ctx.event?.action == null){ ... }
-//! ```
-//!
 //! All three arms are in the corpus: `create_deployment` from the table,
 //! `elasticsearch_api_through_ece-_cat` from the proxy arm, and `post_users`,
 //! `get_regions` and `put_deployments` from the fallback. Unclaimed it is 21
@@ -28,14 +20,14 @@ use serde_json::{Map, Value};
 
 /// The proxied-call arm: the marker that identifies one, and the name its
 /// answer is prefixed with.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ProxyArm {
     marker: String,
     prefix: String,
 }
 
 /// Where the classifier reads its URL and method, and what it writes.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct UrlTailAction {
     url: String,
     method: String,
@@ -128,7 +120,8 @@ pub fn url_tail_action(
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "url_action_tests.rs"]
 #[allow(
     clippy::unwrap_used,

@@ -32,8 +32,9 @@ impl Transform for User {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\n\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      // Skip fields that contain '@' in their name\n      if (!entry.getKey().contains(\"@\")) {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n\n// Apply the conversion\nif (ctx.entityanalytics_entra_id?.user != null) {\n  ctx.entityanalytics_entra_id.user = convertToSnakeCase(ctx.entityanalytics_entra_id.user);\n}\n"#
+                compiled_painless!(
+                    "5881168ed37989b80614e26ed15e8b384ccb5e8412e79c4b731c82ef4411dc1e",
+                    r#"{"params":null,"known":[{"CamelToSnake":{"target":"entityanalytics_entra_id.user","source":"entityanalytics_entra_id.user","rule":"AfterNonUpper","at_keys":"Drop","merge":false,"removes":[]}}]}"#
                 ),
             )?;
 
@@ -424,8 +425,9 @@ impl Transform for User {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def ids = new ArrayList();\ndef names = new ArrayList();\ndef emails = new ArrayList();\nfor (def report : ctx.entityanalytics_entra_id.user.direct_reports) {\n  if (report == null) { continue; }\n  if (report.id != null) { ids.add(report.id); }\n  if (report.user_principal_name != null) { names.add(report.user_principal_name); }\n  if (report.mail != null) { emails.add(report.mail); }\n}\ndef userObj = new HashMap();\nif (!ids.isEmpty()) { userObj.put(\"id\", ids); }\nif (!names.isEmpty()) { userObj.put(\"name\", names); }\nif (!emails.isEmpty()) { userObj.put(\"email\", emails); }\nif (!userObj.isEmpty()) {\n  ctx.user = ctx.user ?: new HashMap();\n  ctx.user.entity = ctx.user.entity ?: new HashMap();\n  ctx.user.entity.relationships = ctx.user.entity.relationships ?: new HashMap();\n  ctx.user.entity.relationships.put(\"supervises\", [\"user\": userObj]);\n}\n"#
+                    compiled_painless!(
+                        "fe0e1169514d0b3b3985a229589689723a4dcbc300ab925fd8202c0a5bcb176a",
+                        r#"{"params":null,"known":[{"CollectColumns":{"source":"entityanalytics_entra_id.user.direct_reports","columns":[["id","id"],["name","user_principal_name"],["email","mail"]],"target":"user.entity.relationships","name":"supervises","inner":"user"}}]}"#
                     ),
                 )?;
             }

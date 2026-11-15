@@ -551,8 +551,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.salesforce.login.api.type = params.api_type_map.getOrDefault(ctx.salesforce?.login?.api?.type, ctx.salesforce.login.api.type);\n"#
+                        compiled_painless!(
+                            "bea34624d60d9b93f8d793e870c9f94e4c421a55df6661d525cdf97123a15a2f",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"api_type_map\":{\"D\":\"Apex Class\",\"E\":\"SOAP Enterprise\",\"I\":\"SOAP Cross Instance\",\"M\":\"SOAP Metadata\",\"O\":\"Old SOAP\",\"P\":\"SOAP Partner\",\"S\":\"SOAP Apex\",\"T\":\"SOAP Tooling\",\"X\":\"XmlRPC\",\"f\":\"Feed\",\"l\":\"Live Agent\",\"p\":\"SOAP ClientSync\"}}"
@@ -600,8 +601,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.salesforce.login.request.status = params.request_status_map.getOrDefault(ctx.salesforce?.login?.request.status, ctx.salesforce.login.request.status);\n"#
+                        compiled_painless!(
+                            "2afd7a50dfba9ea48d8ea74f2d0aa70004c2b618bf19a0a6bd65e9bd74538146",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"request_status_map\":{\"S\":\"Success\",\"F\":\"Failure\",\"U\":\"Undefined\",\"A\":\"Authorization Error\",\"R\":\"Redirect\",\"N\":\"Not Found\"}}"
@@ -719,8 +721,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.salesforce?.login?.db_time?.total != null) {\n    ctx.salesforce.login.db_total_time = ctx.salesforce.login.db_total_time / 1000000;\n}\n"#
+                        compiled_painless!(
+                            "f0083c4fcca77fffcf08c5d8e20f411f761fcda91171b2e544748e38ae1e2ac1",
+                            r#"{"params":null,"known":[{"RescaleFields":{"targets":["salesforce.login.db_total_time"],"divisor":1000000,"round_unit":null}}]}"#
                         ),
                     )?;
                     Ok(())

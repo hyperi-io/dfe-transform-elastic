@@ -169,8 +169,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\ndef category = params.get(ctx.google_workspace.calendar.name);\nif (category == null) {\n  ctx.event.remove('category');\n} else {\n  ctx.event.category = [category];\n}"#
+                        compiled_painless!(
+                            "5e9d46fa4d7faa1e9f40fac13890a5d6a31926b271a925339f2a118194d598c0",
+                            r#"{"params":{"MemberLookup":{"key":"google_workspace.calendar.name","table":null,"fold":"None","target":"event.category","wrap":true,"miss":"Remove","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"change_calendar_acls\":\"iam\",\"change_calendar_country\":\"configuration\",\"create_calendar\":\"configuration\",\"delete_calendar\":\"configuration\",\"change_calendar_description\":\"configuration\",\"change_calendar_location\":\"configuration\",\"change_calendar_timezone\":\"configuration\",\"change_calendar_title\":\"configuration\",\"add_subscription\":\"configuration\",\"delete_subscription\":\"configuration\",\"change_appointment_schedule\":\"configuration\",\"create_appointment_schedule\":\"configuration\",\"delete_appointment_schedule\":\"configuration\",\"create_event\":\"configuration\",\"delete_event\":\"configuration\",\"add_event_guest\":\"configuration\",\"change_event_guest_response_auto\":\"configuration\",\"remove_event_guest\":\"configuration\",\"change_event_guest_response\":\"configuration\",\"change_event\":\"configuration\",\"remove_event_from_trash\":\"configuration\",\"restore_event\":\"configuration\",\"change_event_start_time\":\"configuration\",\"change_event_title\":\"configuration\",\"transfer_event_completed\":\"configuration\",\"transfer_event_requested\":\"configuration\"}"
@@ -218,8 +219,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\ndef type = params.get(ctx.google_workspace.calendar.name);\nif (type == null) {\n  ctx.event.remove('type');\n} else {\n  ctx.event.type = [type];\n}"#
+                        compiled_painless!(
+                            "c3f643b4c5a748cab6891828fc697bec04a04b0931b5868d13314f0f904131b4",
+                            r#"{"params":{"MemberLookup":{"key":"google_workspace.calendar.name","table":null,"fold":"None","target":"event.type","wrap":true,"miss":"Remove","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"change_calendar_acls\":\"change\",\"change_calendar_country\":\"change\",\"create_calendar\":\"creation\",\"delete_calendar\":\"deletion\",\"change_calendar_description\":\"change\",\"export_calendar\":\"info\",\"change_calendar_location\":\"change\",\"print_preview_calendar\":\"info\",\"change_calendar_timezone\":\"change\",\"change_calendar_title\":\"change\",\"notification_triggered\":\"info\",\"add_subscription\":\"change\",\"delete_subscription\":\"change\",\"change_appointment_schedule\":\"change\",\"create_appointment_schedule\":\"creation\",\"delete_appointment_schedule\":\"deletion\",\"create_event\":\"creation\",\"delete_event\":\"deletion\",\"add_event_guest\":\"change\",\"change_event_guest_response_auto\":\"change\",\"remove_event_guest\":\"change\",\"change_event_guest_response\":\"change\",\"change_event\":\"change\",\"print_preview_event\":\"info\",\"remove_event_from_trash\":\"change\",\"restore_event\":\"change\",\"change_event_start_time\":\"change\",\"change_event_title\":\"change\",\"transfer_event_completed\":\"change\",\"transfer_event_requested\":\"info\",\"interop_freebusy_lookup_outbound_successful\":\"info\",\"interop_freebusy_lookup_inbound_successful\":\"info\",\"interop_exchange_resource_availability_lookup_successful\":\"info\",\"interop_exchange_resource_list_lookup_successful\":\"info\",\"interop_freebusy_lookup_outbound_unsuccessful\":\"info\",\"interop_freebusy_lookup_inbound_unsuccessful\":\"info\",\"interop_exchange_resource_availability_lookup_unsuccessful\":\"info\",\"interop_exchange_resource_list_lookup_unsuccessful\":\"info\"}"
@@ -694,8 +696,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"long gregorianOffset = 62135683200L;\nlong startTimeInSeconds = Long.parseLong(ctx.google_workspace.calendar.end_time);\nctx.google_workspace.calendar.end_time = (startTimeInSeconds - gregorianOffset) * 1000L;"#
+                    compiled_painless!(
+                        "67de320c144de9cc47bda11bf3fdec18e0b587a0138a434fbf0f0021720ef74e",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -863,8 +866,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"long gregorianOffset = 62135683200L;\nlong startTimeInSeconds = Long.parseLong(ctx.google_workspace.calendar.start_time);\nctx.google_workspace.calendar.start_time = (startTimeInSeconds - gregorianOffset) * 1000L;"#
+                    compiled_painless!(
+                        "1c200ece385f0b6c7442ce243d7801ac508c235d57fb60a71f3719959d7f1b24",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

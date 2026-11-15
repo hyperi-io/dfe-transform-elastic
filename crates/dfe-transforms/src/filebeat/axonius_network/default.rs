@@ -122,8 +122,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.axonius?.network?.event?.data instanceof Map) {\n  Map eventData = ctx.axonius.network.event.data;\n  for (String key : new ArrayList(eventData.keySet())) {\n    if (ctx.axonius.network.containsKey(key)) {\n      ctx.axonius.network['data_' + key] = eventData[key];\n    } else {\n      ctx.axonius.network[key] = eventData[key];\n    }\n  }\n  ctx.axonius.network.event.remove('data');\n}"#
+                compiled_painless!(
+                    "a706ff0a3726607241265ee5eaeee5f60b7086efac3e01b29d964c0f58727fe4",
+                    r#"{"params":null,"known":[{"MergeMapUp":{"parent":"axonius.network","source":"axonius.network.event.data","take":true,"collision":{"Prefix":"data_"},"drops":[]}}]}"#
                 ),
             )?;
 

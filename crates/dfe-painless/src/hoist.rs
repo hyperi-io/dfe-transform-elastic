@@ -5,19 +5,7 @@
 //!
 //! zeek's DNS stream zips its answers and TTLs into `dns.answers`, lets a
 //! `foreach` processor tag each record whose data parsed as an address, then
-//! takes the tags back out and drops them:
-//!
-//! ```painless
-//! def answers = ctx.dns.answers;
-//! def iplist = new ArrayList();
-//! for (def i = 0; i < ctx.dns.answers.length; i++) {
-//!   if (answers[i].containsKey("tmpip")) {
-//!     iplist.add(answers[i].tmpip);
-//!     answers[i].remove("tmpip");
-//!   }
-//! }
-//! ctx.dns.resolved_ip = iplist;
-//! ```
+//! takes the tags back out and drops them.
 //!
 //! `RecordRenames` in `painless_records` reads the nearest sibling -- suricata's
 //! `for (def answer : ctx.dns.answers)` -- and cannot take this one: it walks by
@@ -32,7 +20,7 @@ use crate::params::{clean_path, ctx_locals as locals};
 use dfe_core::Event;
 
 /// One member gathered out of a list's records and removed from each.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct HoistMember {
     list: String,
     /// The key taken out of each record that carries it.
@@ -123,79 +111,7 @@ pub fn hoist_member(event: &mut Event, pattern: &HoistMember) -> bool {
     true
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/zeek_dns/default.rs`, in the escaped
-    /// one-line form the call site holds.
-    const ZEEK_DNS_HOIST: &str = r#"def answers = ctx.dns.answers; def iplist = new ArrayList(); for (def i = 0; i < ctx.dns.answers.length; i++) {\n  if (answers[i].containsKey(\"tmpip\")) {\n    iplist.add(answers[i].tmpip);\n    answers[i].remove(\"tmpip\");\n  }\n} ctx.dns.resolved_ip = iplist;"#;
-
-    #[test]
-    fn the_zeek_resolved_addresses_are_hoisted_out_of_their_records() {
-        assert_eq!(
-            parse_hoist_member(&crate::common::normalise(ZEEK_DNS_HOIST)),
-            Some(HoistMember {
-                list: "dns.answers".to_owned(),
-                member: "tmpip".to_owned(),
-                target: "dns.resolved_ip".to_owned(),
-            })
-        );
-
-        // The written value, not the parse.
-        let mut event = Event::new(json!({ "dns": { "answers": [
-            { "data": "proxy.example.com", "ttl": 119 },
-            { "data": "89.160.20.156", "ttl": 59, "tmpip": "89.160.20.156" },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            ZEEK_DNS_HOIST
-        ));
-        assert_eq!(
-            event.get("dns.resolved_ip"),
-            Some(&json!(["89.160.20.156"]))
-        );
-        // The tag is REMOVED from the record it was taken from.
-        assert_eq!(
-            event.get("dns.answers"),
-            Some(&json!([
-                { "data": "proxy.example.com", "ttl": 119 },
-                { "data": "89.160.20.156", "ttl": 59 },
-            ]))
-        );
-
-        // No record carrying the tag still writes the empty list, which is what
-        // the script's unguarded assignment says.
-        let mut none = Event::new(json!({ "dns": { "answers": [
-            { "data": "proxy.example.com", "ttl": 119 },
-        ]}}));
-        assert!(crate::common::try_known_painless(&mut none, ZEEK_DNS_HOIST));
-        assert_eq!(none.get("dns.resolved_ip"), Some(&json!([])));
-
-        // An absent list writes nothing at all.
-        let mut quiet = Event::new(json!({ "dns": {} }));
-        assert!(crate::common::try_known_painless(
-            &mut quiet,
-            ZEEK_DNS_HOIST
-        ));
-        assert_eq!(quiet.get("dns.resolved_ip"), None);
-    }
-
-    /// A gather and a removal naming DIFFERENT keys moves a member rather than
-    /// hoisting one.
-    #[test]
-    fn a_hoist_removing_another_key_is_declined() {
-        let script = r#"def rows = ctx.a.list; def acc = new ArrayList(); for (def i = 0; i < rows.length; i++) {\n  if (rows[i].containsKey(\"one\")) {\n    acc.add(rows[i].one);\n    rows[i].remove(\"two\");\n  }\n} ctx.a.out = acc;"#;
-        assert!(parse_hoist_member(&crate::common::normalise(script)).is_none());
-    }
-
-    /// A walk that gathers a member it never removes leaves the record whole,
-    /// so it is a different script.
-    #[test]
-    fn a_hoist_that_keeps_the_member_is_declined() {
-        let script = r#"def rows = ctx.a.list; def acc = new ArrayList(); for (def i = 0; i < rows.length; i++) {\n  if (rows[i].containsKey(\"one\")) {\n    acc.add(rows[i].one);\n  }\n} ctx.a.out = acc;"#;
-        assert!(parse_hoist_member(&crate::common::normalise(script)).is_none());
-    }
-}
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
+#[path = "hoist_tests.rs"]
+mod tests;

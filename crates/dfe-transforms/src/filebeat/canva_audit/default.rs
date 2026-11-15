@@ -100,8 +100,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def eventType = new ArrayList(); if (ctx.event.type != null) {\n  eventType = ctx.event.type;\n} def val = ctx.json.action.type; if (val.toLowerCase().contains('remove') || val.toLowerCase().contains('delete')) {\n  eventType.add('deletion');\n} else if (val.toLowerCase().contains('update') || val.toLowerCase().contains('change')) {\n  eventType.add('change');\n} else if (val.toLowerCase().contains('create') || val.toLowerCase().contains('add')) {\n  eventType.add('creation');\n} else if (val.toLowerCase().contains('user')) {\n  eventType.add('user');\n} else if (val.toLowerCase().contains('group')) {\n  eventType.add('group');\n} else {\n  eventType.add('info');\n} ctx.event.put('type', eventType);"#
+                        compiled_painless!(
+                            "9954eadc3ec2efedefd9a363d83da39acbc246f6ddeb64bc4e943fa5a86242bd",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -176,8 +177,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def convertKeysToBoolean(Map versionMap, String[] keysToConvert) {\n    def convertedMap = [: ];\n    versionMap.entrySet().forEach(entry -> {\n        def key = entry.getKey().toString();\n        def value = entry.getValue();\n        if (Arrays.asList(keysToConvert).contains(key)) {\n            if (value instanceof String) {\n                convertedMap[key] = Boolean.parseBoolean(value);\n            } else if (value instanceof Boolean) {\n                convertedMap[key] = (Boolean) value;\n            } else {\n                throw new Exception('Unsupported type');\n            }\n        } else {\n            convertedMap[key] = value;\n        }\n    });\n    return convertedMap;\n}\ndef valuesToConvert = new String[] {\n    'read',\n    'write',\n    'owning_team_only'\n};\nArrayList keysToConvert = new ArrayList([\n    'access',\n    'new_access',\n    'new_link_role',\n    'old_access',\n    'old_link_role'\n]);\ndef changeArray = ctx.json.action.changes;\nif (changeArray instanceof List) {\n    for (int i = 0; i < changeArray.size(); i++) {\n        for (def j = 0; j < keysToConvert.length; j++) {\n            if (changeArray[i][keysToConvert[j]] != null) {\n                changeArray[i][keysToConvert[j]] = convertKeysToBoolean(changeArray[i][keysToConvert[j]], valuesToConvert);\n            }\n        }\n        if (changeArray[i]['new_link_role'] != null && changeArray[i]['new_link_role']['access'] != null) {\n            changeArray[i]['new_link_role']['access'] = convertKeysToBoolean(changeArray[i]['new_link_role']['access'], valuesToConvert);\n        }\n        if (changeArray[i]['old_link_role'] != null && changeArray[i]['old_link_role']['access'] != null) {\n            changeArray[i]['old_link_role']['access'] = convertKeysToBoolean(changeArray[i]['old_link_role']['access'], valuesToConvert);\n        }\n        changeArray[i] = convertKeysToBoolean(changeArray[i], valuesToConvert);\n    }\n}\nctx.json.action.put('changes', changeArray);\n"#
+                        compiled_painless!(
+                            "e54c05321e6a38174746a366ca41c90eca63005e09d6c6d6dfb636eb97854da1",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -224,8 +226,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def relatedUser = new HashSet();\ndef relatedList = new ArrayList();\nif (ctx.related == null) {\n    ctx.related = new HashMap();\n}\nif (ctx.related.user != null) {\n    relatedUser.add(ctx.related.user);\n}\ndef changeArray = ctx.json.action.changes;\nif (changeArray instanceof List) {\n    for (int i = 0; i < changeArray.size(); i++) {\n        if (changeArray[i]['user'] != null) {\n            if (changeArray[i]['user']['display_name'] != null) {\n                relatedUser.add(changeArray[i]['user']['display_name']);\n            }\n            if (changeArray[i]['user']['email'] != null) {\n                relatedUser.add(changeArray[i]['user']['email']);\n            }\n            if (changeArray[i]['user']['id'] != null) {\n                relatedUser.add(changeArray[i]['user']['id']);\n            }\n        }\n        if (changeArray[i]['new_owner'] != null && changeArray[i]['new_owner']['email'] != null) {\n            relatedUser.add(changeArray[i]['new_owner']['email']);\n        }\n        if (changeArray[i]['recipient'] != null) {\n            relatedUser.add(changeArray[i]['recipient']);\n        }\n    }\n}\n for (def res : relatedUser) {\n    relatedList.add(res);\n }\nctx.related.put('user', relatedList);\n"#
+                    compiled_painless!(
+                        "66388100224f741938d672786c66d2e6c47fd5ecf4ad97e4777872644cdf3570",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

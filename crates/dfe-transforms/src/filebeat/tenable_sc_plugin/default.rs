@@ -536,8 +536,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def parts = ctx.json.vprContext; if (parts != null && parts.length > 0) {\n  Map map = new HashMap();\n  for (int i = 0; i < parts.length; i++) {\n    map.put(parts[i]['id'], parts[i]['value'])\n  }\n  ctx.tenable_sc.plugin.vpr.context = map;\n  ctx.tenable_sc.plugin.vpr.context._original = parts;\n}"#
+                    compiled_painless!(
+                        "3dd2a3ec1187688c2694aab822d0fbfd54c9934202db28d000876a74022b87a0",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

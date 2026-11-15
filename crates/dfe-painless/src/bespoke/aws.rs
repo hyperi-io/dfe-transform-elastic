@@ -159,7 +159,7 @@ pub const ENTRIES: &[Entry] = &[
         run: retain_minimal_flattened,
     },
     Entry {
-        hash: "602e5be43994631e60ac065e2d66986be02ab667280fe8c8d618788c5a2b3f7e",
+        hash: "cfdf01966602a105ea68bd97c24db38c1afee64ce911d81c223e1f13c0683695",
         source: "aws",
         name: "flatten_stack_trace",
         run: flatten_stack_trace,

@@ -7,12 +7,7 @@
 //! `lyve_cloud`'s audit stream reaches the client's own address through a chain
 //! of proxies. `related.ip` holds every hop in order and the vendor's comment
 //! says which one matters -- "setting client's ip as the last element of the
-//! ' related.ip ' field ( the rest are proxies)":
-//!
-//! ```painless
-//! ctx.client = new HashMap();
-//! ctx.client["ip"] = ctx.related.ip[-1];
-//! ```
+//! ' related.ip ' field ( the rest are proxies)".
 //!
 //! Unmatched it costs the whole source: `client.ip` and `source.ip` on all 10
 //! events, with nothing extra, because `source` is a later
@@ -37,7 +32,7 @@ use dfe_core::Event;
 use crate::params::clean_path;
 
 /// A member assigned from a list's last element.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct LastElementMember {
     /// The map the script creates and writes into.
     parent: String,
@@ -113,7 +108,8 @@ pub fn run_last_element_member(event: &mut Event, pattern: &LastElementMember) -
     event.set(&target, last).is_ok()
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#`. Keeping them character-identical is what lets a script
 // be copied straight from a module into a test.
@@ -123,47 +119,5 @@ pub fn run_last_element_member(event: &mut Event, pattern: &LastElementMember) -
     clippy::panic,
     clippy::needless_raw_string_hashes
 )]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from `lyve_cloud_audit/audit_lc.rs`, escapes and all.
-    const LYVE_CLOUD: &str =
-        r#"ctx.client = new HashMap(); ctx.client[\"ip\"] = ctx.related.ip[-1];"#;
-
-    #[test]
-    fn the_last_hop_is_the_client_and_the_rest_are_proxies() {
-        let pattern = parse_last_element_member(LYVE_CLOUD).expect("declined lyve_cloud's take");
-        let mut event = Event::new(json!({
-            "related": { "ip": ["10.0.0.1", "203.0.113.7", "81.2.69.144"] },
-        }));
-        assert!(run_last_element_member(&mut event, &pattern));
-        assert_eq!(event.get("client.ip"), Some(&json!("81.2.69.144")));
-    }
-
-    #[test]
-    fn a_script_that_does_not_build_its_map_is_declined() {
-        let script = r#"ctx.client[\"ip\"] = ctx.related.ip[-1];"#;
-        assert!(parse_last_element_member(script).is_none());
-    }
-
-    #[test]
-    fn two_takes_are_declined_rather_than_half_written() {
-        let script = r#"ctx.client = new HashMap(); ctx.client[\"ip\"] = ctx.related.ip[-1]; ctx.client[\"port\"] = ctx.related.port[-1];"#;
-        assert!(parse_last_element_member(script).is_none());
-    }
-
-    #[test]
-    fn a_first_element_take_is_left_to_its_own_reader() {
-        let script = r#"ctx.client = new HashMap(); ctx.client[\"ip\"] = ctx.related.ip[0];"#;
-        assert!(parse_last_element_member(script).is_none());
-    }
-
-    #[test]
-    fn an_empty_list_writes_nothing() {
-        let pattern = parse_last_element_member(LYVE_CLOUD).expect("declined lyve_cloud's take");
-        let mut event = Event::new(json!({ "related": { "ip": [] } }));
-        assert!(!run_last_element_member(&mut event, &pattern));
-        assert_eq!(event.get("client.ip"), None);
-    }
-}
+#[path = "last_element_tests.rs"]
+mod tests;

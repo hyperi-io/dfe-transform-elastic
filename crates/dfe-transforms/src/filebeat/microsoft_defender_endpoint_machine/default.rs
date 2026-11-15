@@ -918,7 +918,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "7de5e9442832c2d26ad318bb7c773796d10940884f62cfa1a0969d837ec1af88",
+                        r#"{"params":"FirstContainedMember","known":[]}"#,
                         r#"String os_platform = ctx.microsoft_defender_endpoint.machine.os_platform.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\nif (os_platform.contains('centos') || os_platform.contains('ubuntu')) {\n  ctx.host.os.put('type', 'linux');\n}\n"#
                     ),
                     cached_params!(

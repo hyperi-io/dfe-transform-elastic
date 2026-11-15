@@ -58,12 +58,13 @@ pipeline logic runs as native Rust.
 
 ## Crate dependency graph
 
-The workspace is five library crates plus the root service package.
+The workspace is five library crates, the generated transform crates, and the root service package.
 
 ```mermaid
 flowchart TD
     service[dfe-transform-elastic<br/><i>Service binary: cli, config,<br/>envelope, pipeline, registry</i>]
-    transforms[dfe-transforms<br/><i>Transform modules,<br/>one per Elastic pipeline</i>]
+    transforms[dfe-transforms<br/><i>Re-exports the generated<br/>modules as filebeat</i>]
+    generated[dfe-transforms-*<br/><i>Generated transform modules,<br/>split by package</i>]
     runtime[dfe-runtime<br/><i>Grok cache, enrichment,<br/>codegen_api, Transform trait</i>]
     painless[dfe-painless<br/><i>Painless matchers, bespoke<br/>runners, plan, params</i>]
     core[dfe-core<br/><i>Event, errors, date formats,<br/>syslog priority, regex cache</i>]
@@ -71,7 +72,9 @@ flowchart TD
 
     service --> transforms
     service --> runtime
+    transforms --> generated
     transforms --> runtime
+    generated --> runtime
     transforms --> parse
     runtime --> painless
     runtime --> core
@@ -82,7 +85,8 @@ flowchart TD
 | Crate | Type | Purpose |
 |-------|------|---------|
 | `dfe-transform-elastic` | Binary + Library | The service, module by module in the table below |
-| `dfe-transforms` | Library | Transform modules per data source (`filebeat::<source>::<pipeline>`) |
+| `dfe-transforms` | Library | Transform modules per data source (`filebeat::<source>::<pipeline>`), re-exported from the generated crates |
+| `dfe-transforms-<first>-<last>` | Library | The generated filebeat modules for a contiguous run of packages, compiled in place from `dfe-transforms/src/filebeat` so no rustc holds the whole tree |
 | `dfe-runtime` | Library | Grok caching, enrichment, `codegen_api`, the Transform trait, and the prelude |
 | `dfe-painless` | Library | Painless pattern matching: the `known_patterns` ladder, `plan`, `params`, `patterns.lock`, and `bespoke/` -- one module per source holding hand-written equivalents of its scripts, resolved by script hash ahead of every matcher |
 | `dfe-core` | Library | `Event`, error types, date formats, syslog priority, the regex cache |
@@ -97,7 +101,7 @@ is why the thousand generated modules did not change when the split landed.
 everything else. Each call site holds that regex in its own `OnceLock` rather than a shared
 map, for the reason [performance.md](performance.md) measures.
 
-The third-party libraries underneath all six crates are
+The third-party libraries underneath every crate are
 [Key dependencies](performance.md#key-dependencies).
 
 ---

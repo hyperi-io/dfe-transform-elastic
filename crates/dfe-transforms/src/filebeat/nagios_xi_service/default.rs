@@ -1481,8 +1481,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if(ctx.nagios_xi?.service?.containsKey(\"swap_usage\") == true) {\n    ctx.nagios_xi.service.swap_usage.used_swap = ctx.nagios_xi.service.swap_usage.total_swap - ctx.nagios_xi.service.swap_usage.free_swap\n}\n"#
+                    compiled_painless!(
+                        "05dc82f78898cdda8bfb4509b46560671f877f296fb865d4d94ff61e4c134656",
+                        r#"{"params":null,"known":[{"CombineFields":{"target":"nagios_xi.service.swap_usage.used_swap","op":"Subtract","left":{"path":"nagios_xi.service.swap_usage.total_swap","divisor":null},"right":{"path":"nagios_xi.service.swap_usage.free_swap","divisor":null}}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -1866,8 +1867,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if(ctx.nagios_xi?.service?.containsKey(\"root_partition\") == true) {\n    ctx.nagios_xi.service.root_partition.free_space = ctx.nagios_xi.service.root_partition.total_space - ctx.nagios_xi.service.root_partition.used_space\n}\n"#
+                    compiled_painless!(
+                        "f2965955879c1e274023ab93f9602e390d03955f6bf99feff8b5731fc04ae666",
+                        r#"{"params":null,"known":[{"CombineFields":{"target":"nagios_xi.service.root_partition.free_space","op":"Subtract","left":{"path":"nagios_xi.service.root_partition.total_space","divisor":null},"right":{"path":"nagios_xi.service.root_partition.used_space","divisor":null}}}]}"#
                     ),
                 )?;
                 Ok(())

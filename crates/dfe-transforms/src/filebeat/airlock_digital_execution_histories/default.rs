@@ -226,7 +226,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx.file.name = ctx.file.name[ctx.file.name.length-1];\n"#),
+                    compiled_painless!(
+                        "9bce4120e54c09b2b9e89efbb9283d5fc52710a3c460e699b4a09d1e59e73ed8",
+                        r#"{"params":null,"known":[{"LastElement":{"array":"file.name","target":"file.name"}}]}"#
+                    ),
                 )?;
             }
 
@@ -495,8 +498,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"ctx.airlock_digital.execution_histories.type_value = params[(ctx.json.type).toString()];"#
+                    compiled_painless!(
+                        "22628de3aacf9f2ea07375e6e8f9e3456fd0bdc55b9e7be5d504b7ae85d7d773",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"0\":\"Trusted Execution\",\"1\":\"Blocked Execution\",\"2\":\"Untrusted Execution [Audit]\",\"3\":\"Untrusted Execution [OTP]\",\"4\":\"Trusted Path Execution\",\"5\":\"Trusted Publisher Execution\",\"6\":\"Blocklist Execution\",\"7\":\"Blocklist Execution [Audit]\",\"8\":\"Trusted Process Execution\",\"9\":\"Constrained Execution\",\"10\":\"Trusted Metadata Execution\",\"11\":\"Trusted Browser Execution\",\"12\":\"Blocked Browser Execution\",\"13\":\"Untrusted Browser Execution [Audit]\",\"14\":\"Untrusted Browser Execution [OTP]\",\"15\":\"Blocklist Browser Execution [Audit]\",\"16\":\"Blocklist Browser Execution\",\"17\":\"Trusted Installer Execution\",\"18\":\"Trusted Browser Metadata Execution\"}"

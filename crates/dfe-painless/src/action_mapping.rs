@@ -4,24 +4,7 @@
 //! An action's ECS block chosen by a FOUR-TIER lookup over `params`.
 //!
 //! `atlassian_cloud` classifies every audit action with one script, and the
-//! ORDER of the tiers plus where each one stops is the whole answer:
-//!
-//! ```painless
-//! def action = ctx.event.action;
-//! ctx.event.kind = 'event';
-//! def mapping = null;
-//! if (params.exact.containsKey(action)) { mapping = params.exact[action]; }
-//! if (mapping == null && params.prefixes instanceof List) {
-//!   for (def entry : params.prefixes) {
-//!     if (action.startsWith(entry.prefix)) { mapping = entry; break; }
-//!   }
-//! }
-//! if (mapping == null && action.endsWith(params.policy_suffix)) { mapping = params.policy; }
-//! if (mapping == null) { mapping = params.default; }
-//! ctx.event.category = mapping.category;
-//! ctx.event.type = mapping.type;
-//! if (mapping.containsKey('outcome')) { ctx.event.outcome = mapping.outcome; }
-//! ```
+//! ORDER of the tiers plus where each one stops is the whole answer.
 //!
 //! The exact table first; then the prefix list IN ITS OWN ORDER, the FIRST
 //! match winning because the loop breaks -- `user_login_failed` is listed ahead
@@ -43,7 +26,7 @@ use dfe_core::Event;
 use crate::params::{clean_path, is_ctx_path};
 
 /// One member of the chosen mapping, and where it goes.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct MappingWrite {
     /// The member read off the mapping.
     member: String,
@@ -56,7 +39,7 @@ pub struct MappingWrite {
 }
 
 /// The tiers, the fields they are read out of `params` by, and what they write.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ActionMapping {
     /// The action every tier is looked up by.
     source: String,
@@ -311,7 +294,8 @@ pub fn run_action_mapping(
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "action_mapping_tests.rs"]
 #[allow(
     clippy::unwrap_used,

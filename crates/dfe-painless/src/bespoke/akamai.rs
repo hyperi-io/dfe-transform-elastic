@@ -236,7 +236,7 @@ pub const ENTRIES: &[Entry] = &[
         run: fold_attack_rules,
     },
     Entry {
-        hash: "504f25868bec1aa2b5ed333bfd1fbe8083b17c59a04fa3805eba138f3abbefaa",
+        hash: "e6417ca378779da63a580d6bf04abc51375a6b83dd6b0cfd9cf9db4df7578321",
         source: "akamai",
         name: "parse_user_risk_general",
         run: parse_user_risk_general,

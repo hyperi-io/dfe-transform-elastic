@@ -163,8 +163,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"ctx.log = ctx.log ?: [:];\nctx.log.put(\"level\", params.get(ctx.json.messageType.toLowerCase()));"#
+                compiled_painless!(
+                    "c937c396a2fd1afb05caf3ea372114b4402f8530f3381e32de78eb202debdb18",
+                    r#"{"params":{"MemberLookup":{"key":"json.messageType","table":null,"fold":"Lower","target":"log.level","wrap":false,"miss":"Null","literals":{"statements":[],"whole":true}}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"default\":\"info\",\"error\":\"error\",\"debug\":\"debug\",\"info\":\"info\",\"fault\":\"warning\"}"

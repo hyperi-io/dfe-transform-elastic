@@ -563,8 +563,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event = ctx.event ?: [:];\ndef severityScores = [\n  'informational': 21,\n  'low': 21,\n  'medium': 47,\n  'high': 73,\n  'critical': 99\n];\nInteger score = severityScores[ctx.prisma_cloud.misconfiguration.scanned_policy.severity.toLowerCase()];\nif (score != null) {\n  ctx.event.severity = score;\n}"#
+                    compiled_painless!(
+                        "7e39448366dd923df24f2f34ec5a675973cb4f7ae45426af2061d2d914b4f749",
+                        r#"{"params":null,"known":[{"LocalMapLookup":{"source":"prisma_cloud.misconfiguration.scanned_policy.severity","lowered":true,"target":"event.severity","table":{"critical":99,"high":73,"informational":21,"low":21,"medium":47}}}]}"#
                     ),
                 )?;
             }

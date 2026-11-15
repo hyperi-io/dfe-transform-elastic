@@ -69,8 +69,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      newObj[camelToSnake(entry.getKey())] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    if (obj == \"\") {\n      return null;\n    }\n    return obj;\n  }\n}\nctx.crowdstrike.idp.timeline = convertToSnakeCase(ctx.crowdstrike.idp.timeline);\n"#
+                        compiled_painless!(
+                            "a76c0092d5ac72c6be86d8ddf39420b9e3bd1d370ca887fa3fe889590b31654a",
+                            r#"{"params":null,"known":[{"CamelToSnake":{"target":"crowdstrike.idp.timeline","source":"crowdstrike.idp.timeline","rule":"AfterNonUpper","at_keys":"Convert","merge":false,"removes":[]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -120,7 +121,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "6485dede39981655283e895a0d3c679be4e9b6b9cbcf01c47eaf31c591c2e74c",
+                            r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[["Never"]],"then":[],"alt":[]}}],"whole":false}},"known":[]}"#,
                             r#"def m = params.get(ctx.crowdstrike.idp.timeline.event_type);\nif (m != null) {\n  m.forEach((k, v) -> {\n    if (v instanceof List) {\n      ctx.event[k] = new ArrayList(v);\n    } else {\n      ctx.event[k] = v;\n    }\n  });\n}"#
                         ),
                         cached_params!(
@@ -172,8 +175,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"Integer severity = params[ctx.crowdstrike.idp.timeline.event_severity.toUpperCase()];\nif (severity != null) {\n  ctx.event = ctx.event ?: [:];\n  ctx.event.severity = severity;\n}\n"#
+                    compiled_painless!(
+                        "2c7138ff90f7109e462a05a1c0ce351d4b584c1d11c559841019208e720501b6",
+                        r#"{"params":{"NormalisedLookup":{"source":"crowdstrike.idp.timeline.event_severity","target":"event.severity","fold":"Upper"}},"known":[]}"#
                     ),
                     cached_params!("{\"NEUTRAL\":21,\"MODERATE\":47,\"IMPORTANT\":73}"),
                 )?;
@@ -218,8 +222,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def entity = ctx.crowdstrike.idp.timeline.entity;\ndef entityType = entity.type;\ndef secondary = entity.secondary_display_name;\nif (secondary != null && secondary instanceof String && secondary != '') {\n  int slash = secondary.indexOf('\\\\');\n  if (slash >= 0) {\n    def domain = secondary.substring(0, slash);\n    if (domain != null && domain != '' && entityType == 'USER') {\n      ctx.user = ctx.user ?: [:];\n      ctx.user.domain = domain;\n    }\n  } else if (entityType == 'ENDPOINT') {\n    ctx.host = ctx.host ?: [:];\n    ctx.host.hostname = secondary;\n  }\n}\nif (entityType == 'ENDPOINT') {\n  if (entity.primary_display_name != null) {\n    ctx.host = ctx.host ?: [:];\n    ctx.host.name = entity.primary_display_name;\n  }\n} else if (entityType == 'USER') {\n  if (entity.primary_display_name != null) {\n    ctx.user = ctx.user ?: [:];\n    ctx.user.full_name = entity.primary_display_name;\n  }\n}\n"#
+                        compiled_painless!(
+                            "94efbafa84528a6501b42269b2f77aee01e718af8d9bd4e23c407cb89838f91a",
+                            r#"{"params":null,"known":["CrowdstrikeTimelineEntityIdentity"]}"#
                         ),
                     )?;
                     Ok(())
@@ -357,8 +362,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def os = params[ctx.crowdstrike.idp.timeline.operating_system_info.family.toUpperCase()];\nif (os != null) {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.os = ctx.host.os ?: [:];\n  ctx.host.os.type = os;\n}\n"#
+                        compiled_painless!(
+                            "e0ff07c5afcd353dd19b84a9d78bed64f160dc14ddccb4f271a976070c9e580b",
+                            r#"{"params":{"NormalisedLookup":{"source":"crowdstrike.idp.timeline.operating_system_info.family","target":"host.os.type","fold":"Upper"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"WINDOWS\":\"windows\",\"OSX\":\"macos\",\"UNIX\":\"unix\",\"LINUX\":\"linux\",\"IOS\":\"ios\",\"ANDROID\":\"android\"}"
@@ -432,7 +438,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "192929b5a7391f7c34e84e5325643159d73e35ffc11fdc2580c48f4f09ca713b",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Magnitude":{"path":"crowdstrike.idp.timeline.user_entity.email_addresses.size()","than":0,"greater":true}},{"Compare":{"path":"crowdstrike.idp.timeline.user_entity.email_addresses[0]","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"user.email","value":{"Field":"crowdstrike.idp.timeline.user_entity.email_addresses.0"}}}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"def emails = ctx.crowdstrike.idp.timeline.user_entity.email_addresses;\nif (emails.size() > 0 && emails[0] != null) {\n  ctx.user = ctx.user ?: [:];\n  ctx.user.email = emails[0];\n}\n"#
                     ),
                 )?;
@@ -449,8 +457,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def entity = ctx.crowdstrike.idp.timeline.entity;\ndef entityType = entity.type;\ndef accounts = entity.accounts;\nif (accounts.size() == 0 || !(accounts[0] instanceof Map)) {\n  return;\n}\ndef acc = accounts[0];\nif (entityType == 'ENDPOINT') {\n  ctx.host = ctx.host ?: [:];\n  if (acc.sam_account_name != null) {\n    def sam = acc.sam_account_name;\n    if (sam.endsWith('$')) {\n      sam = sam.substring(0, sam.length() - 1);\n    }\n    if (ctx.host.name == null) {\n      ctx.host.name = sam;\n    }\n  }\n  if (acc.object_sid != null) {\n    ctx.host.id = acc.object_sid;\n  }\n} else if (entityType == 'USER') {\n  ctx.user = ctx.user ?: [:];\n  if (acc.sam_account_name != null) {\n    ctx.user.name = acc.sam_account_name;\n    ctx.user.target = ctx.user.target ?: [:];\n    ctx.user.target.name = acc.sam_account_name;\n  }\n  if (acc.object_sid != null) {\n    ctx.user.id = acc.object_sid;\n  }\n} else {\n  ctx.entity = ctx.entity ?: [:];\n  if (acc.sam_account_name != null) {\n    ctx.entity.target = ctx.entity.target ?: [:];\n    ctx.entity.target.name = acc.sam_account_name;\n  }\n  if (acc.object_sid != null) {\n    ctx.entity.id = acc.object_sid;\n  }\n}\n"#
+                        compiled_painless!(
+                            "ee436b5a9cf096d8d3a4c61d65de50ea8dc1069f3824833c48411ee413ad40e1",
+                            r#"{"params":null,"known":["CrowdstrikeTimelineEntityAccounts"]}"#
                         ),
                     )?;
                     Ok(())

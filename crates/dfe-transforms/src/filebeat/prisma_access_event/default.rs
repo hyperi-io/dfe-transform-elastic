@@ -35,8 +35,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ArrayList temp = new ArrayList(ctx.error.message); ArrayList output = new ArrayList(); for(data in temp){\n    if (!(data.contains('error in field ') || data.contains('strconv.Parse'))) {\n        output.add(data);\n    }\nctx.error.put(\"message\", output); }"#
+                        compiled_painless!(
+                            "5aa6e27ecc8384cd1929508c602b8642524dfad68161105d2e42b3ea52b2a882",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -1666,8 +1667,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.host == null) {\n    HashMap hm = new HashMap();\n    ctx.put(\"host\", hm);\n}\nctx.host.cpu = new HashMap();\nctx.host.cpu.usage = Math.round(ctx.prisma_access?.event?.cpu_usage *10) / 1000.0;\n"#
+                    compiled_painless!(
+                        "5466ce091263e1e55c842786d1e44920959403ecc27823b8c6236ac3865b61dc",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

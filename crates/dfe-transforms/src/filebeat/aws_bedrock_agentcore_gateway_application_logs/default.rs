@@ -115,8 +115,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def attrs = ctx.aws.bedrock_agentcore.gateway.resource.attributes;\n\nif (attrs.containsKey('service.name')) {\n  if (ctx.service == null) ctx.service = new HashMap();\n  ctx.service.name = attrs['service.name'];\n}\n"#
+                        compiled_painless!(
+                            "6bf07b8be4c3dab00ce5664716a5441fafaaddceef6d5a7ce8d5d20f05061b17",
+                            r#"{"params":null,"known":[{"DottedKeyCopies":{"map":"aws.bedrock_agentcore.gateway.resource.attributes","copies":[["service.name","service.name"]]}}]}"#
                         ),
                     )?;
                     Ok(())

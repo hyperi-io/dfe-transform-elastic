@@ -236,8 +236,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"String value = ctx.json?.result;\nif (value != null) {\n  ctx.mongodb_atlas.mongod_audit.result = params.error_codes.getOrDefault(value, null);\n}\n"#
+                    compiled_painless!(
+                        "8b7601a8df0edcea7d843016346580b9b19126b6e20216af9a1d639ade8b1d8c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"error_codes\":{\"0\":\"Success\",\"13\":\"Unauthorized to perform the operation\",\"18\":\"Authentication Failed\",\"26\":\"Namespace Not Found\",\"276\":\"Index build aborted\",\"334\":\"Unauthorized to perform the operation\"}}"

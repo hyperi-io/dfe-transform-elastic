@@ -262,8 +262,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.source.user.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} ctx.user.name = splitmail[0]; ctx.source.user.name = splitmail[0]; ctx.user.domain = splitmail[1]; ctx.source.user.domain = splitmail[1];\n"#
+                    compiled_painless!(
+                        "0a7b50a87773f444b7e4fec2eac1bf08fb6a7b27ab9eb53a0632da53a5a8ce8a",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"source.user.email","names":["user.name","source.user.name"],"domains":["user.domain","source.user.domain"],"emails":[],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -312,8 +313,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.google_workspace.saml == null) {\n  ctx.google_workspace.saml = new HashMap();\n} for (int i = 0; i < ctx.json.events.parameters.length; ++i) {\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"] != null && ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"].startsWith(\"saml_\")) {\n    ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"].substring(5);\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"] != null) {\n    ctx.google_workspace.saml[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"intValue\"] != null) {\n    ctx.google_workspace.saml[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"intValue\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"] != null) {\n    ctx.google_workspace.saml[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"];\n  }\n}\n"#
+                    compiled_painless!(
+                        "4fcef4670b761d6782586b6c6117ad88ec18a9ccb8c8236fc1f46173f3db4d6d",
+                        r#"{"params":null,"known":[{"ParameterFanOut":{"list":"json.events.parameters","target":"google_workspace.saml","values":["value","intValue","multiValue"],"strip":{"prefix":"saml_","cut":5},"folds":[]}}]}"#
                     ),
                 )?;
             }

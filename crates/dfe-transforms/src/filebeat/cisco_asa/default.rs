@@ -96,8 +96,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx._temp_.full_message = ctx._temp_.message_prefix + ctx._temp_.extracted_message;"#
+                    compiled_painless!(
+                        "b47f2ac68568e9f76176cb8b1459ed24335b7421948d4d2e32dd87bdfca08643",
+                        r#"{"params":null,"known":[{"CombineFields":{"target":"_temp_.full_message","op":"Add","left":{"path":"_temp_.message_prefix","divisor":null},"right":{"path":"_temp_.extracted_message","divisor":null}}},{"ScalarExpression":{"target":"_temp_.full_message","expr":{"Binary":[{"Field":"_temp_.message_prefix"},"Add",{"Field":"_temp_.extracted_message"}]}}}]}"#
                     ),
                 )?;
             }
@@ -142,8 +143,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (def item : ctx._conf.tz_map) {\n  if (item.tz_short == ctx._temp_.tz) {\n    ctx._temp_.tz = item.tz_long;\n    break;\n  }\n}"#
+                    compiled_painless!(
+                        "0ca5d0eb51426f68871518e62b48c2257bc2648bb9e8e5cec160a8ffce30e3b4",
+                        r#"{"params":null,"known":[{"RecordLookup":{"table":"_conf.tz_map","subject":"_temp_.tz","key":"tz_short","value":"tz_long","target":"_temp_.tz","default":null}}]}"#
                     ),
                 )?;
             }
@@ -9028,8 +9030,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"if (ctx._temp_?.cisco?.dn_parts == null) {\n  return;\n}\ndef parts = [:];\nctx._temp_.cisco.dn_parts.forEach((k,v) -> {\n  if (params.containsKey(k)) {\n    parts[params[k]] = (v instanceof List) ? v : [v];   // `[v]` is a Painless list literal\n  } else {\n    return false;\n  }\n});\nctx._temp_.cisco.dn_parts = parts;\n"#
+                compiled_painless!(
+                    "dfc8372e604923ce52636b2327d83c8b856fb863f24b45907070b3010ee8cd92",
+                    r#"{"params":{"SelectRenameKeys":{"subject":"_temp_.cisco.dn_parts","table":null,"keep_unmapped":false,"wrap_in_list":true}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"ST\":\"state_or_province\",\"S\":\"state_or_province\",\"P\":\"state_or_province\",\"CN\":\"common_name\",\"C\":\"country\",\"L\":\"locality\",\"O\":\"organization\",\"OU\":\"organizational_unit\"}"
@@ -9112,7 +9115,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "e0d8041bc18890b044ef8b79914aa0dfa8ef54706430fb9758721e471f1b19c9",
+                        r#"{"params":"KeyedMessageTable","known":[]}"#,
                         r#"boolean isEmpty(def value) {\n  return (value instanceof AbstractList? value.size() : value.length()) == 0;\n}\ndef appendOrCreate(Map dest, String[] path, def value) {\n for (int i=0; i<path.length-1; i++) {\n  dest = dest.computeIfAbsent(path[i], _ -> new HashMap());\n }\n String key = path[path.length - 1];\n def existing = dest.get(key);\n return existing == null?\n  dest.put(key, value)\n  : existing instanceof AbstractList?\n    existing.add(value)\n    : dest.put(key, new ArrayList([existing, value]));\n}\ndef msg = ctx._temp_.orig_security;\ndef counters = new HashMap();\ndef dest = new HashMap();\nctx._temp_.cisco['security'] = dest;\nfor (entry in msg.entrySet()) {\n def param = params.get(entry.getKey());\n if (param == null) {\n   continue;\n }\n param.getOrDefault('id', []).forEach( id -> counters[id] = 1 + counters.getOrDefault(id, 0) );\n if (!isEmpty(entry.getValue())) {\n  param.getOrDefault('ecs', []).forEach( field -> appendOrCreate(ctx, field.splitOnToken('.'), entry.getValue()) );\n  dest[param.target] = entry.getValue();\n }\n}\nif (ctx._temp_.cisco.message_id != \"\") return;\ndef best;\nfor (entry in counters.entrySet()) {\n if (best == null || best.getValue() < entry.getValue()) best = entry;\n}\nif (best != null) ctx._temp_.cisco.message_id = best.getKey();\n"#
                     ),
                     cached_params!(
@@ -9124,7 +9129,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "8edfac2d11908868e856123c53a5ffb09dd4fcdf74690ce443fb3bb2daeddcac",
+                    r#"{"params":"ValueMaps","known":[]}"#,
                     r#"def getField(Map src, String[] path) {\n for (int i=0; i<path.length-1; i++) {\n  src = src.getOrDefault(path[i], null);\n  if (src == null || !(src instanceof Map)) {\n    return null;\n  }\n }\n return src[path[path.length-1]];\n}\ndef setField(Map dest, String[] path, def value) {\n for (int i=0; i<path.length-1; i++) {\n   dest = dest.computeIfAbsent(path[i], _ -> new HashMap());\n }\n dest[path[path.length-1]] = value;\n}\nfor (entry in params.entrySet()) {\n  def srcField = entry.getKey();\n  def param = entry.getValue();\n  String oldVal = getField(ctx, srcField.splitOnToken('.'));\n  if (oldVal == null) continue;\n  def newVal = param.map?.getOrDefault(oldVal.toLowerCase(), null);\n  if (newVal != null) {\n    def dstField = param.getOrDefault('target', srcField);\n    setField(ctx, dstField.splitOnToken('.'), newVal);\n  }\n}\n"#
                 ),
                 cached_params!(
@@ -9177,7 +9184,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "622edcc1a6104fd208248b469b23d5427001b96ef46a32789e7113e0a9a197a2",
+                        r#"{"params":null,"known":["FlowDuration"]}"#,
                         r#"long parse_hms(String s) {\n    long cur = 0, total = 0;\n    for (char c: s.toCharArray()) {\n        if (c >= (char)'0' && c <= (char)'9') {\n            cur = (cur*10) + (long)c - (char)'0';\n        } else if (c == (char)':') {\n            total = (total + cur) * 60;\n            cur = 0;\n        }\n    }\n    return total + cur;\n}\nif (ctx?.event == null) {\n    ctx['event'] = new HashMap();\n}\nlong nanos = parse_hms(ctx._temp_.duration_hms) * 1000000000L;\nctx.event['duration'] = nanos;\nif (ctx['@timestamp'] != null) {\n    String end = ctx['@timestamp'];\n    ctx.event['end'] = end;\n    try {\n        ctx.event['start'] = ZonedDateTime.ofInstant(\n            Instant.parse(end).minusNanos(nanos),\n            ZoneOffset.UTC);\n    } catch (Exception e) {\n        // If timestamp parsing fails, just set duration\n    }\n}\n"#
                     ),
                 )?;
@@ -9454,7 +9463,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "e75d0bd66ee8847684b929ca67d03079890b4b986bf916174a071058b8c418dc",
+                        r#"{"params":"ReversibleLookup","known":[]}"#,
                         r#"def net = ctx.network; def iana = params[net.transport]; if (iana != null) {\n  net['iana_number'] = iana;\n  return;\n} def reverse = new HashMap(); def[] arr = new def[] { null }; for (entry in params.entrySet()) {\n  arr[0] = entry.getValue();\n  reverse.put(String.format(\"%d\", arr), entry.getKey());\n} def trans = reverse[net.transport]; if (trans != null) {\n  net['iana_number'] = net.transport;\n  net['transport'] = trans;\n}\n"#
                     ),
                     cached_params!(
@@ -10228,7 +10239,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "b39c558d7a96945b2847011c20b248ba50622921a869f998224660d8fab68dd7",
+                    r#"{"params":{"LookupMerge":{"statements":[],"whole":false}},"known":[]}"#,
                     r#"params.get(ctx.event.code)?.get(ctx._temp_.outcome)?.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(
@@ -10239,7 +10252,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "703e761753efc3c046fed464d314d26ebe28027bcbd29b3d261e9e120f3097f7",
+                    r#"{"params":{"LookupMerge":{"statements":[],"whole":false}},"known":[]}"#,
                     r#"params.get(ctx.event.code)?.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(

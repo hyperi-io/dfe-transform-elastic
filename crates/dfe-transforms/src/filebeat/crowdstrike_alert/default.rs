@@ -265,8 +265,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"long score = ctx.crowdstrike.alert.score;\nctx.event = ctx.event ?: [:];\nctx.event.risk_score = (double) score;\nif (score < 40) {\n  ctx.event.severity = 21;\n} else if (score < 60) {\n  ctx.event.severity = 47;\n} else if (score < 80) {\n  ctx.event.severity = 73;\n} else {\n  ctx.event.severity = 99;\n}"#
+                        compiled_painless!(
+                            "08c5d31bf38bc2e69bc0cac2befe75de5519d934a7c47444b41a549c2c3f511d",
+                            r#"{"params":null,"known":[{"ScoreSeverityBands":{"source":"crowdstrike.alert.score","risk_score_target":"event.risk_score","severity_target":"event.severity","bands":[[40,21],[60,47],[80,73],[null,99]]}}]}"#
                         ),
                     )?;
                 }
@@ -548,8 +549,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def indicator = ctx.crowdstrike.alert.threatgraph_indicators[0];\nif (indicator.host_id != null && indicator.host_id != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.id = indicator.host_id;\n}\nif (indicator.hostname != null && indicator.hostname != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.name = indicator.hostname;\n}\nif (indicator.process_id != null && indicator.process_id != '') {\n  ctx.process = ctx.process ?: [:];\n  ctx.process.entity_id = indicator.process_id;\n}"#
+                        compiled_painless!(
+                            "b5c8221fe668a91c0dbf92a793a1826f440821c25e2867f432b626d7acf60045",
+                            r#"{"params":null,"known":[{"IndexedFieldCopies":{"list":"crowdstrike.alert.threatgraph_indicators","index":0,"copies":[["host_id","host.id"],["hostname","host.name"],["process_id","process.entity_id"]]}}]}"#
                         ),
                     )?;
                 }
@@ -655,8 +657,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\nctx.event.provider = ctx.crowdstrike.alert.source_products[0];"#
+                        compiled_painless!(
+                            "ebf57478a1ac358f07330c89cb197b89c6f6cec0f7527f79437d55b12b8bb59a",
+                            r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"crowdstrike.alert.source_products","target":"event.provider","only_if_unset":false,"only_if_single":false,"consumes_array":false}]}}]}"#
                         ),
                     )?;
                 }
@@ -1000,8 +1003,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.host = ctx.host ?: [:];\nif (ctx.host.name == null || ctx.host.name == '') {\n  ctx.host.name = ctx.crowdstrike.alert.host_names[0];\n}"#
+                        compiled_painless!(
+                            "cce727b33611ad8a5f488c3def93f3f80144c14315c4f3a5ee5f9bcdf0c58628",
+                            r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"crowdstrike.alert.host_names","target":"host.name","only_if_unset":true,"only_if_single":false,"consumes_array":false}]}}]}"#
                         ),
                     )?;
                 }
@@ -1077,8 +1081,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.source = ctx.source ?: [:];\nif (ctx.source.domain == null || ctx.source.domain == '') {\n  ctx.source.domain = ctx.crowdstrike.alert.source_hosts[0];\n}"#
+                        compiled_painless!(
+                            "18ecf108a4c25741673db5d9ab568155c3992fbdd931091624cd9e3c84762eae",
+                            r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"crowdstrike.alert.source_hosts","target":"source.domain","only_if_unset":true,"only_if_single":false,"consumes_array":false}]}}]}"#
                         ),
                     )?;
                 }
@@ -1100,8 +1105,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.destination = ctx.destination ?: [:];\nif (ctx.destination.domain == null || ctx.destination.domain == '') {\n  ctx.destination.domain = ctx.crowdstrike.alert.destination_hosts[0];\n}"#
+                        compiled_painless!(
+                            "25ae834673b864b90e958e81acbb4ea9569aafb84a6170ee49d75af532a019c2",
+                            r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"crowdstrike.alert.destination_hosts","target":"destination.domain","only_if_unset":true,"only_if_single":false,"consumes_array":false}]}}]}"#
                         ),
                     )?;
                 }
@@ -1163,8 +1169,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.source = ctx.source ?: [:];\nif (ctx.source.ip == null || ctx.source.ip == '') {\n  ctx.source.ip = ctx.crowdstrike.alert.source_ips[0];\n}"#
+                        compiled_painless!(
+                            "f75785d0775901fbf8fdf926e943d88fb5f493d745fd80ca600560ee9cadde11",
+                            r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"crowdstrike.alert.source_ips","target":"source.ip","only_if_unset":true,"only_if_single":false,"consumes_array":false}]}}]}"#
                         ),
                     )?;
                 }
@@ -1296,8 +1303,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.destination = ctx.destination ?: [:];\nif (ctx.destination.ip == null || ctx.destination.ip == '') {\n  ctx.destination.ip = ctx.crowdstrike.alert.destination_ips[0];\n}"#
+                        compiled_painless!(
+                            "eb6fdb03876aeba98a6f43778c22059512027f692e82c74de0508df42866a942",
+                            r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"crowdstrike.alert.destination_ips","target":"destination.ip","only_if_unset":true,"only_if_single":false,"consumes_array":false}]}}]}"#
                         ),
                     )?;
                 }
@@ -1406,8 +1414,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.user = ctx.user ?: [:];\nif (ctx.user.name == null || ctx.user.name == '') {\n  ctx.user.name = ctx.crowdstrike.alert.user_names[0];\n}"#
+                        compiled_painless!(
+                            "3a4d36786b4c0dda0e56aa8fff35dba33852dd963f1a96ccbc3f1d3b864b6328",
+                            r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"crowdstrike.alert.user_names","target":"user.name","only_if_unset":true,"only_if_single":false,"consumes_array":false}]}}]}"#
                         ),
                     )?;
                 }
@@ -1447,8 +1456,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"for (def userEntry : ctx.crowdstrike.alert.users) {\n  if (userEntry.user_name != null && userEntry.user_name != '') {\n    ctx.user = ctx.user ?: [:];\n    if (ctx.user.name == null || ctx.user.name == '') {\n      ctx.user.name = userEntry.user_name;\n    }\n\n    ctx.related = ctx.related ?: [:];\n    ctx.related.user = ctx.related.user ?: [];\n    if (!ctx.related.user.contains(userEntry.user_name)) {\n      ctx.related.user.add(userEntry.user_name);\n    }\n  }\n\n  ctx.user = ctx.user ?: [:];\n  if (userEntry.sid != null && userEntry.sid != '' && (ctx.user.id == null || ctx.user.id == '')) {\n    ctx.user.id = userEntry.sid;\n  }\n}"#
+                        compiled_painless!(
+                            "83db786d250f738041f9e7ad40f33ba0f5777f8242e40eca62eb46336f32c882",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }
@@ -3494,8 +3504,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.crowdstrike == null) {\n  ctx.crowdstrike = [:];\n}\nif (ctx.crowdstrike.alert == null) {\n  ctx.crowdstrike.alert = [:];\n}\nfor (def c: ctx.crowdstrike.alert.ioc_context) {\n  if (c.type == 'module' || c.type == 'script') {\n    ctx.crowdstrike.alert.has_script_or_module_ioc = true;\n    return;\n  }\n}\nctx.crowdstrike.alert.has_script_or_module_ioc = false;\n"#
+                    compiled_painless!(
+                        "091dcf33f04d8ad8bf00becab43aeac07ae37ee14eaedbf76fc3a751ab56dc87",
+                        r#"{"params":null,"known":[{"ListMemberSelect":{"list":"crowdstrike.alert.ioc_context","key":"type","values":["module","script"],"write":{"Flag":"crowdstrike.alert.has_script_or_module_ioc"}}}]}"#
                     ),
                 )?;
             }
@@ -4160,8 +4171,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.crowdstrike == null) {\n  ctx.crowdstrike = [:];\n}\nif (ctx.crowdstrike.alert == null) {\n  ctx.crowdstrike.alert = [:];\n}\nfor (def d: ctx.crowdstrike.alert.pattern_disposition_details.entrySet()) {\n  if (d.getKey() == 'quarantine_file') {\n    ctx.crowdstrike.alert.is_synthetic_quarantine_disposition = d.getValue();\n    return;\n  }\n}\nctx.crowdstrike.alert.is_synthetic_quarantine_disposition = false;\n"#
+                    compiled_painless!(
+                        "9308ea5f65c3f7dc6dd250997e6ac5410d6a33022d3095a5bb90b62bab64bb27",
+                        r#"{"params":null,"known":[{"NamedMapEntry":{"map":"crowdstrike.alert.pattern_disposition_details","key":"quarantine_file","target":"crowdstrike.alert.is_synthetic_quarantine_disposition","fallback":false}}]}"#
                     ),
                 )?;
             }
@@ -4334,8 +4346,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def location = new HashMap();\nlocation.put('lat', ctx.crowdstrike.alert.location_latitude_as_int);\nlocation.put('lon', ctx.crowdstrike.alert.location_longitude_as_int);\nif(ctx.observer == null) {\n  ctx.put('observer', new HashMap());\n}\nif(ctx.observer.geo == null){\n  ctx.observer.put('geo', new HashMap());\n}\nctx.observer.geo.location = location;"#
+                    compiled_painless!(
+                        "6044297bc3e014f40590122b8a1636e958737bc26e6011587d98051201ab510c",
+                        r#"{"params":null,"known":[{"FieldsIntoMap":{"members":[["lat","crowdstrike.alert.location_latitude_as_int"],["lon","crowdstrike.alert.location_longitude_as_int"]],"target":"observer.geo.location"}}]}"#
                     ),
                 )?;
             }
@@ -4864,7 +4877,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "82a02a6d39c8020c8b1486ac65256892e9bdadaf2b545a1a7d59e8bf06f30b90",
+                    r#"{"params":"FirstContainedMember","known":[]}"#,
                     r#"if (ctx.crowdstrike?.alert?.device?.platform_name != null) {\n  String platform_name = ctx.crowdstrike.alert.device.platform_name.toLowerCase();\n  for (String os: params.os_type) {\n    if (platform_name.contains(os)) {\n      ctx.host.os.put('type', os);\n      return;\n    }\n  }\n} else if (ctx.crowdstrike?.alert?.operating_system != null) {\n  String operating_system = ctx.crowdstrike.alert.operating_system.toLowerCase();\n  for (String os: params.os_type) {\n    if (operating_system.contains(os)) {\n      ctx.host.os.put('type', os);\n      return;\n    }\n  }\n}\n"#
                 ),
                 cached_params!(
@@ -7250,8 +7265,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"long severity = ctx.crowdstrike.alert.severity;\nif (0 <= severity && severity < 20) {\n  ctx.crowdstrike.alert.severity_name = \"info\";\n} else if (20 <= severity && severity < 40) {\n  ctx.crowdstrike.alert.severity_name = \"low\";\n} else if (40 <= severity && severity < 60) {\n  ctx.crowdstrike.alert.severity_name = \"medium\";\n} else if (60 <= severity && severity < 80) {\n  ctx.crowdstrike.alert.severity_name = \"high\";\n} else if (80 <= severity && severity <= 100) {\n  ctx.crowdstrike.alert.severity_name = \"critical\";\n}"#
+                        compiled_painless!(
+                            "d1484170eda309948c1b11eea1b7ff7e99376c06662701eccd2ac25db002f626",
+                            r#"{"params":null,"known":[{"RangeLadder":{"source":"crowdstrike.alert.severity","target":"crowdstrike.alert.severity_name","arms":[{"low":0,"high":20,"high_inclusive":false,"quoted":true,"value":"info"},{"low":20,"high":40,"high_inclusive":false,"quoted":true,"value":"low"},{"low":40,"high":60,"high_inclusive":false,"quoted":true,"value":"medium"},{"low":60,"high":80,"high_inclusive":false,"quoted":true,"value":"high"},{"low":80,"high":100,"high_inclusive":true,"quoted":true,"value":"critical"}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -7300,7 +7316,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "55887cb1d4f265a62c3f78e3c2631739d5d0b188c60d69aae8cc87b3c49fbc17",
+                            r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                             r#"ctx.event = ctx.event ?: [:];\nString risk_score_value = ctx.crowdstrike.alert.severity_name;\nif (risk_score_value.equalsIgnoreCase(\"low\") || risk_score_value.equalsIgnoreCase(\"info\") || risk_score_value.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (risk_score_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (risk_score_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (risk_score_value.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
                         ),
                     )?;
@@ -7906,8 +7924,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def start = ZonedDateTime.parse(ctx.event.start);\ndef end = ZonedDateTime.parse(ctx.event.end);\ndef duration = ChronoUnit.NANOS.between(start, end);\nif (duration >= 0) {\n  ctx.event.duration = duration;\n}"#
+                        compiled_painless!(
+                            "917cbbbfa2a97fe286670862e345f93b7e1fd7ba4c0a2c438301607aece6fc19",
+                            r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -8319,7 +8338,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "abce59f78d181fcad5ddabf0cf32a34d5743d8b49a895ecc815fa9f2041893ae",
+                            r#"{"params":"FrameworkPreference","known":["CollectingLadder"]}"#,
                             r#"def tid = ctx.threat.tactic?.id;\ndef nid = ctx.threat.technique?.id;\ndef tname = ctx.threat.tactic?.name;\nif ((tid == null || tid.isEmpty()) && (nid == null || nid.isEmpty()) && (tname == null || tname.isEmpty())) {\n  return;\n}\nSet frameworks = new HashSet();\n// Handling tactics prefixed with \"CS\" or \"TA\".\nif (tid != null && !tid.isEmpty()) {\n  for (String t: tid) {\n    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n    else if (t.startsWith(\"TA\")) {\n      frameworks.add(params.framework_ma);\n    }\n  }\n}\n// Handling techniques prefixed with \"CS\".\nif (nid != null && !nid.isEmpty()) {\n  for (String t: nid) {\n    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\n// Handling falcon specific tactics.\nif (tname != null && !tname.isEmpty()) {\n  for (String t: tname) {\n    if (params.falcon_tactic_names.contains(t.toLowerCase())) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\nif (frameworks.isEmpty()) {\n  return;\n}\nif (frameworks.size() == 1) {\n  ctx.threat.framework = frameworks.iterator().next();\n  return;\n}\n\nfor (def preferred : params.framework_preference) {\n  if (frameworks.contains(preferred)) {\n    ctx.threat.framework = preferred;\n    return;\n  }\n}\n\n// fallback when new frameworks are added and not yet in preference list\nctx.threat.framework = frameworks.iterator().next();\n"#
                         ),
                         cached_params!(

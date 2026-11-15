@@ -657,8 +657,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.cef?.extensions instanceof Map) {\n  boolean hasCustomString = true;\n  for (int i = 7; i <= 21 && hasCustomString; i++) {\n    String key = \"cs\" + i;\n    String labelKey = key + \"Label\";\n    if (ctx.cef.extensions.containsKey(key) || ctx.cef.extensions.containsKey(labelKey)) {\n      String newKey = \"custom_string\" + i;\n      ctx.imperva.securesphere.device[newKey] = [:];\n\n      if (ctx.cef.extensions.containsKey(key)) {\n        ctx.imperva.securesphere.device[newKey][\"value\"] = ctx.cef.extensions[key];\n      }\n      if (ctx.cef.extensions.containsKey(labelKey)) {\n        ctx.imperva.securesphere.device[newKey][\"label\"] = ctx.cef.extensions[labelKey];\n      }\n\n    } else {\n      // Let it break the loop if the key is not found.\n      hasCustomString = false;\n    }\n  }\n}"#
+                compiled_painless!(
+                    "6ee779eda9c899fb329443f0de0fe3f52b5482d50ba8d03d21fe8bca2aa2bbb4",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

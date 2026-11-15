@@ -25,7 +25,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx.aws.awshealth.end_time = null"#),
+                    compiled_painless!(
+                        "ac60e056f33c7f6990fc38fcb696fc33b77d90f89b71826f2aa02757d67fbc3e",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Set":{"path":"aws.awshealth.end_time","value":{"Literal":null}}}}],"whole":true}}]}"#
+                    ),
                 )?;
             }
 

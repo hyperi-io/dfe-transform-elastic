@@ -515,8 +515,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def value = ctx.cif3.confidence; if (value < 0.0 || value > 10.0) {\n  ctx.threat.indicator.confidence = \"None\";\n  return;\n} if (value >= 0.0 && value < 3.0) {\n  ctx.threat.indicator.confidence = \"Low\";\n  return;\n} if (value >= 3.0 && value < 7.0) {\n  ctx.threat.indicator.confidence = \"Med\";\n  return;\n} if (value >= 7.0 && value <= 10.0) {\n  ctx.threat.indicator.confidence = \"High\";\n  return;\n}\n"#
+                    compiled_painless!(
+                        "fc47dc76a0e7ef8b333c0421b3902d868672c120169ea480bae862650a95ea9f",
+                        r#"{"params":null,"known":[{"BandLadder":{"subject":"cif3.confidence","arms":[[{"bounds":[{"op":"Lt","scaled":0},{"op":"Gt","scaled":10000}],"all":false},{"Text":"None"}],[{"bounds":[{"op":"Ge","scaled":0},{"op":"Lt","scaled":3000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":3000},{"op":"Lt","scaled":7000}],"all":true},{"Text":"Med"}],[{"bounds":[{"op":"Ge","scaled":7000},{"op":"Le","scaled":10000}],"all":true},{"Text":"High"}]],"default":null,"absent":null,"target":"threat.indicator.confidence"}}]}"#
                     ),
                 )?;
             }
@@ -573,8 +574,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_lasttime_at; if (ctx.threat.indicator.last_seen != null) {\n    _tmp_lasttime_at = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n} else {\n    _tmp_lasttime_at = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n} if (ctx.threat.indicator.type == 'ipv4-addr' || ctx.threat.indicator.type == 'ipv6-addr') {\n    _tmp_deleted_at = _tmp_lasttime_at.plusDays(45L);\n    ctx.cif3.expiration_duration = \"45d\";\n} else if (ctx.threat.indicator.type == 'domain-name') {\n    _tmp_deleted_at = _tmp_lasttime_at.plusDays(90L);\n    ctx.cif3.expiration_duration = \"90d\";\n} else if (ctx.threat.indicator.type == 'url' || ctx.threat.indicator.type == 'file') {\n    _tmp_deleted_at = _tmp_lasttime_at.plusDays(365L);\n    ctx.cif3.expiration_duration = \"365d\";\n} else {\n    def dur = ctx._conf.ioc_expiration_duration;\n    ctx.cif3.expiration_duration = ctx._conf.ioc_expiration_duration;\n    if (dur instanceof String){\n        String time_unit = dur.substring(dur.length() -  1, dur.length());\n        String time_value = dur.substring(0, dur.length() - 1);\n        if (time_unit == 'd') {\n            _tmp_deleted_at = _tmp_lasttime_at.plusDays(Long.parseLong(time_value));\n        } else if (time_unit == 'h') {\n            _tmp_deleted_at = _tmp_lasttime_at.plusHours(Long.parseLong(time_value));\n        } else if (time_unit == 'm') {\n            _tmp_deleted_at = _tmp_lasttime_at.plusMinutes(Long.parseLong(time_value));\n        } else {\n            _tmp_deleted_at = _tmp_lasttime_at.plusDays(90L);\n            if (ctx.error == null) {\n            ctx.error = new HashMap();\n            }\n            if (ctx.error.message == null) {\n            ctx.error.message = new ArrayList();\n            }\n            ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n        }\n    }\n} ctx.cif3.deleted_at = _tmp_deleted_at;\n"#
+                        compiled_painless!(
+                            "a131c0442c982526ac3926b685cd42019c0d3514af2ad2cc2bbb3c44cdd203f1",
+                            r#"{"params":null,"known":[{"IndicatorExpiry":{"seen":["threat.indicator.last_seen","threat.indicator.first_seen"],"kind":"threat.indicator.type","arms":[{"types":["ipv4-addr","ipv6-addr"],"unit":"Days","amount":45,"label":"45d"},{"types":["domain-name"],"unit":"Days","amount":90,"label":"90d"},{"types":["url","file"],"unit":"Days","amount":365,"label":"365d"}],"configured":{"source":"_conf.ioc_expiration_duration","units":[["d","Days"],["h","Hours"],["m","Minutes"]],"default_unit":"Days","default_amount":90,"message":"invalid ioc_expiration_duration: using default 90 days","message_target":"error.message"},"duration_target":"cif3.expiration_duration","target":"cif3.deleted_at"}}]}"#
                         ),
                     )?;
                     Ok(())

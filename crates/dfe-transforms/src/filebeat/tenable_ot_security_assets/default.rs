@@ -94,16 +94,18 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\nif (ctx.tenable_ot_security.assets != null) {\n  ctx.tenable_ot_security.assets = keysToSnakeCase(ctx.tenable_ot_security.assets);\n}\n"#
+                compiled_painless!(
+                    "548e300734a275de245f85881ccc5d177cb972a9cb6dc950df41bd7ec447c019",
+                    r#"{"params":null,"known":[{"KeysToSnakeCase":["tenable_ot_security.assets","CamelBreak"]}]}"#
                 ),
             )?;
 
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def normalize(def obj) {\n  if (obj instanceof Map) {\n        Map newObj = new HashMap();\n        for (entry in obj.entrySet()) {\n            def key = entry.getKey();\n            def value = entry.getValue();\n\n            // If the value is a map with a single key \"nodes\", replace it with its contents\n            if (value instanceof Map && value.containsKey(\"nodes\")) {\n                value = value.get(\"nodes\");\n            }\n\n            // Recursively process if value is a map or list\n            newObj.put(key, normalize(value));\n        }\n        return newObj;\n    } else if (obj instanceof List) {\n        List newList = new ArrayList();\n        for (item in obj) {\n            newList.add(normalize(item));\n        }\n        return newList;\n    } else {\n        return obj;\n    }\n   }\n// Apply normalization to every occurrence of \"nodes\" in assets.\nif (ctx.containsKey(\"tenable_ot_security\") && ctx.tenable_ot_security.containsKey(\"assets\")) {\n  ctx.tenable_ot_security.assets = normalize(ctx.tenable_ot_security.assets);\n}\n"#
+                compiled_painless!(
+                    "ad046ad8c15d44a6c0c4c33e287ddac5f9f3529ae0c7f3f74430c627264b96a5",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

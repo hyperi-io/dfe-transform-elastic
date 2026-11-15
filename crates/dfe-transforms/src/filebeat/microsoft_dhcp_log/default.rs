@@ -202,7 +202,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "c657972aa8a3c1fb429bc129b22028094780700bb4a3345966384ec5f1e97d04",
+                        r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Compare":{"path":"event.code","wanted":"Null","negated":false,"lowered":false}}],["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                         r#"if (ctx.event?.code == null || params.get(ctx.event.code) == null) {\n  return;\n}\ndef hm = new HashMap(params[ctx.event.code]);\nhm.forEach((k, v) -> ctx.event[k] = v);"#
                     ),
                     cached_params!(
@@ -212,8 +214,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.microsoft?.dhcp?.result == null) {\n  return;\n}\ndef desc = params.get(ctx.microsoft.dhcp.result);\nif (desc == null) {\n  return;\n}\nctx.microsoft.dhcp['result_description'] = desc; "#
+                    compiled_painless!(
+                        "1ef01747905417d33d33a3653522444002dc9f9ee74294214aed7f74300a8156",
+                        r#"{"params":{"MemberLookup":{"key":"microsoft.dhcp.result","table":null,"fold":"None","target":"microsoft.dhcp.result_description","wrap":false,"miss":"Keep","literals":{"statements":[],"whole":true}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"0\":\"NoQuarantine\",\"1\":\"Quarantine\",\"2\":\"Drop Packet\",\"3\":\"Probation\",\"6\":\"No Quarantine Information\"}"
@@ -385,7 +388,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "7661d15bf4fe714043fa9650fef2656e430dd1c3ed3eb37704f7a904ae63599d",
+                        r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Compare":{"path":"event.code","wanted":"Null","negated":false,"lowered":false}}],["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                         r#"if (ctx?.event?.code == null || params.get(ctx.event.code) == null) {\n  return;\n}\ndef hm = new HashMap(params[ctx.event.code]);\nhm.forEach((k, v) -> ctx.event[k] = v);"#
                     ),
                     cached_params!(

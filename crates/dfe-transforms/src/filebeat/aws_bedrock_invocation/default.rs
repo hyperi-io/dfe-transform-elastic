@@ -79,8 +79,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (int i = 0; i < ctx.aws_bedrock.invocation.artifacts.length; i++) {\n  if (ctx.aws_bedrock.invocation.artifacts[i].base64 instanceof String && ctx.aws_bedrock.invocation.artifacts[i].base64.length() > 32766) {\n    ctx.aws_bedrock.invocation.artifacts[i].base64_massive_hash = ctx.aws_bedrock.invocation.artifacts[i].base64.sha1();\n    ctx.aws_bedrock.invocation.artifacts[i].base64_massive_length = ctx.aws_bedrock.invocation.artifacts[i].base64.length();\n    ctx.aws_bedrock.invocation.artifacts[i].remove(\"base64\");\n  }\n}\n"#
+                    compiled_painless!(
+                        "e0b6f07003814e3d0f4c9d4986bf9e850425553e5d0f881274378557a4b5b9ab",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -102,16 +103,18 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"String json(def val) {\n  if (val == null) {\n    return null;\n  }\n  if (val instanceof Map) {\n    String out = '{';\n    List keyList = new ArrayList(val.keySet());\n    Collections.sort(keyList);\n    for (int i=0; i < keyList.length; i++){\n      if (i != 0) {\n        out += ',';\n      }\n      String key = keyList[i];\n      out += '\"' +  key + '\"';\n      if (val[key] instanceof String){\n        out += ':\"' + val[key] + '\"';\n      } else {\n        out += ':' + json(val[key]);\n      }\n    }\n    return out + '}';\n  } else if (val instanceof ArrayList) {\n    String out = '[';\n    for (int i = 0; i < val.length; i++){\n      if (i != 0) {\n          out += ',';\n      }\n      out = out + json(val[i]);\n    }\n    return out + ']';\n  } else if (val instanceof String) {\n    return '\"' + val + '\"'; // This may not be valid JSON depending on code points in val. TODO: Add escape helper.\n  }\n  return val.toString();\n}\nctx.gen_ai.prompt = json(ctx.aws_bedrock?.invocation?.input?.inputBodyJson);\nctx.gen_ai.completion = json(ctx.aws_bedrock?.invocation?.output?.outputBodyJson);\n"#
+                compiled_painless!(
+                    "b0012de32a76e5529c8000d241aa427b7cf151963a73d15b6fda9f20e940e513",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"def renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\n\nctx.aws_bedrock = renameKeys(ctx.aws_bedrock, params)\n"#
+                compiled_painless!(
+                    "ee41e28a79b4dd2788d42f3a1de274491bc8f0c1f7ddf9faf938f85ae66ec661",
+                    r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"InPlace":"aws_bedrock"}}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"modelId\":\"model_id\",\"inputBodyJson\":\"input_body_json\",\"inputContentType\":\"input_content_type\",\"inputTokenCount\":\"input_token_count\",\"outputBodyJson\":\"output_body_json\",\"outputContentType\":\"output_content_type\",\"outputTokenCount\":\"output_token_count\",\"requestId\":\"request_id\",\"schemaType\":\"schema_type\",\"schemaVersion\":\"schema_version\",\"errorCode\":\"error_code\",\"imageGenerationConfig\":\"image_generation_config\",\"cfgScale\":\"cfg_scale\",\"numberOfImages\":\"number_of_images\",\"imageVariationParams\":\"image_variation_params\",\"inputBodyS3Path\":\"input_body_s3_path\",\"outputBodyS3Path\":\"output_body_s3_path\",\"taskType\":\"task_type\",\"finishReason\":\"finish_reason\",\"amazon-bedrock-invocationMetrics\":\"amazon_bedrock_invocation_metrics\",\"firstByteLatency\":\"first_byte_latency\",\"invocationLatency\":\"invocation_latency\",\"amazon-bedrock-guardrailAction\":\"amazon_bedrock_guardrail_action\",\"amazon-bedrock-trace\":\"amazon_bedrock_trace\",\"contentPolicy\":\"content_policy\",\"wordPolicy\":\"word_policy\",\"topicPolicy\":\"topic_policy\",\"customWords\":\"custom_words\",\"sensitiveInformationPolicy\":\"sensitive_information_policy\",\"contextualGroundingPolicy\":\"contextual_grounding_policy\",\"invocationMetrics\":\"invocation_metrics\",\"guardrailCoverage\":\"guardrail_coverage\",\"textCharacters\":\"text_characters\",\"guardrailProcessingLatency\":\"guardrail_processing_latency\",\"contentPolicyUnits\":\"content_policy_units\",\"contextualGroundingPolicyUnits\":\"contextual_grounding_policy_units\",\"sensitiveInformationPolicyFreeUnits\":\"sensitive_information_policy_free_units\",\"sensitiveInformationPolicyUnits\":\"sensitive_information_policy_units\",\"topicPolicyUnits\":\"topic_policy_units\",\"wordPolicyUnits\":\"word_policy_units\",\"piiEntities\":\"pii_entities\",\"normalizeIndex\":\"normalize_index\",\"latencyMs\":\"latency_ms\",\"stopReason\":\"stop_reason\"}"
@@ -127,8 +130,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Map sys = [:];\nsys.type = 'text';\nsys.text = ctx.aws_bedrock.invocation.system;\nctx.aws_bedrock.invocation.system = sys;"#
+                    compiled_painless!(
+                        "97bec2516ca64fa920dbf36d0f45418a17aaff41a23b890c76baac4895f19184",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -138,8 +142,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// Handle messages as either an array or single object\ndef messagesList = ctx.aws_bedrock.invocation.messages instanceof List\n  ? ctx.aws_bedrock.invocation.messages\n  : [ctx.aws_bedrock.invocation.messages];\n\nfor (def message : messagesList) {\n  if (!(message instanceof Map)) {\n    continue;\n  }\n\n  // If content is a string, promote it to an object with type and text\n  if (message.content instanceof String) {\n    Map contentObj = [:];\n    contentObj.type = 'text';\n    contentObj.text = message.content;\n    message.content = contentObj;\n  }\n  // If content is already an array, ensure each item has type and text fields\n  else if (message.content instanceof List) {\n    for (def contentItem : message.content) {\n      if (!(contentItem instanceof Map)) {\n        continue;\n      }\n\n      // Ensure type field exists\n      if (!contentItem.containsKey('type')) {\n        contentItem.type = 'text';\n      }\n\n      // Check if this item already has a text field with actual content\n      boolean hasExistingText = contentItem.containsKey('text') &&\n                               contentItem.text instanceof String &&\n                               contentItem.text != '';\n\n      // If no text field exists, we need to create one\n      if (!hasExistingText) {\n        // Handle nested content field (e.g., in tool_result)\n        if (contentItem.containsKey('content') && !(contentItem.content instanceof String)) {\n          contentItem.text = Json.dump(contentItem.content);\n        } else if (contentItem.containsKey('content') && contentItem.content instanceof String) {\n          contentItem.text = contentItem.content;\n        } else {\n          // Serialize all fields except type\n          Map itemCopy = [:];\n          for (def entry : contentItem.entrySet()) {\n            if (entry.getKey() != 'type') {\n              itemCopy[entry.getKey()] = entry.getValue();\n            }\n          }\n          contentItem.text = Json.dump(itemCopy);\n        }\n\n        // Remove all fields except type and text to avoid duplication\n        def keysToRemove = new ArrayList(contentItem.keySet());\n        for (def key : keysToRemove) {\n          if (key != 'type' && key != 'text') {\n            contentItem.remove(key);\n          }\n        }\n      }\n    }\n  }\n  // If content is an object, ensure it has type and text fields\n  else if (message.content instanceof Map) {\n    if (!message.content.containsKey('type')) {\n      message.content.type = 'text';\n    }\n\n    boolean hasExistingText = message.content.containsKey('text') &&\n                             message.content.text instanceof String &&\n                             message.content.text != '';\n\n    if (!hasExistingText) {\n      if (message.content.containsKey('content')) {\n        if (message.content.content instanceof String) {\n          message.content.text = message.content.content;\n        } else {\n          message.content.text = Json.dump(message.content.content);\n        }\n      } else {\n        Map contentCopy = [:];\n        for (def entry : message.content.entrySet()) {\n          if (entry.getKey() != 'type') {\n            contentCopy[entry.getKey()] = entry.getValue();\n          }\n        }\n        message.content.text = Json.dump(contentCopy);\n      }\n\n      def keysToRemove = new ArrayList(message.content.keySet());\n      for (def key : keysToRemove) {\n        if (key != 'type' && key != 'text') {\n          message.content.remove(key);\n        }\n      }\n    }\n  }\n}"#
+                    compiled_painless!(
+                        "a75500797ef8531652247312a2135011ba515766d853adef6f303b30765e4e25",
+                        r#"{"params":null,"known":["JoinOptional"]}"#
                     ),
                 )?;
             }
@@ -149,8 +154,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def messagesList = ctx.aws_bedrock.invocation.messages instanceof List\n  ? ctx.aws_bedrock.invocation.messages\n  : [ctx.aws_bedrock.invocation.messages];\n\nfor (def message : messagesList) {\n  if (!(message instanceof Map) || !message.containsKey('content')) {\n    continue;\n  }\n\n  // Process content if it's an array\n  if (message.content instanceof List) {\n    for (def contentItem : message.content) {\n      if (!(contentItem instanceof Map)) {\n        continue;\n      }\n\n      // Ensure we have a text field - if not, create it from available data\n      boolean needsTextCreation = !contentItem.containsKey('text') ||\n                                 contentItem.text == null ||\n                                 contentItem.text == '';\n\n      if (needsTextCreation) {\n        if (contentItem.containsKey('content')) {\n          if (contentItem.content instanceof String) {\n            contentItem.text = contentItem.content;\n          } else {\n            contentItem.text = Json.dump(contentItem.content);\n          }\n        } else {\n          // Create text from all fields except type\n          Map itemCopy = [:];\n          for (def entry : contentItem.entrySet()) {\n            if (entry.getKey() != 'type') {\n              itemCopy[entry.getKey()] = entry.getValue();\n            }\n          }\n          if (itemCopy.size() > 0) {\n            contentItem.text = Json.dump(itemCopy);\n          } else {\n            contentItem.text = '';\n          }\n        }\n      }\n\n      // Remove all fields except type and text\n      def keysToRemove = new ArrayList(contentItem.keySet());\n      for (def key : keysToRemove) {\n        if (key != 'type' && key != 'text') {\n          contentItem.remove(key);\n        }\n      }\n    }\n  }\n  // Process content if it's a single object\n  else if (message.content instanceof Map) {\n    boolean needsTextCreation = !message.content.containsKey('text') ||\n                               message.content.text == null ||\n                               message.content.text == '';\n\n    if (needsTextCreation) {\n      if (message.content.containsKey('content')) {\n        if (message.content.content instanceof String) {\n          message.content.text = message.content.content;\n        } else {\n          message.content.text = Json.dump(message.content.content);\n        }\n      } else {\n        Map contentCopy = [:];\n        for (def entry : message.content.entrySet()) {\n          if (entry.getKey() != 'type') {\n            contentCopy[entry.getKey()] = entry.getValue();\n          }\n        }\n        if (contentCopy.size() > 0) {\n          message.content.text = Json.dump(contentCopy);\n        } else {\n          message.content.text = '';\n        }\n      }\n    }\n\n    def keysToRemove = new ArrayList(message.content.keySet());\n    for (def key : keysToRemove) {\n      if (key != 'type' && key != 'text') {\n        message.content.remove(key);\n      }\n    }\n  }\n}"#
+                    compiled_painless!(
+                        "3c116f6d604137b7723606a7685e33c1b58c5f9543b305942b402001a01210db",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -185,8 +191,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def typ = ctx.gen_ai.request.model.id.substring(0, ctx.gen_ai.request.model.id.indexOf('.'));\nctx.gen_ai.request.model.type = typ;\nctx.gen_ai.request.model.version = ctx.aws_bedrock.invocation.input.input_body_json[typ+'_version'];\n"#
+                    compiled_painless!(
+                        "1516b826d27996a34f9baeaa20650d1c5d06ae1e8a0d206c68f7017ec3aab05b",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -345,8 +352,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// using a Set to avoid duplicates\ndef content_kinds_set = new HashSet(ctx.aws_bedrock.invocation.input?.messages_content_kinds ?: []);\nfor (def message : ctx.aws_bedrock.invocation.input.input_body_json.messages) {\n    if (message?.content instanceof List) {\n        for (def content_item : message['content']) {\n            if (content_item instanceof Map) {\n                def content_type = '';\n                if (content_item.containsKey('text')) {\n                    content_type = 'text';\n                } else if (content_item.containsKey('document')) {\n                    content_type = 'document';\n                    if (content_item['document'] instanceof Map && content_item['document'].containsKey('format')) {\n                        content_type += '/' + content_item['document']['format'];\n                    }\n                }\n                if (content_type != '') {\n                    content_kinds_set.add(content_type);\n                }\n            }\n        }\n    }\n}\n// convert the Set back to a List\nctx.aws_bedrock.invocation.input.messages_content_kinds = new ArrayList(content_kinds_set);\n"#
+                    compiled_painless!(
+                        "0d7f6e83a19c5507f12defde7297abf91098cbeb2da2dcb431e86e0cfd84ba3a",
+                        r#"{"params":null,"known":[{"AppendEach":{"source":"aws_bedrock.invocation.input.input_body_json.messages","target":"aws_bedrock.invocation.input.input_body_json.messages","map_keys":[],"separator":",","deduped":false}}]}"#
                     ),
                 )?;
             }
@@ -360,8 +368,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (int i = 0; i < ctx.aws_bedrock.invocation.output.output_body_json.length; i++) {\n  def e = ctx.aws_bedrock.invocation.output.output_body_json[i];\n  if (e instanceof Map) {\n    continue;\n  }\n  ctx.aws_bedrock.invocation.output.output_body_json[i] = [:];\n  ctx.aws_bedrock.invocation.output.output_body_json[i].value = e;\n}\n"#
+                    compiled_painless!(
+                        "4aee7cadeb7406b510bca77f329675668740eb4cc1c51c530a5dcce3c50be02c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -375,8 +384,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (def e: ctx.aws_bedrock.invocation.output.output_body_json) {\n  if (e.message?.id != null) {\n    if (ctx.gen_ai == null) {\n      ctx.gen_ai = new HashMap();\n    }\n    if (ctx.gen_ai.response == null) {\n      ctx.gen_ai.response = new HashMap();\n    }\n    ctx.gen_ai.request.model.role = e.message?.role; // Surprisingly this is in the invocation.\n    ctx.gen_ai.response.id = e.message?.id;\n    break;\n  }\n}\n"#
+                    compiled_painless!(
+                        "54a89f8995c11f15f43ece944fbefac779fcfdcd6414c5acdad9ca0c5da35f28",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -422,8 +432,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (int i = ctx.aws_bedrock.invocation.output.output_body_json.length-1; i >= 0; i--) {\n  def e = ctx.aws_bedrock.invocation.output.output_body_json[i];\n  if (e.amazon_bedrock_invocation_metrics?.invocation_latency != null) {\n    if (ctx.gen_ai == null) {\n      ctx.gen_ai = new HashMap();\n    }\n    if (ctx.gen_ai.performance == null) {\n      ctx.gen_ai.performance = new HashMap();\n    }\n    ctx.gen_ai.performance.start_response_time = e.amazon_bedrock_invocation_metrics.first_byte_latency;\n    ctx.gen_ai.performance.response_time = e.amazon_bedrock_invocation_metrics.invocation_latency;\n    break;\n  }\n}\n"#
+                    compiled_painless!(
+                        "c70fc35a7a19eda11d89a23b85431ef43ec2909384a96d144a039647c0dde4ce",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -451,8 +462,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def allBodies = ctx.aws_bedrock.invocation.output.output_body_json;\nif (allBodies instanceof Map) { // it can be an object or an array\n  allBodies = [allBodies];\n}\n\ndef nameAndDetailsOfPolicies = allBodies.stream()\n  .flatMap(body -> [\n    [body.trace?.guardrail?.inputAssessment],\n    body.trace?.guardrail?.outputAssessments,\n    [body.amazon_bedrock_trace?.guardrail?.input],\n    body.amazon_bedrock_trace?.guardrail?.outputs\n  ].stream())\n  .filter(Objects::nonNull)\n  .flatMap(List::stream)\n  .filter(Objects::nonNull)\n  .flatMap(assessment -> assessment.entrySet().stream())\n  .flatMap(assessmentEntry -> assessmentEntry.getValue().entrySet().stream())\n  .filter(policyEntry -> policyEntry.getKey().endsWith('_policy'))\n  .flatMap(policyEntry ->\n    policyEntry.getValue().entrySet().stream()\n      .flatMap(policyValueEntry -> policyValueEntry.getValue().stream())\n      .map(details -> [ 'name': policyEntry.getKey(), 'details': details ])\n      .collect(Collectors.toList())\n      .stream()\n  )\n  .collect(Collectors.toList());\n\n\nif (ctx.gen_ai == null) ctx.gen_ai = [:];\nif (ctx.gen_ai.compliance == null) ctx.gen_ai.compliance = [:];\nif (ctx.gen_ai.policy == null) ctx.gen_ai.policy = [:];\n\n\nctx.gen_ai.guardrail_id = allBodies.stream()\n  .flatMap(body -> [\n    body.trace?.guardrail?.inputAssessment,\n    body.amazon_bedrock_trace?.guardrail?.input\n  ].stream())\n  .filter(input -> input instanceof HashMap)\n  .flatMap(input -> input.keySet().stream())\n  .distinct()\n  .sorted()\n  .collect(Collectors.toList());\n\nctx.gen_ai.policy.name = nameAndDetailsOfPolicies.stream()\n  .map(policy -> policy.name)\n  .distinct()\n  .sorted()\n  .collect(Collectors.toList());\n\nctx.gen_ai.policy.action = nameAndDetailsOfPolicies.stream()\n  .map(policy -> policy.details.action)\n  .distinct()\n  .sorted()\n  .collect(Collectors.toList());\n\nctx.gen_ai.policy.match_detail = nameAndDetailsOfPolicies.stream()\n  .filter(policy -> policy.details.match != null || policy.name == 'contextual_grounding_policy')\n  .map(policy -> policy.details)\n  .distinct()  // no sort because HashMap isn't Comparable\n  .collect(Collectors.toList());\n\nctx.gen_ai.policy.confidence = nameAndDetailsOfPolicies.stream()\n  .map(policy -> policy.details.confidence)\n  .filter(Objects::nonNull)\n  .distinct()\n  .sorted()\n  .collect(Collectors.toList());\n\nctx.gen_ai.compliance.violation_code = nameAndDetailsOfPolicies.stream()\n  .map(policy -> policy.details.type)\n  .filter(Objects::nonNull)\n  .distinct()\n  .sorted()\n  .collect(Collectors.toList());\n\nif (ctx.gen_ai.compliance.violation_code.size() > 0 && allBodies.stream().anyMatch(body ->\n  body.amazon_bedrock_guardrail_action == 'INTERVENED' ||\n  body.stop_reason == 'guardrail_intervened'\n)) {\n  ctx.gen_ai.compliance.violation_detected = true;\n  ctx.event.outcome = 'failure';\n}\n"#
+                    compiled_painless!(
+                        "5a2ab6d2f8a87683d36cae3c6554e3d251d015b984a461fb14f1d6e65f68aacf",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -471,8 +483,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.gen_ai.performance.request_size = ctx.gen_ai.prompt.length();\nif (ctx.gen_ai.prompt.length() > 32766) {\n  ctx.aws_bedrock.invocation.input.input_body_json_massive_hash = ctx.gen_ai.prompt.sha1();\n  ctx.aws_bedrock.invocation.input.remove(\"input_body_json\");\n  ctx.gen_ai.remove(\"prompt\");\n}\n"#
+                    compiled_painless!(
+                        "7a6359986918764f5954609ab2b9508bc3f557f09a2ed9eb602ce422b82a6009",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -480,8 +493,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"try {\n  def completionText = new StringBuilder();\n  if (ctx.aws_bedrock?.invocation?.output?.output_body_json != null) {\n    if (ctx.aws_bedrock.invocation.output.output_body_json instanceof List) {\n      for (def block : ctx.aws_bedrock.invocation.output.output_body_json) {\n        if (!(block instanceof Map)) continue;\n        \n        if (block.containsKey('delta') && block.delta instanceof Map && block.delta.containsKey('text')) {\n          // Titan model response\n          completionText.append(block.delta.text);\n        } else if (block.containsKey('outputs') && block.outputs instanceof List) {\n          // Mistral model response\n          for (def cont : block.outputs) {\n            if (cont instanceof Map && cont.containsKey('text')) {\n                completionText.append(cont.text);\n            }\n          }\n        } else if (block.containsKey('generation')) {\n          // Llama3 model response\n          completionText.append(block.generation);\n        } else if (block.containsKey('outputText')) {\n            // Titan Text G1 - Express response\n            completionText.append(block.outputText);\n        }\n      }\n    }else if (ctx.aws_bedrock.invocation.output.output_body_json instanceof Map) {\n      def block = ctx.aws_bedrock.invocation.output.output_body_json;\n      if (block instanceof Map) {\n        Map blockMap = (Map) block;\n        if (blockMap.containsKey('output') && blockMap.output instanceof Map) {\n          Map outputMap = (Map) blockMap.output;\n          if (outputMap.containsKey('message') && outputMap.message instanceof Map) {\n            Map messageMap = (Map) outputMap.message;\n            if (messageMap.containsKey('content') && messageMap.content instanceof List) {\n              List contentList = (List) messageMap.content;\n              for (def cont : contentList) {\n                if (cont.containsKey('text')) {\n                  completionText.append(cont.text);\n                }\n              }\n            }\n          }\n        } else if(blockMap.containsKey('content') && blockMap.content instanceof List) {\n          // To record Guardrail response content, function calling and agentic workflow response\n          List contentList = (List) blockMap.content;\n            for (def cont : contentList) {\n              if (cont.containsKey('text')) {\n                completionText.append(cont.text);\n              }\n            }\n        }\n      }\n    }else if (ctx.aws_bedrock.invocation.output.output_body_json instanceof String){\n      completionText.append(ctx.aws_bedrock.invocation.output.output_body_json)\n    }\n  }\n\n  // Ensure ctx.aws_bedrock.invocation.output is initialized\n  if (ctx.aws_bedrock?.invocation?.output == null) {\n      ctx.aws_bedrock.invocation.output = new HashMap();\n  }\n  // Trim completionText if it exceeds 32766 characters\n  if (completionText.length() > 32766) {\n    completionText.setLength(32766);\n  }\n  ctx.aws_bedrock.invocation.output.completion_text = completionText.toString();\n}\ncatch (Exception e) {\n  if (ctx.aws_bedrock?.invocation?.output == null) {\n      ctx.aws_bedrock.invocation.output = new HashMap();\n  }\n  ctx.aws_bedrock.invocation.output.completion_text =  '';\n  ctx.error.message = e.getMessage()\n}\n"#
+                compiled_painless!(
+                    "1d455a1b48f0edc915a1dea4faee8ac39130fd5196cf1b1f02f4b9d400fdad75",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 
@@ -494,8 +508,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.gen_ai.performance.response_size = ctx.gen_ai.completion.length();\nif (ctx.gen_ai.completion.length() > 32766) {\n  ctx.aws_bedrock.invocation.output.output_body_json_massive_hash = ctx.gen_ai.completion.sha1();\n  ctx.aws_bedrock.invocation.output.remove(\"output_body_json\");\n  ctx.gen_ai.remove(\"completion\");\n}\n"#
+                    compiled_painless!(
+                        "cd5488bb3ae04bd38827b9edb013c6fbc2676d1564246fd311dc64e4d9daea4e",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -540,8 +555,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.original = 'sha1-'+ctx.event.original.sha1()+':'+ctx.event.original.length().toString();\n"#
+                    compiled_painless!(
+                        "3567f9d7c3b51975767b2a0a58678701a97b1c62215c653de82afccde8aa6e6c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

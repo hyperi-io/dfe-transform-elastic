@@ -71,8 +71,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"if (ctx.log?.syslog?.facility?.code == null || !params.containsKey((ctx.log.syslog.facility.code).toString())) {\n  return;\n}\nctx.log.syslog.facility.name = params[(ctx.log.syslog.facility.code).toString()];"#
+                compiled_painless!(
+                    "b5ec7bb705ff269cac7e21dd458b9df18d840db3b06fb72d11e3d4694df6d82f",
+                    r#"{"params":{"StringifiedLookup":{"source":"log.syslog.facility.code","target":"log.syslog.facility.name"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"0\":\"Kernel\",\"1\":\"User\",\"2\":\"Mail\",\"3\":\"System\",\"4\":\"Security\",\"5\":\"Syslog\",\"6\":\"Line printer\",\"7\":\"Network news\",\"8\":\"UUCP\",\"9\":\"Clock\",\"10\":\"Security\",\"11\":\"FTPd\",\"12\":\"NTPd\",\"13\":\"Log audit\",\"14\":\"Log alert\",\"15\":\"Clock daemon\",\"16\":\"Local 0\",\"17\":\"Local 1\",\"18\":\"Local 2\",\"19\":\"Local 3\",\"20\":\"Local 4\",\"21\":\"Local 5\",\"22\":\"Local 6\",\"23\":\"Local 7\"}"
@@ -82,8 +83,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"if (ctx.log?.syslog?.severity?.code == null || !params.containsKey((ctx.log.syslog.severity.code).toString())) {\n  return;\n}\nctx.log.syslog.severity.name = params[(ctx.log.syslog.severity.code).toString()];"#
+                compiled_painless!(
+                    "145361bdae787d1007e4cf7704e9245441d97d3e86975aed83b25b2413beecc6",
+                    r#"{"params":{"StringifiedLookup":{"source":"log.syslog.severity.code","target":"log.syslog.severity.name"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"0\":\"Emergency\",\"1\":\"Alert\",\"2\":\"Critical\",\"3\":\"Error\",\"4\":\"Warning\",\"5\":\"Notice\",\"6\":\"Informational\",\"7\":\"Debug\"}"

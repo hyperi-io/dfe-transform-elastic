@@ -52,7 +52,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx.tags.remove(ctx.tags.indexOf('both'));"#),
+                    compiled_painless!(
+                        "b3b81b1eda742024d530de4e592482eeff45f71ec8042d38693ac58c9f1f129f",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Remove":{"path":"tags.both"}}}],"whole":true}}]}"#
+                    ),
                 )?;
             }
 
@@ -70,7 +73,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx.tags.remove(ctx.tags.indexOf('elastic_cloud_data'));"#),
+                    compiled_painless!(
+                        "c833e95838679d892c3bfddca75a292147198a332fcb7f0164e077a5693b7a5f",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Remove":{"path":"tags.elastic_cloud_data"}}}],"whole":true}}]}"#
+                    ),
                 )?;
             }
 
@@ -3056,8 +3062,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def accIDs = new ArrayList();\ndef projIDs = new ArrayList();\ndef names = new ArrayList();\ndef regions = new ArrayList();\ndef types = new ArrayList();\ndef zones = new ArrayList();\n// Collate attributes.\nif (ctx.qualys_vmdr?.asset_host_detection?.metadata?.ec2?.attribute instanceof List) {\n  for (def attr: ctx.qualys_vmdr.asset_host_detection.metadata.ec2.attribute) {\n    if (attr.value == null && attr.value == \"\") {\n      continue;\n    }\n    if (attr.name == \"latest/dynamic/instance-identity/document/accountId\") {\n      accIDs.add(attr.value);\n      continue;\n    }\n    if (attr.name == \"latest/dynamic/instance-identity/document/instanceType\") {\n      types.add(attr.value);\n      continue;\n    }\n    if (attr.name == \"latest/dynamic/instance-identity/document/region\") {\n      regions.add(attr.value);\n      continue;\n    }\n    if (attr.name == \"latest/dynamic/instance-identity/document/availabilityZone\") {\n      zones.add(attr.value);\n    }\n  }\n}\nif (ctx.qualys_vmdr?.asset_host_detection?.metadata?.google?.attribute instanceof List) {\n  for (def attr: ctx.qualys_vmdr.asset_host_detection.metadata.google.attribute) {\n    if (attr.value == null && attr.value == \"\") {\n      continue;\n    }\n    if (attr.name == \"projectId\") {\n      names.add(attr.value);\n      continue;\n    }\n    if (attr.name == \"projectIdNo\") {\n      projIDs.add(attr.value);\n      continue;\n    }\n    if (attr.name == \"machineType\") {\n      types.add(attr.value);\n      continue;\n    }\n    if (attr.name == \"location\") {\n      regions.add(attr.value);\n      continue;\n    }\n    if (attr.name == \"zone\") {\n      zones.add(attr.value);\n    }\n  }\n}\nif (ctx.qualys_vmdr?.asset_host_detection?.metadata?.azure?.attribute instanceof List) {\n  for (def attr: ctx.qualys_vmdr.asset_host_detection.metadata.azure.attribute) {\n    if (attr.value == null && attr.value == \"\") {\n      continue;\n    }\n    if (attr.name == \"subscriptionId\") {\n      projIDs.add(attr.value);\n      continue;\n    }\n    if (attr.name == \"location\") {\n      regions.add(attr.value);\n    }\n  }\n}\n// Apply collation.\nif (accIDs.length != 0) {\n  if (ctx.cloud == null) {\n    ctx.cloud = new HashMap();\n  }\n  if (ctx.cloud.account == null) {\n    ctx.cloud.account = new HashMap();\n  }\n  ctx.cloud.account.id = accIDs;\n}\nif (projIDs.length != 0) {\n  if (ctx.cloud == null) {\n    ctx.cloud = new HashMap();\n  }\n  if (ctx.cloud.project == null) {\n    ctx.cloud.project = new HashMap();\n  }\n  ctx.cloud.project.id = projIDs;\n  if (ctx.cloud?.account?.id == null) {\n    if (ctx.cloud.account == null) {\n      ctx.cloud.account = new HashMap();\n    }\n    ctx.cloud.account.id = projIDs;\n  }\n}\nif (names.length != 0) {\n  if (ctx.cloud == null) {\n    ctx.cloud = new HashMap();\n  }\n  if (ctx.cloud.project == null) {\n    ctx.cloud.project = new HashMap();\n  }\n  ctx.cloud.project.name = names;\n  if (ctx.cloud?.account?.name == null) {\n    if (ctx.cloud.account == null) {\n      ctx.cloud.account = new HashMap();\n    }\n    ctx.cloud.account.name = names;\n  }\n}\nif (regions.length != 0) {\n  if (ctx.cloud == null) {\n    ctx.cloud = new HashMap();\n  }\n  ctx.cloud.region = regions;\n}\nif (types.length != 0) {\n  if (ctx.cloud == null) {\n    ctx.cloud = new HashMap();\n  }\n  if (ctx.cloud.machine == null) {\n    ctx.cloud.machine = new HashMap();\n  }\n  ctx.cloud.machine.type = types;\n}\nif (zones.length != 0) {\n  if (ctx.cloud == null) {\n    ctx.cloud = new HashMap();\n  }\n  ctx.cloud.availability_zone = zones;\n}"#
+                    compiled_painless!(
+                        "176633b9fd1ce5cf80d91d1b566fc4d511d77569ffd327628a47d37c408f99a4",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -3078,8 +3085,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def obj = ctx.json.DETECTION_LIST; if (obj.containsKey(\"IS_DISABLED\") && obj.get(\"IS_DISABLED\").equals('0')) {\n  obj.remove(\"IS_DISABLED\");\n  obj.put(\"IS_DISABLED\", false);\n} else if (obj.containsKey(\"IS_DISABLED\") && obj.get(\"IS_DISABLED\").equals('1')) {\n  obj.remove(\"IS_DISABLED\");\n  obj.put(\"IS_DISABLED\", true);\n}"#
+                    compiled_painless!(
+                        "18c99cdd8455cea4171d7eadb6ca742628a803d576b2cdc82fa58833adb896a8",
+                        r#"{"params":null,"known":[{"MapEntryToBoolean":{"parent":"json.DETECTION_LIST","key":"IS_DISABLED","values":[["0",false],["1",true]]}}]}"#
                     ),
                 )?;
             }
@@ -3089,8 +3097,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def obj = ctx.json.DETECTION_LIST; if (obj.containsKey(\"IS_IGNORED\") && obj.get(\"IS_IGNORED\").equals('0')) {\n  obj.remove(\"IS_IGNORED\");\n  obj.put(\"IS_IGNORED\", false);\n} else if (obj.containsKey(\"IS_IGNORED\") && obj.get(\"IS_IGNORED\").equals('1')) {\n  obj.remove(\"IS_IGNORED\");\n  obj.put(\"IS_IGNORED\", true);\n}"#
+                    compiled_painless!(
+                        "9a2cebc6ac9aee3578e4417441e30221ec3b9362a499b95843f26f5f10846390",
+                        r#"{"params":null,"known":[{"MapEntryToBoolean":{"parent":"json.DETECTION_LIST","key":"IS_IGNORED","values":[["0",false],["1",true]]}}]}"#
                     ),
                 )?;
             }
@@ -3546,8 +3555,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String results = ctx.qualys_vmdr.asset_host_detection.vulnerability.results;\nif (results.startsWith(\"Package||\")) {\n  if (ctx.package == null) {\n    ctx.package = new HashMap();\n    ctx.qualys_vmdr.asset_host_detection.package_nested = new ArrayList();\n  }\n  if (ctx.package.name == null) {\n    ctx.package.name = new ArrayList();\n  }\n  if (ctx.package.version == null) {\n    ctx.package.version = new ArrayList();\n  }\n  if (ctx.package.fixed_version == null) {\n    ctx.package.fixed_version = new ArrayList();\n  }\n  def res = results.splitOnToken(\";;\");\n  for (int i=1; i < res.length; i++) {\n    def pkg_nest = [:];\n    def pkg = res[i].splitOnToken(\"||\");\n    if (pkg.length < 1) {\n      continue;\n    }\n    ctx.package.name.add(pkg[0]);\n    pkg_nest.name = pkg[0];\n    if (pkg.length < 2) {\n      continue;\n    }\n    ctx.package.version.add(pkg[1]);\n    pkg_nest.version = pkg[1];\n    if (pkg.length == 3) {\n      ctx.package.fixed_version.add(pkg[2]);\n      pkg_nest.fixed_version = pkg[2];\n    }\n    ctx.qualys_vmdr.asset_host_detection.package_nested.add(pkg_nest);\n  }\n}"#
+                        compiled_painless!(
+                            "b9c86a824858fde83c94fbdb35d28a07fc717d2f3ce2198162cbee6137446864",
+                            r#"{"params":null,"known":[{"DelimitedTable":{"source":"qualys_vmdr.asset_host_detection.vulnerability.results","prefix":"Package||","row_separator":";;","column_separator":"||","skip_rows":1,"records":"qualys_vmdr.asset_host_detection.package_nested","steps":[{"RequireColumns":1},{"Column":{"index":0,"target":"package.name","member":"name","only_when_columns":null}},{"RequireColumns":2},{"Column":{"index":1,"target":"package.version","member":"version","only_when_columns":null}},{"Column":{"index":2,"target":"package.fixed_version","member":"fixed_version","only_when_columns":3}}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -5830,8 +5840,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (!(ctx.qualys_vmdr?.asset_host_detection?.knowledge_base?.SEVERITY_LEVEL instanceof String)) {\n  return;\n} def vuln_type = ctx.qualys_vmdr?.asset_host_detection?.knowledge_base?.vuln_type; if (!(vuln_type instanceof String)) {\n  return;\n} String level = ctx.qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL; if (params.vuln_types.contains(vuln_type)) {\n  ctx.qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL = params.vuln_level.getOrDefault(level, params.vuln_level[\"0\"]);\n}"#
+                        compiled_painless!(
+                            "16c19d09a7c1e85f7214d46b3c278f5f0aa4aabde9af9eb9a64d9011970c6178",
+                            r#"{"params":{"TableLookupOrLiteral":{"source":"qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL","table":"vuln_level","target":"qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL","default":{"Row":"0"},"gate":{"field":"qualys_vmdr.asset_host_detection.knowledge_base.vuln_type","list":"vuln_types"}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"vuln_level\":{\"0\":\"None\",\"1\":\"Minimal\",\"2\":\"Medium\",\"3\":\"Serious\",\"4\":\"Critical\",\"5\":\"Urgent\"},\"vuln_types\":[\"Potential Vulnerability\",\"Vulnerability\",\"Vulnerability or Potential Vulnerability\",\"Information Gathered\"]}"
@@ -6149,8 +6160,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"// CVSS score between 9.0 and 10.0)\nif (9.0 <= ctx.vulnerability.score.base) {\n  ctx.vulnerability.severity = \"Critical\";\n}\n// CVSS score between 7.0 and 8.9\nelse if (7.0 <= ctx.vulnerability.score.base) {\n  ctx.vulnerability.severity = \"High\";\n}\n// CVSS score between 4.0 and 6.9\nelse if (4.0 <= ctx.vulnerability.score.base) {\n  ctx.vulnerability.severity = \"Medium\";\n}\n// CVSS score between 0.1 and 3.9\nelse if (0.1 <= ctx.vulnerability.score.base) {\n  ctx.vulnerability.severity = \"Low\";\n}\nelse if (ctx.vulnerability.score.base == 0) {\n  ctx.vulnerability.severity = \"None\";\n}"#
+                        compiled_painless!(
+                            "47159dcbdc8c80d2e310064b31a278740cd5efd3004c48b0716eec51d1189f8e",
+                            r#"{"params":null,"known":[{"BandLadder":{"subject":"vulnerability.score.base","arms":[[{"bounds":[{"op":"Ge","scaled":9000}],"all":true},{"Text":"Critical"}],[{"bounds":[{"op":"Ge","scaled":7000}],"all":true},{"Text":"High"}],[{"bounds":[{"op":"Ge","scaled":4000}],"all":true},{"Text":"Medium"}],[{"bounds":[{"op":"Ge","scaled":100}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Eq","scaled":0}],"all":true},{"Text":"None"}]],"default":null,"absent":null,"target":"vulnerability.severity"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -6359,8 +6371,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def filterMassive(def src) {\n  if (src instanceof Map) {\n    for (def entry: src.entrySet()) {\n      entry.setValue(filterMassive(entry.getValue()));\n    }\n    return src;\n  } else if (src instanceof List) {\n    for (int i = 0; i < src.length; i++) {\n      src[i] = filterMassive(src[i]);\n    }\n    return src;\n  } else if (src instanceof String && src.length() > 32766) {\n    return src.substring(0, 32700)+' (truncated)';\n  }\n  return src;\n}\nfilterMassive(ctx);"#
+                compiled_painless!(
+                    "d8ba8ac79df9c02625cd5a1ec454a2adcc3895cdd71ccd12e4822a6d1a17819e",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

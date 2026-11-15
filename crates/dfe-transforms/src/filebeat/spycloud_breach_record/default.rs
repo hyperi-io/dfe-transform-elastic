@@ -1226,8 +1226,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.spycloud.breach_record.user.os.toLowerCase().contains('windows')) {\n    ctx.host.os.type = 'windows';\n} else if (ctx.spycloud.breach_record.user.os.toLowerCase().contains('linux')) {\n    ctx.host.os.type = 'linux';\n} else if (ctx.spycloud.breach_record.user.os.toLowerCase().contains('mac')) {\n    ctx.host.os.type = 'macos';\n} else if (ctx.spycloud.breach_record.user.os.toLowerCase().contains('unix')) {\n    ctx.host.os.type = 'unix';\n} else if (ctx.spycloud.breach_record.user.os.toLowerCase().contains('ios')) {\n    ctx.host.os.type = 'ios';\n} else if (ctx.spycloud.breach_record.user.os.toLowerCase().contains('android')) {\n    ctx.host.os.type = 'android';\n}\n"#
+                    compiled_painless!(
+                        "54140632966805cd8a88ea84567bbdceef5256dfe6b94b68f9d15654b3b809e8",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"spycloud.breach_record.user.os","fold_case":true,"test":"Contains","arms":[{"literals":["windows"],"writes":[["host.os.type","windows"]],"removes":[]},{"literals":["linux"],"writes":[["host.os.type","linux"]],"removes":[]},{"literals":["mac"],"writes":[["host.os.type","macos"]],"removes":[]},{"literals":["unix"],"writes":[["host.os.type","unix"]],"removes":[]},{"literals":["ios"],"writes":[["host.os.type","ios"]],"removes":[]},{"literals":["android"],"writes":[["host.os.type","android"]],"removes":[]}]}}]}"#
                     ),
                 )?;
             }

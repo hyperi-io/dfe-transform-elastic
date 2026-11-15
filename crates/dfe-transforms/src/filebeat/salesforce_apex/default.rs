@@ -107,8 +107,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def apex = ctx.salesforce?.apex ?: [:];\ndef json = ctx.json ?: [:];\n\ndef fieldsToConvert = [\n  'CALLOUT_TIME': 'callout_time',\n  'CPU_TIME': 'cpu_time',\n  'DB_CPU_TIME': 'db_cpu_time',\n  'DB_TOTAL_TIME': 'db_total_time',\n  'EXECUTE_MS': 'execute_ms',\n  'FETCH_MS': 'fetch_ms',\n  'LIMIT_USAGE_PERCENT': 'limit_usage_pct',\n  'THROUGHPUT': 'throughput',\n  'RUN_TIME': 'run_time'\n];\nfor (def entry : fieldsToConvert.entrySet()) {\n  if (json[entry.getKey()] != null) {\n    def value = json[entry.getKey()];\n    if (value instanceof String && value.length() > 0) {\n      apex[entry.getValue()] = Float.parseFloat(value);\n    }\n  }\n}\n\ndef longFields = [\n  'DB_BLOCKS': 'db_blocks',\n  'LIMIT': 'limit',\n  'NUMBER_FIELDS': 'fields_count',\n  'NUMBER_SOQL_QUERIES': 'soql_queries_count',\n  'OFFSET': 'offset',\n  'ROWS': 'rows_total',\n  'ROWS_FETCHED': 'rows_fetched',\n  'ROWS_PROCESSED': 'rows_processed'\n];\nfor (def entry : longFields.entrySet()) {\n  if (json[entry.getKey()] != null) {\n    def value = json[entry.getKey()];\n    if (value instanceof String && value.length() > 0) {\n      apex[entry.getValue()] = Long.parseLong(value);\n    }\n  }\n}\n\ndef fieldsToRename = [\n  'ACTION': 'action',\n  'CLASS_NAME': 'class_name',\n  'CLIENT_NAME': 'client_name',\n  'ENTITY': 'entity',\n  'ENTITY_NAME': 'entity_name',\n  'ENTRY_POINT': 'entry_point',\n  'EVENT_TYPE': 'event_type',\n  'FILTER': 'filter',\n  'IS_LONG_RUNNING_REQUEST': 'is_long_running_request',\n  'LOGIN_KEY': 'login_key',\n  'MEDIA_TYPE': 'media_type',\n  'MESSAGE': 'message',\n  'METHOD_NAME': 'method_name',\n  'ORDERBY': 'orderby',\n  'ORGANIZATION_ID': 'organization_id',\n  'QUERY': 'query',\n  'QUIDDITY': 'quiddity',\n  'REQUEST_ID': 'request_id',\n  'REQUEST_STATUS': 'request_status',\n  'SELECT': 'select',\n  'SUBQUERIES': 'subqueries',\n  'TRIGGER_ID': 'trigger_id',\n  'TRIGGER_NAME': 'trigger_name',\n  'TRIGGER_TYPE': 'trigger_type',\n  'TYPE': 'type',\n  'URI': 'uri',\n  'URI_ID_DERIVED': 'uri_derived_id',\n  'USER_AGENT': 'user_agent',\n  'USER_ID_DERIVED': 'user_id_derived'\n];\nfor (def entry : fieldsToRename.entrySet()) {\n  if (json[entry.getKey()] != null) {\n    apex[entry.getValue()] = json[entry.getKey()];\n  }\n}\n\nctx.salesforce = ctx.salesforce ?: [:];\nctx.salesforce.apex = apex;\n"#
+                    compiled_painless!(
+                        "8100a79a487f11754491a15b0585a9f2730f72567e03d9c44467412121247832",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())
@@ -139,8 +140,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def userAgent = ctx.salesforce.apex.user_agent.toString();\nif (userAgent.length() >= 3) {\n  def code = userAgent.substring(0, 3);\n  if (params.user_agent_map.containsKey(code)) {\n    ctx.salesforce.apex.user_agent = params.user_agent_map[code];\n  }\n}\n"#
+                        compiled_painless!(
+                            "0ee51f4a072cb6812c2e9c16adffb86373395381249cc60b675f82c07a273ea0",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"user_agent_map\":{\"100\":\"Internet Explorer\",\"110\":\"Firefox\",\"130\":\"Chrome\",\"140\":\"Safari\",\"150\":\"Opera\",\"160\":\"Android\",\"170\":\"Netscape\",\"180\":\"Webkit\",\"190\":\"Gecko\",\"230\":\"Blackberry\",\"240\":\"Good Access\",\"999\":\"Unknown\"}}"
@@ -201,8 +203,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def eventType = ctx.salesforce.apex.event_type?.toLowerCase();\nif (eventType != null && params.event_action_map.containsKey(eventType)) {\n  ctx.event = ctx.event ?: [:];\n  ctx.event.action = params.event_action_map[eventType];\n}\n"#
+                        compiled_painless!(
+                            "4533268d51d91ac557a9d8ab79ebf8fb934964f183fd095d031017d4e24987ae",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"event_action_map\":{\"apexcallout\":\"apex-callout\",\"apextrigger\":\"apex-trigger\",\"apexexecution\":\"apex-execution\",\"apexrestapi\":\"apex-rest\",\"apexsoap\":\"apex-soap\",\"externalcustomapexcallout\":\"apex-external-custom-callout\"}}"
@@ -235,8 +238,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def apex = ctx.salesforce?.apex ?: [:];\ndef json = ctx.json ?: [:];\ndef event = ctx.event ?: [:];\n\nif (apex.event_type == \"ApexCallout\" && json.TIME != null) {\n  event.duration = Float.parseFloat(json.TIME);\n} else if (json.EXEC_TIME != null && (apex.event_type == \"ApexTrigger\" || apex.event_type == \"ApexExecution\")) {\n  event.duration = Float.parseFloat(json.EXEC_TIME);\n} else if (apex.run_time != null && (apex.event_type == \"ApexRestApi\" || apex.event_type == \"ApexSoap\")) {\n  event.duration = apex.run_time;\n} else if (json.TOTAL_MS != null && apex.event_type == \"ExternalCustomApexCallout\") {\n  event.duration = Float.parseFloat(json.TOTAL_MS);\n}\n\nif ((json.SUCCESS != null && json.SUCCESS == \"1\") || (json.STATUS != null && json.STATUS == \"1\")) {\n  event.outcome = \"success\";\n} else if ((json.SUCCESS != null && json.SUCCESS != \"1\") || (json.STATUS != null && json.STATUS != \"1\")) {\n  event.outcome = \"failure\";\n}\n\nif (json.URL != null && apex.event_type == \"ApexCallout\") {\n  event.url = json.URL;\n} else if (apex.uri != null && apex.event_type != \"ApexCallout\" && apex.event_type != \"ExternalCustomApexCallout\") {\n  event.url = apex.uri;\n}\n\nctx.event = event;\n"#
+                    compiled_painless!(
+                        "91eab36f223e73257eee1b99917b7f503960808d110ba3389cdea86af702cd1d",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())

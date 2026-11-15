@@ -7,31 +7,7 @@
 //! `ti_cif3` gives each indicator type its own shelf life -- 45 days for an
 //! address, 90 for a domain, 365 for a URL or a file hash -- and anything else
 //! the lifetime the integration was configured with. The date it lands on
-//! becomes `cif3.deleted_at`, and the label becomes `cif3.expiration_duration`:
-//!
-//! ```painless
-//! ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_lasttime_at;
-//! if (ctx.threat.indicator.last_seen != null) {
-//!     _tmp_lasttime_at = ZonedDateTime.parse(ctx.threat.indicator.last_seen);
-//! } else {
-//!     _tmp_lasttime_at = ZonedDateTime.parse(ctx.threat.indicator.first_seen);
-//! }
-//! if (ctx.threat.indicator.type == 'ipv4-addr' || ctx.threat.indicator.type == 'ipv6-addr') {
-//!     _tmp_deleted_at = _tmp_lasttime_at.plusDays(45L);
-//!     ctx.cif3.expiration_duration = "45d";
-//! } else if ( ... ) { ... } else {
-//!     def dur = ctx._conf.ioc_expiration_duration;
-//!     ctx.cif3.expiration_duration = ctx._conf.ioc_expiration_duration;
-//!     if (dur instanceof String){
-//!         String time_unit = dur.substring(dur.length() - 1, dur.length());
-//!         String time_value = dur.substring(0, dur.length() - 1);
-//!         if (time_unit == 'd') { _tmp_deleted_at = _tmp_lasttime_at.plusDays(Long.parseLong(time_value)); }
-//!         ...
-//!         else { _tmp_deleted_at = _tmp_lasttime_at.plusDays(90L); ctx.error.message.add('...'); }
-//!     }
-//! }
-//! ctx.cif3.deleted_at = _tmp_deleted_at;
-//! ```
+//! becomes `cif3.deleted_at`, and the label becomes `cif3.expiration_duration`.
 //!
 //! The equality ladder alone reads the LABELS and nothing else, so
 //! `cif3.expiration_duration` was right and `cif3.deleted_at` was absent on
@@ -46,7 +22,7 @@ use crate::params::{balanced, clean_path, literal_writes, skip_trivia};
 use dfe_core::event::Event;
 
 /// The calendar unit a `plus...` call adds.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Unit {
     Days,
     Hours,
@@ -85,7 +61,7 @@ impl Unit {
 }
 
 /// One indicator type and the shelf life it earns.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct ExpiryArm {
     /// The type values this arm covers.
     types: Vec<String>,
@@ -96,7 +72,7 @@ struct ExpiryArm {
 }
 
 /// The configured fallback, for a type no arm names.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct ConfiguredExpiry {
     /// The `ctx.` path holding a `<n><unit>` duration.
     source: String,
@@ -111,7 +87,7 @@ struct ConfiguredExpiry {
 }
 
 /// The whole expiry calculation, read once per call site.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct IndicatorExpiry {
     /// The timestamps to date from, in the order the script tests them.
     seen: Vec<String>,
@@ -415,16 +391,7 @@ fn configured_span(
 /// The same shelf life, chosen by a FLAG rather than by the indicator's type.
 ///
 /// `ti_strider` dates every indicator ninety days from when it arrives, except
-/// an archived one, which expires as it lands:
-///
-/// ```painless
-/// ZonedDateTime now = ZonedDateTime.parse(ctx['@timestamp']);
-/// if (ctx.ti_strider?.indicator?.archive == 1) {
-///   ctx.ti_strider.indicator.expires_at = now;
-/// } else {
-///   ctx.ti_strider.indicator.expires_at = now.plusDays(90);
-/// }
-/// ```
+/// an archived one, which expires as it lands.
 ///
 /// Neither reader beside it reaches this. [`IndicatorExpiry`] above demands
 /// per-TYPE arms and a configured fallback; `DatePlusDays` in
@@ -436,7 +403,7 @@ fn configured_span(
 /// Both arms are read off the script rather than assumed: which one shortens
 /// the life is the vendor's to say, and a matcher that assumed the flagged arm
 /// expires the record would silently invert a source that means the opposite.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct FlaggedExpiry {
     /// The timestamp both arms date from.
     base: String,
@@ -577,311 +544,8 @@ fn arm_write(block: &str, local: &str) -> Option<(String, Option<(Unit, i64)>)> 
     Some((target, Some((unit, amount))))
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::panic)]
-mod tests {
-    use serde_json::json;
-
-    use super::*;
-
-    /// `ti_cif3`'s script as the generated call site carries it: one line with
-    /// its newlines escaped, which is what dispatch resolves before parsing.
-    const RAW: &str = r#"ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_lasttime_at; if (ctx.threat.indicator.last_seen != null) {\n    _tmp_lasttime_at = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n} else {\n    _tmp_lasttime_at = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n} if (ctx.threat.indicator.type == 'ipv4-addr' || ctx.threat.indicator.type == 'ipv6-addr') {\n    _tmp_deleted_at = _tmp_lasttime_at.plusDays(45L);\n    ctx.cif3.expiration_duration = \"45d\";\n} else if (ctx.threat.indicator.type == 'domain-name') {\n    _tmp_deleted_at = _tmp_lasttime_at.plusDays(90L);\n    ctx.cif3.expiration_duration = \"90d\";\n} else if (ctx.threat.indicator.type == 'url' || ctx.threat.indicator.type == 'file') {\n    _tmp_deleted_at = _tmp_lasttime_at.plusDays(365L);\n    ctx.cif3.expiration_duration = \"365d\";\n} else {\n    def dur = ctx._conf.ioc_expiration_duration;\n    ctx.cif3.expiration_duration = ctx._conf.ioc_expiration_duration;\n    if (dur instanceof String){\n        String time_unit = dur.substring(dur.length() -  1, dur.length());\n        String time_value = dur.substring(0, dur.length() - 1);\n        if (time_unit == 'd') {\n            _tmp_deleted_at = _tmp_lasttime_at.plusDays(Long.parseLong(time_value));\n        } else if (time_unit == 'h') {\n            _tmp_deleted_at = _tmp_lasttime_at.plusHours(Long.parseLong(time_value));\n        } else if (time_unit == 'm') {\n            _tmp_deleted_at = _tmp_lasttime_at.plusMinutes(Long.parseLong(time_value));\n        } else {\n            _tmp_deleted_at = _tmp_lasttime_at.plusDays(90L);\n            if (ctx.error == null) {\n            ctx.error = new HashMap();\n            }\n            if (ctx.error.message == null) {\n            ctx.error.message = new ArrayList();\n            }\n            ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n        }\n    }\n} ctx.cif3.deleted_at = _tmp_deleted_at;\n"#;
-
-    fn script() -> String {
-        crate::common::normalise(RAW).into_owned()
-    }
-
-    fn pattern() -> IndicatorExpiry {
-        parse_indicator_expiry(&script()).unwrap()
-    }
-
-    fn indicator(kind: &str) -> Value {
-        json!({
-            "_conf": { "ioc_expiration_duration": "5d" },
-            "cif3": {},
-            "threat": { "indicator": {
-                "last_seen": "2022-07-19T08:35:05.971Z",
-                "first_seen": "2022-07-19T07:40:41.000Z",
-                "type": kind,
-            } }
-        })
-    }
-
-    #[test]
-    fn the_script_names_both_timestamps_every_arm_and_the_fallback() {
-        let pattern = pattern();
-        assert_eq!(
-            pattern.seen,
-            ["threat.indicator.last_seen", "threat.indicator.first_seen"]
-        );
-        assert_eq!(pattern.kind, "threat.indicator.type");
-        assert_eq!(pattern.target, "cif3.deleted_at");
-        assert_eq!(pattern.duration_target, "cif3.expiration_duration");
-        assert_eq!(pattern.arms.len(), 3);
-        assert_eq!(pattern.arms[0].types, ["ipv4-addr", "ipv6-addr"]);
-        assert_eq!(pattern.arms[0].amount, 45);
-        assert_eq!(pattern.arms[0].unit, Unit::Days);
-        assert_eq!(pattern.arms[0].label, "45d");
-        assert_eq!(pattern.configured.source, "_conf.ioc_expiration_duration");
-        assert_eq!(
-            pattern.configured.units,
-            [('d', Unit::Days), ('h', Unit::Hours), ('m', Unit::Minutes)]
-        );
-        assert_eq!(pattern.configured.default_amount, 90);
-        assert_eq!(pattern.configured.message_target, "error.message");
-    }
-
-    /// The capture's own event: an address, last seen on 19 July, expiring 45
-    /// days later.
-    #[test]
-    fn an_address_expires_forty_five_days_after_it_was_last_seen() {
-        let pattern = pattern();
-        let mut event = Event::new(indicator("ipv4-addr"));
-        assert!(indicator_expiry(&mut event, &pattern));
-        assert_eq!(
-            event.get("cif3.deleted_at"),
-            Some(&json!("2022-09-02T08:35:05.971Z"))
-        );
-        assert_eq!(event.get("cif3.expiration_duration"), Some(&json!("45d")));
-    }
-
-    /// No `last_seen` means the first sighting dates it instead.
-    #[test]
-    fn the_first_sighting_dates_it_when_the_last_is_absent() {
-        let pattern = pattern();
-        let mut input = indicator("domain-name");
-        input["threat"]["indicator"]
-            .as_object_mut()
-            .unwrap()
-            .shift_remove("last_seen");
-        let mut event = Event::new(input);
-        assert!(indicator_expiry(&mut event, &pattern));
-        assert_eq!(
-            event.get("cif3.deleted_at"),
-            Some(&json!("2022-10-17T07:40:41.000Z"))
-        );
-        assert_eq!(event.get("cif3.expiration_duration"), Some(&json!("90d")));
-    }
-
-    /// A type no arm names takes the configured duration, and its label is the
-    /// configured value rather than one of the script's own.
-    #[test]
-    fn an_unnamed_type_takes_the_configured_duration() {
-        let pattern = pattern();
-        let mut event = Event::new(indicator("email-addr"));
-        assert!(indicator_expiry(&mut event, &pattern));
-        assert_eq!(
-            event.get("cif3.deleted_at"),
-            Some(&json!("2022-07-24T08:35:05.971Z"))
-        );
-        assert_eq!(event.get("cif3.expiration_duration"), Some(&json!("5d")));
-    }
-
-    /// Hours and minutes are units too.
-    #[test]
-    fn the_configured_unit_can_be_hours_or_minutes() {
-        let pattern = pattern();
-        for (configured, expected) in [
-            ("6h", "2022-07-19T14:35:05.971Z"),
-            ("90m", "2022-07-19T10:05:05.971Z"),
-        ] {
-            let mut input = indicator("email-addr");
-            input["_conf"]["ioc_expiration_duration"] = json!(configured);
-            let mut event = Event::new(input);
-            assert!(indicator_expiry(&mut event, &pattern));
-            assert_eq!(event.get("cif3.deleted_at"), Some(&json!(expected)));
-        }
-    }
-
-    /// An unknown unit takes the default and says so, which is the only path
-    /// that writes to `error.message`.
-    #[test]
-    fn an_unknown_unit_falls_back_ninety_days_and_complains() {
-        let pattern = pattern();
-        let mut input = indicator("email-addr");
-        input["_conf"]["ioc_expiration_duration"] = json!("12w");
-        let mut event = Event::new(input);
-        assert!(indicator_expiry(&mut event, &pattern));
-        assert_eq!(
-            event.get("cif3.deleted_at"),
-            Some(&json!("2022-10-17T08:35:05.971Z"))
-        );
-        // A list, because the script builds an `ArrayList` before it adds.
-        assert_eq!(
-            event.get("error.message"),
-            Some(&json!([
-                "invalid ioc_expiration_duration: using default 90 days"
-            ]))
-        );
-    }
-
-    /// Neither timestamp present writes nothing at all -- Painless throws there
-    /// and the call site's `on_failure` is what answers.
-    #[test]
-    fn no_timestamp_writes_nothing() {
-        let pattern = pattern();
-        let mut event = Event::new(json!({"threat": {"indicator": {"type": "ipv4-addr"}}}));
-        assert!(indicator_expiry(&mut event, &pattern));
-        assert_eq!(event.get("cif3.deleted_at"), None);
-        assert_eq!(event.get("cif3.expiration_duration"), None);
-    }
-
-    /// Every part is demanded: a script that dates some other way, names no
-    /// types, or never writes the result declines rather than binding.
-    #[test]
-    fn a_script_missing_a_part_declines() {
-        let script = script();
-        for missing in [
-            script.replace("ZonedDateTime.parse(ctx.", "LocalDate.parse(ctx."),
-            script.replace(
-                "ctx.threat.indicator.type == ",
-                "ctx.threat.indicator.type != ",
-            ),
-            script.replace(" ctx.cif3.deleted_at = _tmp_deleted_at;", ""),
-            script.replace("dur instanceof String", "dur instanceof Map"),
-            script.replace(".add('invalid ioc_expiration_duration", ".push('invalid"),
-        ] {
-            assert!(
-                parse_indicator_expiry(&missing).is_none(),
-                "claimed a script it cannot serve: {missing}"
-            );
-        }
-    }
-
-    /// `ti_strider`'s expiry as the generated call site carries it, newlines
-    /// escaped.
-    const FLAGGED: &str = r"ZonedDateTime now = ZonedDateTime.parse(ctx['@timestamp']);\nif (ctx.ti_strider?.indicator?.archive == 1) {\n  ctx.ti_strider.indicator.expires_at = now;\n} else {\n  ctx.ti_strider.indicator.expires_at = now.plusDays(90);\n}\n";
-
-    fn flagged() -> FlaggedExpiry {
-        parse_flagged_expiry(&crate::common::normalise(FLAGGED)).unwrap()
-    }
-
-    fn expiry(archive: Option<i64>) -> Option<Value> {
-        let mut indicator = json!({});
-        if let Some(archive) = archive {
-            indicator["archive"] = json!(archive);
-        }
-        let mut event = Event::new(json!({
-            "@timestamp": "2021-11-11T01:02:03.123Z",
-            "ti_strider": { "indicator": indicator }
-        }));
-        assert!(flagged_expiry(&mut event, &flagged()));
-        event.get("ti_strider.indicator.expires_at").cloned()
-    }
-
-    /// Every part comes off the script: the base, the flag, both arms and the
-    /// target.
-    #[test]
-    fn the_flagged_expiry_reads_both_arms_off_the_script() {
-        assert_eq!(
-            flagged(),
-            FlaggedExpiry {
-                base: "@timestamp".into(),
-                flag: "ti_strider.indicator.archive".into(),
-                wanted: json!(1),
-                matched: None,
-                unmatched: Some((Unit::Days, 90)),
-                target: "ti_strider.indicator.expires_at".into(),
-            }
-        );
-    }
-
-    /// The captured events: an archived indicator expires as it lands, and
-    /// everything else ninety days later.
-    #[test]
-    fn an_archived_indicator_expires_at_ingest_and_the_rest_in_ninety_days() {
-        assert_eq!(expiry(Some(1)), Some(json!("2021-11-11T01:02:03.123Z")));
-        assert_eq!(expiry(None), Some(json!("2022-02-09T01:02:03.123Z")));
-        // A flag set to anything else takes the same arm as an absent one.
-        assert_eq!(expiry(Some(0)), Some(json!("2022-02-09T01:02:03.123Z")));
-    }
-
-    /// No timestamp writes nothing: Painless throws in `parse` and the
-    /// processor's own `if` is what guards it.
-    #[test]
-    fn a_flagged_expiry_with_no_base_writes_nothing() {
-        let mut event = Event::new(json!({ "ti_strider": { "indicator": { "archive": 1 } } }));
-        assert!(flagged_expiry(&mut event, &flagged()));
-        assert!(!event.has("ti_strider.indicator.expires_at"));
-    }
-
-    /// The arms are read, not assumed. A script that lengthens the flagged life
-    /// instead of shortening it binds the other way round.
-    #[test]
-    fn the_flagged_arm_is_whichever_one_the_script_writes() {
-        let inverted = crate::common::normalise(FLAGGED)
-            .replace(
-                "expires_at = now;",
-                "expires_at = now.plusDays(90);\n_swap_",
-            )
-            .replace(
-                "expires_at = now.plusDays(90);\n}\n",
-                "expires_at = now;\n}\n",
-            )
-            .replace("\n_swap_", "");
-        let pattern = parse_flagged_expiry(&inverted).unwrap();
-        assert_eq!(pattern.matched, Some((Unit::Days, 90)));
-        assert_eq!(pattern.unmatched, None);
-    }
-
-    /// One part the reader cannot place declines the WHOLE script, so a
-    /// near-miss never writes a date that is present and wrong.
-    #[test]
-    fn a_flagged_expiry_missing_a_part_declines() {
-        let script = crate::common::normalise(FLAGGED).into_owned();
-        for broken in [
-            // The two arms writing different fields.
-            script.replace(
-                "ctx.ti_strider.indicator.expires_at = now.plusDays(90);",
-                "ctx.ti_strider.indicator.other = now.plusDays(90);",
-            ),
-            // Neither arm adding a span, which is a copy rather than an expiry.
-            script.replace("= now.plusDays(90);", "= now;"),
-            // A guard this reader does not model.
-            script.replace("ctx.ti_strider?.indicator?.archive == 1", "now != null"),
-            // A statement after the branch.
-            script.replace("}\n", "}\nctx.a = 1;\n"),
-            // A second statement inside an arm.
-            script.replace(
-                "ctx.ti_strider.indicator.expires_at = now;",
-                "ctx.ti_strider.indicator.expires_at = now; ctx.a = 1;",
-            ),
-        ] {
-            assert_ne!(broken, script, "each replacement has to bite");
-            assert!(
-                parse_flagged_expiry(&broken).is_none(),
-                "claimed a script it cannot serve: {broken}"
-            );
-        }
-    }
-
-    /// The dispatch reaches this matcher, and nothing else is bound beside it.
-    #[test]
-    fn the_ladder_dispatches_the_flagged_expiry_here() {
-        let bound = crate::common::known_patterns(&crate::common::normalise(FLAGGED));
-        assert_eq!(
-            bound.len(),
-            1,
-            "the ladder bound {bound:?} instead of this matcher alone"
-        );
-    }
-
-    /// The production path, from the call site's own escaped literal.
-    #[test]
-    fn the_escaped_flagged_call_site_runs() {
-        let _guard = crate::stats::serialised();
-        let plan = crate::plan::PainlessPlan::new(FLAGGED);
-        assert!(plan.matches(), "the call site's own literal binds nothing");
-
-        let mut event = Event::new(json!({
-            "@timestamp": "2021-11-11T01:02:03.123Z",
-            "ti_strider": { "indicator": {} }
-        }));
-        assert!(crate::plan::painless_exec_plan(&mut event, &plan).is_ok());
-        assert_eq!(
-            event.get("ti_strider.indicator.expires_at"),
-            Some(&json!("2022-02-09T01:02:03.123Z"))
-        );
-    }
-}
+#[path = "indicator_expiry_tests.rs"]
+mod tests;

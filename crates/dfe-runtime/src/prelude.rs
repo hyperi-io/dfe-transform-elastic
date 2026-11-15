@@ -19,7 +19,7 @@ pub use chrono::{DateTime, FixedOffset, NaiveDateTime, Utc};
 // three crates that define them rather than one.
 pub use crate::{cached_grok, cached_grok_mapped};
 pub use dfe_core::cached_regex;
-pub use dfe_painless::{cached_painless, cached_params, cached_script};
+pub use dfe_painless::{cached_painless, cached_params, cached_script, compiled_painless};
 
 pub use crate::grok_cache::{extract_first_match, extract_first_match_traced};
 

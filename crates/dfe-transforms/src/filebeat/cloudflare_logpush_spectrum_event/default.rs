@@ -113,8 +113,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def convertToMillis(long timestamp) {\n  if (timestamp > (long)(1e18)) {\n    return timestamp/(long)(1e6)\n  } else if (timestamp < (long)(1e10))  {\n    return timestamp*(long)(1e3)\n  }\n  return timestamp\n}\nif (ctx.json?.Timestamp != null && ctx.json.Timestamp instanceof Number) {\n  ctx.json.Timestamp = convertToMillis(ctx.json.Timestamp);\n}\nif (ctx.json?.ConnectTimestamp != null && ctx.json.ConnectTimestamp instanceof Number) {\n  if (ctx.json.ConnectTimestamp == 0) {\n    ctx.json.ConnectTimestamp = null;\n  } else {\n    ctx.json.ConnectTimestamp = convertToMillis(ctx.json.ConnectTimestamp);\n  }\n}\nif (ctx.json?.DisconnectTimestamp != null && ctx.json.DisconnectTimestamp instanceof Number) {\n  if (ctx.json.DisconnectTimestamp == 0) {\n    ctx.json.DisconnectTimestamp = null;\n  } else {\n    ctx.json.DisconnectTimestamp = convertToMillis(ctx.json.DisconnectTimestamp);\n  }\n}\n"#
+                    compiled_painless!(
+                        "3d14254782519982e118291b22ff8071a0c8b1b710b3c44608285d9022a19169",
+                        r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.Timestamp",false],["json.ConnectTimestamp",true],["json.DisconnectTimestamp",true]],"parse_strings":false}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -369,8 +370,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ZonedDateTime start = ZonedDateTime.parse(ctx.event.start);\nZonedDateTime end = ZonedDateTime.parse(ctx.event.end);\nctx.event.duration = ChronoUnit.NANOS.between(start, end);\n"#
+                        compiled_painless!(
+                            "394b33a528b0a7715d1280fdd377528126d2fcbd7143b24d28469bcce85ff84f",
+                            r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                         ),
                     )?;
                     Ok(())

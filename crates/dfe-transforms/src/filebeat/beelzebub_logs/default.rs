@@ -264,8 +264,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.http.request.body.bytes = ctx.http.request.body.content.length();"#
+                    compiled_painless!(
+                        "02f4e9612b4ac3810d50c63f55b66052336bd0f5e4f2e1b0bc815c2e9d1c63ce",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

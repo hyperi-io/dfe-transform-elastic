@@ -1,0 +1,242 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright (c) 2026 HYPERI PTY LIMITED
+
+#![forbid(unsafe_code)]
+#![warn(clippy::all)]
+// These modules mirror the structure of an Elastic ingest pipeline processor
+// for processor, which is deliberately not idiomatic Rust. Correctness lints
+// stay on; only the style ones that fight that shape are off.
+#![allow(
+    clippy::needless_return,
+    clippy::redundant_closure_for_method_calls,
+    clippy::collapsible_if,
+    clippy::redundant_closure_call,
+    unused_assignments,
+    unused_variables,
+    unused_imports,
+    dead_code
+)]
+
+//! Generated filebeat transforms for the packages from `m365` to `nvidia`.
+//!
+//! The modules stay in `dfe-transforms/src/filebeat`, where the generator writes
+//! them, and `dfe-transforms` re-exports this crate under `filebeat`.
+
+#[path = "../../dfe-transforms/src/filebeat/m365_defender_alert/mod.rs"]
+pub mod m365_defender_alert;
+#[path = "../../dfe-transforms/src/filebeat/m365_defender_event/mod.rs"]
+pub mod m365_defender_event;
+#[path = "../../dfe-transforms/src/filebeat/m365_defender_incident/mod.rs"]
+pub mod m365_defender_incident;
+#[path = "../../dfe-transforms/src/filebeat/m365_defender_vulnerability/mod.rs"]
+pub mod m365_defender_vulnerability;
+#[path = "../../dfe-transforms/src/filebeat/macos_advanced_monitoring/mod.rs"]
+pub mod macos_advanced_monitoring;
+#[path = "../../dfe-transforms/src/filebeat/macos_authentication/mod.rs"]
+pub mod macos_authentication;
+#[path = "../../dfe-transforms/src/filebeat/macos_file_read_write/mod.rs"]
+pub mod macos_file_read_write;
+#[path = "../../dfe-transforms/src/filebeat/macos_network_activity/mod.rs"]
+pub mod macos_network_activity;
+#[path = "../../dfe-transforms/src/filebeat/macos_process_execution_monitoring/mod.rs"]
+pub mod macos_process_execution_monitoring;
+#[path = "../../dfe-transforms/src/filebeat/macos_system_change/mod.rs"]
+pub mod macos_system_change;
+#[path = "../../dfe-transforms/src/filebeat/macos_user_and_account_management/mod.rs"]
+pub mod macos_user_and_account_management;
+#[path = "../../dfe-transforms/src/filebeat/mattermost_audit/mod.rs"]
+pub mod mattermost_audit;
+#[path = "../../dfe-transforms/src/filebeat/memcached_stats/mod.rs"]
+pub mod memcached_stats;
+#[path = "../../dfe-transforms/src/filebeat/menlo_dlp/mod.rs"]
+pub mod menlo_dlp;
+#[path = "../../dfe-transforms/src/filebeat/menlo_web/mod.rs"]
+pub mod menlo_web;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_defender_cloud_assessment/mod.rs"]
+pub mod microsoft_defender_cloud_assessment;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_defender_cloud_event/mod.rs"]
+pub mod microsoft_defender_cloud_event;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_defender_endpoint_log/mod.rs"]
+pub mod microsoft_defender_endpoint_log;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_defender_endpoint_machine/mod.rs"]
+pub mod microsoft_defender_endpoint_machine;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_defender_endpoint_machine_action/mod.rs"]
+pub mod microsoft_defender_endpoint_machine_action;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_defender_endpoint_vulnerability/mod.rs"]
+pub mod microsoft_defender_endpoint_vulnerability;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_dhcp_log/mod.rs"]
+pub mod microsoft_dhcp_log;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_dnsserver_analytical/mod.rs"]
+pub mod microsoft_dnsserver_analytical;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_dnsserver_audit/mod.rs"]
+pub mod microsoft_dnsserver_audit;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_exchange_online_message_trace_log/mod.rs"]
+pub mod microsoft_exchange_online_message_trace_log;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_exchange_server_httpproxy/mod.rs"]
+pub mod microsoft_exchange_server_httpproxy;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_exchange_server_imap4_pop3/mod.rs"]
+pub mod microsoft_exchange_server_imap4_pop3;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_exchange_server_messagetracking/mod.rs"]
+pub mod microsoft_exchange_server_messagetracking;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_exchange_server_smtp/mod.rs"]
+pub mod microsoft_exchange_server_smtp;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_intune_audit/mod.rs"]
+pub mod microsoft_intune_audit;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_intune_managed_device/mod.rs"]
+pub mod microsoft_intune_managed_device;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_sentinel_alert/mod.rs"]
+pub mod microsoft_sentinel_alert;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_sentinel_event/mod.rs"]
+pub mod microsoft_sentinel_event;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_sentinel_incident/mod.rs"]
+pub mod microsoft_sentinel_incident;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_sqlserver_audit/mod.rs"]
+pub mod microsoft_sqlserver_audit;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_sqlserver_availability_groups/mod.rs"]
+pub mod microsoft_sqlserver_availability_groups;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_sqlserver_log/mod.rs"]
+pub mod microsoft_sqlserver_log;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_sqlserver_performance/mod.rs"]
+pub mod microsoft_sqlserver_performance;
+#[path = "../../dfe-transforms/src/filebeat/microsoft_sqlserver_transaction_log/mod.rs"]
+pub mod microsoft_sqlserver_transaction_log;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_archive_search_logs/mod.rs"]
+pub mod mimecast_archive_search_logs;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_audit_events/mod.rs"]
+pub mod mimecast_audit_events;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_cloud_integrated_logs/mod.rs"]
+pub mod mimecast_cloud_integrated_logs;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_dlp_logs/mod.rs"]
+pub mod mimecast_dlp_logs;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_message_release_logs/mod.rs"]
+pub mod mimecast_message_release_logs;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_siem_logs/mod.rs"]
+pub mod mimecast_siem_logs;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_threat_intel_malware_customer/mod.rs"]
+pub mod mimecast_threat_intel_malware_customer;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_threat_intel_malware_grid/mod.rs"]
+pub mod mimecast_threat_intel_malware_grid;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_ttp_ap_logs/mod.rs"]
+pub mod mimecast_ttp_ap_logs;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_ttp_ip_logs/mod.rs"]
+pub mod mimecast_ttp_ip_logs;
+#[path = "../../dfe-transforms/src/filebeat/mimecast_ttp_url_logs/mod.rs"]
+pub mod mimecast_ttp_url_logs;
+#[path = "../../dfe-transforms/src/filebeat/miniflux_feed_entry/mod.rs"]
+pub mod miniflux_feed_entry;
+#[path = "../../dfe-transforms/src/filebeat/modsecurity_auditlog/mod.rs"]
+pub mod modsecurity_auditlog;
+#[path = "../../dfe-transforms/src/filebeat/mongodb_atlas_alert/mod.rs"]
+pub mod mongodb_atlas_alert;
+#[path = "../../dfe-transforms/src/filebeat/mongodb_atlas_disk/mod.rs"]
+pub mod mongodb_atlas_disk;
+#[path = "../../dfe-transforms/src/filebeat/mongodb_atlas_hardware/mod.rs"]
+pub mod mongodb_atlas_hardware;
+#[path = "../../dfe-transforms/src/filebeat/mongodb_atlas_mongod_audit/mod.rs"]
+pub mod mongodb_atlas_mongod_audit;
+#[path = "../../dfe-transforms/src/filebeat/mongodb_atlas_mongod_database/mod.rs"]
+pub mod mongodb_atlas_mongod_database;
+#[path = "../../dfe-transforms/src/filebeat/mongodb_atlas_organization/mod.rs"]
+pub mod mongodb_atlas_organization;
+#[path = "../../dfe-transforms/src/filebeat/mongodb_atlas_process/mod.rs"]
+pub mod mongodb_atlas_process;
+#[path = "../../dfe-transforms/src/filebeat/mongodb_atlas_project/mod.rs"]
+pub mod mongodb_atlas_project;
+#[path = "../../dfe-transforms/src/filebeat/mongodb_log/mod.rs"]
+pub mod mongodb_log;
+#[path = "../../dfe-transforms/src/filebeat/mysql_enterprise_audit/mod.rs"]
+pub mod mysql_enterprise_audit;
+#[path = "../../dfe-transforms/src/filebeat/mysql_error/mod.rs"]
+pub mod mysql_error;
+#[path = "../../dfe-transforms/src/filebeat/mysql_performance/mod.rs"]
+pub mod mysql_performance;
+#[path = "../../dfe-transforms/src/filebeat/mysql_replica_status/mod.rs"]
+pub mod mysql_replica_status;
+#[path = "../../dfe-transforms/src/filebeat/nagios_xi_events/mod.rs"]
+pub mod nagios_xi_events;
+#[path = "../../dfe-transforms/src/filebeat/nagios_xi_host/mod.rs"]
+pub mod nagios_xi_host;
+#[path = "../../dfe-transforms/src/filebeat/nagios_xi_service/mod.rs"]
+pub mod nagios_xi_service;
+#[path = "../../dfe-transforms/src/filebeat/nats_log/mod.rs"]
+pub mod nats_log;
+#[path = "../../dfe-transforms/src/filebeat/neon_cyber_detections/mod.rs"]
+pub mod neon_cyber_detections;
+#[path = "../../dfe-transforms/src/filebeat/neon_cyber_events/mod.rs"]
+pub mod neon_cyber_events;
+#[path = "../../dfe-transforms/src/filebeat/netbox_devices/mod.rs"]
+pub mod netbox_devices;
+#[path = "../../dfe-transforms/src/filebeat/netbox_ips/mod.rs"]
+pub mod netbox_ips;
+#[path = "../../dfe-transforms/src/filebeat/netflow_log/mod.rs"]
+pub mod netflow_log;
+#[path = "../../dfe-transforms/src/filebeat/netscout_sightline/mod.rs"]
+pub mod netscout_sightline;
+#[path = "../../dfe-transforms/src/filebeat/netskope_alerts/mod.rs"]
+pub mod netskope_alerts;
+#[path = "../../dfe-transforms/src/filebeat/netskope_alerts_events_v2/mod.rs"]
+pub mod netskope_alerts_events_v2;
+#[path = "../../dfe-transforms/src/filebeat/netskope_events/mod.rs"]
+pub mod netskope_events;
+#[path = "../../dfe-transforms/src/filebeat/netskope_transaction/mod.rs"]
+pub mod netskope_transaction;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_amqp/mod.rs"]
+pub mod network_traffic_amqp;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_cassandra/mod.rs"]
+pub mod network_traffic_cassandra;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_dhcpv4/mod.rs"]
+pub mod network_traffic_dhcpv4;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_dns/mod.rs"]
+pub mod network_traffic_dns;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_flow/mod.rs"]
+pub mod network_traffic_flow;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_http/mod.rs"]
+pub mod network_traffic_http;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_icmp/mod.rs"]
+pub mod network_traffic_icmp;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_memcached/mod.rs"]
+pub mod network_traffic_memcached;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_mongodb/mod.rs"]
+pub mod network_traffic_mongodb;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_mysql/mod.rs"]
+pub mod network_traffic_mysql;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_nfs/mod.rs"]
+pub mod network_traffic_nfs;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_pgsql/mod.rs"]
+pub mod network_traffic_pgsql;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_redis/mod.rs"]
+pub mod network_traffic_redis;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_sip/mod.rs"]
+pub mod network_traffic_sip;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_thrift/mod.rs"]
+pub mod network_traffic_thrift;
+#[path = "../../dfe-transforms/src/filebeat/network_traffic_tls/mod.rs"]
+pub mod network_traffic_tls;
+#[path = "../../dfe-transforms/src/filebeat/nextron_thor_thor_forwarding/mod.rs"]
+pub mod nextron_thor_thor_forwarding;
+#[path = "../../dfe-transforms/src/filebeat/nginx_access/mod.rs"]
+pub mod nginx_access;
+#[path = "../../dfe-transforms/src/filebeat/nginx_error/mod.rs"]
+pub mod nginx_error;
+#[path = "../../dfe-transforms/src/filebeat/nginx_ingress_controller_access/mod.rs"]
+pub mod nginx_ingress_controller_access;
+#[path = "../../dfe-transforms/src/filebeat/nginx_ingress_controller_error/mod.rs"]
+pub mod nginx_ingress_controller_error;
+#[path = "../../dfe-transforms/src/filebeat/nozomi_networks_alert/mod.rs"]
+pub mod nozomi_networks_alert;
+#[path = "../../dfe-transforms/src/filebeat/nozomi_networks_asset/mod.rs"]
+pub mod nozomi_networks_asset;
+#[path = "../../dfe-transforms/src/filebeat/nozomi_networks_audit/mod.rs"]
+pub mod nozomi_networks_audit;
+#[path = "../../dfe-transforms/src/filebeat/nozomi_networks_health/mod.rs"]
+pub mod nozomi_networks_health;
+#[path = "../../dfe-transforms/src/filebeat/nozomi_networks_node/mod.rs"]
+pub mod nozomi_networks_node;
+#[path = "../../dfe-transforms/src/filebeat/nozomi_networks_node_cve/mod.rs"]
+pub mod nozomi_networks_node_cve;
+#[path = "../../dfe-transforms/src/filebeat/nozomi_networks_session/mod.rs"]
+pub mod nozomi_networks_session;
+#[path = "../../dfe-transforms/src/filebeat/nozomi_networks_variable/mod.rs"]
+pub mod nozomi_networks_variable;
+#[path = "../../dfe-transforms/src/filebeat/nvidia_gpu_stats/mod.rs"]
+pub mod nvidia_gpu_stats;

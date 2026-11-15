@@ -191,8 +191,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def answers = ctx.zeek.dns.answers; def ttls = ctx.zeek.dns.TTLs; if (answers.isEmpty() || ttls.isEmpty() || answers.length != ttls.length) {\n  return;\n} def lst = new ArrayList(); for (def i = 0; i < answers.length; i++) {\n  lst.add([\n    \"data\": answers[i],\n    \"ttl\": (int)ttls[i]\n  ])\n} if (ctx.dns == null) {\n  ctx.dns = new HashMap();\n} ctx.dns.answers = lst;"#
+                    compiled_painless!(
+                        "d0dbc8aeb0798c06b58eb558748a7e28f960b6a67585cef46955c8967f8a9ac5",
+                        r#"{"params":null,"known":[{"ZipLists":{"columns":[{"key":"data","source":"zeek.dns.answers","to_long":false},{"key":"ttl","source":"zeek.dns.TTLs","to_long":true}],"target":"dns.answers","mismatch":null}}]}"#
                     ),
                 )?;
             }
@@ -242,8 +243,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def answers = ctx.dns.answers; def iplist = new ArrayList(); for (def i = 0; i < ctx.dns.answers.length; i++) {\n  if (answers[i].containsKey(\"tmpip\")) {\n    iplist.add(answers[i].tmpip);\n    answers[i].remove(\"tmpip\");\n  }\n} ctx.dns.resolved_ip = iplist;"#
+                    compiled_painless!(
+                        "629315bf2f1ec9940dd20ecbedc3ffe4a15c69a0a6b11cca9625d10ce8cef7e2",
+                        r#"{"params":null,"known":[{"HoistMember":{"list":"dns.answers","member":"tmpip","target":"dns.resolved_ip"}}]}"#
                     ),
                 )?;
             }

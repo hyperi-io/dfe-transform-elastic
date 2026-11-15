@@ -308,7 +308,7 @@ fn distinct(event: &mut Event, path: &str, drop_null: bool) {
 /// Every `box_events` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
-        hash: "02de3d2d39f0a883d833ca52736b7e129109f32bf755c0481c5cc95e290cd7b0",
+        hash: "c1411b921005157654a41044c5887d794969872443acd4b61fb74535a2bbda65",
         source: "box_events",
         name: "prepare_shield_objects",
         run: prepare_shield_objects,

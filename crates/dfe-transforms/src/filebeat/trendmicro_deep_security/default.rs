@@ -2184,8 +2184,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def signatureIds = [4000000L, 4000001L, 4000002L, 4000003L, 4000010L, 4000011L, 4000012L, 4000013L, 4000020L, 4000030L]; if (signatureIds.contains(ctx.trendmicro.deep_security.signature_id)) {\n  ctx.event.category = [\"malware\"];\n  ctx.event.kind = \"alert\";\n  ctx.event.type = [\"info\"];\n}"#
+                            compiled_painless!(
+                                "ef24ecc47d8fb17205d912534a1bb32e4164cddbb284e833a1e332a6d6da7a3b",
+                                r#"{"params":null,"known":[]}"#
                             ),
                         )?;
                         Ok(())

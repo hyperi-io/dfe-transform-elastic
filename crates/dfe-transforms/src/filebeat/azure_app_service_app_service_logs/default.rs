@@ -27,7 +27,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "46de568aa0d0bae7f2c7f161130f7bdd17645af1e92d11bc8e69106d916618a2",
+                        r#"{"params":"Replace","known":[]}"#,
                         r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#
                     ),
                     cached_params!("{\"empty_field_name\":\"\\\"\\\":\\\"\\\",\"}"),

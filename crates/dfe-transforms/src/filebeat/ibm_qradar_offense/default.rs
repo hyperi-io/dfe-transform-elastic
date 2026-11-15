@@ -2018,8 +2018,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def offenseSeverity = ctx.ibm_qradar.offense.severity;\nif (0 <= offenseSeverity && offenseSeverity <= 2) {\n  ctx.event.severity = 21;\n} else if (3 <= offenseSeverity && offenseSeverity <= 5) {\n  ctx.event.severity = 47;\n} else if (6 <= offenseSeverity && offenseSeverity <= 8) {\n  ctx.event.severity = 73;\n} else if (9 <= offenseSeverity && offenseSeverity <= 10) {\n  ctx.event.severity = 99;\n}"#
+                        compiled_painless!(
+                            "f0c2b77a61369cba12a078cc7354e3f99934435593d11dfbfd2f5a62bbc9322e",
+                            r#"{"params":null,"known":[{"RangeLadder":{"source":"ibm_qradar.offense.severity","target":"event.severity","arms":[{"low":0,"high":2,"high_inclusive":true,"quoted":false,"value":"21"},{"low":3,"high":5,"high_inclusive":true,"quoted":false,"value":"47"},{"low":6,"high":8,"high_inclusive":true,"quoted":false,"value":"73"},{"low":9,"high":10,"high_inclusive":true,"quoted":false,"value":"99"}]}}]}"#
                         ),
                     )?;
                     Ok(())

@@ -105,8 +105,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"boolean isPrivateCIDR(def ip) {\n  CIDR class_a_network = new CIDR('10.0.0.0/8');\n  CIDR class_b_network = new CIDR('172.16.0.0/12');\n  CIDR class_c_network = new CIDR('192.168.0.0/16');\n\n  try {\n    return class_a_network.contains(ip) || class_b_network.contains(ip) || class_c_network.contains(ip);\n  } catch (IllegalArgumentException e) {\n    return false;\n  }\n}\ntry {\n  if (ctx.client == null) {\n    Map map = new HashMap();\n    ctx.put(\"client\", map);\n  }\n\n  def found = false;\n  for (def item : ctx.apache.access.remote_addresses) {\n    if (!isPrivateCIDR(item)) {\n      ctx.client.ip = item;\n      found = true;\n      break;\n    }\n  }\n  if (!found) {\n    ctx.client.ip = ctx.apache.access.remote_addresses[0];\n  }\n} catch (Exception e) {\n  ctx.client.ip = null;\n}"#
+                    compiled_painless!(
+                        "00a1194f71f8c2d8db889c4d81f35228737006ac66a9e68d3abada2290a2b610",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"apache.access.remote_addresses","target":"client.ip","only_if_unset":false,"only_if_single":false,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -317,8 +318,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def parts = ctx.apache.access.ssl.protocol.toLowerCase().splitOnToken(\"v\"); if (parts.length != 2) {\n  return;\n} if (parts[1].contains(\".\")) {\n  ctx.tls.version = parts[1];\n} else {\n  ctx.tls.version = parts[1] + \".0\";\n} ctx.tls.version_protocol = parts[0];"#
+                    compiled_painless!(
+                        "41441434a0f26cc9cdc71cf4b5a55da28050c735ceab3f75861fa95b19a89983",
+                        r#"{"params":null,"known":[{"TlsVersionSplit":{"source":"apache.access.ssl.protocol"}}]}"#
                     ),
                 )?;
             }
