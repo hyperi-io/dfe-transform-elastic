@@ -1,5 +1,0 @@
-# Test inputs for this directory's fixtures.
-fields:
-  log:
-    file:
-      path: /test/path/dlplogs

@@ -14,8 +14,8 @@
 //! comment that does not churn.
 //!
 //! These are counts over the GENERATED TREE, so they hold on a fresh clone
-//! with no corpus. Corpus-scoped numbers belong in `tests/compat-baseline.json`
-//! instead, which is skipped whenever the corpus provenance does not match.
+//! with no corpus. Corpus-scoped numbers belong in the compat baseline that
+//! dfe-transform-elastic-dev keeps beside its corpus.
 
 // Every failure here aborts the test that called it, which is the point: a
 // ratchet that cannot load, or one that rose, must stop the run rather than

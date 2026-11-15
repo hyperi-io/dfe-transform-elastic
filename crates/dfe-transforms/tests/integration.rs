@@ -24,17 +24,19 @@
 //! as one ~11.6 GB rustc and ran zero tests. A comment does not need a link
 //! cycle.
 //!
-//! These read the repository's own fixtures under `tests/fixtures/`. The
+//! These read the synthetic samples under `tests/fixtures/synthetic/`. The
 //! floor over the unencumbered samples is `tests/unencumbered.rs`.
 
 mod common;
 
-/// One floor over a fixture, `$fixture` in `$dir` under `tests/fixtures/`.
+/// One floor over a sample, `$fixture` in `$dir` under `tests/fixtures/synthetic/`.
 macro_rules! floor {
     ($name:ident, $transform:expr, $dir:literal, $fixture:literal, $max_errors:expr) => {
         #[test]
         fn $name() {
-            let dir = dfe_runtime::testutil::fixtures().join($dir);
+            let dir = dfe_runtime::testutil::fixtures()
+                .join("synthetic")
+                .join($dir);
             crate::common::run_floor(&$transform, &dir, $fixture, $max_errors);
         }
     };

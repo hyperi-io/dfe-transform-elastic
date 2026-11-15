@@ -6,9 +6,8 @@
 //! `tests/integration/` runs the same sources through the full harness
 //! (config fields merged, envelope detected); these cases feed the bare
 //! `.log` lines instead, which is the other intake shape, and panw's per-type
-//! transforms have no coverage anywhere else. No ECS parity here -- that is
-//! `tests/compat_corpus.rs` -- only the things true regardless of expected
-//! output:
+//! transforms have no coverage anywhere else. No ECS parity here, only the
+//! things true regardless of expected output:
 //!
 //! 1. The transform does not panic. A panic takes the pod and stalls a
 //!    partition, and these are the sources with the most grok in them.
@@ -18,8 +17,8 @@
 //!    having done nothing is indistinguishable from a working one without
 //!    this.
 //!
-//! An `ours` case reads a data stream's fixture under `tests/fixtures/`, and a
-//! `public` case reads a sample under `tests/fixtures/unencumbered/`.
+//! A `public` case reads a sample under `tests/fixtures/unencumbered/`, and a
+//! `synthetic` case one under `tests/fixtures/synthetic/`.
 
 use std::path::{Path, PathBuf};
 
@@ -75,6 +74,14 @@ fn run(transform: &dyn Transform, path: &Path) -> Outcome {
     for mut event in events {
         let before = field_count(&event);
         match transform.transform(&mut event) {
+            // An `on_failure` handler returns Ok with `error.message` set, and
+            // the field it adds would otherwise count as enrichment.
+            Ok(_) if event.as_value().pointer("/error/message").is_some() => {
+                outcome.errored += 1;
+                if outcome.first_error.is_none() {
+                    outcome.first_error = Some(event.as_value()["error"]["message"].to_string());
+                }
+            }
             Ok(TransformResult::Continue | TransformResult::Drop) => {
                 if field_count(&event) > before {
                     outcome.enriched += 1;
@@ -147,13 +154,15 @@ fn check(
 }
 
 /// `(where, source, transform, fixture, max_errors, min_enriched)`, where
-/// `where` is `ours` for `tests/fixtures/` or `public` for the samples under
-/// `tests/fixtures/unencumbered/`.
+/// `where` is `public` for `tests/fixtures/unencumbered/` or `synthetic` for
+/// `tests/fixtures/synthetic/`.
 macro_rules! source_case {
-    (ours, $name:ident, $transform:expr, $fixture:literal, $max_errors:expr, $min_enriched:expr) => {
+    (synthetic, $name:ident, $transform:expr, $fixture:literal, $max_errors:expr, $min_enriched:expr) => {
         #[test]
         fn $name() {
-            let path = dfe_runtime::testutil::fixtures().join($fixture);
+            let path = dfe_runtime::testutil::fixtures()
+                .join("synthetic")
+                .join($fixture);
             check(
                 stringify!($name),
                 &$transform,
@@ -178,44 +187,8 @@ macro_rules! source_case {
     };
 }
 
-// Each floor is every event in the fixture, because every event enriches: a
-// lower one would pass a transform collapsed to a single working event.
-source_case!(
-    ours,
-    raw_fortinet_default,
-    dfe_transforms::filebeat::fortinet::default::Default,
-    "fortinet/fortigate/test-fortinet.log",
-    0,
-    54
-);
-
-source_case!(
-    ours,
-    raw_cisco_meraki_default,
-    dfe_transforms::filebeat::cisco_meraki::default::Default,
-    "cisco/meraki/logs/test-events.log",
-    0,
-    33
-);
-
-source_case!(
-    ours,
-    raw_cisco_nexus_default,
-    dfe_transforms::filebeat::cisco_nexus::default::Default,
-    "cisco/nexus/test-nexus.log",
-    0,
-    72
-);
-
-// panw has no `default`; its pipeline splits by log type.
-source_case!(
-    ours,
-    raw_panw_traffic,
-    dfe_transforms::filebeat::panw::traffic::Traffic,
-    "panw/panos/traffic.log",
-    0,
-    100
-);
+// Each floor is every event that does not fail: a lower one would pass a
+// transform collapsed to a single working event.
 
 // Raw Office 365 Management Activity records, as the API returns them and the
 // filebeat o365 input nests them. Splunk Boss of the SOC v3, CC0-1.0.
@@ -229,16 +202,6 @@ source_case!(
 );
 
 source_case!(
-    ours,
-    raw_cisco_ios_default,
-    dfe_transforms::filebeat::cisco_ios::default::Default,
-    "cisco/ios/test-cisco-ios.log",
-    0,
-    27
-);
-
-// The same raw-intake floors over the unencumbered samples.
-source_case!(
     public,
     raw_fortinet_sample,
     dfe_transforms::filebeat::fortinet::default::Default,
@@ -247,22 +210,26 @@ source_case!(
     5000
 );
 
+// Every line carries a BSD syslog header before Meraki's own `1 <epoch>`, and
+// the pipeline's timestamp parse fails on all 27 of them.
 source_case!(
     public,
     raw_cisco_meraki_sample,
     dfe_transforms::filebeat::cisco_meraki::default::Default,
     "cisco_meraki/meraki-events.log",
-    0,
-    27
+    27,
+    0
 );
 
+// Six of the seven lines put a year-first timestamp straight after the
+// priority, a header none of the pipeline's syslog patterns accepts.
 source_case!(
     public,
     raw_cisco_nexus_sample,
     dfe_transforms::filebeat::cisco_nexus::default::Default,
     "cisco_nexus/cisco-nxos-syslog.log",
-    0,
-    7
+    6,
+    1
 );
 
 source_case!(
@@ -281,4 +248,32 @@ source_case!(
     "cisco_ios/cisco-ios-syslog.log",
     0,
     11
+);
+
+// The same records, written for this repository: one sample per record type.
+source_case!(
+    synthetic,
+    raw_o365_exchange_admin,
+    dfe_transforms::filebeat::o365::default::Default,
+    "o365/exchange-admin.log",
+    0,
+    2
+);
+
+source_case!(
+    synthetic,
+    raw_o365_sharepoint,
+    dfe_transforms::filebeat::o365::default::Default,
+    "o365/sharepoint.log",
+    0,
+    2
+);
+
+source_case!(
+    synthetic,
+    raw_o365_azuread,
+    dfe_transforms::filebeat::o365::default::Default,
+    "o365/azuread.log",
+    0,
+    2
 );

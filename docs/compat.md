@@ -2,6 +2,8 @@
 
 compat runs a fixture's sample lines through the source's own ingest pipeline in a throwaway Elasticsearch container and keeps the documents the engine returns. Those documents are ground truth: what the real engine produces, rather than what we believe it produces. The corpus test scores each transform against the confirmed fixtures it can load.
 
+The samples, the confirmed documents, the corpus test and its baseline all live in the private dfe-transform-elastic-dev repository, which builds against this repository's crates. This repository carries none of them.
+
 What a difference MEANS -- the ratchet, the compare policy, and the divergences kept on purpose -- is [compat-policy.md](compat-policy.md).
 
 ```mermaid
@@ -14,9 +16,9 @@ flowchart LR
     C --> T["compat_corpus.rs<br/>scores the transform"]
 ```
 
-## What is committed
+## What a confirmed fixture holds
 
-A confirmed sample under `tests/fixtures/<package>/<data stream>/` has `<sample>-expected.json` beside it. The samples under `tests/fixtures/unencumbered/` are inputs only.
+A confirmed sample in dfe-transform-elastic-dev has `<sample>-expected.json` beside it. The samples under this repository's `tests/fixtures/` are inputs only.
 
 | Key | Holds |
 |---|---|
@@ -24,9 +26,9 @@ A confirmed sample under `tests/fixtures/<package>/<data stream>/` has `<sample>
 | `input` | The documents the engine was sent, exactly as the pipeline saw them |
 | `expected` | The documents it returned, one per input, or `_compat_error` where the pipeline dropped or failed the event |
 
-`crates/dfe-transforms/tests/compat_corpus.rs` reads these files, runs the inputs of every capture it can score through the transform, and compares field by field. It starts no container and needs no network.
+`compat_corpus.rs` reads these files, runs the inputs of every capture it can score through the transform, and compares field by field. It starts no container and needs no network.
 
-The confirmed documents are produced by the meta project that maintains the transforms, which runs the engine. `tests/fixtures/PROVENANCE.md` names the tools.
+The confirmed documents are produced by the meta project that maintains the transforms, which runs the engine.
 
 ## Known limits
 

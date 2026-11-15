@@ -1,0 +1,3 @@
+<134>1 1772600000.123456789 MX-SYN-01 events dhcp lease of ip 192.0.2.150 from server mac 00:00:5E:00:53:A1 for client mac 00:00:5E:00:53:B2 from router 192.0.2.1 on subnet 255.255.255.0 with dns 198.51.100.53
+<134>1 1772600060.234567891 MX-SYN-01 events type=vpn_connectivity_change vpn_type='site-to-site' peer_contact='198.51.100.200:51856' peer_ident='0a1b2c3d4e5f60718293a4b5c6d7e8f9' connectivity='true'
+<134>1 1772600120.345678912 MR-SYN-02 events type=association radio='0' vap='1' channel='6' rssi='23' aid='1813578850'

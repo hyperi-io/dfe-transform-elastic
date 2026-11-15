@@ -161,13 +161,12 @@ pub fn load_fixture_events(dir: &Path, log_name: &str) -> Vec<Event> {
     load_and_wrap_events(&log_path, &config_fields)
 }
 
-/// Run a committed fixture as a FLOOR: no panic, errors pinned, fields emitted.
+/// Run a committed sample as a FLOOR: no panic, errors pinned, fields emitted.
 ///
-/// Not a parity test. The committed expectations were captured from an older
-/// generation of Elastic's pipelines and disagree with the current engine, so
-/// `tests/compat_corpus.rs` owns parity and this asserts only what is true
-/// regardless of expected output: the transform survives every event,
-/// `max_errors` does not rise, and at least one event gains a field.
+/// Not a parity test. Parity is measured in dfe-transform-elastic-dev, so this
+/// asserts only what is true regardless of expected output: the transform
+/// survives every event, `max_errors` does not rise, and every event that
+/// transforms gains a field.
 pub fn run_floor(transform: &dyn Transform, dir: &Path, log_name: &str, max_errors: usize) {
     let (log_path, _) = find_fixture_pair(dir, log_name);
 
@@ -190,6 +189,15 @@ pub fn run_floor(transform: &dyn Transform, dir: &Path, log_name: &str, max_erro
         match transform.transform(event) {
             Err(e) => {
                 eprintln!("  event[{i}]: transform error: {e}");
+                errors += 1;
+            }
+            // An `on_failure` handler returns Ok with `error.message` set, and
+            // the field it adds would otherwise count as enrichment.
+            Ok(_) if event.as_value().pointer("/error/message").is_some() => {
+                eprintln!(
+                    "  event[{i}]: pipeline failure: {}",
+                    event.as_value()["error"]["message"]
+                );
                 errors += 1;
             }
             Ok(_) => {

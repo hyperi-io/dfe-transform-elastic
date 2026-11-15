@@ -321,46 +321,13 @@ mod tests {
         assert_eq!(cid1, cid2);
     }
 
-    /// The first flow over `transport` that carries a community id, in
-    /// `tests/fixtures/cisco/ios/test-cisco-ios.log-expected.json`.
-    #[cfg(feature = "testutil")]
-    fn cisco_ios_flow(
-        transport: &str,
-        keep: impl Fn(&serde_json::Value) -> bool,
-    ) -> serde_json::Value {
-        let path = crate::testutil::fixtures().join("cisco/ios/test-cisco-ios.log-expected.json");
-        let docs = crate::testutil::expected_documents(&path);
-        docs.into_iter()
-            .find(|doc| {
-                doc["network"]["transport"] == transport
-                    && doc["network"]["community_id"].is_string()
-                    && keep(doc)
-            })
-            .unwrap_or_else(|| panic!("{} has no matching {transport} flow", path.display()))
-    }
-
     /// A destination-unreachable (type 3) has no counterpart, so the flow is
-    /// hashed one-way, to the id Elasticsearch wrote for it.
-    #[cfg(feature = "testutil")]
+    /// hashed one-way. The id is the Community ID reference implementation's
+    /// (pycommunityid) for the same flow.
     #[test]
     fn icmp_without_a_counterpart_is_one_way() {
-        let flow = cisco_ios_flow("icmp", |doc| doc["icmp"]["type"] == "3");
-        let number = |field: &str| -> u16 {
-            flow["icmp"][field]
-                .as_str()
-                .and_then(|n| n.parse().ok())
-                .unwrap_or_else(|| panic!("icmp.{field} is a number: {flow}"))
-        };
-        let cid = community_id_v1(
-            flow["source"]["ip"].as_str().unwrap(),
-            flow["destination"]["ip"].as_str().unwrap(),
-            number("type"),
-            number("code"),
-            "icmp",
-            0,
-        )
-        .unwrap();
-        assert_eq!(Some(cid.as_str()), flow["network"]["community_id"].as_str());
+        let cid = community_id_v1("192.0.2.1", "198.51.100.5", 3, 1, "icmp", 0).unwrap();
+        assert_eq!(cid, "1:8/umfqCQF5APY5DKIWML6FFbPhQ=");
     }
 
     /// An echo and its reply are the same flow, so they hash the same.
@@ -372,21 +339,11 @@ mod tests {
     }
 
     /// IGMP has no ports, and hashing a zero pair in their place yields a
-    /// different id from the one Elasticsearch wrote.
-    #[cfg(feature = "testutil")]
+    /// different id from the reference implementation's (pycommunityid).
     #[test]
     fn a_protocol_without_ports_omits_the_port_bytes() {
-        let flow = cisco_ios_flow("igmp", |_| true);
-        let cid = community_id_v1(
-            flow["source"]["ip"].as_str().unwrap(),
-            flow["destination"]["ip"].as_str().unwrap(),
-            0,
-            0,
-            "igmp",
-            0,
-        )
-        .unwrap();
-        assert_eq!(Some(cid.as_str()), flow["network"]["community_id"].as_str());
+        let cid = community_id_v1("192.0.2.10", "224.0.0.22", 0, 0, "igmp", 0).unwrap();
+        assert_eq!(cid, "1:xiviNiFKvUdlceTUn8b2yIf4CK4=");
     }
 
     /// Verbatim from `testdata/compat/cisco_ios/log/test-asr920`: an ACL deny

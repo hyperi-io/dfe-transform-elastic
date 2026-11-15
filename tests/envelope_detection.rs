@@ -4,8 +4,8 @@
 //! Detection against the shapes the producers actually write.
 //!
 //! Every file under `tests/envelopes/` is one wrapper, read off the
-//! producer's own tests or off the compat corpus and carrying the file it came
-//! from. Adding a shape is adding a file: this test walks the directory, so a
+//! producer's own tests or built from the keys it documents, and carrying where
+//! it came from. Adding a shape is adding a file: this test walks the directory, so a
 //! producer that grows a transport cannot be forgotten here.
 //!
 //! A fixture states two things. `shape` is what the event IS, and `detect` is

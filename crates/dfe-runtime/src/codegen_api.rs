@@ -3799,23 +3799,14 @@ mod tests {
         );
     }
 
-    /// A space before the quote of a field that itself holds commas, read off
-    /// the first line in `tests/fixtures/cisco/umbrella/test-umbrella-dnslogs.log`
-    /// that has one.
-    #[cfg(feature = "testutil")]
+    /// A space before the quote of a field that itself holds commas, in a line
+    /// laid out as Cisco Umbrella documents its DNS log, with invented values.
     #[test]
     fn a_gap_before_a_quote_closes_so_the_field_reads_as_quoted() {
-        let path = crate::testutil::fixtures().join("cisco/umbrella/test-umbrella-dnslogs.log");
-        let text = std::fs::read_to_string(&path)
-            .unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
-        let line = text
-            .lines()
-            .filter_map(|row| serde_json::from_str::<Value>(row).ok())
-            .filter_map(|row| row["message"].as_str().map(str::to_string))
-            .find(|message| message.contains(r#"", ""#))
-            .unwrap_or_else(|| panic!("{} has no gap before a quote", path.display()));
+        let line = r#""2026-03-04 05:06:07","WS-SYN-01","WS-SYN-01,Synthetic Site", "192.0.2.50","203.0.113.5","Allowed","1 (A)","NOERROR","www.example.com.","Software/Technology,Business Services""#;
+        assert!(line.contains(r#"", ""#), "{line}");
 
-        let closed = csv_close_quote_gap(&line, ',', '"');
+        let closed = csv_close_quote_gap(line, ',', '"');
         assert_eq!(closed, line.replace(r#"", ""#, r#"",""#), "{line}");
     }
 

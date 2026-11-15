@@ -127,7 +127,7 @@ impl PainlessPlan {
     ///
     /// Answers the question STATICALLY, so a script from a package with no
     /// transform can be measured. Triggering is not the same as being right --
-    /// `tests/compat_corpus.rs` is what measures that.
+    /// the compat corpus in dfe-transform-elastic-dev is what measures that.
     #[must_use]
     pub fn matches(&self) -> bool {
         self.bespoke.is_some() || self.params.is_some() || !self.known.is_empty()

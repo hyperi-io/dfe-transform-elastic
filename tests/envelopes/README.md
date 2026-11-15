@@ -1,9 +1,9 @@
 # Envelope fixtures
 
-One file per inbound shape the service must recognise. Each is the wrapper a
-producer writes, taken from that producer's own tests or built from the keys
-the producer documents, because a detector asserted against a guessed shape
-proves nothing.
+One file per inbound shape the service must recognise, one directory per
+family. Each is the wrapper a producer writes, taken from that producer's own
+tests or built from the keys the producer documents, because a detector
+asserted against a guessed shape proves nothing.
 
 Every file is the same object:
 
@@ -22,7 +22,7 @@ which shapes we are blind to.
 `tests/envelope_detection.rs` walks this directory and asserts `detect`, so
 adding a shape is adding a file.
 
-The `beats` shapes are built from the keys a Beats shipper or Elastic Agent writes around a vendor line: `agent`, `data_stream`, `input` and `message`. `the_beats_shapes_load` fails a run that finds fewer than five.
+The `beats` shapes are under `beats/`, written for this repository from the keys a Beats shipper or Elastic Agent writes around a vendor line: `agent`, `data_stream`, `input` and `message`. The line is an invented Cisco IOS message. `the_beats_shapes_load` fails a run that finds fewer than five.
 
 ## The families
 
@@ -38,7 +38,7 @@ output included -- see `Envelope` in `src/envelope.rs`.
 ## Three findings the shapes forced
 
 **The Elastic wrapper does not vary by version -- it varies by input
-mechanism.** `panw/panos/traffic` is filebeat 8.13.2 and still carries
+mechanism.** A filebeat 8.13.2 module event still carries
 `fileset.name` with no `data_stream`, so a beats-7-versus-8 detector would be
 answering a question the data never asks. The real split is module output
 (`@metadata.beat` + `fileset`) against Fleet integration output (`data_stream` +
