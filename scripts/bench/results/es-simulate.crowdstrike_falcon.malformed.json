@@ -1,0 +1,173 @@
+{
+  "rows": 400000,
+  "runs": [
+    {
+      "engine": "es-simulate",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.87,
+          3.28,
+          5.48
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          3.07,
+          3.43,
+          5.46
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 21.249536696461213,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 4.485148514851485,
+      "peak_cgroup_memory_bytes": 6120124416,
+      "peak_rss_bytes": null,
+      "samples": 103,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 17185.877700679834,
+      "rate_per_core": 4296.469425169958,
+      "cpu_seconds": 55.088674,
+      "rec_per_cpu_second": 5808.816527331916,
+      "whole_rate": 17234.21999693174,
+      "window_seconds": 18.61993932304904,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794272632
+    },
+    {
+      "engine": "es-simulate",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.93,
+          3.12,
+          5.04
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          2.96,
+          3.27,
+          5.04
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 17.704738835939327,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 10.163694749337518,
+      "peak_cgroup_memory_bytes": 6120124416,
+      "peak_rss_bytes": null,
+      "samples": 113,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 14960.818793385448,
+      "rate_per_core": 3740.204698346362,
+      "cpu_seconds": 64.24978,
+      "rec_per_cpu_second": 4980.561801145467,
+      "whole_rate": 15025.398434498173,
+      "window_seconds": 21.38920365384547,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794272819
+    },
+    {
+      "engine": "es-simulate",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.99,
+          3.0,
+          4.89
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          2.75,
+          3.08,
+          4.86
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 10.221303651914182,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 9.21540787414894,
+      "peak_cgroup_memory_bytes": 6120124416,
+      "peak_rss_bytes": null,
+      "samples": 102,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 17848.965554439852,
+      "rate_per_core": 4462.241388609963,
+      "cpu_seconds": 56.13501066666651,
+      "rec_per_cpu_second": 5700.542249830175,
+      "whole_rate": 17538.951900402975,
+      "window_seconds": 17.92820984633484,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794272878
+    },
+    {
+      "engine": "es-simulate",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.71,
+          2.69,
+          4.5
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          33.45,
+          10.13,
+          6.92
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 12.661519614602065,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 8.352982642638906,
+      "peak_cgroup_memory_bytes": 6120124416,
+      "peak_rss_bytes": null,
+      "samples": 107,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 17260.790032178626,
+      "rate_per_core": 4315.197508044656,
+      "cpu_seconds": 56.054577,
+      "rec_per_cpu_second": 5708.722054935853,
+      "whole_rate": 17070.47020486579,
+      "window_seconds": 18.539128244039603,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794273024
+    }
+  ]
+}
