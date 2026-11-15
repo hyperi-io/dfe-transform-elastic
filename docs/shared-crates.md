@@ -4,7 +4,7 @@
 
 `dfe-transform-splack` (the Splunk equivalent) took a copy of `dfe-parse` and
 `dfe-runtime`. The two projects evolve their copies independently, and that is
-deliberate: both are still changing shape, and extracting them now would make
+deliberate: both are still changing, and extracting them now would make
 every breaking change block both projects at once.
 
 The duplication costs less than that coordination would.
