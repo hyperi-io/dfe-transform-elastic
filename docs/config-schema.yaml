@@ -411,7 +411,7 @@ $defs:
         anonymous, ASN only, CC BY 4.0.
       type: string
       const: sapics
-    - description: Caller supplies the MMDB paths directly; nothing is downloaded.
+    - description: Caller supplies the MMDB paths directly. Nothing is downloaded.
       type: string
       const: custom
   AutoDownloadConfig:
@@ -540,7 +540,7 @@ $defs:
     description: How backends are used when multiple are enabled.
     oneOf:
     - description: |-
-        Try backends in order; stop on first success.
+        Try backends in order. Stop on first success.
         Default order: Kafka first, file fallback.
       type: string
       const: cascade
