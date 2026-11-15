@@ -3,6 +3,15 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.32](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.31...v1.1.32) (2026-11-15)
+
+### Bug Fixes
+
+* **build:** give the generated transforms crate its own lints table ([#173](https://github.com/hyperi-io/dfe-transform-elastic/issues/173)) ([578e482](https://github.com/hyperi-io/dfe-transform-elastic/commit/578e482f898cfba71e00a1cf99eb72637899bc06))
+* **painless:** pass script hashes and resolved plans ([#179](https://github.com/hyperi-io/dfe-transform-elastic/issues/179)) ([cfe03dc](https://github.com/hyperi-io/dfe-transform-elastic/commit/cfe03dced28692b5f49afcaea3fbb9b5396bcd01))
+* **scalo:** rebuild on 2.14.30 ([#178](https://github.com/hyperi-io/dfe-transform-elastic/issues/178)) ([66e779e](https://github.com/hyperi-io/dfe-transform-elastic/commit/66e779ea70e50bc34472538cd77bba92833cbe0d))
+* **tests:** run ignored tests on the repository's own fixtures ([#176](https://github.com/hyperi-io/dfe-transform-elastic/issues/176)) ([75c9cee](https://github.com/hyperi-io/dfe-transform-elastic/commit/75c9cee8374338b8e45f310a8628d2181bd2119b))
+
 ## [1.1.31](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.30...v1.1.31) (2026-11-11)
 
 ### Bug Fixes
