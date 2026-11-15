@@ -33,8 +33,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def stringified_orig = Json.dump(ctx.json);\nif (stringified_orig != null) {\n  ctx.event = ctx.event ?: [:];\n  ctx.event.original = stringified_orig;\n}\n"#
+                    compiled_painless!(
+                        "5174210f24fb050e54015608bc8b9b59b0c4704d0a00758b364804c5d7820eb3",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -356,8 +357,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event = ctx.event ?: [:];\nString severity = ctx.wiz.defend.severity;\nif (severity.equalsIgnoreCase(\"low\")) {\n  ctx.event.severity = 21;\n} else if (severity.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (severity.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (severity.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (severity.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
+                    compiled_painless!(
+                        "6e9094eeafb41b34b0ed0fc61665542a102fcb92117922d3690ab05b6de3ed18",
+                        r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#
                     ),
                 )?;
             }
@@ -1689,8 +1691,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String status = ctx.wiz.defend.triggering_event.status.toLowerCase();\nif (status.contains('success')) {\n  ctx.event.outcome = \"success\";\n} else if (status.contains('fail')) {\n  ctx.event.outcome = \"failure\";\n} else {\n  ctx.event.outcome = \"unknown\";\n}"#
+                        compiled_painless!(
+                            "7ccfea48daf32b41d1599c73ce99c34e1a1b65773319c2a1f4df0b0c59214ea2",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

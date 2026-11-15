@@ -64,7 +64,7 @@ fn gather_custom_strings(event: &mut Event, _params: &Value) {
 
 /// Every `imperva` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
-    hash: "826bfc3c557b5ad787f00d4653af3c58c1eb15fb406c864c7c14a40c08015c12",
+    hash: "6ee779eda9c899fb329443f0de0fe3f52b5482d50ba8d03d21fe8bca2aa2bbb4",
     source: "imperva",
     name: "gather_custom_strings",
     run: gather_custom_strings,

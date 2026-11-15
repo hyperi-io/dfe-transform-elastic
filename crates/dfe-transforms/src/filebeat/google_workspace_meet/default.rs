@@ -181,8 +181,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\ndef type = params.get(ctx.google_workspace.meet.name);\nif (type == null) {\n  ctx.event.remove('type');\n} else {\n  ctx.event.type = [type];\n}"#
+                        compiled_painless!(
+                            "6b51e666ca4ec8cf382c94f637b36f0156596a174f2d93383d026b3516ef05ce",
+                            r#"{"params":{"MemberLookup":{"key":"google_workspace.meet.name","table":null,"fold":"None","target":"event.type","wrap":true,"miss":"Remove","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"abuse_report_submitted\":\"info\",\"broadcast_activity\":\"info\",\"call_ended\":\"info\",\"closed_captions_started\":\"info\",\"consented_to_third_party_media_app\":\"info\",\"dialed_out\":\"info\",\"hand_raised\":\"info\",\"in_meet_broadcast_activity\":\"info\",\"invitation_sent\":\"info\",\"knocking_accepted\":\"info\",\"knocking_denied\":\"info\",\"livestream_watched\":\"info\",\"poll_answered\":\"info\",\"poll_created\":\"creation\",\"presentation_started\":\"info\",\"presentation_stopped\":\"info\",\"question_created\":\"creation\",\"question_responded\":\"info\",\"reaction_sent\":\"info\",\"recording_activity\":\"info\",\"ring_answered\":\"info\",\"ring_missed\":\"info\",\"ring_sent\":\"info\",\"room_check_in\":\"info\",\"room_check_out\":\"info\",\"see_chat_everyone\":\"info\",\"see_chat_participants\":\"info\",\"send_chat_contributors\":\"info\",\"send_chat_everyone\":\"info\",\"send_chat_hosts\":\"info\",\"smart_notes_session_started\":\"info\",\"smart_notes_session_stopped\":\"info\",\"speech_translation_allowed\":\"info\",\"speech_translation_disallowed\":\"info\",\"streaming_session_explicit_consent\":\"info\",\"transcription_activity\":\"info\",\"watermarking_active\":\"info\",\"watermarking_starting\":\"info\",\"watermarking_stopped\":\"info\",\"whiteboard_started\":\"info\"}"
@@ -1137,7 +1138,11 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(r#"ctx.event.duration *= params.S_TO_NS;"#),
+                    compiled_painless!(
+                        "2e74ca12e6a3c795fad30fcfc3ea1bc4986222e244420928ca88045b94200689",
+                        r#"{"params":"Scale","known":[]}"#,
+                        r#"ctx.event.duration *= params.S_TO_NS;"#
+                    ),
                     cached_params!("{\"S_TO_NS\":1000000000}"),
                 )?;
             }
@@ -2568,7 +2573,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "8da080c4ea96c432845b9c5f103aaa7a7dc69c93222289821cc9e7f329d6d34c",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.event.start = ctx.google_workspace.meet.endpoint.start_timestamp_seconds * params.S_TO_MS;"#
                     ),
                     cached_params!("{\"S_TO_MS\":1000}"),

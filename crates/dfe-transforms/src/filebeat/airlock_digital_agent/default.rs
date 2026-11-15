@@ -420,7 +420,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "c6a89ea71bf98a494d5b0d82d9fc20edb1cf771dca8731d6e327002a0d3bf9c1",
+                        r#"{"params":"FirstContainedMember","known":[]}"#,
                         r#"String os_family = ctx.host.os.full.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_family.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\n"#
                     ),
                     cached_params!(
@@ -1236,8 +1238,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"if (ctx.json?.status == null || ctx.json.status == '') {\n  return;\n}\nctx.airlock_digital.agent.status_value = params[(ctx.json.status).toString()];"#
+                compiled_painless!(
+                    "919ce8f7a5d3a2b4aefe2ac11fccc1f44476986fe388f1442d8322115b35d01d",
+                    r#"{"params":null,"known":[]}"#
                 ),
                 cached_params!("{\"0\":\"Offline\",\"1\":\"Online\",\"3\":\"Safemode\"}"),
             )?;

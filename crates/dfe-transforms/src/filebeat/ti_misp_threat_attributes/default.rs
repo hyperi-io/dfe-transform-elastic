@@ -176,8 +176,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.misp?.attribute?.first_seen != null && ctx.misp.attribute.first_seen.length() == 16) {\n    ctx.misp.attribute.first_seen = ctx.misp.attribute.first_seen.substring(0, ctx.misp.attribute.first_seen.length() - 3)\n}\nif (ctx.misp?.attribute?.last_seen != null && ctx.misp.attribute.last_seen.length() == 16) {\n    ctx.misp.attribute.last_seen = ctx.misp.attribute.last_seen.substring(0, ctx.misp.attribute.last_seen.length() - 3)\n}\n"#
+                    compiled_painless!(
+                        "c251879607a2bf21fb4980093185015f81bf2490a5544787546735df6fe0ce0d",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())
@@ -292,8 +293,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def decayed_count = \n    ctx.misp.attribute.decay_score.stream()\n    .filter(t -> t.decayed == true)\n    .count();\ndef decayed = ((float) decayed_count >= (ctx.misp.attribute.decay_score.size())/2.0);\nctx.misp.attribute.decayed = decayed;\nif (decayed == true) {\n    ctx.misp.attribute.decayed_at = ZonedDateTime.parse(ctx._tmp.event_ingested).minusMinutes(2L);\n}\n"#
+                        compiled_painless!(
+                            "fdb09ae59fea4c1e7d57733b484c05c55acb9bc5d3a83f8cf5351d8d062500f7",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -339,8 +341,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def dur = ctx._conf.ioc_expiration_duration; def ts = ctx.misp.attribute.timestamp; long tsMillis = ts instanceof Number ? ts.longValue() : Long.parseLong(ts); ZonedDateTime _tmp_decayed_at; ZonedDateTime _tmp_timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(tsMillis * 1000L), ZoneId.of('Z')); ZonedDateTime _tmp_max_time = _tmp_timestamp; if (ctx.misp.attribute.last_seen != null) {\n    ZonedDateTime _tmp_last_seen = ZonedDateTime.parse(ctx.misp.attribute.last_seen);\n    if (_tmp_max_time.isBefore(_tmp_last_seen)) {\n        _tmp_max_time = _tmp_last_seen;\n    }\n} if (dur instanceof String){\n  char time_unit;\n  String time_value;\n  if (dur.length() != 0){\n    time_unit = dur.charAt(dur.length() - 1);\n    time_value = dur.substring(0, dur.length() - 1);\n  }\n  if (time_unit == (char)'d') {\n    _tmp_decayed_at = _tmp_max_time.plusDays(Long.parseLong(time_value));\n  } else if (time_unit == (char)'h') {\n    _tmp_decayed_at = _tmp_max_time.plusHours(Long.parseLong(time_value));\n  } else if (time_unit == (char)'m') {\n    _tmp_decayed_at = _tmp_max_time.plusMinutes(Long.parseLong(time_value));\n  } else {\n    _tmp_decayed_at = _tmp_max_time.plusDays(90L);\n    if (ctx.error == null) {\n      ctx.error = new HashMap();\n    }\n    if (ctx.error.message == null) {\n      ctx.error.message = new ArrayList();\n    }\n    ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n  }\n  ctx.misp.attribute.decayed_at = _tmp_decayed_at;\n} ctx.misp.attribute.decayed = _tmp_decayed_at.isBefore(ZonedDateTime.parse(ctx._tmp.event_ingested))? true : false;\n"#
+                        compiled_painless!(
+                            "39008f70a12499ad16ce12542fb95297c0bcbda630867f607b49b5644ca1c40f",
+                            r#"{"params":null,"known":[{"DecayWindow":{"duration":"_conf.ioc_expiration_duration","seconds":"misp.attribute.timestamp","later":"misp.attribute.last_seen","default_days":90,"invalid_message":"invalid ioc_expiration_duration: using default 90 days","target":"misp.attribute.decayed_at","flag":"misp.attribute.decayed","ingested":"_tmp.event_ingested"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -965,8 +968,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def tags = ctx.misp.tag.stream()\n   .map(t -> t.name.replace('\\\\', '').replace('\"', ''))\n   .collect(Collectors.toList());\ndef tlpTags = tags.stream()\n   .filter(t -> t.startsWith('tlp:'))\n   .map(t -> t.replace('tlp:', '').toUpperCase())\n   .collect(Collectors.toList());\n\nctx.temp_tags = tags;\nctx.threat.indicator.marking = [ 'tlp': tlpTags ];\n"#
+                    compiled_painless!(
+                        "cada8e16da326076d5a441e2b0d5a19693d119aaffbcbc7cbdb3f8923e82edb4",
+                        r#"{"params":null,"known":[{"TagsAndMarking":{"source":"misp.tag","member":"name","strip":["\\","\""],"scrubbed":"temp_tags","append":false,"marking":"threat.indicator.marking","key":"tlp","prefix":"tlp:"}}]}"#
                     ),
                 )?;
             }

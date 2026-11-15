@@ -33,7 +33,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "f41b37361ab552b315ceaa5a559a699a64a16c6f61407893e5284af6f79e66ba",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"tags","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[[{"FieldContains":{"path":"tags","argument":{"Literal":"both"},"lowered":false}}]],"then":[{"Literal":{"Remove":{"path":"tags.both"}}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"cloud","wanted":"Null","negated":false,"lowered":false}},{"FieldContains":{"path":"tags","argument":{"Literal":"elastic_cloud_data"},"lowered":false}}]],"then":[{"Literal":{"Remove":{"path":"tags.elastic_cloud_data"}}}],"alt":[]}}],"alt":[]}}],"whole":true}}]}"#,
                     r#"if (ctx.tags != null) {\n  if (ctx.tags.contains('both')) {\n    ctx.tags.remove(ctx.tags.indexOf('both'));\n  }\n  if (ctx.cloud == null && ctx.tags.contains('elastic_cloud_data')) {\n    ctx.tags.remove(ctx.tags.indexOf('elastic_cloud_data'));\n  }\n}\n"#
                 ),
             )?;
@@ -3537,8 +3539,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.teleport.audit.body = ctx.teleport.audit.body.decodeBase64();\n"#
+                        compiled_painless!(
+                            "eb16aa07984828691089b853aad9c0e3040b33f960bae2e4dd91cbe8b3e37977",
+                            r#"{"params":null,"known":[{"DecodeBase64":{"source":"teleport.audit.body","target":"teleport.audit.body"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -4124,7 +4127,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "b8d78ee8ce742a4f4b4c70ea6887ad880033d3589cda25ae12f5ced1e0bb1093",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"teleport.audit.certificate.identity.logins","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"AppendAll":{"path":"related.user","source":"teleport.audit.certificate.identity.logins"}}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"teleport.audit.certificate.identity.participants","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"AppendAll":{"path":"related.user","source":"teleport.audit.certificate.identity.participants"}}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"teleport.audit.certificate.identity.database_users","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"AppendAll":{"path":"related.user","source":"teleport.audit.certificate.identity.database_users"}}}],"alt":[]}}],"whole":true}}]}"#,
                         r#"if (ctx.teleport?.audit?.certificate?.identity?.logins != null) {\n  ctx.related.user.addAll(ctx.teleport.audit.certificate.identity.logins);\n}\nif (ctx.teleport?.audit?.certificate?.identity?.participants != null) {\n  ctx.related.user.addAll(ctx.teleport.audit.certificate.identity.participants);\n}\nif (ctx.teleport?.audit?.certificate?.identity?.database_users != null) {\n  ctx.related.user.addAll(ctx.teleport.audit.certificate.identity.database_users);\n}\n"#
                     ),
                 )?;

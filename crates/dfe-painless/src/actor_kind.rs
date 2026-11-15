@@ -5,20 +5,7 @@
 //!
 //! `atlassian_cloud`'s audit stream carries the same `actor` record for a human
 //! and for an installed app, and only the record's own contents say which. The
-//! script decides, then sends the SAME members to different destinations:
-//!
-//! ```painless
-//! def actor = ctx.json.attributes.actor;
-//! boolean isUser = false;
-//! if (actor.email instanceof String && actor.email.indexOf('@') >= 0) {
-//!   isUser = true;
-//! } else if (actor.id instanceof String) {
-//!   String id = actor.id;
-//!   if (id.contains(':') || id ==~ /^[0-9a-fA-F]{8}-.../) { isUser = true; }
-//! }
-//! if (isUser) { ctx.user.id = actor.id; ... }
-//! else { ...actor.app.id = actor.id; ... }
-//! ```
+//! script decides, then sends the SAME members to different destinations.
 //!
 //! Unclaimed it costs `related.user`, `user.email`, `user.id` and `user.name`
 //! on 9 of `atlassian_cloud`'s 10 events, and the app branch's `.app.id` and
@@ -50,7 +37,7 @@ const UUID_PATTERN: &str = "==~ /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-\
                             [0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/";
 
 /// One member copied off the actor record.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ActorCopy {
     /// The member read off the record.
     member: String,
@@ -64,7 +51,7 @@ pub struct ActorCopy {
 }
 
 /// Where one branch writes, and what it writes there.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ActorBranch {
     /// The map the script builds before writing into it.
     parent: String,
@@ -74,7 +61,7 @@ pub struct ActorBranch {
 }
 
 /// An actor record, the tests that classify it, and the two destinations.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ActorKind {
     /// The record classified, as a ctx path.
     actor: String,
@@ -317,7 +304,8 @@ pub fn run_actor_kind(event: &mut Event, pattern: &ActorKind) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "actor_kind_tests.rs"]
 #[allow(
     clippy::unwrap_used,

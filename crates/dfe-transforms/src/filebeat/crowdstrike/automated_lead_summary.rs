@@ -328,8 +328,9 @@ impl Transform for AutomatedLeadSummary {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"long score = ctx.crowdstrike.event.Score;\nctx.event = ctx.event ?: [:];\nctx.event.risk_score = (double) score;\nif (score < 40) {\n  ctx.event.severity = 21;\n} else if (score < 60) {\n  ctx.event.severity = 47;\n} else if (score < 80) {\n  ctx.event.severity = 73;\n} else {\n  ctx.event.severity = 99;\n}"#
+                    compiled_painless!(
+                        "1e42023656762614df9dd32e75a925c24c005194513ccdb2a3eae21e08f9231c",
+                        r#"{"params":null,"known":[{"ScoreSeverityBands":{"source":"crowdstrike.event.Score","risk_score_target":"event.risk_score","severity_target":"event.severity","bands":[[40,21],[60,47],[80,73],[null,99]]}}]}"#
                     ),
                 )?;
             }
@@ -543,8 +544,9 @@ impl Transform for AutomatedLeadSummary {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def indicator = ctx.crowdstrike.event.ThreatgraphIndicators[0];\nif (indicator.HostId != null && indicator.HostId != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.id = indicator.HostId;\n}\nif (indicator.Hostname != null && indicator.Hostname != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.name = indicator.Hostname;\n}\nif (indicator.ProcessId != null && indicator.ProcessId != '') {\n  ctx.process = ctx.process ?: [:];\n  ctx.process.entity_id = indicator.ProcessId;\n}"#
+                    compiled_painless!(
+                        "e72dfc99390a815ab94047984099948b7b729d2581f123d4e4d3a32e231638ea",
+                        r#"{"params":null,"known":[{"IndexedFieldCopies":{"list":"crowdstrike.event.ThreatgraphIndicators","index":0,"copies":[["HostId","host.id"],["Hostname","host.name"],["ProcessId","process.entity_id"]]}}]}"#
                     ),
                 )?;
             }

@@ -48,8 +48,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def dict = ['result': new HashMap()]; \nfor (entry in ctx['json'].entrySet()) { \n    dict['result'][entry.getKey()] = entry.getValue(); \n} \nctx['osquery'] = dict; \nctx.remove('json');\n"#
+                compiled_painless!(
+                    "ede20487fc39dda63a0db0b8cf9609b4f44fb4acb4a784e9f7448af0d58805b8",
+                    r#"{"params":null,"known":[{"NestUnder":{"source":"json","target":"osquery.result","removes":["json"]}}]}"#
                 ),
             )?;
 
@@ -58,8 +59,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"for (key in params.keys) {\n    if (ctx['osquery']['result'][key] == null) {\n        continue;\n    }\n\n    def dict = new HashMap();\n    for (entry in ctx['osquery']['result'][key].entrySet()) { \n        if (entry.getValue() != '') {\n            dict[entry.getKey()] = entry.getValue();\n        }\n    }\n    ctx['osquery']['result'][key] = dict; \n}\n"#
+                    compiled_painless!(
+                        "22fba63130aa23fa405d4f48175db40076cb5b5ce06a14eb6d0498884eb7e240",
+                        r#"{"params":{"DropEmptyMembers":{"parent":"osquery.result","list":"keys"}},"known":[]}"#
                     ),
                     cached_params!("{\"keys\":[\"columns\",\"decorations\"]}"),
                 )?;

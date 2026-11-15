@@ -1100,7 +1100,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "eaaec64ca82ff5f05ca38783bd2f5eec54f2f736072b1ab584fa316175b46c84",
+                        r#"{"params":"IndexedLookup","known":[]}"#,
                         r#"def PolicyTypeValue = Integer.parseInt(ctx.bitwarden.policy.type.value);\nif (PolicyTypeValue >= 0 && PolicyTypeValue < params.PolicyType.length) {\n  ctx.bitwarden.policy.type.put('name', params['PolicyType'][PolicyTypeValue]);\n}"#
                     ),
                     cached_params!(

@@ -135,8 +135,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"String value = ctx.json?.s;\nif (value != null) {\n  ctx.severity = params.severity_levels.getOrDefault(value, null);\n}\n"#
+                    compiled_painless!(
+                        "1f9eb1bffc1de602f17881b16443f62c0384ef82dcab89118931e652f4984523",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"severity_levels\":{\"F\":\"fatal\",\"E\":\"error\",\"W\":\"warning\",\"I\":\"informational\",\"D1\":\"debug 1\",\"D2\":\"debug 2\",\"D3\":\"debug 3\",\"D4\":\"debug 4\",\"D5\":\"debug 5\"}}"

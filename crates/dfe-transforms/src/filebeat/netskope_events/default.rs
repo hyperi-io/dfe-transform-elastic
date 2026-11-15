@@ -3382,8 +3382,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def parts = ctx.file.mime_type; if (parts != null && parts.size() > 0) {\n\n\n  List l = new ArrayList();\n  for (entry in parts.entrySet()) {\n    l.add(entry.getValue());\n  }\n  List setList = new ArrayList(new HashSet(l));\n  ctx.file.mime_type = setList;\n}"#
+                    compiled_painless!(
+                        "31715fd2f10b42ed03c81ca1eff7a05b1b99c8d24a1d3390ed98ccf304bd3fb1",
+                        r#"{"params":null,"known":[{"DedupeMapValues":{"path":"file.mime_type"}}]}"#
                     ),
                 )?;
             }
@@ -3395,8 +3396,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def parts = ctx.user.email; if (!(parts instanceof String)) {\n  List l = new ArrayList();\n  for (entry in parts.entrySet()) {\n    l.add(entry.getValue());\n  }\n  List setList = new ArrayList(new HashSet(l));\n  ctx.user.email = setList;\n} if (ctx.user.email instanceof List) {\n  def related_users = [];\n  for (def email : ctx.user.email) {\n    if (email.contains('@')) {\n      related_users.add(email.splitOnToken('@')[0])\n    }\n  }\n  if (ctx.related == null) {\n    ctx.related = new HashMap();\n  }\n  ctx.related.user = related_users;\n  if (related_users.length == 1) {\n    ctx.user.name = related_users[0]\n  }\n}"#
+                        compiled_painless!(
+                            "adf0c3e58225a113f17192497bb8421b86219a3df0462aca91e91ac4dd84fb3f",
+                            r#"{"params":null,"known":[{"EmailsToRelatedUsers":{"source":"user.email","related":"related.user","name":"user.name"}}]}"#
                         ),
                     )?;
                     Ok(())

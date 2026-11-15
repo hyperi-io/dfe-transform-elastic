@@ -221,8 +221,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def dur = (ctx._conf?.ioc_expiration_duration != null && ctx._conf.ioc_expiration_duration instanceof String && ctx._conf.ioc_expiration_duration != '') ? ctx._conf.ioc_expiration_duration : '90d'; ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_updated_at; if (ctx.threat.indicator.last_seen != null) {\n  _tmp_updated_at = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n} else {\n  _tmp_updated_at = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n} String time_unit = dur.substring(dur.length() -  1, dur.length()); String time_value = dur.substring(0, dur.length() - 1); if (time_unit == 'd') {\n  _tmp_deleted_at = _tmp_updated_at.plusDays(Long.parseLong(time_value));\n} else if (time_unit == 'h') {\n  _tmp_deleted_at = _tmp_updated_at.plusHours(Long.parseLong(time_value));\n} else if (time_unit == 'm') {\n  _tmp_deleted_at = _tmp_updated_at.plusMinutes(Long.parseLong(time_value));\n} else {\n  _tmp_deleted_at = _tmp_updated_at.plusDays(90L);\n  if (ctx.error == null) {\n    ctx.error = new HashMap();\n  }\n  if (ctx.error.message == null) {\n    ctx.error.message = new ArrayList();\n  }\n  ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n} ctx.abusech.url.deleted_at = _tmp_deleted_at;\n"#
+                    compiled_painless!(
+                        "ebfa4fecb4b33131ec5da445161201cbb7bba95f528089fe0003ae2fb47d214c",
+                        r#"{"params":null,"known":[{"IocExpiry":{"duration":"_conf.ioc_expiration_duration","default_duration":"90d","bases":["threat.indicator.last_seen","threat.indicator.first_seen"],"default_days":90,"settle_seconds":0,"invalid_message":"invalid ioc_expiration_duration: using default 90 days","target":"abusech.url.deleted_at"}}]}"#
                     ),
                 )?;
             }

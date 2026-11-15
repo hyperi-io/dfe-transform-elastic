@@ -5,22 +5,7 @@
 //! ECS list.
 //!
 //! `proofpoint_essentials` turns its message parts into `email.attachments` this
-//! way, keeping only the parts the vendor marked as attached:
-//!
-//! ```painless
-//! ctx.email = ctx.email ?: [:];
-//! ctx.email.attachments = ctx.email.attachments ?: [];
-//! for (attachment in ctx.proofpoint_essentials.threat.message_parts) {
-//!   if (attachment.disposition == 'attached') {
-//!     def o = [:];
-//!     o.file = [:];
-//!     o.file.hash = [:];
-//!     o.file.hash.md5 = attachment.md5;
-//!     o.file.name = attachment.filename;
-//!     ctx.email.attachments.add(o);
-//!   }
-//! }
-//! ```
+//! way, keeping only the parts the vendor marked as attached.
 //!
 //! Distinct from [`crate::append_records`], which appends each record REBUILT
 //! from its own keys: here every member is renamed into a nested path the
@@ -37,7 +22,7 @@ use crate::params::clean_path;
 use dfe_core::Event;
 
 /// A guarded record build over one list.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct GuardedRecords {
     /// The list walked.
     list: String,
@@ -200,121 +185,8 @@ pub fn run_guarded_records(event: &mut Event, pattern: &GuardedRecords) -> bool 
 // The script constant is quoted verbatim from a generated call site, which
 // spells it `r#"..."#`. Keeping it character-identical is what lets a script be
 // copied straight from a module into a test.
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::expect_used, clippy::needless_raw_string_hashes)]
-mod tests {
-    use super::*;
-    use crate::common::normalise;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/proofpoint_essentials_threat/`, in
-    /// the escaped one-line form a stored script arrives in.
-    const SCRIPT: &str = r#"ctx.email = ctx.email ?: [:];\nctx.email.attachments = ctx.email.attachments ?: [];\nfor (attachment in ctx.proofpoint_essentials.threat.message_parts) {\n  if (attachment.disposition == 'attached') {\n    def o = [:];\n    o.file = [:];\n    o.file.hash = [:];\n    o.file.hash.md5 = attachment.md5;\n    o.file.hash.sha256 = attachment.sha256;\n    o.file.name = attachment.filename;\n    o.file.mime_type = attachment.content_type;\n    ctx.email.attachments.add(o);\n  }\n}\n"#;
-
-    fn pattern() -> GuardedRecords {
-        parse_guarded_records(&normalise(SCRIPT)).expect("the record build is read")
-    }
-
-    #[test]
-    fn the_list_guard_target_and_every_renamed_member_are_read() {
-        let pattern = pattern();
-        assert_eq!(pattern.list, "proofpoint_essentials.threat.message_parts");
-        assert_eq!(pattern.target, "email.attachments");
-        assert_eq!(
-            pattern.guard,
-            Some(("disposition".to_string(), "attached".to_string()))
-        );
-        assert_eq!(
-            pattern.writes,
-            vec![
-                ("file.hash.md5".to_string(), "md5".to_string()),
-                ("file.hash.sha256".to_string(), "sha256".to_string()),
-                ("file.name".to_string(), "filename".to_string()),
-                ("file.mime_type".to_string(), "content_type".to_string()),
-            ]
-        );
-    }
-
-    /// The captured event: two parts, one inline and one attached, and only
-    /// the attached one becomes an attachment.
-    #[test]
-    fn only_the_items_the_guard_passes_become_records() {
-        let mut event = Event::new(serde_json::json!({ "proofpoint_essentials": { "threat": {
-            "message_parts": [
-                {
-                    "content_type": "text/html", "disposition": "inline",
-                    "filename": "text.html", "md5": "7d79", "sha256": "486e"
-                },
-                {
-                    "content_type": "application/octet-stream", "disposition": "attached",
-                    "filename": "demo.docx.lrf", "md5": "5eb6", "sha256": "b94d"
-                }
-            ]
-        } } }));
-        assert!(run_guarded_records(&mut event, &pattern()));
-        assert_eq!(
-            event.get("email.attachments"),
-            Some(&serde_json::json!([{
-                "file": {
-                    "hash": { "md5": "5eb6", "sha256": "b94d" },
-                    "name": "demo.docx.lrf",
-                    "mime_type": "application/octet-stream"
-                }
-            }]))
-        );
-    }
-
-    /// No part is attached, so nothing is written -- an empty list here would
-    /// be a field Elasticsearch does not emit.
-    #[test]
-    fn a_list_where_nothing_passes_the_guard_writes_no_field() {
-        let mut event = Event::new(serde_json::json!({ "proofpoint_essentials": { "threat": {
-            "message_parts": [
-                { "content_type": "text/html", "disposition": "inline", "filename": "text.html" }
-            ]
-        } } }));
-        assert!(run_guarded_records(&mut event, &pattern()));
-        assert!(!event.has("email.attachments"));
-    }
-
-    #[test]
-    fn a_member_the_vendor_omits_leaves_its_key_out_of_the_record() {
-        let mut event = Event::new(serde_json::json!({ "proofpoint_essentials": { "threat": {
-            "message_parts": [
-                { "disposition": "attached", "filename": "bare.txt", "md5": null }
-            ]
-        } } }));
-        assert!(run_guarded_records(&mut event, &pattern()));
-        assert_eq!(
-            event.get("email.attachments"),
-            Some(&serde_json::json!([{ "file": { "name": "bare.txt" } }]))
-        );
-    }
-
-    #[test]
-    fn records_are_appended_to_a_list_the_document_already_carries() {
-        let mut event = Event::new(serde_json::json!({
-            "email": { "attachments": [{ "file": { "name": "earlier.txt" } }] },
-            "proofpoint_essentials": { "threat": { "message_parts": [
-                { "disposition": "attached", "filename": "later.txt" }
-            ] } }
-        }));
-        assert!(run_guarded_records(&mut event, &pattern()));
-        assert_eq!(
-            event.get("email.attachments"),
-            Some(&serde_json::json!([
-                { "file": { "name": "earlier.txt" } },
-                { "file": { "name": "later.txt" } }
-            ]))
-        );
-    }
-
-    /// A walk that appends a MEMBER rather than a record it built is
-    /// `CollectFromList`'s script, and declines here.
-    #[test]
-    fn a_walk_that_appends_a_member_is_declined() {
-        let script = "for (addr in ctx.cisco.computer.network_addresses) {\n\
-            if (addr.ip != null) { ctx.host.ip.add(addr.ip); }\n}";
-        assert!(parse_guarded_records(&normalise(script)).is_none());
-    }
-}
+#[path = "guarded_records_tests.rs"]
+mod tests;

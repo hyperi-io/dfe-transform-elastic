@@ -146,8 +146,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def mapping = params.type_mapping[ctx.json.type];\nif (mapping == null) {\n  return;\n}\nctx.event.category = mapping.category;\nctx.event.type = mapping.type;"#
+                        compiled_painless!(
+                            "1a834822b1ceafe2bd397429448ec31b2cdec991a0b242e858e840c5dc757115",
+                            r#"{"params":{"RowOrDefaults":{"subject":"json.type","table":"type_mapping","prelude":[],"columns":[{"target":"event.category","member":"category","only_if_unset":false,"empty":"Verbatim"},{"target":"event.type","member":"type","only_if_unset":false,"empty":"Verbatim"}],"defaults":[]}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"type_mapping\":{\"endpoint.event.crossproc\":{\"category\":[\"process\"],\"type\":[\"info\"]},\"endpoint.event.filemod\":{\"category\":[\"file\"],\"type\":[\"change\"]},\"endpoint.event.fileless_scriptload\":{\"category\":[\"process\"],\"type\":[\"start\"]},\"endpoint.event.moduleload\":{\"category\":[\"process\"],\"type\":[\"start\"]},\"endpoint.event.netconn\":{\"category\":[\"network\"],\"type\":[\"connection\"]},\"endpoint.event.netconn_proxy\":{\"category\":[\"network\"],\"type\":[\"connection\"]},\"endpoint.event.procstart\":{\"category\":[\"process\"],\"type\":[\"start\"]},\"endpoint.event.regmod\":{\"category\":[\"registry\"],\"type\":[\"change\"]},\"endpoint.event.scriptload\":{\"category\":[\"process\",\"file\"],\"type\":[\"start\",\"access\"]}}}"
@@ -380,8 +381,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"// These allocations may be futile, but will be cleaned up in the postamble.\nif (ctx.client == null) {\n  ctx.client = new HashMap();\n}\nif (ctx.source == null) {\n  ctx.source = new HashMap();\n}\nif (ctx.destination == null) {\n  ctx.destination = new HashMap();\n}\n// Nulls inserted into the document will be cleaned up in the postamble.\nctx.client.ip = ctx.json.local_ip;\nctx.client.port = ctx.json.local_port;\nif (ctx.json?.netconn_inbound == true) {\n  ctx.destination.ip = ctx.json?.local_ip;\n  ctx.destination.port = ctx.json?.local_port;\n  ctx.source.ip = ctx.json?.remote_ip;\n  ctx.source.port = ctx.json?.remote_port;\n  ctx.source.domain = ctx.json?.netconn_domain;\n} else {\n  ctx.source.ip = ctx.json?.local_ip;\n  ctx.source.port = ctx.json?.local_port;\n  ctx.destination.ip = ctx.json?.remote_ip;\n  ctx.destination.port = ctx.json?.remote_port;\n  ctx.destination.domain = ctx.json?.netconn_domain;\n}     \n"#
+                compiled_painless!(
+                    "e5c66044f8ea83464000845293cb74eaed0986ef2be5bc5fb9320e9bdd464d75",
+                    r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"Compare":{"path":"client","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"source","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"destination","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"Literal":{"Set":{"path":"client.ip","value":{"Field":"json.local_ip"}}}},{"Literal":{"Set":{"path":"client.port","value":{"Field":"json.local_port"}}}},{"If":{"test":[[{"Compare":{"path":"json.netconn_inbound","wanted":{"Value":true},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"destination.ip","value":{"Field":"json.local_ip"}}}},{"Literal":{"Set":{"path":"destination.port","value":{"Field":"json.local_port"}}}},{"Literal":{"Set":{"path":"source.ip","value":{"Field":"json.remote_ip"}}}},{"Literal":{"Set":{"path":"source.port","value":{"Field":"json.remote_port"}}}},{"Literal":{"Set":{"path":"source.domain","value":{"Field":"json.netconn_domain"}}}}],"alt":[{"Literal":{"Set":{"path":"source.ip","value":{"Field":"json.local_ip"}}}},{"Literal":{"Set":{"path":"source.port","value":{"Field":"json.local_port"}}}},{"Literal":{"Set":{"path":"destination.ip","value":{"Field":"json.remote_ip"}}}},{"Literal":{"Set":{"path":"destination.port","value":{"Field":"json.remote_port"}}}},{"Literal":{"Set":{"path":"destination.domain","value":{"Field":"json.netconn_domain"}}}}]}}],"whole":true}}]}"#
                 ),
             )?;
 
@@ -527,8 +529,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"void mapHashField(def ctx, def hashes, def key) {\n    for (hash in hashes) {\n        if (hash.length() == 32) {ctx.json[key + '_md5'] = hash;}\n        if (hash.length() == 64) {ctx.json[key + '_sha256'] = hash;}\n    }\n}\nif (ctx.json?.process_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.process_hash, 'process_hash');\n}\nif (ctx.json?.parent_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.parent_hash, 'parent_hash');\n}\nif (ctx.json?.filemod_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.filemod_hash, 'filemod_hash');\n}\nif (ctx.json?.childproc_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.childproc_hash, 'childproc_hash');\n}\nif (ctx.json?.crossproc_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.crossproc_hash, 'crossproc_hash');\n}\nif (ctx.json?.scriptload_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.scriptload_hash, 'scriptload_hash');\n}\n"#
+                compiled_painless!(
+                    "415becfeaef0bf3018f7030baab896ff7dd3a229e8539b906c42b082fb19d993",
+                    r#"{"params":null,"known":[{"HashesByLength":{"parent":"json","lists":[["json.process_hash","process_hash"],["json.parent_hash","parent_hash"],["json.filemod_hash","filemod_hash"],["json.childproc_hash","childproc_hash"],["json.crossproc_hash","crossproc_hash"],["json.scriptload_hash","scriptload_hash"]],"widths":[[32,"_md5"],[64,"_sha256"]]}}]}"#
                 ),
             )?;
 
@@ -2231,8 +2234,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (Map.Entry m : ctx.json.entrySet()) {\n  ctx.carbon_black_cloud.endpoint_event[m.getKey()] = m.getValue();\n}\n"#
+                    compiled_painless!(
+                        "9f6143169b5dfa58f0085c972b9d95fde2d2867558cf7fa33c4313e490324b9a",
+                        r#"{"params":null,"known":[{"MergeMapUp":{"parent":"carbon_black_cloud.endpoint_event","source":"json","take":false,"collision":"Overwrite","drops":[]}}]}"#
                     ),
                 )?;
             }
@@ -2255,8 +2259,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx?.related?.user != null) {\n  ctx.related.user = new HashSet(ctx.related.user)\n}\nif (ctx?.related?.ip != null) {\n  ctx.related.ip = new HashSet(ctx.related.ip)\n}\nif (ctx?.related?.hash != null) {\n  def hashes = new HashSet(ctx.related.hash);\n  def hash = new ArrayList();\n  for (def h: hashes) {\n    hash.add(h);\n  }\n  Collections.sort(hash);\n  ctx.related.hash = hash;\n}\nif (ctx.related?.hash != null) {\n  def hashes = new HashSet(ctx.related.hash);\n  def hash = new ArrayList();\n  for (def h: hashes) {\n    hash.add(h);\n  }\n  Collections.sort(hash);\n  ctx.related.hash = hash;\n}\n"#
+                compiled_painless!(
+                    "01f6c5ddf8aecdb26bbca314a25cf7f77e1aba4737487ca5d5bf640fc9bdebe9",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

@@ -30,8 +30,9 @@ impl Transform for User {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def stringified_orig = Json.dump(ctx);\nif (stringified_orig != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.original = stringified_orig;\n}\n"#
+                    compiled_painless!(
+                        "415bbaefc30d9e86558e65ebb5a4bb0b8d41b642e5e65d6a827b41345114aa77",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -88,8 +89,9 @@ impl Transform for User {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.user == null) {\n  ctx.user = new HashMap();\n}\nif (ctx.user.account == null) {\n  ctx.user.account = new HashMap();\n}\nif (ctx.user.account.status == null) {\n  ctx.user.account.status = new HashMap();\n}\nctx.user.account.status.put('recovery', false);\nctx.user.account.status.put('locked_out', false);\nctx.user.account.status.put('suspended', false);\nctx.user.account.status.put('password_expired', false);\nctx.user.account.status.put('deprovisioned', false);\ndef status = ctx.okta.status.toLowerCase();\nif (['recovery', 'locked_out', 'suspended', 'password_expired', 'deprovisioned'].contains(status)) {\n  ctx.user.account.status[status] = true;\n}"#
+                        compiled_painless!(
+                            "54265bdd0b03b7d3039a2a8dd1ea510e09a8c730379998cab11425f4cf212d68",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -813,8 +815,9 @@ impl Transform for User {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (def role : ctx.entityanalytics_okta.roles) {\n  if (!(role?.permissions instanceof List)) {\n    continue;\n  }\n  for (def perm : role.permissions) {\n    def label = perm?.label;\n    if (label == null || label == '') {\n      continue;\n    }\n    ctx.user = ctx.user ?: new HashMap();\n    ctx.user.entity = ctx.user.entity ?: new HashMap();\n    ctx.user.entity.attributes = ctx.user.entity.attributes ?: new HashMap();\n    ctx.user.entity.attributes.permissions = ctx.user.entity.attributes.permissions ?: new HashSet();\n    ctx.user.entity.attributes.permissions.add(label);\n  }\n}\n"#
+                    compiled_painless!(
+                        "03cffbfa8676cd72f69d2e5023ef6361b99fdc63b70a2e7bd2422b7e197581c1",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -832,8 +835,9 @@ impl Transform for User {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (def f : ctx.entityanalytics_okta.user.factors) {\n  if (f == null || f.status != \"ACTIVE\") {\n    continue;\n  }\n  ctx.user = ctx.user ?: new HashMap();\n  ctx.user.entity = ctx.user.entity ?: new HashMap();\n  ctx.user.entity.attributes = ctx.user.entity.attributes ?: new HashMap();\n  ctx.user.entity.attributes.put(\"mfa_enabled\", true);\n  return;\n}\n"#
+                    compiled_painless!(
+                        "de6c4eed97324600ded83cb3a9567784cfd2f2475d6f448157f0e5b110899158",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -851,8 +855,9 @@ impl Transform for User {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def ids = new ArrayList();\ndef names = new ArrayList();\nfor (def device : ctx.entityanalytics_okta.user.devices) {\n  if (device == null) { continue; }\n  if (device.id != null) { ids.add(device.id); }\n  def displayName = device?.profile?.displayName;\n  if (displayName != null) { names.add(displayName); }\n}\ndef hostObj = new HashMap();\nif (!ids.isEmpty()) { hostObj.put(\"id\", ids); }\nif (!names.isEmpty()) { hostObj.put(\"name\", names); }\nif (!hostObj.isEmpty()) {\n  ctx.user = ctx.user ?: new HashMap();\n  ctx.user.entity = ctx.user.entity ?: new HashMap();\n  ctx.user.entity.relationships = ctx.user.entity.relationships ?: new HashMap();\n  ctx.user.entity.relationships.put(\"owns\", [\"host\": hostObj]);\n}\n"#
+                    compiled_painless!(
+                        "c50a798107a859e3bc56491471ece6c340b3ffa1d460e1d3ab86d64d8ec434b5",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -870,8 +875,9 @@ impl Transform for User {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def ids = new ArrayList();\ndef names = new ArrayList();\ndef emails = new ArrayList();\ndef renamedSupervises = new ArrayList();\nfor (def supervised : ctx.entityanalytics_okta.user.supervises) {\n  if (supervised == null) { continue; }\n  def raw = new HashMap();\n  if (supervised?.user_id != null) {\n    ids.add(supervised.user_id);\n    raw.put(\"user.id\", supervised.user_id);\n  }\n  if (supervised?.username != null) {\n    names.add(supervised.username);\n    raw.put(\"user.name\", supervised.username);\n  }\n  if (supervised?.email != null) {\n    emails.add(supervised.email);\n    raw.put(\"user.email\", supervised.email);\n  }\n  renamedSupervises.add(raw);\n}\nctx.entityanalytics_okta.user.supervises = renamedSupervises;\ndef userObj = new HashMap();\nif (!ids.isEmpty()) { userObj.put(\"id\", ids); }\nif (!names.isEmpty()) { userObj.put(\"name\", names); }\nif (!emails.isEmpty()) { userObj.put(\"email\", emails); }\nif (!userObj.isEmpty()) {\n  ctx.user = ctx.user ?: new HashMap();\n  ctx.user.entity = ctx.user.entity ?: new HashMap();\n  ctx.user.entity.relationships = ctx.user.entity.relationships ?: new HashMap();\n  ctx.user.entity.relationships.put(\"supervises\", [\"user\": userObj]);\n}\n"#
+                    compiled_painless!(
+                        "7f310b95c5d56f0bf6a39cd58d0ba7395666cc785824dd5a199a080e2b544037",
+                        r#"{"params":null,"known":[{"CollectColumns":{"source":"entityanalytics_okta.user.supervises","columns":[["id","user_id"],["name","username"],["email","email"]],"target":"user.entity.relationships","name":"supervises","inner":"user"}}]}"#
                     ),
                 )?;
             }

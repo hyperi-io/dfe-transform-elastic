@@ -1001,8 +1001,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.spycloud.compass.user.os.toLowerCase().contains('windows')) {\n    ctx.host.os.type = 'windows';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('linux')) {\n    ctx.host.os.type = 'linux';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('mac')) {\n    ctx.host.os.type = 'macos';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('unix')) {\n    ctx.host.os.type = 'unix';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('ios')) {\n    ctx.host.os.type = 'ios';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('android')) {\n    ctx.host.os.type = 'android';\n}\n"#
+                    compiled_painless!(
+                        "45f7db9fa5eaa88035ee8616f3b02232a9a58202c04d735a0ea409f57983f156",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"spycloud.compass.user.os","fold_case":true,"test":"Contains","arms":[{"literals":["windows"],"writes":[["host.os.type","windows"]],"removes":[]},{"literals":["linux"],"writes":[["host.os.type","linux"]],"removes":[]},{"literals":["mac"],"writes":[["host.os.type","macos"]],"removes":[]},{"literals":["unix"],"writes":[["host.os.type","unix"]],"removes":[]},{"literals":["ios"],"writes":[["host.os.type","ios"]],"removes":[]},{"literals":["android"],"writes":[["host.os.type","android"]],"removes":[]}]}}]}"#
                     ),
                 )?;
             }

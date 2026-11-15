@@ -98,8 +98,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def targets = ctx.recordedfuture.playbook_alert.panel_status.targets;\nif (targets instanceof List && targets.size() > 0 && targets[0] instanceof String) {\n  ctx.recordedfuture.playbook_alert.panel_status.targets_str = targets;\n  ctx.recordedfuture.playbook_alert.panel_status.remove(\"targets\");\n}"#
+                    compiled_painless!(
+                        "e684b2aeb8d47dffcf615053988cd6a03236f7da40a47e479c7b83d6bb37c8df",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -113,8 +114,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def panel_log= ctx.recordedfuture.playbook_alert.panel_log_v2;\nfor (panel in panel_log) {\n    if (panel.containsKey(\"changes\") && panel.changes instanceof List) {\n        for (change in panel.changes) {\n            if (change.containsKey(\"old\") && change.old instanceof String) {\n                change.old_str = change.old;\n                change.remove(\"old\");\n            }\n            if (change.containsKey(\"new\") && change.new instanceof String) {\n                change.new_str = change.new;\n                change.remove(\"new\");\n            }\n            if (change.containsKey(\"added\") && change.added instanceof List && change.added.size() > 0 && change.added[0] instanceof String) {\n                change.added_str = change.added;\n                change.remove(\"added\");\n            }\n            if (change.containsKey(\"removed\") && change.removed instanceof List && change.removed.size() > 0 && change.removed[0] instanceof String) {\n                change.removed_str = change.removed;\n                change.remove(\"removed\");\n            }\n        }\n    }\n}"#
+                    compiled_painless!(
+                        "66b3691e2e14dce287ea0bcd3f8223ad337c3af7613ad38fd01005363dc6695b",
+                        r#"{"params":null,"known":[{"TypedMemberRename":{"list":"recordedfuture.playbook_alert.panel_log_v2","nested":"changes","renames":[{"from":"old","to":"old_str","admits":"Text"},{"from":"new","to":"new_str","admits":"Text"},{"from":"added","to":"added_str","admits":"TextList"},{"from":"removed","to":"removed_str","admits":"TextList"}]}}]}"#
                     ),
                 )?;
             }
@@ -1904,7 +1906,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "8bfb2e6c8b212b92b254a06d912bb931d6963205f1dea11b6eeaec181adcd449",
+                            r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                             r#"ctx.event = ctx.event ?: [:];\nString name = ctx.recordedfuture.playbook_alert.panel_status.priority;\nif (name.equalsIgnoreCase(\"low\") || name.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (name.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (name.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (name.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
                         ),
                     )?;

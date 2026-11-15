@@ -96,13 +96,13 @@ fn normalise(value: &Value) -> Value {
 /// Every `tenable_ot_security` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
-        hash: "befb894b8b5e7247fa7deaa56f88b2e6c1fe329936b3eea63505cfae492fbcc6",
+        hash: "f7147e846251e2318bd4ac521cc8f46c1d963b8f3dc0504e881722d49d82f212",
         source: "tenable_ot_security",
         name: "normalise_event_nodes",
         run: normalise_event_nodes,
     },
     Entry {
-        hash: "3b645054334881015da8b7f6d2b3960ac454cdc0069924d4503f8b3f50d72c1a",
+        hash: "ad046ad8c15d44a6c0c4c33e287ddac5f9f3529ae0c7f3f74430c627264b96a5",
         source: "tenable_ot_security",
         name: "normalise_asset_nodes",
         run: normalise_asset_nodes,

@@ -1250,8 +1250,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def conftenants = ctx._tmp.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n}\n"#
+                    compiled_painless!(
+                        "674a8f39af1a74011ff66fc98ba49db49b5fe1895b5aa984831296bcb7c84fa5",
+                        r#"{"params":null,"known":[{"CtxTableLookup":{"table":"_tmp.tenants","key":"organization.id","target":"organization.name"}}]}"#
                     ),
                 )?;
             }
@@ -1290,8 +1291,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"def schemaId = ctx.bitdefender?.event?.module.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.kind = schema;\n}\n"#
+                compiled_painless!(
+                    "8410824b68c8bc94c639ad5bf51372a41f0d7a0d513a282e75405edbf54eec5d",
+                    r#"{"params":{"KeyedRowAssign":{"source":"bitdefender.event.module","target":"event.kind"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"adcloud\":\"event\",\"aph\":\"alert\",\"av\":\"alert\",\"avc\":\"alert\",\"dp\":\"event\",\"exchange-malware\":\"alert\",\"exchange-organization-info\":\"alert\",\"exchange-user-credentials\":\"alert\",\"fw\":\"event\",\"hd\":\"alert\",\"modules\":\"event\",\"network-sandboxing\":\"alert\",\"registration\":\"event\",\"supa-update-status\":\"event\",\"sva-load\":\"alert\",\"sva\":\"event\",\"antiexploit\":\"alert\",\"network-monitor\":\"alert\",\"task-status\":\"event\",\"uc\":\"event\",\"storage-antimalware\":\"alert\",\"install\":\"event\",\"uninstall\":\"event\",\"hwid-change\":\"event\",\"endpoint-moved-in\":\"event\",\"endpoint-moved-out\":\"event\",\"troubleshooting-activity\":\"event\",\"device-control\":\"event\",\"ransomware-mitigation\":\"alert\",\"new-incident\":\"alert\",\"security-container-update-available\":\"event\"}"
@@ -1301,8 +1303,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"def schemaId = ctx.bitdefender?.event?.module.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.category = schema;\n}\n"#
+                compiled_painless!(
+                    "7e2ed2734973bd743255499a11c56509d193ff0b95277eb956da7f7d94bbde51",
+                    r#"{"params":{"KeyedRowAssign":{"source":"bitdefender.event.module","target":"event.category"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"adcloud\":[\"database\"],\"aph\":[\"threat\",\"network\"],\"av\":[\"threat\",\"malware\"],\"avc\":[\"threat\",\"malware\"],\"dp\":[\"threat\",\"network\"],\"exchange-malware\":[\"threat\",\"malware\"],\"exchange-organization-info\":[\"configuration\",\"package\"],\"exchange-user-credentials\":[\"configuration\",\"package\",\"host\"],\"fw\":[\"threat\",\"intrusion_detection\",\"network\"],\"hd\":[\"threat\",\"intrusion_detection\",\"malware\"],\"modules\":[\"configuration\",\"package\"],\"network-sandboxing\":[\"threat\",\"intrusion_detection\"],\"registration\":[\"configuration\",\"package\"],\"supa-update-status\":[\"configuration\",\"package\"],\"sva-load\":[\"configuration\",\"host\"],\"sva\":[\"configuration\",\"host\"],\"antiexploit\":[\"threat\",\"intrusion_detection\"],\"network-monitor\":[\"threat\",\"intrusion_detection\"],\"task-status\":[\"configuration\",\"host\",\"process\"],\"uc\":[\"threat\",\"network\",\"web\"],\"storage-antimalware\":[\"threat\",\"intrusion_detection\"],\"install\":[\"configuration\",\"package\"],\"uninstall\":[\"configuration\",\"package\"],\"hwid-change\":[\"configuration\",\"host\"],\"endpoint-moved-in\":[\"configuration\",\"package\"],\"endpoint-moved-out\":[\"configuration\",\"package\"],\"troubleshooting-activity\":[\"configuration\",\"host\",\"session\"],\"device-control\":[\"configuration\",\"host\"],\"ransomware-mitigation\":[\"threat\",\"intrusion_detection\"],\"new-incident\":[\"threat\",\"intrusion_detection\"],\"security-container-update-available\":[\"configuration\",\"package\"]}"
@@ -1312,8 +1315,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"def schemaId = ctx.bitdefender?.event?.module.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.type = schema;\n}\n"#
+                compiled_painless!(
+                    "907aef208e68d1fe09b9b87f9acd03d8b4086d31b27c2222b3b2c39e544f2dd0",
+                    r#"{"params":{"KeyedRowAssign":{"source":"bitdefender.event.module","target":"event.type"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"adcloud\":[\"info\"],\"aph\":[\"info\",\"access\"],\"av\":[\"info\"],\"avc\":[\"info\"],\"dp\":[\"info\"],\"exchange-malware\":[\"info\"],\"exchange-organization-info\":[\"info\"],\"exchange-user-credentials\":[\"info\"],\"fw\":[\"info\"],\"hd\":[\"info\"],\"modules\":[\"info\"],\"network-sandboxing\":[\"info\"],\"registration\":[\"info\"],\"supa-update-status\":[\"info\"],\"sva-load\":[\"info\"],\"sva\":[\"info\"],\"antiexploit\":[\"info\"],\"network-monitor\":[\"info\"],\"task-status\":[\"info\"],\"uc\":[\"info\"],\"storage-antimalware\":[\"info\"],\"install\":[\"info\"],\"uninstall\":[\"info\"],\"hwid-change\":[\"info\"],\"endpoint-moved-in\":[\"info\"],\"endpoint-moved-out\":[\"info\"],\"troubleshooting-activity\":[\"info\"],\"device-control\":[\"info\"],\"ransomware-mitigation\":[\"info\",\"denied\"],\"new-incident\":[\"info\"],\"security-container-update-available\":[\"info\"]}"
@@ -1323,8 +1327,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"def schemaId = ctx.bitdefender?.event?.module.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.provider = schema;\n}\n"#
+                compiled_painless!(
+                    "2a921857873ce87f99636ef2b3078509062299c81d7d2e3154ee6cd579af2f56",
+                    r#"{"params":{"KeyedRowAssign":{"source":"bitdefender.event.module","target":"event.provider"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"adcloud\":\"Cloud AD Integration\",\"aph\":\"Antiphishing\",\"av\":\"Antimalware\",\"avc\":\"Advanced Threat Control\",\"dp\":\"Data Protection\",\"exchange-malware\":\"Exchange Malware Detection\",\"exchange-organization-info\":\"Exchange License Usage Limit Has Been Reached\",\"exchange-user-credentials\":\"Exchange User Credentials\",\"fw\":\"Firewall\",\"hd\":\"Hyper Detect Event\",\"modules\":\"Product Modules Status\",\"network-sandboxing\":\"Sandbox Analyzer Detection\",\"registration\":\"Product Registration\",\"supa-update-status\":\"Outdated Update Server\",\"sva-load\":\"Overloaded Security Server\",\"sva\":\"Security Server Status\",\"antiexploit\":\"Antiexploit\",\"network-monitor\":\"Network Attack Defense\",\"task-status\":\"Task Status\",\"uc\":\"User Control/Content Control\",\"storage-antimalware\":\"Storage Antimalware Event\",\"install\":\"Install Agent\",\"uninstall\":\"Uninstall Agent\",\"hwid-change\":\"Hardware ID Change\",\"endpoint-moved-in\":\"Endpoint Moved In\",\"endpoint-moved-out\":\"Endpoint Moved Out\",\"troubleshooting-activity\":\"Troubleshooting Activity\",\"device-control\":\"Device Control\",\"ransomware-mitigation\":\"Ransomware Activity\",\"new-incident\":\"New Incident\",\"security-container-update-available\":\"Security Container Update Available\"}"

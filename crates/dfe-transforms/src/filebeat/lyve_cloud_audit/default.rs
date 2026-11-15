@@ -358,7 +358,10 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(r#"ctx.related.ip.removeAll(ctx[\"_failed_ips\"]);"#),
+                        compiled_painless!(
+                            "a14dbc7dc1726e1cdf45e78bd90df22710cf88e75d03c69cb66f79ee463d7a13",
+                            r#"{"params":null,"known":[]}"#
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -368,8 +371,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.client = new HashMap(); ctx.client[\"ip\"] = ctx.related.ip[-1];"#
+                        compiled_painless!(
+                            "9a8372235d9f186a1cecf2eb40506de09f2340b693b5516979f8429ff70a4aa9",
+                            r#"{"params":null,"known":[{"LastElementMember":{"parent":"client","key":"ip","array":"related.ip"}}]}"#
                         ),
                     )?;
                 }

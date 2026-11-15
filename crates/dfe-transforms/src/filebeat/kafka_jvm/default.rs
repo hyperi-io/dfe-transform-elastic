@@ -35,8 +35,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def queue = new ArrayList();\ndef fingerprint = new ArrayList();\n\nif (ctx.containsKey('kafka') && ctx.kafka.containsKey('jvm')) {\n    queue.add(['p': 'kafka.jvm', 'v': ctx.kafka.jvm]);\n\n    while (!queue.isEmpty()) {\n        def item = queue.remove(0);\n        def path = item.p;\n        def val = item.v;\n\n        if (val instanceof Map) {\n            for (entry in val.entrySet()) {\n                def key = entry.getKey();\n                def child = entry.getValue();\n                def childPath = path + '.' + key;\n                queue.add(['p': childPath, 'v': child]);\n            }\n        } else {\n            fingerprint.add(path);\n        }\n    }\n\n    ctx.kafka_jvm_metric_fingerprint = fingerprint;\n}\n"#
+                compiled_painless!(
+                    "9ac00f5b1ae7ab78eb8f424fcfe77291f2c8bf79289dc37bffb3d27031694f11",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

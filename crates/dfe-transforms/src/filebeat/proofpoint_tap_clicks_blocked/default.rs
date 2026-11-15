@@ -366,8 +366,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def ts = Instant.parse(ctx['@timestamp']);\ndef threatTime = Instant.parse(ctx.proofpoint_tap.clicks_blocked.threat.time);\nif (threatTime.isAfter(ts)) {\n  ctx['@timestamp'] = ctx.proofpoint_tap.clicks_blocked.threat.time;\n}\n"#
+                        compiled_painless!(
+                            "7b2cdc01ee42353f8a0f40081e4e94e7309965b4b66878a635fbb4a86cfa45e9",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

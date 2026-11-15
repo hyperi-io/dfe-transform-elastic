@@ -81,8 +81,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"long t = (long)(ctx.json.Timestamp);\nif (t > (long)(1e18)) {\n  ctx.json.Timestamp = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.Timestamp = t*(long)(1e3)\n}\n"#
+                        compiled_painless!(
+                            "896d6cfe7e6ab30897367707da5328b1ed441f19fdc07479a8dfbfcd16efc9c4",
+                            r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.Timestamp",false]],"parse_strings":false}}]}"#
                         ),
                     )?;
                     Ok(())

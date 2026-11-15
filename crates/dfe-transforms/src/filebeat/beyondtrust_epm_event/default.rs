@@ -398,8 +398,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.client.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.client.geo.location.lon);\nctx.beyondtrust_epm.event.client.geo.location = location;"#
+                        compiled_painless!(
+                            "593499ff7715eb6de410252e75638253cde4014f8d137808188b2c516fb74686",
+                            r#"{"params":null,"known":[{"FieldsIntoMap":{"members":[["lat","beyondtrust_epm.event.client.geo.location.lat"],["lon","beyondtrust_epm.event.client.geo.location.lon"]],"target":"beyondtrust_epm.event.client.geo.location"}}]}"#
                         ),
                     )?;
                 }
@@ -1845,8 +1846,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.destination.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.destination.geo.location.lon);\nctx.beyondtrust_epm.event.destination.geo.location = location;"#
+                        compiled_painless!(
+                            "b7b21fa59cad3e83f252b01663e1dd4a4fcc16cf34db2c4360b5c849c46349f9",
+                            r#"{"params":null,"known":[{"FieldsIntoMap":{"members":[["lat","beyondtrust_epm.event.destination.geo.location.lat"],["lon","beyondtrust_epm.event.destination.geo.location.lon"]],"target":"beyondtrust_epm.event.destination.geo.location"}}]}"#
                         ),
                     )?;
                 }
@@ -4060,8 +4062,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.server.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.server.geo.location.lon);\nctx.beyondtrust_epm.event.server.geo.location = location;"#
+                        compiled_painless!(
+                            "7baa709e0491357275ff17294d49598684d25ce269cca76f91f66a7f2a5bba4d",
+                            r#"{"params":null,"known":[{"FieldsIntoMap":{"members":[["lat","beyondtrust_epm.event.server.geo.location.lat"],["lon","beyondtrust_epm.event.server.geo.location.lon"]],"target":"beyondtrust_epm.event.server.geo.location"}}]}"#
                         ),
                     )?;
                 }
@@ -5488,8 +5491,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.source.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.source.geo.location.lon);\nctx.beyondtrust_epm.event.source.geo.location = location;"#
+                        compiled_painless!(
+                            "9dc9d54e12504d382bdfc23215867369738dd336466f58adda168b2c67d29a00",
+                            r#"{"params":null,"known":[{"FieldsIntoMap":{"members":[["lat","beyondtrust_epm.event.source.geo.location.lat"],["lon","beyondtrust_epm.event.source.geo.location.lon"]],"target":"beyondtrust_epm.event.source.geo.location"}}]}"#
                         ),
                     )?;
                 }
@@ -11778,8 +11782,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.threat.indicator.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.threat.indicator.geo.location.lon);\nctx.beyondtrust_epm.event.threat.indicator.geo.location = location;"#
+                        compiled_painless!(
+                            "d8dda17875fdff4243f8fe8e00d95ab002a38ce9f38d705a90d14da8fcd8714c",
+                            r#"{"params":null,"known":[{"FieldsIntoMap":{"members":[["lat","beyondtrust_epm.event.threat.indicator.geo.location.lat"],["lon","beyondtrust_epm.event.threat.indicator.geo.location.lon"]],"target":"beyondtrust_epm.event.threat.indicator.geo.location"}}]}"#
                         ),
                     )?;
                 }
@@ -20484,8 +20489,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.process.entry_meta.source.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.process.entry_meta.source.geo.location.lon);\nctx.beyondtrust_epm.event.process.entry_meta.source.geo.location = location;"#
+                        compiled_painless!(
+                            "c560ac2779640645b4131a8ede39cf94e29ff57dfe8ee759108d4d8190378a62",
+                            r#"{"params":null,"known":[{"FieldsIntoMap":{"members":[["lat","beyondtrust_epm.event.process.entry_meta.source.geo.location.lat"],["lon","beyondtrust_epm.event.process.entry_meta.source.geo.location.lon"]],"target":"beyondtrust_epm.event.process.entry_meta.source.geo.location"}}]}"#
                         ),
                     )?;
                 }
@@ -23360,8 +23366,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"if (ctx.related == null) {\n  ctx.related = new HashMap();\n}\nif (ctx.related.hash == null) {\n  ctx.related.hash = new ArrayList();\n}\nfor (def entry : ctx.beyondtrust_epm.event.container.image.hash.all) {\n  if (entry == null) {\n    continue;\n  }\n  def digest = entry.toString().replace('[', '').replace(']', '');\n  int sep = digest.indexOf(':');\n  if (sep >= 0) {\n    digest = digest.substring(sep + 1);\n  }\n  if (digest.length() > 0 && !ctx.related.hash.contains(digest)) {\n    ctx.related.hash.add(digest);\n  }\n}"#
+                            compiled_painless!(
+                                "825e4c5796f8b644026a63cf65d406830ae8fec109e8f9946aff2a2b57df34ea",
+                                r#"{"params":null,"known":[]}"#
                             ),
                         )?;
                         Ok(())
@@ -24085,8 +24092,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.host.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.host.geo.location.lon);\nctx.beyondtrust_epm.event.host.geo.location = location;"#
+                        compiled_painless!(
+                            "6a11a1b298ada165b8060aadc2f2aa73eb6eb8978d6c962ea67d4d386298561b",
+                            r#"{"params":null,"known":[{"FieldsIntoMap":{"members":[["lat","beyondtrust_epm.event.host.geo.location.lat"],["lon","beyondtrust_epm.event.host.geo.location.lon"]],"target":"beyondtrust_epm.event.host.geo.location"}}]}"#
                         ),
                     )?;
                 }
@@ -24818,8 +24826,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.observer.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.observer.geo.location.lon);\nctx.beyondtrust_epm.event.observer.geo.location = location;"#
+                        compiled_painless!(
+                            "282e8e21b82ae78558484915fd2b07a05941753cdbbe9c2661b7b8c04239405c",
+                            r#"{"params":null,"known":[{"FieldsIntoMap":{"members":[["lat","beyondtrust_epm.event.observer.geo.location.lat"],["lon","beyondtrust_epm.event.observer.geo.location.lon"]],"target":"beyondtrust_epm.event.observer.geo.location"}}]}"#
                         ),
                     )?;
                 }
@@ -28697,8 +28706,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      if (entry.getKey().contains(\"@\")) {\n        newObj[entry.getKey()] = convertToSnakeCase(entry.getValue());\n      } else {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\nif (ctx.beyondtrust_epm.event != null) {\n  ctx.beyondtrust_epm.event = convertToSnakeCase(ctx.beyondtrust_epm.event);\n}\n"#
+                compiled_painless!(
+                    "1855550ebdd36002264499be73ca8553f992d1cf85215fc36f71d2be2b3568dc",
+                    r#"{"params":null,"known":[{"CamelToSnake":{"target":"beyondtrust_epm.event","source":"beyondtrust_epm.event","rule":"AfterNonUpper","at_keys":"Keep","merge":false,"removes":[]}}]}"#
                 ),
             )?;
 

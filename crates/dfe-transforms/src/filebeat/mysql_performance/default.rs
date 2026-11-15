@@ -29,8 +29,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.mysql?.performance?.events_statements?.digest == null) {\n    return;\n}\ndef digest = ctx.mysql.performance.events_statements.digest;\nctx.mysql.performance.events_statements.query = digest.text;\n"#
+                compiled_painless!(
+                    "d20f5cf7c014a69edfa9e4d9d189efce78f0ea7d444fcf5bcc0e15cd81d1694e",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

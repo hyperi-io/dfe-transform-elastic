@@ -829,7 +829,9 @@ impl Transform for Utm {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "da86adf9db7024617db26734f65d3ae8c01582baa8d12a52d532dc46b329f155",
+                        r#"{"params":null,"known":["VersionSplit"]}"#,
                         r#"def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} if (ctx.tls == null) {\n    ctx.tls = new HashMap();\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n    ctx.tls.version += \".0\";\n}"#
                     ),
                 )?;

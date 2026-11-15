@@ -128,8 +128,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def severityValue = ctx.withsecure_elements.security_events.severity; if (severityValue == null) return; if (severityValue instanceof Number) {\n  ctx.event.severity = ((Number) severityValue).intValue();\n  return;\n} def normalized = severityValue.toString().toLowerCase(); if (normalized == 'info') {\n  ctx.event.severity = 21;\n} else if (normalized == 'warning') {\n  ctx.event.severity = 47;\n} else if (normalized == 'critical') {\n  ctx.event.severity = 99;\n}\n"#
+                    compiled_painless!(
+                        "51ef92a2a0c443bfa282546b4032b889c2b430c3451517617b6612a338367461",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"withsecure_elements.security_events.severity","fold_case":true,"test":"Equals","arms":[{"literals":["info"],"writes":[["event.severity",21]],"removes":[]},{"literals":["warning"],"writes":[["event.severity",47]],"removes":[]},{"literals":["critical"],"writes":[["event.severity",99]],"removes":[]}]}}]}"#
                     ),
                 )?;
             }

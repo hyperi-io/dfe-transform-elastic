@@ -99,8 +99,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def transformDataRecord(def row, def schema) {\n  def transformedRecord = new HashMap();\n\n  for (int i = 0; i < schema.size(); i++) {\n    def field = schema[i];\n\n    // Get the corresponding value from the row,\n    // Set fieldValue to null if the value does not exists for the current field.\n    def fieldValue = (row.size() > i && row[i] != null) ? row[i].v : null;\n\n    // If the current field type is 'RECORD' then extract nested fields recursively.\n    if (field.type == 'RECORD') {\n      def value_list = new ArrayList();\n      // Handle field with list of values ('REPEATED' mode).\n      if (field.mode == 'REPEATED') {\n        if (fieldValue instanceof List && fieldValue.size() > 0) {\n          for (def item : fieldValue) {\n            // Recursively call transformDataRecord to transform each nested record.\n            if (item instanceof Map && item.v?.f != null && field.fields != null) {\n              value_list.add(transformDataRecord(item.v.f, field.fields));\n            } else {\n              // Handle scalar values for 'REPEATED' mode.\n              value_list.add(item);\n            }\n          }\n        }\n        transformedRecord[field.name] = value_list;\n      } else {\n        // Handle non-repeated 'RECORD' fields.\n        if (fieldValue instanceof Map) {\n          transformedRecord[field.name] = transformDataRecord(fieldValue.f, field.fields);\n        }\n      }\n    } else {\n      // For scalar field type, map the value to the field name.\n      if (field.mode == 'REPEATED'){\n        def value_list = new ArrayList();\n        for (def item : fieldValue) {\n          value_list.add(item.v);\n        }\n        transformedRecord[field.name] = value_list;\n      } else{\n        transformedRecord[field.name] = fieldValue;\n      }\n    }\n  }\n  return transformedRecord;\n}\n\n// Entry point: Check whether row and schema exists.\nif (ctx.json?.row?.f != null && ctx.json.schema?.fields != null) {\n  ctx.google_workspace = ctx.google_workspace ?: [:];\n  ctx.google_workspace.gmail = transformDataRecord(ctx.json.row.f, ctx.json.schema.fields);\n}"#
+                        compiled_painless!(
+                            "6827f45526384ebb68bbdb4406f9297ebb70f56b0ae91067715cd8cbde455ac1",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -1156,8 +1157,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.google_workspace.gmail.ip_address = ctx.google_workspace.gmail.ip_address.decodeBase64();"#
+                    compiled_painless!(
+                        "a25b78aac66a113101765acd38b6e647a332f91e5b162695d408cce15e1b12af",
+                        r#"{"params":null,"known":[{"DecodeBase64":{"source":"google_workspace.gmail.ip_address","target":"google_workspace.gmail.ip_address"}}]}"#
                     ),
                 )?;
             }
@@ -1803,8 +1805,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx._temp_ = [:]; ctx._temp_.timestamp_usec = ctx.google_workspace.gmail.event_info.timestamp_usec / 1000;\n"#
+                    compiled_painless!(
+                        "33d24e468a9c16f08adf8d605ed7f6d4e5ed3c3e4612992976bff070c0dbf242",
+                        r#"{"params":null,"known":[{"GuardedDivide":{"target":"_temp_.timestamp_usec","source":"google_workspace.gmail.event_info.timestamp_usec","absent":null,"divisor":1000}}]}"#
                     ),
                 )?;
             }
@@ -1873,8 +1876,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.google_workspace.gmail.message_info.spam_info.classification_timestamp_usec /= 1000;\n"#
+                        compiled_painless!(
+                            "ffdc019756cd8323f1eee77fa0c30c084b298d132a28637b161b1fbf714939b3",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -1974,8 +1978,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.google_workspace.gmail.message_info.structured_policy_log_info.exchange_journal_info.timestamp *= 1000;\n"#
+                        compiled_painless!(
+                            "2a4c55b7367cb0428f9427bdfee3ac9d92ad3c371bc85d9bab4bebcda9f045b7",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -2532,8 +2537,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.email = ctx.email ?: [:];\nctx.email.content_type = params.get(ctx.google_workspace.gmail.message_info.smime_content_type);"#
+                        compiled_painless!(
+                            "a6fdd5a231c47c47ed9eb6aad809ebd425f9091513baace287162c156b08a047",
+                            r#"{"params":{"LookupNormalise":[{"key":"google_workspace.gmail.message_info.smime_content_type","fold":"None","target":"email.content_type"},{"statements":[],"whole":false}]},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"1\":\"multipart/signed\",\"2\":\"application/pkcs7-mime\",\"3\":\"application/pkcs7-mime\",\"4\":\"application/pkcs7-mime\"}"
@@ -2779,8 +2785,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def shas = new HashSet();\nfor (def a: ctx.google_workspace.gmail.message_info.post_delivery_info.interaction.attachment) {\n  if (a.sha256 == null) {\n    continue;\n  }\n  shas.add(a.sha256)\n}\nif (shas.size() != 0) {\n  ctx.related = ctx.related ?: [:];\n  ctx.related.hash = new ArrayList(shas);\n}"#
+                    compiled_painless!(
+                        "72505d6ec53ac15a93eafb48d050473db2a798ebacc90e79b38331b0a6685e5c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

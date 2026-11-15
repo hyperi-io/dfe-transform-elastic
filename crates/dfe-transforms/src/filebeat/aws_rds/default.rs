@@ -25,8 +25,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if(ctx.agent?.type == \"firehose\" && ctx.aws?.rds?.metrics?.CPUUtilization?.avg != null && ctx.aws?.rds?.cpu?.total?.pct == null) {\n    ctx.aws.rds.metrics.CPUUtilization.avg = ctx.aws.rds.metrics.CPUUtilization.avg / 100;\n}\n"#
+                compiled_painless!(
+                    "2b0baad214ced9bd244fdabc4cceb3d51b4f3bb6114d5982a4a14d77eb4c3d7b",
+                    r#"{"params":null,"known":[{"GuardedDivide":{"target":"aws.rds.metrics.CPUUtilization.avg","source":"aws.rds.metrics.CPUUtilization.avg","absent":"aws.rds.cpu.total.pct","divisor":100}}]}"#
                 ),
             )?;
 

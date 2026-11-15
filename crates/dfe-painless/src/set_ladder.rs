@@ -5,26 +5,7 @@
 //!
 //! `trend_micro_vision_one` classifies an event by reading one or two of its own
 //! fields and adding ECS words to a pair of sets, then writing each set that
-//! collected anything:
-//!
-//! ```painless
-//! def eventCategory = new HashSet();
-//! def eventType = new HashSet();
-//! def description = ctx.trend_micro_vision_one.alert.description.toLowerCase();
-//! if (description.contains('logon')) {
-//!   eventCategory.add('authentication');
-//!   eventCategory.add('host');
-//!   eventType.add('info');
-//! } else if (description.contains('email')) {
-//!   eventCategory.add('email');
-//!   eventType.add('info');
-//! } else {
-//!   eventCategory.add('malware');
-//!   eventType.add('info');
-//! }
-//! if (!eventCategory.isEmpty()) { ctx.event.category = eventCategory; }
-//! if (!eventType.isEmpty()) { ctx.event.type = eventType; }
-//! ```
+//! collected anything.
 //!
 //! Its `audit` stream writes the same pattern with two subjects, independent
 //! `if`s rather than one chain, list-membership tests, and one arm carrying a
@@ -49,7 +30,7 @@ use crate::common::{if_block, matching_brace, vocabulary_tested};
 use crate::params::clean_path;
 
 /// The subjects the arms read, the accumulators they fill, and the chains.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct SetLadder {
     /// Indexed by every [`Test`]'s `subject`.
     subjects: Vec<Subject>,
@@ -60,7 +41,7 @@ pub struct SetLadder {
 }
 
 /// A local bound to a document field, and how the script read it.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct Subject {
     path: String,
     /// The script bound it through `.toLowerCase()`.
@@ -68,13 +49,13 @@ struct Subject {
 }
 
 /// One `if` / `else if` / `else`, of which at most one arm runs.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct Chain {
     arms: Vec<Arm>,
 }
 
 /// One arm of a chain: what admits it, what it adds, what it guards.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct Arm {
     /// `None` for a closing `else`, which always admits.
     test: Option<Test>,
@@ -85,7 +66,7 @@ struct Arm {
 }
 
 /// The three ways these scripts test a subject.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Test {
     /// `<subject>.contains('<word>')` -- the word is a SUBSTRING of the field.
     Holds { subject: usize, word: String },
@@ -411,7 +392,8 @@ fn quoted(text: &str) -> Option<String> {
     (!inner.is_empty() && !inner.contains(quote)).then(|| inner.to_owned())
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "set_ladder_tests.rs"]
 #[allow(
     clippy::unwrap_used,

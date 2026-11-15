@@ -23,7 +23,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "cb6e7a51906a4b9d3d1af5385b0d3b046068f8045e61f40b9cd1e7f94a6b6b75",
+                        r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                         r#"ctx.winlog?.event_data?.entrySet().removeIf(entry -> [null, \"\", \"-\", \"{00000000-0000-0000-0000-000000000000}\"].contains(entry.getValue()))"#
                     ),
                 )?;
@@ -138,7 +140,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "c657972aa8a3c1fb429bc129b22028094780700bb4a3345966384ec5f1e97d04",
+                    r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Compare":{"path":"event.code","wanted":"Null","negated":false,"lowered":false}}],["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                     r#"if (ctx.event?.code == null || params.get(ctx.event.code) == null) {\n  return;\n}\ndef hm = new HashMap(params[ctx.event.code]);\nhm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(
@@ -255,8 +259,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def hashIsEmpty(String hash) {\n  if (hash == \"\") {\n    return true;\n  }\n  \n  Pattern emptyHashRegex = /^0*$/;\n  def matcher = emptyHashRegex.matcher(hash);\n  \n  return matcher.matches(); \n}\n\ndef hashes = new HashMap();\ndef related = [\n  \"hash\": new ArrayList()\n];\nfor (entry in ctx._temp.hashes.entrySet()) {\n  def key = entry.getKey().toString().toLowerCase();\n  def value = entry.getValue().toString().toLowerCase();\n\n  if (hashIsEmpty(value)) {\n    continue;\n  }\n\n  hashes[key] = value;\n  related.hash.add(value);\n}\n\nctx._temp.hashes = hashes;\nif (related.hash.length > 0) {\n  ctx.related = related;\n}"#
+                    compiled_painless!(
+                        "80bff8152752bc6bdaf9c50e832d5f5d28ccc94ef016e65895551d3a28931030",
+                        r#"{"params":null,"known":[{"HashLowercase":"_temp.hashes"}]}"#
                     ),
                 )?;
             }
@@ -617,8 +622,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// appendBSBytes appends n '\\\\' bytes to b and returns the resulting slice.\ndef appendBSBytes(StringBuilder b, int n) {\n    for (; n > 0; n--) {\n        b.append('\\\\');\n    }\n    return b;\n}\n\n// readNextArg splits command line string cmd into next\n// argument and command line remainder.\ndef readNextArg(String cmd) {\n    def b = new StringBuilder();\n    boolean inquote;\n    int nslash;\n    for (; cmd.length() > 0; cmd = cmd.substring(1)) {\n        def c = cmd.charAt(0);\n        if (c == (char)' ' || c == (char)0x09) {\n            if (!inquote) {\n                return [\n                    \"arg\":  appendBSBytes(b, nslash).toString(),\n                    \"rest\": cmd.substring(1)\n                ];\n            }\n        } else if (c == (char)'\"') {\n            b = appendBSBytes(b, nslash/2);\n            if (nslash%2 == 0) {\n                // use \"Prior to 2008\" rule from\n                // http://daviddeley.com/autohotkey/parameters/parameters.htm\n                // section 5.2 to deal with double double quotes\n                if (inquote && cmd.length() > 1 && cmd.charAt(1) == (char)'\"') {\n                    b.append(c);\n                    cmd = cmd.substring(1);\n                }\n                inquote = !inquote;\n            } else {\n                b.append(c);\n            }\n            nslash = 0;\n            continue;\n        } else if (c == (char)'\\\\') {\n            nslash++;\n            continue;\n        }\n        b = appendBSBytes(b, nslash);\n        nslash = 0;\n        b.append(c);\n    }\n    return [\n        \"arg\":  appendBSBytes(b, nslash).toString(), \n        \"rest\": ''\n    ];\n}\n\n// commandLineToArgv splits a command line into individual argument\n// strings, following the Windows conventions documented\n// at http://daviddeley.com/autohotkey/parameters/parameters.htm#WINARGV\n// Original implementation found at: https://github.com/golang/go/commit/39c8d2b7faed06b0e91a1ad7906231f53aab45d1\ndef commandLineToArgv(String cmd) {\n    def args = new ArrayList();\n    while (cmd.length() > 0) {\n        if (cmd.charAt(0) == (char)' ' || cmd.charAt(0) == (char)0x09) {\n            cmd = cmd.substring(1);\n            continue;\n        }\n        def next = readNextArg(cmd);\n        cmd = next.rest;\n        args.add(next.arg);\n    }\n    return args;\n}\n\ndef cmd = ctx.process?.command_line;\nif (cmd != null && cmd != \"\") {\n  ctx.process.args = commandLineToArgv(cmd);\n  ctx.process.args_count = ctx.process.args.length;\n}\n\ndef parentCmd = ctx.process?.parent?.command_line;\nif (parentCmd != null && parentCmd != \"\") {\n  ctx.process.parent.args = commandLineToArgv(parentCmd);\n  ctx.process.parent.args_count = ctx.process.parent.args.length;\n}"#
+                    compiled_painless!(
+                        "0dd6fc307371b2e11be5da9cf126c1862e26f7dfdb116d1ac69632d95269bc0d",
+                        r#"{"params":null,"known":[{"SplitCommandLine":{"sites":[{"source":"process.command_line","base":"process","count":true,"executable":false},{"source":"process.parent.command_line","base":"process.parent","count":true,"executable":false}],"skip_empty":false}}]}"#
                     ),
                 )?;
             }
@@ -637,8 +643,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def getProcessName(def path) {\n  def idx = path.lastIndexOf(\"\\\\\");\n  if (idx > -1) {\n      return path.substring(idx+1);\n  }\n  return \"\";\n}\n\ndef cmd = ctx.process?.executable;\nif (cmd != null && cmd != \"\" && ctx.process?.name == null) {\n  def name = getProcessName(cmd);\n  if (name != \"\") {\n    ctx.process.name = name;\n  }\n}\n\ndef parentCmd = ctx.process?.parent?.executable;\nif (parentCmd != null && parentCmd != \"\" && ctx.process?.parent?.name == null) {\n  def name = getProcessName(parentCmd);\n  if (name != \"\") {\n    ctx.process.parent.name = name;\n  }\n}"#
+                    compiled_painless!(
+                        "3b6e9c1ee55604ddb7783f10ed3adb4c30d18adf46bca43cde9940356600b5ac",
+                        r#"{"params":null,"known":[{"Basename":{"separator":"\\","cuts":[["process.executable","process.name"],["process.parent.executable","process.parent.name"]]}}]}"#
                     ),
                 )?;
             }
@@ -854,8 +861,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def path = ctx.file.path;\ndef idx = path.lastIndexOf(\"\\\\\");\nif (idx > -1) {\n    if (ctx.file == null) {\n        ctx.file = new HashMap();\n    }\n    ctx.file.name = path.substring(idx+1);\n    ctx.file.directory = path.substring(0, idx);\n\n    def extIdx = path.lastIndexOf(\".\");\n    if (extIdx > -1) {\n        ctx.file.extension = path.substring(extIdx+1);\n    }\n}"#
+                    compiled_painless!(
+                        "4b62717de19bdc548d4daf9cd4812781ea556e9d0dc51e00a69b5362f982848d",
+                        r#"{"params":null,"known":[{"FileInfo":"file.path"}]}"#
                     ),
                 )?;
             }
@@ -927,8 +935,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.winlog?.event_data?.Signed == 'true') {\n  ctx.dll.code_signature.status = \"trusted\";\n} else if (ctx.winlog?.event_data?.SignatureStatus == \"Unavailable\") {\n  ctx.dll.code_signature.status = \"Unavailable\";\n} else if (ctx.winlog?.event_data?.Signed instanceof String && ctx.winlog.event_data.Signed.startsWith(\"failed:\")) {\n  ctx.dll.code_signature.status = ctx.winlog.event_data.Signed;\n}"#
+                    compiled_painless!(
+                        "973e78a5797881e779d75ddd0897eba5ac8383e9b3c247f87f6c28567f06ffe1",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"winlog.event_data.Signed","fold_case":false,"test":"Equals","arms":[{"literals":["true"],"writes":[["dll.code_signature.status","trusted"]],"removes":[]},{"literals":["Unavailable"],"writes":[["dll.code_signature.status","Unavailable"]],"removes":[]}]}}]}"#
                     ),
                 )?;
             }
@@ -1186,7 +1195,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "bff4731015b148a3529e267d260e605c05f37d8fa2d3c20499dbe824491970bf",
+                        r#"{"params":"SysmonQueryResults","known":[]}"#,
                         r#"def results = /;/.split(ctx.winlog.event_data.QueryResults);\ndef answers = new ArrayList();\ndef ips = new ArrayList();\ndef relatedHosts = new ArrayList();\nfor (def i = 0; i < results.length; i++) {\n  def answer = results[i];\n  if (answer == \"\") {\n    continue;\n  }\n\n  if (answer.startsWith(\"type:\")) {\n    def parts = /\\s+/.split(answer);\n    if (parts.length < 2) {\n      throw new Exception(\"unexpected QueryResult format\");\n    }\n    if (parts.length == 3) {\n      answers.add([\n        \"type\": params[parts[1]],\n        \"data\": parts[2]\n      ]);\n      relatedHosts.add(parts[2]);\n    } else {\n      answers.add([\n        \"type\": params[parts[1]]\n      ]);\n    }\n  } else {\n    ips.add(answer);\n  }\n}\n\nif (answers.length > 0) {\n  ctx.dns.answers = answers;\n}\nif (ips.length > 0) {\n  ctx.dns.resolved_ip = ips;\n}\nif (relatedHosts.length > 0) {\n  if (ctx.related == null) {\n    ctx.related = new HashMap();\n  }\n  ctx.related.hosts = relatedHosts;\n}"#
                     ),
                     cached_params!(
@@ -1329,8 +1340,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.dns.answers == null) {\n  ctx.dns.answers = new ArrayList();\n}\nfor (def i = 0; i < ctx.dns.resolved_ip.length; i++) {\n  def ip = ctx.dns.resolved_ip[i];\n  if (ip == null) {\n    ctx.dns.resolved_ip.remove(i);\n    continue;\n  }\n\n  // Synthesize record type based on IP address type.\n  def type = \"A\";\n  if (ip.indexOf(\":\") != -1) {\n    type = \"AAAA\";\n  }\n  ctx.dns.answers.add([\n    \"type\": type,\n    \"data\": ip\n  ]);\n}"#
+                    compiled_painless!(
+                        "eef3f4eec444b699402d40d2f9ee1e688bbf3a800707c210361e0f7a9c4ffc49",
+                        r#"{"params":null,"known":["AnswersFromResolvedIp"]}"#
                     ),
                 )?;
             }
@@ -1573,8 +1585,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def status = params[ctx.sysmon.dns.status];\nif (status != null) {\n  ctx.sysmon.dns.status = status;\n}"#
+                    compiled_painless!(
+                        "cf0bb7d721fd7d729e818466721c5e371ab2bc9d32c22a507457af34fa9e78b7",
+                        r#"{"params":{"NormalisedLookup":{"source":"sysmon.dns.status","target":"sysmon.dns.status","fold":"None"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"5\":\"ERROR_ACCESS_DENIED\",\"0\":\"SUCCESS\",\"8\":\"ERROR_NOT_ENOUGH_MEMORY\",\"13\":\"ERROR_INVALID_DATA\",\"14\":\"ERROR_OUTOFMEMORY\",\"123\":\"ERROR_INVALID_NAME\",\"1214\":\"ERROR_INVALID_NETNAME\",\"1223\":\"ERROR_CANCELLED\",\"1460\":\"ERROR_TIMEOUT\",\"4312\":\"ERROR_OBJECT_NOT_FOUND\",\"9001\":\"DNS_ERROR_RCODE_FORMAT_ERROR\",\"9002\":\"DNS_ERROR_RCODE_SERVER_FAILURE\",\"9003\":\"DNS_ERROR_RCODE_NAME_ERROR\",\"9004\":\"DNS_ERROR_RCODE_NOT_IMPLEMENTED\",\"9005\":\"DNS_ERROR_RCODE_REFUSED\",\"9006\":\"DNS_ERROR_RCODE_YXDOMAIN\",\"9007\":\"DNS_ERROR_RCODE_YXRRSET\",\"9008\":\"DNS_ERROR_RCODE_NXRRSET\",\"9009\":\"DNS_ERROR_RCODE_NOTAUTH\",\"9010\":\"DNS_ERROR_RCODE_NOTZONE\",\"9016\":\"DNS_ERROR_RCODE_BADSIG\",\"9017\":\"DNS_ERROR_RCODE_BADKEY\",\"9018\":\"DNS_ERROR_RCODE_BADTIME\",\"9101\":\"DNS_ERROR_KEYMASTER_REQUIRED\",\"9102\":\"DNS_ERROR_NOT_ALLOWED_ON_SIGNED_ZONE\",\"9103\":\"DNS_ERROR_NSEC3_INCOMPATIBLE_WITH_RSA_SHA1\",\"9104\":\"DNS_ERROR_NOT_ENOUGH_SIGNING_KEY_DESCRIPTORS\",\"9105\":\"DNS_ERROR_UNSUPPORTED_ALGORITHM\",\"9106\":\"DNS_ERROR_INVALID_KEY_SIZE\",\"9107\":\"DNS_ERROR_SIGNING_KEY_NOT_ACCESSIBLE\",\"9108\":\"DNS_ERROR_KSP_DOES_NOT_SUPPORT_PROTECTION\",\"9109\":\"DNS_ERROR_UNEXPECTED_DATA_PROTECTION_ERROR\",\"9110\":\"DNS_ERROR_UNEXPECTED_CNG_ERROR\",\"9111\":\"DNS_ERROR_UNKNOWN_SIGNING_PARAMETER_VERSION\",\"9112\":\"DNS_ERROR_KSP_NOT_ACCESSIBLE\",\"9113\":\"DNS_ERROR_TOO_MANY_SKDS\",\"9114\":\"DNS_ERROR_INVALID_ROLLOVER_PERIOD\",\"9115\":\"DNS_ERROR_INVALID_INITIAL_ROLLOVER_OFFSET\",\"9116\":\"DNS_ERROR_ROLLOVER_IN_PROGRESS\",\"9117\":\"DNS_ERROR_STANDBY_KEY_NOT_PRESENT\",\"9118\":\"DNS_ERROR_NOT_ALLOWED_ON_ZSK\",\"9119\":\"DNS_ERROR_NOT_ALLOWED_ON_ACTIVE_SKD\",\"9120\":\"DNS_ERROR_ROLLOVER_ALREADY_QUEUED\",\"9121\":\"DNS_ERROR_NOT_ALLOWED_ON_UNSIGNED_ZONE\",\"9122\":\"DNS_ERROR_BAD_KEYMASTER\",\"9123\":\"DNS_ERROR_INVALID_SIGNATURE_VALIDITY_PERIOD\",\"9124\":\"DNS_ERROR_INVALID_NSEC3_ITERATION_COUNT\",\"9125\":\"DNS_ERROR_DNSSEC_IS_DISABLED\",\"9126\":\"DNS_ERROR_INVALID_XML\",\"9127\":\"DNS_ERROR_NO_VALID_TRUST_ANCHORS\",\"9128\":\"DNS_ERROR_ROLLOVER_NOT_POKEABLE\",\"9129\":\"DNS_ERROR_NSEC3_NAME_COLLISION\",\"9130\":\"DNS_ERROR_NSEC_INCOMPATIBLE_WITH_NSEC3_RSA_SHA1\",\"9501\":\"DNS_INFO_NO_RECORDS\",\"9502\":\"DNS_ERROR_BAD_PACKET\",\"9503\":\"DNS_ERROR_NO_PACKET\",\"9504\":\"DNS_ERROR_RCODE\",\"9505\":\"DNS_ERROR_UNSECURE_PACKET\",\"9506\":\"DNS_REQUEST_PENDING\",\"9551\":\"DNS_ERROR_INVALID_TYPE\",\"9552\":\"DNS_ERROR_INVALID_IP_ADDRESS\",\"9553\":\"DNS_ERROR_INVALID_PROPERTY\",\"9554\":\"DNS_ERROR_TRY_AGAIN_LATER\",\"9555\":\"DNS_ERROR_NOT_UNIQUE\",\"9556\":\"DNS_ERROR_NON_RFC_NAME\",\"9557\":\"DNS_STATUS_FQDN\",\"9558\":\"DNS_STATUS_DOTTED_NAME\",\"9559\":\"DNS_STATUS_SINGLE_PART_NAME\",\"9560\":\"DNS_ERROR_INVALID_NAME_CHAR\",\"9561\":\"DNS_ERROR_NUMERIC_NAME\",\"9562\":\"DNS_ERROR_NOT_ALLOWED_ON_ROOT_SERVER\",\"9563\":\"DNS_ERROR_NOT_ALLOWED_UNDER_DELEGATION\",\"9564\":\"DNS_ERROR_CANNOT_FIND_ROOT_HINTS\",\"9565\":\"DNS_ERROR_INCONSISTENT_ROOT_HINTS\",\"9566\":\"DNS_ERROR_DWORD_VALUE_TOO_SMALL\",\"9567\":\"DNS_ERROR_DWORD_VALUE_TOO_LARGE\",\"9568\":\"DNS_ERROR_BACKGROUND_LOADING\",\"9569\":\"DNS_ERROR_NOT_ALLOWED_ON_RODC\",\"9570\":\"DNS_ERROR_NOT_ALLOWED_UNDER_DNAME\",\"9571\":\"DNS_ERROR_DELEGATION_REQUIRED\",\"9572\":\"DNS_ERROR_INVALID_POLICY_TABLE\",\"9573\":\"DNS_ERROR_ADDRESS_REQUIRED\",\"9601\":\"DNS_ERROR_ZONE_DOES_NOT_EXIST\",\"9602\":\"DNS_ERROR_NO_ZONE_INFO\",\"9603\":\"DNS_ERROR_INVALID_ZONE_OPERATION\",\"9604\":\"DNS_ERROR_ZONE_CONFIGURATION_ERROR\",\"9605\":\"DNS_ERROR_ZONE_HAS_NO_SOA_RECORD\",\"9606\":\"DNS_ERROR_ZONE_HAS_NO_NS_RECORDS\",\"9607\":\"DNS_ERROR_ZONE_LOCKED\",\"9608\":\"DNS_ERROR_ZONE_CREATION_FAILED\",\"9609\":\"DNS_ERROR_ZONE_ALREADY_EXISTS\",\"9610\":\"DNS_ERROR_AUTOZONE_ALREADY_EXISTS\",\"9611\":\"DNS_ERROR_INVALID_ZONE_TYPE\",\"9612\":\"DNS_ERROR_SECONDARY_REQUIRES_MASTER_IP\",\"9613\":\"DNS_ERROR_ZONE_NOT_SECONDARY\",\"9614\":\"DNS_ERROR_NEED_SECONDARY_ADDRESSES\",\"9615\":\"DNS_ERROR_WINS_INIT_FAILED\",\"9616\":\"DNS_ERROR_NEED_WINS_SERVERS\",\"9617\":\"DNS_ERROR_NBSTAT_INIT_FAILED\",\"9618\":\"DNS_ERROR_SOA_DELETE_INVALID\",\"9619\":\"DNS_ERROR_FORWARDER_ALREADY_EXISTS\",\"9620\":\"DNS_ERROR_ZONE_REQUIRES_MASTER_IP\",\"9621\":\"DNS_ERROR_ZONE_IS_SHUTDOWN\",\"9622\":\"DNS_ERROR_ZONE_LOCKED_FOR_SIGNING\",\"9651\":\"DNS_ERROR_PRIMARY_REQUIRES_DATAFILE\",\"9652\":\"DNS_ERROR_INVALID_DATAFILE_NAME\",\"9653\":\"DNS_ERROR_DATAFILE_OPEN_FAILURE\",\"9654\":\"DNS_ERROR_FILE_WRITEBACK_FAILED\",\"9655\":\"DNS_ERROR_DATAFILE_PARSING\",\"9701\":\"DNS_ERROR_RECORD_DOES_NOT_EXIST\",\"9702\":\"DNS_ERROR_RECORD_FORMAT\",\"9703\":\"DNS_ERROR_NODE_CREATION_FAILED\",\"9704\":\"DNS_ERROR_UNKNOWN_RECORD_TYPE\",\"9705\":\"DNS_ERROR_RECORD_TIMED_OUT\",\"9706\":\"DNS_ERROR_NAME_NOT_IN_ZONE\",\"9707\":\"DNS_ERROR_CNAME_LOOP\",\"9708\":\"DNS_ERROR_NODE_IS_CNAME\",\"9709\":\"DNS_ERROR_CNAME_COLLISION\",\"9710\":\"DNS_ERROR_RECORD_ONLY_AT_ZONE_ROOT\",\"9711\":\"DNS_ERROR_RECORD_ALREADY_EXISTS\",\"9712\":\"DNS_ERROR_SECONDARY_DATA\",\"9713\":\"DNS_ERROR_NO_CREATE_CACHE_DATA\",\"9714\":\"DNS_ERROR_NAME_DOES_NOT_EXIST\",\"9715\":\"DNS_WARNING_PTR_CREATE_FAILED\",\"9716\":\"DNS_WARNING_DOMAIN_UNDELETED\",\"9717\":\"DNS_ERROR_DS_UNAVAILABLE\",\"9718\":\"DNS_ERROR_DS_ZONE_ALREADY_EXISTS\",\"9719\":\"DNS_ERROR_NO_BOOTFILE_IF_DS_ZONE\",\"9720\":\"DNS_ERROR_NODE_IS_DNAME\",\"9721\":\"DNS_ERROR_DNAME_COLLISION\",\"9722\":\"DNS_ERROR_ALIAS_LOOP\",\"9751\":\"DNS_INFO_AXFR_COMPLETE\",\"9752\":\"DNS_ERROR_AXFR\",\"9753\":\"DNS_INFO_ADDED_LOCAL_WINS\",\"9801\":\"DNS_STATUS_CONTINUE_NEEDED\",\"9851\":\"DNS_ERROR_NO_TCPIP\",\"9852\":\"DNS_ERROR_NO_DNS_SERVERS\",\"9901\":\"DNS_ERROR_DP_DOES_NOT_EXIST\",\"9902\":\"DNS_ERROR_DP_ALREADY_EXISTS\",\"9903\":\"DNS_ERROR_DP_NOT_ENLISTED\",\"9904\":\"DNS_ERROR_DP_ALREADY_ENLISTED\",\"9905\":\"DNS_ERROR_DP_NOT_AVAILABLE\",\"9906\":\"DNS_ERROR_DP_FSMO_ERROR\",\"9911\":\"DNS_ERROR_RRL_NOT_ENABLED\",\"9912\":\"DNS_ERROR_RRL_INVALID_WINDOW_SIZE\",\"9913\":\"DNS_ERROR_RRL_INVALID_IPV4_PREFIX\",\"9914\":\"DNS_ERROR_RRL_INVALID_IPV6_PREFIX\",\"9915\":\"DNS_ERROR_RRL_INVALID_TC_RATE\",\"9916\":\"DNS_ERROR_RRL_INVALID_LEAK_RATE\",\"9917\":\"DNS_ERROR_RRL_LEAK_RATE_LESSTHAN_TC_RATE\",\"9921\":\"DNS_ERROR_VIRTUALIZATION_INSTANCE_ALREADY_EXISTS\",\"9922\":\"DNS_ERROR_VIRTUALIZATION_INSTANCE_DOES_NOT_EXIST\",\"9923\":\"DNS_ERROR_VIRTUALIZATION_TREE_LOCKED\",\"9924\":\"DNS_ERROR_INVAILD_VIRTUALIZATION_INSTANCE_NAME\",\"9925\":\"DNS_ERROR_DEFAULT_VIRTUALIZATION_INSTANCE\",\"9951\":\"DNS_ERROR_ZONESCOPE_ALREADY_EXISTS\",\"9952\":\"DNS_ERROR_ZONESCOPE_DOES_NOT_EXIST\",\"9953\":\"DNS_ERROR_DEFAULT_ZONESCOPE\",\"9954\":\"DNS_ERROR_INVALID_ZONESCOPE_NAME\",\"9955\":\"DNS_ERROR_NOT_ALLOWED_WITH_ZONESCOPES\",\"9956\":\"DNS_ERROR_LOAD_ZONESCOPE_FAILED\",\"9957\":\"DNS_ERROR_ZONESCOPE_FILE_WRITEBACK_FAILED\",\"9958\":\"DNS_ERROR_INVALID_SCOPE_NAME\",\"9959\":\"DNS_ERROR_SCOPE_DOES_NOT_EXIST\",\"9960\":\"DNS_ERROR_DEFAULT_SCOPE\",\"9961\":\"DNS_ERROR_INVALID_SCOPE_OPERATION\",\"9962\":\"DNS_ERROR_SCOPE_LOCKED\",\"9963\":\"DNS_ERROR_SCOPE_ALREADY_EXISTS\",\"9971\":\"DNS_ERROR_POLICY_ALREADY_EXISTS\",\"9972\":\"DNS_ERROR_POLICY_DOES_NOT_EXIST\",\"9973\":\"DNS_ERROR_POLICY_INVALID_CRITERIA\",\"9974\":\"DNS_ERROR_POLICY_INVALID_SETTINGS\",\"9975\":\"DNS_ERROR_CLIENT_SUBNET_IS_ACCESSED\",\"9976\":\"DNS_ERROR_CLIENT_SUBNET_DOES_NOT_EXIST\",\"9977\":\"DNS_ERROR_CLIENT_SUBNET_ALREADY_EXISTS\",\"9978\":\"DNS_ERROR_SUBNET_DOES_NOT_EXIST\",\"9979\":\"DNS_ERROR_SUBNET_ALREADY_EXISTS\",\"9980\":\"DNS_ERROR_POLICY_LOCKED\",\"9981\":\"DNS_ERROR_POLICY_INVALID_WEIGHT\",\"9982\":\"DNS_ERROR_POLICY_INVALID_NAME\",\"9983\":\"DNS_ERROR_POLICY_MISSING_CRITERIA\",\"9984\":\"DNS_ERROR_INVALID_CLIENT_SUBNET_NAME\",\"9985\":\"DNS_ERROR_POLICY_PROCESSING_ORDER_INVALID\",\"9986\":\"DNS_ERROR_POLICY_SCOPE_MISSING\",\"9987\":\"DNS_ERROR_POLICY_SCOPE_NOT_ALLOWED\",\"9988\":\"DNS_ERROR_SERVERSCOPE_IS_REFERENCED\",\"9989\":\"DNS_ERROR_ZONESCOPE_IS_REFERENCED\",\"9990\":\"DNS_ERROR_POLICY_INVALID_CRITERIA_CLIENT_SUBNET\",\"9991\":\"DNS_ERROR_POLICY_INVALID_CRITERIA_TRANSPORT_PROTOCOL\",\"9992\":\"DNS_ERROR_POLICY_INVALID_CRITERIA_NETWORK_PROTOCOL\",\"9993\":\"DNS_ERROR_POLICY_INVALID_CRITERIA_INTERFACE\",\"9994\":\"DNS_ERROR_POLICY_INVALID_CRITERIA_FQDN\",\"9995\":\"DNS_ERROR_POLICY_INVALID_CRITERIA_QUERY_TYPE\",\"9996\":\"DNS_ERROR_POLICY_INVALID_CRITERIA_TIME_OF_DAY\",\"10054\":\"WSAECONNRESET\",\"10055\":\"WSAENOBUFS\",\"10060\":\"WSAETIMEDOUT\"}"
@@ -1697,8 +1710,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"ctx.registry = new HashMap();\nPattern qwordRegex = /(?i)QWORD \\(((0x[0-9A-F]{8})-(0x[0-9A-F]{8}))\\)/;\nPattern dwordRegex = /(?i)DWORD \\((0x[0-9A-F]{8})\\)/;\nPattern binDataRegex = /Binary Data/;\n\ndef path = ctx.winlog.event_data.TargetObject;\nctx.registry.path = path;\n\ndef pathTokens = Arrays.asList(/\\\\/.split(path));\ndef hive = params[pathTokens[0]];\nif (hive != null) {\n  ctx.registry.hive = hive;\n  if (pathTokens.length > 1) {\n    ctx.registry.key = pathTokens.subList(1, pathTokens.length).join(\"\\\\\");\n  }\n}\n\ndef value = pathTokens[pathTokens.length - 1];\nctx.registry.value = value;\n\ndef data = ctx.winlog?.event_data?.Details;\nif (data != null && data != \"\") {\n  def prefixLen = 2; // to remove 0x prefix\n  def dataValue = \"\";\n  def dataType = \"\";\n  def matcher = qwordRegex.matcher(data);\n  if (matcher.matches()) {\n    def parsedHighByte = Long.parseLong(matcher.group(2).substring(prefixLen), 16);\n    def parsedLowByte = Long.parseLong(matcher.group(3).substring(prefixLen), 16);\n    if (!Double.isNaN(parsedHighByte) && !Double.isNaN(parsedLowByte)) {\n      dataType = \"SZ_QWORD\";\n      dataValue = Long.toString(((parsedHighByte << 8) + parsedLowByte));\n      ctx.registry.data = [\n        \"strings\": [dataValue],\n        \"type\": dataType\n      ];\n    }\n    return;\n  }\n\n  matcher = dwordRegex.matcher(data);\n  if (matcher.matches()) {\n    def parsedValue = Long.parseLong(matcher.group(1).substring(prefixLen), 16);\n    if (!Double.isNaN(parsedValue)) {\n      dataType = \"SZ_DWORD\";\n      dataValue = Long.toString(parsedValue);\n      ctx.registry.data = [\n        \"strings\": [dataValue],\n        \"type\": dataType\n      ];\n    }\n    return;\n  }\n\n  matcher = binDataRegex.matcher(data);\n  if (matcher.matches()) {\n    // Data type could be REG_BINARY or REG_MULTI_SZ\n    ctx.registry.data = [\n      \"strings\": [data],\n      \"type\": \"REG_BINARY\"\n    ];\n    return;\n  }\n\n  // REG_SZ or REG_EXPAND_SZ\n  ctx.registry.data = [\n    \"strings\": [data],\n    \"type\": \"REG_SZ\"\n  ];\n}"#
+                    compiled_painless!(
+                        "a8e5feaefc58fe4afc79587a0634bbf71b3b1e0aa82082cd4ea393807bb379a9",
+                        r#"{"params":"SysmonRegistry","known":[]}"#
                     ),
                     cached_params!(
                         "{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKCR\":\"HKCR\",\"HKEY_CURRENT_CONFIG\":\"HKCC\",\"HKCC\":\"HKCC\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKCU\":\"HKCU\",\"HKEY_DYN_DATA\":\"HKDD\",\"HKDD\":\"HKDD\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKLM\":\"HKLM\",\"HKEY_PERFORMANCE_DATA\":\"HKPD\",\"HKPD\":\"HKPD\",\"HKEY_USERS\":\"HKU\",\"HKU\":\"HKU\"}"

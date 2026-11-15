@@ -241,8 +241,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def attachmentList = new ArrayList();\nfor (name in ctx.abnormal_security.threat.attachment_names) {\n  def attachment = new HashMap();\n  attachment.put('file', new HashMap());\n  attachment.file.put('name', name);\n  String[] tokenList = name.splitOnToken('.');\n  if(tokenList.length > 1){\n    attachment.file.put('extension', tokenList[tokenList.length - 1]);\n  }\n  attachmentList.add(attachment);\n}\nctx.put('email',new HashMap());\nctx.email.attachments = attachmentList;"#
+                        compiled_painless!(
+                            "15309e58a334520c906fe941efc0577ef2c543e6e50e905996a3287764855298",
+                            r#"{"params":null,"known":[{"AppendEach":{"source":"abnormal_security.threat.attachment_names","target":"abnormal_security.threat.attachment_names","map_keys":[],"separator":".","deduped":false}}]}"#
                         ),
                     )?;
                     Ok(())

@@ -1091,8 +1091,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def parts = ctx.zeek.ssl.version.splitOnToken(\"v\"); if (parts.length != 2) {\n  return;\n} if (parts[0] == \"SSL\") {\n  ctx.tls.version = parts[1] + \".0\";\n} else {\n  ctx.tls.version = parts[1].substring(0,1) + \".\" + parts[1].substring(1);\n} ctx.tls.version_protocol = parts[0].toLowerCase();"#
+                    compiled_painless!(
+                        "ebba937aaf3cea0d2e5b3610086dd7c821bd2383f7c441dcdca43a783f4c2b80",
+                        r#"{"params":null,"known":[{"TlsVersionSplit":{"source":"zeek.ssl.version"}}]}"#
                     ),
                 )?;
             }

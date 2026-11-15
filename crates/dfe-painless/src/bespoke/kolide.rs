@@ -209,13 +209,13 @@ pub const ENTRIES: &[Entry] = &[
         run: issue_timestamp,
     },
     Entry {
-        hash: "57cf020730ca8c35cc0267b0cc9164e4d681e63eeed61d731917e48ff9470dc3",
+        hash: "788b3b02269ed8c4cd70d891723600ccd9e84c44031cedbc9aec4a9196529fc7",
         source: "kolide",
         name: "issue_categorization",
         run: issue_categorization,
     },
     Entry {
-        hash: "6a785318b983aabb2fd69cbe7c9de76549fea87d6a3f8f6c128ba0634aef685e",
+        hash: "a91863ccb3a11c2ea126be0adde0cd35052be36c043645cd2b819caf7ab5bbe4",
         source: "kolide",
         name: "audit_categorization",
         run: audit_categorization,

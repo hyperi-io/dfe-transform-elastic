@@ -471,7 +471,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "6c86f2194bca56610d5b5e4501848324fab5070c197f80f97841a1e440710ad5",
+                            r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"prisma_cloud.audit.result","wanted":"Null","negated":true,"lowered":false}},{"FieldContains":{"path":"prisma_cloud.audit.result","argument":{"Literal":"success"},"lowered":true}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}}],"alt":[{"If":{"test":[[{"Compare":{"path":"prisma_cloud.audit.result","wanted":"Null","negated":true,"lowered":false}},{"FieldContains":{"path":"prisma_cloud.audit.result","argument":{"Literal":"fail"},"lowered":true}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"unknown"}}}}]}}]}}],"whole":false}}]}"#,
                             r#"if (ctx.prisma_cloud?.audit?.result != null && ctx.prisma_cloud.audit.result.toLowerCase().contains(\"success\")){\n    ctx.event.outcome = \"success\";\n} else if (ctx.prisma_cloud?.audit?.result != null && ctx.prisma_cloud.audit.result.toLowerCase().contains(\"fail\")){\n    ctx.event.outcome = \"failure\";\n} else {\n    ctx.event.outcome = \"unknown\";\n}"#
                         ),
                     )?;

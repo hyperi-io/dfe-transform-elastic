@@ -63,8 +63,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// Helper function to convert kebab-case to snake_case\nString kebabToSnake(String str) {\n  return str.replace(\"-\", \"_\");\n}\n\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = kebabToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n\n// Apply the conversion\nif (ctx.netskope?.transaction != null) {\n  ctx.netskope.transaction = convertToSnakeCase(ctx.netskope.transaction);\n}\n"#
+                    compiled_painless!(
+                        "896578aa6e228ca1f58b454740cff0a4c969b4f32970c00ec7d61cff3b68ba4e",
+                        r#"{"params":null,"known":[{"CamelToSnake":{"target":"netskope.transaction","source":"netskope.transaction","rule":"HyphenToUnderscore","at_keys":"Convert","merge":false,"removes":[]}}]}"#
                     ),
                 )?;
                 Ok(())

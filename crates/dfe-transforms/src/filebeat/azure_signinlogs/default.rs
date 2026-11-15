@@ -29,8 +29,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Map keysToSnakeCase(Map m) {\n  def regex = /([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['signinlogs'] = keysToSnakeCase(ctx.azure.signinlogs);\n"#
+                compiled_painless!(
+                    "afb59207511e7c132988812a449a8abcc41a43f5aee2f37f9ed5cd0ef8458472",
+                    r#"{"params":null,"known":[{"KeysToSnakeCase":["azure.signinlogs","CamelBreakKeepingUnderscore"]}]}"#
                 ),
             )?;
 
@@ -288,7 +289,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "ac2cf3f38b7b574df5735ef61263b6c8afcfaf5c675630fc6a3d784442996515",
+                    r#"{"params":null,"known":["JoinOptional"]}"#,
                     r#"String reason = ctx?.azure?.signinlogs?.properties?.status?.failure_reason; String details = ctx?.azure?.signinlogs?.properties?.status?.additional_details; if (reason != null && details != null) { ctx['message'] = reason + ' (' + details + ')'; } else if (reason != null) { ctx['message'] = reason; } else if (details != null) { ctx['message'] = details; }"#
                 ),
             )?;
@@ -334,8 +337,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n"#
+                    compiled_painless!(
+                        "697df72e5c68f86cc1a11eb2d34e071deb43f3a9b7f8a75aa0a3d32ace1fc75d",
+                        r#"{"params":null,"known":[{"KeyValuePairs":{"path":"azure.signinlogs.properties.authentication_processing_details","into":"OneMap","key_steps":[],"dump_key":null}}]}"#
                     ),
                 )?;
             }

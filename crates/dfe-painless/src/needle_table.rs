@@ -6,15 +6,7 @@
 //!
 //! `trellix_edr_cloud` grades its `_eventType` twice this way -- once into
 //! `event.category` and once into `event.type` -- and spells the table as a
-//! counted loop over parallel `ArrayList` literals:
-//!
-//! ```painless
-//! ArrayList items = new ArrayList(['access', 'creat', 'delet']);
-//! ArrayList set_items = new ArrayList(['access', 'creation', 'deletion']);
-//! for (def j = 0; j < items.length; j++) {
-//!     if (event_type.contains(items[j])) { ctx.event.type = [set_items[j]]; }
-//! }
-//! ```
+//! counted loop over parallel `ArrayList` literals.
 //!
 //! The loop is UNROLLED at parse time rather than reasoned about: each pass
 //! keeps the rungs in the order the chain tests them, so the first match within
@@ -33,7 +25,7 @@ use crate::common::{ctx_path_bound_to, strip_case_fold, strip_line_comments};
 use crate::params::clean_path;
 
 /// The table one script grades a field against.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct NeedleTable {
     subject: String,
     fold_case: bool,
@@ -46,14 +38,14 @@ pub struct NeedleTable {
 }
 
 /// The pre-loop write and the list membership that suppresses it.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct Fallback {
     label: String,
     unless: Option<(String, String)>,
 }
 
 /// One rung: the substring that selects it and the label it writes.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct Rung {
     needle: String,
     /// A substring that vetoes the rung, which is how trellix keeps
@@ -207,7 +199,7 @@ pub fn parse_needle_table(script: &str) -> Option<NeedleTable> {
 }
 
 /// A list element, a fixed element, or a literal, as the script names it.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 enum Operand {
     Literal(String),
     /// `items[j]` -- the element this pass selects.
@@ -429,72 +421,8 @@ fn operand(text: &str) -> Option<Operand> {
         .then(|| Operand::Element(text.to_owned()))
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use super::*;
-
-    /// `trellix_edr_cloud/event`, both scripts verbatim.
-    const CATEGORY: &str = "def event_category = ctx.json._eventType.toLowerCase(); ArrayList items = new ArrayList(['process', 'file', 'api', 'network', 'registry','authentication']); for (def j = 0; j < items.length; j++) {\n    String key = items[j];\n    if (event_category.contains('user')){\n        ctx.event.category = [items[5]];\n    } else if (event_category.contains('reg')){\n        ctx.event.category = [items[4]];\n    } else if (event_category.contains('dns')){\n        ctx.event.category = [items[3]];\n    } else if (event_category.contains(key)){\n        ctx.event.category = [key];\n    }\n}";
-
-    const TYPE: &str = "def event_type = ctx.json._eventType.toLowerCase(); if (!ctx.event.category.contains('registry')){\n\n\n  ctx.event.type = ['info']\n} ArrayList items = new ArrayList(['access', 'creat', 'delet', 'modif', 'change']); ArrayList set_items = new ArrayList(['access', 'creation', 'deletion', 'change', 'change']); for (def j = 0; j < items.length; j++) {\n\n\n    if (event_type.contains(items[j]) && (!event_type.contains('process created'))){\n        ctx.event.type = [set_items[j]];\n    }\n}";
-
-    fn graded(script: &str, event_type: &str, category: &Value) -> Event {
-        let mut event = Event::new(json!({
-            "json": { "_eventType": event_type },
-            "event": { "category": category },
-        }));
-        let pattern = parse_needle_table(script).expect("declined");
-        needle_table(&mut event, &pattern);
-        event
-    }
-
-    #[test]
-    fn the_list_element_the_subject_names_wins() {
-        let event = graded(CATEGORY, "File Deleted", &Value::Null);
-        assert_eq!(event.get("event.category"), Some(&json!(["file"])));
-    }
-
-    /// The three fixed rungs sit ahead of the indexed one in every pass, so they
-    /// win over a later list element that also matches.
-    #[test]
-    fn a_fixed_rung_beats_the_indexed_one() {
-        let event = graded(CATEGORY, "User Process Logon", &Value::Null);
-        assert_eq!(
-            event.get("event.category"),
-            Some(&json!(["authentication"]))
-        );
-        let event = graded(CATEGORY, "Registry Value Set", &Value::Null);
-        assert_eq!(event.get("event.category"), Some(&json!(["registry"])));
-    }
-
-    #[test]
-    fn the_parallel_list_supplies_the_label() {
-        let event = graded(TYPE, "File Deleted", &json!(["file"]));
-        assert_eq!(event.get("event.type"), Some(&json!(["deletion"])));
-    }
-
-    /// The pre-loop default stands where no rung fires, and is suppressed by the
-    /// membership its guard names.
-    #[test]
-    fn the_pre_loop_default_is_guarded() {
-        let event = graded(TYPE, "File Opened", &json!(["file"]));
-        assert_eq!(event.get("event.type"), Some(&json!(["info"])));
-        let event = graded(TYPE, "Something Else", &json!(["registry"]));
-        assert_eq!(event.get("event.type"), None);
-    }
-
-    #[test]
-    fn the_veto_keeps_process_created_out_of_the_creation_arm() {
-        let event = graded(TYPE, "Process Created", &json!(["process"]));
-        assert_eq!(event.get("event.type"), Some(&json!(["info"])));
-    }
-
-    /// A script writing a second field is not this pattern, whatever the loop
-    /// looks like.
-    #[test]
-    fn a_second_write_declines() {
-        let script = "def v = ctx.a.b.toLowerCase(); ArrayList items = new ArrayList(['x', 'y']); ctx.event.kind = 'event'; for (def j = 0; j < items.length; j++) {\n    if (v.contains(items[j])){\n        ctx.event.type = [items[j]];\n    }\n}";
-        assert!(parse_needle_table(script).is_none());
-    }
-}
+#[path = "needle_table_tests.rs"]
+mod tests;

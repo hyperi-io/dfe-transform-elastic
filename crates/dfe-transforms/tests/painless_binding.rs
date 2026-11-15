@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Which matcher every generated Painless call site resolves to, decided from
-//! the source literal rather than from a fixture run.
+//! Which matcher every generated Painless call site resolves to, read from the
+//! plan the generator emitted rather than from a fixture run.
 //!
-//! The runtime ladder re-derives that answer from the script TEXT on first
-//! touch. This reads the same literals straight out of the generated tree and
-//! asks [`PainlessPlan`] what each one binds to.
+//! Each site carries the plan the generator resolved, keyed by its script's
+//! hash. This reads those plans back out of the generated tree and asks each
+//! what it binds to.
 //!
 //! Unlike `painless_coverage.rs`, nothing here executes: a script whose package
 //! ships no fixture is measured the same as one that runs on every event.
@@ -15,164 +15,44 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
+mod sites;
+
 use std::collections::BTreeMap;
-use std::fmt::Write as _;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
-use dfe_runtime::painless_plan::PainlessPlan;
 use serde_json::json;
-use sha2::{Digest, Sha256};
-
-/// The macro every generated call site wraps its script literal in.
-const SITE: &str = "cached_painless!(";
-
-/// Below this the scanner has stopped seeing the tree rather than the tree
-/// having shrunk.
-///
-/// Was 3,000 against 3,490 sites. The first whole-tree regeneration took the
-/// count to 2,475: a script the generator recognises now resolves to its
-/// runner AT GENERATION TIME, so it no longer carries a literal for the ladder
-/// to re-match per event, and only the ones no arm claims still do. That is a
-/// structural change, which is the one thing a floor moves for -- and the same
-/// ratio to the live count as before. Removing the 653 modules no `mod.rs`
-/// declared took it to 1,892: 556 of the literals sat in files nothing
-/// compiled, and the scanner reads the disk.
-const MIN_SITES: usize = 1_600;
 
 /// Where the ratchets live, relative to this crate.
 fn workspace_root() -> std::path::PathBuf {
-    std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..")
-}
-
-/// One generated call site.
-struct Site {
-    file: String,
-    line: usize,
-    script: String,
-}
-
-/// Every `.rs` file under `dir`, depth first.
-fn rust_files(dir: &Path, out: &mut Vec<PathBuf>) {
-    let Ok(entries) = std::fs::read_dir(dir) else {
-        return;
-    };
-    for entry in entries.filter_map(Result::ok) {
-        let path = entry.path();
-        if path.is_dir() {
-            rust_files(&path, out);
-        } else if path.extension().is_some_and(|e| e == "rs") {
-            out.push(path);
-        }
-    }
-}
-
-/// The raw-string literal starting at or after `at`, and where it ends.
-///
-/// Every call site passes a raw string, so the delimiter is `r` plus a run of
-/// `#` -- counted, because the closing run has to match it exactly or a script
-/// containing `"#` would truncate here and bind to the wrong matcher.
-fn raw_literal(src: &str, at: usize) -> Option<(String, usize)> {
-    let bytes = src.as_bytes();
-    let mut i = at;
-    while bytes.get(i).is_some_and(u8::is_ascii_whitespace) {
-        i += 1;
-    }
-    if bytes.get(i) != Some(&b'r') {
-        return None;
-    }
-    i += 1;
-    let hashes_at = i;
-    while bytes.get(i) == Some(&b'#') {
-        i += 1;
-    }
-    let close = format!("\"{}", "#".repeat(i - hashes_at));
-    if bytes.get(i) != Some(&b'"') {
-        return None;
-    }
-    i += 1;
-    let end = src[i..].find(&close)? + i;
-    Some((src[i..end].to_string(), end + close.len()))
-}
-
-/// Every call site in the generated tree, in file order.
-fn sites(root: &Path) -> Vec<Site> {
-    let mut files = Vec::new();
-    rust_files(root, &mut files);
-    files.sort();
-
-    let mut found = Vec::new();
-    for file in files {
-        let Ok(src) = std::fs::read_to_string(&file) else {
-            continue;
-        };
-        let name = file
-            .strip_prefix(root)
-            .unwrap_or(&file)
-            .display()
-            .to_string();
-        let mut from = 0;
-        while let Some(hit) = src[from..].find(SITE) {
-            let after = from + hit + SITE.len();
-            let Some((script, end)) = raw_literal(&src, after) else {
-                panic!("{name}: cached_painless! at byte {after} has no raw-string literal");
-            };
-            found.push(Site {
-                file: name.clone(),
-                line: src[..after].matches('\n').count() + 1,
-                script,
-            });
-            from = end;
-        }
-    }
-    found
-}
-
-/// The generated transforms live beside this crate's `tests/`.
-fn transforms_root() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("src")
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("../..")
 }
 
 /// What one distinct script binds to, and where it is used.
 struct Script {
     binding: Vec<String>,
     /// Whether the generator could emit this script's runners instead of the
-    /// script. Asked of the plan rather than kept as a list here, so the
+    /// plan. Asked of the plan rather than kept as a list here, so the
     /// allowlist has one home.
     direct: bool,
-    chars: usize,
-    head: String,
+    /// Whether a bound runner still reads the script text.
+    reads_text: bool,
     uses: Vec<(String, usize)>,
 }
 
 #[test]
 fn every_call_site_reports_the_matcher_it_binds_to() {
-    let sites = sites(&transforms_root());
-    assert!(
-        sites.len() >= MIN_SITES,
-        "found only {} call sites under {} -- the scanner is blind, not the tree empty",
-        sites.len(),
-        transforms_root().display()
-    );
+    let sites = sites::sites();
 
-    // Keyed on the literal so a script shared by twenty packages is planned
-    // once.
+    // Keyed on the hash so a script shared by twenty packages is counted once.
     let mut scripts: BTreeMap<String, Script> = BTreeMap::new();
     for site in &sites {
-        let mut key = String::with_capacity(64);
-        for byte in Sha256::digest(site.script.as_bytes()) {
-            let _ = write!(key, "{byte:02x}");
-        }
         scripts
-            .entry(key)
-            .or_insert_with(|| {
-                let plan = PainlessPlan::new(&site.script);
-                Script {
-                    binding: plan.binding(),
-                    direct: plan.direct_call().is_some(),
-                    chars: plan.text().chars().count(),
-                    head: plan.text().chars().take(120).collect(),
-                    uses: Vec::new(),
-                }
+            .entry(site.hash.clone())
+            .or_insert_with(|| Script {
+                binding: site.plan.binding(),
+                direct: site.plan.direct_call().is_some(),
+                reads_text: site.plan.reads_text(),
+                uses: Vec::new(),
             })
             .uses
             .push((site.file.clone(), site.line));
@@ -241,8 +121,7 @@ fn every_call_site_reports_the_matcher_it_binds_to() {
             .map(|(sha, script)| {
                 json!({
                     "sha256": sha,
-                    "chars": script.chars,
-                    "head": script.head,
+                    "reads_text": script.reads_text,
                     "binding": script.binding,
                     "direct": script.direct,
                     "uses": script.uses.iter()

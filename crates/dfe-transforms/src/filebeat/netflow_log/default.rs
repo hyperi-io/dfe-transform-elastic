@@ -78,8 +78,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"HashSet set = null;\nfor (key in ctx.netflow.keySet()) {\n    if (key.endsWith(\"_ipv4_address\") || key.endsWith(\"_ipv6_address\")) {\n        // Creating set on demand, avoiding extra garbage\n        if (set == null) {\n            set = new HashSet();\n        }\n        set.add(ctx.netflow[key]);\n    }\n}\n\nif (set != null) {\n    if (ctx.related == null) {\n        ctx.related = new HashMap();\n    }\n    if (ctx.related?.ip != null) {\n        for (ip in ctx.related.ip) {\n            set.add(ip);\n        }\n    }\n\n    ArrayList list = new ArrayList(set);\n    Collections.sort(list);\n    ctx.related.ip = list;\n}\n"#
+                    compiled_painless!(
+                        "0c97c812a4085d5f587fb7148f7cfac120705702a6d342b0c934e8b0e545e7b6",
+                        r#"{"params":null,"known":[{"KeysBySuffix":{"map":"netflow","target":"related.ip","suffixes":["_ipv4_address","_ipv6_address"]}}]}"#
                     ),
                 )?;
             }
@@ -93,8 +94,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] flags = new String[]{\"CWR\", \"ECE\", \"URG\", \"ACK\", \"PSH\", \"RST\", \"SYN\", \"FIN\"};\nArrayList flagsSeen = new ArrayList();\n\nint tcp_flags = ctx.netflow.tcp_control_bits;\nfor (int i = 8; i > 0; --i) {\n    int value = (tcp_flags & (1 << (i-1))) & 0x0ff;\n    if (value != 0) {\n        flagsSeen.add(flags[8-i]);\n    }\n}\n\nif (flagsSeen.length > 0) {\n    ctx.netflow.tcp_flags = flagsSeen;\n}\n"#
+                    compiled_painless!(
+                        "a989ada927f868bb3d33fd845dbd535b43319b403049dcc2031ecd24d990833f",
+                        r#"{"params":null,"known":[{"BitNameArray":{"source":"netflow.tcp_control_bits","target":"netflow.tcp_flags","names":["CWR","ECE","URG","ACK","PSH","RST","SYN","FIN"]}}]}"#
                     ),
                 )?;
             }

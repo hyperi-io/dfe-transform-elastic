@@ -8,15 +8,6 @@
 //! field the value belongs in. So the row holds two members: one written to a
 //! fixed path, and one that IS a path.
 //!
-//! ```painless
-//! def mapping = params[ctx.json.ioc_type.toLowerCase()];
-//! if (mapping == null) return;
-//! set(ctx, "threat.indicator.type", mapping.type);
-//! def value = ctx.json.ioc_value;
-//! if (value == null) return;
-//! set(ctx, mapping.target, value);
-//! ```
-//!
 //! `carbonblack_edr`, `ti_mandiant_advantage_threat_intelligence` and
 //! `ti_rapid7_threat_command_ioc` ship it, differing only in whitespace and in
 //! whether a completion flag follows. A key the table has no row for writes
@@ -29,7 +20,7 @@ use crate::params::clean_path;
 use dfe_core::event::Event;
 
 /// The two writes, the key that selects them, and the flag that follows.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct RowNamedTarget {
     /// The ctx path keying the table.
     key: String,

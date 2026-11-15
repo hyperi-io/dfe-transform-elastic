@@ -474,8 +474,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"Map convertDotsToUnderscore(Map m) {\n  def out = new HashMap();\n  for (entry in m.entrySet()) {\n    def k = entry.getKey().replace('.', '_');\n    def v = entry.getValue();\n    out.put(k, v);\n  }\n  return out;\n}\nctx.azure.frontdoor.access.identity.claims = convertDotsToUnderscore(ctx.azure.frontdoor.access.identity.claims);\n"#
+                        compiled_painless!(
+                            "d7a036120ea438e3e1e880b7ea8b78213cee967af6cf3d82541fd3f416307d7b",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -521,8 +522,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def claims = ctx.azure.frontdoor.access.identity.claims;\ndef claims_initiated_by_user = new HashMap();\nif (claims.name != null) {\n    claims_initiated_by_user.fullname = claims.name;\n}\nfor (entry in params.entrySet()) {\n    if (claims[entry.getValue()] != null) {\n        claims_initiated_by_user[entry.getKey()] = claims[entry.getValue()];\n    }\n}\nif (claims_initiated_by_user.size() > 0) {\n    claims_initiated_by_user.schema = \"http://schemas.xmlsoap.org/ws/2005/05/identity/claims\";\n    ctx.azure.frontdoor.access.identity.claims_initiated_by_user = claims_initiated_by_user;\n}"#
+                        compiled_painless!(
+                            "c7f6d3fa8fdbd2190ea36506e703dbc5f73bc3bb81c7bddbf65a39ef71df1571",
+                            r#"{"params":"ReversibleLookup","known":[]}"#
                         ),
                         cached_params!(
                             "{\"surname\":\"http://schemas_xmlsoap_org/ws/2005/05/identity/claims/surname\",\"name\":\"http://schemas_xmlsoap_org/ws/2005/05/identity/claims/name\",\"givenname\":\"http://schemas_xmlsoap_org/ws/2005/05/identity/claims/givenname\",\"objectidentifier\":\"http://schemas_microsoft_com/identity/claims/objectidentifier\",\"tenantid\":\"http://schemas_microsoft_com/identity/claims/tenantid\"}"

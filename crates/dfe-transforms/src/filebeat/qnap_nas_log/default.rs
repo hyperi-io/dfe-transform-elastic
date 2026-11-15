@@ -302,7 +302,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "0a6770b267284a36efa5c8ec316bdfa072a72bccdde48f4072a680e6e80c53d3",
+                    r#"{"params":{"LookupMerge":{"statements":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":"info"}}}},{"If":{"test":[[{"Compare":{"path":"event.action","wanted":"Null","negated":false,"lowered":false}},{"Compare":{"path":"event.provider","wanted":{"Text":"event-log"},"negated":false,"lowered":false}}]],"then":[{"If":{"test":[[{"Compare":{"path":"event.category","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"Literal":{"Append":{"path":"event.category","value":{"Literal":"configuration"}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":"change"}}}}],"alt":[{"If":{"test":[[{"Compare":{"path":"event.action","wanted":"Null","negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}]}}],"whole":false}},"known":[]}"#,
                     r#"ctx.event.kind = 'event'; ctx.event.type = 'info'; if(ctx?.event?.action == null && ctx.event?.provider == 'event-log') {\n  if(ctx.event?.category == null) {\n    List list = new ArrayList();\n    ctx.event.put(\"category\", list);\n  }\n  ctx.event.category.add('configuration');\n  ctx.event.type = 'change';\n} else if (ctx?.event?.action == null) {\n  return;\n} if (params.get(ctx.event.action) == null) {\n  return;\n} def hm = new HashMap(params.get(ctx.event.action)); hm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(

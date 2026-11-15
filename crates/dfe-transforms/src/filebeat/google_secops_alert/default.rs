@@ -1589,8 +1589,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def locationList = new ArrayList();\nif (ctx.google_secops?.alert?.event?.principal?.ipGeoArtifact instanceof List) {\n  for (list in ctx.google_secops.alert.event.principal.ipGeoArtifact) {\n    if (list.location.regionCoordinates != null && list.location.regionCoordinates != ''){\n      locationList.add(list.location.regionCoordinates);\n    }\n  }\n}\nif (!(ctx.host instanceof HashMap)) {\n  ctx.host = new HashMap();\n}\nif (!(ctx.host.geo instanceof HashMap)) {\n  ctx.host.geo = new HashMap();\n}\nctx.host.geo.location = locationList;"#
+                    compiled_painless!(
+                        "b989f3bfa923ac4d89dee6c74d6f73f1d54476a71c14e8dd4cafaa3c087b2d61",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())
@@ -2485,8 +2486,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.google_secops?.alert?.event?.securityResult instanceof List) {\n  for (list in ctx.google_secops?.alert?.event.securityResult) {\n    if (list[\"severity\"] != null && list[\"severity\"] != '') {\n      if (list[\"severity\"].toUpperCase() == 'CRITICAL') {\n        ctx.event.severity = 99\n      } else if (list[\"severity\"].toUpperCase() == 'ERROR') {\n        ctx.event.severity = 99\n      } else if (list[\"severity\"].toUpperCase() == 'HIGH') {\n        ctx.event.severity = 73\n      } else if (list[\"severity\"].toUpperCase() == 'INFORMATIONAL') {\n        ctx.event.severity = 21\n      }  else if (list[\"severity\"].toUpperCase() == 'LOW') {\n        ctx.event.severity = 21\n      } else if (list[\"severity\"].toUpperCase() == 'MEDIUM') {\n        ctx.event.severity = 47\n      } else if (list[\"severity\"].toUpperCase() == 'NONE') {\n        ctx.event.severity = 21\n      } else if (list[\"severity\"].toUpperCase() == 'UNKNOWN_SEVERITY') {\n        ctx.event.severity = 21\n      }\n    }\n  }\n}"#
+                    compiled_painless!(
+                        "f73da231ade0c49731a1070b15470f0b61d3894cc9268de163eb464d41ab1c48",
+                        r#"{"params":null,"known":[{"MemberLadder":{"list":"google_secops.alert.event.securityResult","key":"severity","target":"event.severity","bands":[["critical",99],["error",99],["high",73],["informational",21],["low",21],["medium",47],["none",21],["unknown_severity",21]]}}]}"#
                     ),
                 )?;
                 Ok(())

@@ -5,20 +5,7 @@
 //!
 //! qualys ships one table of level words and two ways of reaching it. Its
 //! `knowledge_base` stream spells the ladder out, and bands an informational
-//! finding differently from a vulnerability:
-//!
-//! ```painless
-//! if (!(ctx.json?.SEVERITY_LEVEL instanceof String)) { return; }
-//! def vuln_type = ctx.qualys_vmdr?.knowledge_base?.vuln_type;
-//! if (!(vuln_type instanceof String)) { return; }
-//! def level = Long.parseLong(ctx.json.SEVERITY_LEVEL);
-//! if (['Potential Vulnerability', 'Vulnerability'].contains(vuln_type)) {
-//!   if (level == 1) { ctx.json.SEVERITY_LEVEL = "Minimal"; }
-//!   else if (level == 4) { ctx.json.SEVERITY_LEVEL = "Critical"; }
-//! } else if (vuln_type == "Information Gathered") {
-//!   if (level == 1) { ctx.json.SEVERITY_LEVEL = "Minimal"; }
-//! }
-//! ```
+//! finding differently from a vulnerability.
 //!
 //! The `asset_host_detection` stream writes the same table through `params`, and
 //! `crate::params::TableGate` is what lets that spelling keep the same
@@ -37,7 +24,7 @@ use crate::common::{if_block, painless_path, vocabulary_tested};
 use crate::params::clean_path;
 
 /// A level, the field that picks its band table, and the tables.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct LevelLabels {
     /// The numbered level, read as text and parsed.
     level: String,
@@ -49,7 +36,7 @@ pub struct LevelLabels {
     groups: Vec<LevelGroup>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct LevelGroup {
     /// The kinds this group covers.
     kinds: Vec<String>,
@@ -229,83 +216,8 @@ pub fn level_labels(event: &mut Event, pattern: &LevelLabels) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use super::*;
-    use crate::common::{normalise, try_known_painless};
-
-    /// Verbatim from `qualys_vmdr_knowledge_base/default.rs`, in the escaped
-    /// one-line form the call site holds.
-    const QUALYS_LEVEL: &str = r#"if (!(ctx.json?.SEVERITY_LEVEL instanceof String)) {\n  return;\n} def vuln_type = ctx.qualys_vmdr?.knowledge_base?.vuln_type; if (!(vuln_type instanceof String)) {\n  return;\n} def level = Long.parseLong(ctx.json.SEVERITY_LEVEL); if (['Potential Vulnerability', 'Vulnerability', 'Vulnerability or Potential Vulnerability'].contains(vuln_type)) {\n  if (level == 1){\n      ctx.json.SEVERITY_LEVEL = \"Minimal\";\n  } else if (level == 2) {\n      ctx.json.SEVERITY_LEVEL = \"Medium\";\n  } else if (level == 3) {\n      ctx.json.SEVERITY_LEVEL = \"Serious\";\n  } else if (level == 4) {\n      ctx.json.SEVERITY_LEVEL = \"Critical\";\n  } else if (level == 5) {\n      ctx.json.SEVERITY_LEVEL = \"Urgent\";\n  }\n} else if (vuln_type == \"Information Gathered\") {\n  if (level == 1) {\n      ctx.json.SEVERITY_LEVEL = \"Minimal\";\n  } else if (level == 2) {\n      ctx.json.SEVERITY_LEVEL = \"Medium\";\n  } else if (level == 3) {\n      ctx.json.SEVERITY_LEVEL = \"Serious\";\n  }\n}"#;
-
-    fn scored(vuln_type: &str, level: &str) -> Event {
-        Event::new(json!({
-            "json": { "SEVERITY_LEVEL": level },
-            "qualys_vmdr": { "knowledge_base": { "vuln_type": vuln_type } },
-        }))
-    }
-
-    fn level_of(vuln_type: &str, level: &str) -> Option<String> {
-        let mut event = scored(vuln_type, level);
-        assert!(try_known_painless(&mut event, QUALYS_LEVEL));
-        event.get_str("json.SEVERITY_LEVEL").map(str::to_owned)
-    }
-
-    #[test]
-    fn a_vulnerability_takes_the_full_band_table() {
-        assert_eq!(level_of("Vulnerability", "4").as_deref(), Some("Critical"));
-        assert_eq!(level_of("Vulnerability", "5").as_deref(), Some("Urgent"));
-        assert_eq!(
-            level_of("Potential Vulnerability", "1").as_deref(),
-            Some("Minimal")
-        );
-    }
-
-    /// The informational table stops at 3, so a 4 keeps its digit -- the full
-    /// table's "Critical" there would be a word the vendor never writes.
-    #[test]
-    fn an_informational_finding_takes_the_short_table() {
-        assert_eq!(
-            level_of("Information Gathered", "3").as_deref(),
-            Some("Serious")
-        );
-        assert_eq!(level_of("Information Gathered", "4").as_deref(), Some("4"));
-    }
-
-    #[test]
-    fn a_type_neither_group_names_keeps_its_digit() {
-        assert_eq!(level_of("Practice", "4").as_deref(), Some("4"));
-    }
-
-    #[test]
-    fn a_record_with_no_type_keeps_its_digit() {
-        let mut event = Event::new(json!({ "json": { "SEVERITY_LEVEL": "4" } }));
-        assert!(try_known_painless(&mut event, QUALYS_LEVEL));
-        assert_eq!(event.get_str("json.SEVERITY_LEVEL"), Some("4"));
-    }
-
-    /// The reader names what it found rather than assuming qualys's fields.
-    #[test]
-    fn the_reader_names_the_level_the_kind_and_both_groups() {
-        let pattern = parse_level_labels(&normalise(QUALYS_LEVEL)).expect("the ladder is read");
-        assert_eq!(pattern.level, "json.SEVERITY_LEVEL");
-        assert_eq!(pattern.kind, "qualys_vmdr.knowledge_base.vuln_type");
-        assert_eq!(pattern.target, "json.SEVERITY_LEVEL");
-        assert_eq!(pattern.groups.len(), 2);
-        assert_eq!(pattern.groups[0].bands.len(), 5);
-        assert_eq!(pattern.groups[1].kinds, ["Information Gathered"]);
-        assert_eq!(pattern.groups[1].bands.len(), 3);
-    }
-
-    /// A ladder writing a second field is a different script: the reader has no
-    /// arm for the extra write and would drop it.
-    #[test]
-    fn a_ladder_writing_a_second_field_declines() {
-        let script = normalise(QUALYS_LEVEL).replace(
-            r#"ctx.json.SEVERITY_LEVEL = "Urgent";"#,
-            r#"ctx.json.SEVERITY_LEVEL = "Urgent"; ctx.event.kind = "alert";"#,
-        );
-        assert!(parse_level_labels(&script).is_none());
-    }
-}
+#[path = "level_labels_tests.rs"]
+mod tests;

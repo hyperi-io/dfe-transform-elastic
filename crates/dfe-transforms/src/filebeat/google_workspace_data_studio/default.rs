@@ -169,8 +169,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\ndef category = new ArrayList();\ncategory.add(params.get(ctx.google_workspace.data_studio.name));\nctx.event.put('category', category);"#
+                        compiled_painless!(
+                            "ab9251cba6a8af128adae452c5bdf5c7a987511b6657418681ffd7ce70e2ed4d",
+                            r#"{"params":{"MemberLookup":{"key":"google_workspace.data_studio.name","table":null,"fold":"None","target":"event.category","wrap":true,"miss":"Null","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"ADD_REPORT_EMAIL_DELIVERY\":\"configuration\",\"CHANGE_ASSET_LINK_SHARING_ACCESS_TYPE\":\"configuration\",\"CHANGE_ASSET_LINK_SHARING_VISIBILITY\":\"configuration\",\"CHANGE_DATA_SOURCE_ACCESS_TYPE\":\"configuration\",\"CHANGE_USER_ACCESS\":\"iam\",\"CHANGE_USER_ACCESS_TO_ASSET_VIA_WORKSPACE\":\"iam\",\"CREATE\":\"configuration\",\"CREATE_DISTRIBUTION_CONTENT\":\"configuration\",\"DATA_EXPORT\":\"configuration\",\"DELETE\":\"configuration\",\"DELETE_DISTRIBUTION_CONTENT\":\"configuration\",\"DOWNLOAD_REPORT\":\"configuration\",\"EDIT\":\"configuration\",\"EDIT_DISTRIBUTION_CONTENT\":\"configuration\",\"PARENT_WORKSPACE_CHANGE\":\"configuration\",\"RESTORE\":\"configuration\",\"STOP_REPORT_EMAIL_DELIVERY\":\"configuration\",\"TRASH\":\"configuration\",\"UPDATE_REPORT_EMAIL_DELIVERY\":\"configuration\",\"VIEW\":\"configuration\"}"
@@ -218,8 +219,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\ndef type = new ArrayList();\ntype.add(params.get(ctx.google_workspace.data_studio.name));\nctx.event.put('type', type);"#
+                        compiled_painless!(
+                            "23003c1f1e55d3fe1a21b413b7e1c1b586d197d3933e7979bf259beab10633f0",
+                            r#"{"params":{"MemberLookup":{"key":"google_workspace.data_studio.name","table":null,"fold":"None","target":"event.type","wrap":true,"miss":"Null","literals":{"statements":[],"whole":true}}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"ADD_REPORT_EMAIL_DELIVERY\":\"info\",\"CHANGE_ASSET_LINK_SHARING_ACCESS_TYPE\":\"change\",\"CHANGE_ASSET_LINK_SHARING_VISIBILITY\":\"change\",\"CHANGE_DATA_SOURCE_ACCESS_TYPE\":\"change\",\"CHANGE_USER_ACCESS\":\"change\",\"CHANGE_USER_ACCESS_TO_ASSET_VIA_WORKSPACE\":\"change\",\"CREATE\":\"creation\",\"CREATE_DISTRIBUTION_CONTENT\":\"creation\",\"DATA_EXPORT\":\"info\",\"DELETE\":\"deletion\",\"DELETE_DISTRIBUTION_CONTENT\":\"deletion\",\"DOWNLOAD_REPORT\":\"info\",\"EDIT\":\"change\",\"EDIT_DISTRIBUTION_CONTENT\":\"change\",\"PARENT_WORKSPACE_CHANGE\":\"change\",\"RESTORE\":\"info\",\"STOP_REPORT_EMAIL_DELIVERY\":\"deletion\",\"TRASH\":\"deletion\",\"UPDATE_REPORT_EMAIL_DELIVERY\":\"change\",\"VIEW\":\"access\"}"

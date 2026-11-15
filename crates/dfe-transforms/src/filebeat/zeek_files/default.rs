@@ -109,7 +109,10 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(r#"ctx.zeek.session_id = ctx.zeek.files.session_ids[0];"#),
+                        compiled_painless!(
+                            "5cded9dd40a16b472c50454e60b61d06c40ad43a6fe1339ab976ca29a69c83ac",
+                            r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"zeek.files.session_ids","target":"zeek.session_id","only_if_unset":false,"only_if_single":false,"consumes_array":false}]}}]}"#
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -141,8 +144,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.zeek.files.tx_host = ctx.zeek.files.tx_hosts[0]; ctx.zeek.files.remove('tx_hosts');"#
+                    compiled_painless!(
+                        "f945ddcc04e639ff46f73c987d8bd083f8f206aa021a9ac41f3007ab340f7d29",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"zeek.files.tx_hosts","target":"zeek.files.tx_host","only_if_unset":false,"only_if_single":false,"consumes_array":true}]}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -174,8 +178,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.zeek.files.rx_host = ctx.zeek.files.rx_hosts[0]; ctx.zeek.files.remove('rx_hosts');"#
+                    compiled_painless!(
+                        "499c1d9b811cc8976a7ce95b2699ed7c67090086cae6c857ac948f2983d7fe9b",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"zeek.files.rx_hosts","target":"zeek.files.rx_host","only_if_unset":false,"only_if_single":false,"consumes_array":true}]}}]}"#
                     ),
                 )?;
                 Ok(())

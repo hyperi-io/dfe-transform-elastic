@@ -93,8 +93,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.resp?.version == null) {\n  def fields = [];\n  for (e in ctx.json.entrySet()) {\n    fields.add(e.getKey());\n  }\n  Collections.sort(fields);\n  String signature = String.join(\"|\", fields);\n  if (signature != params.expect.fields) {\n    ctx.error = ctx.error ?: [:];\n    ctx.error.message = ctx.error.message ?: [];\n    ctx.error.message.add(\"field set mismatch: \"+signature+\" is not expected set of templated fields (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n  }\n} else if (ctx.resp.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add(\"template version mismatch: \"+ctx.resp.version.toString()+\" is not expected version (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n}"#
+                    compiled_painless!(
+                        "484c250d7872083e9f504042c3cb3828e7533f319d8f2a828da182656eca1b55",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"pkg_version\":\"3.15.1\",\"data_stream\":\"endpoint-dlp-log\",\"expect\":{\"fields\":\"actiontaken|activitytype|additionalinfo|channel|confirmaction|confirmjustification|datacenter|datacentercity|datacentercountry|datetime|day|dd|department|deviceappversion|devicehostname|devicemodel|devicename|deviceostype|deviceosversion|deviceowner|deviceplatform|devicetype|dlpdictcount|dlpdictnames|dlpenginenames|dlpidentifier|dsttype|eventtime|expectedaction|feedtime|filedoctype|filedstpath|filemd5|filesha|filesrcpath|filetypecategory|filetypename|hh|itemdstname|itemname|itemsrcname|itemtype|logtype|mm|mon|mth|numdlpdictids|numdlpengineids|odepartment|odevicehostname|odevicename|odeviceowner|odlpdictnames|odlpenginenames|ofiledstpath|ofilesrcpath|oitemdstname|oitemname|oitemsrcname|ootherrulelabels|orulename|otherrulelabels|ouser|recordid|rulename|scannedbytes|scantime|severity|srctype|ss|timezone|user|yyyy|zdpmode\",\"version\":\"v1\"}}"
@@ -248,8 +249,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def dlpdictcount = ctx.json.dlpdictcount;\nString[] parts = dlpdictcount.splitOnToken('|');\nArrayList numbersList = new ArrayList();\nfor (String part: parts) {\n  try {\n    numbersList.add(Integer.parseInt(part));\n  } catch (NumberFormatException e) {}\n}\nctx.json.dlpdictcount = numbersList;"#
+                        compiled_painless!(
+                            "488622f0ff5954183c835ca4b3678e469a420425f37eb2ded60bed6c6f2b456f",
+                            r#"{"params":null,"known":[{"SplitTokenField":{"source":"json.dlpdictcount","separator":"|","parse_int":true,"target":"json.dlpdictcount","head":null,"drop_empty":false,"remove_if_empty":false}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -601,8 +603,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def dlpdictnames = ctx.json.dlpdictnames;\nString[] parts = dlpdictnames.splitOnToken('|');\nArrayList numbersList = new ArrayList();\nfor (String part: parts) {\n  try {\n    String[] subParts = part.splitOnToken(':');\n    numbersList.add(subParts[0]);\n  } catch (NumberFormatException e) {}\n}\nctx.json.dlpdictnames = numbersList;"#
+                        compiled_painless!(
+                            "3ae3825b70c204ef8c69d567fcaf51e78a594c6a150e55dd01c45c88b7f06740",
+                            r#"{"params":null,"known":[{"SplitTokenField":{"source":"json.dlpdictnames","separator":"|","parse_int":false,"target":"json.dlpdictnames","head":":","drop_empty":false,"remove_if_empty":false}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -707,8 +710,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def dlpenginenames = ctx.json.dlpenginenames;\nString[] parts = dlpenginenames.splitOnToken('|');\nArrayList numbersList = new ArrayList();\nfor (String part: parts) {\n  try {\n    numbersList.add(part);\n  } catch (NumberFormatException e) {}\n}\nctx.json.dlpenginenames = numbersList;"#
+                        compiled_painless!(
+                            "a2b1718206cc9c8d48a12c9dbda3b75918b846aa201f7a13ecf6cc1e664367c2",
+                            r#"{"params":null,"known":[{"SplitTokenField":{"source":"json.dlpenginenames","separator":"|","parse_int":false,"target":"json.dlpenginenames","head":null,"drop_empty":false,"remove_if_empty":false}}]}"#
                         ),
                     )?;
                     Ok(())

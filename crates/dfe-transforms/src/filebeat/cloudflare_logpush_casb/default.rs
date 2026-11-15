@@ -81,8 +81,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"long t = (long)(ctx.json.DetectedTimestamp);\nif (t > (long)(1e18)) {\n  ctx.json.DetectedTimestamp = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.DetectedTimestamp = t*(long)(1e3)\n}\n"#
+                        compiled_painless!(
+                            "a2adcd98ef37c9ce7f4b33056898017eae8862cbfd8757abfd82e11fdf633dcf",
+                            r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.DetectedTimestamp",false]],"parse_strings":false}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -247,8 +248,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def severity = ctx.cloudflare_logpush.casb.finding.type.severity.toLowerCase();\nctx.event = ctx.event ?: [:];\nif (severity == \"low\") {\n  ctx.event.severity = 21;\n} else if (severity == \"medium\") {\n  ctx.event.severity = 47;\n} else if (severity == \"high\") {\n  ctx.event.severity = 73;\n} else if (severity == \"critical\") {\n  ctx.event.severity = 99;\n}\n"#
+                        compiled_painless!(
+                            "27a8a4c51a9e7e1aa7f1d012e7b503ba14ad8ca5da27b4b264d8f1c2f2c7b1ee",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"cloudflare_logpush.casb.finding.type.severity","fold_case":true,"test":"Equals","arms":[{"literals":["low"],"writes":[["event.severity",21]],"removes":[]},{"literals":["medium"],"writes":[["event.severity",47]],"removes":[]},{"literals":["high"],"writes":[["event.severity",73]],"removes":[]},{"literals":["critical"],"writes":[["event.severity",99]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())

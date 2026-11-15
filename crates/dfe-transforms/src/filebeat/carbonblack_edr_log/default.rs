@@ -43,8 +43,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def docs = ctx.json.docs;\nif (docs instanceof List && docs.size() > 0) {\n  ctx.json[\"doc\"] = docs[0];\n} else if (docs instanceof Map) {\n  ctx.json[\"doc\"] = docs;\n} else {\n  throw new Exception(\"Unexpected type\");\n}\nctx.json.remove(\"docs\");"#
+                        compiled_painless!(
+                            "cf86dbbdf188b8466749e0189d07ae3218c5c80b92b59397acd142293848d6e1",
+                            r#"{"params":null,"known":[{"FirstOrSelf":{"source":"json.docs","target":"json.doc","remove":"json.docs"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -365,7 +366,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "911836a388c6563a0d322524924e7957b17373a7b49962bd11bd950369bd1b75",
+                    r#"{"params":null,"known":["SentinelRemovalLiteral"]}"#,
                     r#"void removeEmptyStr(Map m) {\n  if (m != null) m.entrySet().removeIf( e -> e.value == \"\");\n}\nremoveEmptyStr(ctx.json);\nremoveEmptyStr(ctx.json.doc);"#
                 ),
             )?;
@@ -389,7 +392,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "aca8ea52a872e4ae530d47f4959690b7ece42e57348a75bf7cb156fc3d4abd1a",
+                    r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[["Never"]],"then":[],"alt":[{"If":{"test":[["Never"]],"then":[],"alt":[]}},"Return"]}}],"whole":false}},"known":[]}"#,
                     r#"def clone(def ref) {\n  if (ref == null) return ref;\n  if (ref instanceof Map) {\n    ref = ref.entrySet().stream().collect(\n            Collectors.toMap(\n              e -> e.getKey(),\n              e -> clone(e.getValue())\n            )\n          );\n  } else if (ref instanceof List) {\n    ref = ref.stream().map(e -> clone(e)).collect(\n            Collectors.toList()\n          );\n  }\n  return ref;\n}\ndef event = ctx.event;\nif (event == null) {\n  event = new HashMap();\n  ctx[\"event\"] = event;\n}\ndef type = ctx.event.action;\ndef fields = params[type] != null? params[type] : params[\"unknown\"];\nfields.forEach( (k, v) -> {\n  event[k] = clone(v);\n});"#
                 ),
                 cached_params!(
@@ -608,7 +613,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "c3a89c9e0d698d232348ade6e8cf71b5d18c2c061efa84c62abe85d3b2382925",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"json.doc.endpoint","wanted":"Null","negated":true,"lowered":false}},{"Not":{"InstanceOf":{"path":"json.doc.endpoint","kind":"List"}}}]],"then":[{"Literal":{"Set":{"path":"json.doc.endpoint","value":{"FieldInList":"json.doc.endpoint"}}}}],"alt":[]}}],"whole":false}}]}"#,
                     r#"def ep = ctx.json.doc?.endpoint;\nif (ep != null && !(ep instanceof List)) {\n  ctx.json.doc.endpoint = [ ep ];\n}"#
                 ),
             )?;
@@ -979,8 +986,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"void _set(Map base, def path, def value) {\n  if (path.length == 0) return;\n  for (int i=0; i<path.length-1; i++) {\n    String c = path[i];\n    if (base[c] == null) base[c] = new HashMap();\n    base = base[c];\n  }\n  base[path[path.length-1]] = value;\n} void set(Map base, String path, def value) {\n  _set(base, path.splitOnToken(\".\"), value);\n} def mapping = params[ctx.json.ioc_type.toLowerCase()]; if (mapping == null) return; set(ctx, \"threat.indicator.type\", mapping.type); def value = ctx.json.ioc_value; if (value == null) return; set(ctx, mapping.target, value); ctx[\"_tmp_ioc_done\"] = true;\n"#
+                        compiled_painless!(
+                            "93b3689270e84807a370fcb1a2caf5df105047522cd03475361b71933752ebe1",
+                            r#"{"params":{"RowNamedTarget":{"key":"json.ioc_type","lowercase":true,"type_member":"type","literal_target":"threat.indicator.type","value_source":"json.ioc_value","target_member":"target","flag":"_tmp_ioc_done"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"dns\":{\"type\":\"domain-name\",\"target\":\"threat.indicator.url.domain\"},\"ipv4\":{\"type\":\"ipv4-addr\",\"target\":\"threat.indicator.ip\"},\"ipv6\":{\"type\":\"ipv6-addr\",\"target\":\"threat.indicator.ip\"},\"md5\":{\"type\":\"file\",\"target\":\"threat.indicator.file.hash.md5\"}}"

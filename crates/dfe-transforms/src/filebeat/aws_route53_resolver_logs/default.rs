@@ -154,8 +154,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"List answers = new ArrayList(); for (answer in ctx.dns.answers) {\n  Map new_answer = new HashMap();\n  if(answer?.Class != null) {\n    new_answer.put(\"class\", answer?.Class);\n  }\n  if(answer?.Type != null) {\n    new_answer.put(\"type\", answer?.Type);\n  }\n  if(answer?.Rdata != null) {\n    new_answer.put(\"data\", answer?.Rdata);\n    if (new_answer?.data != null && new_answer.data.length() > 0 && new_answer.data.substring(new_answer.data.length() - 1) == '.') {\n        new_answer.data = new_answer.data.substring(0, new_answer.data.length() - 1);\n    }\n    if (new_answer?.type != null && new_answer.type == 'CNAME') {\n      new_answer.put(\"name\", new_answer?.data);\n    }\n  }\n  answers.add(new_answer);\n  if(ctx.related == null) {\n    ctx.put('related', new HashMap());\n  }\n  if(ctx.related?.ip == null) {\n    ctx.related.put('ip',new ArrayList());\n  }\n  if(ctx.related?.hosts == null) {\n    ctx.related.put('hosts',new ArrayList());\n  }\n  if(['A','AAAA'].contains(new_answer.type)) {\n    ctx.related.ip.add(new_answer.data);\n  }\n  if(['CNAME', 'PTR'].contains(new_answer.type)) {\n    ctx.related.hosts.add(new_answer.data);\n  }\n} ctx.dns.answers = answers;"#
+                        compiled_painless!(
+                            "1b17e4e49931949adbe998bfba0971ac4d583868aedc91c3134968dc240dc78c",
+                            r#"{"params":null,"known":["Route53Answers"]}"#
                         ),
                     )?;
                     Ok(())
@@ -350,8 +351,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String ip; if(ctx.dns?.question?.name.contains(\".in-addr.arpa\")) {\n  List reverse_ip = Arrays.asList(ctx.dns?.question?.name.replace(\".in-addr.arpa\", \"\").splitOnToken(\".\"));\n  List ip_arr = new ArrayList();\n  for (int i = reverse_ip.length; i > 0 ; i--) {\n      ip_arr.add(reverse_ip[i-1]);\n  }\n  ip = String.join(\".\",ip_arr);\n} else if (ctx.dns?.question?.name.contains(\".ip6.arpa\")) {\n  List reverse_ip = Arrays.asList(ctx.dns?.question?.name.replace(\".ip6.arpa\", \"\").splitOnToken(\".\"));\n  List ip_arr = new ArrayList();\n  int j = 1;\n  for (int i = reverse_ip.length; i > 0 ; i--) {\n      ip_arr.add(reverse_ip[i-1]);\n      if(j % 4 == 0 && i != 1) {\n        j = 0;\n        ip_arr.add(\":\");\n      }\n      j++;\n  }\n  ip = String.join(\"\",ip_arr);    \n}     if(ctx.related?.ip == null) {\n  ctx.related.put('ip',new ArrayList());\n} if(ip != null && !ctx.related?.ip.contains(ip)) {\n  ctx.related.ip.add(ip);\n}   "#
+                        compiled_painless!(
+                            "db11ed705785645879cad3cbe5f3ae1ab3b2f2c09c140c4dde99255cf2790879",
+                            r#"{"params":null,"known":["ReverseLookupAddress"]}"#
                         ),
                     )?;
                     Ok(())

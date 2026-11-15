@@ -101,8 +101,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"def src = ctx.swimlane?.audit_log?.sourceIp; if (src != null) {\n    if (src instanceof List && src.size() > 0) {\n        ctx.swimlane.audit_log.sourceIp = src[0];\n    } else if (src instanceof String) {\n        ctx.swimlane.audit_log.sourceIp = src;\n    }\n}"#
+                compiled_painless!(
+                    "ae92e77b6a0d8b047a0ae9a2276f2aa0fc36622db9bac933332e4a4d48a5c28d",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"swimlane.audit_log.sourceIp","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[[{"InstanceOf":{"path":"swimlane.audit_log.sourceIp","kind":"List"}},{"Magnitude":{"path":"swimlane.audit_log.sourceIp.size()","than":0,"greater":true}}]],"then":[{"Literal":{"Set":{"path":"swimlane.audit_log.sourceIp","value":{"Field":"swimlane.audit_log.sourceIp.0"}}}}],"alt":[{"If":{"test":[[{"InstanceOf":{"path":"swimlane.audit_log.sourceIp","kind":"Text"}}]],"then":[{"Literal":{"Set":{"path":"swimlane.audit_log.sourceIp","value":{"Field":"swimlane.audit_log.sourceIp"}}}}],"alt":[]}}]}}],"alt":[]}}],"whole":false}}]}"#
                 ),
             )?;
 
@@ -206,7 +207,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "0b81247eeb281ba9ea475dc5f840aa3ce987bd43cd67fc3aab5cd4abd767e295",
+                    r#"{"params":{"LookupMerge":{"statements":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}},{"If":{"test":[[{"Compare":{"path":"swimlane.audit_log.ActionType","wanted":"Null","negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                     r#"ctx.event.kind = 'event'; ctx.event.type = ['info']; if (ctx.swimlane?.audit_log?.ActionType == null) {\n    return;\n} if (params.get(ctx.swimlane?.audit_log?.ActionType) == null) {\n    return;\n} def hm = new HashMap(params.get(ctx.swimlane?.audit_log?.ActionType)); hm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(

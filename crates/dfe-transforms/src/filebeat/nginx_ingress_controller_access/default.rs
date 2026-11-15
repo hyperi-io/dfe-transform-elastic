@@ -233,8 +233,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"try {\n  if (ctx.nginx_ingress_controller.access.upstream.response.length_list.length == null) {\n    return;\n  }\n  int last_length = 0;\n  for (def item : ctx.nginx_ingress_controller.access.upstream.response.length_list) {\n    last_length =  Integer.parseInt(item);\n  }\n  ctx.nginx_ingress_controller.access.upstream.response.length = last_length;\n} catch (Exception e) {\n  ctx.nginx_ingress_controller.access.upstream.response.length = null;\n}"#
+                    compiled_painless!(
+                        "42ec4c1a2b27960c0945cf3ac0c343956470398a8bf61480c178547fd2e75a11",
+                        r#"{"params":null,"known":[{"ListFold":{"list":"nginx_ingress_controller.access.upstream.response.length_list","target":"nginx_ingress_controller.access.upstream.response.length","step":"LastWhole"}}]}"#
                     ),
                 )?;
             }
@@ -246,8 +247,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"try {\n  if (ctx.nginx_ingress_controller.access.upstream.response.time_list.length == null) {\n    return;\n  }\n  float res_time = 0;\n  for (def item : ctx.nginx_ingress_controller.access.upstream.response.time_list) {\n    res_time = res_time + Float.parseFloat(item);\n  }\n  ctx.nginx_ingress_controller.access.upstream.response.time = res_time;\n} catch (Exception e) {\n  ctx.nginx_ingress_controller.access.upstream.response.time = null;\n}"#
+                    compiled_painless!(
+                        "4d194b5700001e53b6724f4eafd2abd2450ec5ee66d910b254a4326f01713ae3",
+                        r#"{"params":null,"known":[{"ListFold":{"list":"nginx_ingress_controller.access.upstream.response.time_list","target":"nginx_ingress_controller.access.upstream.response.time","step":"SumFloat"}}]}"#
                     ),
                 )?;
             }
@@ -259,8 +261,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"try {\n  if (ctx.nginx_ingress_controller.access.upstream.response.status_code_list.length == null) {\n    return;\n  }\n  int last_status_code;\n  for (def item : ctx.nginx_ingress_controller.access.upstream.response.status_code_list) {\n    last_status_code = Integer.parseInt(item);\n  }\n  ctx.nginx_ingress_controller.access.upstream.response.status_code = last_status_code;\n} catch (Exception e) {\n  ctx.nginx_ingress_controller.access.upstream.response.status_code = null;\n}"#
+                    compiled_painless!(
+                        "b198bdfd4bbabf9868342de0716edd67cbe9290cf7e284bbcd052c2b569e41ad",
+                        r#"{"params":null,"known":[{"ListFold":{"list":"nginx_ingress_controller.access.upstream.response.status_code_list","target":"nginx_ingress_controller.access.upstream.response.status_code","step":"LastWhole"}}]}"#
                     ),
                 )?;
             }
@@ -272,8 +275,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"try {\n  if (ctx.nginx_ingress_controller.access.upstream_address_list.length == null) {\n    return;\n  }\n  def last_upstream = \"\";\n  for (def item : ctx.nginx_ingress_controller.access.upstream_address_list) {\n    last_upstream = item;\n  }\n  \n  ctx.nginx_ingress_controller.access.upstream.address = last_upstream;\n} catch (Exception e) {\n  ctx.nginx_ingress_controller.access.upstream.address = null;\n}"#
+                    compiled_painless!(
+                        "694acae2cf511993b130316c2ddb97d2113fd78ce64b4917e34fff602e8142d7",
+                        r#"{"params":null,"known":[{"ListFold":{"list":"nginx_ingress_controller.access.upstream_address_list","target":"nginx_ingress_controller.access.upstream.address","step":"LastRaw"}}]}"#
                     ),
                 )?;
             }
@@ -394,8 +398,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"boolean isPrivate(def dot, def ip) {\n  try {\n    StringTokenizer tok = new StringTokenizer(ip, dot);\n    int firstByte = Integer.parseInt(tok.nextToken());\n    int secondByte = Integer.parseInt(tok.nextToken());\n    if (firstByte == 10) {\n      return true;\n    }\n    if (firstByte == 192 && secondByte == 168) {\n      return true;\n    }\n    if (firstByte == 172 && secondByte >= 16 && secondByte <= 31) {\n      return true;\n    }\n    if (firstByte == 127) {\n      return true;\n    }\n    return false;\n  }\n  catch (Exception e) {\n    return false;\n  }\n} try {\n  ctx.source.address = null;\n  if (ctx.nginx_ingress_controller.access.remote_ip_list == null) {\n    return;\n  }\n  def found = false;\n  for (def item : ctx.nginx_ingress_controller.access.remote_ip_list) {\n    if (!isPrivate(params.dot, item)) {\n      ctx.source.address = item;\n      found = true;\n      break;\n    }\n  }\n  if (!found) {\n    ctx.source.address = ctx.nginx_ingress_controller.access.remote_ip_list[0];\n  }\n} catch (Exception e) {\n  ctx.source.address = null;\n}"#
+                    compiled_painless!(
+                        "cbbe2317560748b0ceb2a310992bf578368933fb14d316478a175b8e252c1661",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"nginx_ingress_controller.access.remote_ip_list","target":"source.address","only_if_unset":false,"only_if_single":false,"consumes_array":false}]}}]}"#
                     ),
                     cached_params!("{\"dot\":\".\"}"),
                 )?;

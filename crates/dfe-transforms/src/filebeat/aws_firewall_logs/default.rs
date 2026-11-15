@@ -593,8 +593,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.aws.firewall.tcp_flags_array == null) {\n  ArrayList al = new ArrayList();\n  ctx.aws.firewall.put(\"tcp_flags_array\", al);\n}\n\ndef flags = Integer.parseUnsignedInt(ctx.aws.firewall.tcp_flags);\n\nif ((flags & 0x01) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"fin\");\n}\nif ((flags & 0x02) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"syn\");\n}\nif ((flags & 0x04) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"rst\");\n}\nif ((flags & 0x08) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"psh\");\n}\nif ((flags & 0x10) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"ack\");\n}\nif ((flags & 0x20) != 0) {\n  ctx.aws.firewall.tcp_flags_array.add(\"urg\");\n}\n"#
+                        compiled_painless!(
+                            "771c34a6bd95384ef2f1bc8169251771a10390cf4b748e65f2f56ba62a85f1c7",
+                            r#"{"params":null,"known":[{"BitFlagNames":{"source":"aws.firewall.tcp_flags","target":"aws.firewall.tcp_flags_array","flags":[[1,"fin"],[2,"syn"],[4,"rst"],[8,"psh"],[16,"ack"],[32,"urg"]]}}]}"#
                         ),
                     )?;
                     Ok(())

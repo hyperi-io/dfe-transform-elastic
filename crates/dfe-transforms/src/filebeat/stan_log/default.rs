@@ -152,8 +152,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"if (ctx.log.level == params.inf) {\n          ctx.log.level = params.info;\n        } else if (ctx.log.level == params.dbg) {\n          ctx.log.level = params.debug;\n        } else if (ctx.log.level == params.wrn) {\n          ctx.log.level = params.warning;\n        } else if (ctx.log.level == params.err) {\n          ctx.log.level = params.error;\n        } else if (ctx.log.level == params.ftl) {\n          ctx.log.level = params.fatal;\n        } else if (ctx.log.level == params.trc) {\n          ctx.log.level = params.trace;\n        }"#
+                compiled_painless!(
+                    "7e350f473009430482b62e4dafe08427563f7fbe748ae3326d141fc3a013b05e",
+                    r#"{"params":{"ParamRenameLadder":{"path":"log.level","arms":[["inf","info"],["dbg","debug"],["wrn","warning"],["err","error"],["ftl","fatal"],["trc","trace"]]}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"inf\":\"INF\",\"info\":\"info\",\"dbg\":\"DBG\",\"debug\":\"debug\",\"wrn\":\"WRN\",\"warning\":\"warning\",\"err\":\"ERR\",\"error\":\"error\",\"ftl\":\"FTL\",\"fatal\":\"fatal\",\"trc\":\"TRC\",\"trace\":\"trace\"}"
@@ -165,8 +166,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.stan.log.msg.type == params.msg) {\n          ctx.stan.log.msg.type = params.message;\n        } else if (ctx.stan.log.msg.type == params.pub) {\n          ctx.stan.log.msg.type = params.publish;\n        } else if (ctx.stan.log.msg.type == params.sub) {\n          ctx.stan.log.msg.type = params.subscribe;\n        } else if (ctx.stan.log.msg.type == params.unsub) {\n          ctx.stan.log.msg.type = params.unsubscribe;\n        } else if (ctx.stan.log.msg.type == params.msg_payload) {\n          ctx.stan.log.msg.type = params.payload;\n        } else if (ctx.stan.log.msg.type == params.err) {\n          ctx.stan.log.msg.type = params.error;\n        } else if (ctx.stan.log.msg.type == params.pi) {\n          ctx.stan.log.msg.type = params.ping;\n        } else if (ctx.stan.log.msg.type == params.po) {\n          ctx.stan.log.msg.type = params.pong;\n        } else if (ctx.stan.log.msg.type == params.ok) {\n          ctx.stan.log.msg.type = params.acknowledge;\n        } else if (ctx.stan.log.msg.type == params.connect) {\n          ctx.stan.log.msg.type = params.connection;\n        } else if (ctx.stan.log.msg.type == params.info) {\n          ctx.stan.log.msg.type = params.information;\n        }"#
+                    compiled_painless!(
+                        "14bd5b8b745cf5ed0b278c9a3a61ebf69ec99a0397ec4379c71e78ad53d68fdb",
+                        r#"{"params":{"ParamRenameLadder":{"path":"stan.log.msg.type","arms":[["msg","message"],["pub","publish"],["sub","subscribe"],["unsub","unsubscribe"],["msg_payload","payload"],["err","error"],["pi","ping"],["po","pong"],["ok","acknowledge"],["connect","connection"],["info","information"]]}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"msg\":\"MSG\",\"message\":\"message\",\"pub\":\"PUB\",\"publish\":\"publish\",\"sub\":\"SUB\",\"subscribe\":\"subscribe\",\"unsub\":\"UNSUB\",\"unsubscribe\":\"unsubscribe\",\"msg_payload\":\"MSG_PAYLOAD\",\"payload\":\"payload\",\"err\":\"-ERROR\",\"error\":\"error\",\"pi\":\"PING\",\"ping\":\"ping\",\"po\":\"PONG\",\"pong\":\"pong\",\"ok\":\"OK\",\"acknowledge\":\"acknowledge\",\"connect\":\"CONNECT\",\"connection\":\"connection\",\"info\":\"INFO\",\"information\":\"information\"}"
@@ -179,8 +181,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.network.direction == params.in) {\n          ctx.network.direction = params.inbound;\n        } else if (ctx.network.direction == params.out) {\n          ctx.network.direction = params.outbound;\n        }"#
+                    compiled_painless!(
+                        "c929f62b5fac5100a95eb2378e0ecf7bb3b06192ed7b25d653e6f8ba6f0c67f3",
+                        r#"{"params":{"ParamRenameLadder":{"path":"network.direction","arms":[["in","inbound"],["out","outbound"]]}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"in\":\"<<-\",\"inbound\":\"inbound\",\"out\":\"->>\",\"outbound\":\"outbound\"}"

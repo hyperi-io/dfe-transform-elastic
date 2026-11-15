@@ -53,8 +53,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\n\nif(ctx.jamf_pro.events != null) {\n  ctx.jamf_pro.events = keysToSnakeCase(ctx.jamf_pro.events);\n}\n"#
+                compiled_painless!(
+                    "31d03dd006bf0331b26c03794258d93a945f53002a144691fa398fc71dbce3db",
+                    r#"{"params":null,"known":[{"KeysToSnakeCase":["jamf_pro.events","CamelBreak"]}]}"#
                 ),
             )?;
 
@@ -271,8 +272,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"def action = ctx.event?.action;\nif (action == null) {\n  return;\n}\ndef entry = params.actions.get(action);\nif (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\ndef types = new ArrayList();\nif (entry.category != null) { cats.addAll(entry.category); }\nif (entry.type != null) { types.addAll(entry.type); }\nif (types.isEmpty()) { types.add('info'); }\nctx.event = ctx.event ?: [:];\nif (!cats.isEmpty()) { ctx.event.category = cats; }\nctx.event.type = types;"#
+                compiled_painless!(
+                    "f7fcd815dd563e4cdcd59cc603b974577a96cc42b8030cef3011cd26d01a64b9",
+                    r#"{"params":{"RowOrDefaults":{"subject":"event.action","table":"actions","prelude":[],"columns":[{"target":"event.category","member":"category","only_if_unset":false,"empty":"Skip"},{"target":"event.type","member":"type","only_if_unset":false,"empty":{"Fill":["info"]}}],"defaults":[]}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"actions\":{\"ComputerAdded\":{\"category\":[\"host\"],\"type\":[\"change\"]},\"ComputerCheckIn\":{\"category\":[\"host\"],\"type\":[]},\"ComputerInventoryCompleted\":{\"category\":[\"host\"],\"type\":[]},\"ComputerPushCapabilityChanged\":{\"category\":[\"host\"],\"type\":[\"change\"]},\"MobileDeviceEnrolled\":{\"category\":[\"host\"],\"type\":[\"change\",\"start\"]},\"MobileDeviceUnEnrolled\":{\"category\":[\"host\"],\"type\":[\"change\",\"end\"]},\"MobileDeviceCheckIn\":{\"category\":[\"host\"],\"type\":[]},\"MobileDeviceInventoryCompleted\":{\"category\":[\"host\"],\"type\":[]},\"MobileDeviceCommandCompleted\":{\"category\":[\"host\"],\"type\":[\"change\",\"end\"]},\"MobileDevicePushSent\":{\"category\":[\"host\"],\"type\":[]},\"DeviceAddedToDEP\":{\"category\":[\"host\"],\"type\":[\"change\"]},\"PushSent\":{\"category\":[\"host\"],\"type\":[]},\"SCEPChallenge\":{\"category\":[\"host\",\"authentication\"],\"type\":[\"start\"]},\"SmartGroupComputerMembershipChange\":{\"category\":[\"host\",\"iam\"],\"type\":[\"change\",\"group\"]},\"SmartGroupMobileDeviceMembershipChange\":{\"category\":[\"host\",\"iam\"],\"type\":[\"change\",\"group\"]},\"JSSStartup\":{\"category\":[\"host\"],\"type\":[\"start\"]},\"JSSShutdown\":{\"category\":[\"host\"],\"type\":[\"end\"]},\"ComputerPolicyFinished\":{\"category\":[\"configuration\"],\"type\":[\"change\"]},\"ComputerPatchPolicyCompleted\":{\"category\":[\"configuration\",\"package\"],\"type\":[\"change\"]},\"PatchSoftwareTitleUpdated\":{\"category\":[\"configuration\",\"package\"],\"type\":[\"change\"]},\"RestAPIOperation\":{\"category\":[\"api\"],\"type\":[\"change\",\"admin\"]},\"SmartGroupUserMembershipChange\":{\"category\":[\"iam\"],\"type\":[\"change\",\"group\"]}}}"

@@ -80,8 +80,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.suspicionsMap = ctx.json[1]; ctx.evidenceMap = ctx.json[2]; ctx.json = ctx.json[0];"#
+                        compiled_painless!(
+                            "b9279188e0943d6338567b0b2622d835c72cbb80668347c4f2cd7c116ac4e131",
+                            r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"json","target":"json","only_if_unset":false,"only_if_single":false,"consumes_array":false}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -1334,8 +1335,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def obj = ctx.json.elementValues.remove(\"ownerProcess.user\"); ctx.cybereason.malop_connection.element_values.owner_process_user= obj;"#
+                    compiled_painless!(
+                        "4f3533b625d6ce90153415d4f8359e19815ecc901af7fc4bb1ec16d64fea55d9",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

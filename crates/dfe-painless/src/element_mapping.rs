@@ -57,7 +57,7 @@ const MIN_MEMBER_WRITES: usize = 2;
 // -- The grammar ---------------------------------------------------------
 
 /// Which element of a list a local names.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum ElementIndex {
     /// A literal subscript -- `[0]`, `[1]`.
     At(usize),
@@ -67,7 +67,7 @@ enum ElementIndex {
 }
 
 /// A local bound to one element of a `ctx.` list.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct Local {
     /// The name the script gave it, kept so a second binding of the same name
     /// can be refused.
@@ -78,7 +78,7 @@ struct Local {
 }
 
 /// Something the script reads.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Read {
     /// `ctx.<path>`, with `?.` navigation flattened.
     Field(String),
@@ -88,7 +88,7 @@ enum Read {
 }
 
 /// How a read is rendered before it lands.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Render {
     /// Assigned as it stands.
     Direct,
@@ -103,7 +103,7 @@ enum Render {
 }
 
 /// The condition of an `if`, or one conjunct of it.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Test {
     /// `<read> != null`.
     NotNull(Read),
@@ -116,7 +116,7 @@ enum Test {
 }
 
 /// One statement of the restricted Painless this module reads.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Stmt {
     /// `ctx.<path> = new HashMap();` -- REPLACES whatever is there.
     ResetMap(String),
@@ -137,7 +137,7 @@ enum Stmt {
 
 /// The whole script: the elements it binds, and the statements that write off
 /// them.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ElementMapping {
     locals: Vec<Local>,
     body: Vec<Stmt>,
@@ -756,7 +756,8 @@ fn epoch_second(value: &Value) -> Option<String> {
     )
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#` and carry the vendor's own unseparated literals.
 #[allow(

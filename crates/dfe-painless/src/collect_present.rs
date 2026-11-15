@@ -5,20 +5,7 @@
 //! and a lone survivor unwrapped into the scalar.
 //!
 //! `trend_micro_vision_one/telemetry` writes eight of these, one per ECS field
-//! that several vendor fields could fill:
-//!
-//! ```painless
-//! if (ctx.file == null) ctx.file = [:];
-//! ctx.file.size = [
-//!   ctx.trend_micro_vision_one?.telemetry?.object_current_file_size,
-//!   ctx.trend_micro_vision_one?.telemetry?.object_file_size,
-//!   ctx.trend_micro_vision_one?.telemetry?.src_file_size,
-//!   ctx.trend_micro_vision_one?.telemetry?.process_file_size,
-//!   ctx.trend_micro_vision_one?.telemetry?.parent_file_size
-//! ];
-//! ctx.file.size.removeIf(v -> v == null);
-//! if (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];
-//! ```
+//! that several vendor fields could fill.
 //!
 //! `FirstElement` claimed all eight and wrote nothing. Its trigger is the
 //! closing `[0];`, so it read the last statement alone -- unwrap `ctx.file.size`
@@ -44,7 +31,7 @@ use crate::params::{balanced, ctx_path_plain, skip_trivia};
 use dfe_core::Event;
 
 /// The candidates one script collects, and where the result lands.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct CollectPresent {
     /// The `ctx.` path the list is written to.
     target: String,
@@ -179,190 +166,8 @@ fn without_spaces(text: &str) -> String {
     text.chars().filter(|c| !c.is_whitespace()).collect()
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use serde_json::json;
-
-    use super::*;
-
-    /// Verbatim from `pipelines/trend_micro_vision_one/telemetry/default.yml`,
-    /// the widest of the eight.
-    const FILE_SIZE: &str = "if (ctx.file == null) ctx.file = [:];
-ctx.file.size = [
-  ctx.trend_micro_vision_one?.telemetry?.object_current_file_size,
-  ctx.trend_micro_vision_one?.telemetry?.object_file_size,
-  ctx.trend_micro_vision_one?.telemetry?.src_file_size,
-  ctx.trend_micro_vision_one?.telemetry?.process_file_size,
-  ctx.trend_micro_vision_one?.telemetry?.parent_file_size
-];
-ctx.file.size.removeIf(v -> v == null);
-if (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];
-";
-
-    /// The two-candidate spelling, from the same file.
-    const PROCESS_NAME: &str = "if (ctx.process == null) ctx.process = [:];
-ctx.process.name = [
-  ctx.trend_micro_vision_one?.telemetry?.process_name,
-  ctx.trend_micro_vision_one?.telemetry?.object_name
-];
-ctx.process.name.removeIf(v -> v == null);
-if (ctx.process.name.size() == 1) ctx.process.name = ctx.process.name[0];
-";
-
-    fn run(script: &str, doc: Value) -> Value {
-        let pattern = parse_collect_present(script).expect("the script is recognised");
-        let mut event = Event::new(doc);
-        assert!(collect_present(&mut event, &pattern));
-        event.as_value().clone()
-    }
-
-    /// Every candidate is read off the script, in the order it lists them.
-    #[test]
-    fn every_candidate_is_read_in_script_order() {
-        let pattern = parse_collect_present(FILE_SIZE).expect("recognised");
-        assert_eq!(pattern.target, "file.size");
-        assert_eq!(
-            pattern.sources,
-            [
-                "trend_micro_vision_one.telemetry.object_current_file_size",
-                "trend_micro_vision_one.telemetry.object_file_size",
-                "trend_micro_vision_one.telemetry.src_file_size",
-                "trend_micro_vision_one.telemetry.process_file_size",
-                "trend_micro_vision_one.telemetry.parent_file_size",
-            ]
-        );
-    }
-
-    /// Several present candidates stay a LIST, in script order, duplicates
-    /// kept. The captured `file.size` on one telemetry event is
-    /// `[334168, 334168, 57528]`.
-    #[test]
-    fn several_candidates_keep_their_order_and_their_duplicates() {
-        let out = run(
-            FILE_SIZE,
-            json!({"trend_micro_vision_one": {"telemetry": {
-                "object_current_file_size": 334_168,
-                "object_file_size": 334_168,
-                "src_file_size": 57_528,
-            }}}),
-        );
-        assert_eq!(out["file"]["size"], json!([334_168, 334_168, 57_528]));
-    }
-
-    /// One present candidate is stored as the SCALAR, which is the script's own
-    /// `size() == 1` unwrap. Four telemetry events carry `file.size` as 57528
-    /// rather than a one-member list.
-    #[test]
-    fn a_lone_candidate_is_unwrapped_to_the_scalar() {
-        let out = run(
-            FILE_SIZE,
-            json!({"trend_micro_vision_one": {"telemetry": {"src_file_size": 57_528}}}),
-        );
-        assert_eq!(out["file"]["size"], json!(57_528));
-    }
-
-    /// An explicit null is dropped the same way an absent field is: Painless
-    /// reads both as null and the `removeIf` takes both.
-    #[test]
-    fn an_explicit_null_is_dropped_like_an_absent_field() {
-        let out = run(
-            PROCESS_NAME,
-            json!({"trend_micro_vision_one": {"telemetry": {
-                "process_name": Value::Null,
-                "object_name": "svchost.exe",
-            }}}),
-        );
-        assert_eq!(out["process"]["name"], json!("svchost.exe"));
-    }
-
-    /// Nothing present leaves the EMPTY list Painless leaves. The pipeline's
-    /// closing prune is what removes it, and writing nothing here would
-    /// disagree with a pipeline that has no such prune.
-    #[test]
-    fn nothing_present_leaves_the_empty_list() {
-        let out = run(
-            PROCESS_NAME,
-            json!({"trend_micro_vision_one": {"telemetry": {}}}),
-        );
-        assert_eq!(out["process"]["name"], json!([]));
-    }
-
-    /// A candidate that is not a bare `ctx.` read declines the WHOLE script.
-    /// Collecting the four it understands would write a list short of what
-    /// Painless builds, and the event would then read as needing polish.
-    #[test]
-    fn a_candidate_that_is_not_a_path_declines_the_whole_script() {
-        let broken = FILE_SIZE.replace(
-            "ctx.trend_micro_vision_one?.telemetry?.src_file_size,",
-            "sizeOf(ctx.trend_micro_vision_one?.telemetry?.src_file_size),",
-        );
-        assert_ne!(broken, FILE_SIZE, "the replacement has to bite");
-        assert!(parse_collect_present(&broken).is_none());
-    }
-
-    /// A prune over some OTHER field is a different script.
-    #[test]
-    fn a_prune_naming_another_field_declines() {
-        let broken = FILE_SIZE.replace(
-            "ctx.file.size.removeIf(v -> v == null);",
-            "ctx.file.path.removeIf(v -> v == null);",
-        );
-        assert!(parse_collect_present(&broken).is_none());
-    }
-
-    /// A prune with any other predicate belongs to the matcher that reads one.
-    #[test]
-    fn a_sentinel_prune_declines() {
-        let broken = FILE_SIZE.replace(
-            "removeIf(v -> v == null)",
-            "removeIf(v -> v == null || v == '-')",
-        );
-        assert!(parse_collect_present(&broken).is_none());
-    }
-
-    /// The build and the prune WITHOUT the unwrap is left unclaimed. No
-    /// vendored pipeline spells it, and claiming it here would guess at what
-    /// the missing statement meant.
-    #[test]
-    fn the_build_without_the_unwrap_declines() {
-        let (head, _) = FILE_SIZE.split_once("if (ctx.file.size.size()").unwrap();
-        assert!(parse_collect_present(head).is_none());
-    }
-
-    /// A statement after the unwrap declines: this reader accounts for the
-    /// whole script or none of it.
-    #[test]
-    fn a_trailing_statement_declines() {
-        let extra = format!("{FILE_SIZE}ctx.file.owner = 'root';");
-        assert!(parse_collect_present(&extra).is_none());
-    }
-
-    /// The braced spelling of the unwrap reads the same.
-    #[test]
-    fn the_braced_unwrap_reads_the_same() {
-        let braced = FILE_SIZE.replace(
-            "if (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];",
-            "if (ctx.file.size.size() == 1) { ctx.file.size = ctx.file.size[0]; }",
-        );
-        let pattern = parse_collect_present(&braced).expect("recognised");
-        assert_eq!(pattern.target, "file.size");
-        assert_eq!(pattern.sources.len(), 5);
-    }
-
-    /// The two scripts `FirstElement` claimed before this existed are not
-    /// taken here: a bare take and a guarded unwrap have no build to read.
-    #[test]
-    fn a_plain_first_element_take_is_left_alone() {
-        assert!(
-            parse_collect_present("ctx.source.ip = ctx.crowdstrike.alert.source_ips[0];").is_none()
-        );
-        assert!(
-            parse_collect_present(
-                "if (ctx.url.original instanceof List && ctx.url.original.size() == 1)\n    \
-                 ctx.url.original = ctx.url.original[0];"
-            )
-            .is_none()
-        );
-    }
-}
+#[path = "collect_present_tests.rs"]
+mod tests;

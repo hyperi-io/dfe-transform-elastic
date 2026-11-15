@@ -38,8 +38,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"if (ctx.log?.syslog?.facility?.code == null || !params.containsKey((ctx.log.syslog.facility.code).toString())) {\n  return;\n}\nctx.log.syslog.facility.name = params[(ctx.log.syslog.facility.code).toString()];"#
+                compiled_painless!(
+                    "b5ec7bb705ff269cac7e21dd458b9df18d840db3b06fb72d11e3d4694df6d82f",
+                    r#"{"params":{"StringifiedLookup":{"source":"log.syslog.facility.code","target":"log.syslog.facility.name"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"0\":\"Kernel\",\"1\":\"User\",\"2\":\"Mail\",\"3\":\"System\",\"4\":\"Security\",\"5\":\"Syslog\",\"6\":\"Line printer\",\"7\":\"Network news\",\"8\":\"UUCP\",\"9\":\"Clock\",\"10\":\"Security\",\"11\":\"FTPd\",\"12\":\"NTPd\",\"13\":\"Log audit\",\"14\":\"Log alert\",\"15\":\"Clock daemon\",\"16\":\"Local 0\",\"17\":\"Local 1\",\"18\":\"Local 2\",\"19\":\"Local 3\",\"20\":\"Local 4\",\"21\":\"Local 5\",\"22\":\"Local 6\",\"23\":\"Local 7\"}"
@@ -49,8 +50,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"if (ctx.log?.syslog?.severity?.code == null || !params.containsKey((ctx.log.syslog.severity.code).toString())) {\n  return;\n}\nctx.log.syslog.severity.name = params[(ctx.log.syslog.severity.code).toString()];"#
+                compiled_painless!(
+                    "145361bdae787d1007e4cf7704e9245441d97d3e86975aed83b25b2413beecc6",
+                    r#"{"params":{"StringifiedLookup":{"source":"log.syslog.severity.code","target":"log.syslog.severity.name"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"0\":\"Emergency\",\"1\":\"Alert\",\"2\":\"Critical\",\"3\":\"Error\",\"4\":\"Warning\",\"5\":\"Notice\",\"6\":\"Informational\",\"7\":\"Debug\"}"
@@ -101,7 +103,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "d49719d482c5d2553b6d27622ce90f727d2adb91bc12dd011519e4e082235cb2",
+                        r#"{"params":{"RowColumns":{"statements":[{"Literal":{"Remove":{"path":"arista.succeeded"}}}],"whole":true}},"known":[]}"#,
                         r#"if (ctx?.event == null) {\n  Map map = new HashMap();\n  ctx.put('event', map);\n} if (ctx.arista?.succeeded == null || !params.containsKey((ctx.arista.succeeded).toString())) {\n  return;\n} ctx.event.category = params.get((ctx.arista.succeeded).toString()).get('category').clone(); ctx.event.kind = params.get((ctx.arista.succeeded).toString()).get('kind'); ctx.event.outcome = params.get((ctx.arista.succeeded).toString()).get('outcome'); ctx.event.type = params.get((ctx.arista.succeeded).toString()).get('type').clone(); ctx.event.provider = params.get((ctx.arista.succeeded).toString()).get('provider'); ctx.arista.remove('succeeded');"#
                     ),
                     cached_params!(
@@ -196,8 +200,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.arista?.cpu?.total == null) {\n  Map map = new HashMap();\n  ctx.arista.cpu.put('total', map);\n}\nif (ctx.arista?.cpu?.system?.pct != null && ctx.arista?.cpu?.user?.pct != null) {\n  ctx.arista.cpu.total.pct = (ctx.arista.cpu.system.pct + ctx.arista.cpu.user.pct);\n}"#
+                        compiled_painless!(
+                            "8c51411ba48ff5468ad61dfb7edfde28faba983cfb92f1549f06a518dbee5cc2",
+                            r#"{"params":null,"known":[{"CombineFields":{"target":"arista.cpu.total.pct","op":"Add","left":{"path":"arista.cpu.system.pct","divisor":null},"right":{"path":"arista.cpu.user.pct","divisor":null}}}]}"#
                         ),
                     )?;
                 }
@@ -1155,7 +1160,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "be121acaf2e56a590d07a17eed6727d59ba763b8b6452bb4982757cfbbbd88b9",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"event","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"arista.blocked","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[[{"Truthy":"arista.blocked"}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":"denied"}}}}],"alt":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"success"}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":"allowed"}}}}]}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"arista.filterPrefix","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[[{"Compare":{"path":"arista.filterPrefix","wanted":{"Text":"filter_blocked"},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":"denied"}}}}],"alt":[{"If":{"test":[[{"Compare":{"path":"arista.filterPrefix","wanted":{"Text":"invalid_blocked"},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":"denied"}}}}],"alt":[{"If":{"test":[[{"Compare":{"path":"arista.filterPrefix","wanted":{"Text":"shield_blocked"},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.outcome","value":{"Literal":"failure"}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":"denied"}}}}],"alt":[]}}]}}]}}],"alt":[]}}],"whole":false}}]}"#,
                     r#"if (ctx?.event == null) {\n  Map map = new HashMap();\n  ctx.put('event', map);\n}\nif (ctx.arista?.blocked != null) {\n  if (ctx.arista.blocked) {\n    ctx.event.outcome = 'failure';\n    ctx.event.type = 'denied';\n  } else {\n    ctx.event.outcome = 'success';\n    ctx.event.type = 'allowed';\n  }\n}\nif (ctx.arista?.filterPrefix != null) {\n  if (ctx.arista.filterPrefix == 'filter_blocked') {\n    ctx.event.outcome = 'failure';\n    ctx.event.type = 'denied';\n  } else if (ctx.arista.filterPrefix == 'invalid_blocked') {\n    ctx.event.outcome = 'failure';\n    ctx.event.type = 'denied';\n  } else if (ctx.arista.filterPrefix == 'shield_blocked') {\n    ctx.event.outcome = 'failure';\n    ctx.event.type = 'denied';\n  }\n}\n"#
                 ),
             )?;
@@ -1330,8 +1337,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Instant eventstart = ZonedDateTime.parse(ctx.event?.start).toInstant(); Instant eventend = ZonedDateTime.parse(ctx.event?.end).toInstant(); ctx.event['duration'] = ChronoUnit.NANOS.between(eventstart, eventend);"#
+                    compiled_painless!(
+                        "f4e6097293e2aa08e9d13209f0df46738a7b6e1476cb418f46bee45e405a1c73",
+                        r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                     ),
                 )?;
             }
@@ -1339,7 +1347,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "9643c92e204d9cee9e0f26766e23c092260a4c67883f0fa78a00c6e475f40d57",
+                    r#"{"params":{"RowColumns":{"statements":[{"If":{"test":[[{"Compare":{"path":"event.outcome","wanted":"Null","negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[[{"FieldContains":{"path":"event.category","argument":{"Literal":"network"},"lowered":false}}],[{"FieldContains":{"path":"event.category","argument":{"Literal":"intrusion_detection"},"lowered":false}}]],"then":[{"If":{"test":[[{"Compare":{"path":"event.outcome","wanted":{"Text":"success"},"negated":false,"lowered":false}}]],"then":[{"If":{"test":[[{"Compare":{"path":"event.type","wanted":"Null","negated":false,"lowered":false}}],[{"Not":{"FieldContains":{"path":"event.type","argument":{"Literal":"allowed"},"lowered":false}}}]],"then":[{"Literal":{"Append":{"path":"event.type","value":{"Literal":"allowed"}}}}],"alt":[]}}],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"event.outcome","wanted":{"Text":"failure"},"negated":false,"lowered":false}}]],"then":[{"If":{"test":[[{"Compare":{"path":"event.type","wanted":"Null","negated":false,"lowered":false}}],[{"Not":{"FieldContains":{"path":"event.type","argument":{"Literal":"denied"},"lowered":false}}}]],"then":[{"Literal":{"Append":{"path":"event.type","value":{"Literal":"denied"}}}}],"alt":[]}}],"alt":[]}}],"alt":[]}}],"whole":false}},"known":[]}"#,
                     r#"if (ctx?.arista?.class == null || !params.containsKey(ctx.arista.class)) {\n  return;\n} ctx.event.kind = params.get(ctx.arista.class).get('kind'); ctx.event.category = params.get(ctx.arista.class).get('category').clone(); ctx.event.type = params.get(ctx.arista.class).get('type').clone(); ctx.event.provider = params.get(ctx.arista.class).get('provider'); if (ctx?.event?.outcome == null) {\n  return;\n} if (ctx.event.category.contains('network') || ctx.event.category.contains('intrusion_detection')) {\n  if (ctx.event.outcome == 'success') {\n    if (ctx.event?.type == null || !ctx.event.type.contains('allowed')) {\n      ctx.event.type.add('allowed');\n    }\n  }\n  if (ctx.event.outcome == 'failure') {\n    if (ctx.event?.type == null || !ctx.event.type.contains('denied')) {\n      ctx.event.type.add('denied');\n    }\n  }\n}"#
                 ),
                 cached_params!(
@@ -1398,8 +1408,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"boolean isPrivateCIDR(def ip) {\n  CIDR class_a_network = new CIDR('10.0.0.0/8');\n  CIDR class_b_network = new CIDR('172.16.0.0/12');\n  CIDR class_c_network = new CIDR('192.168.0.0/16');\n\n  try {\n    return class_a_network.contains(ip) || class_b_network.contains(ip) || class_c_network.contains(ip);\n  } catch (IllegalArgumentException e) {\n    return false;\n  }\n}\ntry {\n  if (ctx?.network == null) {\n    Map map = new HashMap();\n    ctx.put('network', map);\n  }\n\n  if (!isPrivateCIDR(ctx.source.ip) && isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'inbound';\n  } else if (isPrivateCIDR(ctx.source.ip) && !isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'outbound';\n  } else if (isPrivateCIDR(ctx.source.ip) && isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'internal';\n  } else if (!isPrivateCIDR(ctx.source.ip) && !isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'external';\n  } else {\n    ctx.network.direction = 'unknown';\n  }\n}\ncatch (Exception e) {\n  ctx.network.direction = null;\n}\n"#
+                    compiled_painless!(
+                        "b086e5050f57221dc296839808aa4bf3580761f21e1421781126aabf5f33858a",
+                        r#"{"params":null,"known":[{"PrivateCidrDirection":{"source":"source.ip","destination":"destination.ip","target":"network.direction"}}]}"#
                     ),
                 )?;
             }
@@ -1483,8 +1494,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.observer?.egress?.interface?.id == \"1\") {\n  if (ctx._conf?.interface_id_1_alias != null) {\n    ctx.observer.egress.interface.alias = ctx._conf.interface_id_1_alias;\n  }\n  if (ctx._conf?.interface_id_1_name != null) {\n    ctx.observer.egress.interface.name = ctx._conf.interface_id_1_name;\n  }\n} else if (ctx?.observer?.egress?.interface?.id == \"2\") {\n  if (ctx._conf?.interface_id_2_alias != null) {\n    ctx.observer.egress.interface.alias = ctx._conf.interface_id_2_alias;\n  }\n  if (ctx._conf?.interface_id_2_name != null) {\n    ctx.observer.egress.interface.name = ctx._conf.interface_id_2_name;\n  }\n}\nif (ctx.observer?.ingress?.interface?.id == \"1\") {\n  if (ctx._conf?.interface_id_1_alias != null) {\n    ctx.observer.ingress.interface.alias = ctx._conf.interface_id_1_alias;\n  }\n  if (ctx._conf?.interface_id_1_name != null) {\n    ctx.observer.ingress.interface.name = ctx._conf.interface_id_1_name;\n  }\n} else if (ctx.observer?.ingress?.interface?.id == \"2\") {\n  if (ctx._conf?.interface_id_2_alias != null) {\n    ctx.observer.ingress.interface.alias = ctx._conf.interface_id_2_alias;\n  }\n  if (ctx._conf?.interface_id_2_name != null) {\n    ctx.observer.ingress.interface.name = ctx._conf.interface_id_2_name;\n  }\n}"#
+                compiled_painless!(
+                    "a867495fff14aa6763ddbff4dee88aeb7abd4c858a9cde3b98a2fc307e3cebed",
+                    r#"{"params":null,"known":[{"BranchCopies":[{"guard":"observer.egress.interface.id","literal":"1","copies":[["observer.egress.interface.alias","_conf.interface_id_1_alias"],["observer.egress.interface.name","_conf.interface_id_1_name"]]},{"guard":"observer.ingress.interface.id","literal":"1","copies":[["observer.ingress.interface.alias","_conf.interface_id_1_alias"],["observer.ingress.interface.name","_conf.interface_id_1_name"]]},{"guard":"observer.ingress.interface.id","literal":"2","copies":[["observer.ingress.interface.alias","_conf.interface_id_2_alias"],["observer.ingress.interface.name","_conf.interface_id_2_name"]]}]}]}"#
                 ),
             )?;
 

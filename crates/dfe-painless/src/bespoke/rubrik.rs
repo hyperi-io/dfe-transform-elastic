@@ -67,7 +67,7 @@ fn counted(event: &Event, path: &str) -> Value {
 
 /// Every rubrik script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
-    hash: "5e47ab508e98ebec73611abea63af8284d1b2699ef642d4bd82416b0b290e0f4",
+    hash: "945fc79b613fc0f04d10f42c1fb7a15b5cc3eaa3c9a3244f4d70c04dd73d873f",
     source: "rubrik",
     name: "managed_volume_derivations",
     run: managed_volume_derivations,

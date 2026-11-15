@@ -198,8 +198,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"void _set(Map base, def path, def value) {\n    if (path.length == 0) return;\n    for (int i = 0; i < path.length - 1; i++) {\n        String c = path[i];\n        if (base[c] == null) base[c] = new HashMap();\n        base = base[c];\n    }\n    base[path[path.length - 1]] = value;\n} void set(Map base, String path, def value) {\n    _set(base, path.splitOnToken(\".\"), value);\n} def mapping = params[ctx.json.type.toLowerCase()]; if (mapping == null) return; set(ctx, \"threat.indicator.type\", mapping.type); def value = ctx.json.value; if (value == null) return; set(ctx, mapping.target, value);\n"#
+                        compiled_painless!(
+                            "ff2c4f6154f7e8264a4cc3de2f19eab92ffe4425ddb4a5a464e43fa3c738eef0",
+                            r#"{"params":{"RowNamedTarget":{"key":"json.type","lowercase":true,"type_member":"type","literal_target":"threat.indicator.type","value_source":"json.value","target_member":"target","flag":null}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"fqdn\":{\"type\":\"domain-name\",\"target\":\"threat.indicator.url.domain\"},\"ipv4\":{\"type\":\"ipv4-addr\",\"target\":\"threat.indicator.ip\"},\"md5\":{\"type\":\"file\",\"target\":\"threat.indicator.file.hash.md5\"}}"
@@ -239,8 +240,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def hashes = new ArrayList();\nhashes.add(ctx.threat.indicator.file.hash.md5);\nfor (hash in ctx.json.associated_hashes) {\n  if (hash == null) {\n    return;\n  }\n    if (hash.containsKey(\"type\") && hash[\"type\"] == \"sha1\" && hash.containsKey(\"value\")) {\n    ctx.threat.indicator.file.hash.sha1 = hash[\"value\"];\n    hashes.add(hash[\"value\"]);\n  }\n    else if (hash.containsKey(\"type\") && hash[\"type\"] == \"sha256\" && hash.containsKey(\"value\")) {\n    ctx.threat.indicator.file.hash.sha256 = hash[\"value\"];\n    hashes.add(hash[\"value\"]);\n  }\n}\nif (ctx.json.hashes == null) {\n  ctx.json.hashes = new HashMap();\n}\nctx.json.hashes = hashes;"#
+                        compiled_painless!(
+                            "c230cb2712b8172e9e52789370fcb3758fc3aebc13f44c8f50133c07685f961a",
+                            r#"{"params":null,"known":[{"PrependToArray":{"scalar":"threat.indicator.file.hash.md5","array":"json.associated_hashes","target":"json.hashes"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -526,8 +528,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def providers = new ArrayList();\ndef categories = new ArrayList();\ndef is_osint = true;\nfor (source in ctx.json.sources) {\n  if (source == null) {\n    return;\n  }\n  if (source.containsKey(\"source_name\") && source[\"source_name\"] != null && !providers.contains(source[\"source_name\"])) {\n    providers.add(source[\"source_name\"]);\n  }\n  if (source.containsKey(\"category\") && source[\"category\"] != null) {\n    categories.addAll(source[\"category\"]);\n  }\n  if (source.containsKey(\"osint\") && !source[\"osint\"]) {\n    is_osint = false;\n  }\n}\nif (providers.size() > 0) {\n  if (ctx.threat.indicator.provider == null) {\n    ctx.threat.indicator.provider = new HashMap();\n  }\n  ctx.threat.indicator.provider = providers;\n}\nif (categories.size() > 0) {\n  if (ctx.indicator_categories == null) {\n    ctx.indicator_categories = new HashMap();\n  }\n  ctx.indicator_categories = categories;\n}\nif (is_osint) {\n  ctx.tlp_color = \"GREEN\";\n}\nelse {\n  ctx.tlp_color = \"RED\";\n}"#
+                    compiled_painless!(
+                        "13905dc061226708b12a1f5080f0a3ad16721a310b699b0e5f5701997ab14838",
+                        r#"{"params":null,"known":[{"GatherMembers":{"list":"json.sources","stop_on_null_element":true,"columns":[{"member":"source_name","targets":["threat.indicator.provider"],"allowed":[],"lowercase":false,"flatten":false,"dedupe":true,"selector":null,"literals":[],"split":null},{"member":"category","targets":["indicator_categories"],"allowed":[],"lowercase":false,"flatten":true,"dedupe":false,"selector":null,"literals":[],"split":null}],"flag":{"member":"osint","target":"tlp_color","when_set":"GREEN","when_clear":"RED"}}}]}"#
                     ),
                 )?;
             }
@@ -539,8 +542,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def groups = new ArrayList();\ndef software = new ArrayList();\nfor (association in ctx.json.attributed_associations) {\n  if (association == null) {\n    return;\n  }\n  if (association.containsKey(\"type\") && association[\"type\"] == \"threat-actor\" && !groups.contains(association[\"name\"])) {\n    groups.add(association[\"name\"]);\n  }\n  else if (association.containsKey(\"type\") && association[\"type\"] == \"malware\" && !software.contains(association[\"name\"])) {\n    software.add(association[\"name\"]);\n  }\n}\nif (groups.size() > 0) {\n  if (ctx.threat.group == null) {\n    ctx.threat.group = new HashMap();\n  }\n  if (ctx.threat.group.name == null) {\n    ctx.threat.group.name = new HashMap();\n  }\n  if (ctx.threat.group.id == null) {\n    ctx.threat.group.id = new HashMap();\n  }\n  ctx.threat.group.id = groups;\n  ctx.threat.group.name = groups;\n}\nif (software.size() > 0) {\n  if (ctx.threat.software == null) {\n    ctx.threat.software = new HashMap();\n  }\n  if (ctx.threat.software.type == null) {\n    ctx.threat.software.type = \"Malware\";\n  }\n  if (ctx.threat.software.name == null) {\n    ctx.threat.software.name = new HashMap();\n  }\n  ctx.threat.software.name = software;\n}"#
+                    compiled_painless!(
+                        "684f37058ee446743b5e0a020ceec2fa3340d79f0f69753123fc8450af5e6ff7",
+                        r#"{"params":null,"known":[{"GatherMembers":{"list":"json.attributed_associations","stop_on_null_element":true,"columns":[{"member":"name","targets":["threat.group.id","threat.group.name"],"allowed":[],"lowercase":false,"flatten":false,"dedupe":true,"selector":{"key":"type","value":"threat-actor"},"literals":[],"split":null},{"member":"name","targets":["threat.software.name"],"allowed":[],"lowercase":false,"flatten":false,"dedupe":true,"selector":{"key":"type","value":"malware"},"literals":[["threat.software.type","Malware"]],"split":null}],"flag":null}}]}"#
                     ),
                 )?;
             }
@@ -550,8 +554,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def positive = new ArrayList();\ndef negative = new ArrayList();\ndef keys = ctx.json.misp.keySet().asList();\nkeys.sort((a, b) -> a.compareTo(b));\nfor (key in keys) {\n  if (ctx.json.misp[key]) {\n    positive.add(key);\n  } else {\n    negative.add(key);\n  }\n}\nctx.json[\"misp_warning_list_hits\"] = positive;\nctx.json[\"misp_warning_list_misses\"] = negative;"#
+                    compiled_painless!(
+                        "02479fb7b0ade727ac8d24dd33176c9c2b9d6a1d9d5a3ff61183f531f53e628a",
+                        r#"{"params":null,"known":["CollectMapValues"]}"#
                     ),
                 )?;
             }
@@ -598,8 +603,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def value = ctx.threat.indicator.confidence; if (value <= 0 || value > 100) {\n  ctx.threat.indicator.confidence = \"None\";\n  return;\n} else if (value >= 1 && value < 40) {\n  ctx.threat.indicator.confidence = \"Low\";\n  return;\n} else if (value >= 40 && value < 80) {\n  ctx.threat.indicator.confidence = \"Medium\";\n  return;\n} else if (value >= 80 && value <= 100) {\n  ctx.threat.indicator.confidence = \"High\";\n  return;\n}\n"#
+                        compiled_painless!(
+                            "3750c194b1487cfb4544a8e0af0394c135273710872dd22d7d3cba2c020812e3",
+                            r#"{"params":null,"known":[{"BandLadder":{"subject":"threat.indicator.confidence","arms":[[{"bounds":[{"op":"Le","scaled":0},{"op":"Gt","scaled":100000}],"all":false},{"Text":"None"}],[{"bounds":[{"op":"Ge","scaled":1000},{"op":"Lt","scaled":40000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":40000},{"op":"Lt","scaled":80000}],"all":true},{"Text":"Medium"}],[{"bounds":[{"op":"Ge","scaled":80000},{"op":"Le","scaled":100000}],"all":true},{"Text":"High"}]],"default":null,"absent":null,"target":"threat.indicator.confidence"}}]}"#
                         ),
                     )?;
                     Ok(())

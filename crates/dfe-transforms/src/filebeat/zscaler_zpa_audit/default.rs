@@ -138,8 +138,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def class = params.event_classification[ctx.json.AuditOperationType?.toLowerCase()];\nif (class == null) {\n  return;\n}\nctx.event.type = class.type;\nctx.event.category = class.category;\nctx.event.outcome = class.outcome;\n"#
+                    compiled_painless!(
+                        "e477ecad55fce1cf23ba29d6bf27c493bc5b9fb00c2b306c3cc25abd4f856eff",
+                        r#"{"params":{"RowOrDefaults":{"subject":"json.AuditOperationType.toLowerCase()","table":"event_classification","prelude":[],"columns":[{"target":"event.type","member":"type","only_if_unset":false,"empty":"Verbatim"},{"target":"event.category","member":"category","only_if_unset":false,"empty":"Verbatim"},{"target":"event.outcome","member":"outcome","only_if_unset":false,"empty":"Verbatim"}],"defaults":[]}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"event_classification\":{\"create\":{\"type\":[\"creation\"],\"category\":[\"iam\"],\"outcome\":\"success\"},\"delete\":{\"type\":[\"deletion\"],\"category\":[\"iam\"],\"outcome\":\"success\"},\"update\":{\"type\":[\"change\"],\"category\":[\"iam\"],\"outcome\":\"success\"},\"sign in\":{\"type\":[\"start\"],\"category\":[\"authentication\",\"session\"],\"outcome\":\"success\"},\"sign in failure\":{\"type\":[\"start\",\"error\"],\"category\":\"failure - session\",\"outcome\":null},\"download\":{\"type\":[\"info\",\"access\"],\"outcome\":\"success\",\"category\":[\"file\"]},\"sign out\":{\"type\":[\"end\"],\"category\":[\"session\"],\"outcome\":\"success\"},\"client session revoked\":{\"type\":[\"change\",\"deletion\"],\"category\":[\"iam\"],\"outcome\":\"success\"}}}"
@@ -423,8 +424,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def objectType = ctx.json.ObjectType?.toLowerCase();\ndef operationType = ctx.json.AuditOperationType?.toLowerCase();\ndef valuesMap;\nif (operationType == 'delete' || operationType == 'sign out') {\n  valuesMap = ctx.json.AuditOldValue;\n} else if (operationType == 'create' || operationType == 'sign in' || operationType == 'update') {\n  valuesMap = ctx.json.AuditNewValue;\n}\n\nif (objectType == 'administrator') {\n  ctx.user.target = new HashMap();\n  ctx.user.target.roles = new ArrayList();\n  def roles = (valuesMap?.roles == null) ? [] : new ArrayList(valuesMap?.roles);\n  ctx.user.target.email = valuesMap?.email;\n  for (int i = 0; i < roles.length; i++) {\n    ctx.user.target.roles.add(roles[i].name);\n  }\n} else if (objectType == 'app connector group') {\n  ctx.group = new HashMap();\n  ctx.group.id = valuesMap?.id;\n  ctx.group.name = valuesMap?.name;\n  ctx.observer = new HashMap();\n  ctx.observer.geo = new HashMap();\n  ctx.observer.geo.location = new HashMap();\n  ctx.observer.geo.location.lat = valuesMap?.latitude;\n  ctx.observer.geo.location.lon = valuesMap?.longitude;\n  ctx.observer.geo.city_name = valuesMap?.cityCountry;\n  ctx.observer.geo.country_name = valuesMap?.location;\n} else if (objectType == 'browser access') {\n  ctx.network = new HashMap();\n  ctx.network.protocol = valuesMap?.applicationProtocol?.toLowerCase();\n} else if (objectType == 'authentication') {\n  ctx.client = new HashMap();\n  ctx.client.ip = valuesMap?.remoteIP;\n} else if (objectType == 'certificate') {\n  ctx.x509 = new HashMap();\n  ctx.x509.issuer = new HashMap();\n  ctx.x509.alternative_names = valuesMap?.subjectAlternateNames;\n  ctx.x509.issuer.common_name = valuesMap?.commonName;\n  ctx.x509.issuer.distinguished_name = valuesMap?.issuedTo;\n} else if (objectType == 'executive insights user') {\n  ctx.user = new HashMap();\n  ctx.user.target = new HashMap();\n  ctx.user.target.id = valuesMap?.id;\n  ctx.user.target.email = valuesMap?.email;\n  ctx.user.target.name = valuesMap?.name;\n} else if (objectType == 'idp certificate') {\n  ctx.x509 = new HashMap();\n  ctx.x509.issuer = new HashMap();\n  if (valuesMap?.creationTimeInSeconds != null) {\n    ctx.x509.not_before = Long.parseLong(valuesMap?.creationTimeInSeconds);\n  }\n  if (valuesMap?.expirationTimeInSeconds != null) {\n    ctx.x509.not_after = Long.parseLong(valuesMap?.expirationTimeInSeconds);\n  }\n  ctx.x509.issuer.common_name = valuesMap?.commonName;\n} else if (objectType == 'server') {\n  ctx.server = new HashMap();\n  ctx.server.address = valuesMap?.domainOrIpAddress;\n}\n"#
+                    compiled_painless!(
+                        "338a53f456db7e25b767107dffec5b0f10241be078e9c8a42c293a1fdafb4815",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -640,8 +642,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (Map.Entry m : ctx.json.entrySet()) {\n  ctx.zscaler_zpa?.audit[m.getKey()] = m.getValue();\n}\n"#
+                    compiled_painless!(
+                        "cb77f729ce6cf7c44791db22595ba700b2a4c89c2fb165b7f880836600158642",
+                        r#"{"params":null,"known":[{"MergeMapUp":{"parent":"zscaler_zpa.audit","source":"json","take":false,"collision":"Overwrite","drops":[]}}]}"#
                     ),
                 )?;
             }

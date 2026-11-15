@@ -97,8 +97,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def convertToMillis(long timestamp) {\n  if (timestamp > (long)(1e18)) {\n    return timestamp/(long)(1e6)\n  } else if (timestamp < (long)(1e10))  {\n    return timestamp*(long)(1e3)\n  }\n  return timestamp\n}\nif (ctx.json?.SessionStartTime != null && ctx.json.SessionStartTime instanceof Number) {\n  ctx.json.SessionStartTime = convertToMillis(ctx.json.SessionStartTime);\n}\nif (ctx.json?.SessionEndTime != null && ctx.json.SessionEndTime instanceof Number) {\n  ctx.json.SessionEndTime = convertToMillis(ctx.json.SessionEndTime);\n}\n"#
+                    compiled_painless!(
+                        "5bbf2b343769dd2ec5067aed6cf9039f6cae49619f5aa61a869c6b2294077a87",
+                        r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.SessionStartTime",false],["json.SessionEndTime",false]],"parse_strings":false}}]}"#
                     ),
                 )?;
                 Ok(())
@@ -555,8 +556,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ZonedDateTime start = ZonedDateTime.parse(ctx.event.start);\nZonedDateTime end = ZonedDateTime.parse(ctx.event.end);\nctx.event.duration = ChronoUnit.NANOS.between(start, end);\n"#
+                        compiled_painless!(
+                            "394b33a528b0a7715d1280fdd377528126d2fcbd7143b24d28469bcce85ff84f",
+                            r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                         ),
                     )?;
                     Ok(())

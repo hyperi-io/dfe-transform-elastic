@@ -4865,8 +4865,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.network = ctx.network ?: [:];\nif (ctx.splunk?.alert?.proto != null) {\n  def num = String.valueOf(ctx.splunk.alert.proto);\n  ctx.network.iana_number = num;\n  def name = params.number_to_name.get(num);\n  if (name != null) {\n    ctx.network.transport = name;\n  }\n}\nif (ctx.network.transport != null) {\n  ctx.network.transport = ctx.network.transport.toLowerCase();\n  if (ctx.network.iana_number == null) {\n    def n = params.name_to_number.get(ctx.network.transport);\n    if (n != null) {\n      ctx.network.iana_number = n;\n    }\n  }\n}"#
+                        compiled_painless!(
+                            "034f4fd024a3e6d279ad95a792c312142110ebd560ee11a0887fe11b7d205134",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"number_to_name\":{\"0\":\"hopopt\",\"1\":\"icmp\",\"2\":\"igmp\",\"6\":\"tcp\",\"8\":\"egp\",\"17\":\"udp\",\"47\":\"gre\",\"50\":\"esp\",\"51\":\"ah\",\"58\":\"ipv6-icmp\",\"112\":\"vrrp\",\"132\":\"sctp\"},\"name_to_number\":{\"hopopt\":\"0\",\"icmp\":\"1\",\"igmp\":\"2\",\"tcp\":\"6\",\"egp\":\"8\",\"udp\":\"17\",\"gre\":\"47\",\"esp\":\"50\",\"ah\":\"51\",\"ipv6-icmp\":\"58\",\"vrrp\":\"112\",\"sctp\":\"132\"}}"
@@ -5085,7 +5086,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "ba5d37d19713bb88ff38fe63dd806c263d24627fd7d22c59c7c5463031f369d6",
+                            r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                             r#"ctx.event = ctx.event ?: [:];\nString name = ctx.splunk.alert.severity;\nif (name.equalsIgnoreCase(\"low\") || name.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (name.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (name.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (name.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
                         ),
                     )?;
@@ -5133,8 +5136,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def severity = ctx.splunk.alert.event.SeverityName.toLowerCase();\n  if (severity == 'critical') {\n    ctx.event.severity = 99;\n  } else if (severity == 'high') {\n    ctx.event.severity = 73;\n  } else if (severity == 'medium') {\n    ctx.event.severity = 47;\n  } else if (severity == 'low'|| severity == 'informational') {\n    ctx.event.severity = 21;\n  }"#
+                        compiled_painless!(
+                            "fd249e859f7f8660f7dc20108c7ead0e20585f335ebae9a9c06a54c4f3e31feb",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"splunk.alert.event.SeverityName","fold_case":true,"test":"Equals","arms":[{"literals":["critical"],"writes":[["event.severity",99]],"removes":[]},{"literals":["high"],"writes":[["event.severity",73]],"removes":[]},{"literals":["medium"],"writes":[["event.severity",47]],"removes":[]},{"literals":["low","informational"],"writes":[["event.severity",21]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())

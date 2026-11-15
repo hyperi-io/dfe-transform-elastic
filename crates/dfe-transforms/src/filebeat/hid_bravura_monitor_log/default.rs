@@ -134,8 +134,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Map m = new HashMap(); ctx['hid_bravura_monitor']['perf'].forEach((k,v) -> m.put(k.toLowerCase(), v)); ctx['hid_bravura_monitor'].remove('perf'); ctx['hid_bravura_monitor']['perf'] = new HashMap(); m.forEach((k,v) -> ctx['hid_bravura_monitor']['perf'][k] = v );"#
+                    compiled_painless!(
+                        "0ab0a632ca6de5f6b8a0ec6b08689a9602bfab6804f23c45d59eb66107b047ad",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

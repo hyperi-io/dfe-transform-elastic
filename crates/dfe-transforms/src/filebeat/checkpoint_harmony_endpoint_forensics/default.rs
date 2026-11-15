@@ -249,8 +249,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.host.os.name instanceof List && ctx.host.os.name.size() == 1)\n    ctx.host.os.name = ctx.host.os.name[0];\nif (ctx.host.os.version instanceof List && ctx.host.os.version.size() == 1)\n    ctx.host.os.version = ctx.host.os.version[0];"#
+                    compiled_painless!(
+                        "9e8e3ec533b117be2ce709d23d6a427dfcd970667e786cc0b6ca1a6155f90097",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"host.os.name","target":"host.os.name","only_if_unset":false,"only_if_single":true,"consumes_array":false},{"array":"host.os.version","target":"host.os.version","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -284,8 +285,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.file.name instanceof List)\n    ctx.file.name = ctx.file.name[0];"#
+                    compiled_painless!(
+                        "5e76f0fca7e93974af2669ce25615ed26d54ef4be061b0a5a12bbf0c4c144369",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"file.name","target":"file.name","only_if_unset":false,"only_if_single":false,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -320,8 +322,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.file.path instanceof List && ctx.file.path.size() == 1)\n    ctx.file.path = ctx.file.path[0];"#
+                    compiled_painless!(
+                        "8cf9f518c5b8ed9935e7da0744d25c03b8390dabe0baa6427401fc0ea41c61d4",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"file.path","target":"file.path","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -347,8 +350,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.url.original instanceof List && ctx.url.original.size() == 1)\n    ctx.url.original = ctx.url.original[0];"#
+                    compiled_painless!(
+                        "cedd2657f48613f5eeda466f73d0cd26a4f6f09fe352b0181800b37c7da98efe",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"url.original","target":"url.original","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -416,8 +420,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.forensics.client.version instanceof List && ctx.checkpoint_harmony_endpoint.forensics.client.version.size() == 1)\n    ctx.checkpoint_harmony_endpoint.forensics.client.version = ctx.checkpoint_harmony_endpoint.forensics.client.version[0];"#
+                    compiled_painless!(
+                        "247971e779f9db71d3329a11e35d8a8bf055a3eaba323e797a7a93ff7d2ecd86",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.forensics.client.version","target":"checkpoint_harmony_endpoint.forensics.client.version","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -435,8 +440,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.forensics.malware.action instanceof List && ctx.checkpoint_harmony_endpoint.forensics.malware.action.size() == 1)\n    ctx.checkpoint_harmony_endpoint.forensics.malware.action = ctx.checkpoint_harmony_endpoint.forensics.malware.action[0];"#
+                    compiled_painless!(
+                        "854f1a6976521a7f62075d20882eab403d6fb80722e04e00f219d76dd43600b3",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.forensics.malware.action","target":"checkpoint_harmony_endpoint.forensics.malware.action","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }
@@ -454,8 +460,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.checkpoint_harmony_endpoint.forensics.web_client_type instanceof List && ctx.checkpoint_harmony_endpoint.forensics.web_client_type.size() == 1)\n    ctx.checkpoint_harmony_endpoint.forensics.web_client_type = ctx.checkpoint_harmony_endpoint.forensics.web_client_type[0];"#
+                    compiled_painless!(
+                        "151c650a43290012787a27f0c7595bfba3a4ff330b34ca0de5718edff432f080",
+                        r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"checkpoint_harmony_endpoint.forensics.web_client_type","target":"checkpoint_harmony_endpoint.forensics.web_client_type","only_if_unset":false,"only_if_single":true,"consumes_array":false}]}}]}"#
                     ),
                 )?;
             }

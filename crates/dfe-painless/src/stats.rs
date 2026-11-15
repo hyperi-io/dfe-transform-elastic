@@ -24,10 +24,11 @@ static HANDLED: AtomicU64 = AtomicU64::new(0);
 static UNHANDLED: AtomicU64 = AtomicU64::new(0);
 static CATALOGUE_ON: AtomicBool = AtomicBool::new(false);
 
-/// How many characters of a script identify it in the catalogue.
+/// How many characters of a key identify it in the catalogue.
 ///
-/// Painless scripts share long preambles, so a short prefix would collapse
-/// distinct scripts into one entry.
+/// The executors key it by script hash, which this never truncates. The cap
+/// bounds any other caller's key, and Painless scripts share long preambles, so
+/// a short prefix would collapse distinct scripts into one entry.
 const CATALOGUE_KEY_LEN: usize = 200;
 
 /// Per script, how often it ran and how often it was skipped.

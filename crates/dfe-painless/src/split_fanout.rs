@@ -6,22 +6,7 @@
 //!
 //! `panw_cortex_xdr` ships its MITRE mapping as a list of `"<id> - <name>"`
 //! strings and declares a helper that appends the two halves to two lists,
-//! creating each container on the way and skipping a value already held:
-//!
-//! ```painless
-//! void addTechnique(def ctx, def x, def y) {
-//!   if (ctx.threat == null) { ctx.threat = new HashMap(); }
-//!   if (ctx.threat.technique == null) { ctx.threat.technique = new HashMap(); }
-//!   if (ctx.threat.technique.id == null) { ctx.threat.technique.id = new ArrayList(); }
-//!   if (ctx.threat.technique.name == null) { ctx.threat.technique.name = new ArrayList(); }
-//!   if (!ctx.threat.technique.id.contains(x)) { ctx.threat.technique.id.add(x); }
-//!   if (!ctx.threat.technique.name.contains(y)) { ctx.threat.technique.name.add(y); }
-//! }
-//! for (mitre_technique in ctx.panw_cortex.xdr.mitre_technique_id_and_name) {
-//!   addTechnique(ctx, mitre_technique.splitOnToken(' - ')[0],
-//!                     mitre_technique.splitOnToken(' - ')[1]);
-//! }
-//! ```
+//! creating each container on the way and skipping a value already held.
 //!
 //! The same text appears with `tactic` for `technique` and, on the incidents
 //! stream, over the plural field names -- six call sites across three modules
@@ -40,7 +25,7 @@ use crate::params::{balanced, clean_path};
 use dfe_core::Event;
 
 /// One part of the cut, and the list it is appended to.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct FanColumn {
     /// Which part of the split this column takes.
     index: usize,
@@ -48,7 +33,7 @@ pub struct FanColumn {
 }
 
 /// A list's elements cut on a separator and fanned out to parallel lists.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct SplitFanOut {
     list: String,
     separator: String,
@@ -258,152 +243,10 @@ pub fn split_fan_out(event: &mut Event, pattern: &SplitFanOut) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#`.
 #[allow(clippy::needless_raw_string_hashes)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/panw_cortex_xdr_alerts/v2_pipeline.rs`,
-    /// in the escaped one-line form the call site holds.
-    const PANW_TECHNIQUE: &str = r#"void addTechnique(def ctx, def x, def y) {\n  if (ctx.threat == null) {\n    ctx.threat = new HashMap();\n  }\n  if (ctx.threat.technique == null) {\n    ctx.threat.technique = new HashMap();\n  }\n  if (ctx.threat.technique.id == null) {\n    ctx.threat.technique.id = new ArrayList();\n  }\n  if (ctx.threat.technique.name == null) {\n    ctx.threat.technique.name = new ArrayList();\n  }\n  if (!ctx.threat.technique.id.contains(x)) {\n    ctx.threat.technique.id.add(x);\n  }\n  if (!ctx.threat.technique.name.contains(y)) {\n    ctx.threat.technique.name.add(y);\n  }\n}\nfor (mitre_technique in ctx.panw_cortex.xdr.mitre_technique_id_and_name) {\n  addTechnique(ctx, mitre_technique.splitOnToken(' - ')[0], mitre_technique.splitOnToken(' - ')[1]);\n}"#;
-
-    /// The incidents stream's tactic spelling: plural field names, a different
-    /// indent inside the helper, and the call indented further.
-    const PANW_INCIDENT_TACTIC: &str = r#"void addTactic(def ctx, def x, def y) {\n  if (ctx.threat == null) {\n  ctx.threat = new HashMap();\n  }\n  if (ctx.threat.tactic == null) {\n  ctx.threat.tactic = new HashMap();\n  }\n  if (ctx.threat.tactic.id == null) {\n  ctx.threat.tactic.id = new ArrayList();\n  }\n  if (ctx.threat.tactic.name == null) {\n  ctx.threat.tactic.name = new ArrayList();\n  }\n  if (!ctx.threat.tactic.id.contains(x)) {\n  ctx.threat.tactic.id.add(x);\n  }\n  if (!ctx.threat.tactic.name.contains(y)) {\n  ctx.threat.tactic.name.add(y);\n  }\n}\nfor (mitre_tactic in ctx.panw_cortex.xdr.mitre_tactics_ids_and_names) {\n    addTactic(ctx, mitre_tactic.splitOnToken(' - ')[0], mitre_tactic.splitOnToken(' - ')[1]);\n}"#;
-
-    #[test]
-    fn the_panw_technique_list_is_cut_into_two_deduped_lists() {
-        assert_eq!(
-            parse_split_fan_out(&crate::common::normalise(PANW_TECHNIQUE)),
-            Some(SplitFanOut::new(
-                "panw_cortex.xdr.mitre_technique_id_and_name",
-                " - ",
-                vec![
-                    (0, "threat.technique.id".to_owned()),
-                    (1, "threat.technique.name".to_owned()),
-                ],
-            ))
-        );
-
-        // The WRITTEN value, over the stream's own data: four techniques and a
-        // repeated tactic, which the vendor's `contains` guard collapses.
-        let mut event = Event::new(json!({ "panw_cortex": { "xdr": {
-            "mitre_technique_id_and_name": [
-                "T1018 - Remote System Discovery",
-                "T1082 - System Information Discovery",
-                "T1016 - System Network Configuration Discovery",
-                "T1007 - System Service Discovery",
-                "T1018 - Remote System Discovery",
-            ]
-        }}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            PANW_TECHNIQUE
-        ));
-        assert_eq!(
-            event.get("threat.technique.id"),
-            Some(&json!(["T1018", "T1082", "T1016", "T1007"]))
-        );
-        assert_eq!(
-            event.get("threat.technique.name"),
-            Some(&json!([
-                "Remote System Discovery",
-                "System Information Discovery",
-                "System Network Configuration Discovery",
-                "System Service Discovery",
-            ]))
-        );
-    }
-
-    /// A name carrying the separator keeps only the part the subscript names,
-    /// which is what `splitOnToken(...)[1]` says.
-    #[test]
-    fn a_sub_technique_name_is_cut_the_way_painless_cuts_it() {
-        let mut event = Event::new(json!({ "panw_cortex": { "xdr": {
-            "mitre_technique_id_and_name": [
-                "T1059.001 - Command and Scripting Interpreter: PowerShell",
-            ]
-        }}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            PANW_TECHNIQUE
-        ));
-        assert_eq!(
-            event.get("threat.technique.id"),
-            Some(&json!(["T1059.001"]))
-        );
-        assert_eq!(
-            event.get("threat.technique.name"),
-            Some(&json!(["Command and Scripting Interpreter: PowerShell"]))
-        );
-    }
-
-    #[test]
-    fn the_incident_tactic_spelling_reads_the_same_pattern() {
-        assert_eq!(
-            parse_split_fan_out(&crate::common::normalise(PANW_INCIDENT_TACTIC)),
-            Some(SplitFanOut::new(
-                "panw_cortex.xdr.mitre_tactics_ids_and_names",
-                " - ",
-                vec![
-                    (0, "threat.tactic.id".to_owned()),
-                    (1, "threat.tactic.name".to_owned()),
-                ],
-            ))
-        );
-
-        let mut event = Event::new(json!({ "panw_cortex": { "xdr": {
-            "mitre_tactics_ids_and_names": ["TA0010 - Exfiltration"]
-        }}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            PANW_INCIDENT_TACTIC
-        ));
-        assert_eq!(event.get("threat.tactic.id"), Some(&json!(["TA0010"])));
-        assert_eq!(
-            event.get("threat.tactic.name"),
-            Some(&json!(["Exfiltration"]))
-        );
-    }
-
-    /// An absent list writes nothing, and an element the cut cannot fill both
-    /// columns from is skipped rather than half-written.
-    #[test]
-    fn a_list_the_cut_cannot_fill_writes_nothing() {
-        let mut quiet = Event::new(json!({ "panw_cortex": { "xdr": {} } }));
-        assert!(crate::common::try_known_painless(
-            &mut quiet,
-            PANW_TECHNIQUE
-        ));
-        assert_eq!(quiet.get("threat.technique.id"), None);
-
-        let mut short = Event::new(json!({ "panw_cortex": { "xdr": {
-            "mitre_technique_id_and_name": ["T1018"]
-        }}}));
-        assert!(crate::common::try_known_painless(
-            &mut short,
-            PANW_TECHNIQUE
-        ));
-        assert_eq!(short.get("threat.technique.id"), None);
-        assert_eq!(short.get("threat.technique.name"), None);
-    }
-
-    /// A guard and an append naming DIFFERENT lists hold one value back and
-    /// add it to another, so the pair is declined.
-    #[test]
-    fn a_fan_out_guarding_another_list_is_declined() {
-        let script = r"void add(def ctx, def x) {\n  if (!ctx.a.one.contains(x)) {\n    ctx.a.two.add(x);\n  }\n}\nfor (v in ctx.a.list) {\n  add(ctx, v.splitOnToken(' - ')[0]);\n}";
-        assert!(parse_split_fan_out(&crate::common::normalise(script)).is_none());
-    }
-
-    /// Two separators in one call is a different cut for each half.
-    #[test]
-    fn a_fan_out_cutting_on_two_separators_is_declined() {
-        let script = r"void add(def ctx, def x, def y) {\n  if (!ctx.a.one.contains(x)) {\n    ctx.a.one.add(x);\n  }\n  if (!ctx.a.two.contains(y)) {\n    ctx.a.two.add(y);\n  }\n}\nfor (v in ctx.a.list) {\n  add(ctx, v.splitOnToken(' - ')[0], v.splitOnToken(':')[1]);\n}";
-        assert!(parse_split_fan_out(&crate::common::normalise(script)).is_none());
-    }
-}
+#[path = "split_fanout_tests.rs"]
+mod tests;

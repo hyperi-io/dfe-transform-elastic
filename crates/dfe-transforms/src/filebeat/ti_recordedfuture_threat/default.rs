@@ -125,8 +125,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def cols = params[ ctx._tmp_.col4 == null? \"default\" : \"hash\" ]; def src = ctx._tmp_; def dst = new HashMap(); for (entry in cols.entrySet()) {\n  dst[entry.getValue()] = src[entry.getKey()];\n} ctx['json'] = dst;\n"#
+                        compiled_painless!(
+                            "c6e8f731020332bf69ee62ccb17627fca72bdcef780d13f54f15b88d7021d635",
+                            r#"{"params":{"RemapKeysThroughTable":{"source":"_tmp_","target":"json","selector":"_tmp_.col4","absent":"default","present":"hash"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"default\":{\"col0\":\"Name\",\"col1\":\"Risk\",\"col2\":\"RiskString\",\"col3\":\"EvidenceDetails\"},\"hash\":{\"col0\":\"Name\",\"col1\":\"Algorithm\",\"col2\":\"Risk\",\"col3\":\"RiskString\",\"col4\":\"EvidenceDetails\"}}"
@@ -321,8 +322,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\nList evidence_details = new ArrayList();\nfor (evidence in ctx.json.evidence_details){\n  evidence_details.add(keysToSnakeCase(evidence));\n}\nctx.json.evidence_details = evidence_details;\n"#
+                        compiled_painless!(
+                            "6cc7ba4ed58aff4b2ff5bc7d05d78e2c76b4e8b77b44dc728cc148081bd36737",
+                            r#"{"params":null,"known":[{"SnakeCaseListElements":{"list":"json.evidence_details"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -466,8 +468,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def key = params[ctx.json.Algorithm]; if (key == null) {\n  throw new Exception(\"Unsupported hash algorithm '\" + ctx.json.Algorithm + \"'\");\n} def hashes = [key:ctx.json.Name]; ctx[\"_hashes\"] = hashes;"#
+                        compiled_painless!(
+                            "39328c5d8a77b4349b62698c5435a92d3e0e21d2cf8f1f12601b6fad672c6950",
+                            r#"{"params":{"KeyedByLookup":{"selector":"json.Algorithm","value":"json.Name","target":"_hashes"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"MD5\":\"md5\",\"SHA-1\":\"sha1\",\"SHA-256\":\"sha256\",\"SHA-384\":\"sha384\",\"SHA-512\":\"sha512\"}"
@@ -618,8 +621,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def sum_sources_count = 0;\nfor (evidence in ctx.json.evidence_details){\n  if (evidence['sources_count'] != null){\n    sum_sources_count += evidence['sources_count'];\n  }\n}\nctx.threat.indicator.scanner_stats = sum_sources_count;\n"#
+                        compiled_painless!(
+                            "3a865563184517ae81aba13769d8a5ab5272b75e29978803049e7dda1e06cea5",
+                            r#"{"params":null,"known":[{"SumMemberOverList":{"list":"json.evidence_details","member":"sources_count","target":"threat.indicator.scanner_stats"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -663,8 +667,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def sum_sightings_count = 0;\nfor (evidence in ctx.json.evidence_details){\n  if (evidence['sightings_count'] != null){\n    sum_sightings_count += evidence['sightings_count'];\n  }\n}\nctx.threat.indicator.sightings = sum_sightings_count;\n"#
+                        compiled_painless!(
+                            "f69663e591e75fcaaf989e938e522916bf4073c763cf14afb9e1e93359624c9e",
+                            r#"{"params":null,"known":[{"SumMemberOverList":{"list":"json.evidence_details","member":"sightings_count","target":"threat.indicator.sightings"}}]}"#
                         ),
                     )?;
                     Ok(())

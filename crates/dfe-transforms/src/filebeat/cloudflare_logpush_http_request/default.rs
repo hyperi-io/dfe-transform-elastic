@@ -112,8 +112,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def convertToMillis(long timestamp) {\n  if (timestamp > (long)(1e18)) {\n    return timestamp/(long)(1e6)\n  } else if (timestamp < (long)(1e10))  {\n    return timestamp*(long)(1e3)\n  }\n  return timestamp\n}\nif (ctx.json?.EdgeStartTimestamp != null && ctx.json.EdgeStartTimestamp instanceof Number) {\n  ctx.json.EdgeStartTimestamp = convertToMillis(ctx.json.EdgeStartTimestamp);\n}\nif (ctx.json?.EdgeEndTimestamp != null && ctx.json.EdgeEndTimestamp instanceof Number) {\n  ctx.json.EdgeEndTimestamp = convertToMillis(ctx.json.EdgeEndTimestamp);\n}\nif (ctx.json?.Datetime != null && ctx.json.Datetime instanceof Number) {\n  ctx.json.Datetime = convertToMillis(ctx.json.Datetime);\n}\n"#
+                    compiled_painless!(
+                        "ee91427504977e23e119d25d3c53770dedbda005f825f5093ab0e2f154edc523",
+                        r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.EdgeStartTimestamp",false],["json.EdgeEndTimestamp",false],["json.Datetime",false]],"parse_strings":false}}]}"#
                     ),
                 )?;
                 Ok(())

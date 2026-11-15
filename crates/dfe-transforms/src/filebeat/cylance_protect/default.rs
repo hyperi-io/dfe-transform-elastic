@@ -33,7 +33,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx.host.mac = [ctx.host.mac];\n"#),
+                    compiled_painless!(
+                        "361fc9f40bc09e8ea582a5fd8ac47f3ec5ed6d0fe9b70674287832627752afa3",
+                        r#"{"params":null,"known":[{"WrapValueInList":[{"source":"host.mac","target":"host.mac","remove_source":false,"guards":{"not_list":false,"not_null":false,"not_empty":false}}]}]}"#
+                    ),
                 )?;
             }
 

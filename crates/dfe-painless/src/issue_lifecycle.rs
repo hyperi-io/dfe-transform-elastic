@@ -6,34 +6,7 @@
 //! kolide's issues stream reads a params table for the base category, adds a
 //! security domain keyed by the check id, then decides the event type and the
 //! action from two timestamps -- a block deadline that has not yet passed is
-//! PENDING, and one that has is a block that already happened:
-//!
-//! ```painless
-//! def action = ctx.event.action;
-//! def m = params.exact.get(action);
-//! if (m != null) { ctx.event.kind = m.kind; ctx.event.category = new ArrayList(m.category); }
-//! else { ctx.event.kind = 'event'; ctx.event.category = ['configuration']; }
-//! if (ctx.rule?.id != null) {
-//!   def domain = params.check_category.get(ctx.rule.id);
-//!   if (domain != null && !ctx.event.category.contains(domain)) { ctx.event.category.add(domain); }
-//! }
-//! boolean pendingBlock = (ctx.kolide?.issues?.blocks_device_at != null);
-//! boolean blocked = false;
-//! if (pendingBlock && ctx['@timestamp'] != null) {
-//!   ZonedDateTime blockAt = ZonedDateTime.parse(ctx.kolide.issues.blocks_device_at);
-//!   ZonedDateTime eventTime = ZonedDateTime.parse(ctx['@timestamp']);
-//!   blocked = !blockAt.isAfter(eventTime);
-//! }
-//! boolean resolved = (ctx.kolide?.issues?.resolved_at != null) || (action == 'issues.resolved');
-//! ctx.event.type = (pendingBlock || resolved) ? ['change'] : ['creation'];
-//! ctx._tmp = ctx._tmp == null ? [:] : ctx._tmp;
-//! ctx._tmp.blocked = blocked;
-//! if (action == 'issue') {
-//!   if (resolved) { ctx.event.action = 'resolved'; }
-//!   else if (blocked) { ctx.event.action = 'blocked'; }
-//!   else if (pendingBlock) { ctx.event.action = 'will_be_blocked'; }
-//! }
-//! ```
+//! PENDING, and one that has is a block that already happened.
 //!
 //! `RowOrDefaults` reads the lookup at the top and DECLINES this script by
 //! design -- its parse requires the branch to be the end of the text, because
@@ -51,7 +24,7 @@ use crate::params::{balanced, clean_path, literal_value, skip_trivia, subject_pa
 use dfe_core::Event;
 
 /// A second table keyed by another field, appended to the category list.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct DomainAppend {
     /// The params member holding the table.
     table: String,
@@ -61,7 +34,7 @@ pub struct DomainAppend {
 }
 
 /// The lifecycle decided from a params row and two timestamps.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct IssueLifecycle {
     /// The `ctx.` path the action is read from, before anything rewrites it.
     subject: String,
@@ -404,169 +377,10 @@ pub fn issue_lifecycle(
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#`.
 #[allow(clippy::needless_raw_string_hashes)]
-mod tests {
-    use super::*;
-    use crate::plan::{PainlessPlan, painless_exec_plan_params};
-    use serde_json::json;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/kolide_issues/default.rs`.
-    const KOLIDE_ISSUES: &str = r#"def action = ctx.event.action;\ndef m = params.exact.get(action);\nif (m != null) {\n  ctx.event.kind = m.kind;\n  ctx.event.category = new ArrayList(m.category);\n} else {\n  ctx.event.kind = 'event';\n  ctx.event.category = ['configuration'];\n}\n\n// Add a security-domain category (malware/vulnerability) for specific\n// checks, keyed by check id; the base 'configuration' category is kept.\nif (ctx.rule?.id != null) {\n  def domain = params.check_category.get(ctx.rule.id);\n  if (domain != null && !ctx.event.category.contains(domain)) {\n    ctx.event.category.add(domain);\n  }\n}\n\n// blocked/resolved issues are a change; a newly detected issue is a creation.\n// blocked_device_at is a future deadline, not an immediate state: the device\n// is only actually blocked once that deadline has passed relative to this event.\nboolean pendingBlock = (ctx.kolide?.issues?.blocks_device_at != null);\nboolean blocked = false;\nif (pendingBlock && ctx['@timestamp'] != null) {\n  ZonedDateTime blockAt = ZonedDateTime.parse(ctx.kolide.issues.blocks_device_at);\n  ZonedDateTime eventTime = ZonedDateTime.parse(ctx['@timestamp']);\n  blocked = !blockAt.isAfter(eventTime);\n}\nboolean resolved = (ctx.kolide?.issues?.resolved_at != null) || (action == 'issues.resolved');\nctx.event.type = (pendingBlock || resolved) ? ['change'] : ['creation'];\n\n// Persist the computed blocked state for the fingerprint processor in\n// default.yml, so pending/blocked/resolved each fingerprint to a distinct _id.\nctx._tmp = ctx._tmp == null ? [:] : ctx._tmp;\nctx._tmp.blocked = blocked;\n\n// Precedence: a resolved issue takes priority over a still-blocking one;\n// a pending future block takes priority over a plain open issue.\nif (action == 'issue') {\n  if (resolved) {\n    ctx.event.action = 'resolved';\n  } else if (blocked) {\n    ctx.event.action = 'blocked';\n  } else if (pendingBlock) {\n    ctx.event.action = 'will_be_blocked';\n  }\n}"#;
-
-    /// kolide's auth stream, which reads the same `params.exact` table and is
-    /// `RowOrDefaults`. It must not be claimed here.
-    const KOLIDE_AUTH: &str = "def action = ctx.event.action;\nctx.event.kind = 'event';\n\ndef m = params.exact.get(action);\nif (m != null) {\n  ctx.event.category = new ArrayList(m.category);\n  ctx.event.type = new ArrayList(m.type);\n  if (m.containsKey('outcome') && ctx.event.outcome == null) {\n    ctx.event.outcome = m.outcome;\n  }\n} else {\n  ctx.event.category = ['authentication'];\n  ctx.event.type = ['info'];\n}";
-
-    fn params() -> Value {
-        json!({
-            "exact": {},
-            "check_category": { "20": "malware", "41": "vulnerability" },
-        })
-    }
-
-    /// Run one of the stream's own documents through the plan.
-    fn classify(document: Value) -> Event {
-        let mut event = Event::new(document);
-        let plan = PainlessPlan::new(KOLIDE_ISSUES);
-        assert!(painless_exec_plan_params(&mut event, &plan, &params()).is_ok());
-        event
-    }
-
-    #[test]
-    fn the_kolide_issue_lifecycle_reads_both_tables_and_both_timestamps() {
-        let held = format!(
-            "{:?}",
-            parse_issue_lifecycle(&crate::common::normalise(KOLIDE_ISSUES))
-        );
-        for part in [
-            r#"subject: "event.action""#,
-            r#"table: "exact""#,
-            r#"columns: [("event.kind", "kind"), ("event.category", "category")]"#,
-            r#"defaults: [("event.kind", String("event")), ("event.category", Array [String("configuration")])]"#,
-            r#"table: "check_category", key: "rule.id", target: "event.category""#,
-            r#"deadline: "kolide.issues.blocks_device_at""#,
-            r#"clock: "@timestamp""#,
-            r#"resolved: "kolide.issues.resolved_at""#,
-            r#"resolved_action: "issues.resolved""#,
-            r#"type_target: "event.type""#,
-            r#"changed: Array [String("change")]"#,
-            r#"created: Array [String("creation")]"#,
-            r#"flag_target: "_tmp.blocked""#,
-            r#"rewrite_when: "issue""#,
-            r#"rewrite_target: "event.action""#,
-            r#"on_resolved: String("resolved")"#,
-            r#"on_blocked: String("blocked")"#,
-            r#"on_pending: String("will_be_blocked")"#,
-        ] {
-            assert!(held.contains(part), "lost {part}: {held}");
-        }
-    }
-
-    /// The WRITTEN values, over the stream's own documents. A deadline that has
-    /// not yet passed is PENDING and one that has is a block that happened, and
-    /// only the two timestamps separate them.
-    #[test]
-    fn the_deadline_decides_pending_from_blocked() {
-        // A plain open issue.
-        let event = classify(json!({
-            "event": { "action": "issue" },
-            "@timestamp": "2026-06-14T20:31:58.869Z",
-            "rule": { "id": "32" },
-        }));
-        assert_eq!(event.get("event.kind"), Some(&json!("event")));
-        assert_eq!(event.get("event.category"), Some(&json!(["configuration"])));
-        assert_eq!(event.get("event.type"), Some(&json!(["creation"])));
-        assert_eq!(event.get("event.action"), Some(&json!("issue")));
-        assert_eq!(event.get("_tmp.blocked"), Some(&json!(false)));
-
-        // A deadline in 2099 has not passed: pending, not blocked.
-        let event = classify(json!({
-            "event": { "action": "issue" },
-            "@timestamp": "2026-08-27T06:01:02.066187847Z",
-            "rule": { "id": "32" },
-            "kolide": { "issues": { "blocks_device_at": "2099-01-01T00:00:00.000Z" } },
-        }));
-        assert_eq!(event.get("event.type"), Some(&json!(["change"])));
-        assert_eq!(event.get("event.action"), Some(&json!("will_be_blocked")));
-        assert_eq!(event.get("_tmp.blocked"), Some(&json!(false)));
-
-        // The same deadline, now reached to the millisecond.
-        let event = classify(json!({
-            "event": { "action": "issue" },
-            "@timestamp": "2026-06-16T00:00:00Z",
-            "rule": { "id": "32" },
-            "kolide": { "issues": { "blocks_device_at": "2026-06-16T00:00:00.000Z" } },
-        }));
-        assert_eq!(event.get("event.type"), Some(&json!(["change"])));
-        assert_eq!(event.get("event.action"), Some(&json!("blocked")));
-        assert_eq!(event.get("_tmp.blocked"), Some(&json!(true)));
-
-        // Resolved outranks a block that already happened.
-        let event = classify(json!({
-            "event": { "action": "issue" },
-            "@timestamp": "2026-06-20T00:00:00Z",
-            "rule": { "id": "32" },
-            "kolide": { "issues": {
-                "blocks_device_at": "2026-06-16T00:00:00.000Z",
-                "resolved_at": "2026-06-20T00:00:00.000Z",
-            } },
-        }));
-        assert_eq!(event.get("event.type"), Some(&json!(["change"])));
-        assert_eq!(event.get("event.action"), Some(&json!("resolved")));
-    }
-
-    /// The check id adds a security domain beside the base category, and the
-    /// webhook actions are classified without being rewritten.
-    #[test]
-    fn the_check_id_adds_a_domain_and_the_webhook_actions_stand() {
-        let event = classify(json!({
-            "event": { "action": "issue" },
-            "@timestamp": "2024-03-11T09:00:00Z",
-            "rule": { "id": "20" },
-        }));
-        assert_eq!(
-            event.get("event.category"),
-            Some(&json!(["configuration", "malware"]))
-        );
-
-        let event = classify(json!({
-            "event": { "action": "issue" },
-            "@timestamp": "2024-03-11T10:00:00Z",
-            "rule": { "id": "41" },
-        }));
-        assert_eq!(
-            event.get("event.category"),
-            Some(&json!(["configuration", "vulnerability"]))
-        );
-
-        // `issues.resolved` means resolved, and keeps its own action.
-        let event = classify(json!({
-            "event": { "action": "issues.resolved" },
-            "@timestamp": "2023-10-28T21:00:58.000Z",
-            "rule": { "id": "71" },
-            "kolide": { "issues": { "resolved_at": "2023-10-28T21:00:58.000Z" } },
-        }));
-        assert_eq!(event.get("event.type"), Some(&json!(["change"])));
-        assert_eq!(event.get("event.action"), Some(&json!("issues.resolved")));
-
-        let event = classify(json!({
-            "event": { "action": "issues.new" },
-            "@timestamp": "2023-10-28T20:50:15.000Z",
-            "rule": { "id": "71" },
-        }));
-        assert_eq!(event.get("event.type"), Some(&json!(["creation"])));
-        assert_eq!(event.get("event.action"), Some(&json!("issues.new")));
-    }
-
-    /// kolide's auth stream reads the same table and belongs to
-    /// `RowOrDefaults`, which writes `event.type` off the row rather than off a
-    /// deadline this script does not have.
-    #[test]
-    fn the_sibling_auth_stream_is_declined() {
-        assert!(parse_issue_lifecycle(&crate::common::normalise(KOLIDE_AUTH)).is_none());
-    }
-}
+#[path = "issue_lifecycle_tests.rs"]
+mod tests;

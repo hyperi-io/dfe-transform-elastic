@@ -138,7 +138,7 @@ fn attributes(event: &Event, path: &str) -> Vec<(String, Value)> {
 
 /// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
-    hash: "5ae52753a2f671408ff9df1e1d85adc90e313dab3a92dbdc7b280d13ba2dd1db",
+    hash: "176633b9fd1ce5cf80d91d1b566fc4d511d77569ffd327628a47d37c408f99a4",
     source: "qualys_vmdr",
     name: "cloud_provider_attributes",
     run: cloud_provider_attributes,

@@ -54,8 +54,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.zscaler_zia.saas_security_activity.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.saas_security_activity.version == null ? 'null' : ctx.zscaler_zia.saas_security_activity.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}"#
+                        compiled_painless!(
+                            "4469538e5aa7579923bd035a93b59943eae253dbbd44c32b5704991bcb0d3ab4",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"pkg_version\":\"3.21.0\",\"data_stream\":\"saas_security_activity\",\"expect\":{\"version\":\"v1\"}}"
@@ -367,7 +368,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "aeb36ca9a0ebb3c835c2d2f63debef8eda76598327c357dd528a8c484bf21026",
+                        r#"{"params":{"MappingRow":{"subject":"zscaler_zia.saas_security_activity.activity.type","table":"mapping","writes":[["event.category","category"],["event.type","type"],["event.outcome","outcome"]],"defaults":[["event.category",["iam"]],["event.type",["info"]]]}},"known":[{"GuardedCopy":{"statements":[{"If":{"test":[["Never"]],"then":[{"If":{"test":[["Never"]],"then":[],"alt":[]}}],"alt":[{"Literal":{"Set":{"path":"event.category","value":{"Literal":["iam"]}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}}]}}],"whole":false}}]}"#,
                         r#"def at = ctx.zscaler_zia?.saas_security_activity?.activity?.type;\ndef m = at != null ? params.mapping.get(at) : null;\nctx.event = ctx.event ?: [:];\nif (m != null) {\n  ctx.event.category = new ArrayList(m.category);\n  ctx.event.type = new ArrayList(m.type);\n  if (m.outcome != null) {\n    ctx.event.outcome = m.outcome;\n  }\n} else {\n  ctx.event.category = ['iam'];\n  ctx.event.type = ['info'];\n}"#
                     ),
                     cached_params!(

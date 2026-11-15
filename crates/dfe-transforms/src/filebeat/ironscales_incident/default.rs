@@ -62,8 +62,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n    def result = \"\";\n    for (int i = 0; i < str.length(); i++) {\n        char c = str.charAt(i);\n        if (Character.isUpperCase(c)) {\n            if (i > 0 && Character.isLowerCase(str.charAt(i - 1))) {\n                result += \"_\";\n            }\n            result += Character.toLowerCase(c);\n        } else {\n            result += c;\n        }\n    }\n    return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n// Apply the conversion\nctx.ironscales = ctx.ironscales ?: [:];\nif (ctx.json != null) {\n  ctx.ironscales.incident = convertToSnakeCase(ctx.json);\n}\n// Remove json field\nctx.remove('json');"#
+                compiled_painless!(
+                    "b2c7a4a6857c24a0f827d151b1173a19bd1d2fbe84b2e7fc6a73424cc029c1d6",
+                    r#"{"params":null,"known":[{"CamelToSnake":{"target":"ironscales.incident","source":"json","rule":"OnWordBreak","at_keys":"Convert","merge":false,"removes":["json"]}}]}"#
                 ),
             )?;
 
@@ -1636,8 +1637,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// Initialize ECS email.attachments structure\nctx.email = ctx.email ?: [:];\nctx.email.attachments = ctx.email.attachments ?: [:];\nctx.email.attachments.file = ctx.email.attachments.file ?: [:];\nctx.email.attachments.file.name = ctx.email.attachments.file.name ?: [];\nctx.email.attachments.file.hash = ctx.email.attachments.file.hash ?: [:];\nctx.email.attachments.file.hash.md5 = ctx.email.attachments.file.hash.md5 ?: [];\n\n// Single iteration to extract file_name and md5 from attachments array\nfor (attachment in ctx.ironscales.incident.attachments) {\n  if (attachment.file_name != null && !ctx.email.attachments.file.name.contains(attachment.file_name)) {\n    ctx.email.attachments.file.name.add(attachment.file_name);\n  }\n  if (attachment.md5 != null && !ctx.email.attachments.file.hash.md5.contains(attachment.md5)) {\n    ctx.email.attachments.file.hash.md5.add(attachment.md5);\n  }\n}"#
+                    compiled_painless!(
+                        "ffda7d6fd6ea26a927ad4f27bc9b5a15dc4b4205f6b2feabdf3192e0a6be3e40",
+                        r#"{"params":null,"known":[{"CollectFromList":{"source":"ironscales.incident.attachments","columns":[{"member":"file_name","target":"email.attachments.file.name","replace":null,"upper":false},{"member":"md5","target":"email.attachments.file.hash.md5","replace":null,"upper":false}],"firsts":[]}}]}"#
                     ),
                 )?;
             }
@@ -1771,8 +1773,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// Initialize ECS related fields structure\nctx.related = ctx.related ?: [:];\nctx.related.user = ctx.related.user ?: [];\nctx.related.hosts = ctx.related.hosts ?: [];\nctx.related.ip = ctx.related.ip ?: [];\n\n// Single iteration to extract name, email, sender_email, mail_server.host, and mail_server.ip from reports array\nfor (report in ctx.ironscales.incident.reports) {\n  if (report?.name != null && !ctx.related.user.contains(report.name)) {\n    ctx.related.user.add(report.name);\n  }\n  if (report?.email != null && !ctx.related.user.contains(report.email)) {\n    ctx.related.user.add(report.email);\n  }\n  if (report?.sender_email != null && !ctx.related.user.contains(report.sender_email)) {\n    ctx.related.user.add(report.sender_email);\n  }\n  if (report?.mail_server?.host != null && !ctx.related.hosts.contains(report.mail_server.host)) {\n    ctx.related.hosts.add(report.mail_server.host);\n  }\n  if (report?.mail_server?.ip != null && !ctx.related.ip.contains(report.mail_server.ip)) {\n    ctx.related.ip.add(report.mail_server.ip);\n  }\n}"#
+                    compiled_painless!(
+                        "879588ecd3043abcd2bef88a71b22017da37157e0a5e3e8d24821f17b4bfad40",
+                        r#"{"params":null,"known":[{"CollectFromList":{"source":"ironscales.incident.reports","columns":[{"member":"name","target":"related.user","replace":null,"upper":false},{"member":"email","target":"related.user","replace":null,"upper":false},{"member":"sender_email","target":"related.user","replace":null,"upper":false},{"member":"mail_server.host","target":"related.hosts","replace":null,"upper":false},{"member":"mail_server.ip","target":"related.ip","replace":null,"upper":false}],"firsts":[]}}]}"#
                     ),
                 )?;
             }

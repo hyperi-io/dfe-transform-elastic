@@ -29,7 +29,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "46de568aa0d0bae7f2c7f161130f7bdd17645af1e92d11bc8e69106d916618a2",
+                        r#"{"params":"Replace","known":[]}"#,
                         r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#
                     ),
                     cached_params!("{\"empty_field_name\":\"\\\"\\\":\\\"\\\",\"}"),
@@ -155,7 +157,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "9f9c90e4f91775fe67ee2632e8c138fcb8957f6e350220f240467745e1aed012",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#
                     ),
                     cached_params!("{\"param_nano\":1000000}"),
@@ -254,7 +258,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "e593e7cb0aeae65328f0c64b65323795cb63f38d7fce1ae1ab4ced1fb405f46d",
+                        r#"{"params":null,"known":["AzureEventCategory"]}"#,
                         r#"if (ctx?.azure?.activitylogs?.properties?.eventCategory != null) {\n  ctx.azure.activitylogs.event_category = ctx.azure.activitylogs.properties.eventCategory;\n} else if (ctx?.azure?.activitylogs?.properties?.policies != null)  {\n  ctx.azure.activitylogs.event_category = 'Policy';\n} else {\n  ctx.azure.activitylogs.event_category = 'Administrative';\n}"#
                     ),
                 )?;
@@ -473,7 +479,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "582294265c882d928c7e622959949963a05c49e858edcf06acb18f2efb30ee88",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"azure.activitylogs.identity.claims.http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname","wanted":"Null","negated":true,"lowered":false}}]],"then":[],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.surname = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];\n}"#
                     ),
                 )?;
@@ -485,7 +493,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "9f2d2dc2d438258937957d8dd1ca1dc24c1723df1c1e8c91f39882a11b3eeb73",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"azure.activitylogs.identity.claims.http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name","wanted":"Null","negated":true,"lowered":false}}]],"then":[],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.name = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];\n}"#
                     ),
                 )?;
@@ -497,7 +507,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "4a484ee0c7317dbb7ca0d868a18248701544e69c85561a46f1eb49a81d5f08ce",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"azure.activitylogs.identity.claims.http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname","wanted":"Null","negated":true,"lowered":false}}]],"then":[],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.givenname = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];\n}"#
                     ),
                 )?;
@@ -525,7 +537,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "be7a5d33927d9fb0bd30eee1df0e5d84ff5ce1d4dc15591e310bb13103691cda",
+                        r#"{"params":null,"known":["ReplaceDotsInKeys"]}"#,
                         r#"if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims; ctx.remove('temp_claims');\n}"#
                     ),
                 )?;
@@ -535,7 +549,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "1db4ce2bb03fc5f31626107230a96c87204356e19b67e9f2416d716fdbe340a7",
+                    r#"{"params":{"LookupMerge":{"statements":[{"If":{"test":[[{"Compare":{"path":"azure.activitylogs.category","wanted":"Null","negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":["AzureCategoryEventType"]}"#,
                     r#"if (ctx?.azure?.activitylogs?.category == null) {\n  return;\n} def category = ctx.azure.activitylogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(

@@ -105,8 +105,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.tencent_cloud.audit?.eventTime != null &&\n    ctx.tencent_cloud.audit.eventTime instanceof ArrayList){\n    ctx.tencent_cloud.audit.eventTime = ctx.tencent_cloud.audit.eventTime[0];\n}\n"#
+                compiled_painless!(
+                    "e67cfa214d04250b473b07c965e60af72a44975b96749310c0215c2c8011c600",
+                    r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"tencent_cloud.audit.eventTime","target":"tencent_cloud.audit.eventTime","only_if_unset":false,"only_if_single":false,"consumes_array":false}]}}]}"#
                 ),
             )?;
 

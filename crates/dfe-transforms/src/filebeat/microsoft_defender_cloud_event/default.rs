@@ -82,8 +82,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"void handleMap(Map map) {\n for (def x: map.values()) {\n  if (x instanceof Map) {\n   handleMap(x);\n  } else if (x instanceof List) {\n   handleList(x);\n  }\n }\n def keySet = map.keySet().toArray();\n for (def key: keySet) {\n  def lc = key.toLowerCase();\n  map[lc] = map[key];\n  if (key != lc) {\n   map.remove(key)\n  }\n }\n}\nvoid handleList(List list) {\n for (def x: list) {\n  if (x instanceof Map) {\n   handleMap(x);\n  } else if (x instanceof List) {\n   handleList(x);\n  }\n }\n}\nhandleMap(ctx);\n"#
+                    compiled_painless!(
+                        "476f0bc89929d00b14ed03099f6460e621ea6e79f7aa83f7c5b7159979b2809d",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -626,8 +627,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n      if (key=='location') {\n        updatedJson['location_value'] = value;\n        updatedJson.remove('location');\n      }\n    }\n  }\n  return updatedJson;\n}\ndef entities_obj = new ArrayList();\nfor(entity in ctx.json.entities){\n  entities_obj.add(renameKeys(entity, params));\n}\nctx.entities_obj=entities_obj;\n"#
+                    compiled_painless!(
+                        "d7fa430067d0f2aa0271bcf4fd8842525f912727daeaa5fd940944ca62762217",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":["location","location_value"],"write":{"FanOut":{"source":"json.entities","target":"entities_obj","drop":null}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"$id\":\"id\",\"aadtenantid\":\"aad_tenant_id\",\"aaduserid\":\"aad_user_id\",\"$ref\":\"ref\",\"amazonresourceid\":\"amazon_resource_id\",\"azureid\":\"azure_id\",\"files\":\"files\",\"blobcontainer\":\"blob_container\",\"cloudresource\":\"cloud_resource\",\"commandline\":\"command_line\",\"containerid\":\"container_id\",\"creationtimeutc\":\"creation_time_utc\",\"dnsdomain\":\"dns_domain\",\"domainname\":\"domain_name\",\"elevationtoken\":\"elevation_token\",\"endtimeutc\":\"end_time_utc\",\"filehashes\":\"file_hashes\",\"hostipaddress\":\"host_ip_address\",\"hostname\":\"host_name\",\"imagefile\":\"image_file\",\"imageid\":\"image_id\",\"ipaddresses\":\"ip_addresses\",\"countrycode\":\"country_code\",\"countryname\":\"country_name\",\"isdomainjoined\":\"is_domain_joined\",\"isvalid\":\"is_valid\",\"cloudprovider\":\"cloud_provider\",\"organizationtype\":\"organization_type\",\"systemservice\":\"system_service\",\"logonid\":\"logon_id\",\"netbiosname\":\"net_bios_name\",\"ntdomain\":\"nt_domain\",\"objectguid\":\"object_guid\",\"omsagentid\":\"oms_agent_id\",\"osfamily\":\"os_family\",\"osversion\":\"os_version\",\"parentprocess\":\"parent_process\",\"processid\":\"process_id\",\"projectid\":\"project_id\",\"relatedazureresourceids\":\"related_azure_resource_ids\",\"resourceid\":\"resource_id\",\"resourcename\":\"resource_name\",\"resourcetype\":\"resource_type\",\"sessionid\":\"session_id\",\"sourceaddress\":\"source_address\",\"starttimeutc\":\"start_time_utc\",\"storageresource\":\"storage_resource\",\"threatintelligence\":\"threat_intelligence\",\"providername\":\"provider_name\",\"reportlink\":\"report_link\",\"threatdescription\":\"description\",\"threatname\":\"name\",\"locationtype\":\"location_type\",\"threattype\":\"type\",\"upnsuffix\":\"upn_suffix\"}"
@@ -1914,8 +1916,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\ndef resource_identifier_obj = new ArrayList();\nfor(entity in ctx.json.resourceidentifiers){\n  resource_identifier_obj.add(renameKeys(entity, params));\n}\nctx.resource_identifier_obj=resource_identifier_obj;\n"#
+                    compiled_painless!(
+                        "364a67a2f9ad956db68e5283402875bd9aa02b33bb7df42796f71104d12c6c5b",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"FanOut":{"source":"json.resourceidentifiers","target":"resource_identifier_obj","drop":null}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"$id\":\"id\",\"aadtenantid\":\"aad_tenant_id\",\"agentid\":\"agent_id\",\"azureresourceid\":\"azure_id\",\"azureresourcetenantid\":\"azure_tenant_id\",\"workspaceid\":\"workspace_id\",\"workspaceresourcegroup\":\"workspace_resource_group\",\"workspacesubscriptionid\":\"workspace_subscription_id\"}"
@@ -3332,7 +3335,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "ec8f18cf9ac8bc8d2611b9093d3bfd9fa7d6c40e6121b48612996cf5441ffbc6",
+                            r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                             r#"ctx.event = ctx.event ?: [:];\nString risk_score_value = ctx.microsoft_defender_cloud.event.severity;\nif (risk_score_value.equalsIgnoreCase(\"low\") || risk_score_value.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (risk_score_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (risk_score_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (risk_score_value.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
                         ),
                     )?;

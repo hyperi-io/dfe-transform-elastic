@@ -7,21 +7,7 @@
 //! `rrtype`, `ttl` -- and ECS wants them as one member of `dns.answers` under
 //! its own names. The pipeline reads each into a local, puts the ones that are
 //! present into a map, and writes the map as a ONE-ELEMENT list when it came to
-//! anything:
-//!
-//! ```painless
-//! def name = ctx?.suricata?.eve?.dns?.rrname;
-//! def data = ctx?.suricata?.eve?.dns?.rdata;
-//! def type = ctx?.suricata?.eve?.dns?.rrtype;
-//! def ttl  = ctx?.suricata?.eve?.dns?.ttl;
-//!
-//! def answer = [:];
-//! if (name != null) { answer["name"] = name; }
-//! ...
-//! if (!answer.isEmpty()) { ctx.dns.answers = [answer]; }
-//!
-//! if (type == "A" || type == "AAAA") { ctx.dns.resolved_ip = [data]; }
-//! ```
+//! anything.
 //!
 //! The trailing arm is part of the same matcher rather than one of its own,
 //! because `try_known_painless` claims a WHOLE script: reading only the record
@@ -40,7 +26,7 @@ use dfe_core::Event;
 ///
 /// Both paths are resolved at PARSE time through the locals the script bound,
 /// so nothing has to carry a local's name into the run.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct RecordAlso {
     /// The `ctx` path whose value decides.
     decider: String,
@@ -53,7 +39,7 @@ pub struct RecordAlso {
 }
 
 /// A record built from the fields the event carries, written as a list of one.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct RecordFromFields {
     /// `(key in the record, ctx path)`, in the order the script writes them --
     /// the document is insertion-ordered, so the order is behaviour.
@@ -217,7 +203,7 @@ pub fn record_from_fields(event: &mut Event, pattern: &RecordFromFields) -> bool
 
 /// The collect beside a rename walk: one member gathered when another names a
 /// listed value.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct RenameCollect {
     /// The OLD key whose value decides.
     decider: String,
@@ -231,22 +217,12 @@ pub struct RenameCollect {
 /// Every record of a list renamed onto ECS keys, one member gathered on the way.
 ///
 /// The suricata DNS answers that arrive as a LIST take the same three names as
-/// the flat form above, but a record at a time:
-///
-/// ```painless
-/// for (def answer : ctx?.dns?.answers) {
-///     def name = answer.remove("rrname");
-///     if (name != null) { answer["name"] = name; }
-///     ...
-///     if (type == "A" || type == "AAAA") { resolvedIps.add(data); }
-/// }
-/// if (resolvedIps.size() > 0) { ctx.dns.resolved_ip = resolvedIps; }
-/// ```
+/// the flat form above, but a record at a time.
 ///
 /// The rename MOVES the key to the end, because Painless removes it and then
 /// assigns a new one -- so the runner uses `shift_remove` and a plain insert,
 /// which is the same order Elasticsearch's own map keeps.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct RecordRenames {
     list: String,
     /// `(old key, new key)`, in the order the script renames them.
@@ -426,122 +402,8 @@ pub fn record_renames(event: &mut Event, pattern: &RecordRenames) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from `suricata_eve/default.rs`, in the escaped one-line form
-    /// the call site holds.
-    #[test]
-    fn a_dns_answer_is_assembled_from_the_flat_fields() {
-        let script = r#"def name = ctx?.suricata?.eve?.dns?.rrname;\ndef data = ctx?.suricata?.eve?.dns?.rdata;\ndef type = ctx?.suricata?.eve?.dns?.rrtype;\ndef ttl = ctx?.suricata?.eve?.dns?.ttl;\n\ndef answer = [:];\nif (name != null) {\n    answer[\"name\"] = name;\n}\nif (data != null) {\n    answer[\"data\"] = data;\n}\nif (type != null) {\n    answer[\"type\"] = type;\n}\nif (ttl != null) {\n    answer[\"ttl\"] = ttl;\n}\nif (!answer.isEmpty()) {\n    ctx.dns.answers = [answer];\n}\n\nif (type == \"A\" || type == \"AAAA\") {\n    ctx.dns.resolved_ip = [data];\n}\n"#;
-        let mut event = Event::new(json!({ "suricata": { "eve": { "dns": {
-            "rrname": "example.com",
-            "rdata": "93.184.216.34",
-            "rrtype": "A",
-            "ttl": 300,
-        }}}}));
-
-        let parsed = parse_record_from_fields(&crate::common::normalise(script))
-            .expect("the assembly is recognised");
-        assert_eq!(
-            parsed.members,
-            vec![
-                ("name".to_owned(), "suricata.eve.dns.rrname".to_owned()),
-                ("data".to_owned(), "suricata.eve.dns.rdata".to_owned()),
-                ("type".to_owned(), "suricata.eve.dns.rrtype".to_owned()),
-                ("ttl".to_owned(), "suricata.eve.dns.ttl".to_owned()),
-            ]
-        );
-
-        assert!(crate::common::try_known_painless(&mut event, script));
-        assert_eq!(
-            event.get("dns.answers"),
-            Some(&json!([{
-                "name": "example.com",
-                "data": "93.184.216.34",
-                "type": "A",
-                "ttl": 300,
-            }]))
-        );
-        assert_eq!(
-            event.get("dns.resolved_ip"),
-            Some(&json!(["93.184.216.34"]))
-        );
-
-        // A member the event does not carry is left OUT, not written null, and
-        // a type that is neither A nor AAAA writes no resolved address.
-        let mut partial = Event::new(json!({ "suricata": { "eve": { "dns": {
-            "rrname": "example.com",
-            "rrtype": "NS",
-        }}}}));
-        assert!(crate::common::try_known_painless(&mut partial, script));
-        assert_eq!(
-            partial.get("dns.answers"),
-            Some(&json!([{ "name": "example.com", "type": "NS" }]))
-        );
-        assert_eq!(partial.get("dns.resolved_ip"), None);
-
-        // Nothing at all writes nothing at all, which is what the script's own
-        // `isEmpty` guard says.
-        let mut quiet = Event::new(json!({ "suricata": { "eve": {} } }));
-        assert!(crate::common::try_known_painless(&mut quiet, script));
-        assert_eq!(quiet.get("dns.answers"), None);
-    }
-
-    /// Verbatim from `suricata_eve/default.rs`, in the escaped one-line form
-    /// the call site holds.
-    #[test]
-    fn a_list_of_answers_is_renamed_onto_ecs_keys() {
-        let script = r#"def resolvedIps = new ArrayList();\nfor (def answer : ctx?.dns?.answers) {\n    // Normalize field names to match ECS.\n    def name = answer.remove(\"rrname\");\n    if (name != null) {\n        answer[\"name\"] = name;\n    }\n    def type = answer.remove(\"rrtype\");\n    if (type != null) {\n        answer[\"type\"] = type;\n    }\n    def data = answer.remove(\"rdata\");\n    if (data != null) {\n        answer[\"data\"] = data;\n    }\n\n    if (type == \"A\" || type == \"AAAA\") {\n        resolvedIps.add(data);\n    }\n}\n\nif (resolvedIps.size() > 0) {\n    ctx.dns.resolved_ip = resolvedIps;\n}\n"#;
-        let mut event = Event::new(json!({ "dns": { "answers": [
-            { "rrname": "example.com", "rrtype": "A", "rdata": "93.184.216.34", "ttl": 300 },
-            { "rrname": "example.com", "rrtype": "NS", "rdata": "ns.example.com" },
-        ]}}));
-
-        assert!(crate::common::try_known_painless(&mut event, script));
-        // The rename MOVES each key to the END, which is what removing and
-        // re-assigning does in Painless.
-        assert_eq!(
-            event.get("dns.answers"),
-            Some(&json!([
-                {
-                    "ttl": 300,
-                    "name": "example.com",
-                    "type": "A",
-                    "data": "93.184.216.34",
-                },
-                { "name": "example.com", "type": "NS", "data": "ns.example.com" },
-            ]))
-        );
-        assert_eq!(
-            event.get("dns.resolved_ip"),
-            Some(&json!(["93.184.216.34"]))
-        );
-
-        // No A or AAAA record gathers nothing, and the empty list is not
-        // written -- the script's own `size() > 0` guard.
-        let mut none = Event::new(json!({ "dns": { "answers": [
-            { "rrname": "example.com", "rrtype": "NS", "rdata": "ns.example.com" },
-        ]}}));
-        assert!(crate::common::try_known_painless(&mut none, script));
-        assert_eq!(none.get("dns.resolved_ip"), None);
-    }
-
-    /// A rename that writes somewhere other than the loop's own item moves a
-    /// member, so it is declined.
-    #[test]
-    fn a_rename_out_of_the_record_is_declined() {
-        let script = r#"for (def a : ctx.x.list) {\n  def n = a.remove(\"old\");\n  if (n != null) {\n    ctx.y.new = n;\n  }\n}\n"#;
-        assert!(parse_record_renames(&crate::common::normalise(script)).is_none());
-    }
-
-    /// A member that is not the local its guard tested is a different script.
-    #[test]
-    fn a_record_declines_a_member_from_somewhere_else() {
-        let script = r#"def name = ctx.a.one;\ndef other = ctx.a.two;\ndef rec = [:];\nif (name != null) {\n  rec[\"name\"] = other;\n}\nif (!rec.isEmpty()) {\n  ctx.b.list = [rec];\n}\n"#;
-        assert!(parse_record_from_fields(&crate::common::normalise(script)).is_none());
-    }
-}
+#[path = "records_tests.rs"]
+mod tests;

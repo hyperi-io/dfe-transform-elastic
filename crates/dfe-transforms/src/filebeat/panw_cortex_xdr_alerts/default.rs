@@ -306,8 +306,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"void addTechnique(def ctx, def x, def y) {\n  if (ctx.threat == null) {\n    ctx.threat = new HashMap();\n  }\n  if (ctx.threat.technique == null) {\n    ctx.threat.technique = new HashMap();\n  }\n  if (ctx.threat.technique.id == null) {\n    ctx.threat.technique.id = new ArrayList();\n  }\n  if (ctx.threat.technique.name == null) {\n    ctx.threat.technique.name = new ArrayList();\n  }\n  if (!ctx.threat.technique.id.contains(x)) {\n    ctx.threat.technique.id.add(x);\n  }\n  if (!ctx.threat.technique.name.contains(y)) {\n    ctx.threat.technique.name.add(y);\n  }\n}\nfor (mitre_technique in ctx.panw_cortex.xdr.mitre_technique_id_and_name) {\n  addTechnique(ctx, mitre_technique.splitOnToken(' - ')[0], mitre_technique.splitOnToken(' - ')[1]);\n}"#
+                        compiled_painless!(
+                            "a7b4aa3339c8190664215f55abb32aeaa7f80daeb994ce354c717709b23f8eac",
+                            r#"{"params":null,"known":[{"SplitFanOut":{"list":"panw_cortex.xdr.mitre_technique_id_and_name","separator":" - ","columns":[{"index":0,"target":"threat.technique.id"},{"index":1,"target":"threat.technique.name"}]}}]}"#
                         ),
                     )?;
                 }
@@ -316,8 +317,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"void addTactic(def ctx, def x, def y) {\n  if (ctx.threat == null) {\n    ctx.threat = new HashMap();\n  }\n  if (ctx.threat.tactic == null) {\n    ctx.threat.tactic = new HashMap();\n  }\n  if (ctx.threat.tactic.id == null) {\n    ctx.threat.tactic.id = new ArrayList();\n  }\n  if (ctx.threat.tactic.name == null) {\n    ctx.threat.tactic.name = new ArrayList();\n  }\n  if (!ctx.threat.tactic.id.contains(x)) {\n    ctx.threat.tactic.id.add(x);\n  }\n  if (!ctx.threat.tactic.name.contains(y)) {\n    ctx.threat.tactic.name.add(y);\n  }\n}\nfor (mitre_tactic in ctx.panw_cortex.xdr.mitre_tactic_id_and_name) {\n  addTactic(ctx, mitre_tactic.splitOnToken(' - ')[0], mitre_tactic.splitOnToken(' - ')[1]);\n}"#
+                        compiled_painless!(
+                            "cf573840de25d1df6307bc3aa7c7e28e8eecd141a63024a55794d5975648f488",
+                            r#"{"params":null,"known":[{"SplitFanOut":{"list":"panw_cortex.xdr.mitre_tactic_id_and_name","separator":" - ","columns":[{"index":0,"target":"threat.tactic.id"},{"index":1,"target":"threat.tactic.name"}]}}]}"#
                         ),
                     )?;
                 }
@@ -1632,8 +1634,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"void addTechnique(def ctx, def x, def y) {\n  if (ctx.threat == null) {\n    ctx.threat = new HashMap();\n  }\n  if (ctx.threat.technique == null) {\n    ctx.threat.technique = new HashMap();\n  }\n  if (ctx.threat.technique.id == null) {\n    ctx.threat.technique.id = new ArrayList();\n  }\n  if (ctx.threat.technique.name == null) {\n    ctx.threat.technique.name = new ArrayList();\n  }\n  if (!ctx.threat.technique.id.contains(x)) {\n    ctx.threat.technique.id.add(x);\n  }\n  if (!ctx.threat.technique.name.contains(y)) {\n    ctx.threat.technique.name.add(y);\n  }\n}\nfor (mitre_technique in ctx.panw_cortex.xdr.mitre_technique_id_and_name) {\n  addTechnique(ctx, mitre_technique.splitOnToken(' - ')[0], mitre_technique.splitOnToken(' - ')[1]);\n}"#
+                        compiled_painless!(
+                            "a7b4aa3339c8190664215f55abb32aeaa7f80daeb994ce354c717709b23f8eac",
+                            r#"{"params":null,"known":[{"SplitFanOut":{"list":"panw_cortex.xdr.mitre_technique_id_and_name","separator":" - ","columns":[{"index":0,"target":"threat.technique.id"},{"index":1,"target":"threat.technique.name"}]}}]}"#
                         ),
                     )?;
                 }
@@ -1642,8 +1645,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"void addTactic(def ctx, def x, def y) {\n  if (ctx.threat == null) {\n    ctx.threat = new HashMap();\n  }\n  if (ctx.threat.tactic == null) {\n    ctx.threat.tactic = new HashMap();\n  }\n  if (ctx.threat.tactic.id == null) {\n    ctx.threat.tactic.id = new ArrayList();\n  }\n  if (ctx.threat.tactic.name == null) {\n    ctx.threat.tactic.name = new ArrayList();\n  }\n  if (!ctx.threat.tactic.id.contains(x)) {\n    ctx.threat.tactic.id.add(x);\n  }\n  if (!ctx.threat.tactic.name.contains(y)) {\n    ctx.threat.tactic.name.add(y);\n  }\n}\nfor (mitre_tactic in ctx.panw_cortex.xdr.mitre_tactic_id_and_name) {\n  addTactic(ctx, mitre_tactic.splitOnToken(' - ')[0], mitre_tactic.splitOnToken(' - ')[1]);\n}"#
+                        compiled_painless!(
+                            "cf573840de25d1df6307bc3aa7c7e28e8eecd141a63024a55794d5975648f488",
+                            r#"{"params":null,"known":[{"SplitFanOut":{"list":"panw_cortex.xdr.mitre_tactic_id_and_name","separator":" - ","columns":[{"index":0,"target":"threat.tactic.id"},{"index":1,"target":"threat.tactic.name"}]}}]}"#
                         ),
                     )?;
                 }

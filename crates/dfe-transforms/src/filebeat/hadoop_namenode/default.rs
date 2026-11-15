@@ -35,8 +35,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"ctx.hadoop.namenode.temp = ctx.hadoop.namenode.beans[0]; ctx.hadoop.namenode.remove(\"beans\")\n"#
+                compiled_painless!(
+                    "4e3e3afdc012b188962a784986747fec39b50fd16fbfc9725f95b961e3a33fd3",
+                    r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"hadoop.namenode.beans","target":"hadoop.namenode.temp","only_if_unset":false,"only_if_single":false,"consumes_array":true}]}}]}"#
                 ),
             )?;
 

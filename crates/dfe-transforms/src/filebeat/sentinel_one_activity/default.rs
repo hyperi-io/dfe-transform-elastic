@@ -1183,7 +1183,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "7a5a72cb1b86a4619745d5f0bea43839a4ec3015a165070603bbff674aa0d9ce",
+                        r#"{"params":"FirstContainedMember","known":[]}"#,
                         r#"String os_family = ctx.host.os.family.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_family.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\n"#
                     ),
                     cached_params!(

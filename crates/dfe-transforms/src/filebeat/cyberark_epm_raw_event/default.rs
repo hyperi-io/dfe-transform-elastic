@@ -547,7 +547,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "36c427c808e9256fcfffd2250c15841db315eb025447aed65d0be893d1c10187",
+                            r#"{"params":"IndexedLookup","known":[]}"#,
                             r#"def value = (int) ctx.cyberark_epm.raw_event.deception_type;\nif (value >= 1 && value <= params.DeceptionType.length) {\n  ctx.cyberark_epm.raw_event.put('deception_type_value', params['DeceptionType'][value - 1]);\n}"#
                         ),
                         cached_params!("{\"DeceptionType\":[\"Lsass lure\",\"Browser lure\"]}"),
@@ -638,7 +640,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "af4bfc9306496472e89a701802043b1c93d0c0b1c254b664b518161e144074ec",
+                            r#"{"params":"IndexedLookup","known":[]}"#,
                             r#"def value = (int) ctx.cyberark_epm.raw_event.defence_action_id;\nif (value >= 0 && value < params.DefenceAction.length) {\n  ctx.cyberark_epm.raw_event.put('defence_action_value', params['DefenceAction'][value]);\n}"#
                         ),
                         cached_params!("{\"DefenceAction\":[\"No action\",\"Detect\",\"Block\"]}"),
@@ -727,8 +731,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def getOctalValue(String permissions) {\n  def value = 0;\n  if (permissions.charAt(0) == (char) 'r') value += 4;\n  if (permissions.charAt(1) == (char) 'w') value += 2;\n  if (permissions.charAt(2) == (char) 'x') value += 1;\n  return value;\n}\nString permissionString = ctx.cyberark_epm.raw_event.file_access_permission;\nif (permissionString.length() != 10) {\n  return;\n}\nint owner = getOctalValue(permissionString.substring(1, 4));\nint group = getOctalValue(permissionString.substring(4, 7));\nint other = getOctalValue(permissionString.substring(7, 10));\nif (ctx.file == null) {\n  ctx.put('file', new HashMap());\n}\nctx.file.put('mode', Integer.toString(owner) + Integer.toString(group) + Integer.toString(other));"#
+                        compiled_painless!(
+                            "f7a777a29445106c530802d0c70821c4ff5d8e630b3eb956ebbc088fb5ded324",
+                            r#"{"params":null,"known":[{"PermissionOctal":{"source":"cyberark_epm.raw_event.file_access_permission","target":"file.mode","length":10,"triplets":[[1,4],[4,7],[7,10]],"scores":[[0,"r",4],[1,"w",2],[2,"x",1]]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -987,8 +992,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def hash = ctx.cyberark_epm.raw_event.hash;\nif (ctx.file == null) {\n  ctx.put('file', new HashMap());\n}\nif (ctx.file.hash == null) {\n  ctx.file.put('hash', new HashMap());\n}\nif (hash.length() == 40) {\n  ctx.file.hash.sha1 = hash;\n} else if (hash.startsWith('sha1##') || hash.startsWith('SHA1##')) {\n  ctx.file.hash.sha1 = hash.substring(6);\n}"#
+                        compiled_painless!(
+                            "d9a15e39dc9ec00103121aa64b2c2a4fd62f880ea8a1000b8008fbc9b45eae21",
+                            r#"{"params":null,"known":[{"HashByWidthOrPrefix":{"source":"cyberark_epm.raw_event.hash","target":"file.hash.sha1","width":40,"prefixes":["sha1##","SHA1##"],"cut":6}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -1266,8 +1272,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def value = Long.toString(ctx.cyberark_epm.raw_event.logon_attempt_type_id);\nif (params.containsKey(value)) {\n  ctx.cyberark_epm.raw_event.put('logon_attempt_value', params[value]);\n}"#
+                        compiled_painless!(
+                            "27ac26648102c69a4869a65d503b652a06436f677fe13c96bdf2ea4766f4f6ef",
+                            r#"{"params":{"StringifiedLookup":{"source":"cyberark_epm.raw_event.logon_attempt_type_id","target":"cyberark_epm.raw_event.logon_attempt_value"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"2\":\"Interactive (logon at keyboard and screen of system)\",\"3\":\"Network (i.e. connection to shared folder on this computer from elsewhere on network)\",\"4\":\"Batch (i.e. scheduled task)\",\"5\":\"Service (Service startup)\",\"7\":\"Unlock (i.e. unnattended workstation with password protected screen saver)\",\"8\":\"NetworkCleartext (Logon with credentials sent in the clear text.)\",\"9\":\"NewCredentials such as with RunAs or mapping a network drive with alternate credentials.\",\"10\":\"RemoteInteractive (Terminal Services, Remote Desktop or Remote Assistance)\",\"11\":\"CachedInteractive (logon with cached domain credentials, such as when logging on to a laptop when away from the network)\"}"
@@ -1359,8 +1366,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def value = Long.toString(ctx.cyberark_epm.raw_event.logon_status_id);\nif (params.containsKey(value)) {\n  ctx.cyberark_epm.raw_event.put('logon_status_value', params[value]);\n}"#
+                        compiled_painless!(
+                            "e2c01c9214185f89236614ac1f6c5b618f0de95ad7e6474bc48a530a88181efc",
+                            r#"{"params":{"StringifiedLookup":{"source":"cyberark_epm.raw_event.logon_status_id","target":"cyberark_epm.raw_event.logon_status_value"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"3221225566\":\"There are currently no logon servers available to service the logon request.\",\"3221225572\":\"User logon with misspelled or bad user account\",\"3221225578\":\"User logon with misspelled or bad password\",\"3221225581\":\"The cause is either a bad username or authentication information\",\"3221225582\":\"Indicates a referenced user name and authentication information are valid, but some user account restriction has prevented successful authentication (such as time-of-day restrictions).\",\"3221225583\":\"User logon outside authorized hours\",\"3221225584\":\"User logon from unauthorized workstation\",\"3221225585\":\"User logon with expired password\",\"3221225586\":\"User logon to account disabled by administrator\",\"3221225692\":\"Indicates the Sam Server was in the wrong state to perform the desired operation.\",\"3221225779\":\"Clocks between DC and other computer too far out of sync\",\"3221225819\":\"The user has not been granted the requested logon type (also called the logon right) at this machine\",\"3221225868\":\"The logon request failed because the trust relationship between the primary domain and the trusted domain failed.\",\"3221225874\":\"An attempt was made to logon, but the Netlogon service was not started.\",\"3221225875\":\"User logon with expired account\",\"3221226020\":\"User is required to change password at next logon\",\"3221226021\":\"Evidently a bug in Windows and not a risk\",\"3221226036\":\"User logon with account locked\",\"3221226222\":\"Failure Reason: An Error occurred during Logon\",\"3221226515\":\"Logon Failure: The machine you are logging on to is protected by an authentication firewall. The specified account is not allowed to authenticate to the machine.\",\"0\":\"Status OK.\"}"
@@ -1773,8 +1781,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def value = ctx.cyberark_epm.raw_event.source_process_hash;\nif (ctx.process == null) {\n  ctx.put('process', new HashMap());\n}\nif (ctx.process.hash == null) {\n  ctx.process.put('hash', new HashMap());\n}\nif (ctx.related == null) {\n  ctx.put('related', new HashMap());\n}\nif (ctx.related.hash == null) {\n  ctx.related.put('hash', new ArrayList());\n}\nif (value.length() == 32) {\n  ctx.process.hash.md5 = value;\n  ctx.related.hash.add(value);\n} else if (value.length() == 40) {\n  ctx.process.hash.sha1 = value;\n  ctx.related.hash.add(value);\n} else if (value.length() == 64) {\n  ctx.process.hash.sha256 = value;\n  ctx.related.hash.add(value);\n} else if (value.length() == 96) {\n  ctx.process.hash.sha384 = value;\n  ctx.related.hash.add(value);\n} else if (value.length() == 128) {\n  ctx.process.hash.sha512 = value;\n  ctx.related.hash.add(value);\n}"#
+                        compiled_painless!(
+                            "4277b453206138580390702f7b986c70efe4e54985449c257084a4ee9c7ffda7",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

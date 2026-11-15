@@ -126,8 +126,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def riskLevelValue = ctx.withsecure_elements.incidents.riskLevel; if (riskLevelValue == null) return; if (riskLevelValue instanceof Number) {\n  ctx.event.severity = ((Number) riskLevelValue).intValue();\n  return;\n} def normalized = riskLevelValue.toString().toLowerCase(); if (normalized == 'info' || normalized == 'low') {\n  ctx.event.severity = 21;\n} else if (normalized == 'medium') {\n  ctx.event.severity = 47;\n} else if (normalized == 'high') {\n  ctx.event.severity = 73;\n} else if (normalized == 'severe') {\n  ctx.event.severity = 99;\n}\n"#
+                    compiled_painless!(
+                        "dc66e5838e97c58f6aa2c6d0efa864a54ccf8a9f4cb98865e60da7923c7a71de",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"withsecure_elements.incidents.riskLevel","fold_case":true,"test":"Equals","arms":[{"literals":["info","low"],"writes":[["event.severity",21]],"removes":[]},{"literals":["medium"],"writes":[["event.severity",47]],"removes":[]},{"literals":["high"],"writes":[["event.severity",73]],"removes":[]},{"literals":["severe"],"writes":[["event.severity",99]],"removes":[]}]}}]}"#
                     ),
                 )?;
             }

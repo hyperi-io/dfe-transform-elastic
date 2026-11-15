@@ -1184,8 +1184,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.threat == null) {\n  ctx.threat = new HashMap();\n}\nif (ctx.threat.indicator == null) {\n  ctx.threat.indicator = new HashMap();\n}\nctx.threat.indicator.type = params[ctx.gti.trending.type];"#
+                        compiled_painless!(
+                            "23aded7ef4499a20b0b277c0b2526c9c6d33f9e595f8a80ef589f2da25038785",
+                            r#"{"params":{"LookupNormalise":[{"key":"gti.trending.type","fold":"None","target":"threat.indicator.type"},{"statements":[{"If":{"test":[[{"Compare":{"path":"threat","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"threat.indicator","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}}],"whole":false}]},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"domain\":\"domain-name\",\"file\":\"file\",\"ip_address\":\"ipv4-addr\",\"url\":\"url\"}"

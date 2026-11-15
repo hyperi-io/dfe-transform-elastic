@@ -429,8 +429,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"String full = '';\nif (ctx.url?.scheme != null && ctx.url.scheme != \"\") {\n  full += ctx.url.scheme+\"://\";\n}\nif (ctx.url?.domain != null && ctx.url.domain != \"\") {\n  full += ctx.url.domain;\n}\nif (ctx.json.httpMessage?.path != null && ctx.json.httpMessage.path != \"\") {\n  full += ctx.json.httpMessage.path;\n}\nif (ctx.json.httpMessage?.query != null && ctx.json.httpMessage.query != \"\") {\n  full += \"?\"+ctx.json.httpMessage.query;\n}\nif (full != \"\") {\n  if (ctx.url == null) {\n    ctx.url = [:];\n  }\n  ctx.url.full = full\n}\n"#
+                compiled_painless!(
+                    "443bb7031c5ad0fa41628ef0447b14f6a752b14fb70b5760239180a4574db3f3",
+                    r#"{"params":null,"known":[{"ConcatParts":{"target":"url.full","clauses":[[{"Field":"url.scheme"},{"Literal":"://"}],[{"Field":"url.domain"}],[{"Field":"json.httpMessage.path"}],[{"Literal":"?"},{"Field":"json.httpMessage.query"}]]}}]}"#
                 ),
             )?;
 
@@ -803,8 +804,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"ArrayList rules_array = new ArrayList();\nArrayList rule_actions = new ArrayList();\nArrayList rule_tags = new ArrayList();\nfor (def i = 0; i < ctx.json.attackData.rules.length; i++) {\n  HashMap map = new HashMap();\n  for (String key: params.items) {\n    if (i < ctx.json.attackData[key].length) {\n      String data = ctx.json.attackData[key][i].replace(\" \", \"\");\n      try {\n        String value = data.decodeBase64();\n        map.put(key, value);\n        if (key == \"ruleTags\") {\n          rule_tags.add(value.toLowerCase());\n        } else if (key == \"ruleActions\") {\n          rule_actions.add(value.toLowerCase());\n        }\n      }\n      catch (Exception e) {\n        if (data.length() > 10) {\n          data = data.substring(0,10)+\"...\"\n        }\n        String error = e.toString();\n        if (error.startsWith(\"java.lang.IllegalArgumentException: \")) {\n          error = error.substring(\"java.lang.IllegalArgumentException: \".length());\n        }\n        String warning = \"failed to decode base64 data: \" + error + \": \" + data;\n        map.put(key, warning);\n      }\n    }\n  }\n  rules_array.add(map);\n}\nctx.akamai.siem.rules = rules_array;\nctx._rule_actions = rule_actions;\nctx._rule_tags = rule_tags;\n"#
+                    compiled_painless!(
+                        "26af47fb381e55afc57a8edc20b0d9d9d3d965dd4775a03f74c9326ab9707e7e",
+                        r#"{"params":"FirstContainedMember","known":[]}"#
                     ),
                     cached_params!(
                         "{\"items\":[\"rules\",\"ruleActions\",\"ruleData\",\"ruleMessages\",\"ruleTags\",\"ruleSelectors\",\"ruleVersions\"]}"
@@ -1105,8 +1107,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String text = ctx.json.userRiskData.general.trim();\nif (text != \"\") {\n  def m = new HashMap();\n  for (String f: /\\|/.split(text)) {\n    if (f == \"\") {\n      continue;\n    }\n    int idx = f.indexOf(':');\n    if (idx == -1) {\n      m.put(f, \"-\"); // Include a non-empty string to prevent the field being removed.\n      continue;\n    }\n    String k = f.substring(0, idx);\n    String v = f.substring(idx+1);\n    m.put(k, v);\n  }\n  if (m.size() > 0) {\n    if (ctx.akamai == null) {\n      ctx.akamai = new HashMap();\n    }\n    if (ctx.akamai.siem == null) {\n      ctx.akamai.siem = new HashMap();\n    }\n    if (ctx.akamai.siem.user_risk == null) {\n      ctx.akamai.siem.user_risk = new HashMap();\n    }\n    ctx.akamai.siem.user_risk.general = m;\n  }\n}\n"#
+                    compiled_painless!(
+                        "e6417ca378779da63a580d6bf04abc51375a6b83dd6b0cfd9cf9db4df7578321",
+                        r#"{"params":"FirstContainedMember","known":[]}"#
                     ),
                 )?;
             }

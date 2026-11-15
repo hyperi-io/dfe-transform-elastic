@@ -357,8 +357,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def removeUnwantedCharacters(def input) {\n  if (input.startsWith(\"<\") && input.endsWith(\">\")) {\n    String trimmed = input.substring(1, input.length() - 1);\n    return trimmed;\n  } else {\n    return input;\n  }\n}\nif (ctx.proofpoint_on_demand?.mail?.sm?.from != null) {\n  ctx.proofpoint_on_demand.mail.sm.from = removeUnwantedCharacters(ctx.proofpoint_on_demand.mail.sm.from);\n}\nif (ctx.proofpoint_on_demand?.mail?.sm?.msgid != null) {\n  ctx.proofpoint_on_demand.mail.sm.msgid = removeUnwantedCharacters(ctx.proofpoint_on_demand.mail.sm.msgid);\n}\nList toAddresses = new ArrayList();\nif (ctx.proofpoint_on_demand?.mail?.sm?.to instanceof List) {\n  for (address in ctx.proofpoint_on_demand.mail.sm.to) {\n    toAddresses.add(removeUnwantedCharacters(address));\n  }\n  ctx.proofpoint_on_demand.mail.sm.to = toAddresses;\n}\n"#
+                    compiled_painless!(
+                        "88dff2fedd45972b8bca472adcd0d8cfe73b61e0092f50826f5eee9526740c1b",
+                        r#"{"params":null,"known":[{"StripAnglePairs":{"scalars":["proofpoint_on_demand.mail.sm.from","proofpoint_on_demand.mail.sm.msgid"],"lists":["proofpoint_on_demand.mail.sm.to"]}}]}"#
                     ),
                 )?;
                 Ok(())

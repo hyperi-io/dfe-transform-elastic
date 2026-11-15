@@ -6928,8 +6928,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.type = params[ctx.gti.ioc_stream.type];"#
+                        compiled_painless!(
+                            "ff9a57d25693a0128ee97c7a02f7733825964c4a57c3362272739c23882e0099",
+                            r#"{"params":{"LookupNormalise":[{"key":"gti.ioc_stream.type","fold":"None","target":"threat.indicator.type"},{"statements":[],"whole":false}]},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"domain\":\"domain-name\",\"file\":\"file\",\"ip_address\":\"ipv4-addr\",\"url\":\"url\"}"

@@ -6,34 +6,7 @@
 //!
 //! `keycloak`'s log pipeline parses its ECS-formatted payload into `json`,
 //! expands the dotted keys the vendor ships, and then lifts the whole tree onto
-//! the root:
-//!
-//! ```painless
-//! def mergeMaps(Map map1, Map map2) {
-//!   for (def key : map2.keySet()) {
-//!     if (!map1.containsKey(key)
-//!         || map1[key] == null
-//!         || map1[key] == ""
-//!         || (map1[key] instanceof Map && map1[key].isEmpty())) {
-//!       map1[key] = map2[key];
-//!     } else if (map1[key] != map2[key]) {
-//!       if (map1[key] instanceof Map && map2[key] instanceof Map) {
-//!         map1[key] = mergeMaps(map1[key], map2[key]);
-//!       } else if (map1[key] instanceof List) {
-//!         def combined = new LinkedHashSet(map1[key]);
-//!         if (map2[key] instanceof List) {
-//!           combined.addAll(map2[key]);
-//!         } else if (map2[key] != null) {
-//!           combined.add(map2[key]);
-//!         }
-//!         map1[key] = new ArrayList(combined);
-//!       }
-//!     }
-//!   }
-//!   return map1;
-//! }
-//! mergeMaps(ctx, ctx.json);
-//! ```
+//! the root.
 //!
 //! Unmatched it costs the whole ECS capture -- all 18 events and every one of
 //! their 216 fields. `message`, `log.*`, `host.*` and `process.*` reach the
@@ -59,7 +32,7 @@ use dfe_core::Event;
 use crate::params::{clean_path, is_ctx_path};
 
 /// A recursive merge, and the two maps the terminal call names.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct DeepMerge {
     /// The map merged INTO. EMPTY for `ctx` itself, which is the document root.
     into: String,
@@ -301,7 +274,8 @@ pub fn run_deep_merge(event: &mut Event, pattern: &DeepMerge) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#` and carry the vendor's own escaped newlines.
 #[allow(

@@ -1732,8 +1732,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def iana_number = ctx.network.iana_number;\nif (iana_number == '0' && ctx.source?.ip?.contains(':')) {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number == '2') {\n    ctx.network.transport = 'igmp';\n} else if (iana_number == '6') {\n    ctx.network.transport = 'tcp';\n} else if (iana_number == '8') {\n    ctx.network.transport = 'egp';\n} else if (iana_number == '17') {\n    ctx.network.transport = 'udp';\n} else if (iana_number == '47') {\n    ctx.network.transport = 'gre';\n} else if (iana_number == '50') {\n    ctx.network.transport = 'esp';\n} else if (iana_number == '58') {\n    ctx.network.transport = 'ipv6-icmp';\n} else if (iana_number == '112') {\n    ctx.network.transport = 'vrrp';\n} else if (iana_number == '114') {\n    ctx.network.transport = '0-hop';\n} else if (iana_number == '132') {\n    ctx.network.transport = 'sctp';\n} else if (iana_number == '4294967295') {\n    iana_number = null;\n} else {\n    ctx.network.transport = iana_number;\n}\n"#
+                        compiled_painless!(
+                            "0cbe4e1a13349b4d9640df832fd1206d7ccbb27c76619e05db8b3a7080dfd55a",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"network.iana_number","fold_case":false,"test":"Equals","arms":[{"literals":["1"],"writes":[["network.transport","icmp"]],"removes":[]},{"literals":["2"],"writes":[["network.transport","igmp"]],"removes":[]},{"literals":["6"],"writes":[["network.transport","tcp"]],"removes":[]},{"literals":["8"],"writes":[["network.transport","egp"]],"removes":[]},{"literals":["17"],"writes":[["network.transport","udp"]],"removes":[]},{"literals":["47"],"writes":[["network.transport","gre"]],"removes":[]},{"literals":["50"],"writes":[["network.transport","esp"]],"removes":[]},{"literals":["58"],"writes":[["network.transport","ipv6-icmp"]],"removes":[]},{"literals":["112"],"writes":[["network.transport","vrrp"]],"removes":[]},{"literals":["114"],"writes":[["network.transport","0-hop"]],"removes":[]},{"literals":["132"],"writes":[["network.transport","sctp"]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -1837,8 +1838,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String packetsStr = ctx.checkpoint.packets.trim();\nif (packetsStr.startsWith('(sample')) {\n  int closeParenIdx = packetsStr.indexOf(')');\n  if (closeParenIdx > 0) {\n    ctx.checkpoint.packets_data_is_sampled = true;\n    packetsStr = packetsStr.substring(closeParenIdx + 1).trim();\n  }\n}\nif (packetsStr.endsWith('\";')) {\n  packetsStr = packetsStr.substring(0, packetsStr.length() - 2);\n}\ndef parsed = [];\nString[] entries = packetsStr.splitOnToken('>');\nfor (int i = 0; i < entries.length; i++) {\n  String entry = entries[i].trim();\n  if (entry.length() == 0) continue;\n  if (entry.startsWith('<')) {\n    entry = entry.substring(1);\n  }\n  def packet = new HashMap();\n  String[] parts = entry.splitOnToken(';');\n  String tuple = parts[0];\n  if (parts.length > 1) {\n    packet.put('interface', ['name': parts[1]]);\n  }\n  String[] fields = tuple.splitOnToken(',');\n  if (fields.length >= 5) {\n    packet.put('source', ['ip': fields[0], 'port': Long.parseLong(fields[1])]);\n    packet.put('destination', ['ip': fields[2], 'port': Long.parseLong(fields[3])]);\n    packet.put('network', ['iana_number': fields[4]]);\n    parsed.add(packet);\n  }\n}\nif (parsed.size() > 0) {\n  ctx.checkpoint.packets_dropped = parsed;\n  ctx.checkpoint.remove('packets');\n}\n"#
+                    compiled_painless!(
+                        "33d6ddb34a78692a6890108f2e0e945eb7ae4c18872230fc5794606007eb1c8f",
+                        r#"{"params":null,"known":["CheckpointPackets"]}"#
                     ),
                 )?;
             }
@@ -2191,8 +2193,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ZonedDateTime convert(String time) {\n  ZonedDateTime zdt;\n  try {\n    Instant instant;\n    long temp_time = Long.parseLong(time);\n    if (String.valueOf(temp_time).length() > 10) {\n      instant = Instant.ofEpochMilli(temp_time);\n    } else {\n      instant = Instant.ofEpochMilli(temp_time * 1000L);\n    }\n    zdt = ZonedDateTime.ofInstant(instant, ZoneId.of('Z'));\n  }\n  catch (NumberFormatException nfe) {\n    zdt = ZonedDateTime.parse(time);\n  }\n  return zdt\n}\n\n// Handle single time field.\nif (ctx.checkpoint.time instanceof String) {\n  ctx.checkpoint._temp_unixms = convert(ctx.checkpoint.time);\n  return;\n}\n\n// Some log lines have more than one time. Pick the earliest and retain all.\nList zdt = new ArrayList();\nfor (def time: ctx.checkpoint.time) {\n  zdt.add(convert(time));\n}\nctx.checkpoint.times = zdt;\nctx.checkpoint._temp_unixms = Collections.min(zdt);\n"#
+                        compiled_painless!(
+                            "d470aa098a6f0951d803f0eb735f4b2f6761c451b4d15833e1a6509488479476",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

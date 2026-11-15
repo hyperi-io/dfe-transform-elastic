@@ -48,8 +48,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.azure.ai_foundry.model_availability_rate.avg = ctx.azure.ai_foundry.model_availability_rate.avg\n        / params.param_percent;"#
+                        compiled_painless!(
+                            "12799b674d656272a9a622aa46cad3a12de0734dfff86defdd01df76eb14e5dc",
+                            r#"{"params":{"ScalarExpression":{"target":"azure.ai_foundry.model_availability_rate.avg","expr":{"Binary":[{"Field":"azure.ai_foundry.model_availability_rate.avg"},"Div",{"Param":"param_percent"}]}}},"known":[]}"#
                         ),
                         cached_params!("{\"param_percent\":100}"),
                     )?;
@@ -64,8 +65,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"ctx.azure.ai_foundry.provisioned_utilization.avg = ctx.azure.ai_foundry.provisioned_utilization.avg\n        / params.param_percent;"#
+                        compiled_painless!(
+                            "e86fc5a00b0ca6d4ed7fc765e3e2e6317641e309d39232d3777d8138a707bd0f",
+                            r#"{"params":{"ScalarExpression":{"target":"azure.ai_foundry.provisioned_utilization.avg","expr":{"Binary":[{"Field":"azure.ai_foundry.provisioned_utilization.avg"},"Div",{"Param":"param_percent"}]}}},"known":[]}"#
                         ),
                         cached_params!("{\"param_percent\":100}"),
                     )?;

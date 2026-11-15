@@ -180,7 +180,7 @@ fn split_log_details_raw(event: &mut Event, _params: &Value) {
 /// Every `cisco_ise` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
-        hash: "b1de5852c63f9fc6b4ee9ae2d791d454c6f72b2ec4dcca8c692794e3ed59cfc4",
+        hash: "81b2bec4b395b036dc5ca7bc29262827fd278de1b6cf7e29f3bb8ad979f1aa5d",
         source: "cisco_ise",
         name: "parse_av_pairs",
         run: parse_av_pairs,

@@ -4,13 +4,7 @@
 //! One member of every record in a list, replaced by the text Java renders it as.
 //!
 //! `darktrace`'s model-breach stream carries a boolean expression tree under
-//! each triggered component, and flattens it to text before the mapping sees it:
-//!
-//! ```painless
-//! for (component in ctx.json.triggeredComponents) {
-//!   component.logic.data = component?.logic?.data.toString();
-//! }
-//! ```
+//! each triggered component, and flattens it to text before the mapping sees it.
 //!
 //! Unclaimed it costs `darktrace.model_breach_alert.triggered_components` on 9
 //! of the stream's 11 events -- the whole array compares wrong for one nested
@@ -42,7 +36,7 @@ use dfe_core::Event;
 use crate::common::for_each_in;
 
 /// A list, and the member of each of its records that becomes text.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct StringifyMember {
     /// The list walked, as a ctx path.
     list: String,
@@ -281,7 +275,8 @@ fn table_size(entries: usize) -> usize {
     capacity
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[path = "stringify_member_tests.rs"]
 #[allow(
     clippy::unwrap_used,

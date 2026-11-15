@@ -770,7 +770,7 @@ fn sorted(values: &[Value]) -> Value {
 /// Every `aws_bedrock` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
-        hash: "414ac3ec4eb6dea11366a1b00e5849cf740b60a0728cb184c4264e3d5a34542b",
+        hash: "b0012de32a76e5529c8000d241aa427b7cf151963a73d15b6fda9f20e940e513",
         source: "aws_bedrock",
         name: "remarshal_bodies",
         run: remarshal_bodies,
@@ -782,13 +782,13 @@ pub const ENTRIES: &[Entry] = &[
         run: promote_system_to_object,
     },
     Entry {
-        hash: "3b733bb75041e36818f98adb0fa60315cab918b98d7b79d97a7f6bb0afec4d9e",
+        hash: "a75500797ef8531652247312a2135011ba515766d853adef6f303b30765e4e25",
         source: "aws_bedrock",
         name: "normalise_message_content",
         run: normalise_message_content,
     },
     Entry {
-        hash: "a9592ae374567c283b817576464ea6e93426a477d70f61844684c4eab03d516f",
+        hash: "3c116f6d604137b7723606a7685e33c1b58c5f9543b305942b402001a01210db",
         source: "aws_bedrock",
         name: "ensure_message_content_text",
         run: ensure_message_content_text,
@@ -800,7 +800,7 @@ pub const ENTRIES: &[Entry] = &[
         run: model_type_and_version,
     },
     Entry {
-        hash: "f67e38da0b735f09c120cb228e2efd9a05059717d72b78966ad18bc1ac680a53",
+        hash: "0d7f6e83a19c5507f12defde7297abf91098cbeb2da2dcb431e86e0cfd84ba3a",
         source: "aws_bedrock",
         name: "append_input_message_content_kinds",
         run: append_input_message_content_kinds,
@@ -812,7 +812,7 @@ pub const ENTRIES: &[Entry] = &[
         run: wrap_scalar_output_bodies,
     },
     Entry {
-        hash: "f1cbffacd2c6667a60e764fd4eff2d61e530c066850c6860e862eafcf42a77c4",
+        hash: "54a89f8995c11f15f43ece944fbefac779fcfdcd6414c5acdad9ca0c5da35f28",
         source: "aws_bedrock",
         name: "response_id_and_role_from_list",
         run: response_id_and_role_from_list,
@@ -824,7 +824,7 @@ pub const ENTRIES: &[Entry] = &[
         run: response_times_from_metrics,
     },
     Entry {
-        hash: "b93dbb6b33d08693f643a44e200cdf73c72c1c0d76a8a9bf78a6a8933673ca23",
+        hash: "5a2ab6d2f8a87683d36cae3c6554e3d251d015b984a461fb14f1d6e65f68aacf",
         source: "aws_bedrock",
         name: "guardrail_details",
         run: guardrail_details,
@@ -836,7 +836,7 @@ pub const ENTRIES: &[Entry] = &[
         run: request_size_from_prompt,
     },
     Entry {
-        hash: "8a8f72d0e37bbd66f53b3e6616c748b1df6b5422d4f51529b444a3154f703583",
+        hash: "1d455a1b48f0edc915a1dea4faee8ac39130fd5196cf1b1f02f4b9d400fdad75",
         source: "aws_bedrock",
         name: "completion_text",
         run: completion_text,

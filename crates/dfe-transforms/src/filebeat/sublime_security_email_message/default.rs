@@ -267,8 +267,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def attachmentList = new ArrayList();\nfor (attachment in ctx.sublime_security.email_message.attachments) {\n  def object = new HashMap();\n  object.put('file', new HashMap());\n  object.file.put('hash', new HashMap());\n  object.file.put('mime_type', attachment.content.type);\n  object.file.put('extension', attachment.file.extension);\n  object.file.put('name', attachment.file.name);\n  object.file.put('size', attachment.size);\n  object.file.hash.put('md5', attachment.md5);\n  object.file.hash.put('sha1', attachment.sha1);\n  object.file.hash.put('sha256', attachment.sha256);\n  attachmentList.add(object);\n}\nctx.put('email',new HashMap());\nctx.email.attachments = attachmentList;"#
+                    compiled_painless!(
+                        "a5258d66d76ce6a9fbf3bd258483892d1fe36bb8a77f51647907b3f188acdc5a",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -278,8 +279,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"for (attachment in ctx.email.attachments) {\n  if (attachment.file.extension != null && attachment.file.extension.startsWith('.')) {\n    String extension = attachment.file.extension.substring(1);\n    attachment.file.extension = extension;\n  }\n}"#
+                    compiled_painless!(
+                        "caeba5bfcd1056c009ee0e0963eadafa59dbb832b51254b3500bb20980ec8db7",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -768,8 +770,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def links = new ArrayList();\nfor (link in ctx.json.body.links) {\n  def object = new HashMap();\n  if(link?.href_url != null) {\n    object.put('domain', link.href_url.domain.domain);\n    object.put('subdomain', link.href_url.domain.subdomain);\n    object.put('top_level_domain', link.href_url.domain.tld);\n    object.put('fragment', link.href_url.fragment);\n    object.put('password', link.href_url.password);\n    object.put('path', link.href_url.path);\n    object.put('port', link.href_url.port);\n    object.put('query', link.href_url.query_params);\n    object.put('scheme', link.href_url.scheme);\n    object.put('full', link.href_url.url);\n    object.put('username', link.href_url.username);\n    links.add(object);\n  }\n}\nctx.put('url',new HashMap());\nctx.url = links;"#
+                    compiled_painless!(
+                        "0e077699fc5fe7da655be519e41c8fb49a60ceed30fdec106af35fa3601bf7f0",
+                        r#"{"params":"IndexedLookup","known":[]}"#
                     ),
                 )?;
             }
@@ -2080,8 +2083,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def hops = ctx.json.headers.hops;\nfor (int i = 0; i < hops.size(); i++) {\n  def hop = hops[i];\n  if(hop.fields instanceof List) {\n    for (def field : hop.fields) {\n      def lowercaseName = field.name.toLowerCase();\n      field[lowercaseName] = field.value;\n    }\n  }\n}\n"#
+                    compiled_painless!(
+                        "1d43c059430ba0d25a028de8b8d20383a5918090f673f6997cdf5e517b4e84d4",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

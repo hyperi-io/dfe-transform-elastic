@@ -128,8 +128,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def dur = ctx._conf.ioc_expiration_duration; String lastModified = ctx.json.lastModified; if (dur instanceof String){\n  String time_unit = dur.substring(dur.length() -  1, dur.length());\n  String time_value = dur.substring(0, dur.length() - 1);\n  if (time_unit == 'd') {\n    ctx.json.deleted_at = ZonedDateTime.parse(lastModified).plusDays(Long.parseLong(time_value));\n  } else if (time_unit == 'h') {\n    ctx.json.deleted_at = ZonedDateTime.parse(lastModified).plusHours(Long.parseLong(time_value));\n  } else if (time_unit == 'm') {\n    ctx.json.deleted_at = ZonedDateTime.parse(lastModified).plusMinutes(Long.parseLong(time_value));\n  } else {\n    ctx.json.deleted_at = ZonedDateTime.parse(lastModified).plusDays(90L);\n  }\n}\n"#
+                        compiled_painless!(
+                            "7a83e920e15c32af1d12323a705493274e8226a6374243064c5665f77d3ce852",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -2656,8 +2657,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n      if (key=='location') {\n        updatedJson['location_value'] = value;\n        updatedJson.remove('location');\n      }\n    }\n  }\n  return updatedJson;\n}\ndef entities_obj = new ArrayList();\nfor(entity in ctx.json.associatedIndicators.data){\n  entities_obj.add(renameKeys(entity, params));\n}\nctx.entities_obj=entities_obj;\n"#
+                    compiled_painless!(
+                        "c58fa021901496481c33e323568cc4bd885a6c87debfdb59cdfa3ab9d356965a",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":["location","location_value"],"write":{"FanOut":{"source":"json.associatedIndicators.data","target":"entities_obj","drop":null}}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"AS Number\":\"as_number\",\"hostName\":\"host_name\",\"Hashtag\":\"hashtag\",\"Key Name\":\"key_name\",\"legacyLink\":\"legacy_link\",\"Mutex\":\"mutex\",\"Subject\":\"subject\",\"User Agent String\":\"user_agent_string\",\"webLink\":\"web_link\"}"
@@ -4548,8 +4550,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def value = ctx.json?.confidence; def confidence = \"None\"; if (value == 0) {\n  confidence = \"Not Specified\";\n} if (value > 1 && value < 40) {\n  confidence = \"Low\";\n} if (value >= 40.0 && value < 70) {\n  confidence = \"Medium\";\n} else if (value >= 70 && value <= 100) {\n  confidence = \"High\";\n} ctx.threat.indicator.put(\"confidence\", confidence)\n"#
+                    compiled_painless!(
+                        "e825920c3105d82cd4c27892599dee1806b284144ec3be10b416bd97b2456eec",
+                        r#"{"params":null,"known":[{"BandLadder":{"subject":"json.confidence","arms":[[{"bounds":[{"op":"Eq","scaled":0}],"all":true},{"Text":"Not Specified"}],[{"bounds":[{"op":"Gt","scaled":1000},{"op":"Lt","scaled":40000}],"all":true},{"Text":"Low"}],[{"bounds":[{"op":"Ge","scaled":40000},{"op":"Lt","scaled":70000}],"all":true},{"Text":"Medium"}],[{"bounds":[{"op":"Ge","scaled":70000},{"op":"Le","scaled":100000}],"all":true},{"Text":"High"}]],"default":{"Text":"None"},"absent":null,"target":"threat.indicator.confidence"}}]}"#
                     ),
                 )?;
             }
@@ -5320,8 +5323,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.threat_connect.indicator.type.contains('File')) {\n  ctx.threat.indicator.type = ['file'];\n} else if (ctx.threat_connect.indicator.type.contains('URL')){\n  ctx.threat.indicator.type = ['url'];\n} else if (ctx.threat_connect.indicator.type.contains('EmailAddress')){\n  ctx.threat.indicator.type = ['email-addr'];\n} else if (ctx.threat_connect.indicator.type.contains('Mutex')){\n  ctx.threat.indicator.type = ['mutex'];\n}  else if (ctx.threat_connect.indicator.type.contains('Registry Key')){\n  ctx.threat.indicator.type = ['windows-registry-key'];\n}"#
+                        compiled_painless!(
+                            "11dd159e49bcbda3f1aea1d72a10824732977c936502f1b442331ea2c0b0a178",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"threat_connect.indicator.type","fold_case":false,"test":"Contains","arms":[{"literals":["File"],"writes":[["threat.indicator.type",["file"]]],"removes":[]},{"literals":["URL"],"writes":[["threat.indicator.type",["url"]]],"removes":[]},{"literals":["EmailAddress"],"writes":[["threat.indicator.type",["email-addr"]]],"removes":[]},{"literals":["Mutex"],"writes":[["threat.indicator.type",["mutex"]]],"removes":[]},{"literals":["Registry Key"],"writes":[["threat.indicator.type",["windows-registry-key"]]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -5736,8 +5740,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def ecsTlps = ['WHITE','CLEAR','GREEN','AMBER','AMBER+STRICT','RED']; def tlps = new ArrayList(); for (def obj : ctx.json.securityLabels.data) {\n  if (obj.containsKey('name')) {\n    if (obj.get('name').contains(':')){\n       def name = obj.get('name').splitOnToken(':')[1];\n       if (ecsTlps.contains(name)) {\n          tlps.add(name)\n       }\n    }\n  }\n} if (tlps.size() > 0){\n  if (ctx.threat.indicator.marking == null) {\n    ctx.threat.indicator.marking = new HashMap();\n  }\n  ctx.threat.indicator.marking.tlp = tlps;\n}"#
+                    compiled_painless!(
+                        "03f749f6381c11cd73dd8b97fe4c1fd88b504ce2380a7430edb9d3b67306cebd",
+                        r#"{"params":null,"known":[{"GatherMembers":{"list":"json.securityLabels.data","stop_on_null_element":false,"columns":[{"member":"name","targets":["threat.indicator.marking.tlp"],"allowed":["WHITE","CLEAR","GREEN","AMBER","AMBER+STRICT","RED"],"lowercase":false,"flatten":false,"dedupe":false,"selector":null,"literals":[],"split":{"separator":":","index":1}}],"flag":null}}]}"#
                     ),
                 )?;
             }
@@ -6035,8 +6040,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def t_names = new ArrayList();\nfor (def obj : ctx.json.tags.data) {\n  if (obj.get('techniqueId') != null) {\n    t_names.add(obj.get('name'));\n  }\n}\nif (t_names.size() > 0){\n  if (ctx.threat.technique == null) {\n    ctx.threat.technique = new HashMap();\n  }\n  ctx.threat.technique.name = t_names;\n}"#
+                        compiled_painless!(
+                            "584855fb8fc3f0081ec30ba82188f1a67ae24fbfbbef0ae2f962b547aa36cc58",
+                            r#"{"params":null,"known":[{"GatherMembers":{"list":"json.tags.data","stop_on_null_element":false,"columns":[{"member":"name","targets":["threat.technique.name"],"allowed":[],"lowercase":false,"flatten":false,"dedupe":false,"selector":null,"literals":[],"split":null}],"flag":null}}]}"#
                         ),
                     )?;
                     Ok(())

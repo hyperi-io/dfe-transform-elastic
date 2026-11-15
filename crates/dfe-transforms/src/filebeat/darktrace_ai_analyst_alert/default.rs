@@ -1815,8 +1815,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def duration = new ArrayList(); for (event in ctx.json.periods) { duration.add((event?.end - event?.start) * params.NANOS_IN_A_MILLI_SECOND); } ctx.event.duration = duration;"#
+                        compiled_painless!(
+                            "b89fb8ee527fb568dad33d03f591aa62f83430cbddf6259dc24b7951d8bd4cdc",
+                            r#"{"params":"Scale","known":[]}"#
                         ),
                         cached_params!("{\"NANOS_IN_A_MILLI_SECOND\":1000000}"),
                     )?;

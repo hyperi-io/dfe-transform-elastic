@@ -47,8 +47,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.zscaler_zia.saas_security.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.saas_security.version == null ? 'null' : ctx.zscaler_zia.saas_security.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}"#
+                        compiled_painless!(
+                            "6406c8f6f2fdd073640f4fedbc1d0685a2e2dff78226904933ee7ca91f51a217",
+                            r#"{"params":null,"known":[]}"#
                         ),
                         cached_params!(
                             "{\"pkg_version\":\"3.19.0\",\"data_stream\":\"saas_security\",\"expect\":{\"version\":\"v1\"}}"
@@ -695,8 +696,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"void splitStr(Map m, String key) {\n  if (m == null || key == null) return;\n  def v = m.get(key);\n  if (!(v instanceof String)) return;\n  String s = (String) v;\n  if (s.length() == 0) return;\n  List out = new ArrayList();\n  int from = 0;\n  int n = s.length();\n  for (int i = 0; i < n; i++) {\n    if (s.charAt(i) == (char)'|') {\n      out.add(s.substring(from, i));\n      from = i + 1;\n    }\n  }\n  out.add(s.substring(from, n));\n  m.put(key, out);\n}\ndef ss = ctx.zscaler_zia?.saas_security;\nif (ss == null) return;\nsplitStr(ss, 'accessibility_flags');\nsplitStr(ss, 'collab_names');\nsplitStr(ss, 'collab_names_obfuscated');\nsplitStr(ss, 'external_collab_groups');\nsplitStr(ss, 'external_collab_groups_obfuscated');\nsplitStr(ss, 'external_collab_names');\nsplitStr(ss, 'external_collab_names_obfuscated');\nsplitStr(ss, 'internal_collab_groups');\nsplitStr(ss, 'internal_collab_groups_obfuscated');\nsplitStr(ss, 'internal_collab_names');\nsplitStr(ss, 'internal_collab_names_obfuscated');\nif (ss.dlp instanceof Map) {\n  splitStr(ss.dlp, 'dict_counts');\n  splitStr(ss.dlp, 'dict_names');\n  splitStr(ss.dlp, 'dict_names_obfuscated');\n  splitStr(ss.dlp, 'engine_names');\n  splitStr(ss.dlp, 'engine_names_obfuscated');\n}\nif (ss.collaboration instanceof Map) {\n  splitStr(ss.collaboration, 'external_recipients');\n  splitStr(ss.collaboration, 'external_recipients_obfuscated');\n  splitStr(ss.collaboration, 'internal_recipients');\n  splitStr(ss.collaboration, 'internal_recipients_obfuscated');\n}\nif (ss.email instanceof Map) {\n  splitStr(ss.email, 'external_recipients');\n  splitStr(ss.email, 'external_recipients_obfuscated');\n  splitStr(ss.email, 'internal_recipients');\n  splitStr(ss.email, 'internal_recipients_obfuscated');\n  if (ss.email.attachments instanceof Map) {\n    splitStr(ss.email.attachments, 'file_names');\n    splitStr(ss.email.attachments, 'file_names_obfuscated');\n    splitStr(ss.email.attachments, 'file_sizes');\n    splitStr(ss.email.attachments, 'file_types');\n    splitStr(ss.email.attachments, 'md5s');\n  }\n}"#
+                    compiled_painless!(
+                        "73f5b087561774297ac5a2ff7594625a2c183b297fbe17af529263a7a5160dd6",
+                        r#"{"params":null,"known":[{"SplitPipeFields":["zscaler_zia.saas_security.accessibility_flags","zscaler_zia.saas_security.collab_names","zscaler_zia.saas_security.collab_names_obfuscated","zscaler_zia.saas_security.external_collab_groups","zscaler_zia.saas_security.external_collab_groups_obfuscated","zscaler_zia.saas_security.external_collab_names","zscaler_zia.saas_security.external_collab_names_obfuscated","zscaler_zia.saas_security.internal_collab_groups","zscaler_zia.saas_security.internal_collab_groups_obfuscated","zscaler_zia.saas_security.internal_collab_names","zscaler_zia.saas_security.internal_collab_names_obfuscated","zscaler_zia.saas_security.dlp.dict_counts","zscaler_zia.saas_security.dlp.dict_names","zscaler_zia.saas_security.dlp.dict_names_obfuscated","zscaler_zia.saas_security.dlp.engine_names","zscaler_zia.saas_security.dlp.engine_names_obfuscated","zscaler_zia.saas_security.collaboration.external_recipients","zscaler_zia.saas_security.collaboration.external_recipients_obfuscated","zscaler_zia.saas_security.collaboration.internal_recipients","zscaler_zia.saas_security.collaboration.internal_recipients_obfuscated","zscaler_zia.saas_security.email.external_recipients","zscaler_zia.saas_security.email.external_recipients_obfuscated","zscaler_zia.saas_security.email.internal_recipients","zscaler_zia.saas_security.email.internal_recipients_obfuscated","zscaler_zia.saas_security.email.attachments.file_names","zscaler_zia.saas_security.email.attachments.file_names_obfuscated","zscaler_zia.saas_security.email.attachments.file_sizes","zscaler_zia.saas_security.email.attachments.file_types","zscaler_zia.saas_security.email.attachments.md5s"]}]}"#
                     ),
                 )?;
                 Ok(())
@@ -1156,7 +1158,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "c3e334a08ea12651829e3e386396f78e0b01d833b59faec216d59ec44e36db45",
+                            r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                             r#"ctx.event = ctx.event ?: [:];\nString severity = ctx.zscaler_zia.saas_security.severity;\nif (severity.equalsIgnoreCase(\"information\")) {\n  ctx.event.severity = 21;\n} else if (severity.equalsIgnoreCase(\"low\")) {\n  ctx.event.severity = 21;\n} else if (severity.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (severity.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n}"#
                         ),
                     )?;
@@ -1388,8 +1392,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def att = ctx.zscaler_zia.saas_security.email.attachments;\ndef names = att.file_names instanceof List ? att.file_names : null;\ndef sizes = att.file_sizes instanceof List ? att.file_sizes : null;\ndef md5s = att.md5s instanceof List ? att.md5s : null;\nint n = 0;\nif (names != null && names.size() > n) n = names.size();\nif (sizes != null && sizes.size() > n) n = sizes.size();\nif (md5s != null && md5s.size() > n) n = md5s.size();\nif (n == 0) return;\nif (ctx.email == null) ctx.email = [:];\nif (ctx.email.attachments == null) ctx.email.attachments = new ArrayList();\nfor (int i = 0; i < n; i++) {\n  def file = new HashMap();\n  if (names != null && i < names.size()) file.put('name', names.get(i));\n  if (sizes != null && i < sizes.size()) file.put('size', sizes.get(i));\n  if (md5s != null && i < md5s.size()) {\n    def hash = new HashMap();\n    hash.put('md5', md5s.get(i));\n    file.put('hash', hash);\n  }\n  def item = new HashMap();\n  item.put('file', file);\n  ctx.email.attachments.add(item);\n}"#
+                        compiled_painless!(
+                            "b45feb8ea305b7eeb91d1f4ce1800d91fe141d3cb6bffcdd4931a74e03e12616",
+                            r#"{"params":null,"known":[{"ZipAttachments":{"source":"zscaler_zia.saas_security.email.attachments","target":"email.attachments","wrapper":"file","columns":[["file_names","name"],["file_sizes","size"],["md5s","hash.md5"]]}}]}"#
                         ),
                     )?;
                     Ok(())

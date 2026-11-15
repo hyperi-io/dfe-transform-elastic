@@ -733,8 +733,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.aws.config.compliance_type == 'NON_COMPLIANT') {\n  ctx.event.outcome = 'failure';\n} else if (ctx.aws.config.compliance_type == 'COMPLIANT') {\n  ctx.event.outcome = 'success';\n} else {\n  ctx.event.outcome = 'unknown';\n}"#
+                    compiled_painless!(
+                        "ee205a1f7eeb6a7bde5328d65d6e8e372b55359b8c220cb909142cf0377f1132",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"aws.config.compliance_type","fold_case":false,"test":"Equals","arms":[{"literals":["NON_COMPLIANT"],"writes":[["event.outcome","failure"]],"removes":[]},{"literals":["COMPLIANT"],"writes":[["event.outcome","success"]],"removes":[]}]}}]}"#
                     ),
                 )?;
             }

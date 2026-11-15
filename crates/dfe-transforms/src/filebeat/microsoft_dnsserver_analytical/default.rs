@@ -62,8 +62,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def t = params.get(ctx.event.code);\nif (t == null) {\n  return;\n}\nif (ctx.microsoft_dnsserver?.analytical == null ) {\n  Map map = new HashMap();\n  ctx.microsoft_dnsserver.put(\"analytical\", map);\n}\nctx.microsoft_dnsserver.analytical.put(\"description\", t)"#
+                    compiled_painless!(
+                        "03a7d5b7554ec8ad9b41b5cd2ac8f4129b6b63a8cb417cc12f9b555c104475c4",
+                        r#"{"params":{"LookupPut":{"source":"event.code","target":"microsoft_dnsserver.analytical.description","removes":[]}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"256\":\"Query received\",\"257\":\"Response success\",\"258\":\"Response failure\",\"259\":\"Ignored query\",\"260\":\"Recursive query out\",\"261\":\"Response in\",\"262\":\"Recursive query timeout\",\"263\":\"Update in\",\"264\":\"Update response\",\"265\":\"IXFR request out\",\"266\":\"IXFR request in\",\"267\":\"IXFR response out\",\"268\":\"IXFR response in\",\"269\":\"AXFR request out\",\"270\":\"AXFR request in\",\"271\":\"AXFR response out\",\"272\":\"AXFR response in\",\"273\":\"XFR notification in\",\"274\":\"XFR notification out\",\"275\":\"XFR notify ACK in\",\"276\":\"XFR notify ACK out\",\"277\":\"Dynamic update forward\",\"278\":\"Dynamic update response in\",\"279\":\"Internal lookup CNAME\",\"280\":\"Internal lookup additional\"}"
@@ -76,7 +77,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "328ffd7b3dc44aed0d6f1217ab9c223be894d061d96c3e4ad653bc7e6ff4e048",
+                        r#"{"params":{"LookupPut":{"source":"microsoft_dnsserver.analytical.QTYPE","target":"microsoft_dnsserver.analytical.question_type","removes":["microsoft_dnsserver.analytical.QTYPE"]}},"known":[{"GuardedCopy":{"statements":[{"If":{"test":[["Never"]],"then":[],"alt":[]}},{"Literal":{"Remove":{"path":"microsoft_dnsserver.analytical.QTYPE"}}}],"whole":false}}]}"#,
                         r#"def t = params.get(ctx.microsoft_dnsserver.analytical.QTYPE);\nif (t != null) {\n  ctx.microsoft_dnsserver.analytical.put(\"question_type\", t);\n}\nctx.microsoft_dnsserver.analytical.remove(\"QTYPE\");"#
                     ),
                     cached_params!(
@@ -90,7 +93,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "05f55c9470f1c02f5c926d9e9aedf8c079432799c3f07b5b25c9f26c4607cf99",
+                        r#"{"params":{"LookupPut":{"source":"microsoft_dnsserver.analytical.RCODE","target":"microsoft_dnsserver.analytical.response_code","removes":["microsoft_dnsserver.analytical.RCODE"]}},"known":[{"GuardedCopy":{"statements":[{"If":{"test":[["Never"]],"then":[],"alt":[]}},{"Literal":{"Remove":{"path":"microsoft_dnsserver.analytical.RCODE"}}}],"whole":false}}]}"#,
                         r#"def t = params.get(ctx.microsoft_dnsserver.analytical.RCODE);\nif (t != null) {\n  ctx.microsoft_dnsserver.analytical.put(\"response_code\", t);\n}\nctx.microsoft_dnsserver.analytical.remove(\"RCODE\");"#
                     ),
                     cached_params!(
@@ -120,8 +125,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def t = params.get(ctx.winlog.task);\nif (t != null) {\n  ctx.winlog.task = t;\n}"#
+                    compiled_painless!(
+                        "b4278c9050a6319dcfd4a089579dcd420850a8371be98c582872a9b5ab0874e7",
+                        r#"{"params":{"MemberLookup":{"key":"winlog.task","table":null,"fold":"None","target":"winlog.task","wrap":false,"miss":"Keep","literals":{"statements":[],"whole":true}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"0\":\"DEFAULT\",\"1\":\"LOOK_UP\",\"2\":\"RECURSE_QUERY\",\"3\":\"DYNAMIC_UPDATE\",\"4\":\"ZONE_XFR\",\"5\":\"ZONE_OP\",\"6\":\"AGEING\",\"7\":\"OnlineSigning\",\"8\":\"DNSSEC_OP\",\"9\":\"CACHE_OP\",\"10\":\"Configuration\",\"11\":\"SERVER_OP\",\"13\":\"POLICY_OP\",\"14\":\"RRL\",\"15\":\"RRL_OP\",\"16\":\"VIRTUALIZATION_OP\"}"
@@ -134,8 +140,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = value;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\nctx.microsoft_dnsserver.analytical = renameKeys(ctx.microsoft_dnsserver.analytical, params)\n"#
+                    compiled_painless!(
+                        "ce1b787e9d390c929f8cf4059aa78f6b08c0328b70df29ed4d44470321ef3701",
+                        r#"{"params":{"RenameKeys":{"names":"Params","coerce":null,"rename_key":null,"write":{"InPlace":"microsoft_dnsserver.analytical"}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"AdditionalInfo\":\"additional_info\",\"BufferSize\":\"bytes_sent\",\"CacheScope\":\"cache_scope\",\"DNSSEC\":\"dnssec\",\"ElapsedTime\":\"elapsed_time\",\"GUID\":\"guid\",\"PacketData\":\"packet_data\",\"PolicyName\":\"policy_name\",\"QNAME\":\"question_name\",\"QueriesAttached\":\"queries_attached\",\"QXID\":\"qxid\",\"Reason\":\"reason\",\"RecursionDepth\":\"recursion_depth\",\"RecursionScope\":\"recursion_scope\",\"Scope\":\"scope\",\"Secure\":\"secure\",\"XID\":\"xid\",\"Zone\":\"zone\",\"ZoneScope\":\"zone_scope\"}"
@@ -403,8 +410,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def t = params.get(ctx.event.code);\nif (t == null) {\n  return;\n}\ndef list = new ArrayList();\nlist.add(t);\nctx.winlog.keywords = list;"#
+                    compiled_painless!(
+                        "3c388fdb6aa74a73202ed9c634c2c17186d598f0a58825d563b5c97d597148c5",
+                        r#"{"params":{"LookupWrapList":{"source":"event.code","target":"winlog.keywords"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"256\":\"QUERY_RECEIVED\",\"257\":\"RESPONSE_SUCCESS\",\"258\":\"RESPONSE_FAILURE\",\"259\":\"IGNORED_QUERY\",\"260\":\"RECURSE_QUERY_OUT\",\"261\":\"RECURSE_RESPONSE_IN\",\"262\":\"RECURSE_QUERY_TIMEOUT\",\"263\":\"DYN_UPDATE_RECV\",\"264\":\"DYN_UPDATE_RESPONSE\",\"265\":\"IXFR_REQ_OUT\",\"266\":\"IXFR_REQ_RECV\",\"267\":\"IXFR_RESP_OUT\",\"268\":\"IXFR_RESP_RECV\",\"269\":\"AXFR_REQ_OUT\",\"270\":\"AXFR_REQ_RECV\",\"271\":\"AXFR_RESP_OUT\",\"272\":\"AXFR_RESP_RECV\",\"273\":\"XFR_NOTIFY_RECV\",\"274\":\"XFR_NOTIFY_OUT\",\"275\":\"XFR_NOTIFY_ACK_IN\",\"276\":\"XFR_NOTIFY_ACK_OUT\",\"277\":\"DYN_UPDATE_FORWARD\",\"278\":\"DYN_UPDATE_RESPONSE_IN\",\"279\":\"INTERNAL_LOOKUP_CNAME\",\"280\":\"INTERNAL_LOOKUP_ADDITIONAL\"}"

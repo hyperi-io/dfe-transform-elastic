@@ -613,8 +613,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"for (action in params.mappings) {\n  def src = ctx[action.source.object];\n  if (src != null) {\n    Map map = action.map;\n    String key = src[action.source.key];\n    String mapping = map[key];\n    if (mapping != null) {\n      Map dst = ctx[action.destination.object];\n      if (dst == null) {\n          dst = new HashMap();\n          ctx[action.destination.object] = dst;\n      }\n      dst[action.destination.key] = mapping;\n    }\n  }\n}"#
+                compiled_painless!(
+                    "94f96c7f3a48e4d6c631ab9f714c6e4129af31a943b51a5a9e9f42b291544a8a",
+                    r#"{"params":{"MemberMappings":"mappings"},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"mappings\":[{\"source\":{\"object\":\"iptables\",\"key\":\"ether_type\"},\"destination\":{\"object\":\"network\",\"key\":\"type\"},\"map\":{\"08:00\":\"ipv4\",\"86:dd\":\"ipv6\"}},{\"source\":{\"object\":\"event\",\"key\":\"action\"},\"destination\":{\"object\":\"event\",\"key\":\"action\"},\"map\":{\"d\":\"drop\",\"a\":\"accept\"}},{\"source\":{\"object\":\"event\",\"key\":\"action\"},\"destination\":{\"object\":\"event\",\"key\":\"type\"},\"map\":{\"drop\":\"denied\",\"accept\":\"allowed\",\"deny\":\"denied\",\"drop_input\":\"denied\"}},{\"source\":{\"object\":\"network\",\"key\":\"transport\"},\"destination\":{\"object\":\"network\",\"key\":\"transport\"},\"map\":{\"icmpv6\":\"ipv6-icmp\"}}]}"
@@ -662,8 +663,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"def iptables = ctx['iptables']; if (iptables != null) {\n  for (key in params.hex_fields_to_convert) {\n    long value = 0;\n    def field = iptables[key];\n    if (field == null) continue;\n    char[] hex = field.toLowerCase().toCharArray();\n    for (chr in hex) {\n      long v = -1;\n      if (chr >= (char) 'a' && chr <= (char) 'f') v = (long) chr - (char) 'a' + 10;\n      else if (chr >= (char) '0' && chr <= (char) '9') v = (long) chr - (char) '0';\n      if (v >= 0) {\n        value = value * 16 + v;\n      }\n      iptables[key] = value;\n    }\n  }\n}"#
+                compiled_painless!(
+                    "299aa7794855f111f7234e294b842fe407fe1259f0eca1890e6657efeec949c4",
+                    r#"{"params":{"HexFields":{"container":"iptables","table":"hex_fields_to_convert"}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"hex_fields_to_convert\":[\"ether_type\",\"tos\",\"precedence_bits\",\"tcp_reserved_bits\"]}"

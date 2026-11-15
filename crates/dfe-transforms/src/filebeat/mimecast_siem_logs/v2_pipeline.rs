@@ -43,8 +43,9 @@ impl Transform for V2Pipeline {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"ctx.mimecast.log_type = params.get(ctx.mimecast.type);\nctx.mimecast.type = null;\n"#
+                    compiled_painless!(
+                        "6ceb87ab1f88369681f1f687a387153587193490ea3ed3711e8fadb41fafff16",
+                        r#"{"params":{"LookupNormalise":[{"key":"mimecast.type","fold":"None","target":"mimecast.log_type"},{"statements":[{"Literal":{"Set":{"path":"mimecast.type","value":{"Literal":null}}}}],"whole":false}]},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"av\":\"avlog\",\"delivery\":\"delivery\",\"internal email protect\":\"internal-email-protect\",\"impersonation protect\":\"impersonation-protect\",\"journal\":\"jrnl\",\"process\":\"process\",\"receipt\":\"receipt\",\"attachment protect\":\"attachment-protect\",\"spam\":\"spam\",\"url protect\":\"url-protect\"}"
@@ -779,8 +780,9 @@ impl Transform for V2Pipeline {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def attachments = [];\nattachments.add(ctx.email.attachments);\nctx.email.attachments = attachments;\n"#
+                    compiled_painless!(
+                        "470260865e03bcbb8817b72c3b626458d736dd06fa90d96814925557f148f980",
+                        r#"{"params":null,"known":[{"WrapValueInList":[{"source":"email.attachments","target":"email.attachments","remove_source":false,"guards":{"not_list":false,"not_null":false,"not_empty":false}}]}]}"#
                     ),
                 )?;
             }

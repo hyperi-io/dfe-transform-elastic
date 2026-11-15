@@ -262,7 +262,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "e9e1cc9e79879d185f2ce47534ba9090a59c791e6bc8ab07ecf931979801ce56",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"ctx.event.duration = Math.round(ctx.temp.duration * params.scale)"#
                     ),
                     cached_params!("{\"scale\":1000000000}"),
@@ -320,8 +322,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.zeek?.connection?.local_orig == null ||\n    ctx.zeek?.connection?.local_resp == null) {\n  return;\n}\nif (ctx.zeek.connection.local_orig == true &&\n    ctx.zeek.connection.local_resp == true) {\n  ctx.network.direction = \"internal\";\n  return;\n}\nif (ctx.zeek.connection.local_orig == true &&\n    ctx.zeek.connection.local_resp == false) {\n  ctx.network.direction = \"outbound\";\n  return;\n}\nif (ctx.zeek.connection.local_orig == false &&\n    ctx.zeek.connection.local_resp == true) {\n  ctx.network.direction = \"inbound\";\n  return;\n}\nif (ctx.zeek.connection.local_orig == false &&\n    ctx.zeek.connection.local_resp == false) {\n  ctx.network.direction = \"external\";\n  return;\n}"#
+                compiled_painless!(
+                    "6275b2cf720dba93f084cc12ba88e7a25e64ab5bb112054a2a0f40d9ed54effc",
+                    r#"{"params":null,"known":[{"PairTable":{"left":"zeek.connection.local_orig","right":"zeek.connection.local_resp","rows":[[[true,true],"internal"],[[true,false],"outbound"],[[false,true],"inbound"],[[false,false],"external"]],"target":"network.direction"}}]}"#
                 ),
             )?;
 
@@ -445,8 +448,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
-                    r#"if (ctx.zeek?.connection?.state == null) {\n  return;\n} if (params.containsKey(ctx.zeek.connection.state)) {\n  ctx.zeek.connection.state_message = params[ctx.zeek.connection.state][\"conn_str\"];\n  ctx.event.type = params[ctx.zeek.connection.state][\"types\"];\n}"#
+                compiled_painless!(
+                    "27776b01faff2532dc420663f291b52d491bd6a975c70c1a83ae2407d10775ed",
+                    r#"{"params":{"RowMembers":{"key":"zeek.connection.state","writes":[["conn_str","zeek.connection.state_message"],["types","event.type"]]}},"known":[]}"#
                 ),
                 cached_params!(
                     "{\"S0\":{\"conn_str\":\"Connection attempt seen, no reply.\",\"types\":[\"connection\",\"start\"]},\"S1\":{\"conn_str\":\"Connection established, not terminated.\",\"types\":[\"connection\",\"start\"]},\"SF\":{\"conn_str\":\"Normal establishment and termination.\",\"types\":[\"connection\",\"start\",\"end\"]},\"REJ\":{\"conn_str\":\"Connection attempt rejected.\",\"types\":[\"connection\",\"start\",\"denied\"]},\"S2\":{\"conn_str\":\"Connection established and close attempt by originator seen (but no reply from responder).\",\"types\":[\"connection\",\"info\"]},\"S3\":{\"conn_str\":\"Connection established and close attempt by responder seen (but no reply from originator).\",\"types\":[\"connection\",\"info\"]},\"RSTO\":{\"conn_str\":\"Connection established, originator aborted (sent a RST).\",\"types\":[\"connection\",\"info\"]},\"RSTR\":{\"conn_str\":\"Responder sent a RST.\",\"types\":[\"connection\",\"info\"]},\"RSTOS0\":{\"conn_str\":\"Originator sent a SYN followed by a RST, we never saw a SYN-ACK from the responder.\",\"types\":[\"connection\",\"info\"]},\"RSTRH\":{\"conn_str\":\"Responder sent a SYN ACK followed by a RST, we never saw a SYN from the (purported) originator.\",\"types\":[\"connection\",\"info\"]},\"SH\":{\"conn_str\":\"Originator sent a SYN followed by a FIN, we never saw a SYN ACK from the responder (hence the connection was 'half' open).\",\"types\":[\"connection\",\"info\"]},\"SHR\":{\"conn_str\":\"Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator.\",\"types\":[\"connection\",\"info\"]},\"OTH\":{\"conn_str\":\"No SYN seen, just midstream traffic (a 'partial connection' that was not later closed).\",\"types\":[\"connection\",\"info\"]}}"

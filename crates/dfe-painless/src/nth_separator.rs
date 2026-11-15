@@ -32,7 +32,7 @@ use dfe_core::Event;
 
 /// One value cut at the `count`-th separator counted from its end, the part
 /// BEFORE the cut landing on `target`.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct NthSeparatorPrefix {
     /// The `ctx.` path the value is read from.
     source: String,
@@ -97,25 +97,6 @@ fn prefix_before_nth_last(subject: &str, separator: char, count: usize) -> Optio
 }
 
 /// Read the backwards-counting cut off the script, or decline.
-///
-/// ```painless
-/// def <helper>(String <s>) {
-///   int <n>;
-///   for (int <i> = <s>.length()-1; <i> >= 0; <i>--) {
-///     if (<s>.charAt(<i>) == (char)'<separator>') {
-///       <n>++;
-///       if (<n> == <count>) {
-///         return <s>.substring(0, <i>);
-///       }
-///     }
-///   }
-///   return null;
-/// }
-/// def <result> = <helper>(ctx.<source>);
-/// if (<result> != null) {
-///   ctx.<target> = <result>;
-/// }
-/// ```
 ///
 /// Every statement has to be one of those, and anything else declines the
 /// WHOLE script: a cut made at a different occurrence, or from the other end,
@@ -272,177 +253,8 @@ fn same_ignoring_spaces(text: &str, expected: &str) -> bool {
         .eq(expected.chars().filter(|c| !c.is_whitespace()))
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use serde_json::json;
-
-    use super::*;
-
-    /// gigamon's subdomain helper, verbatim from
-    /// `pipelines/gigamon/ami/default.yml:995` with the YAML fold applied.
-    fn script() -> &'static str {
-        "def subdomain(String s) {\n  int n;\n  for (int i = s.length()-1; i >= 0; i--) {\n    \
-         if (s.charAt(i) == (char)'.') {\n      n++;\n      if (n == 2) {\n        \
-         return s.substring(0, i);\n      }\n    }\n  }\n  return null;\n} \
-         def sub = subdomain(ctx.dns.question.name); if (sub != null) {\n  \
-         ctx.dns.question.subdomain = sub;\n}"
-    }
-
-    fn pattern() -> NthSeparatorPrefix {
-        parse_nth_separator_prefix(script()).expect("the helper is recognised")
-    }
-
-    fn cut(name: &str) -> Option<Value> {
-        let mut event = Event::new(json!({ "dns": { "question": { "name": name } } }));
-        assert!(nth_separator_prefix(&mut event, &pattern()));
-        event.get("dns.question.subdomain").cloned()
-    }
-
-    /// Every part comes OFF the script -- the separator, the occurrence, and
-    /// both paths.
-    #[test]
-    fn every_part_is_read_off_the_script() {
-        assert_eq!(
-            pattern(),
-            NthSeparatorPrefix {
-                source: "dns.question.name".into(),
-                target: "dns.question.subdomain".into(),
-                separator: '.',
-                count: 2,
-            }
-        );
-    }
-
-    /// The captured pairs, which are what settle the vendor's definition: the
-    /// cut is at the SECOND-LAST dot, so a four-label name keeps two labels.
-    #[test]
-    fn the_cut_is_at_the_second_last_separator() {
-        assert_eq!(cut("_ipps._tcp.local"), Some(json!("_ipps")));
-        assert_eq!(
-            cut("229.85.115.10.in-addr.arpa"),
-            Some(json!("229.85.115.10"))
-        );
-        assert_eq!(
-            cut("HCT_6011-181e00a30af6._tcn_eqaHCT._tcp.local"),
-            Some(json!("HCT_6011-181e00a30af6._tcn_eqaHCT"))
-        );
-    }
-
-    /// Fewer separators than the count writes NOTHING -- the helper returns
-    /// null and the caller's guard skips the write.
-    #[test]
-    fn too_few_separators_write_nothing() {
-        assert_eq!(cut("example.com"), None);
-        assert_eq!(cut("localhost"), None);
-        assert_eq!(cut(""), None);
-    }
-
-    /// A cut at offset zero writes an EMPTY string, which is Painless's own
-    /// answer: `substring(0, 0)` is `""`, and `"" != null` holds. No captured
-    /// name opens with a dot; the case is held so the reading is not lost.
-    #[test]
-    fn a_cut_at_the_front_writes_an_empty_string() {
-        assert_eq!(cut(".tcp.local"), Some(json!("")));
-    }
-
-    /// A source that is not a string DECLINES rather than claiming the script:
-    /// Painless casts it to `String` and throws, which nothing here reproduces.
-    #[test]
-    fn a_non_string_source_declines() {
-        let mut event = Event::new(json!({ "dns": { "question": { "name": 4 } } }));
-        assert!(!nth_separator_prefix(&mut event, &pattern()));
-        assert!(!event.has("dns.question.subdomain"));
-
-        let mut absent = Event::new(json!({ "dns": { "question": {} } }));
-        assert!(!nth_separator_prefix(&mut absent, &pattern()));
-        assert!(!absent.has("dns.question.subdomain"));
-    }
-
-    /// The occurrence is the script's number, not a constant here.
-    #[test]
-    fn the_count_comes_from_the_script() {
-        let third = script().replace("if (n == 2)", "if (n == 3)");
-        assert_ne!(third, script(), "the replacement has to bite");
-        let pattern = parse_nth_separator_prefix(&third).expect("recognised");
-        assert_eq!(pattern.count, 3);
-
-        let mut event = Event::new(json!({
-            "dns": { "question": { "name": "a.b.c.example.com" } }
-        }));
-        assert!(nth_separator_prefix(&mut event, &pattern));
-        assert_eq!(event.get("dns.question.subdomain"), Some(&json!("a.b")));
-    }
-
-    /// The separator is the script's character, not a dot by assumption.
-    #[test]
-    fn the_separator_comes_from_the_script() {
-        let dashes = script().replace("(char)'.'", "(char)'-'");
-        assert_ne!(dashes, script(), "the replacement has to bite");
-        let pattern = parse_nth_separator_prefix(&dashes).expect("recognised");
-        assert_eq!(pattern.separator, '-');
-    }
-
-    /// One statement the reader cannot place declines the WHOLE script, so a
-    /// near-miss never writes a value that is present and wrong.
-    #[test]
-    fn one_unreadable_statement_declines_the_whole_script() {
-        for broken in [
-            // The cut taken from the other end.
-            script().replace("s.substring(0, i)", "s.substring(i + 1)"),
-            // The walk started at the front, so the count would run forwards.
-            script().replace("s.length()-1", "0"),
-            // A count that no increment ever reaches.
-            script().replace("if (n == 2)", "if (n == 0)"),
-            // A guard over something other than the helper's own answer.
-            script().replace("if (sub != null)", "if (ctx.other != null)"),
-            // The answer transformed on its way to the target.
-            script().replace("subdomain = sub;", "subdomain = sub.trim();"),
-            // A second statement under the guard.
-            script().replace(
-                "ctx.dns.question.subdomain = sub;",
-                "ctx.dns.question.subdomain = sub; ctx.a = sub;",
-            ),
-        ] {
-            assert_ne!(broken, script(), "each replacement has to bite");
-            assert!(
-                parse_nth_separator_prefix(&broken).is_none(),
-                "read a script it should have declined: {broken}"
-            );
-        }
-    }
-
-    /// The dispatch reaches this matcher: nothing above it in the text ladder
-    /// claims the script, and nothing else is bound beside it.
-    #[test]
-    fn the_ladder_dispatches_the_script_here() {
-        let bound = crate::common::known_patterns(script());
-        assert_eq!(
-            bound.len(),
-            1,
-            "the ladder bound {bound:?} instead of this matcher alone"
-        );
-    }
-
-    /// The production path, end to end. A generated call site hands
-    /// `PainlessPlan` the script with its newlines ESCAPED, so a matcher that
-    /// works only on real newlines passes its own tests and does nothing in
-    /// the service. This is the literal
-    /// `crates/dfe-transforms/src/filebeat/gigamon_ami/default.rs:2886` holds.
-    #[test]
-    fn the_escaped_call_site_literal_runs() {
-        // Running a plan records into the process-global stats the counting
-        // tests read; one lock keeps those honest.
-        let _guard = crate::stats::serialised();
-        let plan = crate::plan::PainlessPlan::new(
-            r"def subdomain(String s) {\n  int n;\n  for (int i = s.length()-1; i >= 0; i--) {\n    if (s.charAt(i) == (char)'.') {\n      n++;\n      if (n == 2) {\n        return s.substring(0, i);\n      }\n    }\n  }\n  return null;\n} def sub = subdomain(ctx.dns.question.name); if (sub != null) {\n  ctx.dns.question.subdomain = sub;\n}",
-        );
-        assert!(plan.matches(), "the call site's own literal binds nothing");
-
-        let mut event = Event::new(json!({
-            "dns": { "question": { "name": "_webdav._tcp.local" } }
-        }));
-        crate::plan::painless_exec_plan(&mut event, &plan).expect("the plan runs");
-        assert_eq!(event.get("dns.question.subdomain"), Some(&json!("_webdav")));
-    }
-}
+#[path = "nth_separator_tests.rs"]
+mod tests;

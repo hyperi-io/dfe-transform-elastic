@@ -669,7 +669,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "f701f9cd084feaad6d9b7f00b42e40a2950b67f5c2a6519ace6082a12637a00a",
+                        r#"{"params":null,"known":["CaseInsensitiveLadder"]}"#,
                         r#"ctx.event = ctx.event ?: [:];\nString severity_in_text = ctx.cyera.issue.severity;\nif (severity_in_text.equalsIgnoreCase(\"Low\")) {\n  ctx.event.severity = 21;\n} else if (severity_in_text.equalsIgnoreCase(\"Medium\")) {\n  ctx.event.severity = 47;\n} else if (severity_in_text.equalsIgnoreCase(\"High\")) {\n  ctx.event.severity = 73;\n} else if (severity_in_text.equalsIgnoreCase(\"Critical\")) {\n  ctx.event.severity = 99;\n}"#
                     ),
                 )?;

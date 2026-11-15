@@ -19,11 +19,15 @@
 //! A vendor pipeline carries Painless the generator cannot transpile, so each
 //! recognised pattern gets a reader that parses the script ONCE per call site
 //! and a runner that applies it per event. [`plan::PainlessPlan`] holds that
-//! split: `cached_painless!` resolves the dispatch behind a site-local
-//! `OnceLock`, so the ladder in `common::known_patterns` is cold path and
-//! only the matched runner costs anything per event.
+//! split: `compiled_painless!` rebuilds the plan the generator resolved, keyed
+//! by the script's hash, behind a site-local `OnceLock`, so only the matched
+//! runner costs anything per event.
 //!
 //! The modules drop the `painless_` prefix the crate name already carries.
+//!
+//! A test module gated on `dfe_script_tests` is built on pipeline scripts and
+//! ships from the private repository, so its file is absent here and
+//! `#[rustfmt::skip]` keeps rustfmt from resolving it.
 
 pub mod action_mapping;
 pub mod actor_kind;
@@ -78,6 +82,7 @@ pub mod scheduled_task;
 pub mod sddl;
 pub mod seconds_between;
 pub mod securityhub_ocsf;
+mod serde_regex;
 pub mod set_ladder;
 pub mod split_fanout;
 pub mod stats;

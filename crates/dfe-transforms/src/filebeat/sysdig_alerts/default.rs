@@ -375,8 +375,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def mitreRegex = /T\\d{4}/;\nfor (int i = 0; i < ctx.sysdig.content.ruleTags.length; i++) {\n    def tag = ctx.sysdig.content.ruleTags[i];\n    def matcher = mitreRegex.matcher(tag);\n    if (matcher.find()) {\n        ctx['threat.technique.id'] = [matcher.group()];\n        break;\n    }\n}\n"#
+                    compiled_painless!(
+                        "dff0ab059b2d08e3ef24766ea9fb460983e49844d68de1560b3fa44f31db97ed",
+                        r#"{"params":null,"known":[{"FirstMatchInList":{"list":"sysdig.content.ruleTags","target":"threat.technique.id","pattern":"T\\d{4}","matcher":"T\\d{4}","wrap_in_list":true}}]}"#
                     ),
                 )?;
             }

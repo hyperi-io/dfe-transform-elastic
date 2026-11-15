@@ -75,8 +75,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Map m = new HashMap();\nm.put(0, \"Shutdown\");\nm.put(1, \"Starting\");\nm.put(2, \"Running\");\nctx.oracle_weblogic.deployed_application.deployment.state.name = m.get(ctx.oracle_weblogic.deployed_application.deployment.state.value);\n"#
+                    compiled_painless!(
+                        "3a6ac4cf36296fa949742b34738acc545c2a5cb587b8db25ac4c49d7c1635566",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())

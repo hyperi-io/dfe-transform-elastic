@@ -122,8 +122,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def merge(Map dst, Map src) {\n  for (def k: src.keySet()) {\n    if (src.get(k) instanceof Map && dst.get(k) instanceof Map) {\n      dst.put(k, merge(dst.get(k), src.get(k)));\n    } else if (src.get(k) instanceof List && dst.get(k) instanceof List) {\n      def c = dst.get(k);\n      for (def e: src.get(k)) {\n        if (!c.contains(e)) {\n          c.add(e);\n        }\n      }\n    } else {\n        dst.put(k, src.get(k));\n    }\n  }\n  return dst;\n}\nmerge(ctx, ctx.splunk.search.ecs_result);\nctx.splunk.search.remove(\"ecs_result\");"#
+                        compiled_painless!(
+                            "2b44cdbaaa4224bf4ed974717f9173dae994cd390e7bda9bb2a7637dca7eb4d9",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

@@ -326,8 +326,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def enumeration = \"GHSA\";\ndef id = \"\";\ndef sa_ids = ctx.github.dependabot.security_advisory.identifiers;\nfor (def sa_id: sa_ids) {\n    id = sa_id.value;\n    if (!sa_id.type.equals(\"GHSA\")) {\n        enumeration = sa_id.type;\n        break;\n    }\n}\nctx.vulnerability.enumeration = enumeration;\nctx.vulnerability.id = id;\n"#
+                    compiled_painless!(
+                        "67736c4cce181e9036f4ab4dcbe5673cd4a2e3edb2709556fb126069f3a9334f",
+                        r#"{"params":null,"known":[{"ScanTaggedList":{"list":"github.dependabot.security_advisory.identifiers","value_member":"value","tag_member":"type","default_tag":"GHSA","default_value":"","tag_target":"vulnerability.enumeration","value_target":"vulnerability.id"}}]}"#
                     ),
                 )?;
             }
@@ -337,8 +338,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"List references = new ArrayList();\ndef sa_references = ctx.github.dependabot.security_advisory.references;\nfor (def ref: sa_references) {\n    references.add(ref.url);\n}\nctx.vulnerability.reference = references;\n"#
+                    compiled_painless!(
+                        "e6e6b10f40d13128a0db8605efcfa87eecfa36206073fd40a713a309c848e6ae",
+                        r#"{"params":null,"known":[{"ListRebuild":{"list":"github.dependabot.security_advisory.references","target":"vulnerability.reference","take":{"Member":"url"}}}]}"#
                     ),
                 )?;
             }
@@ -431,8 +433,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ZonedDateTime end = ZonedDateTime.parse(ctx.event.end); ctx.event.duration = ChronoUnit.NANOS.between(start, end);"#
+                    compiled_painless!(
+                        "394b33a528b0a7715d1280fdd377528126d2fcbd7143b24d28469bcce85ff84f",
+                        r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                     ),
                 )?;
             }

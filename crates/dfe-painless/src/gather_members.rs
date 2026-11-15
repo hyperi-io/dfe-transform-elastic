@@ -5,25 +5,7 @@
 //! its own, written only where the walk came to something.
 //!
 //! `ti_threatq` walks its sources once and takes two members out of them, the
-//! second filtered against a literal allow-list:
-//!
-//! ```painless
-//! def ecsTlps = ['WHITE', 'GREEN', 'AMBER', 'RED', 'CLEAR', 'AMBER+STRICT'];
-//! def providers = new ArrayList();
-//! def tlps = new ArrayList();
-//! for (source in ctx.threatq.sources) {
-//!   if (source == null) { return; }
-//!   if (source.containsKey("name") && source["name"] != null) {
-//!     providers.add(source["name"]);
-//!   }
-//!   if (source.containsKey("tlp_name") && source["tlp_name"] != null
-//!       && ecsTlps.contains(source["tlp_name"])) {
-//!     tlps.add(source["tlp_name"]);
-//!   }
-//! }
-//! if (tlps.size() > 0) { ... ctx.threat.indicator.marking.tlp = tlps; }
-//! if (providers.size() > 0) { ... ctx.threat.indicator.provider = providers; }
-//! ```
+//! second filtered against a literal allow-list.
 //!
 //! `CollectFromList` claims the same loop and reads the member name off the
 //! GUARD, so both columns came back named `containsKey`, the allow-list was
@@ -81,7 +63,7 @@ use dfe_core::Event;
 ///
 /// mandiant sorts one list of associations into two columns by a `type` member
 /// the columns do not themselves gather.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct Selector {
     key: String,
     value: String,
@@ -91,7 +73,7 @@ pub struct Selector {
 ///
 /// mandiant's `is_osint` opens true, goes false at the first source whose
 /// `osint` member is present and false, and decides the indicator's TLP.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct GatheredFlag {
     /// The member whose presence-and-falsehood clears the flag.
     member: String,
@@ -105,7 +87,7 @@ pub struct GatheredFlag {
 ///
 /// `ti_threatconnect` labels its security labels `TLP:AMBER` and gathers the
 /// half after the colon, which is the spelling its allow-list holds.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct Split {
     separator: String,
     index: usize,
@@ -116,7 +98,7 @@ pub struct Split {
 /// The three booleans are independent modifiers of the same gather rather than
 /// correlated states -- how the value enters the list, whether it is folded on
 /// the way in, and whether a repeat is kept -- so they stay separate flags.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct GatheredColumn {
     /// The record key gathered.
     member: String,
@@ -222,7 +204,7 @@ impl GatheredColumn {
 }
 
 /// Members gathered out of a list's records into parallel lists.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct GatherMembers {
     list: String,
     /// Whether a null element abandons the whole script.
@@ -568,12 +550,7 @@ fn appends_off_record(body: &str, var: &str, accumulator: &str) -> bool {
 /// `<acc>.add(<local>)`, where the local holds a CUT of the record's member.
 ///
 /// `ti_threatconnect` names its security labels `TLP:AMBER` and gathers the
-/// half after the colon:
-///
-/// ```painless
-/// def name = obj.get('name').splitOnToken(':')[1];
-/// if (ecsTlps.contains(name)) { tlps.add(name) }
-/// ```
+/// half after the colon.
 ///
 /// Same walk, same accumulator, same literal allow-list as `ti_threatq` --
 /// one transform between the read and the test. So it is read here rather than
@@ -897,453 +874,10 @@ pub fn gather_members(event: &mut Event, pattern: &GatherMembers) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 // The script constants are quoted verbatim from generated call sites, which
 // spell them `r#"..."#`.
 #[allow(clippy::needless_raw_string_hashes)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/ti_threatq_threat/default.rs`, in
-    /// the escaped one-line form the call site holds.
-    const THREATQ_SOURCES: &str = r#"def ecsTlps = ['WHITE', 'GREEN', 'AMBER', 'RED', 'CLEAR', 'AMBER+STRICT'];\ndef providers = new ArrayList();\ndef tlps = new ArrayList();\nfor (source in ctx.threatq.sources) {\n  if (source == null) {\n    return;\n  }\n  if (source.containsKey(\"name\") && source[\"name\"] != null) {\n    providers.add(source[\"name\"]);\n  }\n  if (source.containsKey(\"tlp_name\") && source[\"tlp_name\"] != null && ecsTlps.contains(source[\"tlp_name\"])) {\n    tlps.add(source[\"tlp_name\"]);\n  }\n}\nif (tlps.size() > 0) {\n  if (ctx.threat.indicator.marking == null) {\n    ctx.threat.indicator.marking = new HashMap();\n  }\n  ctx.threat.indicator.marking.tlp = tlps;\n}\nif (providers.size() > 0) {\n  if (ctx.threat.indicator.provider == null) {\n    ctx.threat.indicator.provider = new HashMap();\n  }\n  ctx.threat.indicator.provider = providers;\n}"#;
-
-    /// gdacs's walk over the same grammar, which stays with `CollectFromList`:
-    /// dotted members, and three lists written whether or not they hold
-    /// anything.
-    const GDACS_COUNTRIES: &str = r#"def countries = ctx.gdacs?.affected_countries;\nif (countries == null || countries.size() == 0) { return; }\n\ndef names = new ArrayList();\ndef iso2_codes = new ArrayList();\ndef iso3_codes = new ArrayList();\n\nfor (def c : countries) {\n  if (c.countryname != null) { names.add(c.countryname); }\n  if (c.iso2 != null) { iso2_codes.add(c.iso2); }\n  if (c.iso3 != null) { iso3_codes.add(c.iso3); }\n}\n\nctx.gdacs.affected_country_names = names;\nctx.gdacs.affected_country_iso2 = iso2_codes;\nctx.gdacs.affected_country_iso3 = iso3_codes;\n"#;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/ti_threatconnect_indicator/default.rs`.
-    ///
-    /// The same walk and allow-list as threatq, with the label cut on a colon
-    /// and the add bound to the LOCAL holding the piece.
-    const THREATCONNECT_LABELS: &str = r#"def ecsTlps = ['WHITE','CLEAR','GREEN','AMBER','AMBER+STRICT','RED']; def tlps = new ArrayList(); for (def obj : ctx.json.securityLabels.data) {\n  if (obj.containsKey('name')) {\n    if (obj.get('name').contains(':')){\n       def name = obj.get('name').splitOnToken(':')[1];\n       if (ecsTlps.contains(name)) {\n          tlps.add(name)\n       }\n    }\n  }\n} if (tlps.size() > 0){\n  if (ctx.threat.indicator.marking == null) {\n    ctx.threat.indicator.marking = new HashMap();\n  }\n  ctx.threat.indicator.marking.tlp = tlps;\n}"#;
-
-    #[test]
-    fn the_threatq_sources_give_up_two_members_in_one_walk() {
-        assert_eq!(
-            parse_gather_members(&crate::common::normalise(THREATQ_SOURCES)),
-            Some(GatherMembers::new(
-                "threatq.sources",
-                true,
-                vec![
-                    GatheredColumn::new("tlp_name", "threat.indicator.marking.tlp").allowing(&[
-                        "WHITE",
-                        "GREEN",
-                        "AMBER",
-                        "RED",
-                        "CLEAR",
-                        "AMBER+STRICT"
-                    ]),
-                    GatheredColumn::new("name", "threat.indicator.provider"),
-                ],
-            ))
-        );
-
-        // The WRITTEN value: both members gathered, and a tlp the allow-list
-        // does not hold left out of the marking.
-        let mut event = Event::new(json!({ "threatq": { "sources": [
-            { "name": "TAXII Feed", "tlp_name": "AMBER" },
-            { "name": "Internal Research" },
-            { "name": "Partner Feed", "tlp_name": "PURPLE" },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            THREATQ_SOURCES
-        ));
-        assert_eq!(
-            event.get("threat.indicator.provider"),
-            Some(&json!(["TAXII Feed", "Internal Research", "Partner Feed"]))
-        );
-        assert_eq!(
-            event.get("threat.indicator.marking.tlp"),
-            Some(&json!(["AMBER"]))
-        );
-    }
-
-    /// threatq subscripts the member it gathers and compares it to `null`, and
-    /// reading that as a selector would choose no records at all.
-    #[test]
-    fn a_null_comparison_on_the_gathered_member_is_not_a_selector() {
-        let parsed = parse_gather_members(&crate::common::normalise(THREATQ_SOURCES));
-        let columns: &[GatheredColumn] = parsed.as_ref().map_or(&[], |read| &read.columns);
-        assert_eq!(columns.len(), 2, "threatq's sources were declined");
-        assert!(columns.iter().all(|column| column.selector.is_none()));
-        assert!(columns.iter().all(|column| !column.dedupe));
-        assert!(columns.iter().all(|column| column.literals.is_empty()));
-        assert!(parsed.is_some_and(|read| read.flag.is_none()));
-    }
-
-    /// The `size() > 0` guards: a walk that gathers nothing writes nothing,
-    /// where the empty list was what made these fields EXTRA.
-    #[test]
-    fn a_walk_that_gathers_nothing_writes_neither_field() {
-        let mut event = Event::new(json!({ "threatq": { "sources": [ { "id": 4 } ] } }));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            THREATQ_SOURCES
-        ));
-        assert_eq!(event.get("threat.indicator.provider"), None);
-        assert_eq!(event.get("threat.indicator.marking.tlp"), None);
-    }
-
-    /// A null element returns out of the script, so the members gathered
-    /// before it are discarded too.
-    #[test]
-    fn a_null_record_abandons_the_whole_walk() {
-        let mut event = Event::new(json!({ "threatq": { "sources": [
-            { "name": "TAXII Feed" },
-            null,
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            THREATQ_SOURCES
-        ));
-        assert_eq!(event.get("threat.indicator.provider"), None);
-    }
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/cybereason_poll_malop/default.rs`.
-    ///
-    /// The same walk again, reading its member through `.get("<member>")`,
-    /// folding the value on the way in, and writing its allow-list INLINE at
-    /// the test rather than binding it to a local first.
-    const CYBEREASON_OS_TYPES: &str = r#"def os_types = new ArrayList(); for (def obj : ctx.json.machines) {\n  if (obj.containsKey(\"os_type\") && [\"linux\", \"macos\", \"unix\", \"windows\", \"ios\", \"android\"].contains((obj.get(\"os_type\")).toLowerCase())) {\n    os_types.add(obj.get(\"os_type\").toLowerCase());\n  }\n} if (os_types.size() > 0){\n  if (ctx.host.os == null) {\n    ctx.host.os = new HashMap();\n  }\n  ctx.host.os.type= os_types;\n}"#;
-
-    /// The fold and the allow-list are what this script gathers BY, so a reader
-    /// dropping either writes the vendor's own casing into a closed ECS
-    /// vocabulary.
-    #[test]
-    fn a_folded_member_is_tested_and_gathered_in_the_folded_spelling() {
-        assert_eq!(
-            parse_gather_members(&crate::common::normalise(CYBEREASON_OS_TYPES)),
-            Some(GatherMembers::new(
-                "json.machines",
-                false,
-                vec![
-                    GatheredColumn::new("os_type", "host.os.type")
-                        .allowing(&["linux", "macos", "unix", "windows", "ios", "android"])
-                        .folded(),
-                ],
-            ))
-        );
-
-        let mut event = Event::new(json!({ "json": { "machines": [
-            { "os_type": "Windows" },
-            { "os_type": "LINUX" },
-            { "os_type": "Solaris" },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            CYBEREASON_OS_TYPES
-        ));
-        assert_eq!(
-            event.get("host.os.type"),
-            Some(&json!(["windows", "linux"]))
-        );
-    }
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/jamf_protect_alerts/default.rs`.
-    ///
-    /// The SAME walk as threatq's, spelled `for (def v : ctx.x)` rather than
-    /// `for (v in ctx.x)` and declaring its accumulator `ArrayList names =`
-    /// rather than `def names =`.
-    const JAMF_RELATED_USERS: &str = r#"if (ctx.jamf_protect?.alerts?.input?.related?.users != null && ctx.jamf_protect.alerts.input.related.users.size() > 0) {\n    ArrayList userNames = new ArrayList();\n\n    for (def user : ctx.jamf_protect.alerts.input.related.users) {\n        if (user.containsKey('name') && user['name'] != null) {\n            userNames.add(user['name']);\n        }\n    }\n    if (userNames.size() > 0) {\n        ctx.related = ctx.related ?: new HashMap();\n        ctx.related.user = userNames;\n    }\n}  \n"#;
-
-    /// Neither spelling says anything about what the loop DOES, so both read
-    /// here. `CollectFromList` claimed this one and named the member off the
-    /// guard -- `related.user` came back as an empty list, which the module's
-    /// own closing `drop_empty` then removed, so four events lost the field
-    /// with nothing extra and no error to show for it.
-    #[test]
-    fn the_colon_spelling_and_a_typed_accumulator_read_the_same_walk() {
-        assert_eq!(
-            parse_gather_members(&crate::common::normalise(JAMF_RELATED_USERS)),
-            Some(GatherMembers::new(
-                "jamf_protect.alerts.input.related.users",
-                false,
-                vec![GatheredColumn::new("name", "related.user")],
-            ))
-        );
-
-        // The WRITTEN value: every user's name, in the list's own order.
-        let mut event = Event::new(
-            json!({ "jamf_protect": { "alerts": { "input": { "related": {
-                "users": [
-                    { "uid": 0, "name": "root" },
-                    { "uid": 501, "name": "local-admin" },
-                ]
-            }}}}}),
-        );
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            JAMF_RELATED_USERS
-        ));
-        assert_eq!(
-            event.get("related.user"),
-            Some(&json!(["root", "local-admin"]))
-        );
-    }
-
-    /// The script's own `size() > 0` guard: a walk that gathers nothing leaves
-    /// no empty list behind for a later prune to have to clean up.
-    #[test]
-    fn a_users_list_with_no_names_writes_no_field_at_all() {
-        let mut event = Event::new(
-            json!({ "jamf_protect": { "alerts": { "input": { "related": {
-                "users": [{ "uid": 0 }]
-            }}}}}),
-        );
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            JAMF_RELATED_USERS
-        ));
-        assert_eq!(event.get("related.user"), None);
-    }
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/ti_threatconnect_indicator/default.rs`.
-    ///
-    /// The member is read through `.get('<member>')` and the guard tests a
-    /// DIFFERENT member for presence, which is what sent it to
-    /// `CollectFromList` -- where the member came back named `get` and the
-    /// technique names were written as an empty list.
-    const THREATCONNECT_TECHNIQUES: &str = r#"def t_names = new ArrayList();\nfor (def obj : ctx.json.tags.data) {\n  if (obj.get('techniqueId') != null) {\n    t_names.add(obj.get('name'));\n  }\n}\nif (t_names.size() > 0){\n  if (ctx.threat.technique == null) {\n    ctx.threat.technique = new HashMap();\n  }\n  ctx.threat.technique.name = t_names;\n}"#;
-
-    /// The `add` says what is gathered, whichever way the record is read.
-    #[test]
-    fn a_member_read_through_get_is_gathered_by_its_own_name() {
-        assert_eq!(
-            parse_gather_members(&crate::common::normalise(THREATCONNECT_TECHNIQUES)),
-            Some(GatherMembers::new(
-                "json.tags.data",
-                false,
-                vec![GatheredColumn::new("name", "threat.technique.name")],
-            ))
-        );
-
-        let mut event = Event::new(json!({ "json": { "tags": { "data": [
-            { "techniqueId": "T1055.005", "name": "userexecution:maliciouslink" },
-            { "name": "no-technique-id" },
-        ]}}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            THREATCONNECT_TECHNIQUES
-        ));
-        assert_eq!(
-            event.get("threat.technique.name"),
-            Some(&json!(["userexecution:maliciouslink", "no-technique-id"]))
-        );
-    }
-
-    #[test]
-    fn the_neighbouring_walk_over_the_same_grammar_is_declined() {
-        // gdacs reads dotted members and writes its three lists unguarded, so
-        // claiming it would lose the empty list it leaves behind.
-        assert!(
-            parse_gather_members(&crate::common::normalise(GDACS_COUNTRIES)).is_none(),
-            "gdacs was claimed"
-        );
-    }
-
-    #[test]
-    fn a_label_is_cut_before_the_allow_list_admits_the_piece() {
-        assert_eq!(
-            parse_gather_members(&crate::common::normalise(THREATCONNECT_LABELS)),
-            Some(GatherMembers::new(
-                "json.securityLabels.data",
-                false,
-                vec![
-                    GatheredColumn::new("name", "threat.indicator.marking.tlp")
-                        .allowing(&["WHITE", "CLEAR", "GREEN", "AMBER", "AMBER+STRICT", "RED"])
-                        .cut_on(":", 1),
-                ],
-            ))
-        );
-
-        // The WRITTEN value: the half after the colon, a label the allow-list
-        // does not hold left out, and one carrying no colon skipped.
-        let mut event = Event::new(json!({ "json": { "securityLabels": { "data": [
-            { "name": "TLP:AMBER" },
-            { "name": "TLP:PURPLE" },
-            { "name": "Internal" },
-        ]}}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            THREATCONNECT_LABELS
-        ));
-        assert_eq!(
-            event.get("threat.indicator.marking.tlp"),
-            Some(&json!(["AMBER"]))
-        );
-    }
-
-    /// A walk whose cut admits nothing writes no field, the same as one that
-    /// gathers nothing.
-    #[test]
-    fn a_cut_that_admits_nothing_writes_no_field() {
-        let mut event = Event::new(json!({ "json": { "securityLabels": { "data": [
-            { "name": "Internal" },
-        ]}}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            THREATCONNECT_LABELS
-        ));
-        assert_eq!(event.get("threat.indicator.marking.tlp"), None);
-    }
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/ti_mandiant_advantage_threat_intelligence/default.rs`.
-    ///
-    /// One walk that dedupes one member, FLATTENS a second that is itself a
-    /// list, and folds a boolean deciding the indicator's TLP.
-    const MANDIANT_SOURCES: &str = r#"def providers = new ArrayList();\ndef categories = new ArrayList();\ndef is_osint = true;\nfor (source in ctx.json.sources) {\n  if (source == null) {\n    return;\n  }\n  if (source.containsKey(\"source_name\") && source[\"source_name\"] != null && !providers.contains(source[\"source_name\"])) {\n    providers.add(source[\"source_name\"]);\n  }\n  if (source.containsKey(\"category\") && source[\"category\"] != null) {\n    categories.addAll(source[\"category\"]);\n  }\n  if (source.containsKey(\"osint\") && !source[\"osint\"]) {\n    is_osint = false;\n  }\n}\nif (providers.size() > 0) {\n  if (ctx.threat.indicator.provider == null) {\n    ctx.threat.indicator.provider = new HashMap();\n  }\n  ctx.threat.indicator.provider = providers;\n}\nif (categories.size() > 0) {\n  if (ctx.indicator_categories == null) {\n    ctx.indicator_categories = new HashMap();\n  }\n  ctx.indicator_categories = categories;\n}\nif (is_osint) {\n  ctx.tlp_color = \"GREEN\";\n}\nelse {\n  ctx.tlp_color = \"RED\";\n}"#;
-
-    /// Verbatim from the same module. One list of associations sorted into TWO
-    /// columns by a `type` member neither column gathers, one accumulator
-    /// written to two targets, and a literal stamped beside the second.
-    const MANDIANT_ASSOCIATIONS: &str = r#"def groups = new ArrayList();\ndef software = new ArrayList();\nfor (association in ctx.json.attributed_associations) {\n  if (association == null) {\n    return;\n  }\n  if (association.containsKey(\"type\") && association[\"type\"] == \"threat-actor\" && !groups.contains(association[\"name\"])) {\n    groups.add(association[\"name\"]);\n  }\n  else if (association.containsKey(\"type\") && association[\"type\"] == \"malware\" && !software.contains(association[\"name\"])) {\n    software.add(association[\"name\"]);\n  }\n}\nif (groups.size() > 0) {\n  if (ctx.threat.group == null) {\n    ctx.threat.group = new HashMap();\n  }\n  if (ctx.threat.group.name == null) {\n    ctx.threat.group.name = new HashMap();\n  }\n  if (ctx.threat.group.id == null) {\n    ctx.threat.group.id = new HashMap();\n  }\n  ctx.threat.group.id = groups;\n  ctx.threat.group.name = groups;\n}\nif (software.size() > 0) {\n  if (ctx.threat.software == null) {\n    ctx.threat.software = new HashMap();\n  }\n  if (ctx.threat.software.type == null) {\n    ctx.threat.software.type = \"Malware\";\n  }\n  if (ctx.threat.software.name == null) {\n    ctx.threat.software.name = new HashMap();\n  }\n  ctx.threat.software.name = software;\n}"#;
-
-    #[test]
-    fn one_walk_dedupes_a_member_flattens_a_list_and_folds_a_flag() {
-        assert_eq!(
-            parse_gather_members(&crate::common::normalise(MANDIANT_SOURCES)),
-            Some(
-                GatherMembers::new(
-                    "json.sources",
-                    true,
-                    vec![
-                        GatheredColumn::new("source_name", "threat.indicator.provider").deduped(),
-                        GatheredColumn::new("category", "indicator_categories").flattened(),
-                    ],
-                )
-                .with_flag("osint", "tlp_color", "GREEN", "RED")
-            )
-        );
-    }
-
-    /// The capture's own ipv4 event: five sources, three category lists between
-    /// them, and every source OSINT.
-    #[test]
-    fn the_categories_of_every_source_are_flattened_into_one_list() {
-        let mut event = Event::new(json!({ "json": { "sources": [
-            { "source_name": "voipbl", "osint": true, "category": [] },
-            { "source_name": "greensnow", "osint": true, "category": ["exploit/vuln-scanning", "exploit"] },
-            { "source_name": "sblam_blacklist", "osint": true, "category": ["spam/sender", "spam"] },
-            { "source_name": "blocklist_net_ua", "osint": true, "category": [] },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            MANDIANT_SOURCES
-        ));
-        assert_eq!(
-            event.get("indicator_categories"),
-            Some(&json!([
-                "exploit/vuln-scanning",
-                "exploit",
-                "spam/sender",
-                "spam"
-            ]))
-        );
-        assert_eq!(event.get("tlp_color"), Some(&json!("GREEN")));
-    }
-
-    /// The capture's url event: the same source listed twice, and not OSINT.
-    /// Without the dedupe the provider came back `["Mandiant","Mandiant"]`, and
-    /// without the flag the TLP was never written at all.
-    #[test]
-    fn a_source_listed_twice_is_one_provider_and_a_private_source_is_red() {
-        let mut event = Event::new(json!({ "json": { "sources": [
-            { "source_name": "Mandiant", "osint": false, "category": [] },
-            { "source_name": "Mandiant", "osint": false, "category": [] },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            MANDIANT_SOURCES
-        ));
-        assert_eq!(
-            event.get("threat.indicator.provider"),
-            Some(&json!(["Mandiant"]))
-        );
-        assert_eq!(event.get("tlp_color"), Some(&json!("RED")));
-        // Every source's category list was empty, so the guarded write never
-        // ran and no empty list is left behind.
-        assert_eq!(event.get("indicator_categories"), None);
-    }
-
-    /// One record that is not OSINT clears the flag for the whole walk, however
-    /// many OSINT ones surround it.
-    #[test]
-    fn one_private_source_among_public_ones_clears_the_flag() {
-        let mut event = Event::new(json!({ "json": { "sources": [
-            { "source_name": "blocklist_de", "osint": true },
-            { "source_name": "Mandiant", "osint": false },
-            { "source_name": "phishtank", "osint": true },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            MANDIANT_SOURCES
-        ));
-        assert_eq!(event.get("tlp_color"), Some(&json!("RED")));
-    }
-
-    #[test]
-    fn one_list_is_sorted_into_two_columns_by_a_member_neither_gathers() {
-        assert_eq!(
-            parse_gather_members(&crate::common::normalise(MANDIANT_ASSOCIATIONS)),
-            Some(GatherMembers::new(
-                "json.attributed_associations",
-                true,
-                vec![
-                    GatheredColumn::new("name", "threat.group.id")
-                        .also_into("threat.group.name")
-                        .deduped()
-                        .selected_on("type", "threat-actor"),
-                    GatheredColumn::new("name", "threat.software.name")
-                        .deduped()
-                        .selected_on("type", "malware")
-                        .with_literal("threat.software.type", "Malware"),
-                ],
-            ))
-        );
-
-        // The capture's md5 event. Ignoring the selector wrote both names into
-        // both columns; reading only the last assignment dropped the group id;
-        // and the literal beside the list is the software's own type.
-        let mut event = Event::new(json!({ "json": { "attributed_associations": [
-            { "id": "threat-actor--09b0", "name": "UNC3313", "type": "threat-actor" },
-            { "id": "malware--999a", "name": "SMUGPIGEON", "type": "malware" },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            MANDIANT_ASSOCIATIONS
-        ));
-        assert_eq!(event.get("threat.group.id"), Some(&json!(["UNC3313"])));
-        assert_eq!(event.get("threat.group.name"), Some(&json!(["UNC3313"])));
-        assert_eq!(
-            event.get("threat.software.name"),
-            Some(&json!(["SMUGPIGEON"]))
-        );
-        assert_eq!(event.get("threat.software.type"), Some(&json!("Malware")));
-    }
-
-    /// The literal is stamped only where the column gathered something, because
-    /// the script writes it inside the same `size() > 0` guard.
-    #[test]
-    fn a_column_that_gathers_nothing_stamps_no_literal_either() {
-        let mut event = Event::new(json!({ "json": { "attributed_associations": [
-            { "name": "UNC961", "type": "threat-actor" },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            MANDIANT_ASSOCIATIONS
-        ));
-        assert_eq!(event.get("threat.group.name"), Some(&json!(["UNC961"])));
-        assert_eq!(event.get("threat.software.name"), None);
-        assert_eq!(event.get("threat.software.type"), None);
-    }
-}
+#[path = "gather_members_tests.rs"]
+mod tests;

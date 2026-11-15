@@ -247,7 +247,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "a9215dff2a1d49458b0aa173fcf343de295bbc18319a1b310af0cc3bdb210d31",
+                        r#"{"params":null,"known":[{"RowLookupWithFallback":{"item":"item","table":"_conf.tz_map","key":"tz_short","subject":"_temp_.tz","value_col":"tz_long","target":null}}]}"#,
                         r#"String get_timezone(def ctx) {\n  if (ctx._temp_?.tz != null) {\n    if (ctx._conf?.tz_map != null) {\n      for (def item : ctx._conf.tz_map) {\n        if (item.tz_short == ctx._temp_.tz) {\n          return item.tz_long;\n        }\n      }\n    }\n    if (ctx._temp_.tz == 'Z') {\n      return '+00:00';\n    }\n    if (ctx._temp_.tz.length() <= 4) {\n      // all time zone abbreviations need to be uppercase\n      return ctx._temp_.tz.toUpperCase();\n    }\n\n    return ctx._temp_.tz;\n  }\n\n  if (ctx._conf?.tz_offset != null) {\n      ctx.event.timezone = ctx._conf.tz_offset;\n      return ctx._conf.tz_offset;\n  }\n\n  ctx.event.timezone = 'UTC';\n  return 'UTC';\n}\n\ndef event_timezone = get_timezone(ctx);\nif (!event_timezone.contains('+') && !event_timezone.contains('-') && !(event_timezone.length() > 4)) {\n  // timezone abbreviation e.g. CEST need to be put inside the timestamp\n  SimpleDateFormat sdf = new SimpleDateFormat(\"z\");\n  sdf.parse(event_timezone);\n  ctx._temp_.date_timezone = ZoneId.of(sdf.getTimeZone().getID(), ZoneId.SHORT_IDS).getId();\n  ctx?._temp_.cisco_timestamp = ctx?._temp_.cisco_timestamp + \" \" + event_timezone;\n} else {\n  // timezone is either abbreviation+-offset e.g. UTC+1 or long representation\n  // e.g. Europe/Athens needs to be put as a ZoneId and *not* inside the timestamp\n  ctx._temp_.date_timezone = event_timezone;\n}"#
                     ),
                 )?;

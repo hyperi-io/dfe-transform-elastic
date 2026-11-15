@@ -59,8 +59,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def err_levels = [\"FATAL\", \"ERROR\", \"WARN\"]; if (err_levels.contains(ctx.log.level)) {\n  ctx.event.type = [\"error\"];\n} else {\n  ctx.event.type = [\"info\"];\n}"#
+                    compiled_painless!(
+                        "e57ef184b4ad15554a3e7f1a4c240b06596cd031b43b5a19630cd4c6be4c0f13",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"ListContains":{"members":["FATAL","ERROR","WARN"],"argument":{"Field":"log.level"}}}]],"then":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["error"]}}}}],"alt":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}}]}}],"whole":true}}]}"#
                     ),
                 )?;
             }

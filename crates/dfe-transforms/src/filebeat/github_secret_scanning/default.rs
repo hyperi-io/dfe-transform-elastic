@@ -472,8 +472,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def secret = ctx.github.secret_scanning.secret.toString();\ndef masked_secret = secret;\nint num_start = 2;\nint num_end = 2;\ndef masked_value = String.join(\"\", Collections.nCopies(secret.length()-(num_start+num_end), \"X\"));\nmasked_secret = secret.substring(0,num_start) + masked_value + secret.substring(secret.length()-num_end);\nctx.github.secret_scanning.secret = masked_secret;\n"#
+                    compiled_painless!(
+                        "c6de198000bf271071761a0253759effcfc21dd63547e9dcc0022a2d8e8a52df",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -483,8 +484,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def time_to_resolution = new HashMap();\ndef resolvedAtDt = ctx.github.secret_scanning.resolved_at;\ndef createdAtDt = ctx.github.secret_scanning.created_at;\nZonedDateTime zdt = ZonedDateTime.parse(createdAtDt);\nlong createdAtEpoch = zdt.toEpochSecond();\nzdt = ZonedDateTime.parse(resolvedAtDt);\nlong resolvedAtEpoch = zdt.toEpochSecond();\ntime_to_resolution.put(\"sec\", resolvedAtEpoch - createdAtEpoch);\nctx.github.secret_scanning.time_to_resolution = time_to_resolution;\n"#
+                    compiled_painless!(
+                        "c46d74d1aef1631a428484ec97c72d6db56cc36bbecf24017b822ffd201a1fe3",
+                        r#"{"params":null,"known":[{"SecondsBetween":{"from":"github.secret_scanning.created_at","to":["github.secret_scanning.resolved_at"],"key":"sec","target":"github.secret_scanning.time_to_resolution"}}]}"#
                     ),
                 )?;
             }

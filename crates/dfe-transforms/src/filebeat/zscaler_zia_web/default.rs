@@ -93,8 +93,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.resp?.version == null) {\n  def fields = [];\n  for (e in ctx.json.entrySet()) {\n    fields.add(e.getKey());\n  }\n  Collections.sort(fields);\n  String signature = String.join(\"|\", fields);\n  if (signature != params.expect.fields) {\n    ctx.error = ctx.error ?: [:];\n    ctx.error.message = ctx.error.message ?: [];\n    ctx.error.message.add(\"field set mismatch: \"+signature+\" is not expected set of templated fields (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n  }\n} else if (ctx.resp.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add(\"template version mismatch: \"+ctx.resp.version.toString()+\" is not expected version (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n}"#
+                    compiled_painless!(
+                        "484c250d7872083e9f504042c3cb3828e7533f319d8f2a828da182656eca1b55",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"pkg_version\":\"3.17.0\",\"data_stream\":\"web-log\",\"expect\":{\"fields\":\"action|appclass|applayerprotocol|appname|appriskscore|apprulelabel|b64referer|b64url|bamd5|bandwidthclassname|bandwidthrulename|bwthrottle|bypassedtime|bypassedtraffic|client_tls_keyex_alg|client_tls_keyex_hybrid_offers|client_tls_keyex_non_pqc_offers|client_tls_keyex_pqc_offers|client_tls_keyex_unknown_offers|client_tls_sig_alg|client_tls_sig_hybrid_offers|client_tls_sig_non_pqc_offers|client_tls_sig_pqc_offers|client_tls_sig_unknown_offers|cloudname|cltintip|cltip|cltpubip|cltsourceport|cltsslcipher|cltsslfailcount|cltsslfailreason|cltsslsessreuse|clttlsversion|company|contenttype|datacenter|datacentercity|datacentercountry|day|day_of_month|dept|deviceappversion|devicehostname|devicemodel|devicename|deviceostype|deviceosversion|deviceowner|devicetype|df_hosthead|df_hostname|dlpdict|dlpdicthitcount|dlpeng|dlpidentifier|dlpmd5|dlprulename|dstip_country|eedone|epochtime|external_devid|externalsslpolicyreason|fileclass|filename|filesubtype|filetype|flow_type|forward_gateway_ip|forward_gateway_name|forward_type|ft_rulename|host|hour|is_dst_cntry_risky|is_src_cntry_risky|is_sslexpiredca|is_sslselfsigned|is_ssluntrustedca|keyprotectiontype|location|login|malwarecategory|malwareclass|minute|mobappcategory|mobappname|mobdevtype|module|month|month_of_year|nssserviceip|oapprulelabel|obwclassname|ocip|ocpubip|odevicehostname|odevicename|odeviceowner|odlpdict|odlpeng|odlprulename|ofwd_gw_name|ologin|ordr_rulename|ourlcat|ourlfilterrulelabel|ozpa_app_seg_name|productversion|prompt_req|proto|rdr_rulename|reason|recordid|refererhost|reqdatasize|reqheadersize|reqmethod|reqsize|reqversion|respcode|respdatasize|respheadersize|respsize|respversion|riskscore|rulelabel|ruletype|second|server_tls_keyex_alg|server_tls_sig_alg|serverip|serversslsessreuse|sha256|srcip_country|srvcertchainvalpass|srvcertvalidationtype|srvcertvalidityperiod|srvocspresult|srvsslcipher|srvtlsversion|srvwildcardcert|ssl_rulename|ssldecrypted|threatname|threatseverity|throttlereqsize|throttlerespsize|time|totalsize|trafficredirectmethod|tz|unscannabletype|upload_doctypename|upload_fileclass|upload_filename|upload_filesubtype|upload_filetype|urlcatmethod|urlclass|urlfilterrulelabel|urlsubcat|urlsupercat|useragent|useragentclass|useragenttoken|userlocationname|year|zpa_app_seg_name|ztunnelversion\",\"version\":\"v11\"}}"
@@ -109,8 +110,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"// Zscaler hex-encoded data is similar to URL encoded data, but it doesn't encode `%`.\n// This pre-processing allows the URL decode processor's strict logic to run successfully.\ndef pattern = /(%)(?![0-9A-Fa-f]{2})/;\nfor (String k: params.fields) {\n    String v = ctx.json[k];\n    if (v == null) {\n        continue;\n    }\n    ctx.json[k] = pattern.matcher(v).replaceAll('%25');\n}"#
+                    compiled_painless!(
+                        "614b5e0c5a596b1b499a3cd03b6b70717cf826ee7e3cc5e3e3f456b733380d1c",
+                        r#"{"params":null,"known":[]}"#
                     ),
                     cached_params!(
                         "{\"fields\":[\"apprulelabel\",\"devicename\",\"filename\",\"host\",\"location\",\"login\",\"mobappname\",\"refererhost\",\"rulelabel\",\"upload_filename\",\"urlfilterrulelabel\",\"useragent\",\"userlocationname\"]}"
@@ -1396,8 +1398,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"String osType = ctx.zscaler_zia.web.device.os.type;\nif (ctx.host == null) {\n    Map map = new HashMap();\n    ctx.put('host', map);\n}\nif (ctx.host?.os == null) {\n    Map map = new HashMap();\n    ctx.host.put('os', map);\n}\nif (osType == 'iOS') {\n   ctx.host.os.put('type', 'ios');\n}\nelse if (osType == 'Android OS') {\n   ctx.host.os.put('type', 'android');\n}\nelse if (osType == 'Windows OS') {\n   ctx.host.os.put('type', 'windows');\n}\nelse if (osType == 'MAC OS') {\n   ctx.host.os.put('type', 'macos');\n}\nelse if (osType == 'Other OS') {\n   ctx.host.os.put('type', 'other');\n}"#
+                        compiled_painless!(
+                            "887ac7c29c487820aa92235239d67d60158ca9ee1e19f14cb677abbe947d8785",
+                            r#"{"params":null,"known":[{"LiteralValueMap":{"source":"zscaler_zia.web.device.os.type","arms":[{"when":"iOS","target":"host.os.type","value":"ios"},{"when":"Android OS","target":"host.os.type","value":"android"},{"when":"Windows OS","target":"host.os.type","value":"windows"},{"when":"MAC OS","target":"host.os.type","value":"macos"},{"when":"Other OS","target":"host.os.type","value":"other"}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -2604,7 +2607,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx.json.referer = ctx.json.b64referer.decodeBase64();"#),
+                    compiled_painless!(
+                        "4abe31732cc970591e10d5ec21ac715f20143bf243546b614fc0726a2dd0b801",
+                        r#"{"params":null,"known":[{"DecodeBase64":{"source":"json.b64referer","target":"json.referer"}}]}"#
+                    ),
                 )?;
             }
 
@@ -3838,7 +3844,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx.json.url = ctx.json.b64url.decodeBase64();"#),
+                    compiled_painless!(
+                        "d7d9e91e40d40762755a7ee767b9ea2bc45ade0fb2895a5f403919c6cf83c4f2",
+                        r#"{"params":null,"known":[{"DecodeBase64":{"source":"json.b64url","target":"json.url"}}]}"#
+                    ),
                 )?;
             }
 
@@ -3855,8 +3864,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"// Remap network.protocol to a valid value, if necessary.\nif (params.valid_protocols.contains(ctx.network.protocol)) {\n  ctx.json['url'] = ctx.network.protocol + '://' + ctx.json.url;\n} else {\n  ctx.json['url'] = params.default_protocol + '://' + ctx.json.url;\n}\n"#
+                    compiled_painless!(
+                        "192a66c20822525b2469b1505c4b7a54d9e9a88ed72536c4eae02efd04c4eec4",
+                        r#"{"params":{"ProtocolPrefix":{"list":"valid_protocols","fallback":"default_protocol","subject":"network.protocol","target":"json.url"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"valid_protocols\":[\"http\",\"https\"],\"default_protocol\":\"https\"}"

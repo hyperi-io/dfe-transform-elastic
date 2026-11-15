@@ -468,7 +468,9 @@ impl Transform for Event {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "60d1d9a241c76fd269ee68a641e14746423eb6124e27cfeaca41e4627b5bab8a",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"fortinet.firewall.advpnsc","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"fortinet.firewall.advpnsc","value":{"Test":[[{"Compare":{"path":"fortinet.firewall.advpnsc","wanted":{"Text":"0"},"negated":true,"lowered":false}}]]}}}}],"alt":[]}}],"whole":true}}]}"#,
                     r#"if (ctx.fortinet?.firewall?.advpnsc != null) {\n  ctx.fortinet.firewall.advpnsc = ctx.fortinet.firewall.advpnsc != '0';\n}\n"#
                 ),
             )?;
@@ -487,7 +489,9 @@ impl Transform for Event {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "cc05dd074aca0a18e177668b06d68ee80724a7dd1b0b7e51a800673817af8a39",
+                        r#"{"params":null,"known":["SwapSubtrees",{"GuardedCopy":{"statements":[{"Literal":{"Set":{"path":"source","value":{"Field":"destination"}}}},{"If":{"test":[[{"Compare":{"path":"source","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"source.user","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"source.user","value":{"Field":"source.user"}}}},{"Literal":{"Remove":{"path":"source.user"}}}],"alt":[]}},{"Literal":{"Set":{"path":"destination","value":{"Field":"source"}}}}],"whole":false}}]}"#,
                         r#"def tmp = ctx.source;\nctx.source = ctx.destination;\nif (ctx.source == null) { ctx.source = [:]; }\nif ( tmp?.user != null ) {\n    ctx.source.user = tmp.user;\n    tmp.remove(\"user\");\n}\nctx.destination = tmp;\n"#
                     ),
                 )?;

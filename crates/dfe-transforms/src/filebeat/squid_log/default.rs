@@ -95,7 +95,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx._tmp?.values().removeIf(value -> value == \"-\");"#),
+                    compiled_painless!(
+                        "8de25c19c4ddeba12c218df262c98c01eed7fce153366fc9f4f7669bbf970d07",
+                        r#"{"params":null,"known":[{"RemoveMapValue":{"field":"_tmp","value":"-"}}]}"#
+                    ),
                 )?;
             }
 
@@ -107,8 +110,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx[\"@timestamp\"] = new Date(ctx._tmp.time_s * 1000 + ctx._tmp.time_ms);"#
+                    compiled_painless!(
+                        "8c4a870cac2270dfda10bf22099d2db65cedaa59d9320a46c84237a2086231c1",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

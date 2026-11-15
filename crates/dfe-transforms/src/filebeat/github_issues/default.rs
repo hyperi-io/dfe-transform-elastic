@@ -447,8 +447,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Map label;\nList labels = new ArrayList();\nList labels_raw = ctx._temp_.labels;\nString label_key, label_value;\nfor (Map label_raw: labels_raw) {\n    label = new HashMap();\n    label.put(\"name\", label_raw.name);\n    label.put(\"description\", label_raw.description);\n    labels.add(label);\n}\nctx.github.issues.labels = labels;\n"#
+                    compiled_painless!(
+                        "282dcf74aa96f6204533d05e6a32419bcee6774d118ec815f7483f5f34998726",
+                        r#"{"params":null,"known":[{"ListRebuild":{"list":"_temp_.labels","target":"github.issues.labels","take":{"Record":[["name","name"],["description","description"]]}}}]}"#
                     ),
                 )?;
             }
@@ -458,8 +459,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def time_to_close = new HashMap();\ndef closedAtDt = ctx.github.issues.closed_at;\ndef createdAtDt = ctx.github.issues.created_at;\nZonedDateTime zdt = ZonedDateTime.parse(createdAtDt);\nlong createdAtEpoch = zdt.toEpochSecond();\nzdt = ZonedDateTime.parse(closedAtDt);\nlong closedAtEpoch = zdt.toEpochSecond();\ntime_to_close.put(\"sec\", closedAtEpoch - createdAtEpoch);\nctx.github.issues.time_to_close = time_to_close;\n"#
+                    compiled_painless!(
+                        "729865076951747701612803932f6ce2c17f06a8d7d3657de3a65cf16c6c1313",
+                        r#"{"params":null,"known":[{"SecondsBetween":{"from":"github.issues.created_at","to":["github.issues.closed_at"],"key":"sec","target":"github.issues.time_to_close"}}]}"#
                     ),
                 )?;
             }

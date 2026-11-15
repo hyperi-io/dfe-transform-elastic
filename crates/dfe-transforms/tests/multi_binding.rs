@@ -18,14 +18,12 @@
 //! ladder contention and a hand transcription consulted ahead of the ladder
 //! competes with nothing -- what remains is the ladder's own search space.
 //!
-//! The generated modules are the source of script text on purpose: they carry
-//! the literal in full, where `DFE_PAINLESS_UNHANDLED` groups scripts by their
-//! first 200 characters and cannot be parsed back.
+//! The plans are read back out of the generated modules, one per distinct
+//! script hash.
 
-use std::collections::BTreeSet;
-use std::path::Path;
+mod sites;
 
-use dfe_runtime::painless_plan::PainlessPlan;
+use std::collections::BTreeMap;
 
 /// Scripts binding to more than one pattern, as of 2026-09-07.
 ///
@@ -88,76 +86,23 @@ use dfe_runtime::painless_plan::PainlessPlan;
 /// and the call site passes no `params` block, so dispatch skips it and this
 /// arm is the only one that can run. The source scored 0 of 2 events with 26
 /// fields Elasticsearch does not emit, and 2 of 2 with none once it bound.
-const MULTI_BINDING: usize = 58;
-
-/// The `cached_painless!` literals a generated file holds, in full.
 ///
-/// rustfmt breaks a long macro call across lines, so only 578 of the 2,456
-/// call sites spell `cached_painless!(r#"` contiguously. The whitespace skip
-/// is what reaches the rest.
-fn scripts_in(text: &str) -> Vec<String> {
-    let mut found = Vec::new();
-    let mut rest = text;
-    while let Some(at) = rest.find("cached_painless!(") {
-        let after = &rest[at + "cached_painless!(".len()..];
-        let opened = after.trim_start();
-        let Some(body) = opened.strip_prefix("r#\"") else {
-            rest = after;
-            continue;
-        };
-        let Some(end) = body.find("\"#") else {
-            break;
-        };
-        found.push(body[..end].to_string());
-        rest = &body[end..];
-    }
-    found
-}
-
-fn generated_root() -> &'static Path {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-}
-
-fn every_script() -> BTreeSet<String> {
-    let mut held = BTreeSet::new();
-    let mut stack = vec![generated_root().join("src")];
-    while let Some(dir) = stack.pop() {
-        let Ok(entries) = std::fs::read_dir(&dir) else {
-            continue;
-        };
-        for entry in entries.flatten() {
-            let path = entry.path();
-            if path.is_dir() {
-                stack.push(path);
-            } else if path.extension().is_some_and(|ext| ext == "rs")
-                && let Ok(text) = std::fs::read_to_string(&path)
-            {
-                held.extend(scripts_in(&text));
-            }
-        }
-    }
-    held
-}
-
-#[test]
-fn the_scan_finds_scripts_at_all() {
-    // A floor on the scan itself: a macro rename would empty it silently and
-    // every assertion below would pass on nothing.
-    let scripts = every_script();
-    assert!(
-        scripts.len() > 500,
-        "only {} scripts found -- has cached_painless! been renamed?",
-        scripts.len()
-    );
-}
+/// 58 to 56 when the scan moved to the compiled plans, which it reads at every
+/// site, once per script hash. okta's two risk-behaviour scripts left the
+/// search space when `RemapKeysThroughTable` stopped claiming them with script
+/// text as its target.
+const MULTI_BINDING: usize = 56;
 
 #[test]
 fn the_shadowing_search_space_has_not_grown() {
-    let mut multi: Vec<(usize, String)> = every_script()
+    let plans: BTreeMap<String, Vec<String>> = sites::sites()
         .into_iter()
-        .filter_map(|script| {
-            let names: Vec<String> = PainlessPlan::new(&script)
-                .binding()
+        .map(|site| (site.hash, site.plan.binding()))
+        .collect();
+    let mut multi: Vec<(usize, String)> = plans
+        .into_iter()
+        .filter_map(|(hash, binding)| {
+            let names: Vec<String> = binding
                 .into_iter()
                 .filter(|name| !name.starts_with("Bespoke("))
                 .collect();
@@ -166,14 +111,7 @@ fn the_shadowing_search_space_has_not_grown() {
                     .iter()
                     .map(|name| name.split(['(', ' ', '{']).next().unwrap_or_default())
                     .collect();
-                (
-                    names.len(),
-                    format!(
-                        "{} <- {}",
-                        heads.join(" + "),
-                        &script[..script.len().min(72)]
-                    ),
-                )
+                (names.len(), format!("{} <- {hash}", heads.join(" + ")))
             })
         })
         .collect();

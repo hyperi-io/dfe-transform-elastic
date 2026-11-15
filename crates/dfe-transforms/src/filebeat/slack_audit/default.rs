@@ -327,8 +327,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def secs = (long)(ctx.slack.audit.details.action_timestamp/1e6);\ndef nanos = (long)(ctx.slack.audit.details.action_timestamp % 1e6) * 1000;\nctx[\"@timestamp\"] = Instant.ofEpochSecond(secs, nanos).atZone(ZoneId.of(\"UTC\"));\nctx.slack.audit.details.remove(\"action_timestamp\");\n"#
+                    compiled_painless!(
+                        "83cc0320dcf65ac594c1096efe04cf2fedf8bbd276202055e9c963ed6a401122",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -536,7 +537,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "d6767fde70d9d0f9e2cbfbd8ae2bf1affda7de96d86d79d186eb40c2eccc6544",
+                    r#"{"params":{"LookupMerge":{"statements":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}},{"If":{"test":[[{"Compare":{"path":"event.action","wanted":"Null","negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                     r#"ctx.event.kind = 'event';\nctx.event.type = ['info'];\nif (ctx.event?.action == null) {\n    return;\n}\nif (params.get(ctx.event.action) == null) {\n    return;\n}\ndef hm = new HashMap(params.get(ctx.event.action));\nhm.forEach((k, v) -> ctx.event[k] = v);\n"#
                 ),
                 cached_params!(

@@ -37,8 +37,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.event = ctx.event ?: [:]; ctx.event.original = Json.dump(ctx); ctx.tags = ctx.tags ?: []; if (!ctx.tags.contains('preserve_original_event')) {\n  ctx.tags.add('preserve_original_event');\n}\n"#
+                    compiled_painless!(
+                        "d7e8b5ffca6572aa6dad38f2b15e39c4ae7cedd63e380a701190ab5218c7f805",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -185,7 +186,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "1ca0f691517e2103af3dc1fc224226fa328a68aa89fd3d196ebb30ea5214ae3b",
+                        r#"{"params":{"ArmedTable":{"subject":"event_name","prelude":[["event.kind","event"]],"arms":[{"values":["user_prompt","skill_activated"],"writes":[]},{"values":["tool_decision"],"writes":[["event.category",["iam"]],["event.type",["info"]]]}],"table":"categories","columns":[{"target":"event.category","member":"category"},{"target":"event.type","member":"type"}],"defaults":[["event.category",["host"]],["event.type",["info"]]]}},"known":[{"GuardedCopy":{"statements":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}},{"If":{"test":[[{"Compare":{"path":"event_name","wanted":{"Text":"user_prompt"},"negated":false,"lowered":false}}],[{"Compare":{"path":"event_name","wanted":{"Text":"skill_activated"},"negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[[{"Compare":{"path":"event_name","wanted":{"Text":"tool_decision"},"negated":false,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.category","value":{"Literal":["iam"]}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}},"Return"],"alt":[]}},{"If":{"test":[["Never"]],"then":[],"alt":[{"Literal":{"Set":{"path":"event.category","value":{"Literal":["host"]}}}},{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}}]}}],"whole":false}}]}"#,
                         r#"def name = ctx.event_name; ctx.event = ctx.event ?: new HashMap(); ctx.event.kind = 'event'; if (name == 'user_prompt' || name == 'skill_activated') {\n  return;\n} if (name == 'tool_decision') {\n  ctx.event.category = ['iam'];\n  ctx.event.type = ['info'];\n  return;\n} def entry = params.categories.getOrDefault(name, null); if (entry != null) {\n  ctx.event.category = entry.category;\n  ctx.event.type = entry.type;\n} else {\n  ctx.event.category = ['host'];\n  ctx.event.type = ['info'];\n}\n"#
                     ),
                     cached_params!(

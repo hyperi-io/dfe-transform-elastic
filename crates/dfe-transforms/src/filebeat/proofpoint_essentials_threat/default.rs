@@ -55,8 +55,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\n\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      // Skip fields that contain '@' in their name\n      if (!entry.getKey().contains(\"@\")) {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n\n// Apply the conversion\nctx.proofpoint_essentials = ctx.proofpoint_essentials ?: [:];\nif (ctx.json != null) {\n  ctx.proofpoint_essentials.threat = convertToSnakeCase(ctx.json);\n}\n"#
+                compiled_painless!(
+                    "0b3616b19187aee3382985c7b01b6b1f1c1897fe0dc912c0c716a5dc492a1e13",
+                    r#"{"params":null,"known":[{"CamelToSnake":{"target":"proofpoint_essentials.threat","source":"json","rule":"AfterNonUpper","at_keys":"Drop","merge":false,"removes":[]}}]}"#
                 ),
             )?;
 
@@ -798,8 +799,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def ts = Instant.parse(ctx['@timestamp']);\nif (ctx.proofpoint_essentials?.threat?.event_type == 'messages_blocked' || ctx.proofpoint_essentials?.threat?.event_type == 'messages_delivered') {\n  if (ctx.proofpoint_essentials.threat.threats_info_map instanceof List) {\n    for (item in ctx.proofpoint_essentials.threat.threats_info_map) {\n      if (item?.threat_time instanceof String && Instant.parse(item.threat_time).isAfter(ts)) {\n        ts = item.threat_time;\n      }\n    }\n  }\n}\nif (ctx.proofpoint_essentials?.threat?.event_type == 'clicks_blocked' || ctx.proofpoint_essentials?.threat?.event_type == 'clicks_permitted') {\n  if (ctx.proofpoint_essentials.threat.threat_time instanceof String && Instant.parse(ctx.proofpoint_essentials.threat.threat_time).isAfter(ts)) {\n    ts = ctx.proofpoint_essentials.threat.threat_time;\n  }\n}\nctx['@timestamp'] = ts.toString();\n"#
+                        compiled_painless!(
+                            "ebe3dac02cd180d6dd795001993ba92b96a576b27ce4945b993fa65d5e18b887",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -1077,8 +1079,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.email = ctx.email ?: [:];\nctx.email.attachments = ctx.email.attachments ?: [];\nfor (attachment in ctx.proofpoint_essentials.threat.message_parts) {\n  if (attachment.disposition == 'attached') {\n    def o = [:];\n    o.file = [:];\n    o.file.hash = [:];\n    o.file.hash.md5 = attachment.md5;\n    o.file.hash.sha256 = attachment.sha256;\n    o.file.name = attachment.filename;\n    o.file.mime_type = attachment.content_type;\n    ctx.email.attachments.add(o);\n  }\n}\n"#
+                        compiled_painless!(
+                            "c43bde1ccb88f1f326655353a7fd134a6ff31dde713be064d2b740b02a001055",
+                            r#"{"params":null,"known":[{"GuardedRecords":{"list":"proofpoint_essentials.threat.message_parts","guard":["disposition","attached"],"writes":[["file.hash.md5","md5"],["file.hash.sha256","sha256"],["file.name","filename"],["file.mime_type","content_type"]],"target":"email.attachments"}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -1205,8 +1208,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.name = ctx.threat.indicator.name ?: [];\nctx.threat.indicator.type = ctx.threat.indicator.type ?: [];\nctx.threat.indicator.email = ctx.threat.indicator.email ?: [:];\nctx.threat.indicator.email.address = ctx.threat.indicator.email.address ?: [];\nctx.threat.indicator.url = ctx.threat.indicator.url ?: [:];\nctx.threat.indicator.url.original = ctx.threat.indicator.url.original ?: [];\nctx.related = ctx.related ?: [:];\nctx.related.hash = ctx.related.hash ?: [];\nctx.related.user = ctx.related.user ?: [];\nfor (artifact in ctx.proofpoint_essentials.threat.threats_info_map) {\n  if (artifact.threat != null) {\n\n    // if artifact is hash of the attachment threat\n    if (artifact.threat.length() == 64) {\n      def str = artifact.threat.toLowerCase();\n      def hash_pattern = /^[0-9a-f]{64}$/;\n      if (hash_pattern.matcher(str).matches() && !ctx.related.hash.contains(str)) {\n        ctx.related.hash.add(str);\n      }\n    }\n\n    // if artifact is email address of the impostor sender\n    def email_pattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$/;\n    if (email_pattern.matcher(artifact.threat).matches() && !ctx.related.user.contains(artifact.threat)) {\n      ctx.threat.indicator.email.address.add(artifact.threat);\n      ctx.threat.indicator.type.add('email-addr');\n      ctx.related.user.add(artifact.threat);\n    }\n\n    // else artifact is malicious url\n    if (artifact.threat_type != null && artifact.threat_type == 'URL') {\n      ctx.threat.indicator.url.original.add(artifact.threat);\n      ctx.threat.indicator.type.add('url'); \n    }\n\n    ctx.threat.indicator.name.add(artifact.threat);\n  }\n}\n"#
+                        compiled_painless!(
+                            "9f45e5e75f2770bd48ccf472ffadc860e4b7a09e621519e55b90368b1881a032",
+                            r#"{"params":null,"known":[{"ThreatArtifacts":{"source":"proofpoint_essentials.threat.threats_info_map","value_member":"threat","kind_member":"threat_type","url_literal":"URL","name_target":"threat.indicator.name","type_target":"threat.indicator.type","email_target":"threat.indicator.email.address","url_target":"threat.indicator.url.original","related_hash":"related.hash","related_user":"related.user"}}]}"#
                         ),
                     )?;
                     Ok(())

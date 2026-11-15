@@ -60,8 +60,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.json.containsKey('workspace_id') && ctx.json.workspace_id == null) {\n  ctx.json.workspace_id = 'Default';\n} ctx.json.entrySet().removeIf(e -> e.getValue() == null);"#
+                    compiled_painless!(
+                        "20f909e105ccd81059eaf32797e146f533ba06a5db97c877ba9607b5b0dfcb18",
+                        r#"{"params":null,"known":["SentinelRemovalLiteral"]}"#
                     ),
                 )?;
             }

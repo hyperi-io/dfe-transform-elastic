@@ -5,30 +5,7 @@
 //! members.
 //!
 //! `ti_opencti` folds an indicator's external references this way, and it is
-//! the only thing `opencti.indicator.external_reference.*` is ever built from:
-//!
-//! ```painless
-//! ArrayList edges = ctx.externalReferences.edges;
-//! if (edges == null) {
-//!   return;
-//! }
-//! for (int i = 0; i < edges.length; i++) {
-//!   if (!ctx.opencti?.indicator?.containsKey('external_reference') == true) {
-//!     if (!ctx.containsKey('opencti')) { ctx.opencti = [:]; }
-//!     if (!ctx.opencti.containsKey('indicator')) { ctx.opencti.indicator = [:]; }
-//!     if (!ctx.opencti.indicator.containsKey('external_reference')) {
-//!       ctx.opencti.indicator.external_reference = [];
-//!     }
-//!   }
-//!   def newNode = [:];
-//!   for (def key : edges[i]['node'].keySet()) {
-//!     if (edges[i]['node'][key] != null) {
-//!       newNode[key] = edges[i]['node'][key];
-//!     }
-//!   }
-//!   ctx.opencti.indicator.external_reference.add(newNode);
-//! }
-//! ```
+//! the only thing `opencti.indicator.external_reference.*` is ever built from.
 //!
 //! Sibling of [`crate::group_records`], which walks the same list and files
 //! each record into a bucket one of its own members NAMES. Here there is one
@@ -48,7 +25,7 @@ use crate::params::{clean_path, is_ctx_path};
 use dfe_core::Event;
 
 /// A list's records appended to one target list, their null members dropped.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct AppendRecords {
     /// The list walked.
     list: String,
@@ -202,154 +179,7 @@ pub fn append_records(event: &mut Event, pattern: &AppendRecords) -> bool {
     true
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use serde_json::json;
-
-    /// Verbatim from the generated call site in
-    /// `crates/dfe-transforms/src/filebeat/ti_opencti_indicator/default.rs`, in
-    /// the escaped one-line form a stored script reaches it in.
-    const OPENCTI_EXTERNAL_REFERENCES: &str = r"ArrayList edges = ctx.externalReferences.edges;\nif (edges == null) {\n  return;\n}\nfor (int i = 0; i < edges.length; i++) {\n  if (!ctx.opencti?.indicator?.containsKey('external_reference') == true) {\n    if (!ctx.containsKey('opencti')) {\n      ctx.opencti = [:];\n    }\n    if (!ctx.opencti.containsKey('indicator')) {\n      ctx.opencti.indicator = [:];\n    }\n    if (!ctx.opencti.indicator.containsKey('external_reference')) {\n      ctx.opencti.indicator.external_reference = [];\n    }\n  }\n  def newNode = [:];\n  for (def key : edges[i]['node'].keySet()) {\n    if (edges[i]['node'][key] != null) {\n      newNode[key] = edges[i]['node'][key];\n    }\n  }\n  ctx.opencti.indicator.external_reference.add(newNode);\n}\n";
-
-    #[test]
-    fn the_opencti_external_references_append_to_one_list() {
-        assert_eq!(
-            parse_append_records(&crate::common::normalise(OPENCTI_EXTERNAL_REFERENCES)),
-            Some(AppendRecords {
-                list: "externalReferences.edges".to_owned(),
-                record: "node".to_owned(),
-                target: "opencti.indicator.external_reference".to_owned(),
-            })
-        );
-    }
-
-    /// The written document, not the parse. Every node lands in list order and
-    /// the nulls the vendor sent are gone.
-    #[test]
-    fn every_node_appends_without_its_null_members() {
-        let mut event = Event::new(json!({ "externalReferences": { "edges": [
-            { "node": { "source_name": "stopforumspam", "url": "https://example.com/a", "description": null } },
-            { "node": { "source_name": "MISC", "url": "https://example.com/b", "external_id": null } },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_EXTERNAL_REFERENCES
-        ));
-        assert_eq!(
-            event.get("opencti.indicator.external_reference"),
-            Some(&json!([
-                { "source_name": "stopforumspam", "url": "https://example.com/a" },
-                { "source_name": "MISC", "url": "https://example.com/b" },
-            ]))
-        );
-    }
-
-    /// An empty list leaves NO target: the seed sits inside the loop, so
-    /// Painless never reaches it either.
-    #[test]
-    fn an_empty_edge_list_writes_no_target() {
-        let mut event = Event::new(json!({ "externalReferences": { "edges": [] } }));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_EXTERNAL_REFERENCES
-        ));
-        assert_eq!(event.get("opencti"), None);
-    }
-
-    /// An absent list is the script's own `if (edges == null) return;`.
-    #[test]
-    fn an_absent_list_writes_nothing() {
-        let mut event = Event::new(json!({ "threat": { "indicator": { "type": "domain-name" } } }));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_EXTERNAL_REFERENCES
-        ));
-        assert_eq!(event.get("opencti"), None);
-    }
-
-    /// What an earlier processor already put in the target is kept, because
-    /// `.add()` appends to it.
-    #[test]
-    fn an_existing_target_list_is_appended_to() {
-        let mut event = Event::new(json!({
-            "externalReferences": { "edges": [{ "node": { "source_name": "MISC" } }] },
-            "opencti": { "indicator": { "external_reference": [{ "source_name": "held" }] } },
-        }));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_EXTERNAL_REFERENCES
-        ));
-        assert_eq!(
-            event.get("opencti.indicator.external_reference"),
-            Some(&json!([{ "source_name": "held" }, { "source_name": "MISC" }]))
-        );
-    }
-
-    /// The walked list is left exactly as it was -- the vendor's own `remove`
-    /// processor is what drops it.
-    #[test]
-    fn the_walked_list_is_left_alone() {
-        let mut event = Event::new(json!({ "externalReferences": { "edges": [
-            { "node": { "source_name": "MISC" } },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_EXTERNAL_REFERENCES
-        ));
-        assert_eq!(
-            event.get("externalReferences.edges"),
-            Some(&json!([{ "node": { "source_name": "MISC" } }]))
-        );
-    }
-
-    /// A subscripted target names its destination at run time, which is
-    /// `group_records`' intent and not this one.
-    #[test]
-    fn a_subscripted_target_is_declined() {
-        let script = r"ArrayList rows = ctx.a.list;\nfor (int i = 0; i < rows.length; i++) {\n  String k = rows[i]['node']['kind'];\n  if (!ctx.out.bucket.containsKey(k)) {\n    ctx.out.bucket[k] = [];\n  }\n  def newNode = [:];\n  for (def key : rows[i]['node'].keySet()) {\n    if (rows[i]['node'][key] != null) {\n      newNode[key] = rows[i]['node'][key];\n    }\n  }\n  ctx.out.bucket[k].add(newNode);\n}\n";
-        assert!(parse_append_records(&crate::common::normalise(script)).is_none());
-    }
-
-    /// Without the copy loop the record is appended WHOLE, which keeps the
-    /// nulls -- a different document, so a different pattern.
-    #[test]
-    fn an_append_with_no_copy_loop_is_declined() {
-        let script = r"ArrayList rows = ctx.a.list;\nfor (int i = 0; i < rows.length; i++) {\n  if (!ctx.out.containsKey('refs')) {\n    ctx.out.refs = [];\n  }\n  ctx.out.refs.add(rows[i]['node']);\n}\n";
-        assert!(parse_append_records(&crate::common::normalise(script)).is_none());
-    }
-
-    /// Without the empty-list seed the target is not a list, so `.add()` is a
-    /// different operation on a value something upstream put there.
-    #[test]
-    fn a_target_never_seeded_as_a_list_is_declined() {
-        let script = r"ArrayList rows = ctx.a.list;\nfor (int i = 0; i < rows.length; i++) {\n  def newNode = [:];\n  for (def key : rows[i]['node'].keySet()) {\n    if (rows[i]['node'][key] != null) {\n      newNode[key] = rows[i]['node'][key];\n    }\n  }\n  ctx.out.refs.add(newNode);\n}\n";
-        assert!(parse_append_records(&crate::common::normalise(script)).is_none());
-    }
-
-    /// A second append is a second thing being written, and reading one of them
-    /// claims the call site while writing half the document.
-    #[test]
-    fn a_script_with_two_appends_is_declined() {
-        let script = r"ArrayList rows = ctx.a.list;\nfor (int i = 0; i < rows.length; i++) {\n  if (!ctx.out.containsKey('refs')) {\n    ctx.out.refs = [];\n  }\n  def newNode = [:];\n  for (def key : rows[i]['node'].keySet()) {\n    if (rows[i]['node'][key] != null) {\n      newNode[key] = rows[i]['node'][key];\n    }\n  }\n  ctx.out.refs.add(newNode);\n  ctx.related.kinds.add(rows[i]['node']['kind']);\n}\n";
-        assert!(parse_append_records(&crate::common::normalise(script)).is_none());
-    }
-
-    /// A record that is not a map is skipped rather than appended as an empty
-    /// one: Painless throws on `null.keySet()`.
-    #[test]
-    fn a_missing_record_member_is_skipped() {
-        let mut event = Event::new(json!({ "externalReferences": { "edges": [
-            { "other": { "source_name": "not a node" } },
-            { "node": { "source_name": "MISC" } },
-        ]}}));
-        assert!(crate::common::try_known_painless(
-            &mut event,
-            OPENCTI_EXTERNAL_REFERENCES
-        ));
-        assert_eq!(
-            event.get("opencti.indicator.external_reference"),
-            Some(&json!([{ "source_name": "MISC" }]))
-        );
-    }
-}
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
+#[path = "append_records_tests.rs"]
+mod tests;

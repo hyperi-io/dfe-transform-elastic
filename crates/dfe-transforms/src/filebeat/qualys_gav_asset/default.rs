@@ -119,7 +119,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx.tags.remove(ctx.tags.indexOf('both'));"#),
+                    compiled_painless!(
+                        "b3b81b1eda742024d530de4e592482eeff45f71ec8042d38693ac58c9f1f129f",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Remove":{"path":"tags.both"}}}],"whole":true}}]}"#
+                    ),
                 )?;
             }
 
@@ -137,7 +140,10 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(r#"ctx.tags.remove(ctx.tags.indexOf('elastic_cloud_data'));"#),
+                    compiled_painless!(
+                        "c833e95838679d892c3bfddca75a292147198a332fcb7f0164e077a5693b7a5f",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Remove":{"path":"tags.elastic_cloud_data"}}}],"whole":true}}]}"#
+                    ),
                 )?;
             }
 
@@ -189,8 +195,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n    def result = \"\";\n    for (int i = 0; i < str.length(); i++) {\n        char c = str.charAt(i);\n        if (Character.isUpperCase(c)) {\n            if (i > 0 && Character.isLowerCase(str.charAt(i - 1))) {\n                result += \"_\";\n            }\n            result += Character.toLowerCase(c);\n        } else {\n            result += c;\n        }\n    }\n    return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n// Apply the conversion\nctx.qualys_gav = ctx.qualys_gav ?: [:];\nctx.qualys_gav.asset = ctx.qualys_gav.asset ?: [:];\nif (ctx.json != null) {\n  ctx.qualys_gav.asset.putAll(convertToSnakeCase(ctx.json));\n}\n// Remove json field\nctx.remove('json');\n"#
+                compiled_painless!(
+                    "135daee9316622ca9bc1b97f41817c563168bb7a2b7a9f115c1a9773623831fb",
+                    r#"{"params":null,"known":[{"CamelToSnake":{"target":"qualys_gav.asset","source":"json","rule":"OnWordBreak","at_keys":"Convert","merge":true,"removes":["json"]}}]}"#
                 ),
             )?;
 
@@ -675,8 +682,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.qualys_gav.asset.sensor.values().removeIf(v -> { return v == 0 });\n"#
+                    compiled_painless!(
+                        "b7223cf02d1dfc89f1a8ced72bdbf04d53153b9d8a5b151d5542daab245ef809",
+                        r#"{"params":null,"known":[{"RemoveMapValue":{"field":"qualys_gav.asset.sensor","value":0}}]}"#
                     ),
                 )?;
             }
@@ -3517,8 +3525,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"def os_type = ctx.qualys_gav.asset.operating_system.category1.toLowerCase();\n\nctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\n\nif (os_type.contains('centos') || os_type.contains('ubuntu')) {\n  ctx.host.os.put('type', 'linux');\n} else {\n  ctx.host.os.put('type', params.get(os_type));\n}\n"#
+                    compiled_painless!(
+                        "2e713107e2a58a58655dba27ca3b003b0baa6fe45022b659cd74c70d4f0aeb91",
+                        r#"{"params":{"MemberLookup":{"key":"qualys_gav.asset.operating_system.category1","table":null,"fold":"Lower","target":"host.os.type","wrap":false,"miss":"Null","literals":{"statements":[{"If":{"test":[[{"FieldContains":{"path":"qualys_gav.asset.operating_system.category1","argument":{"Literal":"centos"},"lowered":true}}],[{"FieldContains":{"path":"qualys_gav.asset.operating_system.category1","argument":{"Literal":"ubuntu"},"lowered":true}}]],"then":[{"Literal":{"Set":{"path":"host.os.type","value":{"Literal":"linux"}}}}],"alt":[]}}],"whole":false}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"macos\":\"macos\",\"linux\":\"linux\",\"unix\":\"unix\",\"windows\":\"windows\",\"ios\":\"ios\",\"android\":\"android\"}"
@@ -7319,6 +7328,7 @@ impl Transform for Default {
                     empty_strings: true,
                     empty_collections: true,
                     prune_lists: true,
+                    trim_strings: true,
                     ..DropPolicy::none()
                 },
                 None,

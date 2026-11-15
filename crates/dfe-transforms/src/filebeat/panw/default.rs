@@ -1110,8 +1110,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def fixHttpHeadersEscaping(String input) {\n  // Find a CSV fragment like `,Some-Header:\"eg1.com, eg2.com\";`\n  //     and correct it to be `,\"Some-Header:\"\"eg1.com, eg2.com\"\";\"`\n  Matcher matcher = /,(([A-Za-z0-9\\-_]+: *\\\"[^\\\"]*\\\"; *)+)/.matcher(input);\n  if (matcher.find()) {\n    String match = matcher.group(0);\n    String value = matcher.group(1);\n    String fixed = ',\"' + value.replace('\"', '\"\"') + '\"';\n    return input.replace(match, fixed);\n  } else {\n    return input;\n  }\n}\nctx.message = fixHttpHeadersEscaping(ctx.message);\n"#
+                        compiled_painless!(
+                            "44eb70af5035fe61ae63a6a39651c26beee1616e2f1a676a40a8354f49f46e92",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }
@@ -2047,8 +2048,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"Map url = new HashMap();\nString url_original = ctx.url.original;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.lastIndexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;"#
+                        compiled_painless!(
+                            "c9c77b242128ed2b5be12a473ed497dcda7be6db1a70da10414eadf3a564b7b7",
+                            r#"{"params":null,"known":["SchemelessUrl"]}"#
                         ),
                     )?;
                 }
@@ -2083,8 +2085,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"// For file.path to be set it must have had one of '/' or '\\' present.\nint idx = ctx.file.path.lastIndexOf('/');\nif (idx == -1) {\n  idx = ctx.file.path.lastIndexOf('\\\\');\n}\nctx.file[\"name\"] = ctx.file.path.substring(idx+1);"#
+                        compiled_painless!(
+                            "9f980c28bb5635e008b94e0d170e411c56d49839954e6befb59d2fa4b183a1fe",
+                            r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"file.path","target":"file.name","separator":"/","whole_when_absent":false}}]}"#
                         ),
                     )?;
                 }
@@ -3379,8 +3382,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"ctx.event.action = params.get(ctx.panw.panos.cmd);"#
+                            compiled_painless!(
+                                "c2ac03560e636cda2a42fcdf25a8414fb4b79918783dbc9abcc4274c6b5c6742",
+                                r#"{"params":{"LookupNormalise":[{"key":"panw.panos.cmd","fold":"None","target":"event.action"},{"statements":[],"whole":false}]},"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"add\":\"cmd-add\",\"clone\":\"cmd-clone\",\"commit\":\"cmd-commit\",\"delete\":\"cmd-delete\",\"edit\":\"cmd-edit\",\"move\":\"cmd-move\",\"rename\":\"cmd-rename\",\"set\":\"cmd-set\"}"
@@ -4428,8 +4432,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n"#
+                        compiled_painless!(
+                            "df5a33b8059b90a46216563551c53aeb8cb119e0adf117adc970036be2ef5b21",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }
@@ -4438,8 +4443,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n"#
+                        compiled_painless!(
+                            "024df5a1a89169a00f2a7612114dd28ce99024f23207859d52ead24c167a2066",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }
@@ -10522,7 +10528,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "2f1ade74c7c96cf28f03765124134bc3bdb4275da1747c9f21885144d95d724d",
+                        r#"{"params":"BitFlags","known":[]}"#,
                         r#"def labels = ctx.labels; if (labels == null) {\n  labels = new HashMap();\n  ctx['labels'] = labels;\n} long value = ctx._temp_.labels; for (entry in params.entrySet()) {\n  def flag = entry.getValue();\n  if (flag instanceof String) {\n      flag = Long.decode(flag);\n  }\n  if ((value & flag) != 0) {\n      labels[entry.getKey()] = true;\n  }\n}\n"#
                     ),
                     cached_params!(
@@ -10536,7 +10544,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "b4b59b0a231cc804bc3781c5721462fd7f39b73903bf2dfadb3e3fb644e2586d",
+                        r#"{"params":"Scale","known":[]}"#,
                         r#"long nanos = ctx['event']['duration'] * params.NANOS_IN_A_SECOND; ctx['event']['duration'] = nanos; def start = ctx.event?.start; if (start != null) {\n  ctx.event['end'] = ZonedDateTime.parse(start).plusNanos(nanos);\n}\n"#
                     ),
                     cached_params!("{\"NANOS_IN_A_SECOND\":1000000000}"),

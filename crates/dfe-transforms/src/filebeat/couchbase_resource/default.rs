@@ -221,8 +221,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.tags == null) {\n    ctx.tags = new ArrayList();\n}\nctx.tags.add(ctx.prometheus.labels.job)\n"#
+                    compiled_painless!(
+                        "e2f89e3f7c16967b2107beb1d70cbbfbf331ee7b628e1a93d42baf78b5711293",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"Compare":{"path":"tags","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"Literal":{"Append":{"path":"tags","value":{"Field":"prometheus.labels.job"}}}}],"whole":true}}]}"#
                     ),
                 )?;
                 Ok(())

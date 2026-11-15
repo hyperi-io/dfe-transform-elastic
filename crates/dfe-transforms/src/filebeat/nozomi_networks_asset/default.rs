@@ -823,8 +823,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"long lastActivity = ctx.json.last_activity_time;\nlong createdAt = ctx.json.created_at;\nlong uptimeMillis = lastActivity - createdAt;\nlong uptimeSeconds = uptimeMillis / 1000;\nctx.host = ctx.host ?: [:];\nctx.host.uptime = uptimeSeconds;"#
+                    compiled_painless!(
+                        "a5ad050926ebbc2cdb0bf18c3912370ea7c65141139f29483403d2e2245190e8",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -952,8 +953,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def locationList = new HashMap();\nlocationList.lat = ctx.nozomi_networks.asset.latitude;\nlocationList.lon = ctx.nozomi_networks.asset.longitude;\nctx.host = ctx.host ?: [:];\nctx.host.geo = ctx.host.geo ?: [:];\nctx.host.geo.location = locationList;"#
+                        compiled_painless!(
+                            "f210656edec3eae33ed9abf7db4991755fc1612a67f8dde167c8e7764b53df7a",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

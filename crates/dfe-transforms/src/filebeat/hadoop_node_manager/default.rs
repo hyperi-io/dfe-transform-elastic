@@ -35,8 +35,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"ctx.hadoop.node_manager.temp = ctx.hadoop.node_manager.beans[0]; ctx.hadoop.node_manager.remove(\"beans\")\n"#
+                compiled_painless!(
+                    "f7a6434303073d795df66a0ac8960cdebba4cacb2dbc69c9f8f3ff8d9eb475f3",
+                    r#"{"params":null,"known":[{"FirstElement":{"takes":[{"array":"hadoop.node_manager.beans","target":"hadoop.node_manager.temp","only_if_unset":false,"only_if_single":false,"consumes_array":true}]}}]}"#
                 ),
             )?;
 

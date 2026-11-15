@@ -145,8 +145,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def fixup(ArrayList macs) {\n  for (def i = 0; i < macs.length; i++) {\n    macs[i] = macs[i].replace(':','-').toUpperCase();\n  }\n  return macs;\n}\nctx.host['mac'] = fixup(ctx.host?.mac);\n"#
+                    compiled_painless!(
+                        "d4806e8ffc92e2f74dc38a872168d9f7483f441f227ccbfb3825faabefd42190",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -325,7 +326,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "a2dc0a891a78e0d236ebe604703a06e0b1c34367b1353b569ff0e42c4aa2afab",
+                        r#"{"params":{"LookupMerge":{"statements":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}},{"Literal":{"Set":{"path":"event.category","value":{"Literal":["network"]}}}},{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                         r#"ctx.event.kind = 'event';\nctx.event.category = ['network'];\ndef type_params = params.get(ctx?.suricata?.eve?.event_type);\nif (type_params == null) {\n    return;\n}\ntype_params.forEach((k, v) -> {\n    if ('network_protocol' == k) {\n        if (ctx.network == null) {\n            ctx.network = ['protocol': v];\n        } else {\n            ctx.network.protocol = v;\n        }\n    } else if (v instanceof List) {\n        ctx.event[k] = new ArrayList(v);\n    } else {\n        ctx.event[k] = v;\n    }\n});\n"#
                     ),
                     cached_params!(
@@ -463,8 +466,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def name = ctx?.suricata?.eve?.dns?.rrname;\ndef data = ctx?.suricata?.eve?.dns?.rdata;\ndef type = ctx?.suricata?.eve?.dns?.rrtype;\ndef ttl = ctx?.suricata?.eve?.dns?.ttl;\n\ndef answer = [:];\nif (name != null) {\n    answer[\"name\"] = name;\n}\nif (data != null) {\n    answer[\"data\"] = data;\n}\nif (type != null) {\n    answer[\"type\"] = type;\n}\nif (ttl != null) {\n    answer[\"ttl\"] = ttl;\n}\nif (!answer.isEmpty()) {\n    ctx.dns.answers = [answer];\n}\n\nif (type == \"A\" || type == \"AAAA\") {\n    ctx.dns.resolved_ip = [data];\n}\n"#
+                        compiled_painless!(
+                            "482c5da4e2fe0f4eb30d228baff5b93ec180a0774a5db38ce70ac528eb426eaa",
+                            r#"{"params":null,"known":[{"RecordFromFields":{"members":[["name","suricata.eve.dns.rrname"],["data","suricata.eve.dns.rdata"],["type","suricata.eve.dns.rrtype"],["ttl","suricata.eve.dns.ttl"]],"target":"dns.answers","also":{"decider":"suricata.eve.dns.rrtype","values":["A","AAAA"],"member":"suricata.eve.dns.rdata","target":"dns.resolved_ip"}}}]}"#
                         ),
                     )?;
                     // End nested pipeline: "dns-answer-v1"
@@ -483,8 +487,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def resolvedIps = new ArrayList();\nfor (def answer : ctx?.dns?.answers) {\n    // Normalize field names to match ECS.\n    def name = answer.remove(\"rrname\");\n    if (name != null) {\n        answer[\"name\"] = name;\n    }\n    def type = answer.remove(\"rrtype\");\n    if (type != null) {\n        answer[\"type\"] = type;\n    }\n    def data = answer.remove(\"rdata\");\n    if (data != null) {\n        answer[\"data\"] = data;\n    }\n\n    if (type == \"A\" || type == \"AAAA\") {\n        resolvedIps.add(data);\n    }\n}\n\nif (resolvedIps.size() > 0) {\n    ctx.dns.resolved_ip = resolvedIps;\n}\n"#
+                            compiled_painless!(
+                                "dcd6bfb439cf7f1800bc2e6ac1822f2566e0be6074da9dd0baf677282bf19637",
+                                r#"{"params":null,"known":[{"RecordRenames":{"list":"dns.answers","renames":[["rrname","name"],["rrtype","type"],["rdata","data"]],"collect":{"decider":"rrtype","values":["A","AAAA"],"member":"rdata","target":"dns.resolved_ip"}}}]}"#
                             ),
                         )?;
                     }
@@ -508,8 +513,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def rd = ctx.dns.question.registered_domain;\ndef firstDot = rd.indexOf(\".\");\nif (firstDot == -1) {\n    return;\n}\nctx.dns.question.top_level_domain = rd.substring(firstDot + 1);\n"#
+                        compiled_painless!(
+                            "d53cddcd89da3357fac1464e3f1272ad0220695946cf2744d478f052583bc96a",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }
@@ -580,8 +586,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def sni = ctx.suricata.eve.tls.sni;\nif (!sni.endsWith(\".\")) {\n    return;\n}\nctx.suricata.eve.tls.sni = sni.substring(0, sni.length() - 1);\n"#
+                        compiled_painless!(
+                            "cf62239bdb15883ec349cf9e658e797c2c4b8b21f4f01d98058c0ee4e546da1f",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }
@@ -1152,8 +1159,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def domain = ctx.destination?.domain; if (domain instanceof Collection) {\n\n\n  domain = domain.stream().distinct().collect(Collectors.toList());\n  if (domain.length == 1) {\n    domain = domain[0];\n  }\n  ctx.destination.domain = domain;\n}\n"#
+                    compiled_painless!(
+                        "860f2345aee0559090e60b9bd2857c0b5f90a892e71b3c5b5d3a4f2f29ab49e7",
+                        r#"{"params":null,"known":[{"DedupeUnwrap":"destination.domain"}]}"#
                     ),
                 )?;
                 Ok(())
@@ -1552,8 +1560,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"Instant ins(def d) {\n  try {\n    return Instant.parse(d);\n  } catch(Exception e) {\n    return null;\n  }\n} def ev = ctx['event']; if (ev != null) {\n  def start = ins(ev['start']);\n  def end = ins(ev['end']);\n  if (start != null && end != null && !start.isAfter(end)) {\n    ev['duration'] = Duration.between(start,end).toNanos();\n  }\n}\n"#
+                compiled_painless!(
+                    "8e303327b531f01b62d6873b2d874615ea57eeaace24002330dd89cf74e744b4",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

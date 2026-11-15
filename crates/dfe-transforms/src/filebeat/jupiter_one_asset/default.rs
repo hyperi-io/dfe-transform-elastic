@@ -55,8 +55,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n    def result = \"\";\n    for (int i = 0; i < str.length(); i++) {\n        char c = str.charAt(i);\n        if (Character.isUpperCase(c)) {\n            if (i > 0 && Character.isLowerCase(str.charAt(i - 1))) {\n                result += \"_\";\n            }\n            result += Character.toLowerCase(c);\n        } else {\n            result += c;\n        }\n    }\n    return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n// Apply the conversion\nctx.jupiter_one = ctx.jupiter_one ?: [:];\nif (ctx.json != null) {\n  ctx.jupiter_one.asset = convertToSnakeCase(ctx.json);\n}\n// Remove json field\nctx.remove('json');"#
+                compiled_painless!(
+                    "bc16fd15fbca0b01a4b61a32d1fbf6c345bd92eea5168970d4e6c1985375b0c6",
+                    r#"{"params":null,"known":[{"CamelToSnake":{"target":"jupiter_one.asset","source":"json","rule":"OnWordBreak","at_keys":"Convert","merge":false,"removes":["json"]}}]}"#
                 ),
             )?;
 
@@ -666,8 +667,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Instant eventstart = ZonedDateTime.parse(ctx.event?.start).toInstant();\nInstant eventend = ZonedDateTime.parse(ctx.event?.end).toInstant();\nctx.event['duration'] = ChronoUnit.NANOS.between(eventstart, eventend);"#
+                    compiled_painless!(
+                        "f4e6097293e2aa08e9d13209f0df46738a7b6e1476cb418f46bee45e405a1c73",
+                        r#"{"params":null,"known":[{"NanosBetween":{"start":"event.start","end":"event.end","target":"event.duration","non_negative":false}}]}"#
                     ),
                 )?;
             }

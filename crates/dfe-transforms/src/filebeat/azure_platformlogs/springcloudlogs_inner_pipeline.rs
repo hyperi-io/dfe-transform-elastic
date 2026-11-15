@@ -21,8 +21,9 @@ impl Transform for SpringcloudlogsInnerPipeline {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')"#
+                    compiled_painless!(
+                        "1d98408bb17fac2a68cd97ba63e3417da23809a4516f242fff4d7dc0cb6d7f40",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
                 Ok(())

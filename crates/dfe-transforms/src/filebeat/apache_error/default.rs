@@ -199,8 +199,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def err_levels = [\"emerg\", \"alert\", \"crit\", \"error\", \"warn\"]; if (err_levels.contains(ctx.log.level)) {\n  ctx.event.type = [\"error\"];\n} else {\n  ctx.event.type = [\"info\"];\n}"#
+                    compiled_painless!(
+                        "8e45d27228b0703046f311f13829498123edc98a59a9d8fa82466da3d0a5a767",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"ListContains":{"members":["emerg","alert","crit","error","warn"],"argument":{"Field":"log.level"}}}]],"then":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["error"]}}}}],"alt":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}}]}}],"whole":true}}]}"#
                     ),
                 )?;
             }

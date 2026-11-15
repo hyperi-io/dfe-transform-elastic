@@ -78,8 +78,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"long t = (long)(ctx.json.Timestamp);\nif (t > (long)(1e18)) {\n  ctx.json.Timestamp = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.Timestamp = t*(long)(1e3)\n}\n"#
+                        compiled_painless!(
+                            "896d6cfe7e6ab30897367707da5328b1ed441f19fdc07479a8dfbfcd16efc9c4",
+                            r#"{"params":null,"known":[{"EpochToMillis":{"fields":[["json.Timestamp",false]],"parse_strings":false}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -451,8 +452,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def queryType = String.valueOf(ctx.cloudflare_logpush.dns_firewall.question.type);\nctx.dns = ctx.dns ?: [:];\nctx.dns.question = ctx.dns.question ?: [:];\nif (params.containsKey(queryType)) {\n  ctx.dns.question.type = params[queryType];\n}\n"#
+                        compiled_painless!(
+                            "9bb7fefb16d0d8e91e7b07b4f67f885b270c5bf3166f1aeb149598fef329011f",
+                            r#"{"params":{"GuardedLookup":{"key":"cloudflare_logpush.dns_firewall.question.type","target":"dns.question.type"}},"known":[]}"#
                         ),
                         cached_params!(
                             "{\"0\":\"Reserved\",\"1\":\"A\",\"2\":\"NS\",\"3\":\"MD\",\"4\":\"MF\",\"5\":\"CNAME\",\"6\":\"SOA\",\"7\":\"MB\",\"8\":\"MG\",\"9\":\"MR\",\"10\":\"NULL\",\"11\":\"WKS\",\"12\":\"PTR\",\"13\":\"HINFO\",\"14\":\"MINFO\",\"15\":\"MX\",\"16\":\"TXT\",\"17\":\"RP\",\"18\":\"AFSDB\",\"19\":\"X25\",\"20\":\"ISDN\",\"21\":\"RT\",\"22\":\"NSAP\",\"23\":\"NSAP-PTR\",\"24\":\"SIG\",\"25\":\"KEY\",\"26\":\"PX\",\"27\":\"GPOS\",\"28\":\"AAAA\",\"29\":\"LOC\",\"30\":\"NXT\",\"31\":\"EID\",\"32\":\"NIMLOC\",\"33\":\"SRV\",\"34\":\"ATMA\",\"35\":\"NAPTR\",\"36\":\"KX\",\"37\":\"CERT\",\"38\":\"A6\",\"39\":\"DNAME\",\"40\":\"SINK\",\"41\":\"OPT\",\"42\":\"APL\",\"43\":\"DS\",\"44\":\"SSHFP\",\"45\":\"IPSECKEY\",\"46\":\"RRSIG\",\"47\":\"NSEC\",\"48\":\"DNSKEY\",\"49\":\"DHCID\",\"50\":\"NSEC3\",\"51\":\"NSEC3PARAM\",\"52\":\"TLSA\",\"53\":\"SMIMEA\",\"55\":\"HIP\",\"56\":\"NINFO\",\"57\":\"RKEY\",\"58\":\"TALINK\",\"59\":\"CDS\",\"60\":\"CDNSKEY\",\"61\":\"OPENPGPKEY\",\"62\":\"CSYNC\",\"63\":\"ZONEMD\",\"64\":\"SVCB\",\"65\":\"HTTPS\",\"66\":\"DSYNC\",\"67\":\"HHIT\",\"68\":\"BRID\",\"99\":\"SPF\",\"100\":\"UINFO\",\"101\":\"UID\",\"102\":\"GID\",\"103\":\"UNSPEC\",\"104\":\"NID\",\"105\":\"L32\",\"106\":\"L64\",\"107\":\"LP\",\"108\":\"EUI48\",\"109\":\"EUI64\",\"128\":\"NXNAME\",\"249\":\"TKEY\",\"250\":\"TSIG\",\"251\":\"IXFR\",\"252\":\"AXFR\",\"253\":\"MAILB\",\"254\":\"MAILA\",\"255\":\"ANY\",\"256\":\"URI\",\"257\":\"CAA\",\"258\":\"AVC\",\"259\":\"DOA\",\"260\":\"AMTRELAY\",\"261\":\"RESINFO\",\"262\":\"WALLET\",\"263\":\"CLA\",\"264\":\"IPN\",\"32768\":\"TA\",\"32769\":\"DLV\"}"
@@ -599,8 +601,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"ctx.dns = ctx.dns ?: [:];\ndef code1 = ctx.cloudflare_logpush?.dns_firewall?.response?.code;\ndef code2 = ctx.cloudflare_logpush?.dns_firewall?.upstream?.response_code;\nif (code1 != null && params.containsKey(code1)) {\n  ctx.dns.response_code = params[code1];\n} else if (code2 != null && params.containsKey(code2)) {\n  ctx.dns.response_code = params[code2];\n}\n"#
+                    compiled_painless!(
+                        "0b797909faa3e259e016ce00a32a39386059a4064673ba2fc6c62854361bba27",
+                        r#"{"params":{"GuardedLookup":{"key":"cloudflare_logpush.dns_firewall.upstream.response_code","target":"dns.response_code"}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"0\":\"NoError\",\"1\":\"FormErr\",\"2\":\"ServFail\",\"3\":\"NXDomain\",\"4\":\"NotImp\",\"5\":\"Refused\",\"6\":\"YXDomain\",\"7\":\"YXRRSet\",\"8\":\"NXRRSet\",\"9\":\"NotAuth\",\"10\":\"NotZone\",\"11\":\"DSOTYPENI\",\"16\":\"BADVERS\",\"17\":\"BADKEY\",\"18\":\"BADTIME\",\"19\":\"BADMODE\",\"20\":\"BADNAME\",\"21\":\"BADALG\",\"22\":\"BADTRUNC\",\"23\":\"BADCOOKIE\"}"

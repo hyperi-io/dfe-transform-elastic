@@ -109,8 +109,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.json.put(\"k8sCluster.containerImage.value\", ctx.json['k8sCluster.containerImage']); ctx.json.remove('k8sCluster.containerImage');"#
+                        compiled_painless!(
+                            "22b5134d065e2c2c5321b74b88a4a5cb02d0021ad77662fb99fa97a1bc27c64b",
+                            r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Set":{"path":"json.k8sCluster.containerImage.value","value":{"Field":"json['k8sCluster.containerImage']"}}}},{"Literal":{"Remove":{"path":"json.k8sCluster.containerImage"}}}],"whole":true}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -187,8 +188,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"String trimQuotes(def doubleQuote, def v) {\n  if (v.startsWith(doubleQuote) && v.endsWith(doubleQuote)) {\n    v = v.substring(1, v.length() - 1);\n  }\n  return v;\n}\ndef v1 = ctx.json?.src?.process?.parent?.cmdline;\ndef v2 = ctx.json?.tgt?.process?.cmdline;\nif (v1 instanceof String && v1 != null) {\n  v1 = trimQuotes(params.double_quote, v1);\n  ctx.json.src.process.parent.put(\"cmdline\", v1);\n}\nif (v2 instanceof String && v2 != null) {\n  v2 = trimQuotes(params.double_quote, v2);\n  ctx.json.tgt.process.put(\"cmdline\", v2);\n}\n"#
+                    compiled_painless!(
+                        "c5c4a8ea9ecb9369c6fcdbdd0e318624b1b9cbba6efd694caada805bda77f220",
+                        r#"{"params":{"TrimDelimited":{"delimiter":"double_quote","fields":[{"source":"json.src.process.parent.cmdline","target":"json.src.process.parent.cmdline"},{"source":"json.tgt.process.cmdline","target":"json.tgt.process.cmdline"}]}},"known":[]}"#
                     ),
                     cached_params!("{\"double_quote\":\"\\\"\"}"),
                 )?;
@@ -9885,8 +9887,9 @@ impl Transform for Default {
                             // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
-                                cached_painless!(
-                                    r#"def ips = new ArrayList();\ndef relatedHosts = new ArrayList();\ndef dns = new HashMap();\n\nif (ctx.sentinel_one_cloud_funnel?.event?.dns?.request != null && ctx.sentinel_one_cloud_funnel.event.dns.request != \"\") {\n  def request = ctx.sentinel_one_cloud_funnel.event.dns.request;\n  def question = new HashMap();\n  def parts = /\\s+/.split(request);\n\n  if (parts.length == 3) {\n    question.put(\"type\", params[parts[1]]);\n    question.put(\"name\", parts[2]);   \n    relatedHosts.add(parts[2]);\n  } else {\n    question.put(\"name\", request); \n  }\n  dns.question = question;\n}\n\nif (ctx.sentinel_one_cloud_funnel?.event?.dns?.response != null && ctx.sentinel_one_cloud_funnel.event.dns.response != \"\") {\n  def response = /;/.split(ctx.sentinel_one_cloud_funnel.event.dns.response);\n  def answers = new ArrayList();\n\n  for (def i = 0; i < response.length; i++) {\n    def answer = response[i];\n    if (answer == \"\") {\n      continue;\n    }\n\n    if (answer.startsWith(\"type:\")) {\n      def parts = /\\s+/.split(answer);\n      if (parts.length < 2) {\n        throw new Exception(\"unexpected event.dns.response format\");\n      }\n      if (parts.length == 3) {\n        answers.add([\n          \"type\": params[parts[1]],\n          \"data\": parts[2]\n        ]);\n        relatedHosts.add(parts[2]);\n      } else {\n        answers.add([\n          \"type\": params[parts[1]]\n        ]);\n      }\n    } else {\n      ips.add(answer);\n    }\n  }\n\n  if (answers.length > 0) {\n    dns.answers = answers;\n  }\n  if (ips.length > 0) {\n    dns.resolved_ip = ips;\n  }\n  if (relatedHosts.length > 0) {\n    if (ctx?.related == null) {\n      ctx.related = new HashMap();\n    }\n    ctx.related.hosts = relatedHosts;\n  }\n}\nif (dns != null) {\n  ctx.dns = dns;\n}"#
+                                compiled_painless!(
+                                    "dfdc942f9327060a0fd95800eef850a11b2a19b4847833e404ecdd6acc626d59",
+                                    r#"{"params":"IndexedLookup","known":[]}"#
                                 ),
                                 cached_params!(
                                     "{\"1\":\"A\",\"2\":\"NS\",\"3\":\"MD\",\"4\":\"MF\",\"5\":\"CNAME\",\"6\":\"SOA\",\"7\":\"MB\",\"8\":\"MG\",\"9\":\"MR\",\"10\":\"NULL\",\"11\":\"WKS\",\"12\":\"PTR\",\"13\":\"HINFO\",\"14\":\"MINFO\",\"15\":\"MX\",\"16\":\"TXT\",\"17\":\"RP\",\"18\":\"AFSDB\",\"19\":\"X25\",\"20\":\"ISDN\",\"21\":\"RT\",\"22\":\"NSAP\",\"23\":\"NSAPPTR\",\"24\":\"SIG\",\"25\":\"KEY\",\"26\":\"PX\",\"27\":\"GPOS\",\"28\":\"AAAA\",\"29\":\"LOC\",\"30\":\"NXT\",\"31\":\"EID\",\"32\":\"NIMLOC\",\"33\":\"SRV\",\"34\":\"ATMA\",\"35\":\"NAPTR\",\"36\":\"KX\",\"37\":\"CERT\",\"38\":\"A6\",\"39\":\"DNAME\",\"40\":\"SINK\",\"41\":\"OPT\",\"43\":\"DS\",\"46\":\"RRSIG\",\"47\":\"NSEC\",\"48\":\"DNSKEY\",\"49\":\"DHCID\",\"100\":\"UINFO\",\"101\":\"UID\",\"102\":\"GID\",\"103\":\"UNSPEC\",\"248\":\"ADDRS\",\"249\":\"TKEY\",\"250\":\"TSIG\",\"251\":\"IXFR\",\"252\":\"AXFR\",\"253\":\"MAILB\",\"254\":\"MAILA\",\"255\":\"ANY\",\"65281\":\"WINS\",\"65282\":\"WINSR\"}"
@@ -10399,8 +10402,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def path = ctx.sentinel_one_cloud_funnel.event.tgt.file.path;\ndef idx = path.lastIndexOf(\"\\\\\");\nif (idx == -1) {\n  idx = path.lastIndexOf(\"/\");\n}\nif (idx > -1) {\n    if (ctx.file == null) {\n        ctx.file = new HashMap();\n    }\n    ctx.file.name = path.substring(idx+1);\n    ctx.file.directory = path.substring(0, idx);\n\n    def extIdx = ctx.file.name.lastIndexOf(\".\");\n    if (extIdx > -1 && ctx.file.type == \"file\") {\n        ctx.file.extension = ctx.file.name.substring(extIdx+1);\n    }\n}\nif (path.indexOf(':') == 1) {\n  ctx.file.drive_letter = path.substring(0, 1).toUpperCase();\n}"#
+                            compiled_painless!(
+                                "7f01f43aff0343500d11533a54dd252911026dff327bafc2ea7b1507835fdeae",
+                                r#"{"params":null,"known":[{"FileInfo":"sentinel_one_cloud_funnel.event.tgt.file.path"}]}"#
                             ),
                         )?;
                     }
@@ -12859,8 +12863,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def idx = ctx.registry.path.lastIndexOf('\\\\');\nif (idx >= 0) {\n  ctx.registry.key = ctx.registry.path.substring(0, idx);\n  ctx.registry.value = ctx.registry.path.substring(idx+1);\n}"#
+                            compiled_painless!(
+                                "cfee1fe416838fa61d7bcd448b889baf5066b2d7288c6e501a37de6ff1514718",
+                                r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"registry.path","target":"registry.value","separator":"\\\\","whole_when_absent":false}}]}"#
                             ),
                         )?;
                     }
@@ -13855,8 +13860,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// appendBSBytes appends n '\\\\' bytes to b and returns the resulting slice.\ndef appendBSBytes(StringBuilder b, int n) {\n    for (; n > 0; n--) {\n        b.append('\\\\');\n    }\n    return b;\n}\n\n// readNextArg splits command line string into next\n// argument and command line remainder offset.\ndef readNextArg(String line, int offset) {\n    def b = new StringBuilder();\n    boolean inquote;\n    int nslash;\n    for (; offset < line.length(); offset++) {\n        def c = line.charAt(offset);\n        if (c == (char)' ' || c == (char)0x09) {\n            if (!inquote) {\n                return [\n                    \"arg\":  appendBSBytes(b, nslash).toString(),\n                    \"offset\": offset+1\n                ];\n            }\n        } else if (c == (char)'\"') {\n            b = appendBSBytes(b, nslash/2);\n            if (nslash%2 == 0) {\n                // use \"Prior to 2008\" rule from\n                // http://daviddeley.com/autohotkey/parameters/parameters.htm\n                // section 5.2 to deal with double double quotes\n                if (inquote && offset+1 < line.length() && line.charAt(offset+1) == (char)'\"') {\n                    b.append(c);\n                    offset++;\n                }\n                inquote = !inquote;\n            } else {\n                b.append(c);\n            }\n            nslash = 0;\n            continue;\n        } else if (c == (char)'\\\\') {\n            nslash++;\n            continue;\n        }\n        b = appendBSBytes(b, nslash);\n        nslash = 0;\n        b.append(c);\n    }\n    return [\n        \"arg\":  appendBSBytes(b, nslash).toString(), \n        \"offset\": line.length()\n    ];\n}\n\n// commandLineToArgv splits a command line into individual argument\n// strings, following the Windows conventions documented\n// at http://daviddeley.com/autohotkey/parameters/parameters.htm#WINARGV\n// Original implementation found at: https://github.com/golang/go/commit/39c8d2b7faed06b0e91a1ad7906231f53aab45d1\ndef commandLineToArgv(String line) {\n    def args = new ArrayList();\n    for (int i = 0; i < line.length();) {\n        if (line.charAt(i) == (char)' ' || line.charAt(i) == (char)0x09) {\n            i++;\n            continue;\n        }\n        def next = readNextArg(line, i);\n        i = next.offset;\n        if (next.arg == '') {\n            // Empty strings will be removed later so don't bother adding them.\n            continue;\n        }\n        args.add(next.arg);\n    }\n    return args;\n}\n\ndef cmd = ctx.process?.command_line;\nif (cmd != null && cmd != \"\") {\n  ctx.process.args = commandLineToArgv(cmd);\n  ctx.process.args_count = ctx.process.args.length;\n}\n\ndef parentCmd = ctx.process?.parent?.command_line;\nif (parentCmd != null && parentCmd != \"\") {\n  ctx.process.parent.args = commandLineToArgv(parentCmd);\n  ctx.process.parent.args_count = ctx.process.parent.args.length;\n}"#
+                    compiled_painless!(
+                        "f77edc35a79d7cb83993be894f667c029d58c13fdee0afbec83b6683597119fb",
+                        r#"{"params":null,"known":[{"SplitCommandLine":{"sites":[{"source":"process.command_line","base":"process","count":true,"executable":false},{"source":"process.parent.command_line","base":"process.parent","count":true,"executable":false}],"skip_empty":true}}]}"#
                     ),
                 )?;
             }

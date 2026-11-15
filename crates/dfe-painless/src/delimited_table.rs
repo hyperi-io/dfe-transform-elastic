@@ -7,34 +7,7 @@
 //! qualys's host detections carry the affected packages as a table inside
 //! `RESULTS`, which two `gsub`s ahead of the script turn into one delimited
 //! line. The header row is skipped and every later row contributes a cell to
-//! each column:
-//!
-//! ```painless
-//! String results = ctx.qualys_vmdr.asset_host_detection.vulnerability.results;
-//! if (results.startsWith("Package||")) {
-//!   if (ctx.package == null) {
-//!     ctx.package = new HashMap();
-//!     ctx.qualys_vmdr.asset_host_detection.package_nested = new ArrayList();
-//!   }
-//!   if (ctx.package.name == null) { ctx.package.name = new ArrayList(); }
-//!   def res = results.splitOnToken(";;");
-//!   for (int i=1; i < res.length; i++) {
-//!     def pkg_nest = [:];
-//!     def pkg = res[i].splitOnToken("||");
-//!     if (pkg.length < 1) { continue; }
-//!     ctx.package.name.add(pkg[0]);
-//!     pkg_nest.name = pkg[0];
-//!     if (pkg.length < 2) { continue; }
-//!     ctx.package.version.add(pkg[1]);
-//!     pkg_nest.version = pkg[1];
-//!     if (pkg.length == 3) {
-//!       ctx.package.fixed_version.add(pkg[2]);
-//!       pkg_nest.fixed_version = pkg[2];
-//!     }
-//!     ctx.qualys_vmdr.asset_host_detection.package_nested.add(pkg_nest);
-//!   }
-//! }
-//! ```
+//! each column.
 //!
 //! **A SHORT ROW is not an error and the arrays go ragged.** The `continue`
 //! after each column is the vendor saying so: a row of one cell contributes a
@@ -52,7 +25,7 @@ use crate::common::{block_statements, if_block, painless_path};
 use crate::params::{add_to_list, balanced, clean_path};
 
 /// A delimited table, and where each of its columns lands.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct DelimitedTable {
     /// The field holding the whole table.
     source: String,
@@ -68,7 +41,7 @@ pub struct DelimitedTable {
     steps: Vec<RowStep>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum RowStep {
     /// `if (<cells>.length < n) { continue; }` -- a shorter row stops here and
     /// contributes no record.
@@ -76,7 +49,7 @@ enum RowStep {
     Column(Column),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 struct Column {
     /// Which cell of the row.
     index: usize,
@@ -466,123 +439,8 @@ pub fn delimited_table(event: &mut Event, pattern: &DelimitedTable) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use super::*;
-    use crate::common::{normalise, try_known_painless};
-
-    /// Verbatim from `qualys_vmdr_asset_host_detection/default.rs`, in the
-    /// escaped one-line form the call site holds.
-    const QUALYS_PACKAGES: &str = r#"String results = ctx.qualys_vmdr.asset_host_detection.vulnerability.results;\nif (results.startsWith(\"Package||\")) {\n  if (ctx.package == null) {\n    ctx.package = new HashMap();\n    ctx.qualys_vmdr.asset_host_detection.package_nested = new ArrayList();\n  }\n  if (ctx.package.name == null) {\n    ctx.package.name = new ArrayList();\n  }\n  if (ctx.package.version == null) {\n    ctx.package.version = new ArrayList();\n  }\n  if (ctx.package.fixed_version == null) {\n    ctx.package.fixed_version = new ArrayList();\n  }\n  def res = results.splitOnToken(\";;\");\n  for (int i=1; i < res.length; i++) {\n    def pkg_nest = [:];\n    def pkg = res[i].splitOnToken(\"||\");\n    if (pkg.length < 1) {\n      continue;\n    }\n    ctx.package.name.add(pkg[0]);\n    pkg_nest.name = pkg[0];\n    if (pkg.length < 2) {\n      continue;\n    }\n    ctx.package.version.add(pkg[1]);\n    pkg_nest.version = pkg[1];\n    if (pkg.length == 3) {\n      ctx.package.fixed_version.add(pkg[2]);\n      pkg_nest.fixed_version = pkg[2];\n    }\n    ctx.qualys_vmdr.asset_host_detection.package_nested.add(pkg_nest);\n  }\n}"#;
-
-    fn with_results(results: &str) -> Event {
-        Event::new(json!({ "qualys_vmdr": { "asset_host_detection": {
-            "vulnerability": { "results": results }
-        }}}))
-    }
-
-    const NESTED: &str = "qualys_vmdr.asset_host_detection.package_nested";
-
-    #[test]
-    fn every_full_row_fills_both_destinations() {
-        let mut event = with_results(
-            "Package||Installed Version||Required Version\
-             ;;kernel-devel||3.10.0-1062.1.1||3.10.0-1062.1.2\
-             ;;kernel||3.10.0-1062.1.1||3.10.0-1062.1.2",
-        );
-        assert!(try_known_painless(&mut event, QUALYS_PACKAGES));
-        assert_eq!(
-            event.get("package.name"),
-            Some(&json!(["kernel-devel", "kernel"]))
-        );
-        assert_eq!(
-            event.get("package.version"),
-            Some(&json!(["3.10.0-1062.1.1", "3.10.0-1062.1.1"]))
-        );
-        assert_eq!(
-            event.get("package.fixed_version"),
-            Some(&json!(["3.10.0-1062.1.2", "3.10.0-1062.1.2"]))
-        );
-        assert_eq!(
-            event.get(NESTED),
-            Some(&json!([
-                {"name": "kernel-devel", "version": "3.10.0-1062.1.1", "fixed_version": "3.10.0-1062.1.2"},
-                {"name": "kernel", "version": "3.10.0-1062.1.1", "fixed_version": "3.10.0-1062.1.2"},
-            ]))
-        );
-    }
-
-    /// A one-cell row contributes a name and stops, so the arrays go ragged and
-    /// no record is written for it. Padding them would disagree with the
-    /// capture, which holds two names beside one version.
-    #[test]
-    fn a_short_row_contributes_a_name_and_no_record() {
-        let mut event = with_results(
-            "Package||Installed Version||Required Version\
-             ;;rsync||3.1.2-12.els1||3.1.2-12.els2\
-             ;;CentOS Linux release 7.9",
-        );
-        assert!(try_known_painless(&mut event, QUALYS_PACKAGES));
-        assert_eq!(
-            event.get("package.name"),
-            Some(&json!(["rsync", "CentOS Linux release 7.9"]))
-        );
-        assert_eq!(
-            event.get("package.version"),
-            Some(&json!(["3.1.2-12.els1"]))
-        );
-        assert_eq!(
-            event.get(NESTED),
-            Some(&json!([
-                {"name": "rsync", "version": "3.1.2-12.els1", "fixed_version": "3.1.2-12.els2"},
-            ]))
-        );
-    }
-
-    /// The last column is guarded on EXACTLY three cells, so a wider row takes
-    /// the record without a `fixed_version`.
-    #[test]
-    fn a_row_wider_than_the_table_skips_the_guarded_column() {
-        let mut event = with_results("Package||A||B;;curl||8.5.0||8.5.1||extra");
-        assert!(try_known_painless(&mut event, QUALYS_PACKAGES));
-        assert_eq!(event.get("package.fixed_version"), None);
-        assert_eq!(
-            event.get(NESTED),
-            Some(&json!([{"name": "curl", "version": "8.5.0"}]))
-        );
-    }
-
-    /// The vendor's own guard: text that is not the package table is left alone.
-    #[test]
-    fn text_without_the_prefix_writes_nothing() {
-        let mut event = with_results("No packages found;;at all");
-        assert!(try_known_painless(&mut event, QUALYS_PACKAGES));
-        assert_eq!(event.get("package.name"), None);
-        assert_eq!(event.get(NESTED), None);
-    }
-
-    /// The reader names the literals it found rather than assuming qualys's.
-    #[test]
-    fn the_reader_names_the_separators_and_the_header_row() {
-        let pattern =
-            parse_delimited_table(&normalise(QUALYS_PACKAGES)).expect("the fan-out is read");
-        assert_eq!(pattern.prefix, "Package||");
-        assert_eq!(pattern.row_separator, ";;");
-        assert_eq!(pattern.column_separator, "||");
-        assert_eq!(pattern.skip_rows, 1);
-        assert_eq!(pattern.records.as_deref(), Some(NESTED));
-        assert_eq!(pattern.steps.len(), 5);
-    }
-
-    /// A statement the reader has no arm for declines the whole script rather
-    /// than writing a partial table.
-    #[test]
-    fn an_unrecognised_statement_declines() {
-        let script = normalise(QUALYS_PACKAGES).replace(
-            "ctx.qualys_vmdr.asset_host_detection.package_nested.add(pkg_nest);",
-            "ctx.qualys_vmdr.asset_host_detection.package_nested.add(pkg_nest);\n    ctx.event.kind = pkg[9];",
-        );
-        assert!(parse_delimited_table(&script).is_none());
-    }
-}
+#[path = "delimited_table_tests.rs"]
+mod tests;

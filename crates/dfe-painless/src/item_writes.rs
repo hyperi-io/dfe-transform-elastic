@@ -35,7 +35,7 @@ use dfe_core::Event;
 // -- The grammar ---------------------------------------------------------
 
 /// A value one statement reads.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Expr {
     /// `ctx.<path>`, with the null-safe navigation flattened.
     Field(String),
@@ -60,7 +60,7 @@ enum Expr {
 }
 
 /// The condition of an `if`.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Test {
     /// `<expr> == null`.
     IsNull(Expr),
@@ -75,7 +75,7 @@ enum Test {
 }
 
 /// One statement of the restricted Painless this module reads.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Stmt {
     /// `return;` -- leaves the whole script, not just the block.
     Return,
@@ -103,9 +103,10 @@ enum Stmt {
 /// build DECLINE the script rather than panic on the first event to reach it.
 /// Java has lookaround and backreferences and Rust does not, and a
 /// `Regex::new(..).unwrap()` at the call site would only say so in production.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 struct ScriptRegex {
     source: String,
+    #[serde(with = "crate::serde_regex")]
     compiled: Regex,
 }
 
@@ -120,7 +121,7 @@ impl PartialEq for ScriptRegex {
 impl Eq for ScriptRegex {}
 
 /// The whole script: its statements, and every regex literal it names.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ItemWrites {
     body: Vec<Stmt>,
     regexes: Vec<ScriptRegex>,
@@ -130,7 +131,7 @@ pub struct ItemWrites {
 
 /// What the scanner is inside of, so punctuation in a literal is not read as
 /// code.
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 enum Span {
     Code,
     Quoted(char),
@@ -603,7 +604,7 @@ fn statements(text: &str, regexes: &mut Vec<ScriptRegex>) -> Option<Vec<Stmt>> {
 
 /// What the walks and declarations in scope have bound, for the check that
 /// every name a statement reads is one the script itself binds.
-#[derive(Default)]
+#[derive(Default, serde::Serialize, serde::Deserialize)]
 struct Bound {
     /// `(<index variable>, <the list its walk is over>)`.
     indices: Vec<(String, String)>,
@@ -957,365 +958,8 @@ pub fn item_writes(event: &mut Event, pattern: &ItemWrites) -> bool {
     true
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use serde_json::json;
-
-    use super::*;
-    use crate::plan::{PainlessPlan, painless_exec_plan};
-
-    /// `pipelines/atlassian_jira/audit/default.yml`, "Add ECS User fields",
-    /// verbatim -- in the ESCAPED form the generated call site holds it, so
-    /// the test goes through `normalise` the way production does.
-    const JIRA: &str = r#"if (ctx?.event?.action == null) {\n    return;\n} if (ctx.group == null) {\n  Map map = new HashMap();\n  ctx.put(\"group\", map);\n} if (ctx.user == null) {\n  Map map = new HashMap();\n  ctx.put(\"user\", map);\n} if (ctx.user?.target == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"target\", map);\n} if (ctx.user?.changes == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"changes\", map);\n} if (ctx.user?.target?.group == null) {\n  Map map = new HashMap();\n  ctx.user.target.put(\"group\", map);\n} if(ctx.jira?.audit?.affected_objects != null) {\n  for (def j = 0; j < ctx.jira?.audit?.affected_objects.length; j++) {\n    if(ctx.jira?.audit?.affected_objects[j]?.type == 'GROUP') {\n      if(['jira.auditing.group.created', 'jira.auditing.group.deleted', 'Group created', 'Group deleted'].contains(ctx.event.action)) {\n        ctx.group.put(\"name\", ctx.jira?.audit?.affected_objects[j]?.name);\n      }\n      if(['jira.auditing.user.added.to.group', 'jira.auditing.user.removed.from.group', 'User added to group', 'User removed from group'].contains(ctx.event.action)) {\n        ctx.user.target.group.put(\"name\", ctx.jira?.audit?.affected_objects[j]?.name);\n        ctx.user.target.group.put(\"id\", ctx.jira?.audit?.affected_objects[j]?.id);\n      }\n    }\n    if(ctx.jira?.audit?.affected_objects[j]?.type == 'USER') {\n      if(['jira.auditing.user.created', 'jira.auditing.user.deleted','jira.auditing.user.password.changed','jira.auditing.user.updated','jira.auditing.user.added.to.group', 'jira.auditing.user.removed.from.group', 'User created', 'User deleted', 'User added to group', 'User removed from group'].contains(ctx.event.action)) {\n        ctx.user.target.put(\"name\", ctx.jira?.audit?.affected_objects[j]?.name);\n        ctx.user.target.put(\"id\", ctx.jira?.audit?.affected_objects[j]?.id);\n      }\n    }\n  }\n} if(ctx.jira?.audit?.changed_values != null) {\n  for (def j = 0; j < ctx.jira?.audit?.changed_values.length; j++) {\n    if(['jira.auditing.user.renamed', 'User renamed'].contains(ctx.event.action)) {\n      if(ctx.jira?.audit?.changed_values[j]?.i18nKey == 'common.words.username') {\n        ctx.user.changes.put(\"name\", ctx.jira?.audit?.changed_values[j]?.to);\n        ctx.user.target.put(\"name\", ctx.jira?.audit?.changed_values[j]?.from);\n      }\n    }\n    if(['jira.auditing.user.created','jira.auditing.user.updated', 'User created', 'User updated'].contains(ctx.event.action)) {\n      if(ctx.jira?.audit?.changed_values[j]?.i18nKey == 'common.words.username') {\n        ctx.user.changes.put(\"name\", ctx.jira?.audit?.changed_values[j]?.to);\n        if(ctx.jira?.audit?.changed_values[j]?.from != null) {\n          ctx.user.target.put(\"name\", ctx.jira?.audit?.changed_values[j]?.from);\n        }\n      }\n      if(ctx.jira?.audit?.changed_values[j]?.i18nKey == 'common.words.email') {\n        ctx.user.changes.put(\"email\", ctx.jira?.audit?.changed_values[j]?.to);\n        if(ctx.jira?.audit?.changed_values[j]?.from != null) {\n          ctx.user.target.put(\"email\", ctx.jira?.audit?.changed_values[j]?.from);\n        }\n      }\n      if(ctx.jira?.audit?.changed_values[j]?.i18nKey == 'common.words.fullname') {\n        ctx.user.changes.put(\"full_name\", ctx.jira?.audit?.changed_values[j]?.to);\n        if(ctx.jira?.audit?.changed_values[j]?.from != null) {\n          ctx.user.target.put(\"full_name\", ctx.jira?.audit?.changed_values[j]?.from);\n        }\n      }\n    }\n  }\n}"#;
-
-    /// `pipelines/atlassian_confluence/audit/default.yml`, verbatim. The same
-    /// job as jira's with two regexes and a pair of locals in it.
-    const CONFLUENCE: &str = r#"if (ctx?.event?.action == null) {\n    return;\n} if (ctx.group == null) {\n  Map map = new HashMap();\n  ctx.put(\"group\", map);\n} if (ctx.user == null) {\n  Map map = new HashMap();\n  ctx.put(\"user\", map);\n} if (ctx.user?.target == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"target\", map);\n} if (ctx.user?.changes == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"changes\", map);\n} if (ctx.user?.target?.group == null) {\n  Map map = new HashMap();\n  ctx.user.target.put(\"group\", map);\n} if(ctx.confluence?.audit?.affected_objects != null) {\n  for (def j = 0; j < ctx.confluence?.audit?.affected_objects.length; j++) {\n    if(ctx.confluence?.audit?.affected_objects[j]?.type == 'Group') {\n      String group_name = ctx.confluence?.audit?.affected_objects[j]?.name;\n      String group_id = ctx.confluence?.audit?.affected_objects[j]?.id;\n      if(ctx._config?.atlassian_cloud != null) {\n          def m = /(.+):(\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b)$/.matcher(group_name);\n          if (m.find()) {\n            group_name = m.group(1);\n            group_id = m.group(2);\n          }\n      }\n      if(['audit.logging.summary.group.created', 'audit.logging.summary.group.deleted', 'Group created', 'Group deleted'].contains(ctx.event.action)) {\n        ctx.group.put(\"name\", group_name);\n        ctx.group.put(\"id\", group_id);\n      }\n      if(['audit.logging.summary.group.membership.added', 'audit.logging.summary.group.membership.removed', 'User added to group','User removed from group'].contains(ctx.event.action)) {\n        ctx.user.target.group.put(\"name\", group_name);\n        ctx.user.target.group.put(\"id\", group_id);\n      }\n    }\n    if(ctx.confluence?.audit?.affected_objects[j]?.type == 'User') {\n      if(['audit.logging.summary.user.created', 'audit.logging.summary.user.deleted', 'audit.logging.summary.user.password.changed','audit.logging.summary.user.updated', 'User created', 'User deleted', 'User details updated'].contains(ctx.event.action)) {\n        ctx.user.target.put(\"full_name\", ctx.confluence?.audit?.affected_objects[j]?.name);\n        ctx.user.target.put(\"id\", ctx.confluence?.audit?.affected_objects[j]?.id);\n        if(ctx.confluence?.audit?.affected_objects[j]?.uri != null) {\n          def m = /\\?username=([a-zA-Z0-9._-]+)$/.matcher(ctx.confluence?.audit?.affected_objects[j]?.uri);\n          if (m.find()) {\n            ctx.user.target.put(\"name\", m.group(1));\n          }\n        }\n      }\n      if(['audit.logging.summary.group.membership.added', 'audit.logging.summary.group.membership.removed', 'User added to group', 'User removed from group'].contains(ctx.event.action)) {\n        ctx.user.target.put(\"name\", ctx.confluence?.audit?.affected_objects[j]?.name);\n        ctx.user.target.put(\"id\", ctx.confluence?.audit?.affected_objects[j]?.id);\n      }\n      if(['audit.logging.summary.login.success', 'audit.logging.summary.login.failed'].contains(ctx.event.action)) {\n        ctx.user.put(\"full_name\", ctx.confluence?.audit?.affected_objects[j]?.name);\n        ctx.user.put(\"id\", ctx.confluence?.audit?.affected_objects[j]?.id);\n        if(ctx.confluence?.audit?.affected_objects[j]?.uri != null) {\n          def m = /\\?username=([a-zA-Z0-9._-]+)$/.matcher(ctx.confluence?.audit?.affected_objects[j]?.uri);\n          if (m.find()) {\n            ctx.user.put(\"name\", m.group(1));\n          }\n        }\n      }\n    }\n  }\n} if(ctx.confluence?.audit?.changed_values != null) {\n  for (def j = 0; j < ctx.confluence?.audit?.changed_values.length; j++) {\n    if(['audit.logging.summary.user.renamed', 'User renamed'].contains(ctx.event.action)) {\n      if(ctx.confluence?.audit?.changed_values[j]?.i18nKey == 'audit.logging.changed.value.username') {\n        ctx.user.changes.put(\"name\", ctx.confluence?.audit?.changed_values[j]?.to);\n        ctx.user.target.put(\"name\", ctx.confluence?.audit?.changed_values[j]?.from);\n      }\n    }\n    if(['audit.logging.summary.user.created','audit.logging.summary.user.updated', 'User created', 'User details updated'].contains(ctx.event.action)) {\n      if(ctx.confluence?.audit?.changed_values[j]?.i18nKey == 'Username') {\n        ctx.user.changes.put(\"name\", ctx.confluence?.audit?.changed_values[j]?.to);\n          ctx.user.target.put(\"name\", ctx.confluence?.audit?.changed_values[j]?.to);\n        if(ctx.confluence?.audit?.changed_values[j]?.from != null) {\n          ctx.user.target.put(\"name\", ctx.confluence?.audit?.changed_values[j]?.from);\n        }\n      }\n      if(ctx.confluence?.audit?.changed_values[j]?.i18nKey == 'Email') {\n        ctx.user.changes.put(\"email\", ctx.confluence?.audit?.changed_values[j]?.to);\n        ctx.user.target.put(\"email\", ctx.confluence?.audit?.changed_values[j]?.to);\n        if(ctx.confluence?.audit?.changed_values[j]?.from != null) {\n          ctx.user.target.put(\"email\", ctx.confluence?.audit?.changed_values[j]?.from);\n        }\n      }\n      if(ctx.confluence?.audit?.changed_values[j]?.i18nKey == 'Display name') {\n        ctx.user.changes.put(\"full_name\", ctx.confluence?.audit?.changed_values[j]?.to);\n        ctx.user.target.put(\"full_name\", ctx.confluence?.audit?.changed_values[j]?.to);\n        if(ctx.confluence?.audit?.changed_values[j]?.from != null) {\n          ctx.user.target.put(\"full_name\", ctx.confluence?.audit?.changed_values[j]?.from);\n        }\n      }\n    }\n  }\n}"#;
-
-    /// `pipelines/atlassian_bitbucket/audit/default.yml`, verbatim. Jira's
-    /// skeleton with its own action table and a `group.id` jira does not write.
-    const BITBUCKET: &str = r#"if (ctx?.event?.action == null) {\n    return;\n} if (ctx.group == null) {\n  Map map = new HashMap();\n  ctx.put(\"group\", map);\n} if (ctx.user == null) {\n  Map map = new HashMap();\n  ctx.put(\"user\", map);\n} if (ctx.user?.target == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"target\", map);\n} if (ctx.user?.changes == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"changes\", map);\n} if (ctx.user?.target?.group == null) {\n  Map map = new HashMap();\n  ctx.user.target.put(\"group\", map);\n} if(ctx.bitbucket?.audit?.affected_objects != null) {\n  for (def j = 0; j < ctx.bitbucket?.audit?.affected_objects.length; j++) {\n    if(ctx.bitbucket?.audit?.affected_objects[j]?.type == 'GROUP') {\n      if(['bitbucket.service.user.audit.action.groupcreated', 'bitbucket.service.user.audit.action.groupdeleted'].contains(ctx.event.action)) {\n        ctx.group.put(\"name\", ctx.bitbucket?.audit?.affected_objects[j]?.name);\n        ctx.group.put(\"id\", ctx.bitbucket?.audit?.affected_objects[j]?.id);\n      }\n      if(['bitbucket.service.user.audit.action.groupmembershipscreated.user', 'bitbucket.service.user.audit.action.groupmembershipdeleted'].contains(ctx.event.action)) {\n        ctx.user.target.group.put(\"name\", ctx.bitbucket?.audit?.affected_objects[j]?.name);\n        ctx.user.target.group.put(\"id\", ctx.bitbucket?.audit?.affected_objects[j]?.id);\n      }\n    }\n    if(ctx.bitbucket?.audit?.affected_objects[j]?.type == 'USER') {\n      if(['bitbucket.service.user.audit.action.usercreated', 'bitbucket.service.user.audit.action.userdeleted', 'bitbucket.service.user.audit.action.userrenamed', 'bitbucket.service.user.audit.action.usercredentialupdated','bitbucket.service.user.audit.action.groupmembershipscreated.user', 'bitbucket.service.user.audit.action.groupmembershipdeleted'].contains(ctx.event.action)) {\n        ctx.user.target.put(\"name\", ctx.bitbucket?.audit?.affected_objects[j]?.name);\n        ctx.user.target.put(\"id\", ctx.bitbucket?.audit?.affected_objects[j]?.id);\n      }\n    }\n  }\n} if(ctx.bitbucket?.audit?.changed_values != null) {\n  for (def j = 0; j < ctx.bitbucket?.audit?.changed_values.length; j++) {\n    if(['bitbucket.service.user.audit.action.userrenamed'].contains(ctx.event.action)) {\n      if(ctx.bitbucket?.audit?.changed_values[j]?.i18nKey == 'bitbucket.service.user.audit.attribute.user.name') {\n        ctx.user.changes.put(\"name\", ctx.bitbucket?.audit?.changed_values[j]?.to);\n        ctx.user.target.put(\"name\", ctx.bitbucket?.audit?.changed_values[j]?.from);\n      }\n    }\n  }\n}"#;
-
-    /// Run a script the way a generated call site does: through the plan, so
-    /// the test proves the LADDER reaches this matcher and not only that the
-    /// parser can read the text.
-    fn through_the_ladder(script: &str, input: Value) -> Event {
-        let plan = PainlessPlan::new(script);
-        assert!(plan.matches(), "no matcher claims the script");
-        let mut event = Event::new(input);
-        painless_exec_plan(&mut event, &plan).expect("the plan runs");
-        event
-    }
-
-    /// jira's `User added to group`, from
-    /// `testdata/compat/atlassian_jira/audit/test-audit-api`: the GROUP arm
-    /// writes the target group and the USER arm the target user, off the same
-    /// list, chosen by each item's own `type`.
-    #[test]
-    fn each_item_writes_the_arm_its_own_type_selects() {
-        let event = through_the_ladder(
-            JIRA,
-            json!({
-                "event": { "action": "jira.auditing.user.added.to.group" },
-                "user": { "name": "Anonymous" },
-                "jira": { "audit": { "affected_objects": [
-                    { "type": "GROUP", "name": "jira-software-users" },
-                    { "type": "USER", "name": "test.user", "id": "JIRAUSER10000" }
-                ] } }
-            }),
-        );
-
-        assert_eq!(
-            event.get("user.target.group.name"),
-            Some(&json!("jira-software-users"))
-        );
-        assert_eq!(event.get("user.target.name"), Some(&json!("test.user")));
-        assert_eq!(event.get("user.target.id"), Some(&json!("JIRAUSER10000")));
-        // jira's GROUP arm writes no id, so the group has none to carry.
-        assert_eq!(event.get("user.target.group.id"), Some(&json!(null)));
-        // The author's own name is left where it was.
-        assert_eq!(event.get("user.name"), Some(&json!("Anonymous")));
-    }
-
-    /// jira's `user.created`: the changed values fill `user.changes.*`, and
-    /// `from` being absent leaves `user.target.name` as the affected object
-    /// wrote it. Elastic's captured output for this event carries exactly
-    /// these five fields.
-    #[test]
-    fn a_changed_value_with_no_from_leaves_the_target_alone() {
-        let event = through_the_ladder(
-            JIRA,
-            json!({
-                "event": { "action": "jira.auditing.user.created" },
-                "jira": { "audit": {
-                    "affected_objects": [
-                        { "type": "USER", "name": "test.user", "id": "JIRAUSER10000" }
-                    ],
-                    "changed_values": [
-                        { "i18nKey": "common.words.username", "to": "test.user" },
-                        { "i18nKey": "common.words.email", "to": "test.user@example.com" },
-                        { "i18nKey": "common.words.fullname", "to": "Alex" }
-                    ]
-                } }
-            }),
-        );
-
-        assert_eq!(event.get("user.changes.name"), Some(&json!("test.user")));
-        assert_eq!(
-            event.get("user.changes.email"),
-            Some(&json!("test.user@example.com"))
-        );
-        assert_eq!(event.get("user.changes.full_name"), Some(&json!("Alex")));
-        assert_eq!(event.get("user.target.name"), Some(&json!("test.user")));
-        assert_eq!(event.get("user.target.id"), Some(&json!("JIRAUSER10000")));
-    }
-
-    /// jira's `user.renamed` writes the OLD name to the target and the new one
-    /// to the changes, with no guard on either -- so a missing `from` stores an
-    /// explicit null rather than keeping what was there.
-    #[test]
-    fn the_rename_arm_writes_both_ends_unguarded() {
-        let event = through_the_ladder(
-            JIRA,
-            json!({
-                "event": { "action": "jira.auditing.user.renamed" },
-                "jira": { "audit": { "changed_values": [
-                    { "i18nKey": "common.words.username", "to": "admin.user1", "from": "admin.user" }
-                ] } }
-            }),
-        );
-        assert_eq!(event.get("user.changes.name"), Some(&json!("admin.user1")));
-        assert_eq!(event.get("user.target.name"), Some(&json!("admin.user")));
-    }
-
-    /// An action outside every table writes nothing but the empty containers
-    /// the script allocates, which the drop-empty script after it removes.
-    #[test]
-    fn an_action_no_table_names_writes_nothing() {
-        let event = through_the_ladder(
-            JIRA,
-            json!({
-                "event": { "action": "jira.auditing.project.created" },
-                "jira": { "audit": { "affected_objects": [
-                    { "type": "USER", "name": "test.user" }
-                ] } }
-            }),
-        );
-        // Only the containers the script allocates, `user.target.group`
-        // nested inside `user.target` the way Painless puts it there.
-        assert_eq!(event.get("user.target"), Some(&json!({ "group": {} })));
-        assert_eq!(event.get("group"), Some(&json!({})));
-    }
-
-    /// The opening guard leaves the script before it allocates anything.
-    #[test]
-    fn no_action_returns_before_the_allocations() {
-        let event = through_the_ladder(JIRA, json!({ "jira": { "audit": {} } }));
-        assert!(event.get("group").is_none());
-        assert!(event.get("user").is_none());
-    }
-
-    /// confluence's cloud stream carries the group id INSIDE the name, and the
-    /// script splits it back out with a regex -- but only where `_config`
-    /// marks the stream cloud-hosted. Captured output for
-    /// `test-audit-cloud[7]` is the group name without its uuid and the uuid
-    /// as the id.
-    #[test]
-    fn the_cloud_group_name_is_split_back_into_name_and_id() {
-        let event = through_the_ladder(
-            CONFLUENCE,
-            json!({
-                "_config": { "atlassian_cloud": true },
-                "event": { "action": "User added to group" },
-                "confluence": { "audit": { "affected_objects": [
-                    {
-                        "type": "Group",
-                        "name": "jira-software-users:b8d81944-e737-4da0-94ca-165fa5c0635c"
-                    },
-                    { "type": "User", "name": "ASP" }
-                ] } }
-            }),
-        );
-        assert_eq!(
-            event.get("user.target.group.name"),
-            Some(&json!("jira-software-users"))
-        );
-        assert_eq!(
-            event.get("user.target.group.id"),
-            Some(&json!("b8d81944-e737-4da0-94ca-165fa5c0635c"))
-        );
-        assert_eq!(event.get("user.target.name"), Some(&json!("ASP")));
-    }
-
-    /// Without the cloud marker the same name is left whole, because the regex
-    /// is behind a guard on `_config` rather than on the name.
-    #[test]
-    fn the_self_hosted_group_name_is_left_whole() {
-        let event = through_the_ladder(
-            CONFLUENCE,
-            json!({
-                "event": { "action": "audit.logging.summary.group.created" },
-                "confluence": { "audit": { "affected_objects": [
-                    { "type": "Group", "name": "confluence-users", "id": "confluence-users" }
-                ] } }
-            }),
-        );
-        assert_eq!(event.get("group.name"), Some(&json!("confluence-users")));
-        assert_eq!(event.get("group.id"), Some(&json!("confluence-users")));
-    }
-
-    /// confluence reads the target user's NAME out of the affected object's
-    /// `uri`, and its display name out of `name` -- two different ECS fields
-    /// off one item.
-    #[test]
-    fn the_target_user_name_comes_out_of_the_uri() {
-        let event = through_the_ladder(
-            CONFLUENCE,
-            json!({
-                "event": { "action": "audit.logging.summary.user.updated" },
-                "confluence": { "audit": { "affected_objects": [
-                    {
-                        "type": "User",
-                        "name": "asdf asdfasdf",
-                        "id": "2c9680837d4a3682017d67821e520003",
-                        "uri": "/confluence/admin/users/viewuser.action?username=asdf123"
-                    }
-                ] } }
-            }),
-        );
-        assert_eq!(
-            event.get("user.target.full_name"),
-            Some(&json!("asdf asdfasdf"))
-        );
-        assert_eq!(event.get("user.target.name"), Some(&json!("asdf123")));
-        assert_eq!(
-            event.get("user.target.id"),
-            Some(&json!("2c9680837d4a3682017d67821e520003"))
-        );
-    }
-
-    /// confluence's login arms write the AUTHOR's fields, not the target's --
-    /// the same item, a different destination, chosen by the action table.
-    #[test]
-    fn the_login_arm_writes_the_author_not_the_target() {
-        let event = through_the_ladder(
-            CONFLUENCE,
-            json!({
-                "event": { "action": "audit.logging.summary.login.success" },
-                "confluence": { "audit": { "affected_objects": [
-                    { "type": "User", "name": "Joe Bob", "id": "-2" }
-                ] } }
-            }),
-        );
-        assert_eq!(event.get("user.full_name"), Some(&json!("Joe Bob")));
-        assert_eq!(event.get("user.id"), Some(&json!("-2")));
-        // The target arms did not fire, so nothing but the allocation is there.
-        assert_eq!(event.get("user.target"), Some(&json!({ "group": {} })));
-    }
-
-    /// bitbucket's own table, with the `group.id` jira's script never writes.
-    #[test]
-    fn bitbucket_writes_its_own_table() {
-        let event = through_the_ladder(
-            BITBUCKET,
-            json!({
-                "event": { "action": "bitbucket.service.user.audit.action.groupcreated" },
-                "bitbucket": { "audit": { "affected_objects": [
-                    { "type": "GROUP", "name": "asdf", "id": "asdf" }
-                ] } }
-            }),
-        );
-        assert_eq!(event.get("group.name"), Some(&json!("asdf")));
-        assert_eq!(event.get("group.id"), Some(&json!("asdf")));
-    }
-
-    /// bitbucket's rename, off `changed_values` alone.
-    #[test]
-    fn bitbucket_reads_its_own_changed_value_key() {
-        let event = through_the_ladder(
-            BITBUCKET,
-            json!({
-                "event": { "action": "bitbucket.service.user.audit.action.userrenamed" },
-                "bitbucket": { "audit": {
-                    "affected_objects": [
-                        { "type": "USER", "name": "test", "id": "3" }
-                    ],
-                    "changed_values": [
-                        {
-                            "i18nKey": "bitbucket.service.user.audit.attribute.user.name",
-                            "to": "test.user",
-                            "from": "test"
-                        }
-                    ]
-                } }
-            }),
-        );
-        assert_eq!(event.get("user.changes.name"), Some(&json!("test.user")));
-        assert_eq!(event.get("user.target.name"), Some(&json!("test")));
-        assert_eq!(event.get("user.target.id"), Some(&json!("3")));
-    }
-
-    /// mattermost ships the same processor as an if/else-if chain over fields
-    /// rather than a walk. Reading only the `if` half would write the branch
-    /// the vendor did not take, so the whole script declines.
-    #[test]
-    fn an_else_arm_declines() {
-        let script = "if (['patchUser'].contains(ctx.event.action)) {\n  \
-             if(ctx.user.target.name != ctx.mattermost?.audit?.patch?.name) {\n    \
-             ctx.user.changes.put(\"name\", ctx.mattermost?.audit?.patch?.name);\n  }\n\
-             } else if (['createTeam'].contains(ctx.event.action)) {\n  \
-             ctx.group.put(\"name\", ctx.mattermost?.audit?.team?.name);\n}";
-        assert!(parse_item_writes(script).is_none());
-    }
-
-    /// A statement the grammar does not hold declines the WHOLE script, even
-    /// though every other statement in it reads cleanly.
-    #[test]
-    fn one_unreadable_statement_declines_the_whole_script() {
-        let readable = "if(ctx.a?.items != null) {\n  \
-             for (def j = 0; j < ctx.a?.items.length; j++) {\n    \
-             ctx.user.put(\"name\", ctx.a?.items[j]?.name);\n  }\n}";
-        assert!(parse_item_writes(readable).is_some());
-
-        let with_a_call = "if(ctx.a?.items != null) {\n  \
-             for (def j = 0; j < ctx.a?.items.length; j++) {\n    \
-             ctx.user.put(\"name\", ctx.a?.items[j]?.name.toLowerCase());\n  }\n}";
-        assert!(parse_item_writes(with_a_call).is_none());
-    }
-
-    /// A name no statement binds declines: an item read outside the walk over
-    /// its list means the index is somebody else's.
-    #[test]
-    fn an_unbound_name_declines() {
-        let script = "if(ctx.a?.items != null) {\n  \
-             for (def j = 0; j < ctx.a?.items.length; j++) {\n    \
-             ctx.user.put(\"name\", ctx.b?.other[j]?.name);\n  }\n}";
-        assert!(parse_item_writes(script).is_none());
-    }
-
-    /// A Java regex Rust cannot build declines at PARSE time. A lookahead is
-    /// the pattern that would otherwise panic on the first event to reach the
-    /// call site.
-    #[test]
-    fn a_regex_rust_cannot_build_declines() {
-        let script = "if(ctx.a?.items != null) {\n  \
-             for (def j = 0; j < ctx.a?.items.length; j++) {\n    \
-             def m = /(?!x)(.+)/.matcher(ctx.a?.items[j]?.name);\n    \
-             if (m.find()) {\n      ctx.user.put(\"name\", m.group(1));\n    }\n  }\n}";
-        assert!(parse_item_writes(script).is_none());
-    }
-
-    /// A walk with no write, and a write with no walk, are both somebody
-    /// else's pattern -- this arm sits last and must only take its own.
-    #[test]
-    fn a_script_without_both_a_walk_and_a_write_declines() {
-        assert!(
-            parse_item_writes(
-                "if(ctx.a?.items != null) {\n  \
-                 for (def j = 0; j < ctx.a?.items.length; j++) {\n    \
-                 def m = /(.+)/.matcher(ctx.a?.items[j]?.name);\n  }\n}"
-            )
-            .is_none()
-        );
-        assert!(parse_item_writes("ctx.user.put(\"name\", ctx.a?.name);").is_none());
-    }
-
-    /// The scanner counts nesting in CODE only: a regex literal's `{8}` and
-    /// `(.+)` are text, and counting either would cut the block short.
-    #[test]
-    fn a_regex_literals_braces_are_not_nesting() {
-        let script = "if(ctx.a?.items != null) {\n  \
-             for (def j = 0; j < ctx.a?.items.length; j++) {\n    \
-             def m = /(.+):([0-9a-f]{4})$/.matcher(ctx.a?.items[j]?.name);\n    \
-             if (m.find()) {\n      ctx.user.put(\"name\", m.group(1));\n      \
-             ctx.user.put(\"id\", m.group(2));\n    }\n  }\n}";
-        let pattern = parse_item_writes(script).expect("the literal is text, not nesting");
-
-        let mut event = Event::new(json!({ "a": { "items": [{ "name": "host:beef" }] } }));
-        assert!(item_writes(&mut event, &pattern));
-        assert_eq!(event.get("user.name"), Some(&json!("host")));
-        assert_eq!(event.get("user.id"), Some(&json!("beef")));
-    }
-}
+#[path = "item_writes_tests.rs"]
+mod tests;

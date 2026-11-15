@@ -21,8 +21,9 @@ impl Transform for Threat {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def fixHttpHeadersEscaping(String input) {\n  // Find a CSV fragment like `,Some-Header:\"eg1.com, eg2.com\";`\n  //     and correct it to be `,\"Some-Header:\"\"eg1.com, eg2.com\"\";\"`\n  Matcher matcher = /,(([A-Za-z0-9\\-_]+: *\\\"[^\\\"]*\\\"; *)+)/.matcher(input);\n  if (matcher.find()) {\n    String match = matcher.group(0);\n    String value = matcher.group(1);\n    String fixed = ',\"' + value.replace('\"', '\"\"') + '\"';\n    return input.replace(match, fixed);\n  } else {\n    return input;\n  }\n}\nctx.message = fixHttpHeadersEscaping(ctx.message);\n"#
+                    compiled_painless!(
+                        "44eb70af5035fe61ae63a6a39651c26beee1616e2f1a676a40a8354f49f46e92",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -994,8 +995,9 @@ impl Transform for Threat {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"Map url = new HashMap();\nString url_original = ctx.url.original;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.lastIndexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;"#
+                    compiled_painless!(
+                        "c9c77b242128ed2b5be12a473ed497dcda7be6db1a70da10414eadf3a564b7b7",
+                        r#"{"params":null,"known":["SchemelessUrl"]}"#
                     ),
                 )?;
             }
@@ -1028,8 +1030,9 @@ impl Transform for Threat {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// For file.path to be set it must have had one of '/' or '\\' present.\nint idx = ctx.file.path.lastIndexOf('/');\nif (idx == -1) {\n  idx = ctx.file.path.lastIndexOf('\\\\');\n}\nctx.file[\"name\"] = ctx.file.path.substring(idx+1);"#
+                    compiled_painless!(
+                        "9f980c28bb5635e008b94e0d170e411c56d49839954e6befb59d2fa4b183a1fe",
+                        r#"{"params":null,"known":[{"SuffixAfterSeparator":{"source":"file.path","target":"file.name","separator":"/","whole_when_absent":false}}]}"#
                     ),
                 )?;
             }

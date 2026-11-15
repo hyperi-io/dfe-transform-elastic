@@ -84,7 +84,7 @@ fn duration_to_nanos(event: &mut Event, _params: &Value) {
 /// Every `microsoft_sqlserver` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
-        hash: "686fe34d7a1700217abca6ee554bcf88d83fd48f3939561464e2db7afe76c5c1",
+        hash: "dc5ddabd793b6f145dbd3f54bd08f8b3ed63b1a6f59bce3965f4acdc616b462e",
         source: "microsoft_sqlserver",
         name: "resolve_action_codes",
         run: resolve_action_codes,

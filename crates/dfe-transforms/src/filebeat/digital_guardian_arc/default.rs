@@ -101,8 +101,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"long bytesFromStr(String str) {\n  def factors = [\n    \"KB\": 1000L,\n    \"MB\": 1000000L,\n    \"GB\": 1000000000L,\n    \"TB\": 1000000000000L\n  ];\n  def parts = str.splitOnToken(' ');\n  double num = Double.parseDouble(parts[0]);\n  String unit = parts.length > 1 ? parts[1] : null;\n  if (factors.containsKey(unit)) {\n    return (long) (num * factors[unit]);\n  } else {\n    return (long) num;\n  }\n}\nif (ctx.digital_guardian?.arc?.dg_attachments?.dg_file_size instanceof String) {\n  ctx.digital_guardian.arc.dg_attachments.dg_file_size_bytes = bytesFromStr(ctx.digital_guardian.arc.dg_attachments.dg_file_size);\n}\nif (ctx.digital_guardian?.arc?.dg_file_size instanceof String) {\n  ctx.digital_guardian.arc.dg_file_size_bytes = bytesFromStr(ctx.digital_guardian.arc.dg_file_size);\n}\nif (ctx.digital_guardian?.arc?.pi_fs instanceof String) {\n  ctx.digital_guardian.arc.pi_fs_bytes = bytesFromStr(ctx.digital_guardian.arc.pi_fs);\n}\nif (ctx.digital_guardian?.arc?.uad_br instanceof String) {\n  ctx.digital_guardian.arc.uad_br_bytes = bytesFromStr(ctx.digital_guardian.arc.uad_br);\n}\nif (ctx.digital_guardian?.arc?.uad_bw instanceof String) {\n  ctx.digital_guardian.arc.uad_bw_bytes = bytesFromStr(ctx.digital_guardian.arc.uad_bw);\n}"#
+                compiled_painless!(
+                    "6124b0aad5aa5ba4e33a364f536cc58c3be300daecd4df04c3d3af1362fafac6",
+                    r#"{"params":null,"known":[{"ByteSizeFields":{"factors":[["KB",1000],["MB",1000000],["GB",1000000000],["TB",1000000000000]],"fields":[["digital_guardian.arc.dg_attachments.dg_file_size","digital_guardian.arc.dg_attachments.dg_file_size_bytes"],["digital_guardian.arc.dg_file_size","digital_guardian.arc.dg_file_size_bytes"],["digital_guardian.arc.pi_fs","digital_guardian.arc.pi_fs_bytes"],["digital_guardian.arc.uad_br","digital_guardian.arc.uad_br_bytes"],["digital_guardian.arc.uad_bw","digital_guardian.arc.uad_bw_bytes"]]}}]}"#
                 ),
             )?;
 
@@ -124,8 +125,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\nctx.event.action = (ctx.digital_guardian.arc.dg_utype + \"-\" + ctx.digital_guardian.arc.inc_state).toLowerCase();"#
+                    compiled_painless!(
+                        "f099042d998de0ebc8b28bed4aee5e8f715690dfc0f267e6e83f321d109428dc",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"If":{"test":[[{"Compare":{"path":"event","wanted":"Null","negated":false,"lowered":false}}]],"then":[],"alt":[]}},{"Literal":{"Set":{"path":"event.action","value":{"Concat":{"pieces":[{"Field":"digital_guardian.arc.dg_utype"},{"Literal":"-"},{"Field":"digital_guardian.arc.inc_state"}],"fold":"Lower"}}}}}],"whole":true}}]}"#
                     ),
                 )?;
             }
@@ -135,8 +137,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\ndef sev = ctx.digital_guardian.arc.inc_sev;\nctx.event.severity = params.getOrDefault(sev, params['Unknown']);"#
+                    compiled_painless!(
+                        "d23773a5db469fd8096b475c64ec114c3869528de7b6caf0abc7238f0870e0c4",
+                        r#"{"params":{"TableLookupOrLiteral":{"source":"digital_guardian.arc.inc_sev","table":null,"target":"event.severity","default":{"Row":"Unknown"},"gate":null}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"Unknown\":9,\"Informational\":6,\"Low\":5,\"Minor\":5,\"Medium\":4,\"High\":2,\"Critical\":1}"

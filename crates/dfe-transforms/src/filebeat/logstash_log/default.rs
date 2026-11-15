@@ -158,7 +158,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "7febd4bde0d6b001e02802bc480cf2092da8c81019b6e3475ef4cd9a522b9642",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"log.level","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[[{"ListContains":{"members":["ERROR","FATAL"],"argument":{"Field":"log.level"}}}]],"then":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["error"]}}}}],"alt":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}}]}}],"alt":[]}}],"whole":true}}]}"#,
                         r#"def errorLevels = [\"ERROR\", \"FATAL\"]; if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n    ctx.event.type = [\"error\"];\n  } else {\n    ctx.event.type = [\"info\"];\n  }\n}"#
                     ),
                 )?;
@@ -212,8 +214,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def items = [];\nctx.logstash.log.log_event.action.forEach(v -> {\n    items.add(v.toString());\n});\nctx.logstash.log.log_event.action = items;\n"#
+                        compiled_painless!(
+                            "a6e13c66f713579310f7cf207218a05bc82c979dd648bbe9c3b2ad81f50c049e",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                 }
@@ -221,7 +224,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "7febd4bde0d6b001e02802bc480cf2092da8c81019b6e3475ef4cd9a522b9642",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"log.level","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[[{"ListContains":{"members":["ERROR","FATAL"],"argument":{"Field":"log.level"}}}]],"then":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["error"]}}}}],"alt":[{"Literal":{"Set":{"path":"event.type","value":{"Literal":["info"]}}}}]}}],"alt":[]}}],"whole":true}}]}"#,
                         r#"def errorLevels = [\"ERROR\", \"FATAL\"]; if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n    ctx.event.type = [\"error\"];\n  } else {\n    ctx.event.type = [\"info\"];\n  }\n}"#
                     ),
                 )?;

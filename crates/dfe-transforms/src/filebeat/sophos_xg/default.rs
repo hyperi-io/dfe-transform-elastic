@@ -145,8 +145,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def conf = ctx['_conf']; if (conf == null) return;\ndef mappings = conf.tz_map; if (mappings == null) return;\ndef tz_log = ctx._temp_.tz; for (def item : mappings) {\n  if (item.tz_short == tz_log) {\n    ctx._temp_.tz = item.tz_long;\n    break;\n  }\n}"#
+                    compiled_painless!(
+                        "a4adab472be80cda2967a04001b9fe29e737dca7d86810176369909a359c56e8",
+                        r#"{"params":null,"known":[{"RecordLookup":{"table":"_conf.tz_map","subject":"_temp_.tz","key":"tz_short","value":"tz_long","target":"_temp_.tz","default":null}}]}"#
                     ),
                 )?;
             }
@@ -402,7 +403,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "b0d96cef2c3a53d6576a15d645ddfe31320d8adc28fdbda41caec72ccca1a002",
+                    r#"{"params":"SentinelRemoval","known":["SentinelRemovalLiteral"]}"#,
                     r#"ctx.sophos?.xg.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));"#
                 ),
                 cached_params!("{\"values\":[\"\",\"-\",\"N/A\"]}"),
@@ -543,8 +546,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def conf = ctx['_conf']; if (conf == null) return; def serial = ctx.observer.serial_number; def mappings = conf.mappings; if (mappings == null) return; def name = conf['default']; for (def item : mappings) {\n  if (item.serial_number == serial) {\n    name = item.hostname;\n    break;\n  }\n} if (ctx.host == null) {\n  ctx.host = new HashMap();\n} ctx.host.name = name;"#
+                    compiled_painless!(
+                        "d847e24b7c8f086eaa3920c9f2ec3d4a20a18679f61c5ed2fb52fffe30b6ae25",
+                        r#"{"params":null,"known":[{"RecordLookup":{"table":"_conf.mappings","subject":"observer.serial_number","key":"serial_number","value":"hostname","target":"host.name","default":"_conf.default"}}]}"#
                     ),
                 )?;
             }
@@ -3024,7 +3028,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "3d6cc63c400b4b56455de9bae2e9e36f0ec02260960156266892fc182af8e66f",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"sophos.xg.responsetime","wanted":"Null","negated":true,"lowered":false}},{"Magnitude":{"path":"sophos.xg.responsetime","than":0,"greater":true}}]],"then":[{"Literal":{"Set":{"path":"event.duration","value":{"Scaled":{"path":"sophos.xg.responsetime","factor":1000,"divide":false}}}}}],"alt":[]}}],"whole":false}}]}"#,
                         r#"if (ctx.sophos?.xg?.responsetime != null && ctx.sophos.xg.responsetime > 0) {\n  ctx.event.duration = ctx.sophos.xg.responsetime * 1000; \n}\n"#
                     ),
                 )?;

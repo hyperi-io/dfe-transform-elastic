@@ -1441,8 +1441,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String identities_tail = ctx.cisco.umbrella.identities.substring(ctx.cisco.umbrella.identity.length());\nif (identities_tail.startsWith(',')) {\n  identities_tail = identities_tail.substring(1);\n}\nif (ctx.cisco.umbrella._tmp == null) {\n  ctx.cisco.umbrella._tmp = new HashMap();\n}\nctx.cisco.umbrella._tmp.identities_tail = identities_tail;"#
+                    compiled_painless!(
+                        "b3c39a77eae65721cf3fa53507806b268ff93979831fa6f9071722436951fea0",
+                        r#"{"params":null,"known":[{"PrefixTail":{"source":"cisco.umbrella.identities","prefix":"cisco.umbrella.identity","strip_comma":true,"target":"cisco.umbrella._tmp.identities_tail"}}]}"#
                     ),
                 )?;
             }
@@ -1469,8 +1470,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def identities = new ArrayList();\nidentities.add(ctx.cisco.umbrella.identity);\nfor (identity in ctx.cisco.umbrella._tmp.identities_tail) {\n  identities.add(identity);\n}        \nctx.cisco.umbrella._tmp.identities = identities;"#
+                    compiled_painless!(
+                        "f5c93e72e8cca1fb60d48a6c4152a146281df238d282ca24d68e3fc069f591ea",
+                        r#"{"params":null,"known":[{"PrependToArray":{"scalar":"cisco.umbrella.identity","array":"cisco.umbrella._tmp.identities_tail","target":"cisco.umbrella._tmp.identities"}}]}"#
                     ),
                 )?;
             }
@@ -1602,7 +1604,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "d4a1cf265692edcd17d590b386744d0c7e0c8b5d1e11cc068c87453ab7fcd212",
+                        r#"{"params":null,"known":["ParallelDispatch"]}"#,
                         r#"void setHost(def ctx, def x) {\n  if (ctx.host == null) {\n    ctx.host = new HashMap();\n  }\n  if (ctx.host.name == null) {\n    ctx.host.name = x;\n  }\n}\nvoid setUser(def ctx, def x) {\n  if (ctx.user == null) {\n    ctx.user = new HashMap();\n  }\n  if (ctx.user.name == null) {\n    ctx.user.name = x;\n  }\n}\nvoid addNetwork(def ctx, def x) {\n  if (ctx.network == null) {\n    ctx.network = new HashMap();\n  }\n  if (ctx.network?.name == null) {\n    ArrayList al = new ArrayList();\n    ctx.network.put(\"name\", al);\n  }\n  if (!ctx.network.name.contains(x)) {\n    ctx.network.name.add(x);\n  }\n}\ndef i = 0;\nfor (cisco_identity_type in ctx.cisco.umbrella.identity_types) {\n  if ([\"AD Users\"].contains(cisco_identity_type)) {\n    setUser(ctx, ctx.cisco.umbrella.identities[i]);\n  }\n  if ([\"AD Computers\", \"Roaming Computers\", \"Anyconnect Roaming Client\", \"Mobile Devices\"].contains(cisco_identity_type)) {\n    setHost(ctx, ctx.cisco.umbrella.identities[i]);\n  }\n  if ([\"Sites\", \"Internal Networks\", \"Networks\", \"Network Devices\", \"Network Tunnels\", \"CDFW Tunnel Device\"].contains(cisco_identity_type)) {\n    addNetwork(ctx, ctx.cisco.umbrella.identities[i]);\n  }\n  i++;\n}"#
                     ),
                 )?;

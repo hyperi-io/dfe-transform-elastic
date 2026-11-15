@@ -602,8 +602,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def severity = ctx.vectra_rux.entity_event.severity.toLowerCase();\n  if (severity == 'high') {\n    ctx.event.severity = 99;\n  } else if (severity == 'medium') {\n    ctx.event.severity = 66;\n  } else if (severity == 'low') {\n    ctx.event.severity = 33;\n  }"#
+                    compiled_painless!(
+                        "2103f79226e35b3c083a31162d4c2d2598b3923f80f0b6a3e53c4189d8e1b394",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"vectra_rux.entity_event.severity","fold_case":true,"test":"Equals","arms":[{"literals":["high"],"writes":[["event.severity",99]],"removes":[]},{"literals":["medium"],"writes":[["event.severity",66]],"removes":[]},{"literals":["low"],"writes":[["event.severity",33]],"removes":[]}]}}]}"#
                     ),
                 )?;
             }

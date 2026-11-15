@@ -56,8 +56,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def flatTags = []; for (def t : ctx.tags) {\n  if (t instanceof Map && t.containsKey('name')) {\n    flatTags.add(t.name);\n  } else {\n    flatTags.add(t.toString());\n  }\n} ctx.tags = flatTags;\n"#
+                        compiled_painless!(
+                            "224fbf7f6d172f951b35aa161512c1996ce90907b7c9e29b8fb4de6798dec4c4",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -69,8 +70,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def s = ctx.severity.toLowerCase(); if (ctx.event == null) { ctx.event = [:]; } if (ctx.labels == null) { ctx.labels = [:]; }\nif (s == 'high') { \n  ctx.event.severity = 1; \n  ctx.labels.severity = 'High';\n} else if (s == 'medium') { \n  ctx.event.severity = 3; \n  ctx.labels.severity = 'Medium';\n} else if (s == 'low') { \n  ctx.event.severity = 5; \n  ctx.labels.severity = 'Low';\n} else { \n  ctx.event.severity = 5; \n  ctx.labels.severity = 'Unknown';\n}\n"#
+                    compiled_painless!(
+                        "bc3ee82334d00589c0d579c26727ef25c92111a518e33bfd96ab316eaba43e9b",
+                        r#"{"params":null,"known":[{"EqualityLadder":{"subject":"severity","fold_case":true,"test":"Equals","arms":[{"literals":["high"],"writes":[["event.severity",1],["labels.severity","High"]],"removes":[]},{"literals":["medium"],"writes":[["event.severity",3],["labels.severity","Medium"]],"removes":[]},{"literals":["low"],"writes":[["event.severity",5],["labels.severity","Low"],["labels.severity","Unknown"]],"removes":[]}]}}]}"#
                     ),
                 )?;
             }

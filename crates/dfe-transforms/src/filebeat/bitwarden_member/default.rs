@@ -103,7 +103,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
+                        compiled_painless!(
+                            "d7d627b949ac9712d3bbc1cf04c31f4a13a74c40dc6afebaa012bf1bc340213b",
+                            r#"{"params":"IndexedLookup","known":[]}"#,
                             r#"def OrganizationUserTypeValue = Integer.parseInt(ctx.bitwarden.member.type.value);\nif (OrganizationUserTypeValue >= 0 && OrganizationUserTypeValue < params.OrganizationUserType.length) {\n  ctx.bitwarden.member.type.put('name', params['OrganizationUserType'][OrganizationUserTypeValue]);\n}"#
                         ),
                         cached_params!(
@@ -377,8 +379,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
-                        cached_painless!(
-                            r#"def OrganizationUserStatusTypeValue = Integer.parseInt(ctx.bitwarden.member.status.value)+1;\nif (OrganizationUserStatusTypeValue >= 0 && OrganizationUserStatusTypeValue < params.OrganizationUserStatusType.length) {\n  ctx.bitwarden.member.status.put('name', params['OrganizationUserStatusType'][OrganizationUserStatusTypeValue]);\n}"#
+                        compiled_painless!(
+                            "529441cfbb7d5620c8a7550d158e35a84dde5b0c331192ce2595cbfd00a6c00d",
+                            r#"{"params":"IndexedLookup","known":[]}"#
                         ),
                         cached_params!(
                             "{\"OrganizationUserStatusType\":[\"Revoked\",\"Invited\",\"Accepted\",\"Confirmed\"]}"

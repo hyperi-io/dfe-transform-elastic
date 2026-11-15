@@ -122,8 +122,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if (ctx.axonius?.identity?.event?.data instanceof Map) {\n  Map eventData = ctx.axonius.identity.event.data;\n  for (String key : new ArrayList(eventData.keySet())) {\n    if (ctx.axonius.identity.containsKey(key)) {\n      ctx.axonius.identity['data_' + key] = eventData[key];\n    } else {\n      ctx.axonius.identity[key] = eventData[key];\n    }\n  }\n  ctx.axonius.identity.event.remove('data');\n}"#
+                compiled_painless!(
+                    "e0083c76260942430e6af80afd565e9447337664f305f7ae4a787f0bef54f4ad",
+                    r#"{"params":null,"known":[{"MergeMapUp":{"parent":"axonius.identity","source":"axonius.identity.event.data","take":true,"collision":{"Prefix":"data_"},"drops":[]}}]}"#
                 ),
             )?;
 
@@ -3798,8 +3799,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"void appendUnique(Map container, String field, def value) {\n  if (value == null) return;\n  def current = container[field];\n  if (current == null) {\n    container[field] = [value];\n  } else if (current instanceof List) {\n    if (!current.contains(value)) {\n      current.add(value);\n    }\n  } else if (current != value) {\n    container[field] = [current, value];\n  }\n}\nif (ctx.axonius?.identity?.associated_devices instanceof List) {\n  if (ctx.device == null) ctx.device = [:];\n  if (ctx.device.model == null) ctx.device.model = [:];\n  for (def device : ctx.axonius.identity.associated_devices) {\n    if (!(device instanceof Map)) continue;\n    if (device.device_id instanceof List) {\n      for (def v : device.device_id) {\n        if (v != null) appendUnique(ctx.device, 'id', v.toString());\n      }\n    }\n    if (device.device_model instanceof List) {\n      for (def v : device.device_model) {\n        if (v != null) appendUnique(ctx.device.model, 'name', v.toString());\n      }\n    }\n    if (device.device_serial instanceof List) {\n      for (def v : device.device_serial) {\n        if (v != null) appendUnique(ctx.device, 'serial_number', v.toString());\n      }\n    }\n    if (device.device_preferred_mac_address instanceof List) {\n      for (int i = 0; i < device.device_preferred_mac_address.size(); i++) {\n        def mac = device.device_preferred_mac_address[i];\n        if (mac != null) {\n          device.device_preferred_mac_address[i] = mac.toString().replace(':', '-').toUpperCase();\n        }\n      }\n    }\n  }\n}\nif (ctx.axonius?.identity?.associated_employees instanceof List) {\n  if (ctx.related == null) ctx.related = [:];\n  for (def emp : ctx.axonius.identity.associated_employees) {\n    if (!(emp instanceof Map)) continue;\n    if (emp.username instanceof List) {\n      for (def v : emp.username) {\n        if (v != null) appendUnique(ctx.related, 'user', v.toString());\n      }\n    }\n  }\n}\nif (ctx.axonius?.identity?.associated_groups instanceof List) {\n  if (ctx.related == null) ctx.related = [:];\n  for (def grp : ctx.axonius.identity.associated_groups) {\n    if (!(grp instanceof Map)) continue;\n    if (grp.display_name != null) {\n      appendUnique(ctx.related, 'user', grp.display_name.toString());\n    }\n  }\n}"#
+                        compiled_painless!(
+                            "006e09306a16955e39ef85a98ebcc9c9edbc51a826e36678c65ece0f53b2cedb",
+                            r#"{"params":null,"known":["CollectingLadder"]}"#
                         ),
                     )?;
                     Ok(())
@@ -3860,8 +3862,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"String parseDate(String input, def fmts, def outFmt) {\n  // Strip \"EEE,\" / \"EEE, \" day-of-week prefix if present so we don't\n  // depend on it being internally consistent (the source data is known\n  // to occasionally have a day-of-week that doesn't match the date).\n  String stripped = input;\n  if (input.length() > 4 && input.indexOf(',') == 3) {\n    stripped = input.substring(4).trim();\n  }\n  for (def fmt : fmts) {\n    try {\n      return LocalDateTime.parse(stripped, fmt).atZone(ZoneId.of('UTC')).format(outFmt);\n    } catch (Exception e1) {\n      try {\n        return LocalDate.parse(stripped, fmt).atStartOfDay(ZoneId.of('UTC')).format(outFmt);\n      } catch (Exception e2) { /* try next */ }\n    }\n  }\n  return null;\n}\nvoid appendUnique(Map container, String field, def value) {\n  if (value == null) return;\n  def current = container[field];\n  if (current == null) {\n    container[field] = [value];\n  } else if (current instanceof List) {\n    if (!current.contains(value)) {\n      current.add(value);\n    }\n  } else if (current != value) {\n    container[field] = [current, value];\n  }\n}\ndef fmts = [\n  DateTimeFormatter.ofPattern(\"dd MMM yyyy HH:mm:ss 'GMT'\", Locale.ENGLISH),\n  DateTimeFormatter.ofPattern(\"yyyy-MM-dd\", Locale.ENGLISH)\n];\ndef outFmt = DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSSXXX\");\nfor (def item : ctx.axonius.identity.breaches_data) {\n  if (!(item instanceof Map)) continue;\n  for (def f : params.dateFields) {\n    if (item[f] == null || item[f] == '') continue;\n    String parsed = parseDate(item[f].toString(), fmts, outFmt);\n    if (parsed != null) {\n      item[f] = parsed;\n    } else {\n      item.remove(f);\n    }\n  }\n  if (item.added_date != null) {\n    if (ctx.threat == null) ctx.threat = [:];\n    if (ctx.threat.enrichments == null) ctx.threat.enrichments = [:];\n    if (ctx.threat.enrichments.indicator == null) ctx.threat.enrichments.indicator = [:];\n    appendUnique(ctx.threat.enrichments.indicator, 'first_seen', item.added_date.toString());\n  }\n  if (item.pwn_count != null && !(item.pwn_count instanceof Long || item.pwn_count instanceof Integer)) {\n    try {\n      item.pwn_count = Long.parseLong(item.pwn_count.toString());\n    } catch (NumberFormatException e) {\n      item.remove('pwn_count');\n    }\n  }\n  for (def f : params.boolFields) {\n    if (!item.containsKey(f) || item[f] == null) continue;\n    def v = item[f];\n    if (v instanceof Boolean) continue;\n    def s = v.toString().toLowerCase();\n    if (s == '1' || s == 'true') {\n      item[f] = true;\n    } else if (s == '' || s == '0' || s == 'false') {\n      item[f] = false;\n    } else {\n      item.remove(f);\n    }\n  }\n}"#
+                            compiled_painless!(
+                                "dcaba314277f19ce2a5cb9a2169c58ce7b72a9c89facb866fe4f9b2b431272d3",
+                                r#"{"params":null,"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"boolFields\":[\"is_fabricated\",\"is_retired\",\"is_sensitive\",\"is_spam_list\",\"is_verified\"],\"dateFields\":[\"added_date\",\"breach_date\",\"modified_date\"]}"
@@ -4500,8 +4503,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def obj = ctx.axonius.identity.feature;\nfor (def f : params.boolFields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Boolean) {\n    continue;\n  }\n  def s = v.toString().toLowerCase();\n  if (s == '1' || s == 'true') {\n    obj[f] = true;\n  } else if (s == '' || s == '0' || s == 'false') {\n    obj[f] = false;\n  } else {\n    obj.remove(f);\n  }\n}\nfor (def f : params.longFields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Long || v instanceof Integer) {\n    continue;\n  }\n  try {\n    obj[f] = Long.parseLong(v.toString());\n  } catch (NumberFormatException e) {\n    obj.remove(f);\n  }\n}"#
+                            compiled_painless!(
+                                "11aa8d8455dd0d7d710dac881821b4a4a33442f4f51f1df79f2dc8cdde78d604",
+                                r#"{"params":null,"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"boolFields\":[\"cn_meeting\",\"in_meeting\",\"large_meeting\",\"webinar\",\"zoom_phone\"],\"longFields\":[\"meeting_capacity\"]}"
@@ -4618,8 +4622,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def obj = ctx.axonius.identity.in_meeting;\nfor (def f : params.fields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Boolean) {\n    continue;\n  }\n  def s = v.toString().toLowerCase();\n  if (s == '1' || s == 'true') {\n    obj[f] = true;\n  } else if (s == '' || s == '0' || s == 'false') {\n    obj[f] = false;\n  } else {\n    obj.remove(f);\n  }\n}"#
+                            compiled_painless!(
+                                "93211c26d8f42c73d849e588b2c9dc37217997309043cd8a4ad5d3f4d5035a06",
+                                r#"{"params":null,"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"fields\":[\"allow_live_streaming\",\"annotation\",\"attendee_on_hold\",\"auto_saving_chat\",\"breakout_room\",\"chat\",\"closed_caption\",\"co_host\",\"e2e_encryption\",\"entry_exit_chime\",\"far_end_camera_control\",\"feedback\",\"group_hd\",\"non_verbal_feedback\",\"polling\",\"private_chat\",\"record_play_voice\",\"remote_control\",\"remote_support\",\"share_dual_camera\",\"show_meeting_control_toolbar\",\"virtual_background\",\"waiting_room\",\"workplace_by_facebook\"]}"
@@ -4666,8 +4671,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def obj = ctx.axonius.identity;\nfor (def f : params.fields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Boolean) {\n    continue;\n  }\n  def s = v.toString().toLowerCase();\n  if (s == '1' || s == 'true') {\n    obj[f] = true;\n  } else if (s == '' || s == '0' || s == 'false') {\n    obj[f] = false;\n  } else {\n    obj.remove(f);\n  }\n}"#
+                            compiled_painless!(
+                                "1e8faaa8c7e1dad0af4a5f7e8a5011f2bf1c76f5c8d4654e7f80f1911044d2cc",
+                                r#"{"params":null,"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"fields\":[\"internal_is_admin\",\"is_active\",\"is_delegated_admin\",\"is_from_sso_provider\",\"is_latest_last_seen\",\"is_managed_by_application\",\"is_mfa_enforced\",\"is_mfa_enrolled\",\"is_non_editable\",\"is_paid\",\"is_permission_adapter\",\"is_saas_user\",\"is_user_active\",\"is_user_deleted\",\"is_user_external\",\"is_user_inactive\",\"is_user_suspended\"]}"
@@ -5579,8 +5585,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def obj = ctx.axonius.identity.recording;\nfor (def f : params.fields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Boolean) {\n    continue;\n  }\n  def s = v.toString().toLowerCase();\n  if (s == '1' || s == 'true') {\n    obj[f] = true;\n  } else if (s == '' || s == '0' || s == 'false') {\n    obj[f] = false;\n  } else {\n    obj.remove(f);\n  }\n}"#
+                            compiled_painless!(
+                                "33a62b6a59917cc495fb67627e3cbc9222c350d934727524adc09ab477abbfc3",
+                                r#"{"params":null,"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"fields\":[\"auto_delete_cmr\",\"auto_delete_cmr_days\",\"auto_recording\",\"cloud_recording\",\"host_pause_stop_recording\",\"local_recording\",\"record_audio_file\",\"record_gallery_view\",\"record_speaker_view\",\"recording_audio_transcript\",\"save_chat_text\",\"show_timestamp\"]}"
@@ -5674,8 +5681,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"def obj = ctx.axonius.identity.schedule_meeting;\nfor (def f : params.fields) {\n  if (!obj.containsKey(f) || obj[f] == null) {\n    continue;\n  }\n  def v = obj[f];\n  if (v instanceof Boolean) {\n    continue;\n  }\n  def s = v.toString().toLowerCase();\n  if (s == '1' || s == 'true') {\n    obj[f] = true;\n  } else if (s == '' || s == '0' || s == 'false') {\n    obj[f] = false;\n  } else {\n    obj.remove(f);\n  }\n}"#
+                            compiled_painless!(
+                                "fdc3b65b5ee125beefacfa3645d3828b8c1c67226a3434d13fe2400c060d99bd",
+                                r#"{"params":null,"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"fields\":[\"force_pmi_jbh_password\",\"host_video\",\"join_before_host\",\"participants_video\",\"pstn_password_protected\",\"require_password_for_instant_meetings\",\"require_password_for_pmi_meetings\",\"require_password_for_scheduled_meetings\",\"require_password_for_scheduling_new_meetings\",\"use_pmi_for_instant_meetings\",\"use_pmi_for_scheduled_meetings\"]}"
@@ -6108,8 +6116,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
-                            cached_painless!(
-                                r#"for (def item : ctx.axonius.identity.user_apps) {\n  for (def f : params.fields) {\n    if (!item.containsKey(f) || item[f] == null) {\n      continue;\n    }\n    def v = item[f];\n    if (v instanceof Boolean) {\n      continue;\n    }\n    def s = v.toString().toLowerCase();\n    if (s == '1' || s == 'true') {\n      item[f] = true;\n    } else if (s == '' || s == '0' || s == 'false') {\n      item[f] = false;\n    } else {\n      item.remove(f);\n    }\n  }\n}"#
+                            compiled_painless!(
+                                "437876d949624956a7aee880cf9e324a88765e670b3e955d8be93f5d407ead76",
+                                r#"{"params":null,"known":[]}"#
                             ),
                             cached_params!(
                                 "{\"fields\":[\"active_from_direct_adapter\",\"is_from_direct_adapter\",\"is_managed\",\"is_saas_application\",\"is_unmanaged_extension\",\"is_user_deleted\",\"is_user_external\",\"is_user_paid\",\"is_user_suspended\"]}"

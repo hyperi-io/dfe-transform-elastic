@@ -394,8 +394,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx._conf.event.end = ctx._conf.event.end + ctx._conf.timedelta/2"#
+                        compiled_painless!(
+                            "a558e84f5a95a2345a1e480386e79c52e41ecc81cb582099602ef5e3a764edf2",
+                            r#"{"params":null,"known":[{"CombineFields":{"target":"_conf.event.end","op":"Add","left":{"path":"_conf.event.end","divisor":null},"right":{"path":"_conf.timedelta","divisor":2}}},{"ScalarExpression":{"target":"_conf.event.end","expr":{"Binary":[{"Field":"_conf.event.end"},"Add",{"Binary":[{"Field":"_conf.timedelta"},"Div",{"Int":2}]}]}}}]}"#
                         ),
                     )?;
                 }
@@ -409,8 +410,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx._conf.event.start = ctx._conf.event.start - ctx._conf.timedelta/2"#
+                        compiled_painless!(
+                            "24b864b27cc5e76e2551c8e2fa786f3d386b36d4924271382e39f23e01100944",
+                            r#"{"params":null,"known":[{"CombineFields":{"target":"_conf.event.start","op":"Subtract","left":{"path":"_conf.event.start","divisor":null},"right":{"path":"_conf.timedelta","divisor":2}}},{"ScalarExpression":{"target":"_conf.event.start","expr":{"Binary":[{"Field":"_conf.event.start"},"Sub",{"Binary":[{"Field":"_conf.timedelta"},"Div",{"Int":2}]}]}}}]}"#
                         ),
                     )?;
                 }

@@ -93,8 +93,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"// Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def sb = new StringBuilder();\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        sb.append(\"_\");\n      }\n      sb.append(Character.toLowerCase(c));\n      lastCharWasUpperCase = true;\n    } else {\n      sb.append(c);\n      lastCharWasUpperCase = false;\n    }\n  }\n  return sb.toString();\n}\n\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      // Skip fields that contain '@' in their name\n      if (!entry.getKey().contains(\"@\")) {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n\n// Apply the conversion\nctx.microsoft_defender_cloud = ctx.microsoft_defender_cloud ?: [:];\nctx.microsoft_defender_cloud.assessment = convertToSnakeCase(ctx.json.properties);\n"#
+                    compiled_painless!(
+                        "74a7f1921adeaab6640388ba8767e63e1f5ec16cc0fa7bcf9adc3f1a08b5c707",
+                        r#"{"params":null,"known":[{"CamelToSnake":{"target":"microsoft_defender_cloud.assessment","source":"json.properties","rule":"AfterNonUpper","at_keys":"Drop","merge":false,"removes":[]}}]}"#
                     ),
                 )?;
             }
@@ -1662,8 +1663,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def cvss = ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.vulnerability_details.cvss; if (cvss.containsKey('2.0')) {\n  ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.vulnerability_details.cvss_v2 = cvss.get('2.0');\n} if (cvss.containsKey('3.0')) {\n  ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.vulnerability_details.cvss_v3 = cvss.get('3.0');\n} if (cvss.containsKey('4.0')) {\n  ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.vulnerability_details.cvss_v4 = cvss.get('4.0');\n}"#
+                        compiled_painless!(
+                            "110155c37069bdf5b0d4696e120b36f11797add43b976344d517fcc50560e075",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -2330,7 +2332,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
+                    compiled_painless!(
+                        "65d8fa634d80946ac9148b623828adc7c654cee169a52c38eea18c063998202a",
+                        r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"microsoft_defender_cloud.assessment.status.status_change_date","wanted":"Null","negated":true,"lowered":false}},{"Compare":{"path":"microsoft_defender_cloud.assessment.status.first_evaluation_date","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"If":{"test":[["Never"]],"then":[{"Literal":{"Set":{"path":"event.created","value":{"Field":"microsoft_defender_cloud.assessment.status.status_change_date"}}}}],"alt":[{"Literal":{"Set":{"path":"event.created","value":{"Field":"microsoft_defender_cloud.assessment.status.first_evaluation_date"}}}}]}}],"alt":[{"If":{"test":[[{"Compare":{"path":"microsoft_defender_cloud.assessment.status.first_evaluation_date","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.created","value":{"Field":"microsoft_defender_cloud.assessment.status.first_evaluation_date"}}}}],"alt":[{"If":{"test":[[{"Compare":{"path":"microsoft_defender_cloud.assessment.status.status_change_date","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"event.created","value":{"Field":"microsoft_defender_cloud.assessment.status.status_change_date"}}}}],"alt":[]}}]}}]}}],"whole":false}}]}"#,
                         r#"def status_change_date = ctx.microsoft_defender_cloud?.assessment?.status?.status_change_date; def first_evaluation_date = ctx.microsoft_defender_cloud?.assessment?.status?.first_evaluation_date; if (status_change_date != null && first_evaluation_date != null) {\n  ZonedDateTime date1 = ZonedDateTime.parse(status_change_date);\n  ZonedDateTime date2 = ZonedDateTime.parse(first_evaluation_date);\n\n  if (date1.isAfter(date2)) {\n    ctx.event.created = status_change_date;\n  } else {\n    ctx.event.created = first_evaluation_date;\n  }\n} else if (first_evaluation_date != null) {\n  ctx.event.created = first_evaluation_date;\n} else if (status_change_date != null) {\n  ctx.event.created = status_change_date;\n}"#
                     ),
                 )?;
@@ -2440,8 +2444,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def severity = ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.status.severity;\nif (severity == 'Low') {\n  ctx.event.severity = 21;\n} else if (severity == 'Medium') {\n  ctx.event.severity = 47;\n} else if (severity == 'High') {\n  ctx.event.severity = 73;\n}"#
+                        compiled_painless!(
+                            "a1da51a994d6ee36fcda0d7f2b76e674c6d3ae312b928abbb35c6f31644f8861",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"microsoft_defender_cloud.assessment.additional_data.sub_assessment.status.severity","fold_case":false,"test":"Equals","arms":[{"literals":["Low"],"writes":[["event.severity",21]],"removes":[]},{"literals":["Medium"],"writes":[["event.severity",47]],"removes":[]},{"literals":["High"],"writes":[["event.severity",73]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -2793,8 +2798,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"String os_platform;\nif (ctx.microsoft_defender_cloud?.assessment?.additional_data?.sub_assessment?.additional_data?.software_details?.os_details?.os_platform != null) {\n  os_platform = ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.software_details.os_details.os_platform.toLowerCase();\n} else if (ctx.microsoft_defender_cloud?.assessment?.additional_data?.os_type != null) {\n  os_platform = ctx.microsoft_defender_cloud.assessment.additional_data.os_type.toLowerCase();\n} else {\n  return;\n}\nfor (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    if (os == 'mac') {\n      ctx.host.os.put('type', 'macos');\n    } else {\n      ctx.host.os.put('type', os);\n    }\n    return;\n  }\n}\n"#
+                    compiled_painless!(
+                        "e93ccff5c9be7eeb5a48b4faff90f65398e6f47abe9ef25ee8c9ce2141325aa2",
+                        r#"{"params":"FirstContainedMember","known":["JoinOptional"]}"#
                     ),
                     cached_params!(
                         "{\"os_type\":[\"linux\",\"mac\",\"unix\",\"windows\",\"ios\",\"android\"]}"
@@ -3243,8 +3249,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"double max_score = 0.0;\nString severity, version;\nfor (def cve: ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.cve_list) {\n  if (cve.cvss_score != null) {\n    if (max_score < cve.cvss_score) {\n      max_score = cve.cvss_score;\n      severity = cve.severity;\n      version = cve.cvss_version;\n    }\n  }\n}\nctx.vulnerability = ctx.vulnerability ?: [:];\nctx.vulnerability.score = ctx.vulnerability.score ?: [:];\nctx.vulnerability.score.base = max_score;\nctx.vulnerability.severity = severity;\nctx.vulnerability.score.version = version;\n"#
+                        compiled_painless!(
+                            "61433c0df39d2c5a773e6eaf94faa3d80525cfd52cba8f28b9bd747f967c95f5",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())
@@ -3288,8 +3295,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"double max_score = 0.0;\nString severity;\nfor (def cve: ctx.microsoft_defender_cloud.assessment.additional_data.cves) {\n  if (cve.base_score != null) {\n    if (max_score < cve.base_score) {\n      max_score = cve.base_score;\n      severity = cve.severity;\n    }\n  }\n}\nctx.vulnerability = ctx.vulnerability ?: [:];\nctx.vulnerability.score = ctx.vulnerability.score ?: [:];\nctx.vulnerability.score.base = max_score;\nctx.vulnerability.severity = severity;\n"#
+                        compiled_painless!(
+                            "9450f1fd50c0be068de552617aeec8b648a237294639a4476a79f5f7ebaf605d",
+                            r#"{"params":null,"known":[]}"#
                         ),
                     )?;
                     Ok(())

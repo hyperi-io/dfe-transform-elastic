@@ -57,8 +57,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
-                    r#"if ((ctx.json?.client_io_rate?.write_op_per_sec != null && ctx.json?.client_io_rate?.write_op_per_sec!=\"\")||(ctx.json?.client_io_rate?.read_op_per_sec != null && ctx.json?.client_io_rate?.read_op_per_sec!=\"\")){\n    def totalOperation = 0;\n    ctx.total_activity = totalOperation + ctx.json?.client_io_rate?.write_op_per_sec + ctx.json?.client_io_rate?.read_op_per_sec;\n}\n"#
+                compiled_painless!(
+                    "edfa0c5307cf75c5a7ed5d4cfa7724dd19b34cdb70322b44b6daeaddf1c4ad0c",
+                    r#"{"params":null,"known":[]}"#
                 ),
             )?;
 

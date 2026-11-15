@@ -348,8 +348,9 @@ impl Transform for Default {
                         // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
-                            cached_painless!(
-                                r#"def iana_number = ctx.network.iana_number;\nif (iana_number == '0') {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number == '2') {\n    ctx.network.transport = 'igmp';\n} else if (iana_number == '6') {\n    ctx.network.transport = 'tcp';\n} else if (iana_number == '8') {\n    ctx.network.transport = 'egp';\n} else if (iana_number == '17') {\n    ctx.network.transport = 'udp';\n} else if (iana_number == '47') {\n    ctx.network.transport = 'gre';\n} else if (iana_number == '50') {\n    ctx.network.transport = 'esp';\n} else if (iana_number == '58') {\n    ctx.network.transport = 'ipv6-icmp';\n} else if (iana_number == '112') {\n    ctx.network.transport = 'vrrp';\n} else if (iana_number == '132') {\n    ctx.network.transport = 'sctp';\n}\n"#
+                            compiled_painless!(
+                                "545279c4d643ce7d4d0abdf23cb5da7630f5a05e1c60d163acfd1103faf4785f",
+                                r#"{"params":null,"known":[{"EqualityLadder":{"subject":"network.iana_number","fold_case":false,"test":"Equals","arms":[{"literals":["0"],"writes":[["network.transport","hopopt"]],"removes":[]},{"literals":["1"],"writes":[["network.transport","icmp"]],"removes":[]},{"literals":["2"],"writes":[["network.transport","igmp"]],"removes":[]},{"literals":["6"],"writes":[["network.transport","tcp"]],"removes":[]},{"literals":["8"],"writes":[["network.transport","egp"]],"removes":[]},{"literals":["17"],"writes":[["network.transport","udp"]],"removes":[]},{"literals":["47"],"writes":[["network.transport","gre"]],"removes":[]},{"literals":["50"],"writes":[["network.transport","esp"]],"removes":[]},{"literals":["58"],"writes":[["network.transport","ipv6-icmp"]],"removes":[]},{"literals":["112"],"writes":[["network.transport","vrrp"]],"removes":[]},{"literals":["132"],"writes":[["network.transport","sctp"]],"removes":[]}]}}]}"#
                             ),
                         )?;
                         Ok(())

@@ -96,8 +96,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def keys = ctx.json.uniqueness.toString().splitOnToken(','); ctx.tenable_sc = new HashMap(); ctx.tenable_sc.asset = new HashMap(); String uniqueKey = ''; if (keys.length > 0) {\n  for (int i = 0; i < keys.length; i++) {\n    if(keys[i] == 'repositoryID') {\n      uniqueKey = uniqueKey + ctx.json.repository.id + (i == keys.length - 1 ? '' : '_');\n    } else {\n      uniqueKey = uniqueKey + ctx.json[keys[i]] + (i == keys.length - 1 ? '' : '_');\n    }\n  }\n} ctx.tenable_sc.asset.custom_hash = uniqueKey;"#
+                    compiled_painless!(
+                        "8917c851e5d0dbbd17f86b28ea3955453ff222646cc43fb53e0195923412fd2b",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -497,8 +498,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def domain = '';\ndef nameArray = ctx.json.dnsName.toString().splitOnToken('.');\nif (nameArray?.length != null && nameArray.length > 0) {\n  for (int i = 1; i < nameArray.length; i++) {\n    domain += nameArray[i] + (i < nameArray.length - 1 ? '.' : '');\n  }\n  ctx.host.name = nameArray[0];\n  ctx.host.domain = domain;\n}\n"#
+                    compiled_painless!(
+                        "f125f9a6899f4f5eeb0c16801b954305929da7935ef7d7a23eaba133893e3b48",
+                        r#"{"params":null,"known":[{"SplitFirstLabel":{"source":"json.dnsName","separator":".","head":"host.name","tail":"host.domain"}}]}"#
                     ),
                 )?;
             }

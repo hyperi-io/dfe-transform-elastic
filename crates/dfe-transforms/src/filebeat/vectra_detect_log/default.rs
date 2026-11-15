@@ -914,8 +914,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.vectra_detect?.log?.bytes?.sent != null && ctx.vectra_detect?.log?.bytes?.received != null) {\n  ctx.temp = ctx.vectra_detect.log.bytes.sent + ctx.vectra_detect.log.bytes.received;\n}"#
+                    compiled_painless!(
+                        "46b137188e3a9b860f123bf5bf55c1fa221f4652874c9e87836119d68f562ab1",
+                        r#"{"params":null,"known":[{"CombineFields":{"target":"temp","op":"Add","left":{"path":"vectra_detect.log.bytes.sent","divisor":null},"right":{"path":"vectra_detect.log.bytes.received","divisor":null}}}]}"#
                     ),
                 )?;
                 if let Some(v) = event

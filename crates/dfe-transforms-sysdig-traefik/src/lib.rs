@@ -1,0 +1,244 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright (c) 2026 HYPERI PTY LIMITED
+
+#![forbid(unsafe_code)]
+#![warn(clippy::all)]
+// These modules mirror the structure of an Elastic ingest pipeline processor
+// for processor, which is deliberately not idiomatic Rust. Correctness lints
+// stay on; only the style ones that fight that shape are off.
+#![allow(
+    clippy::needless_return,
+    clippy::redundant_closure_for_method_calls,
+    clippy::collapsible_if,
+    clippy::redundant_closure_call,
+    unused_assignments,
+    unused_variables,
+    unused_imports,
+    dead_code
+)]
+
+//! Generated filebeat transforms for the packages from `sysdig` to `traefik`.
+//!
+//! The modules stay in `dfe-transforms/src/filebeat`, where the generator writes
+//! them, and `dfe-transforms` re-exports this crate under `filebeat`.
+
+#[path = "../../dfe-transforms/src/filebeat/sysdig_alerts/mod.rs"]
+pub mod sysdig_alerts;
+#[path = "../../dfe-transforms/src/filebeat/sysdig_cspm/mod.rs"]
+pub mod sysdig_cspm;
+#[path = "../../dfe-transforms/src/filebeat/sysdig_event/mod.rs"]
+pub mod sysdig_event;
+#[path = "../../dfe-transforms/src/filebeat/sysdig_vulnerability/mod.rs"]
+pub mod sysdig_vulnerability;
+#[path = "../../dfe-transforms/src/filebeat/syslog_router_log/mod.rs"]
+pub mod syslog_router_log;
+#[path = "../../dfe-transforms/src/filebeat/sysmon_linux_log/mod.rs"]
+pub mod sysmon_linux_log;
+#[path = "../../dfe-transforms/src/filebeat/system_application/mod.rs"]
+pub mod system_application;
+#[path = "../../dfe-transforms/src/filebeat/system_audit_package/mod.rs"]
+pub mod system_audit_package;
+#[path = "../../dfe-transforms/src/filebeat/system_auth/mod.rs"]
+pub mod system_auth;
+#[path = "../../dfe-transforms/src/filebeat/system_process/mod.rs"]
+pub mod system_process;
+#[path = "../../dfe-transforms/src/filebeat/system_security/mod.rs"]
+pub mod system_security;
+#[path = "../../dfe-transforms/src/filebeat/system_syslog/mod.rs"]
+pub mod system_syslog;
+#[path = "../../dfe-transforms/src/filebeat/system_system/mod.rs"]
+pub mod system_system;
+#[path = "../../dfe-transforms/src/filebeat/tanium_action_history/mod.rs"]
+pub mod tanium_action_history;
+#[path = "../../dfe-transforms/src/filebeat/tanium_client_status/mod.rs"]
+pub mod tanium_client_status;
+#[path = "../../dfe-transforms/src/filebeat/tanium_discover/mod.rs"]
+pub mod tanium_discover;
+#[path = "../../dfe-transforms/src/filebeat/tanium_endpoint_config/mod.rs"]
+pub mod tanium_endpoint_config;
+#[path = "../../dfe-transforms/src/filebeat/tanium_reporting/mod.rs"]
+pub mod tanium_reporting;
+#[path = "../../dfe-transforms/src/filebeat/tanium_threat_response/mod.rs"]
+pub mod tanium_threat_response;
+#[path = "../../dfe-transforms/src/filebeat/teleport_audit/mod.rs"]
+pub mod teleport_audit;
+#[path = "../../dfe-transforms/src/filebeat/tenable_io_asset/mod.rs"]
+pub mod tenable_io_asset;
+#[path = "../../dfe-transforms/src/filebeat/tenable_io_audit/mod.rs"]
+pub mod tenable_io_audit;
+#[path = "../../dfe-transforms/src/filebeat/tenable_io_plugin/mod.rs"]
+pub mod tenable_io_plugin;
+#[path = "../../dfe-transforms/src/filebeat/tenable_io_scan/mod.rs"]
+pub mod tenable_io_scan;
+#[path = "../../dfe-transforms/src/filebeat/tenable_io_vulnerability/mod.rs"]
+pub mod tenable_io_vulnerability;
+#[path = "../../dfe-transforms/src/filebeat/tenable_ot_security_assets/mod.rs"]
+pub mod tenable_ot_security_assets;
+#[path = "../../dfe-transforms/src/filebeat/tenable_ot_security_events/mod.rs"]
+pub mod tenable_ot_security_events;
+#[path = "../../dfe-transforms/src/filebeat/tenable_ot_security_system_log/mod.rs"]
+pub mod tenable_ot_security_system_log;
+#[path = "../../dfe-transforms/src/filebeat/tenable_sc_asset/mod.rs"]
+pub mod tenable_sc_asset;
+#[path = "../../dfe-transforms/src/filebeat/tenable_sc_plugin/mod.rs"]
+pub mod tenable_sc_plugin;
+#[path = "../../dfe-transforms/src/filebeat/tenable_sc_vulnerability/mod.rs"]
+pub mod tenable_sc_vulnerability;
+#[path = "../../dfe-transforms/src/filebeat/tencent_cloud_audit/mod.rs"]
+pub mod tencent_cloud_audit;
+#[path = "../../dfe-transforms/src/filebeat/tencent_cloud_clb/mod.rs"]
+pub mod tencent_cloud_clb;
+#[path = "../../dfe-transforms/src/filebeat/tencent_cloud_cos/mod.rs"]
+pub mod tencent_cloud_cos;
+#[path = "../../dfe-transforms/src/filebeat/tencent_cloud_scf/mod.rs"]
+pub mod tencent_cloud_scf;
+#[path = "../../dfe-transforms/src/filebeat/tetragon_log/mod.rs"]
+pub mod tetragon_log;
+#[path = "../../dfe-transforms/src/filebeat/thycotic_ss_logs/mod.rs"]
+pub mod thycotic_ss_logs;
+#[path = "../../dfe-transforms/src/filebeat/ti_abusech_ja3_fingerprints/mod.rs"]
+pub mod ti_abusech_ja3_fingerprints;
+#[path = "../../dfe-transforms/src/filebeat/ti_abusech_malware/mod.rs"]
+pub mod ti_abusech_malware;
+#[path = "../../dfe-transforms/src/filebeat/ti_abusech_malwarebazaar/mod.rs"]
+pub mod ti_abusech_malwarebazaar;
+#[path = "../../dfe-transforms/src/filebeat/ti_abusech_sslblacklist/mod.rs"]
+pub mod ti_abusech_sslblacklist;
+#[path = "../../dfe-transforms/src/filebeat/ti_abusech_threatfox/mod.rs"]
+pub mod ti_abusech_threatfox;
+#[path = "../../dfe-transforms/src/filebeat/ti_abusech_url/mod.rs"]
+pub mod ti_abusech_url;
+#[path = "../../dfe-transforms/src/filebeat/ti_anomali_intelligence/mod.rs"]
+pub mod ti_anomali_intelligence;
+#[path = "../../dfe-transforms/src/filebeat/ti_anomali_threatstream/mod.rs"]
+pub mod ti_anomali_threatstream;
+#[path = "../../dfe-transforms/src/filebeat/ti_anyrun_ioc/mod.rs"]
+pub mod ti_anyrun_ioc;
+#[path = "../../dfe-transforms/src/filebeat/ti_cif3_feed/mod.rs"]
+pub mod ti_cif3_feed;
+#[path = "../../dfe-transforms/src/filebeat/ti_crowdstrike_intel/mod.rs"]
+pub mod ti_crowdstrike_intel;
+#[path = "../../dfe-transforms/src/filebeat/ti_crowdstrike_ioc/mod.rs"]
+pub mod ti_crowdstrike_ioc;
+#[path = "../../dfe-transforms/src/filebeat/ti_custom_indicator/mod.rs"]
+pub mod ti_custom_indicator;
+#[path = "../../dfe-transforms/src/filebeat/ti_cybersixgill_threat/mod.rs"]
+pub mod ti_cybersixgill_threat;
+#[path = "../../dfe-transforms/src/filebeat/ti_cyware_intel_exchange_indicator/mod.rs"]
+pub mod ti_cyware_intel_exchange_indicator;
+#[path = "../../dfe-transforms/src/filebeat/ti_domaintools_domaindiscovery_feed/mod.rs"]
+pub mod ti_domaintools_domaindiscovery_feed;
+#[path = "../../dfe-transforms/src/filebeat/ti_domaintools_domainhotlist_feed/mod.rs"]
+pub mod ti_domaintools_domainhotlist_feed;
+#[path = "../../dfe-transforms/src/filebeat/ti_domaintools_domainrdap_feed/mod.rs"]
+pub mod ti_domaintools_domainrdap_feed;
+#[path = "../../dfe-transforms/src/filebeat/ti_domaintools_domainrisk_feed/mod.rs"]
+pub mod ti_domaintools_domainrisk_feed;
+#[path = "../../dfe-transforms/src/filebeat/ti_domaintools_nad_feed/mod.rs"]
+pub mod ti_domaintools_nad_feed;
+#[path = "../../dfe-transforms/src/filebeat/ti_domaintools_nod_feed/mod.rs"]
+pub mod ti_domaintools_nod_feed;
+#[path = "../../dfe-transforms/src/filebeat/ti_eclecticiq_threat/mod.rs"]
+pub mod ti_eclecticiq_threat;
+#[path = "../../dfe-transforms/src/filebeat/ti_eset_apt/mod.rs"]
+pub mod ti_eset_apt;
+#[path = "../../dfe-transforms/src/filebeat/ti_eset_botnet/mod.rs"]
+pub mod ti_eset_botnet;
+#[path = "../../dfe-transforms/src/filebeat/ti_eset_cc/mod.rs"]
+pub mod ti_eset_cc;
+#[path = "../../dfe-transforms/src/filebeat/ti_eset_domains/mod.rs"]
+pub mod ti_eset_domains;
+#[path = "../../dfe-transforms/src/filebeat/ti_eset_files/mod.rs"]
+pub mod ti_eset_files;
+#[path = "../../dfe-transforms/src/filebeat/ti_eset_ip/mod.rs"]
+pub mod ti_eset_ip;
+#[path = "../../dfe-transforms/src/filebeat/ti_eset_url/mod.rs"]
+pub mod ti_eset_url;
+#[path = "../../dfe-transforms/src/filebeat/ti_flashpoint_alert/mod.rs"]
+pub mod ti_flashpoint_alert;
+#[path = "../../dfe-transforms/src/filebeat/ti_flashpoint_indicator/mod.rs"]
+pub mod ti_flashpoint_indicator;
+#[path = "../../dfe-transforms/src/filebeat/ti_flashpoint_vulnerability/mod.rs"]
+pub mod ti_flashpoint_vulnerability;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_cryptominer/mod.rs"]
+pub mod ti_google_threat_intelligence_cryptominer;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_first_stage_delivery_vectors/mod.rs"]
+pub mod ti_google_threat_intelligence_first_stage_delivery_vectors;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_infostealer/mod.rs"]
+pub mod ti_google_threat_intelligence_infostealer;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_ioc_stream/mod.rs"]
+pub mod ti_google_threat_intelligence_ioc_stream;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_iot/mod.rs"]
+pub mod ti_google_threat_intelligence_iot;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_linux/mod.rs"]
+pub mod ti_google_threat_intelligence_linux;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_malicious_network_infrastructure/mod.rs"]
+pub mod ti_google_threat_intelligence_malicious_network_infrastructure;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_malware/mod.rs"]
+pub mod ti_google_threat_intelligence_malware;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_mobile/mod.rs"]
+pub mod ti_google_threat_intelligence_mobile;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_osx/mod.rs"]
+pub mod ti_google_threat_intelligence_osx;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_phishing/mod.rs"]
+pub mod ti_google_threat_intelligence_phishing;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_ransomware/mod.rs"]
+pub mod ti_google_threat_intelligence_ransomware;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_threat_actor/mod.rs"]
+pub mod ti_google_threat_intelligence_threat_actor;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_trending/mod.rs"]
+pub mod ti_google_threat_intelligence_trending;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_vulnerability/mod.rs"]
+pub mod ti_google_threat_intelligence_vulnerability;
+#[path = "../../dfe-transforms/src/filebeat/ti_google_threat_intelligence_vulnerability_weaponization/mod.rs"]
+pub mod ti_google_threat_intelligence_vulnerability_weaponization;
+#[path = "../../dfe-transforms/src/filebeat/ti_greynoise_ip/mod.rs"]
+pub mod ti_greynoise_ip;
+#[path = "../../dfe-transforms/src/filebeat/ti_maltiverse_indicator/mod.rs"]
+pub mod ti_maltiverse_indicator;
+#[path = "../../dfe-transforms/src/filebeat/ti_mandiant_advantage_threat_intelligence/mod.rs"]
+pub mod ti_mandiant_advantage_threat_intelligence;
+#[path = "../../dfe-transforms/src/filebeat/ti_misp_threat/mod.rs"]
+pub mod ti_misp_threat;
+#[path = "../../dfe-transforms/src/filebeat/ti_misp_threat_attributes/mod.rs"]
+pub mod ti_misp_threat_attributes;
+#[path = "../../dfe-transforms/src/filebeat/ti_opencti_indicator/mod.rs"]
+pub mod ti_opencti_indicator;
+#[path = "../../dfe-transforms/src/filebeat/ti_otx_pulses_subscribed/mod.rs"]
+pub mod ti_otx_pulses_subscribed;
+#[path = "../../dfe-transforms/src/filebeat/ti_otx_threat/mod.rs"]
+pub mod ti_otx_threat;
+#[path = "../../dfe-transforms/src/filebeat/ti_rapid7_threat_command_alert/mod.rs"]
+pub mod ti_rapid7_threat_command_alert;
+#[path = "../../dfe-transforms/src/filebeat/ti_rapid7_threat_command_ioc/mod.rs"]
+pub mod ti_rapid7_threat_command_ioc;
+#[path = "../../dfe-transforms/src/filebeat/ti_rapid7_threat_command_vulnerability/mod.rs"]
+pub mod ti_rapid7_threat_command_vulnerability;
+#[path = "../../dfe-transforms/src/filebeat/ti_recordedfuture_identity_detection/mod.rs"]
+pub mod ti_recordedfuture_identity_detection;
+#[path = "../../dfe-transforms/src/filebeat/ti_recordedfuture_playbook_alert/mod.rs"]
+pub mod ti_recordedfuture_playbook_alert;
+#[path = "../../dfe-transforms/src/filebeat/ti_recordedfuture_threat/mod.rs"]
+pub mod ti_recordedfuture_threat;
+#[path = "../../dfe-transforms/src/filebeat/ti_recordedfuture_triggered_alert/mod.rs"]
+pub mod ti_recordedfuture_triggered_alert;
+#[path = "../../dfe-transforms/src/filebeat/ti_socradar_feeds_feed/mod.rs"]
+pub mod ti_socradar_feeds_feed;
+#[path = "../../dfe-transforms/src/filebeat/ti_socradar_taxii_indicator/mod.rs"]
+pub mod ti_socradar_taxii_indicator;
+#[path = "../../dfe-transforms/src/filebeat/ti_strider_indicator/mod.rs"]
+pub mod ti_strider_indicator;
+#[path = "../../dfe-transforms/src/filebeat/ti_threatconnect_indicator/mod.rs"]
+pub mod ti_threatconnect_indicator;
+#[path = "../../dfe-transforms/src/filebeat/ti_threatq_threat/mod.rs"]
+pub mod ti_threatq_threat;
+#[path = "../../dfe-transforms/src/filebeat/ti_ticura_indicator/mod.rs"]
+pub mod ti_ticura_indicator;
+#[path = "../../dfe-transforms/src/filebeat/tines_audit_logs/mod.rs"]
+pub mod tines_audit_logs;
+#[path = "../../dfe-transforms/src/filebeat/tines_time_saved/mod.rs"]
+pub mod tines_time_saved;
+#[path = "../../dfe-transforms/src/filebeat/tomcat_log/mod.rs"]
+pub mod tomcat_log;
+#[path = "../../dfe-transforms/src/filebeat/traefik_access/mod.rs"]
+pub mod traefik_access;

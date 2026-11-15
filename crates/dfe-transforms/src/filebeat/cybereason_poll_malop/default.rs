@@ -956,8 +956,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def os_types = new ArrayList(); for (def obj : ctx.json.machines) {\n  if (obj.containsKey(\"os_type\") && [\"linux\", \"macos\", \"unix\", \"windows\", \"ios\", \"android\"].contains((obj.get(\"os_type\")).toLowerCase())) {\n    os_types.add(obj.get(\"os_type\").toLowerCase());\n  }\n} if (os_types.size() > 0){\n  if (ctx.host.os == null) {\n    ctx.host.os = new HashMap();\n  }\n  ctx.host.os.type= os_types;\n}"#
+                    compiled_painless!(
+                        "c26c5f89ace4b5e5099ee3ad7c7082d34506acecab2426436d16300dfa396e65",
+                        r#"{"params":null,"known":[{"GatherMembers":{"list":"json.machines","stop_on_null_element":false,"columns":[{"member":"os_type","targets":["host.os.type"],"allowed":["linux","macos","unix","windows","ios","android"],"lowercase":true,"flatten":false,"dedupe":false,"selector":null,"literals":[],"split":null}],"flag":null}}]}"#
                     ),
                 )?;
             }

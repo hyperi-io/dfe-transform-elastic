@@ -249,8 +249,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.source.user.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} ctx.user.name = splitmail[0]; ctx.source.user.name = splitmail[0]; ctx.user.domain = splitmail[1]; ctx.source.user.domain = splitmail[1];\n"#
+                    compiled_painless!(
+                        "0a7b50a87773f444b7e4fec2eac1bf08fb6a7b27ab9eb53a0632da53a5a8ce8a",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"source.user.email","names":["user.name","source.user.name"],"domains":["user.domain","source.user.domain"],"emails":[],"appends":[]}}]}"#
                     ),
                 )?;
             }
@@ -457,8 +458,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.google_workspace.login == null) {\n  ctx.google_workspace.login = new HashMap();\n} for (int i = 0; i < ctx.json.events.parameters.length; ++i) {\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"] != null && ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"].startsWith(\"login_\")) {\n    ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"].substring(6);\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"] != null) {\n    ctx.google_workspace.login[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"intValue\"] != null) {\n    ctx.google_workspace.login[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"intValue\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"] != null) {\n    ctx.google_workspace.login[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"boolValue\"] != null) {\n    ctx.google_workspace.login[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"boolValue\"];\n  }    \n}\n"#
+                    compiled_painless!(
+                        "be18db1d3a540c90c06de5bfadb2779c2f07fd5016b19ddc8fd0e116bae86103",
+                        r#"{"params":null,"known":[{"ParameterFanOut":{"list":"json.events.parameters","target":"google_workspace.login","values":["value","intValue","multiValue","boolValue"],"strip":{"prefix":"login_","cut":6},"folds":[]}}]}"#
                     ),
                 )?;
             }
@@ -505,8 +507,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx._temp_ = new HashMap(); ctx._temp_.start = ctx?.google_workspace?.login.timestamp / 1000;\n"#
+                    compiled_painless!(
+                        "f0593b56271a493bffe6677df0bddc90b9f5bfeb7e9a2be889a39084b3470b22",
+                        r#"{"params":null,"known":[{"PlainAssignments":{"statements":[{"Literal":{"Set":{"path":"_temp_.start","value":{"Scaled":{"path":"google_workspace.login.timestamp","factor":1000,"divide":true}}}}}],"whole":true}}]}"#
                     ),
                 )?;
             }
@@ -560,8 +563,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"String[] splitmail = ctx.google_workspace.login.affected_email_address.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} if (ctx.user.target == null) {\n  ctx.user.target = new HashMap();\n} ctx.user.target.name = splitmail[0]; ctx.user.target.domain = splitmail[1]; ctx.related.user.add(splitmail[0]);\n"#
+                    compiled_painless!(
+                        "fe78dca98a7785eb42930196b065e4e9d5786b845799ddd75c4c4073a721518e",
+                        r#"{"params":null,"known":[{"EmailSplit":{"source":"google_workspace.login.affected_email_address","names":["user.target.name"],"domains":["user.target.domain"],"emails":[],"appends":[["related.user",0]]}}]}"#
                     ),
                 )?;
             }

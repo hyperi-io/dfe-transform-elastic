@@ -340,7 +340,7 @@ fn gregorian_millis(event: &mut Event, path: &str) {
 /// Every `google_workspace` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
-        hash: "a1dd684dd83a395d087233df33b8a70697611c14e426537c7468da801b63b720",
+        hash: "6827f45526384ebb68bbdb4406f9297ebb70f56b0ae91067715cd8cbde455ac1",
         source: "google_workspace",
         name: "gmail_bigquery_transform",
         run: gmail_bigquery_transform,

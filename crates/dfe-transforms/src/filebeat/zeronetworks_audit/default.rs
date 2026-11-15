@@ -194,7 +194,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "59e35904c14e8357085e6cd6d33c7fa212545098f14eedc29ad9005438d3e1c7",
+                    r#"{"params":{"LookupMerge":{"statements":[{"Literal":{"Set":{"path":"event.kind","value":{"Literal":"event"}}}},{"If":{"test":[[{"Compare":{"path":"event.code","wanted":"Null","negated":false,"lowered":false}}]],"then":["Return"],"alt":[]}},{"If":{"test":[["Never"]],"then":["Return"],"alt":[]}}],"whole":false}},"known":[]}"#,
                     r#"ctx.event.kind = 'event'; if (ctx?.event?.code == null) {\n    return;\n} if (params.get(ctx.event.code) == null) {\n    return;\n} def hm = new HashMap(params.get(ctx.event.code)); hm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(

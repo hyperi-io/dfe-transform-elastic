@@ -26,7 +26,7 @@ use dfe_core::event::Event;
 use crate::common::{last_assignment, literal_divisor, painless_path, strip_line_comments};
 
 /// The fields one script rescales, and how.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct RescaleFields {
     /// Every field the script divides, in the order it names them.
     targets: Vec<String>,
@@ -306,117 +306,8 @@ fn is_identifier(name: &str) -> bool {
     !name.is_empty() && name.chars().all(|c| c.is_alphanumeric() || c == '_')
 }
 
-#[cfg(test)]
+#[cfg(all(test, dfe_script_tests))]
+#[rustfmt::skip]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
-mod tests {
-    use super::*;
-
-    /// `panw_metrics/system`, verbatim.
-    const PANW: &str = "if (ctx.panw != null && ctx.panw.system != null) {\n    if (ctx.panw.system.cpu != null) {\n        def cpuFields = ['user', 'system', 'nice', 'idle', 'wait', 'hi', 'system_int', 'steal'];\n        for (def fieldName : cpuFields) {\n            if (ctx.panw.system.cpu[fieldName] != null) {\n                ctx.panw.system.cpu[fieldName] = ctx.panw.system.cpu[fieldName] / 100.0;\n            }\n        }\n    }\n    if (ctx.panw.system.containsKey('filesystem.use_percent') && ctx.panw.system['filesystem.use_percent'] != null) {\n        ctx.panw.system['filesystem.use_percent'] = ctx.panw.system['filesystem.use_percent'] / 100.0;\n    }\n}\n";
-
-    /// `cisco_meraki_metrics/device_health`, trimmed to one radio.
-    const MERAKI: &str = "if (ctx.meraki != null) {\n    if (ctx.meraki.uplink != null && ctx.meraki.uplink.loss != null && ctx.meraki.uplink.loss.pct != null) {\n        ctx.meraki.uplink.loss.pct = Math.round((ctx.meraki.uplink.loss.pct / 100) * 10000) / 10000.0;\n    }\n\n    if (ctx.meraki.device != null && ctx.meraki.device.channel_utilization != null) {\n        def wifi0 = ctx.meraki.device.channel_utilization[\"2_4\"];\n\n        if (wifi0 != null) {\n            if (wifi0.utilization_80211 != null) {\n                wifi0.utilization_80211 = Math.round((wifi0.utilization_80211 / 100) * 10000) / 10000.0;\n            }\n        }\n    }\n}\n";
-
-    #[test]
-    fn a_loop_over_a_name_list_names_every_field_it_divides() {
-        let pattern = parse_rescale_fields(PANW).expect("panw declined");
-        assert_eq!(pattern.divisor, 100);
-        assert_eq!(pattern.round_unit, None);
-        assert_eq!(
-            pattern.targets,
-            [
-                "panw.system.cpu.user",
-                "panw.system.cpu.system",
-                "panw.system.cpu.nice",
-                "panw.system.cpu.idle",
-                "panw.system.cpu.wait",
-                "panw.system.cpu.hi",
-                "panw.system.cpu.system_int",
-                "panw.system.cpu.steal",
-                "panw.system.filesystem.use_percent",
-            ]
-        );
-    }
-
-    #[test]
-    fn a_local_bound_to_a_subscript_carries_its_path_to_the_member() {
-        let pattern = parse_rescale_fields(MERAKI).expect("meraki declined");
-        assert_eq!(pattern.divisor, 100);
-        assert_eq!(pattern.round_unit, Some(10000));
-        assert_eq!(
-            pattern.targets,
-            [
-                "meraki.uplink.loss.pct",
-                "meraki.device.channel_utilization.2_4.utilization_80211",
-            ]
-        );
-    }
-
-    /// The dotted key is ONE key, so the divide has to land on the vendor's own
-    /// value rather than on a nested twin beside it.
-    #[test]
-    fn a_flat_dotted_key_is_divided_in_place() {
-        let mut event = Event::new(json!({
-            "panw": { "system": {
-                "cpu": { "user": 85, "nice": 95.62 },
-                "filesystem.use_percent": 93,
-            } }
-        }));
-        rescale_fields(&mut event, &parse_rescale_fields(PANW).unwrap());
-        assert_eq!(
-            event.get("panw.system"),
-            Some(&json!({
-                "cpu": { "user": 0.85, "nice": 0.9562 },
-                "filesystem.use_percent": 0.93,
-            }))
-        );
-    }
-
-    #[test]
-    fn the_vendors_rounding_is_applied_once() {
-        let mut event = Event::new(json!({
-            "meraki": {
-                "uplink": { "loss": { "pct": 1.7 } },
-                "device": { "channel_utilization": { "2_4": { "utilization_80211": 8.46 } } },
-            }
-        }));
-        rescale_fields(&mut event, &parse_rescale_fields(MERAKI).unwrap());
-        assert_eq!(event.get_f64("meraki.uplink.loss.pct"), Some(0.017));
-        assert_eq!(
-            event.get_f64("meraki.device.channel_utilization.2_4.utilization_80211"),
-            Some(0.0846)
-        );
-    }
-
-    /// A script that also does something else is not this pattern, however many
-    /// divides it holds.
-    #[test]
-    fn a_script_doing_anything_else_declines() {
-        assert!(
-            parse_rescale_fields("ctx.a.pct = ctx.a.pct / 100.0;\nctx.event.kind = 'metric';\n")
-                .is_none()
-        );
-        // Source and target apart is the `GuardedDivide` pattern, not this one.
-        assert!(parse_rescale_fields("ctx.a.norm = ctx.a.raw / 100.0;\n").is_none());
-        // Two divisors in one script means the reading is wrong somewhere.
-        assert!(
-            parse_rescale_fields("ctx.a.pct = ctx.a.pct / 100.0;\nctx.b.pct = ctx.b.pct / 1000;\n")
-                .is_none()
-        );
-    }
-
-    /// `aws/ec2_metrics`, verbatim: the divide runs only where the agent has
-    /// not already written the fraction, so this reader has to hand it on.
-    #[test]
-    fn a_guard_on_another_field_declines() {
-        assert!(
-            parse_rescale_fields(
-                "if(ctx.aws?.ec2?.metrics?.CPUUtilization?.avg != null && \
-                 ctx.host?.cpu?.usage == null) {\n    \
-                 ctx.aws.ec2.metrics.CPUUtilization.avg = \
-                 ctx.aws.ec2.metrics.CPUUtilization.avg / 100;\n}\n"
-            )
-            .is_none()
-        );
-    }
-}
+#[path = "rescale_tests.rs"]
+mod tests;

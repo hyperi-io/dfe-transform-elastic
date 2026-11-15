@@ -1028,8 +1028,9 @@ impl Transform for Decryption {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n"#
+                    compiled_painless!(
+                        "df5a33b8059b90a46216563551c53aeb8cb119e0adf117adc970036be2ef5b21",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }
@@ -1039,8 +1040,9 @@ impl Transform for Decryption {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n"#
+                    compiled_painless!(
+                        "024df5a1a89169a00f2a7612114dd28ce99024f23207859d52ead24c167a2066",
+                        r#"{"params":null,"known":[]}"#
                     ),
                 )?;
             }

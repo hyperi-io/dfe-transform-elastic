@@ -51,7 +51,9 @@ impl Transform for Default {
             // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
-                cached_painless!(
+                compiled_painless!(
+                    "0eeee68e45ee2e49ddd5421917bb81b67dab004c769c3385063b087f5fee1da4",
+                    r#"{"params":null,"known":[{"GuardedCopy":{"statements":[{"If":{"test":[[{"Compare":{"path":"ti_strider.indicator.is_new","wanted":"Null","negated":true,"lowered":false}}]],"then":[{"Literal":{"Set":{"path":"ti_strider.indicator.is_new","value":{"Test":[[{"Compare":{"path":"ti_strider.indicator.is_new","wanted":{"Value":1},"negated":false,"lowered":false}}]]}}}}],"alt":[]}}],"whole":true}}]}"#,
                     r#"if (ctx.ti_strider?.indicator?.is_new != null) {\n  ctx.ti_strider.indicator.is_new = (ctx.ti_strider.indicator.is_new == 1);\n}\n"#
                 ),
             )?;
@@ -73,8 +75,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"ZonedDateTime now = ZonedDateTime.parse(ctx['@timestamp']);\nif (ctx.ti_strider?.indicator?.archive == 1) {\n  ctx.ti_strider.indicator.expires_at = now;\n} else {\n  ctx.ti_strider.indicator.expires_at = now.plusDays(90);\n}\n"#
+                    compiled_painless!(
+                        "230457bc52c5c5f06b2f497b23b234b1e6073a61f16f4afb594ed2239b64de21",
+                        r#"{"params":null,"known":[{"FlaggedExpiry":{"base":"@timestamp","flag":"ti_strider.indicator.archive","wanted":1,"matched":null,"unmatched":["Days",90],"target":"ti_strider.indicator.expires_at"}}]}"#
                     ),
                 )?;
             }

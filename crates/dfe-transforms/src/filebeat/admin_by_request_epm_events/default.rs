@@ -113,8 +113,9 @@ impl Transform for Default {
         // The pipeline's script, run by the runtime's equivalent
         painless_exec_plan(
             event,
-            cached_painless!(
-                r#"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\n\nif (ctx.admin_by_request_epm.events != null) {\n  ctx.admin_by_request_epm.events = keysToSnakeCase(ctx.admin_by_request_epm.events);\n}\n"#
+            compiled_painless!(
+                "7f3eb127cd7dc48f5647cdec20280dce1610a512eb1e472d1cee59ef86247b67",
+                r#"{"params":null,"known":[{"KeysToSnakeCase":["admin_by_request_epm.events","CamelBreak"]}]}"#
             ),
         )?;
 

@@ -880,8 +880,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def mac = ctx.client.mac;\ndef pattern = /^[A-F0-9]{4}(-[A-F0-9]{4}){2}$/;\ndef matcher = pattern.matcher(mac);\nif (matcher.matches()) {\n   ctx.client.mac = mac.substring(0,2) + \"-\" + mac.substring(2,4) + \"-\" + mac.substring(5,7) + \"-\" + mac.substring(7,9) + \"-\" + mac.substring(10,12) + \"-\" + mac.substring(12,14);\n}\n"#
+                    compiled_painless!(
+                        "6942ae6a53a8492cf1b2c8dc55a0a21b55279f1d9a253248a8dfb672613d3cdf",
+                        r#"{"params":null,"known":[{"SubstringRejoin":{"field":"client.mac","pattern":"^[A-F0-9]{4}(-[A-F0-9]{4}){2}$","matcher":"^(?:^[A-F0-9]{4}(-[A-F0-9]{4}){2}$)$","parts":[{"Slice":{"start":0,"end":2}},{"Literal":"-"},{"Slice":{"start":2,"end":4}},{"Literal":"-"},{"Slice":{"start":5,"end":7}},{"Literal":"-"},{"Slice":{"start":7,"end":9}},{"Literal":"-"},{"Slice":{"start":10,"end":12}},{"Literal":"-"},{"Slice":{"start":12,"end":14}}]}}]}"#
                     ),
                 )?;
             }
@@ -924,8 +925,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
-                    cached_painless!(
-                        r#"def mac = ctx.destination.mac;\ndef pattern = /^[A-F0-9]{4}(-[A-F0-9]{4}){2}$/;\ndef matcher = pattern.matcher(mac);\nif (matcher.matches()) {\n   ctx.destination.mac = mac.substring(0,2) + \"-\" + mac.substring(2,4) + \"-\" + mac.substring(5,7) + \"-\" + mac.substring(7,9) + \"-\" + mac.substring(10,12) + \"-\" + mac.substring(12,14);\n}\n"#
+                    compiled_painless!(
+                        "bd89bdaeaf4843ea8a2382bc272f8c73a4e9c33da37f9ea77c150b7077293134",
+                        r#"{"params":null,"known":[{"SubstringRejoin":{"field":"destination.mac","pattern":"^[A-F0-9]{4}(-[A-F0-9]{4}){2}$","matcher":"^(?:^[A-F0-9]{4}(-[A-F0-9]{4}){2}$)$","parts":[{"Slice":{"start":0,"end":2}},{"Literal":"-"},{"Slice":{"start":2,"end":4}},{"Literal":"-"},{"Slice":{"start":5,"end":7}},{"Literal":"-"},{"Slice":{"start":7,"end":9}},{"Literal":"-"},{"Slice":{"start":10,"end":12}},{"Literal":"-"},{"Slice":{"start":12,"end":14}}]}}]}"#
                     ),
                 )?;
             }

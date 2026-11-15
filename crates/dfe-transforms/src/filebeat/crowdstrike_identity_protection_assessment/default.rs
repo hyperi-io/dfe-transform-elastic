@@ -189,8 +189,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\ndouble v = ((Number) ctx.event.risk_score).doubleValue();\nctx.event.risk_score_norm = (long) Math.round(v * 100.0);"#
+                        compiled_painless!(
+                            "d84d4066832ed6af333fc9518d991645ad65375e2e7bfbcfafd957d5c3fd7c13",
+                            r#"{"params":null,"known":[{"RoundedScale":{"source":"event.risk_score","target":"event.risk_score_norm","factor":100}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -236,8 +237,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"ctx.event = ctx.event ?: [:];\ndef level = ctx.crowdstrike.idp.security_assessment.overall_score_level;\nif (level instanceof String) {\n  def u = level.toUpperCase();\n  if (u == 'LOW' || u == 'NEUTRAL') {\n    ctx.event.severity = 21;\n  } else if (u == 'MEDIUM') {\n    ctx.event.severity = 47;\n  } else if (u == 'HIGH') {\n    ctx.event.severity = 73;\n  } else if (u == 'CRITICAL') {\n    ctx.event.severity = 99;\n  }\n}"#
+                        compiled_painless!(
+                            "6b05409c20f1d8319f0a0f622bb17ea238e70bcf15ec11c42da6f38d7f8b7279",
+                            r#"{"params":null,"known":[{"EqualityLadder":{"subject":"crowdstrike.idp.security_assessment.overall_score_level","fold_case":true,"test":"Equals","arms":[{"literals":["LOW","NEUTRAL"],"writes":[["event.severity",21]],"removes":[]},{"literals":["MEDIUM"],"writes":[["event.severity",47]],"removes":[]},{"literals":["HIGH"],"writes":[["event.severity",73]],"removes":[]},{"literals":["CRITICAL"],"writes":[["event.severity",99]],"removes":[]}]}}]}"#
                         ),
                     )?;
                     Ok(())
@@ -283,8 +285,9 @@ impl Transform for Default {
                     // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
-                        cached_painless!(
-                            r#"def sa = ctx.crowdstrike.idp.security_assessment;\ndef factors = sa.remove('assessmentFactors');\nif (!(factors instanceof List)) {\n  return;\n}\ndef out = new ArrayList();\nfor (def f : factors) {\n  if (!(f instanceof Map)) {\n    continue;\n  }\n  def m = new HashMap();\n  if (f.containsKey('riskFactorType')) {\n    m.put('risk_factor_type', f.get('riskFactorType'));\n  }\n  if (f.containsKey('likelihood')) {\n    m.put('likelihood', f.get('likelihood'));\n  }\n  if (f.containsKey('severity')) {\n    m.put('severity', f.get('severity'));\n  }\n  out.add(m);\n}\nsa.put('assessment_factors', out);"#
+                        compiled_painless!(
+                            "fbcb9f9dc7043e2e73562d24cc1ea52c179ed27ad03a86eace7ce448ba128e50",
+                            r#"{"params":null,"known":[{"ListRenameTable":{"source":"crowdstrike.idp.security_assessment.assessmentFactors","target":"crowdstrike.idp.security_assessment.assessment_factors","renames":[["riskFactorType","risk_factor_type"],["likelihood","likelihood"],["severity","severity"]]}}]}"#
                         ),
                     )?;
                     Ok(())

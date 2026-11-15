@@ -256,8 +256,9 @@ impl Transform for Default {
                 // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
-                    cached_painless!(
-                        r#"String algo = params.get(ctx.file.x509.signature_algorithm);\nif (algo != null) {\n  ctx.file.x509.signature_algorithm = algo;\n}\n"#
+                    compiled_painless!(
+                        "1405ac8c6d5e6fb18a06d5a8b3f7c5f067332fb06db27d82c432686cb9f83d65",
+                        r#"{"params":{"MemberLookup":{"key":"file.x509.signature_algorithm","table":null,"fold":"None","target":"file.x509.signature_algorithm","wrap":false,"miss":"Keep","literals":{"statements":[],"whole":true}}},"known":[]}"#
                     ),
                     cached_params!(
                         "{\"md2WithRSAEncryption\":\"MD2-RSA\",\"md5WithRSAEncryption\":\"MD5-RSA\",\"sha-1WithRSAEncryption\":\"SHA1-RSA\",\"sha256WithRSAEncryption\":\"SHA256-RSA\",\"sha384WithRSAEncryption\":\"SHA384-RSA\",\"sha512WithRSAEncryption\":\"SHA512-RSA\",\"dsaWithSha1\":\"DSA-SHA1\",\"dsaWithSha256\":\"DSA-SHA256\",\"ecdsa-with-SHA1\":\"ECDSA-SHA1\",\"ecdsa-with-SHA256\":\"ECDSA-SHA256\",\"ecdsa-with-SHA384\":\"ECDSA-SHA384\",\"ecdsa-with-SHA512\":\"ECDSA-SHA512\",\"id-Ed25519\":\"Ed25519\"}"
