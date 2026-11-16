@@ -5,81 +5,54 @@
 # License:   BUSL-1.1
 # Copyright: (c) 2026 HYPERI PTY LIMITED
 
-# Repo category. Matches the `classification` custom property on the org.
-# Values: internal, product, fork, general-oss
 classification: product
 
-# Project language (auto-detected if not specified)
-# Values: python, typescript, golang, rust, bash, none
 language: rust
 
-# Quality checks
 quality:
   enabled: true
   ignore:
-    # GHSA-w9wp-h8wv-79jx / CVE-2026-48504: opentelemetry_sdk 0.31.0 is in the
-    # lock through scalo, in the affected range (<= 0.32.0, fixed in 0.32.1).
-    # The flaw is in BaggagePropagator::extract_with_context, which parses an
-    # inbound W3C Baggage header before enforcing its size limits. Neither this
-    # repo nor scalo registers a Baggage or other text map propagator, so it is
-    # never called. Recorded as not reachable in the DFE threat model (dfe-infra
-    # docs/THREAT-MODEL.md, accepted risks). It is a GitHub advisory with no
-    # RustSec entry, so only osv-scanner sees it. scalo holds 0.31 because
-    # metrics-exporter-opentelemetry 0.2.1 requires opentelemetry ^0.31;
-    # tracked in hyperi-io/scalo-rs#281.
     - tool: osv-scanner
       id: GHSA-w9wp-h8wv-79jx
       reason: "CVE-2026-48504, opentelemetry_sdk 0.31.0 via scalo: unreachable, no Baggage propagator registered in dfe-transform-elastic or scalo. Not reachable per dfe-infra docs/THREAT-MODEL.md accepted risks. Blocked on metrics-exporter-opentelemetry 0.2.1 requiring opentelemetry ^0.31; tracked in hyperi-io/scalo-rs#281."
 
-# Testing
 test:
   enabled: true
   coverage: true
   rust:
-    # Required, not auto: the memory and cascade tests read process-wide state, and only nextest gives each test a process of its own.
+    # Required: the memory and cascade tests need a process each (docs/testing.md).
     nextest: true
 
-# Building
 build:
   enabled: true
   strategies:
     - native
   rust:
     glibc_max: "2.41"
-    # librdkafka and OpenSSL link statically from hyperi-ci's prefix, so the
-    # image installs no C library packages.
+    # librdkafka and OpenSSL link statically, so the image installs no C libraries.
     static_libs: true
-    # The arm64 leg needs a larger runner for MEMORY, not cores. `dfe-transforms`
-    # carries one module per data stream and holds 13.15 GiB in a single rustc at
-    # opt-level 1; the hosted `ubuntu-24.04-arm` is 2 vCPU and 8 GiB on a private
-    # repo, so the build was OOM-killed after 12 minutes. A repo-level
-    # `GH_RUNNER_ARM64` points this repo at a 16-core, 64 GiB runner (issue #27).
+    # arm64 builds on the larger runner `GH_RUNNER_ARM64` names, for memory (issue #27).
     targets:
       - x86_64-unknown-linux-gnu
       - aarch64-unknown-linux-gnu
-    # One rustc here peaks near 14 GiB, and clippy --all-targets builds the lib and its test target at once, so a 24 GiB runner fits one job.
+    # One rustc here peaks near 14 GiB.
     memory_per_job_gib: 14
-    # The cost lands on a RELEASE and never on a PR: the build half only runs
-    # behind the `Publish: true` trailer, a `hyperi-ci publish` dispatch, or a
-    # dispatch with `optimize-tier: release`, so the day-to-day loop is untouched.
+    # Release builds only, never a PR (CONTRIBUTING.md, "CI is slow here").
     optimize:
       pgo:
         enabled: true
-        # 600s of load, 300s per source. The prefix holds it there over the duration_secs hyperi-ci exports.
+        # The prefix holds the load at 600 s over the duration_secs hyperi-ci exports.
         workload_cmd: "env PGO_WORKLOAD_DURATION_SECS=600 bash scripts/pgo-workload.sh"
-        # Built before the workload clock starts, so the script's own cargo build finds it fresh.
+        # Built before the workload clock starts.
         workload_setup_cmd: "cargo build --release -p pgo-driver --features driver"
-        # hyperi-ci's timeout is this plus 600s, which covers the broker pull as well as the load.
+        # hyperi-ci's timeout is this plus 600 s, which covers the broker pull.
         duration_secs: 900
       bolt:
         enabled: true
 
-# Publishing (on release). The stack pins every app by GHCR image digest, so
-# a release must land an image, and the thin chart assembled from the emitted
-# contract ships beside it.
 release:
   enabled: true
-  # Keep `library` at the scalo version in Cargo.toml: the library renders only the contract version its scalo release writes.
+  # Keep `library` at the scalo version in Cargo.toml (CONTRIBUTING.md, "Generated artefacts").
   helm:
     enabled: true
     contract: emit

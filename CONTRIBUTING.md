@@ -17,7 +17,7 @@ versioning and changelog generation. All commits must follow this format:
 [optional footer(s)]
 ```
 
-### Types
+The type sets the version bump:
 
 | Type | Description | Version Bump |
 |------|-------------|--------------|
@@ -33,8 +33,6 @@ versioning and changelog generation. All commits must follow this format:
 | `chore` | Other changes that don't modify src or test files | None |
 | `revert` | Reverts a previous commit | Varies |
 
-### Breaking Changes
-
 For breaking changes that require a major version bump, add `!` after the type
 or include `BREAKING CHANGE:` in the footer:
 
@@ -44,7 +42,7 @@ feat!: remove deprecated API endpoints
 BREAKING CHANGE: The /v1/users endpoint has been removed. Use /v2/users instead.
 ```
 
-### Examples
+Examples:
 
 ```text
 feat(auth): add OAuth2 support for Google login
@@ -58,18 +56,14 @@ refactor(core)!: restructure module exports
 BREAKING CHANGE: Named exports are now used instead of default exports.
 ```
 
-### Scope
-
 Scope is optional but recommended. Use it to indicate the area of the codebase
 affected (e.g., `api`, `auth`, `core`, `cli`, `docs`).
 
-## Semantic Versioning
-
 This project follows [Semantic Versioning 2.0.0](https://semver.org/):
 
-- **MAJOR** (X.0.0): Breaking changes that require users to modify their code
-- **MINOR** (0.X.0): New features that are backwards-compatible
-- **PATCH** (0.0.X): Bug fixes and minor improvements
+- MAJOR (X.0.0): breaking changes that need users to modify their code
+- MINOR (0.X.0): backwards-compatible features
+- PATCH (0.0.X): bug fixes and small improvements
 
 Versions are automatically determined by semantic-release based on commit
 messages. Do not manually update version numbers.
@@ -85,12 +79,14 @@ anniversary of its release.
 
 ## How to Contribute
 
-1. **Fork the repository** and create your branch from `main`
-2. **Make your changes** following the commit message format above
-3. **Test your changes** to ensure they work as expected
-4. **Submit a pull request** with a clear description of what you've done
+1. Fork the repository and create your branch from `main`.
+2. Make your changes, following the commit message format above.
+3. Run the tests below.
+4. Open a pull request that says what the change does.
 
-### Pull Request Checklist
+A question goes in an issue.
+
+Before you open it, check:
 
 - [ ] Commits follow the conventional commit format
 - [ ] Tests pass (if applicable)
@@ -98,22 +94,14 @@ anniversary of its release.
 
 ## CI/CD Workflow
 
-When your pull request is merged to `main`:
-
-1. **semantic-release** analyses commit messages since the last release
-2. Determines the next version number based on commit types
-3. Generates/updates the CHANGELOG
-4. Creates a new GitHub release with release notes
-5. Publishes the package (if applicable)
-
-This happens automatically - no manual intervention required.
+A pull request runs the quality and test jobs. Merging to `main` does not release. A release is a merge with a `Publish: true` trailer in its commit, or a `hyperi-ci publish` dispatch, and semantic-release then picks the version from the commit types since the last release, updates the CHANGELOG, and creates the GitHub release with the image.
 
 ## CI is slow here, so iterate off it
 
 **A push to find out what CI says costs the better part of an hour.** Treat CI
 as the gate that proves a finished change, never as the type checker.
 
-Measured on this repo, per release run:
+Per release run on this repo:
 
 | Stage | Elapsed |
 |---|---|
@@ -121,25 +109,23 @@ Measured on this repo, per release run:
 | Build, linux-amd64 | ~30 min plain, 93 min with PGO |
 | Build, linux-arm64 | ~6-16% longer again than amd64 |
 
-The PGO figure is measured rather than projected: instrument build, then 300
+The PGO figure is from a run, not a projection: instrument build, then 300
 seconds of load against each of two sources, then the optimise build.
 
 The cause is this repo's size rather than a misconfiguration. `dfe-transforms`
-carries one module per data stream, over a thousand of them across about 2,200
-source files, so it compiles as a single `rustc` holding about 13 GiB whatever
-`-j` says, and the binary then links under fat LTO in one thread. Neither step
-spreads across cores, which is why a bigger runner buys very little.
+has one module per data stream, over a thousand of them across about 2,200
+source files, split into crates by package so each `rustc` peaks near 14 GiB
+whatever `-j` says, and the binary then links under thin LTO with one codegen
+unit. Neither step spreads well across cores, which is why a bigger runner buys
+very little.
 
-**PGO and BOLT are configured for the release build and switched on together
-at GA release prep.** PGO alone is two cargo passes around 600
-seconds of load, which measured 93 minutes. BOLT adds two more passes and
+**PGO and BOLT are both on for the release build** (`.hyperi-ci.yaml`). PGO alone is two cargo passes around 600
+seconds of load. BOLT adds two more passes and
 another workload, and retries the pair on a failure, so the two together are
 roughly two hours per architecture and three with a retry.
 
-That cost falls only on a release, never on a PR, because the build half runs
+That cost falls on a release, never on a PR, because the build half runs
 behind the `Publish: true` trailer or a `hyperi-ci publish` dispatch.
-
-### What to run instead
 
 Everything below runs locally. `hyperi-ci check` takes about an hour and runs
 the same gates CI does, and the rest answer in seconds:
@@ -152,15 +138,15 @@ hyperi-ci check
 cargo test -p dfe-transforms --test integration --test untested_sources --test unencumbered
 ```
 
-Keep a `bacon` session running while you edit -- it recompiles on save and gives
-verdicts without you spending a CI run on them. The first build of the workspace
+Keep a `bacon` session running as you edit. It recompiles on save and gives
+verdicts without spending a CI run on them. The first build of the workspace
 is cold and takes around twenty minutes, and every one after it is incremental.
 
 Two traps worth knowing before you burn a run on them:
 
 - **Never set `CARGO_BUILD_JOBS` by hand.** A hand-set value beats the project's
-  own pinning and any build governor on the host.
-- **The compat corpus is not here.** It is Elastic-licensed and lives in the private dfe-transform-elastic-dev repository, which runs the parity tests. Never copy it into `tests/fixtures/`: `unencumbered.rs` fails a tree that holds anything but `unencumbered/` and `synthetic/`.
+  pinning and any build governor on the host.
+- **`tests/fixtures/` holds `unencumbered/` and `synthetic/` and nothing else.** `unencumbered.rs` fails a tree holding anything more, or any file with one of its marker strings.
 
 ## Working in this repo
 
@@ -171,7 +157,7 @@ hyperi-ci check
 
 `librdkafka` 2.12.1 or later is needed for the `kafka` feature, which is on by default. `cargo build --no-default-features` builds without it.
 
-Non-English text is a tested case, not an edge case. `tests/unicode.rs` runs every registered transform against seventeen scripts and a set of degenerate inputs.
+Non-English text is a tested case, not an edge case. `tests/unicode.rs` runs every registered transform against seventeen samples of scripts, combining marks, emoji and degenerate inputs.
 
 ### Generated artefacts
 
@@ -189,7 +175,7 @@ The deployed chart is not committed here. At release, hyperi-ci runs `generate-a
 
 **Not every artefact is pinned against a fresh regen.** `committed_config_artefacts_do_not_drift` in `src/deployment.rs` compares `config-schema.{json,yaml}` and `capability-catalog.{json,yaml}`, and its sibling tests do the same for the committed `deployment-contract.json`, `Dockerfile` and `config.example.yaml`. Nothing compares `container-manifest.json` or `Dockerfile.runtime`, so those can and do fall behind -- re-run the command when `src/deployment.rs` changes rather than assuming a test caught it.
 
-`metrics-manifest.json` is compared by metric NAME SET in `src/metrics.rs`, not byte for byte, because it also records the version and commit of the build that wrote it.
+`metrics-manifest.json` is compared by metric NAME SET in `src/metrics.rs`, not byte for byte, because it records the version and commit of the build that wrote it.
 
 The image expects the release binary in the build context:
 
@@ -201,10 +187,21 @@ docker build -t dfe-transform-elastic .
 
 ### The catalogue and the detect tables
 
-`scripts/emit_variants.py` prints every registered variant with the intakes it accepts. On a push to `main` that changes it, `.github/workflows/sync-elastic-variants.yml` opens or updates a `chore(elastic-variants)` PR on dfe-schemas, whose catalogue test checks every elastic entry against that file.
+`sources.yaml` is the source catalogue: every source this service transforms, and what its name does not say. The registry is asserted against it, and `dfe-transform-elastic emit-catalogue` prints the copy compiled into the binary, which dfe-engine offers as its source catalogue. Per source:
+
+| Key | Holds |
+|---|---|
+| `package` | The integration package directory |
+| `data_stream` | The data stream directory within that package |
+| `pipelines` | Where the source's pipelines sit in the pipeline tree |
+| `fixtures` | The source's fixture directory |
+| `beats` | The Beats module and fileset for the same source, if any |
+| `intakes` | Every way the payload can arrive: `beats` always, `receiver` when a device pushes it, `fetcher` when Elastic's agent input is a pure transport such as `httpjson`, `cel` or `aws-s3` |
+| `framing` | Receiver intakes only: `line` if the pipeline groks the syslog header out of `message`, `body` if a header would corrupt its first field |
+| `transforms` | The generated transforms wired into the registry, as `filebeat.<source>.<transform>` |
+
+None of it is derivable from the name: fortinet's package is `fortinet_fortigate`, and one azure package is four of our modules.
+
+`scripts/emit_variants.py` prints every registered variant with the intakes it accepts. On a push to `main` that changes it, `.github/workflows/sync-elastic-variants.yml` opens or updates a `chore(elastic-variants)` PR on dfe-schemas, and its catalogue test checks every elastic entry against that file.
 
 The other direction is generated code. `src/detect/labels.rs` (each variant's `_source` label) and `src/detect/markers.rs` (the agentless marker table) come from the dfe-schemas wheel `scripts/dfe-schemas.toml` pins by version and sha256. To move the pin, set both values from `https://pypi.org/pypi/dfe-schemas/<version>/json` and run `scripts/gen_detect_tables.py`. `tests/scripts_suite.rs` runs it with `--check`, so a stale file fails the test job.
-
-## Questions
-
-If you have questions about contributing, please open an issue or contact us.

@@ -46,16 +46,11 @@ tikv-jemallocator = { workspace = true, optional = true }
 parking_lot = { workspace = true }
 
 [dev-dependencies]
-# `tests/unicode.rs` runs its sweeps through `dfe_runtime::testutil`, which is
-# feature-gated. The dependency above asks for no features, so the module is
-# configured out whenever this package is built ALONE -- a whole-workspace
-# build only worked because dfe-transforms happens to ask for it.
+# `tests/unicode.rs` needs `testutil`, which a package-alone build leaves off.
 dfe-runtime = { workspace = true, features = ["testutil"] }
-# `start_paused` for the loop tests: the pipeline's retry backoff is fast-forwarded
-# by a paused clock instead of waited out.
+# `start_paused` fast-forwards the loop tests' retry backoff.
 tokio = { workspace = true, features = ["test-util"] }
-# An in-process source, so the loop's hold is tested without a broker, and
-# the run's shared Kafka broker for the tests that need one.
+# An in-process source for the loop tests, and the run's shared Kafka broker.
 scalo = { workspace = true, features = [
     "transport-memory",
     "deployment-test-support",
@@ -80,17 +75,11 @@ harness = false
 
 [features]
 default = ["kafka", "grpc"]
-# hyperi-ci enables this on spike/alpha/beta/release. Local dev stays on the
-# system allocator so `cargo build` is not paying for it.
+# hyperi-ci enables this on release builds. Local builds use the system allocator.
 jemalloc = ["dep:tikv-jemallocator"]
-# The Kafka service loop. Separable so the crate still builds and tests on a
-# host without librdkafka-dev; needs the LIBRDKAFKA C library at 2.12.1 or
-# later when enabled, which is unrelated to the scalo version below.
+# Needs librdkafka 2.12.1 or later. Off, the crate builds without librdkafka-dev.
 kafka = ["scalo/transport-kafka"]
-# The direct transport: a scalo Push listener inbound, a gRPC client outbound.
-# Additive to `kafka` rather than an alternative, and in `default` because the
-# release build takes no other feature list and the deployment contract
-# declares the listener port the shipped binary must be able to bind.
+# In `default`: the release build takes no other feature list, and the contract declares the push port.
 grpc = ["scalo/transport-grpc"]
 
 [lints.rust]
@@ -107,7 +96,6 @@ dbg_macro = "deny"
 module_name_repetitions = "allow"
 # #[must_use] goes where dropping the value is a bug, not on every pure function.
 must_use_candidate = "allow"
-# About 38 public Result and panicking fns have no # Errors or # Panics section, 8 of them in dfe-core.
 missing_errors_doc = "allow"
 missing_panics_doc = "allow"
 
@@ -135,13 +123,9 @@ members = [
     "crates/dfe-transforms-zscaler",
     "crates/pgo-driver",
 ]
-# Edition 2024's resolver. Feature unification is per-target, so a dev- or
-# build-dependency's features no longer leak into the normal build.
 resolver = "3"
 
-# The member crates ARE the hot path, so they carry the same panic guards the
-# root package does. `missing_docs` is deliberately absent: it is a library
-# lint, and these crates are internal to a black-box service.
+# The member crates are the hot path, so they share the root's panic guards. No `missing_docs`: they are internal.
 [workspace.lints.rust]
 unsafe_code = "forbid"
 # Set by the private repository's CI, which supplies the script-based test modules.
@@ -157,22 +141,19 @@ dbg_macro = "deny"
 module_name_repetitions = "allow"
 # #[must_use] goes where dropping the value is a bug, not on every pure function.
 must_use_candidate = "allow"
-# About 38 public Result and panicking fns have no # Errors or # Panics section, 8 of them in dfe-core.
 missing_errors_doc = "allow"
 missing_panics_doc = "allow"
 
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
-# A black-box service, not a library. Nothing here goes to crates.io, and
-# saying so stops an accidental publish of BUSL-1.1 code.
+# Stops an accidental crates.io publish of BUSL-1.1 code.
 publish = false
 license = "BUSL-1.1"
 repository = "https://github.com/hyperi-io/dfe-transform-elastic"
 rust-version = "1.95"
 
 [workspace.dependencies]
-# Workspace crates
 dfe-core = { path = "crates/dfe-core" }
 dfe-painless = { path = "crates/dfe-painless" }
 dfe-parse = { path = "crates/dfe-parse" }
@@ -194,10 +175,7 @@ dfe-transforms-sysdig-traefik = { path = "crates/dfe-transforms-sysdig-traefik" 
 dfe-transforms-trellix-zoom = { path = "crates/dfe-transforms-trellix-zoom" }
 dfe-transforms-zscaler = { path = "crates/dfe-transforms-zscaler" }
 
-# Batteries-included runtime (crates.io) — NEVER a path dependency.
-# Features are added when their API is actually referenced, not speculatively.
-# The floor moves with `release.helm.library` in .hyperi-ci.yaml: the library
-# renders only the contract version its scalo release writes.
+# crates.io, never a path dependency. The floor moves with `release.helm.library` in .hyperi-ci.yaml.
 scalo = { version = ">=2.14.30, <3", features = [
     "cli-service",
     "config",
@@ -213,116 +191,79 @@ scalo = { version = ">=2.14.30, <3", features = [
     "metrics",
     "scaling",
     "service-metrics",
-    # The transport types the config and the loop name whichever transport is
-    # compiled in, AcknowledgementsConfig and Record among them.
+    # The transport types the config and loop name, whichever transport is compiled in.
     "transport",
     "version-check",
     # BatchEngine and its pipeline builder, which runs the service loop.
     "worker-batch",
 ] }
 
-# The metric handle types (Counter/Gauge/Histogram) that MetricsManager hands
-# back. scalo re-exports the manager, not the facade crate.
+# The handle types MetricsManager returns. scalo re-exports the manager, not this crate.
 metrics = ">=0.24.6, <0.25"
 
-# JSON Schema derivation for the reflectable config contract. Same range as
-# scalo's own so cargo unifies to one schemars.
+# Same range as scalo's, so cargo unifies to one schemars.
 schemars = { version = ">=1.2.3, <2", default-features = false, features = [
     "std",
     "derive",
     "preserve_order",
 ] }
 
-# Async runtime
 tokio = { version = ">=1.54.1", features = ["full"] }
 tokio-util = ">=0.7.20, <0.8"
 
-# Zero-copy payload bytes -- the currency handed to the transport sender.
 bytes = ">=1.12.1, <2"
 
-# Global allocator for the binary; behind the `jemalloc` feature.
 tikv-jemallocator = ">=0.7.0, <0.8"
 
-# CLI surface for the service binary.
 clap = { version = ">=4.6.7", features = ["derive"] }
 
-# JSON parsing (SIMD-accelerated)
+# Dev-dependency of dfe-runtime's json_parse bench: docs/architecture.md#event-model.
 simd-json = { version = ">=0.19.0, <0.20", features = ["known-key"] }
 serde = { version = ">=1.0.229", features = ["derive"] }
-# preserve_order keeps object keys in DOCUMENT order, which is what
-# Elasticsearch's LinkedHashMap-backed ingest documents hold: a Painless
-# `toString` of a map renders in that order, and sorted keys diverged on
-# every rendered copy aws's cloudtrail writes.
-# float_roundtrip parses every float to the nearest double, as Elasticsearch's
-# Java parser does; without it a long literal such as 0.10617876052856445 reads
-# one ulp low and is written back as ...444.
+# preserve_order keeps Elasticsearch's document key order. float_roundtrip parses floats as Java does.
 serde_json = { version = ">=1.0.154", features = ["preserve_order", "float_roundtrip"] }
 
-# SIMD byte search
 memchr = ">=2.8.3"
 
-# One pass over a line for every marker the agentless detector knows.
 aho-corasick = ">=1.1.5"
 
-# Test only: dfe-receiver's syslog parser, which decides what the detector is
-# handed when the receiver keeps no raw line.
+# Test only: dfe-receiver's syslog parser.
 syslog_loose = ">=0.23.0, <0.24"
 
-# The lock in front of the GeoIP cache. std's RwLock carries poisoning and a
-# slower uncontended path, and this one is taken on the per-event path. Already
-# in the lockfile through
-# scalo, so this adds no supply chain.
+# std's RwLock poisons and is slower uncontended, and the GeoIP cache takes this per event.
 parking_lot = ">=0.13.0, <0.14"
 
-# Pre-compiled DFA regex (serialisable, zero-cost startup)
 regex-automata = ">=0.4.18, <0.5"
 regex = ">=1.13.1"
 
-# Backtracking fallback for the vendor patterns `regex` rejects by design --
-# lookaround. Only reached when `regex` fails to compile, so the hot path is
-# unchanged; without it those patterns silently match nothing. Bounded because
-# 0.x minors break, and the floor is the line the tests actually run.
+# Fallback for the lookaround `regex` rejects. Bounded because 0.x minors break.
 fancy-regex = ">=0.20.0, <0.21"
 
-# Mozilla's Public Suffix List, compiled in. Elasticsearch's registered_domain
-# processor is a PSL lookup, and the last-two-labels heuristic it replaced was
-# wrong in both directions: `a.co.uk` came out registered to `co.uk`, and
-# `host.tld` got a registered domain Elasticsearch writes nothing for.
+# Elasticsearch's registered_domain is a Public Suffix List lookup.
 psl = ">=2.1.248"
 
-# Timestamp handling. chrono-tz carries the IANA database, which chrono
-# deliberately does not ship: a pipeline configured with `America/Denver`
-# needs the offset AT THE EVENT, and that moves with daylight saving.
+# chrono-tz has the IANA database chrono lacks, for a zone's offset at the event.
 chrono = { version = ">=0.4.45, <0.5", features = ["serde"] }
 chrono-tz = { version = ">=0.10.4, <0.11" }
 
-# GeoIP enrichment, memory-mapped for a long-running service. Upper bound
-# because 0.x minors break.
+# Bounded because 0.x minors break.
 maxminddb = { version = ">=0.32.0, <0.33", features = ["mmap"] }
 
-# Error handling
 thiserror = ">=2.0.21"
 
-# Logging
 tracing = ">=0.1.44, <0.2"
 
-# Hashing. Upper bound because 0.x minors break: 0.11 returns a
-# `hybrid_array::Array` from `finalize()`, which has no `LowerHex`.
+# Bounded because 0.x minors break.
 sha1 = ">=0.11.0, <0.12"
 sha2 = ">=0.11.1, <0.12"
-# Bounded for the same reason: 0.x minors break, and 0.23 is what the tests run.
 base64 = ">=0.23.1, <0.24"
 
-# CSV parsing
 csv = ">=1.4.0"
 
-# Testing (used as dev-dependencies in member crates)
 criterion = { version = ">=0.8.2, <0.9", features = ["html_reports"] }
 tempfile = ">=3.27.0, <4"
 
-# Scores the compat corpus across cores. A test-only dependency: the service
-# transforms each block on one thread and scales by replica, and nothing in
-# the shipped path uses a work-stealing pool.
+# Test only. The shipped path runs one transform thread per block.
 rayon = ">=1.12.0, <2"
 
 [profile.release]
@@ -332,10 +273,7 @@ panic = "abort"
 strip = true
 opt-level = 3
 
-# The generated transforms build at opt-level 1: it leaves the three transform
-# benches unchanged, because thin LTO re-optimises this code at the binary's own
-# opt-level anyway, and it holds a rustc's memory down. Splitting the modules
-# across crates by package is what keeps each rustc inside a 16 GiB runner.
+# Why opt-level 1: docs/performance.md.
 [profile.release.package.dfe-transforms-1password-authentik]
 opt-level = 1
 codegen-units = 16
@@ -399,10 +337,7 @@ codegen-units = 16
 [profile.bench]
 inherits = "release"
 debug = true
-# `release` strips, which contradicts the `debug` above: the debuginfo is
-# emitted and then the symbol table it needs is thrown away, so every frame of
-# a backtrace resolves to `<unknown>` and the allocation-site profiler in
-# `dfe-transforms/benches/allocations.rs` has nothing to attribute to.
+# `release` strips, which leaves the allocation profiler no symbols to attribute to.
 strip = false
 
 [profile.profiling]

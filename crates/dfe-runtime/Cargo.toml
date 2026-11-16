@@ -21,9 +21,7 @@ workspace = true
 
 [features]
 testutil = []
-# The generator resolves a script to its runner call at generation time by
-# asking dfe-painless, so the two paths cannot diverge. The service never
-# enables it and never compiles the emitters.
+# Generator-time only: the service never enables it.
 codegen = ["dfe-painless/codegen"]
 
 [dependencies]
@@ -47,29 +45,20 @@ psl = { workspace = true }
 [dev-dependencies]
 tempfile = { workspace = true }
 criterion = { workspace = true }
-# `benches/json_parse.rs` only, which is what demoted it from a runtime
-# dependency: both hot-path uses measured slower than serde_json.
+# `benches/json_parse.rs` only (docs/architecture.md#event-model).
 simd-json = { workspace = true }
 
-# The grok call site, native path against the compiled regex. Here rather than
-# in dfe-transforms because it needs only grok_cache and dfe-parse, and
-# benching it there meant an opt-level=3, codegen-units=1 build of a crate
-# holding one module per data stream.
+# Here, not in dfe-transforms, so the bench builds in minutes.
 [[bench]]
 name = "grok"
 harness = false
 
-# Reading the vendor payload, which every JSON-carrying source does first.
-# Tests the "simd-json is 2-3x faster" premise against this workload. Here
-# rather than in dfe-core because it benches `codegen_api::parse_json_str`
-# alongside `Event::from_bytes`.
+# Here, not in dfe-core, because it benches `codegen_api::parse_json_str` too.
 [[bench]]
 name = "json_parse"
 harness = false
 
-# The GeoIP cache hit, on one thread and on eight. 14 of the 60 source
-# pipelines carry a geoip processor, several of them four or more times per
-# event, and the cache is process-global, shared by every thread that transforms.
+# The GeoIP cache hit, on one thread and on eight.
 [[bench]]
 name = "geoip"
 harness = false

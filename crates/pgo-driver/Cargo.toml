@@ -20,9 +20,7 @@ publish.workspace = true
 workspace = true
 
 [features]
-# hyperi-ci packages every non-gated bin in the workspace, and its
-# `_detect_binary_names` skips a target carrying `required-features`, so the
-# gate is what keeps this driver out of a release payload.
+# hyperi-ci skips a bin with `required-features`, which keeps this driver out of a release.
 driver = []
 
 [[bin]]
@@ -31,9 +29,7 @@ path = "src/main.rs"
 required-features = ["driver"]
 
 [dependencies]
-# Declared here rather than inherited: the workspace entry carries the
-# service's full feature list, and this crate must build with the Kafka
-# transport alone so the workload's driver build takes minutes.
+# The Kafka transport alone, so the driver builds in minutes.
 scalo = { version = "2.14.30", default-features = false, features = [
     "transport-kafka",
 ] }

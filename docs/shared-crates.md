@@ -1,31 +1,20 @@
 # Shared crates: what dfe-transform-splack took a copy of
 
-## Today: independent copies
+dfe-transform-splack, the Splunk counterpart, has copies of `dfe-parse` and `dfe-runtime`, and no extraction is scheduled. The two projects evolve their copies apart on purpose: both are changing, and a shared crate would make every breaking change block both at once. The duplication costs less than that coordination would.
 
-`dfe-transform-splack` (the Splunk equivalent) took a copy of `dfe-parse` and
-`dfe-runtime`. The two projects evolve their copies independently, and that is
-deliberate: both are still changing, and extracting them now would make
-every breaking change block both projects at once.
+This workspace has since split its library code into five crates, `dfe-core`, `dfe-painless`, `dfe-parse`, `dfe-runtime` and `dfe-transforms`, so the one copy boundary is four. `dfe-runtime` re-exports the moved modules at their old paths, so a copy taken against the old layout still compiles, against a compatibility surface rather than the current one.
 
-The duplication costs less than that coordination would.
-
-**The workspace has since split to five crates** — `dfe-core`, `dfe-painless`,
-`dfe-parse`, `dfe-runtime`, `dfe-transforms` — so what was one copy boundary is
-now four. `dfe-runtime` re-exports the moved modules at their old paths, so a
-copy taken against the old layout still compiles; it is reading a compatibility
-surface, not the current one.
-
-## What is common, conceptually
+The common half, by crate:
 
 | Component | dfe-core | dfe-parse | dfe-runtime |
-|-----------|----------|-----------|-------------|
+|---|---|---|---|
 | IP parsers (v4, v6, host) | | Yes | |
 | Timestamp parsers (ISO 8601, syslog, epoch) | | Yes | |
 | Numeric parsers (int, float) | | Yes | |
 | String parsers (word, quoted, greedy) | | Yes | |
 | Network parsers (MAC, hostname, URI) | | Yes | |
 | Composite parser builder | | Yes | |
-| DFA fallback (pre-compiled regex) | | Yes | |
+| DFA fallback | | Yes | |
 | `Event` (dotted-path JSON wrapper) | Yes | | |
 | Error types | Yes | | |
 | Date formats and syslog priority | Yes | | |
@@ -36,41 +25,15 @@ surface, not the current one.
 | Prelude re-exports | | | Yes |
 | Test utilities (harness, diff, flatten) | | | Yes |
 
-## What is not
-
-| Project | Specific code |
-|---------|---------------|
-| dfe-transform-elastic | the whole `dfe-painless` crate, and `codegen_api.rs` in `dfe-runtime` — Painless semantics have no Splunk counterpart |
-| dfe-transform-splack | Splunk eval expressions and lookup transforms |
-
-Putting the Painless matchers in their own crate makes that boundary explicit
-in the manifest rather than a note in a table. It does not by itself prove
-non-use: `dfe-runtime` re-exports `dfe-painless` at the old `painless_*` paths,
-and `dfe-transforms` reaches the matchers that way rather than through a direct
-edge. So a copy has to be checked for BOTH — a `dfe-painless` dependency, and
-the re-export paths through `dfe-runtime`.
+What is not common: the whole `dfe-painless` crate and `codegen_api.rs` in `dfe-runtime`, because Painless has no Splunk counterpart, and splack's Splunk eval expressions and lookup transforms. A separate `dfe-painless` makes that boundary visible in the manifest without proving non-use: `dfe-runtime` re-exports `dfe-painless` at the old `painless_*` paths, and the generated transforms reach the matchers that way. A copy has to be checked for both, a `dfe-painless` dependency and the re-export paths.
 
 ## Extracting later
 
 When both sides settle:
 
-1. Diff the two copies to find what is genuinely common, rather than assuming.
-2. Stand up a shared private workspace repo. **The name `dfe-core` is not
-   available for it**: this workspace ships a crate called `dfe-core` that is a
-   different thing -- workspace-internal, never published. Anything extracted
-   needs another name.
-3. Move the common code there; project-specific code stays put.
+1. Diff the two copies to find what is common, rather than assuming.
+2. Stand up a shared private workspace repo. It needs a name other than `dfe-core`, which this workspace uses for an unpublished internal crate.
+3. Move the common code there, and leave project-specific code where it is.
 4. Both projects depend on it by git reference.
 
-## When to do it
-
-Not on a date — on these signals:
-
-- Both parser sets have stopped growing.
-- The `Event` API has settled: no breaking changes to get/set/remove.
-- The `Transform` trait is identical in both.
-- Test utilities are being copy-pasted between the two with no edits.
-- A change to shared logic already requires updating both by hand.
-
-Until then, divergence is expected. If a parser or an `Event` method is missing, add it
-locally rather than waiting for the other project.
+The signals that it is time: both parser sets have stopped growing, the `Event` API has had no breaking change to get, set or remove, the `Transform` trait is identical in both, test utilities are copied between the two with no edits, and a change to shared logic needs both updated by hand. Until then divergence is expected. A missing parser or `Event` method is added locally rather than waiting for the other project.

@@ -1,109 +1,54 @@
 # Performance
 
-What the hot path is built out of -- SIMD, zero-copy, reused buffers, the release profile and
-the libraries underneath -- plus the targets the native parsers are held to and where the
-benchmarks live. The code map around it is [architecture.md](architecture.md), and the parsers
-themselves are [parsers.md](parsers.md).
+What the hot path is built from: SIMD byte search, borrowed values, reused buffers, the release profile and the libraries underneath, plus where the benchmarks live. The code map is [architecture.md](architecture.md), and the grok dispatch and its timings are [parsers.md](parsers.md).
 
----
+`memchr` scans for delimiters in `crates/dfe-parse/src/string.rs`, and `aho-corasick` finds every agentless marker in one pass over the line. Both dispatch on the CPU features the build targets in `.cargo/config.toml`:
 
-## SIMD acceleration
+- `x86_64-unknown-linux-gnu`: `-C target-cpu=x86-64-v3` (AVX2, BMI1 and BMI2, FMA, Haswell and later)
+- `aarch64-unknown-linux-gnu`: `-C target-cpu=generic` (the NEON baseline), linked with mold
+- A build with no `--target`: `-C target-cpu=native`
 
-| Library | Use | SIMD Features |
-|---|---|---|
-| `memchr` | Delimiter scanning in parsers (`string.rs`) | AVX2/SSE2 byte search |
-| `regex-automata` | Layer 3 DFA fallback (`dfa.rs`) | Compiled DFA (no backtracking) |
+JSON parsing is not SIMD. simd-json lost to `serde_json` on this workload ([architecture.md](architecture.md#event-model)).
 
-JSON deserialisation is NOT on this list. simd-json was measured against
-`serde_json` on this workload and lost on both paths -- see
-[Event model](architecture.md#event-model).
+Values are borrowed where the types allow it. A parser returns `ParseResult<'a, &'a str>`, a slice of its input, and `event.get_str()` returns an `Option<&str>` into the event. A helper that may or may not change a string, such as `url_decode`, returns an `Option<Cow<'_, str>>`, borrowing unchanged input. Events hold their tree: `Event::from_json` parses each NDJSON line into an owned `serde_json::Value`.
 
-Build targets in `.cargo/config.toml`:
+`pipeline.rs` sizes its vectors from the batch with `Vec::with_capacity`, and `serialise_events` writes every event through one reused scratch buffer.
 
-- **x86_64 release:** `-C target-cpu=x86-64-v3` (AVX2, BMI1/2, FMA — Haswell+)
-- **aarch64 release:** `-C target-cpu=generic` (NEON baseline)
-- **Development:** `-C target-cpu=native`
+The release profile in `Cargo.toml` is thin LTO, one codegen unit, `panic = "abort"`, stripped, at `opt-level = 3`. The generated transform crates override it with `opt-level = 1` and 16 codegen units, which leaves the transform benches unchanged, because thin LTO re-optimises that code at the binary's level, and keeps each rustc's memory down. Splitting the modules across crates by package is what keeps each rustc inside a 16 GiB runner.
 
----
+The benchmarks are Criterion, except `allocations`, which counts allocations with its own allocator and prints a report. Run one with `cargo bench -p <crate> --bench <name>`.
 
-## Zero-copy patterns
-
-1. **Kafka → Event:** `Event::from_bytes` borrows from the message buffer rather than copying it
-2. **Parser returns:** `ParseResult<'a, &'a str>` — parsed values reference input slice
-3. **Field access:** `event.get_str()` returns `Option<&str>` borrowing from inner Value
-4. **Cow for transforms:** `Cow<'_, str>` when field may or may not need modification
-
----
-
-## Buffer reuse
-
-- Pre-allocated `Vec<u8>` buffers for serialisation output
-- `String` buffers cleared and reused across events for format operations
-- `Vec::with_capacity()` based on expected batch sizes
-
----
-
-## Release profile
-
-```toml
-[profile.release]
-lto = "thin"
-codegen-units = 1
-panic = "abort"
-strip = true
-opt-level = 3
-```
-
----
-
-## Native parser targets
-
-| Operation | Regex/Grok | Native Rust | Expected Speedup |
-|---|---|---|---|
-| IP address parse | ~200ns | ~15ns | ~13x |
-| Timestamp (ISO8601) | ~500ns | ~40ns | ~12x |
-| Integer parse | ~100ns | ~10ns | ~10x |
-| Syslog header (5 fields) | ~2us | ~100ns | ~20x |
-| Full DNS log line (8 fields) | ~5us | ~300ns | ~15x |
-
-JSON parsing is deliberately absent: it is not a grok replacement, and the one
-candidate that would have belonged here lost its own benchmark
-(`crates/dfe-runtime/benches/json_parse.rs`).
-
----
-
-## Benchmark framework
-
-- **Per-parser:** Criterion benchmarks comparing each dfe-parse parser against its regex equivalent (`crates/dfe-parse/benches/parsers.rs`)
-- **End-to-end:** Full pipeline (JSON deserialise → transform chain → serialise)
-
----
+| Crate | Benches |
+|---|---|
+| root | `detect.rs`, `envelope.rs`, `original.rs` |
+| `dfe-core` | `codec.rs`, `date_formats.rs`, `event.rs`, `hashing.rs` |
+| `dfe-parse` | `parsers.rs`, each parser against its regex equivalent |
+| `dfe-runtime` | `grok.rs`, `geoip.rs`, `json_parse.rs` |
+| `dfe-transforms` | `transforms.rs`, `allocations.rs` |
 
 ## Key dependencies
 
-The libraries the hot path is built on. `Cargo.toml` carries the version ranges and the reason
-for each bound; this is the map of which crate does what.
+The libraries the hot path is built on. `Cargo.toml` has the version ranges and the reason for each bound, and this is the map of which crate does what.
 
 | Crate | Purpose |
 |---|---|
-| `serde` / `serde_json` | Serialisation framework, and both JSON paths. `preserve_order` is on, so object keys keep document order |
-| `simd-json` | DEV-dependency of `dfe-runtime` only, for `crates/dfe-runtime/benches/json_parse.rs` -- the bench that demoted it |
-| `scalo` (`yaml`) | YAML config parsing, through `scalo::yaml` on serde-saphyr |
+| `serde` / `serde_json` | Serialisation, and both JSON paths. `preserve_order` is on, so object keys keep document order |
+| `simd-json` | Dev-dependency of `dfe-runtime` alone, for `crates/dfe-runtime/benches/json_parse.rs`, the bench that demoted it |
+| `scalo` | Config, logging, metrics, Kafka and gRPC transport, deployment, memory guard, scaling and DLQ: the service's runtime. Its `yaml` support parses the config on serde-saphyr |
 | `memchr` | SIMD byte search (`crates/dfe-parse/src/string.rs`) |
-| `regex-automata` | Pre-compiled DFA regex (`crates/dfe-parse/src/dfa.rs`) |
-| `regex` | Grok-derived pattern matching in `dfe-transforms` |
-| `fancy-regex` | Backtracking fallback for the vendor patterns `regex` rejects by design -- lookaround and backreferences. Reached only when `regex` fails to COMPILE, so the hot path is unchanged |
+| `aho-corasick` | The agentless marker scan (`src/detect/`) |
+| `regex-automata` | The Layer 3 parser in `crates/dfe-parse/src/dfa.rs` |
+| `regex` | Grok-derived pattern matching |
+| `fancy-regex` | Backtracking fallback for the patterns `regex` rejects by design, lookaround and backreferences. Reached when `regex` fails to compile, so the hot path is unchanged |
 | `psl` | Mozilla's Public Suffix List, compiled in, for `registered_domain` |
 | `parking_lot` | The lock in front of the GeoIP cache, taken per event across one transform thread per partition |
 | `chrono` | Timestamp handling |
-| `maxminddb` | GeoIP lookups (mmap) |
-| `base64` | Fingerprinting and Community ID encoding |
+| `maxminddb` | GeoIP lookups, memory-mapped |
+| `base64` | Fingerprint and Community ID encoding |
 | `sha1`, `sha2` | Fingerprint and Community ID digests, and Painless's `sha1()` and `sha256()` as lower-case hex |
-| `csv` | CSV processor |
-| `scalo` | Config, logging, metrics, Kafka transport, deployment, memory guard, scaling -- the service binary's runtime |
-| `clap` | Service CLI surface |
+| `csv` | The `csv` processor |
+| `clap` | The service's command line |
 | `tokio` | Async runtime |
-| `thiserror` | Error types in every crate, including the service binary's `src/error.rs` |
+| `thiserror` | Error types in `dfe-core`, `dfe-parse` and the service's `src/error.rs` |
 | `tracing` | Logging |
-| `criterion` | Benchmarking framework |
-| `testcontainers` | Ephemeral Kafka broker for round-trip tests |
+| `criterion` | Benchmarks |

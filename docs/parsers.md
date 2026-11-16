@@ -1,45 +1,48 @@
 # Parsers and processors
 
-The three-layer parser strategy that replaces grok and regex, every ingest processor the
-transforms use, and how far the Painless matchers reach. The code map around it is
-[architecture.md](architecture.md), and the speed numbers behind the layers are
-[performance.md](performance.md).
+Grok runs on compiled regex at almost every call site. Three whole-pattern forms take a native path instead, and the composite builder and DFA fallback in `dfe-parse` are built but not called by any transform. This page covers that dispatch, every ingest processor the transforms use, and how far the Painless matchers reach. The code map is [architecture.md](architecture.md), and the libraries are [performance.md](performance.md).
 
----
+`grok_cache::native_form` recognises whole-pattern forms and rejects a near-miss rather than guessing at one: a pattern with literal text around its captures stays on the regex.
 
-## Three layers over grok and regex
-
-Three-layer strategy for replacing grok/regex with native Rust, implemented in `dfe-parse`.
-Layer 1 is WIRED, for the three whole-pattern forms `grok_cache::native_form` recognises.
-Everything else still falls back to the compiled regex the grok expands to. Layers 2 and 3
-exist in `dfe-parse`, but nothing outside that crate calls them yet. The dispatch table
-below is the current state, and widening it is the gap this architecture exists to close.
+A grok call site in a native form skips the regex, and every other site runs its compiled regex.
 
 ```mermaid
-flowchart TD
-    input[Grok Pattern String] --> expand["Expand grok aliases<br/>%{IP} -> regex"]
-    expand --> analyse{Analyse each<br/>capture group}
+flowchart LR
+    accTitle: L4 Detail -- Grok dispatch
+    accDescr: A grok call site checks whether its pattern is one of the native whole-pattern forms. If so it runs a dfe-parse parser or a newline scan, otherwise the compiled regex. Both return the captured fields.
 
-    analyse -->|All replaceable| l1[Layer 1: Native Parsers<br/>parse_ipv4, parse_int, etc.<br/><b>10-20x faster</b>]
-    analyse -->|Some replaceable| l2[Layer 2: Composite<br/>Chain L1 parsers +<br/>literal separators<br/><b>not called yet</b>]
-    analyse -->|Irreducibly complex| l3[Layer 3: DFA Fallback<br/>regex-automata pre-compiled<br/><b>not called yet</b>]
+    site(["Grok call site"])
+    form{"Native<br/>form?"}
+    native["dfe-parse or<br/>newline scan"]
+    regex["Compiled regex"]
+    fields(["Captured fields"])
 
-    l1 --> output[Structured fields]
-    l2 --> output
-    l3 --> output
+    site --> form
+    form -->|yes| native
+    form -->|no| regex
+    native --> fields
+    regex --> fields
 
-    style l1 fill:#2d5,stroke:#1a3,color:#fff
-    style l2 fill:#28a,stroke:#167,color:#fff
-    style l3 fill:#a72,stroke:#841,color:#fff
+    classDef default fill:#F8FAFC,stroke:#64748B,stroke-width:1px,color:#0F172A
+    classDef decision fill:#FCF1D6,stroke:#9A6700,stroke-width:1px,color:#3D2A00
+    class form decision
 ```
 
----
+*Figure 1. L4 Detail -- Grok dispatch.* Up: [L3 Components -- dfe-transform-elastic](architecture.md#four-steps-between-the-producers-and-the-sink).
 
-## Layer 1: common pattern replacements (`ip.rs`, `numeric.rs`, `string.rs`, `timestamp.rs`)
+| Pattern | Path | Native against regex |
+|---|---|---|
+| `^%{IPV4:f}$` | `dfe_parse::ip::parse_ipv4` | 29 ns against 214 ns |
+| `^%{IPV4:a}:%{PORT:p}$` | the two chained | 47 ns against 208 ns |
+| `%{GREEDYDATA:f}`, anchored or not | `split_once('\n')` | 11 ns against 1,098 ns |
 
-Zero-regex native Rust parsers for the 15 most common grok patterns:
+The timings come from `cargo bench -p dfe-runtime --bench grok`. The third form reaches no parser: `line_anchored` makes it `(?m)^.*$` because joni anchors to lines, so it captures the first line and the native form is a newline scan. Count the sites from the generated tree (`cached_grok!` and `cached_grok_mapped!`) rather than from a figure written here.
 
-| Grok Pattern | Rust Parser | Technique |
+`^%{DATA:f}$` is excluded although it reads the same: `%{DATA}` is the lazy `.*?`, and on a `\r\n` line ending greedy keeps the `\r` in the capture where lazy stops before it. Every dispatched form has an equivalence test running both paths over the same inputs, because the native path is an optimisation over the regex and never a replacement for it.
+
+`dfe-parse` holds more than the dispatch uses. Layer 1 is native parsers for 15 common grok patterns, in `ip.rs`, `network.rs`, `numeric.rs`, `string.rs` and `timestamp.rs`:
+
+| Grok pattern | Rust parser | Technique |
 |---|---|---|
 | `%{IPV4}` | `parse_ipv4()` | Octet validation, direct byte scan |
 | `%{IPV6}` | `parse_ipv6()` | Colon-group parser |
@@ -47,64 +50,26 @@ Zero-regex native Rust parsers for the 15 most common grok patterns:
 | `%{INT}` | `parse_int::<T>()` | Direct digit scan, generic over type |
 | `%{NUMBER}` | `parse_number()` | Integer or float with optional exponent |
 | `%{WORD}` | `take_word()` | Byte-level alphanumeric scan |
-| `%{GREEDYDATA}` | `take_greedy()` | Return remaining slice (zero cost) |
+| `%{GREEDYDATA}` | `take_greedy()` | Returns the remaining slice |
 | `%{TIMESTAMP_ISO8601}` | `parse_iso8601()` | Fixed-position field extraction |
-| `%{SYSLOGTIMESTAMP}` | `parse_syslog_timestamp()` | Month lookup table + digit parse |
+| `%{SYSLOGTIMESTAMP}` | `parse_syslog_timestamp()` | Month lookup table and digit parse |
 | `%{LOGLEVEL}` | `parse_loglevel()` | Case-insensitive keyword match |
-| `%{QUOTEDSTRING}` | `take_quoted()` | memchr for quote, handle escapes |
+| `%{QUOTEDSTRING}` | `take_quoted()` | memchr for the quote, handles escapes |
 | `%{HOSTNAME}` | `parse_hostname()` | Label-dot-label (RFC 1123) |
 | `%{MAC}` | `parse_mac()` | Fixed 6-group hex parse |
 | `%{URI}` | `parse_uri()` | scheme://authority/path?query#fragment |
 | `%{UUID}` | `parse_uuid()` | Fixed 8-4-4-4-12 hex pattern |
 
-**What is WIRED is a much smaller set than what exists.** The table above is
-`dfe-parse`'s capability, not the dispatch. `grok_cache::native_form` recognises
-whole-pattern forms only, and by design refuses a near-miss rather than guessing
-at one — a pattern with literal text around its captures stays on the regex,
-because the regex engine is good at exactly that. Three forms are dispatched
-today:
-
-| Pattern | Path | Measured |
-|---|---|---|
-| `^%{IPV4:f}$` | `dfe_parse::ip::parse_ipv4` | 29 ns against 214 ns |
-| `^%{IPV4:a}:%{PORT:p}$` | the two chained | 47 ns against 208 ns |
-| `%{GREEDYDATA:f}`, anchored or not | `split_once('\n')` | 11 ns against 1,098 ns |
-
-The third reaches no parser at all: `line_anchored` makes it `(?m)^.*$` because
-joni anchors to lines, so it captures the FIRST LINE and the native form is a
-newline scan. It covers 202 call sites over 37 distinct patterns, 4.7% of the
-4,299 grok sites in the generated tree (3,496 `cached_grok!` plus 803
-`cached_grok_mapped!`).
-
-Those are DERIVED, not typed: re-count them from the generated tree rather than
-editing them.
-
-`^%{DATA:f}$` is deliberately excluded despite reading the same: `%{DATA}` is
-the lazy `.*?`, and on a `\r\n` line ending greedy keeps the `\r` in the capture
-where lazy stops before it.
-
-Every dispatched form carries an equivalence test running both paths over the
-same inputs, because the native path is an optimisation over the regex and never
-a replacement for it.
-
-**Parser convention:** All parsers take `&str`, return `ParseResult<'_, T>` where
-`T` is the parsed value (often `&str` for zero-copy):
+Every parser takes `&str` and returns `ParseResult<'_, T>`, the remaining input and the parsed value, following the winnow and nom convention:
 
 ```rust
 pub type ParseResult<'a, T> = Result<(&'a str, T), ParseError>;
 ```
 
-The return tuple contains `(remaining_input, parsed_value)`, following winnow/nom convention.
-
----
-
-## Layer 2: composite parser builder (`composite.rs`)
-
-Built in `dfe-parse` and not yet called by the transforms. Chains Layer 1 parsers with literal separators for full grok-equivalent patterns:
+Layer 2, `composite.rs`, chains Layer 1 parsers with literal separators. Layer 3, `dfa.rs`, wraps `regex_automata::meta::Regex` and returns named captures. Both are built and tested in `dfe-parse`, and no transform calls either.
 
 ```rust
 // Grok: %{IPORHOST:source_ip}:%{INT:source_port} -> %{IPORHOST:dest_ip}:%{INT:dest_port}
-// Becomes:
 let parser = CompositeParser::builder()
     .capture("source_ip", parse_ip_or_host)
     .literal(":")
@@ -116,116 +81,48 @@ let parser = CompositeParser::builder()
     .build();
 ```
 
----
-
-## Layer 3: pre-compiled DFA fallback (`dfa.rs`)
-
-Built in `dfe-parse` and not yet called by the transforms. For patterns that can't be decomposed into Layer 1/2:
-
-- Compile regex to DFA at build time via `regex-automata`
-- Serialise DFA bytes, load at runtime with zero compilation cost
-- Named capture groups mapped to field names
-
----
-
 ## Processor taxonomy
 
-Every processor the transforms use, by implementation weight, runtime status, and which
-sources exercise it.
+Every processor the transforms use, and the code the generator emits for it.
 
-### Simple (~11) — direct `Event` API calls, no parser dependency
+| Processor | Weight | Code pattern |
+|---|---|---|
+| `set`, `append`, `remove`, `rename` | Simple | `event.set`, `event.append`, `event.remove`, `event.rename` |
+| `uppercase`, `lowercase`, `trim` | Simple | Read the string, write it back changed |
+| `convert` | Simple | `convert_value` to string, integer, long, float, double, boolean or ip |
+| `drop` | Simple | Returns `TransformResult::Drop` |
+| `split` | Simple | Splits a string into an array |
+| `join` | Simple | `join_values(value, sep)`, `None` on a non-array |
+| `uri_parts` | Simple | Scheme, host, port, path and query components |
+| `dot_expander` | Simple | `dot_expand(event, path, field)` |
+| `fail` | Simple | Returns a `TransformError` with the message |
+| `terminate` | Simple | Stops the pipeline and keeps the document |
+| `urldecode` | Simple | `url_decode`, form-encoded so `+` is a space |
+| `sort` | Simple | `sort_values`, an error on anything with no natural order |
+| `html_strip` | Simple | `html_strip` |
+| `grok` | Medium | `cached_grok!`, one compiled pattern per call site, on `regex` or `fancy-regex` |
+| `dissect` | Medium | Tokenizer-based split |
+| `json` | Medium | `codegen_api::parse_json_str`, on `serde_json` |
+| `kv` | Medium | Key-value split with configurable delimiters |
+| `csv` | Medium | The `csv` crate, with the processor's separator and quote |
+| `foreach` | Medium | Each element bound to `_ingest._value`, the inner processor run, the list rebuilt |
+| `date` | Medium | `parse_date_out` against the formats the processor names |
+| `gsub` | Medium | A cached regex `replace_all` |
+| `script` (Painless) | Complex | A matched runner, or counted and skipped. See below |
+| `geoip` | Complex | `enrichment::geoip` |
+| `user_agent` | Complex | `enrichment::user_agent` |
+| `community_id` | Complex | `enrichment::community_id` |
+| `registered_domain` | Complex | `codegen_api::registered_domain_lookup`, a `psl` lookup against Mozilla's Public Suffix List |
+| `network_direction` | Complex | CIDR-based internal and external classification |
+| `fingerprint` | Complex | `fingerprint_default` (SHA-1, base64, NUL before each value), or `fingerprint_with` for a `salt` and SHA-256, SHA-512 or MurmurHash3. Any other method fails |
+| `pipeline` (nested) | Complex | Inlined into the caller, not a call. `rg -l "Begin nested pipeline"` lists the modules |
 
-| Processor | Status | Used By | Code Pattern |
-|---|---|---|---|
-| `set` | Done | All | `event.set(path, value)?` |
-| `append` | Done | All | `event.append(path, value)?` |
-| `remove` | Done | All | `event.remove(path)` |
-| `rename` | Done | All | `event.rename(from, to)?` |
-| `uppercase` | Done | Panw | `event.set(path, s.to_uppercase())?` |
-| `lowercase` | Done | All | `event.set(path, s.to_lowercase())?` |
-| `trim` | Done | Cisco | `event.set(path, s.trim())?` |
-| `convert` | Done | All | Type coercion: `str→i64`, `str→f64`, `i64→str` |
-| `drop` | Done | All | `return Ok(TransformResult::Drop)` |
-| `split` | Done | O365 | `event.set(path, s.split(sep).collect())?` |
-| `join` | Done | SentinelOne | `join_values(value, sep)`, `None` on a non-array |
-| `uri_parts` | Done | Panw | Scheme, host, port, path, query components |
-| `dot_expander` | Done | GCP | `dot_expand(event, path, field)` |
-| `fail` | Done | CrowdStrike | Returns a `TransformError` carrying the message |
-| `terminate` | Done | Defender | Stops the pipeline and KEEPS the document |
-| `urldecode` | Done | Zscaler | `url_decode`, form-encoded so `+` is a space |
-| `sort` | Done | M365 Defender | `sort_values`, errors on anything with no natural ordering |
-
-### Medium (~8) — read a field value and reshape it
-
-| Processor | Status | Used By | Code Pattern |
-|---|---|---|---|
-| `grok` | Done (regex fallback) | All | `grok_to_regex` builds a pattern, `regex::Regex` matches it |
-| `dissect` | Done | Cisco, Meraki | Tokenizer-based split parser |
-| `json` | Done | All | `codegen_api::parse_json_str`, on `serde_json` |
-| `kv` | Done | Okta | Key-value split, configurable delimiters |
-| `csv` | Done | Fortinet | Separator/quote config |
-| `foreach` | Done | Okta, O365, sysmon | Each element bound to `_ingest._value`, the inner processor run, the list rebuilt |
-| `date` | Done | All | `chrono` against the formats a source emits |
-| `gsub` | Done | O365 | `regex::Regex::replace_all` |
-
-### Complex (~8) — enrichment runtime or a Painless pattern match
-
-| Processor | Status | Used By | Code Pattern |
-|---|---|---|---|
-| `script` (Painless) | Pattern-match, see below | All | Rust matching a recognised script pattern, or a no-op |
-| `geoip` | Done (DB-IP) | All with IPs | `enrichment::geoip::enrich(event, field, prefix)?` |
-| `user_agent` | Done | O365, Okta | `enrichment::user_agent::enrich(event, field, prefix)?` |
-| `community_id` | Done | Panw, Fortinet | `enrichment::community_id::enrich(event)?` |
-| `registered_domain` | Done | Panw | `codegen_api::registered_domain_lookup`, a `psl` lookup against Mozilla's Public Suffix List |
-| `network_direction` | Done | Fortinet, Panw | CIDR-based internal/external classification |
-| `fingerprint` | Done | O365, M365 | `fingerprint_default`: SHA-1, base64, NUL before each value. `salt` and `method` are refused, so the default is the only path. |
-| `pipeline` (nested) | Done | most multi-pipeline packages -- derive with `rg -l "Begin nested pipeline"` | Inlined into the caller, not a call |
-
-Not implemented (not used by any transform's pipeline): bytes, cef, date_index_name,
-enrich, geo_grid, html_strip, inference, redact, reroute, set_security_user.
-The generator ERRORS on one rather than skipping it, so a package that starts
-using one fails to onboard and says which -- that is how `join`, `sort`,
-`urldecode`, `dot_expander`, `fail` and `terminate` got written.
-
----
+Not implemented, and used by no shipped pipeline: `bytes`, `cef`, `date_index_name`, `enrich`, `geo_grid`, `inference`, `redact`, `reroute` and `set_security_user`.
 
 ## Painless coverage
 
-A script the runtime cannot execute is skipped rather than failing the event, so the skips have
-to be counted or they are indistinguishable from a script that did nothing. `painless_exec`
-lives in `crates/dfe-painless/src/plan.rs` and is re-exported through
-`crates/dfe-runtime/src/codegen_api.rs` for the generated call sites. It resolves a
-hand-written runner from `crates/dfe-painless/src/bespoke/` first, then the params patterns
-in `params.rs`, then the `known_patterns` ladder in `common.rs`, and records the outcome
-through `crates/dfe-painless/src/stats.rs`.
+A script the runtime cannot execute is skipped rather than failing the event, so the skips are counted, or they would look like a script that did nothing. `painless_exec` lives in `crates/dfe-painless/src/plan.rs` and is re-exported through `crates/dfe-runtime/src/codegen_api.rs`. It resolves a hand-written runner from `crates/dfe-painless/src/bespoke/` first, then the params patterns in `params.rs`, then the `known_patterns` ladder in `common.rs`, and records the outcome through `crates/dfe-painless/src/stats.rs`. The service exports the outcome as `painless_handled_total` and `painless_unhandled_total`.
 
-A generated call site holds no script. The generator resolves the dispatch and emits
-`compiled_painless!` with the script's hash and that plan as JSON, plus the text only where a
-bound runner still reads it. The runtime looks bespoke runners up by the hash, and the counters
-key each script by it.
+A generated call site holds no script. The generator resolves the dispatch and emits `compiled_painless!` with the script's hash and that plan as JSON, plus the normalised text where a bound runner still reads it. The runtime looks bespoke runners up by the hash, and the counters key each script by it.
 
-**Two measurements, and only the second is honest about reach.**
-
-`painless_coverage.rs` drives a few dozen fixture files and holds a floor of 100%, none skipped. That floor is real but its driver is narrow, so it says those fixtures are fully covered, not that the runtime is.
-
-The corpus test, `compat_corpus.rs`, runs the same counters over every confirmed capture it can load and score, and that is what says it. Both tests run in dfe-transform-elastic-dev, beside the Elastic fixtures they read. Both figures are run outputs rather than constants, so derive them rather than quoting a number from here: the corpus run prints handled, skipped and distinct-script counts, and `never_ran` is ratcheted in the compat baseline.
-
-The gap between the two is the point. A pattern can MATCH a script statically and then decline at
-run time, which reads as covered from everywhere except the corpus run.
-
----
-
-## Future: dfe-parsers, a standalone parser crate
-
-**Vision:** extract the per-source message-parsing logic in `dfe-transforms` into a standalone
-`dfe-parsers` crate that any DFE Rust project can depend on. It would take `&str` / `Value`
-input and return structured output with no knowledge of Beats, Elastic Agent, or transport, so
-a syslog feed project outside this repo could parse a raw line and get the same structured
-output as if it had come through Beats.
-
-`dfe-transforms` would become a thin layer over it: Beats/Agent envelope handling, ECS field
-naming, and the enrichment calls, with the actual message parsing delegated out.
-
-The nearer half of that is already standing: `dfe-parse` is a workspace crate of its own, and
-dfe-transform-splack runs a copy of it -- [shared-crates.md](shared-crates.md) is the account of
-what the two projects share and what it would take to extract it.
+`crates/dfe-transforms/tests/painless_binding.rs` reads every plan out of the generated tree and asks what it binds to, which says a script is claimed but not that the runner writes anything. The two counters say what ran on live traffic. A pattern can match a script statically and decline at run time, which reads as covered everywhere except those counters.
