@@ -61,7 +61,7 @@ On a direct source a push is held at most 18 s, so every send it waits on gives 
 
 ## `sink.max_message_bytes` caps one outbound record
 
-The default is the DFE record cap, 8,000,000 bytes: dfe-receiver rejects a request body over it, and every broker DFE deploys takes a record that size (Confluent Basic's 8,388,608 limit leaves room for the framing). The producer this service builds allows 16 MiB, so a deployment with larger brokers can raise the budget up to that. An event that serialises larger is dropped, logged and counted on `events_oversize_total`, and its source is acknowledged.
+The default is the DFE record cap, 8,000,000 bytes: dfe-receiver rejects a request body over it, and every broker DFE deploys takes a record that size (Confluent Basic's 8,388,608 limit leaves room for the framing). The producer this service builds allows 16 MiB, so a deployment with larger brokers can raise the budget up to that. An event that serialises larger is logged, counted on `events_oversize_total` and sent to the DLQ with its size and the budget as the reason. The DLQ cuts the body to `dlq.max_payload_bytes`, keeping `original_bytes` and a truncated head.
 
 Against a broker or topic with a lower `message.max.bytes` (a stock Kafka broker takes about 1 MB), set `sink.max_message_bytes` below that limit. Left at the default, the broker rejects the events between the two: each is dead-lettered by the sink transport, counted on `send_filtered_dlq_total`, and the partition moves on. Validation rejects a value under 4096 or over 16,777,216.
 

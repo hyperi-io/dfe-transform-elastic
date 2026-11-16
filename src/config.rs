@@ -326,7 +326,8 @@ pub struct SinkConfig {
     pub brokers: Option<Vec<String>>,
 
     /// Ceiling on one outbound record. An event that serialises larger is
-    /// dropped and counted on `events_oversize_total`.
+    /// dead-lettered, with its size and this budget as the reason, and counted
+    /// on `events_oversize_total`.
     ///
     /// The default is the DFE record cap, 8,000,000 bytes. Against a broker or
     /// topic whose `message.max.bytes` is lower, set this below that limit, or

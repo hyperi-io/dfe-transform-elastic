@@ -82,8 +82,8 @@ pub struct TransformMetrics {
     /// or topic ceiling below `sink.max_message_bytes`.
     pub send_filtered_dlq: Counter,
 
-    /// Events too large for one Kafka record even on their own. Dropped: no
-    /// broker would ever accept one, and retrying blocks the partition.
+    /// Events too large for one Kafka record even on their own. Dead-lettered:
+    /// no broker would ever accept one, and retrying blocks the partition.
     pub events_oversize: Counter,
 
     /// Batches whose events did not look like the envelope the config pinned.
@@ -180,7 +180,7 @@ impl TransformMetrics {
             ),
             events_oversize: manager.counter(
                 "events_oversize_total",
-                "Events too large for one Kafka record, dropped",
+                "Events too large for one Kafka record, dead-lettered",
             ),
             envelope_contradicted: manager.counter(
                 "envelope_contradicted_total",
