@@ -80,27 +80,16 @@ fn cisco_meraki_urls_writes_dotted_paths() {
 ///
 /// A message carrying `signature=` alone matches nothing, so no capture leaks
 /// and the negative assertion holds -- a transform that did nothing looks
-/// identical to one that did it right. The line and the expected values are
-/// the first `ids-alerts` document in
-/// `tests/fixtures/cisco/meraki/logs/test-security-events.log-expected.json`.
+/// identical to one that did it right. The line follows the `ids-alerts`
+/// sample in Cisco Meraki's syslog event types documentation, with invented
+/// values.
 #[test]
 fn cisco_meraki_idsalerts_writes_dotted_paths() {
-    let path = dfe_runtime::testutil::fixtures()
-        .join("cisco/meraki/logs/test-security-events.log-expected.json");
-    let expected = dfe_runtime::testutil::expected_documents(&path);
-    let want = expected
-        .iter()
-        .find(|doc| doc["cisco_meraki"]["event_type"] == "ids-alerts")
-        .unwrap_or_else(|| panic!("{} has no ids-alerts document", path.display()));
-    let line = want["event"]["original"]
-        .as_str()
-        .expect("the document keeps event.original");
-    let signature = want["cisco_meraki"]["security"]["signature"]
-        .as_str()
-        .expect("the document carries a signature");
-    let source_ip = want["source"]["ip"]
-        .as_str()
-        .expect("the document carries a source.ip");
+    let line = "<134>1 1772600400.891234567 MX-SYN-01 ids-alerts signature=1:99001:1 \
+                priority=1 timestamp=1772600400.891000 direction=ingress protocol=tcp/ip \
+                src=203.0.113.90:80";
+    let signature = "1:99001:1";
+    let source_ip = "203.0.113.90";
 
     let mut event = Event::new(serde_json::json!({
         "message": line,

@@ -1,9 +1,8 @@
 {
   "provenance": {
-    "file": "scripts/rewrite_fixtures.py in dfe-transform-elastic-dev",
-    "line": "synthesise_envelopes",
+    "file": "tests/envelopes/beats/",
     "producer": "a Beats shipper's bare wrapper",
-    "note": "Built from the wrapper's documented keys around a vendor line."
+    "note": "Written for this repository from the keys a Beats shipper or Elastic Agent documents, around an invented Cisco IOS line."
   },
   "shape": {
     "family": "beats",
@@ -14,7 +13,7 @@
     "variant": "bare"
   },
   "event": {
-    "message": "Feb  9 04:00:48 203.0.113.12 585917: Feb  9 04:00:47.272: %SEC-6-IPACCESSLOGRP: list 177 denied igmp 198.51.100.197 -> 224.0.0.22, 1 packet",
+    "message": "Mar  4 05:06:07 192.0.2.1 000105: Mar  4 05:06:06.900: %SEC-6-IPACCESSLOGP: list 101 denied tcp 198.51.100.5(44123) -> 192.0.2.1(22), 1 packet",
     "tags": [
       "preserve_original_event"
     ]

@@ -1,9 +1,8 @@
 {
   "provenance": {
-    "file": "scripts/rewrite_fixtures.py in dfe-transform-elastic-dev",
-    "line": "synthesise_envelopes",
+    "file": "tests/envelopes/beats/",
     "producer": "a Beats shipper's agent wrapper",
-    "note": "Built from the wrapper's documented keys around a vendor line."
+    "note": "Written for this repository from the keys a Beats shipper or Elastic Agent documents, around an invented Cisco IOS line."
   },
   "shape": {
     "family": "beats",
@@ -14,11 +13,11 @@
     "variant": "agent"
   },
   "event": {
-    "@timestamp": "2052-03-04T07:26:15.000Z",
+    "@timestamp": "2026-03-04T05:06:07.000Z",
     "agent": {
-      "ephemeral_id": "0f6c2a4e-6d1b-4c3a-9e2f-3b7a1c5d8e90",
-      "id": "6a1e4f2b-9c3d-4e5f-8a7b-1c2d3e4f5a6b",
-      "name": "shipper-01",
+      "ephemeral_id": "3d4e5f60-7182-4a93-8b4c-5d6e7f809a1b",
+      "id": "9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d",
+      "name": "shipper-syn-01",
       "type": "filebeat",
       "version": "8.17.0"
     },
@@ -28,23 +27,23 @@
       "type": "logs"
     },
     "elastic_agent": {
-      "id": "6a1e4f2b-9c3d-4e5f-8a7b-1c2d3e4f5a6b",
+      "id": "9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d",
       "snapshot": false,
       "version": "8.17.0"
     },
     "event": {
       "agent_id_status": "verified",
-      "ingested": "2052-03-04T07:26:16Z"
+      "ingested": "2026-03-04T05:06:08Z"
     },
     "input": {
       "type": "tcp"
     },
     "log": {
       "source": {
-        "address": "203.0.113.12:51514"
+        "address": "192.0.2.1:51514"
       }
     },
-    "message": "Feb  9 04:00:48 203.0.113.12 585917: Feb  9 04:00:47.272: %SEC-6-IPACCESSLOGRP: list 177 denied igmp 198.51.100.197 -> 224.0.0.22, 1 packet",
+    "message": "Mar  4 05:06:07 192.0.2.1 000105: Mar  4 05:06:06.900: %SEC-6-IPACCESSLOGP: list 101 denied tcp 198.51.100.5(44123) -> 192.0.2.1(22), 1 packet",
     "tags": [
       "preserve_original_event",
       "forwarded"

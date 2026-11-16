@@ -1,7 +1,0 @@
-# Test inputs for this directory's fixtures.
-fields:
-  tags:
-  - preserve_original_event
-  - o365.metrics.active.services.user.counts
-dynamic_fields:
-  event.ingested: .*

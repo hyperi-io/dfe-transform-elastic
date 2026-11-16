@@ -198,13 +198,8 @@ the same gates CI does, and the rest answer in seconds:
 # The same gates CI runs, before pushing.
 hyperi-ci check
 
-# One source against the corpus, ~6s once built. The name is a package
-# (okta, cisco_ios, panw) and must match exactly. A filtered run SKIPS both
-# ratchets, so it tells you about that source and nothing else.
-DFE_COMPAT_ONLY=okta cargo test -p dfe-transforms --test compat_corpus
-
-# The whole corpus, ~18s once built. This is the one that moves the ratchets.
-cargo test -p dfe-transforms --test compat_corpus
+# The floors over the committed samples.
+cargo test -p dfe-transforms --test integration --test untested_sources --test unencumbered
 ```
 
 Keep a `bacon` session running while you edit -- it recompiles on save and gives
@@ -215,9 +210,7 @@ Two traps worth knowing before you burn a run on them:
 
 - **Never set `CARGO_BUILD_JOBS` by hand.** A hand-set value beats the project's
   own pinning and any build governor on the host.
-- **The compat corpus is committed.** Each confirmed fixture's documents sit
-  beside it under `tests/fixtures/`, so a worktree scores the same corpus as
-  the main checkout, and a tree with none fails.
+- **The compat corpus is not here.** It is Elastic-licensed and lives in the private dfe-transform-elastic-dev repository, which runs the parity tests. Never copy it into `tests/fixtures/`: `unencumbered.rs` fails a tree that holds anything but `unencumbered/` and `synthetic/`.
 
 ## Working in this repo
 

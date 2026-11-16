@@ -1,0 +1,4 @@
+<189>nx-syn-01: 2026 Mar 14 05:10:00 UTC: %ETHPORT-5-IF_DOWN_ADMIN_DOWN: Interface Ethernet1/10 is down (Administratively down)
+<189>nx-syn-01: 2026 Mar 14 05:10:05 UTC: %ETHPORT-5-IF_UP: Interface Ethernet1/10 is up in mode access
+<190>nx-syn-01: 2026 Mar 14 05:11:00 UTC: %AUTHPRIV-6-SYSTEM_MSG: pam_unix(sshd:session): session opened for user admin by (uid=0) - sshd[12345]
+<189>: 2026 Mar 14 05:12:00 UTC: %VSHD-5-VSHD_SYSLOG_CONFIG_I: Configured from vty by admin on 192.0.2.101@pts/0

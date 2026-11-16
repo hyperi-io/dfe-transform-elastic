@@ -8,8 +8,8 @@
 //! hash. This reads those plans back out of the generated tree and asks each
 //! what it binds to.
 //!
-//! Unlike `painless_coverage.rs`, nothing here executes: a script whose package
-//! ships no fixture is measured the same as one that runs on every event.
+//! Nothing here executes: a script whose package has no sample is measured the
+//! same as one that runs on every event.
 //!
 //! `DFE_BINDING_DUMP=<path>` writes the full binding as JSON.
 

@@ -7,7 +7,7 @@ and the mechanics of the measurement are [compat.md](compat.md) and
 
 **Goal:** 1:1 (or better) parity with Elastic ingest pipeline output for the supported
 Beats and Elastic Agent integrations. Parity is measured per source against Elastic's
-output on the compat corpus and ratcheted in `tests/compat-baseline.json`, so some
+output on the compat corpus and ratcheted in the compat baseline, so some
 sources match fully and others do not yet.
 
 This is NOT reverse engineering Elasticsearch. We are building an independent transform
@@ -72,13 +72,12 @@ A transform called directly still sets `event.original`.
 ## How parity is verified
 
 **Parity is measured ONLY against the compat corpus.**
-`crates/dfe-transforms/tests/compat_corpus.rs` compares per FIELD against output captured from a
-real Elasticsearch and ratchets `tests/compat-baseline.json`, which holds every per-source score.
+`compat_corpus.rs` compares per FIELD against output captured from a real Elasticsearch and ratchets the compat baseline, which holds every per-source score. Both run in the private dfe-transform-elastic-dev repository, beside the corpus.
 [compat.md](compat.md) and [compat-policy.md](compat-policy.md) are the full account: how the
 corpus is generated, what `tests/compare-policy.yaml` excludes and why, and how the ratchet
 refuses to be lowered.
 
-The `.log` / `-expected.json` fixtures copied from Elastic predate the current pipelines and disagree with what Elasticsearch emits now, so **their parity assertions are retired**. They are Elastic-licensed and kept outside this repository, where a CI job runs `integration/` and `untested_sources.rs` over them as panic, error and enrichment floors. On a fresh clone of this repository, where neither they nor the corpus exist, the floors that hold are `unencumbered.rs` and the `public` cases in `untested_sources.rs`, over the licence-clean samples in `tests/fixtures/unencumbered/`.
+Elastic's integration samples are Elastic-licensed and kept in dfe-transform-elastic-dev, which runs the corpus test and its own floors over them. This repository's floors run on every clone: `integration/`, `untested_sources.rs` and `unencumbered.rs`, over the licence-clean samples in `tests/fixtures/unencumbered/` and the synthetic samples in `tests/fixtures/synthetic/`. They assert no panic, no new errors and enrichment, never parity.
 
 Per-processor runtime status and code pattern: see
 [Processor taxonomy](parsers.md#processor-taxonomy).

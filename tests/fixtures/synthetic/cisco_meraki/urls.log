@@ -1,0 +1,2 @@
+<134>1 1772600300.678912345 MX-SYN-01 urls src=192.0.2.150:52010 dst=203.0.113.80:80 mac=00:00:5E:00:53:B2 request: GET http://www.example.com/index.html
+<134>1 1772600330.789123456 MX-SYN-01 urls src=192.0.2.151:52020 dst=203.0.113.81:443 mac=00:00:5E:00:53:B3 agent: 'curl/8.5.0' request: GET https://api.example.com/v1/status

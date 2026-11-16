@@ -1,3 +1,0 @@
-# Test inputs for this directory's fixtures.
-dynamic_fields:
-  user_agent.version: ^\d+\.\d+(\.|\..*)?$

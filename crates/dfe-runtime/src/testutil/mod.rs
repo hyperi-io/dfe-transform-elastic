@@ -46,7 +46,7 @@ pub fn on_a_deep_stack<F: FnOnce() + Send + 'static>(body: F) {
 }
 
 pub use diff::{JsonDiff, MatchMode};
-pub use fixtures::{envelopes, expected_documents, fixtures, workspace_root};
+pub use fixtures::{fixtures, workspace_root};
 pub use flatten::{flatten_value, unflatten_value};
 pub use harness::{
     load_expected_outputs, load_integration_events, load_integration_expected, load_test_events,

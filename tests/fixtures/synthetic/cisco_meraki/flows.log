@@ -1,0 +1,2 @@
+<134>1 1772600200.456789123 MX-SYN-01 flows src=192.0.2.150 dst=198.51.100.53 mac=00:00:5E:00:53:B2 protocol=udp sport=51001 dport=53 pattern: allow all
+<134>1 1772600260.567891234 MX-SYN-01 flows src=192.0.2.151 dst=203.0.113.80 mac=00:00:5E:00:53:B3 protocol=tcp sport=52002 dport=443 pattern: 1 all
