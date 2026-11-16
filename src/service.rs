@@ -20,12 +20,12 @@
 //! downstream must be idempotent, which is the contract every DFE stage carries.
 //!
 //! An event that cannot be delivered is dropped and counted, never counted
-//! delivered: one that will not transform or serialise, one over
-//! `sink.max_message_bytes`, and one the sink transport would refuse, which the
-//! pipeline screens out before the send. Input that is not JSON is refused as a
-//! dead letter. Dead letters, the screened records among them, go to the DLQ
-//! `dlq` configures, and the source is released only once the DLQ holds them.
-//! With `dlq.enabled: false` they are dropped and counted in
+//! delivered: one that will not transform or serialise, and one the sink
+//! transport would refuse, which the pipeline screens out before the send. An
+//! event over `sink.max_message_bytes` and input that is not JSON are dead
+//! letters. Dead letters, the screened records among them, go to the DLQ `dlq`
+//! configures, and the source is released only once the DLQ holds them. With
+//! `dlq.enabled: false` they are dropped and counted in
 //! `pipeline_dead_letters_dropped_total`.
 
 use std::sync::Arc;
@@ -51,8 +51,8 @@ use crate::agentless::{Agentless, Stopped};
 use crate::config::{Config, Transport};
 use crate::metrics::TransformMetrics;
 use crate::pipeline::{
-    BatchOutcome, EnvelopeOutcome, NOT_JSON, SerialiseOutcome, message_budget, parse_each,
-    serialise_events, transform_batch_resolved,
+    BatchOutcome, EnvelopeOutcome, NOT_JSON, SerialiseOutcome, message_budget, oversize_reason,
+    parse_each, serialise_events_with_oversize, transform_batch_resolved,
 };
 
 /// The longest the loop goes without pushing scaling signals.
@@ -653,6 +653,8 @@ struct Block {
     outcome: BatchOutcome,
     envelopes: EnvelopeOutcome,
     serialised: SerialiseOutcome,
+    /// Events over the per-message budget, held for the DLQ.
+    oversize: Vec<FilteredDlqEntry>,
 }
 
 impl Block {
@@ -666,6 +668,7 @@ impl Block {
             outcome: BatchOutcome::default(),
             envelopes: EnvelopeOutcome::default(),
             serialised: SerialiseOutcome::default(),
+            oversize: Vec::new(),
         }
     }
 }
@@ -685,7 +688,8 @@ struct Stage<'a> {
 
 impl Stage<'_> {
     /// Parse, transform and serialise one block, returning a record per event
-    /// that survived and a dead letter per input refused as not JSON.
+    /// that survived and a dead letter per input refused as not JSON or event
+    /// over the per-message budget.
     ///
     /// At most `source.batch_size` parsed events are held at once, however many
     /// NDJSON lines the block's records carry.
@@ -735,8 +739,10 @@ impl Stage<'_> {
             outcome,
             envelopes,
             serialised,
+            oversize,
             ..
         } = block;
+        dead.extend(oversize);
 
         // One series, counted once. The source transport counts its own wire
         // records in `transport_received_*`; these are the events parsed out.
@@ -816,17 +822,29 @@ impl Stage<'_> {
             } => transform_batch_resolved(*transform, resolver, events),
             Work::Agentless(agentless) => agentless.transform(events)?,
         };
-        let (payloads, serialised) =
-            serialise_events(&transformed, self.config.sink.max_message_bytes);
+        let max_bytes = self.config.sink.max_message_bytes;
+        let budget = message_budget(max_bytes);
+        let serialised = serialise_events_with_oversize(&transformed, max_bytes);
         drop(transformed);
         block.out.extend(
-            payloads
+            serialised
+                .payloads
                 .into_iter()
                 .map(|payload| outbound_record(payload, &self.topic)),
         );
+        block.oversize.extend(
+            serialised
+                .oversize
+                .into_iter()
+                .map(|payload| FilteredDlqEntry {
+                    reason: oversize_reason(payload.len(), budget),
+                    payload,
+                    key: Some(Arc::clone(&self.topic)),
+                }),
+        );
         block.outcome.absorb(outcome);
         block.envelopes.absorb(envelopes);
-        block.serialised.absorb(serialised);
+        block.serialised.absorb(serialised.outcome);
         Ok(())
     }
 

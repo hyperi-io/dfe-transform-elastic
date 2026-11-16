@@ -241,6 +241,16 @@ pub(crate) fn elided(value: &str) -> Cow<'_, str> {
 /// The dead-letter reason for input that is not JSON.
 pub const NOT_JSON: &str = "payload is not JSON";
 
+/// The dead-letter reason for an event that serialised over the per-message
+/// budget: names its size and the budget it broke.
+#[must_use]
+pub fn oversize_reason(bytes: usize, budget: usize) -> String {
+    format!(
+        "event serialises to {bytes} bytes, over the {budget} byte per-message budget \
+         (sink.max_message_bytes)"
+    )
+}
+
 /// What a payload cost to decode.
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct ParseOutcome {
@@ -353,8 +363,8 @@ pub struct SerialiseOutcome {
     /// Events that became an outbound message.
     pub serialised: usize,
     /// Events that on their own exceed the whole per-message budget. No
-    /// broker will ever accept one, so it is dropped rather than blocking the
-    /// partition behind a record that can only fail.
+    /// broker will ever accept one, so it is dead-lettered rather than
+    /// blocking the partition behind a record that can only fail.
     pub oversize: usize,
     /// Events serde refused to serialise. Dropped, on the same footing as an
     /// event the transform rejected.
@@ -394,6 +404,17 @@ pub const fn message_budget(max_bytes: usize) -> usize {
     }
 }
 
+/// What [`serialise_events_with_oversize`] produced.
+#[derive(Debug, Default)]
+pub struct Serialised {
+    /// One payload per event that fits the budget.
+    pub payloads: Vec<Vec<u8>>,
+    /// The whole serialised body of each event over the budget, for the DLQ.
+    pub oversize: Vec<Vec<u8>>,
+    /// The counts behind both.
+    pub outcome: SerialiseOutcome,
+}
+
 /// Serialise each event into a message payload of its own.
 ///
 /// ONE JSON document per payload, never NDJSON. dfe-loader parses exactly one
@@ -402,13 +423,16 @@ pub const fn message_budget(max_bytes: usize) -> usize {
 /// (hyperi-io/dfe-transform-elastic#67).
 ///
 /// `max_bytes` bounds each payload on its own, because that is what a broker
-/// bounds: an event above the budget is dropped rather than blocking the
-/// partition behind a record no broker would take.
+/// bounds. An event above the budget is returned in [`Serialised::oversize`]
+/// for the caller to dead-letter, rather than blocking the partition behind a
+/// record no broker would take.
 #[must_use]
-pub fn serialise_events(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, SerialiseOutcome) {
+pub fn serialise_events_with_oversize(events: &[Event], max_bytes: usize) -> Serialised {
     let budget = message_budget(max_bytes);
-    let mut payloads = Vec::with_capacity(events.len());
-    let mut outcome = SerialiseOutcome::default();
+    let mut serialised = Serialised {
+        payloads: Vec::with_capacity(events.len()),
+        ..Serialised::default()
+    };
     // Written once and copied out at its exact length: a payload is held until
     // its block is delivered, and a buffer sized by a guess holds the guess.
     let mut scratch: Vec<u8> = Vec::with_capacity(1024);
@@ -416,25 +440,35 @@ pub fn serialise_events(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, Se
     for event in events {
         scratch.clear();
         if let Err(e) = event.write_json(&mut scratch) {
-            outcome.failed += 1;
+            serialised.outcome.failed += 1;
             tracing::warn!(error = %e, "event could not be serialised, dropped");
             continue;
         }
         if scratch.len() > budget {
-            outcome.oversize += 1;
+            serialised.outcome.oversize += 1;
             tracing::error!(
                 bytes = scratch.len(),
                 budget,
-                "event exceeds the per-message budget and cannot be produced, dropped"
+                "event exceeds the per-message budget and cannot be produced, dead-lettered"
             );
+            serialised.oversize.push(scratch.as_slice().to_vec());
             continue;
         }
 
-        outcome.serialised += 1;
-        payloads.push(scratch.as_slice().to_vec());
+        serialised.outcome.serialised += 1;
+        serialised.payloads.push(scratch.as_slice().to_vec());
     }
 
-    (payloads, outcome)
+    serialised
+}
+
+/// [`serialise_events_with_oversize`] without the oversize bodies, for tests
+/// and offline tools that only count them. The service keeps the bodies and
+/// dead-letters them.
+#[must_use]
+pub fn serialise_events(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, SerialiseOutcome) {
+    let serialised = serialise_events_with_oversize(events, max_bytes);
+    (serialised.payloads, serialised.outcome)
 }
 
 /// Serialise every event into ONE NDJSON payload, whatever its size.
@@ -739,9 +773,9 @@ mod tests {
     }
 
     /// The shipped budget is the DFE record cap: a payload of 8,000,000 bytes
-    /// goes out and one byte more is dropped and counted.
+    /// goes out and one byte more is counted and held back for the DLQ.
     #[test]
-    fn the_shipped_budget_admits_8_000_000_bytes_and_drops_one_more() {
+    fn the_shipped_budget_admits_8_000_000_bytes_and_holds_back_one_more() {
         let budget = crate::config::default_max_message_bytes();
         assert_eq!(budget, 8_000_000);
         let overhead = serialise_events(&padded(1, 0), budget).0[0].len();
@@ -755,17 +789,32 @@ mod tests {
         assert_eq!((outcome.serialised, outcome.oversize), (0, 1));
     }
 
-    /// A record no broker can accept is dropped and counted, rather than
-    /// retried forever behind the rest of the partition.
+    /// A record no broker can accept is counted and handed back whole for the
+    /// DLQ, rather than retried forever behind the rest of the partition.
     #[test]
-    fn an_event_larger_than_the_budget_is_dropped_and_counted() {
+    fn an_event_larger_than_the_budget_is_counted_and_returned_for_the_dlq() {
         let mut events = padded(2, 100);
         events.extend(padded(1, 20_000));
 
-        let (payloads, outcome) = serialise_events(&events, MIN_MESSAGE_BYTES);
-        assert_eq!(outcome.oversize, 1);
-        assert_eq!(outcome.serialised, 2);
-        assert_eq!(payloads.len(), 2);
+        let serialised = serialise_events_with_oversize(&events, MIN_MESSAGE_BYTES);
+        assert_eq!(serialised.outcome.oversize, 1);
+        assert_eq!(serialised.outcome.serialised, 2);
+        assert_eq!(serialised.payloads.len(), 2);
+        assert_eq!(serialised.oversize.len(), 1);
+        assert!(
+            serialised.oversize[0].len() > 20_000,
+            "the body was cut before it reached the DLQ"
+        );
+        let body: serde_json::Value =
+            serde_json::from_slice(&serialised.oversize[0]).expect("a whole document");
+        assert_eq!(body.get("i"), Some(&serde_json::json!(0)));
+    }
+
+    #[test]
+    fn the_oversize_reason_names_the_size_and_the_budget() {
+        let reason = oversize_reason(8_000_001, 8_000_000);
+        assert!(reason.contains("8000001 bytes"), "{reason}");
+        assert!(reason.contains("8000000 byte"), "{reason}");
     }
 
     /// A budget below one ordinary event would drop the entire batch as
