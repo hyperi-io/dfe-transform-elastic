@@ -16,9 +16,7 @@ repository.workspace = true
 rust-version.workspace = true
 publish.workspace = true
 
-# Not `workspace = true`. The crate is ~200 GENERATED modules, and the workspace
-# set flags the generator's own output rather than a defect, so adopting it means
-# changing codegen first. An own table keeps cargo from hinting on every build.
+# Its own table: the workspace set flags generated code rather than defects.
 [lints.clippy]
 all = "warn"
 
@@ -47,28 +45,22 @@ csv = { workspace = true }
 
 [dev-dependencies]
 criterion = { workspace = true }
-# `codegen` so `painless_binding` can ask a plan whether the generator could
-# emit it directly, rather than a second copy of the allowlist drifting here.
+# `codegen` lets `painless_binding` ask a plan whether it could be emitted directly.
 dfe-runtime = { workspace = true, features = ["testutil", "codegen"] }
-# `grok_compiles` proves every pattern reaches one of the two engines the
-# runtime dispatches over, so it has to be able to try both itself.
+# `grok_compiles` tries both engines the runtime dispatches over.
 fancy-regex = { workspace = true }
 rayon = { workspace = true }
-# A capture's `dynamic_fields` patterns are Go `regexp` in the file upstream
-# writes them to, so the linear-time engine is the matching one -- and none of
-# them needs lookaround.
+# `dynamic_fields` patterns are Go regexp, so the linear-time engine matches them.
 regex = { workspace = true }
 # Fixture and pipeline YAML parses with the rules the service reads YAML by.
 scalo = { workspace = true }
 
-# Per-event transform throughput. A 20k batch multiplies whatever one event
-# costs, so anything done per event has to be measured, not reasoned about.
+# Per-event transform throughput.
 [[bench]]
 name = "transforms"
 harness = false
 
-# Where the allocations go. Timing says a transform is slow; a per-event
-# allocation count says why, and it is exact rather than sampled.
+# Allocations per event, counted exactly.
 [[bench]]
 name = "allocations"
 harness = false

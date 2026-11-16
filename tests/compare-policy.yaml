@@ -1,26 +1,7 @@
-# What matters when comparing DFE output against Elastic's.
-#
-# Byte equality is not the goal. DFE deliberately does not emit Elastic's
-# plumbing, and resolves some enrichment against different databases. This file
-# is the single definition of which differences are defects, read by
-# scripts/compat.py and by the Rust comparison harness.
-#
-# Adding an entry hides a difference, so every entry carries a reason and every
-# run reports how many fields each rule excluded.
-#
-# An entry may carry `sources: [name, ...]`, and it then holds for those sources
-# alone. Omit it only where the reason is a fact about the FIELD rather than one
-# source's quirk -- `event.ingested` is write time everywhere. A quirk left
-# unscoped blinds every other source: `event.kind` and `error.message` were
-# excluded corpus-wide for a cisco_nexus date failure, so a transform emitting
-# `pipeline_error` anywhere else did not show up as a difference at all.
-#
-# scripts/compat.py does not read `sources` yet and applies every rule globally,
-# so its audit is the wider reading of the two.
+# What counts as a difference against Elastic's output: docs/compat-policy.md.
 
 version: 1
 
-# Carry no information and vary run to run. Removed at capture, not compared.
 nondeterministic:
   - path: _ingest.timestamp
     why: Written by the simulate API on every call.
@@ -66,8 +47,7 @@ nondeterministic:
       instant gives 3-1788220800000. Wrong on 4 of 7 events and on no other
       field of theirs, so the id before the dash is not what differs.
 
-# Elastic and Beats plumbing DFE does not emit. Never a defect. Prefix match on
-# the dotted path, list indices removed first.
+# Prefix match on the dotted path, list indices removed first.
 not_emitted:
   - prefix: tags
     why: Beats and test-harness tagging, plus _tag_on_failure. Not vendor data.
@@ -100,8 +80,6 @@ not_emitted:
   - prefix: data_stream
     why: Destination routing, decided downstream of the transform.
 
-# Produced by both sides, differently. Debt, not plumbing: each entry should
-# eventually go away, and the count is expected to fall rather than grow.
 known_different:
   - prefix: source.geo
     why: DB-IP Lite against MaxMind GeoLite2.
@@ -164,10 +142,6 @@ known_different:
     sources: [bbot]
     why: The other half of the same split.
 
-# Permanent divergences, each with its reason named -- a divergence without one
-# is indistinguishable from a defect of our own. Most are Elasticsearch being
-# wrong where we are right. The rest is text only the vendor's own runtime can
-# produce, which no amount of work here will reproduce.
 corrected:
   - prefix: event.duration
     sources: [azure]
@@ -215,8 +189,6 @@ corrected:
       we do; JSON carries no Set to tell apart from a List, so this can never
       be matched.
 
-# ECS fields whose values are sets. Same members in a different sequence is
-# equality, not a difference.
 unordered:
   - event.category
   - event.type
@@ -229,19 +201,8 @@ unordered:
   - threat.tactic.name
   - threat.technique.name
   - okta.debug_context.debug_data.risk_behaviors
-  # o365 collects the forwarding addresses into a Java HashSet and lists it,
-  # so Elastic's order is the hash-bucket walk and carries no meaning.
+  # o365 lists a Java HashSet, so Elastic's order means nothing.
   - email.to.address
-  # symantec_endpoint_security collects both of these into a Java HashSet the
-  # same way. Its email direction ids 0 then 1 map to unknown then inbound and
-  # every capture holds ["inbound","unknown"]; six attribute ids go in in
-  # numeric order and come back [encrypted, hidden, readonly, archive,
-  # compressed, directory]. Reproducing the bucket walk would bake a
-  # meaningless order into shipped data to score a test.
+  # symantec_endpoint_security lists a Java HashSet the same way.
   - email.direction
   - file.attributes
-
-# Per-fixture declarations Elastic already ships are honoured in addition to the
-# above, read from each `*-config.yml`:
-#   dynamic_fields          value need only match a regex
-#   numeric_keyword_fields  compare the number as a string

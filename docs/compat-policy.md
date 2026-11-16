@@ -1,165 +1,27 @@
 # compat policy -- what counts as a difference
 
-The ratchet that holds per-source scores, the rule sections in `tests/compare-policy.yaml` that decide which differences are defects, and the divergences kept on purpose. The corpus test and its baseline run in the private dfe-transform-elastic-dev repository. The compare policy stays here, because the runtime's test support reads it. The how-to that produces the corpus is [compat.md](compat.md), and what parity means in the first place is [parity.md](parity.md).
+`tests/compare-policy.yaml` is the one definition of which differences between our output and Elasticsearch's are defects. The comparison harness reads it through `crates/dfe-runtime/src/testutil/policy.rs`, which is why it lives here beside the runtime. The known limits are in [compat.md](compat.md), and what parity means is [parity.md](parity.md).
 
-## The ratchet
-
-The compat baseline is the ratchet the corpus test asserts, and the
-test prints the exact line for every source that improved. A fall needs a
-stated reason and is never mechanical.
-
-## A provenance mismatch fails
-
-The baseline is asserted only when the fixtures' confirmed documents name the
-`pipelines_commit` and engine version the baseline names. A score against
-different pipelines is a different measurement, so ratcheting one against the
-other would fail for the wrong reason, and the test FAILS rather than print.
-Two variables lift it: `DFE_COMPAT_ONLY` scores a subset and checks neither
-ratchet, and the acknowledgement below.
-
-`DFE_COMPAT_ALLOW_UNRATCHETED=1` is the acknowledgement, for the one
-legitimate case: the confirmed documents have moved and the baseline has not
-caught up yet. It lets a run whose provenance the baseline does not name pass,
-which leaves those scores unenforced for that run and is why it has to be typed.
-
-## The second ratchet: patterns that never apply
-
-`never_ran` in the compat baseline holds the count of scripts that
-bound a pattern and never once ran it. A pattern can MATCH a script and decline
-every event, so only running the corpus shows whether it applied. It is not a
-defect count: a script can legitimately never run because no event carries its
-source field.
-
-## The ratchet does not gate EXTRA fields
-
-`fields_wrong` counts missing and mismatched fields only. A field we emit that
-Elasticsearch does not is counted separately as `fields_extra`, printed in the
-run and compared against nothing.
-
-An event still needs an empty diff to count as matched, so extras are gated at
-EVENT granularity -- but on a source already scoring zero matched events, which
-is most of the ones carrying real debt, nothing checks them at all. The run
-prints the current figure; it is not restated here, for the same reason.
-
-Extras are the best single signal that a source is emitting its fields RAW rather
-than parsed. axonius carried 2,313 of them on 3,705 fields, all of the
-form `<base>.event.data.<name>` where Elasticsearch had `<base>.<name>` -- one
-unread hoist, and reading it took the source from 11% of events to 94%.
-
-So **record the extras figure before and after any change to the pattern
-ladder**. A pattern that stops claiming a script hands it to whatever sits
-below, and if
-that writes a field Elastic never emits, the totals hold while only the extras
-move -- which the ratchet passes green. That has happened once and the change
-was reverted; it was caught by having written the previous number down and by
-nothing else.
-
-## What matters, and what does not
-
-Byte equality is not the goal. `tests/compare-policy.yaml` is the single
-definition of which differences are defects, read by this tool and by the Rust
-comparison harness. Every rule carries a reason, and every run reports what it
-excluded. Adding an entry HIDES a difference, which is why the reason is
-mandatory and why the section a rule lands in is a decision rather than a
-filing choice:
+Byte equality is not the goal. Every rule has a `why:` that says why the difference is not a defect, because adding a rule hides that difference from every run. The section a rule lands in decides what follows:
 
 | Section | What it claims | What follows from it |
 |---|---|---|
-| `nondeterministic` | the value varies run to run and carries no information | removed at capture, never compared at all |
-| `not_emitted` | Elastic or Beats plumbing DFE does not produce | never a defect |
-| `known_different` | both sides produce it, differently | DEBT. Each entry should eventually go away and the count is expected to FALL |
-| `corrected` | Elasticsearch is wrong and we are right | permanent. It never goes away, and matching the bug would have scored better |
-| `unordered` | the field's value is a SET | the same members in another sequence is equality, not a difference |
+| `nondeterministic` | The value varies run to run and says nothing | Removed before comparison, never compared |
+| `not_emitted` | Elastic or Beats plumbing DFE does not produce | Never a defect |
+| `known_different` | Both sides produce it, differently | Debt. Each entry should go, and the count should fall |
+| `corrected` | Elasticsearch is wrong and we are right | Permanent. Matching the bug would have scored better |
+| `unordered` | The field's value is a set | The same members in another order are equal |
 
-`known_different` and `corrected` read alike and mean opposite things, and the
-test is whether the difference is ours to close. An array NOT named in
-`unordered` is compared in order, deliberately.
+`known_different` and `corrected` read alike and mean opposite things. The test is whether the difference is ours to close. An array not listed in `unordered` is compared in order.
 
-## Scope a rule to its source, or it blinds every other one
+Scope a rule to its source, or it blinds every other one. A rule with `sources: [name, ...]` holds for those sources alone. Leave `sources` off where the reason is a fact about the field itself: `event.ingested` is write time everywhere.
 
-A rule may carry `sources: [name, ...]` and then holds for those sources alone.
-Omit it only where the reason is a fact about the FIELD -- `event.ingested` is
-write time everywhere. An unscoped quirk is the expensive mistake: `event.kind`
-and `error.message` were once excluded corpus-wide for one source's date
-failure, so a transform emitting `pipeline_error` anywhere else did not register
-as a difference at all. `unordered` is never scoped, because a set is a fact
-about the field.
+An unscoped quirk is the expensive mistake. `event.kind` and `error.message` were once excluded everywhere for one source's date failure, so a transform emitting `pipeline_error` for any other source did not register as a difference. `unordered` is never scoped, because a set is a fact about the field.
 
-The two readers differ. `crates/dfe-runtime/src/testutil/policy.rs` honours
-`sources` and chains the four rule sections into ONE skip set, keeping no column
-breakdown -- a skipped path is not compared, whichever section it came
-from. The audit tool that confirms the documents keeps them apart to build its
-columns and does not read `sources` yet, so every rule applies globally there,
-the wider reading of the two. And a comparison that does not know its source cannot honour scoping, so
-every scoped rule applies to it, which is how the committed-fixture tests run.
-
-## The audit's four columns
-
-Every run reports what it excluded:
-
-```text
-excluded 156 field differences by 5 rules:
-      93x  source.geo    DB-IP Lite against MaxMind GeoLite2.
-      24x  tags          Beats and test-harness tagging. Not vendor data.
-```
-
-What it still counts is sorted into four columns, which is where the sections
-above land:
-
-- **real** -- the only one that means something is wrong. Everything the policy
-  did not explain.
-- **order** -- `unordered`, where the members match and the sequence does not.
-  An undeclared array in a different order is still real.
-- **meta** -- `not_emitted`.
-- **enrich** -- `known_different` and `corrected` together. `nondeterministic`
-  reaches no column, because it is dropped before the comparison.
-
-Each fixture's own `dynamic_fields` and `numeric_keyword_fields` are honoured
-on top of the policy. A source reports `CURRENT` when `real` is zero, and the
-`clean` count is the events with no real difference.
-
-**The corpus test runs with GeoIP OFF** (`geoip_global::disable`). Skipping the
-geo fields is not enough, because the enrichment has side effects that ARE
-compared: gcp/vpcflow renames `source.as.asn` onto `source.as.number`, and an
-ASN hit DB-IP Lite has where MaxMind's GeoLite2 does not makes that rename land
-on an occupied target -- which fails the document and skips the twenty-nine
-removes behind it, costing 262 events. Comparing against output built from a
-database we do not have means running without one. The fixture floors still
-exercise enrichment, over the Elastic fixtures in dfe-transform-elastic-dev and the samples in this repository's `tests/fixtures/`.
+`policy.rs` honours `sources` and chains the four rule sections into one skip set, so a skipped path is not compared whichever section it came from. A comparison that does not know its source cannot honour scoping, so every scoped rule applies to it.
 
 ## Correct beats bug-compatible
 
-The corpus is the reference for what a pipeline MEANS, not a specification of
-what Elasticsearch does in every case. Where its output is wrong, we emit the
-right value and record the divergence -- we do not reproduce the bug.
+Elasticsearch's output is the reference for what a pipeline means, not a specification of what it does in every case. Where its output is wrong, we emit the right value and record the divergence in `corrected` rather than reproduce the bug.
 
-Two live examples. Elasticsearch 9.2.2 overflows a 2,826 ms duration to
-`event.duration: -1468967296` where the correct value is 2,826,000,000, because
-it multiplies into a 32-bit int. And symantec_endpoint_security carries 51
-events with a non-JSON `event.original`, so both engines fail the same `json`
-processor and report it in their own words -- the failure agrees and only the
-wording is the runtime's own.
-
-Both are recorded in `tests/compare-policy.yaml` with the reason attached, so
-the difference is excluded from scoring and stays visible to anyone reading it.
-A divergence taken this way is a decision with a name on it, and it is never
-the quiet option: matching the bug would have scored better.
-
-### Most of Elasticsearch's own failures never reach a policy entry
-
-`compat_corpus.rs` drops any expected document whose `event.kind` is
-`pipeline_error`, or that carries a bare `_compat_error` object, BEFORE
-comparing -- counting it as `events_unanswered`, because scoring against a
-failed run counts our correct output as a miss. 405 captured events carry an
-Elasticsearch-side `error.message` and that gate excludes 336 of them.
-
-So a policy entry is needed only where the failed document is still SCORED,
-which means Elasticsearch failed a processor and its `on_failure` left
-`event.kind` as `event`. That is why cisco_nexus needs no entry in this
-harness despite 27 unparseable timestamps -- all 27 set `pipeline_error` and
-the source scores 45/45. Its entries in `compare-policy.yaml` still do work
-for the audit tool, which applies the rules globally.
-
-**Read the scorer before concluding an Elasticsearch failure costs anything.**
-A scan of the confirmed documents cannot see this gate, and sizing a prize off the captures
-alone over-counts it by roughly six times.
+Elasticsearch 9.2.2 multiplies milliseconds into a 32-bit int, so azure's 2,826 ms duration becomes `event.duration: -1468967296` where the correct value is 2,826,000,000. symantec_endpoint_security has events with a non-JSON `event.original`, so both engines fail the same `json` processor and report it in different words: the failure agrees and the wording differs. Both rules name the bug in their `why:`, so the difference is left out of the score and stays visible to anyone reading the file.

@@ -6,11 +6,6 @@
 # License:   BUSL-1.1
 # Copyright: (c) 2026 HYPERI PTY LIMITED
 #
-# Extends the CI base configuration (ci/.gitleaks.toml)
-#
-# The CI runs gitleaks to detect secrets in your code. This file lets you
-# exclude false positives specific to your project.
-#
 # Documentation: https://github.com/gitleaks/gitleaks#configuration
 
 [extend]
@@ -19,23 +14,17 @@ useDefault = true
 [allowlist]
 description = "Project-specific false positive allowlist"
 
-# Paths to exclude from scanning (regex patterns)
 paths = [
-    # Git submodules (have their own scanning)
     '''(^|/)ci/''',
     '''(^|/)ai/''',
-    # Vendor sample logs -- synthetic ids that trip the entropy rules.
+    # Sample logs: invented ids trip the entropy rules.
     '''(^|/)tests/fixtures/''',
     '''(^|/)tests/pipelines/''',
 ]
 
-# Regex patterns for known false positives
 regexes = [
     # Meraki event-type literal carried through from the Elastic pipeline.
     '''8021x_eap_failure''',
-    # Confluent's PUBLIC signing-key fingerprint, pinned by the generated
-    # Dockerfile and carried into docs/deployment-contract.json. Publishing it
-    # is the security control -- the build verifies the downloaded key against
-    # it before trusting the apt repo.
+    # Confluent's public signing-key fingerprint, which the Dockerfile verifies.
     '''CBBB821E8FAF364F79835C438B1DA6120C2BF624''',
 ]

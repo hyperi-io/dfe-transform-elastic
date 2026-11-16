@@ -5,13 +5,7 @@
 # License:   BUSL-1.1
 # Copyright: (c) 2026 HYPERI PTY LIMITED
 #
-# dfe-schemas checks every elastic catalogue entry against that file, and the contract this
-# service publishes names its variants but not the intakes each one accepts.
-#
-# Auth: a GitHub App installation token (vars.GH_APP_CLIENT_ID + secrets.GH_APP_PRIVATE_KEY),
-#   scoped to dfe-schemas with contents + pull-requests write, which covers the branch push
-#   and opening, editing or closing the PR.
-# Optional var: DFE_SCHEMAS_REPO - repo as owner/name (default: hyperi-io/dfe-schemas)
+# Why: CONTRIBUTING.md, "The catalogue and the detect tables". Optional var DFE_SCHEMAS_REPO (owner/name).
 
 name: Sync elastic variants
 
@@ -36,7 +30,7 @@ concurrency:
 jobs:
   push-to-dfe-schemas:
     name: Open or update the dfe-schemas sync PR
-    # scripts/sources.py reads with PyYAML, which the native runner image's python3 carries and the vanilla default may not.
+    # The native runner's python3 has PyYAML, which scripts/sources.py needs.
     runs-on: ${{ vars.GH_RUNNER_PYTHON || 'ubuntu-latest' }}
     timeout-minutes: 10
     steps:
