@@ -98,6 +98,7 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    # A job of its own outside the reusable workflow, so it names its runner. It only runs gh against the release.
     runs-on: ubuntu-latest
     permissions:
       contents: write
