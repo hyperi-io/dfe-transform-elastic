@@ -8,8 +8,7 @@
 name: CI
 
 on:
-  # No nightly schedule: no test here is #[ignore]d, so the full tier is the core
-  # tier every push already runs (docs/testing.md).
+  # No nightly schedule: no test is #[ignore]d, so core is the full tier (docs/testing.md).
   push:
     branches: ["**"]
     paths-ignore:
@@ -70,10 +69,7 @@ jobs:
   ci:
     uses: hyperi-io/hyperi-ci/.github/workflows/rust-ci.yml@main
     with:
-      # No runner-quality: one dfe-transforms rustc peaks near 14 GiB, which a
-      # 16 GiB 8x16 runner kills, so Quality stays on the org's GH_RUNNER_RUST.
-      # `both` resolves to the release channel; `internal` is the spike
-      # channel and would demote a release build silently.
+      # No runner-quality: a 16 GiB runner kills a 14 GiB rustc. `internal` would demote a release to the spike channel.
       publish-target: both
       tag: ${{ inputs.tag || '' }}
       from-head: ${{ inputs.from-head || '' }}
@@ -81,14 +77,10 @@ jobs:
       skip-optimize: ${{ inputs.skip-optimize || '' }}
       release-unoptimized: ${{ inputs.release-unoptimized || '' }}
       optimize-tier: ${{ inputs.optimize-tier || '' }}
-      # A PGO+BOLT release builds the binary three times, ending in a single-threaded LTO pass; one build took over three hours.
+      # A PGO and BOLT release builds the binary three times.
       build-timeout-minutes: 360
       test-tier: ${{ inputs.test-tier || 'core' }}
-    # Least privilege: the org carries 31+ secrets and this pipeline uses seven.
-    # Only names declared in rust-ci.yml's `workflow_call.secrets` can be
-    # passed, so an addition there is needed before one can be added here.
-    # No crates.io token: the package has binary targets and publishes no
-    # crate, so the preflight never asks for one.
+    # Least privilege: only the secrets this pipeline uses. No crates.io token, nothing is published there.
     secrets:
       GITLEAKS_GH_ACTIONS_KEY: ${{ secrets.GITLEAKS_GH_ACTIONS_KEY }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -98,15 +90,8 @@ jobs:
       R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
 
-  # The engine offers `sources.yaml` as its source catalogue and content-pins it
-  # the way it pins dfe-schemas, so a release has to carry the file (issue #18).
-  # hyperi-ci has no release-asset stanza and this needs no change there: the
-  # upload lives in this repo's own workflow.
-  #
-  # NOT triggered on `release: published` -- semantic-release creates the
-  # release with a token whose events cannot start another workflow run, so
-  # that trigger would never fire. This gates on the same events that can
-  # publish and then proves a release for THIS commit exists before uploading.
+  # The engine pins `sources.yaml` from the release, so a release carries it (issue #18).
+  # Not on `release: published`: semantic-release's token cannot start a workflow run.
   catalogue-asset:
     name: Source catalogue asset
     needs: ci

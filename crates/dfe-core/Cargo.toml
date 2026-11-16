@@ -31,25 +31,20 @@ fancy-regex = { workspace = true }
 
 [dev-dependencies]
 criterion = { workspace = true }
-# `benches/hashing.rs` only. serde_json's preserve_order map is an IndexMap
-# with the std hasher, and that bench measures what the hasher costs.
+# `benches/hashing.rs` only.
 indexmap = { version = "2.14.2", default-features = false, features = ["std"] }
 
-# The dotted-path accessors. Field plumbing is the hot path -- rename, set and
-# append outnumber script and grok by an order of magnitude in the vendored
-# pipelines -- so one path walk is the number that multiplies out to a batch.
+# The dotted-path accessors, the hottest path.
 [[bench]]
 name = "event"
 harness = false
 
-# What the map's hasher costs, against the lookup it is part of. A measurement,
-# not a proposal: serde_json::Map does not let a caller choose the hasher.
+# What the map's hasher costs. serde_json::Map does not let a caller choose it.
 [[bench]]
 name = "hashing"
 harness = false
 
-# What a `date` processor costs per event, and how much of that is re-derived
-# from a format literal the call site already owns.
+# What a `date` processor costs per event.
 [[bench]]
 name = "date_formats"
 harness = false

@@ -1,37 +1,47 @@
-# compat -- confirmed output from the real Elastic engine
+# compat -- measuring against the Elastic engine
 
-compat runs a fixture's sample lines through the source's own ingest pipeline in a throwaway Elasticsearch container and keeps the documents the engine returns. Those documents are ground truth: what the real engine produces, rather than what we believe it produces. The corpus test scores each transform against the confirmed fixtures it can load.
+compat runs a source's sample lines through that source's ingest pipeline in a throwaway Elasticsearch container and keeps the documents the engine returns. The corpus test scores each transform against them field by field. The corpus and its test are not part of this repository.
 
-The samples, the confirmed documents, the corpus test and its baseline all live in the private dfe-transform-elastic-dev repository, which builds against this repository's crates. This repository carries none of them.
+What a difference means, and which differences are kept on purpose, is [compat-policy.md](compat-policy.md).
 
-What a difference MEANS -- the ratchet, the compare policy, and the divergences kept on purpose -- is [compat-policy.md](compat-policy.md).
+Elasticsearch's output is the reference, and the score is per source.
 
 ```mermaid
 flowchart LR
-    L["sample lines<br/>+ test config"] --> B["message envelope<br/>+ config fields"]
-    P["the source's<br/>ingest pipeline"] --> I["install into ES"]
-    B --> S["_simulate"]
-    I --> S
-    S --> C["&lt;fixture&gt;-expected.json"]
-    C --> T["compat_corpus.rs<br/>scores the transform"]
+    accTitle: L4 Detail -- How a transform is scored
+    accDescr: Sample lines go through the source's ingest pipeline in Elasticsearch, which returns confirmed documents. The same lines go through the transform, and the two outputs are compared field by field under the compare policy.
+
+    samples[("Sample lines")]
+
+    subgraph engines["Both engines"]
+        es["Elasticsearch<br/>ingest pipeline"]
+        transform["The transform"]
+    end
+
+    compare["Compare<br/>per field"]
+    score(["Per-source<br/>score"])
+
+    samples --> engines
+    engines --> compare
+    compare --> score
+
+    classDef default fill:#F8FAFC,stroke:#64748B,stroke-width:1px,color:#0F172A
+    classDef core fill:#DCEBF7,stroke:#0072B2,stroke-width:2px,color:#0B2A3F
+    classDef store fill:#DDF3EC,stroke:#00785A,stroke-width:1px,color:#0B3327
+    classDef ext fill:#EEF0F2,stroke:#6B7280,stroke-width:1px,stroke-dasharray:4 3,color:#1F2937
+    classDef group fill:none,stroke:#64748B,stroke-width:1px,stroke-dasharray:2 4
+    class samples store
+    class es ext
+    class transform core
+    class engines group
 ```
 
-## What a confirmed fixture holds
+*Figure 1. L4 Detail -- How a transform is scored. The dashed box is external.* Up: [L3 Components -- dfe-transform-elastic](architecture.md#four-steps-between-the-producers-and-the-sink).
 
-A confirmed sample in dfe-transform-elastic-dev has `<sample>-expected.json` beside it. The samples under this repository's `tests/fixtures/` are inputs only.
-
-| Key | Holds |
-|---|---|
-| `meta` | The package and data stream, the engine version, the pipeline commit, the entry pipeline, and the fields the test config marks as nondeterministic |
-| `input` | The documents the engine was sent, exactly as the pipeline saw them |
-| `expected` | The documents it returned, one per input, or `_compat_error` where the pipeline dropped or failed the event |
-
-`compat_corpus.rs` reads these files, runs the inputs of every capture it can score through the transform, and compares field by field. It starts no container and needs no network.
-
-The confirmed documents are produced by the meta project that maintains the transforms, which runs the engine.
+The comparison reads `tests/compare-policy.yaml` through `dfe_runtime::testutil::policy`, so the rules live here beside the runtime.
 
 ## Known limits
 
-- **o365 and panw are incomplete.** Part of their transformation runs inside Filebeat before Elasticsearch sees the event: o365 has a JavaScript processor chain, and panw applies `decode_csv_fields` to `message`. The simulate API cannot reach either, so for those two the confirmed output covers only the Elasticsearch half.
-- **GeoIP is not compared.** The corpus test disables its GeoIP enricher and excludes GeoIP-derived fields from the comparison. An event can still carry geo fields its source supplied.
-- **The engine never ships.** The Elasticsearch image is a development dependency of the meta project only and must never become part of the shipped service.
+- o365 and panw are incomplete. Part of their transformation runs inside Filebeat before Elasticsearch sees the event: o365 has a JavaScript processor chain, and panw applies `decode_csv_fields` to `message`. The simulate API reaches neither, so for those two the confirmed output covers the Elasticsearch half.
+- GeoIP is not compared. The corpus test turns its GeoIP enricher off and excludes GeoIP-derived fields. An event can still have geo fields its source supplied.
+- The engine never ships. Elasticsearch is a development dependency of the measurement, never part of the service.

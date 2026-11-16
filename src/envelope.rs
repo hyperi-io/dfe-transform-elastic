@@ -15,7 +15,7 @@
 //! [`Envelope::Receiver`] is what dfe-receiver produces, on any of its
 //! transports -- syslog, gelf, fluent, splunk-hec, otlp, grpc, prometheus,
 //! netflow, sflow. The syslog arm puts a syslog-shaped line back in `message`,
-//! because that is what the transforms grok; the rest pass their payload
+//! because that is what the transforms grok. The rest pass their payload
 //! through with their own field names moved onto the ECS paths those names
 //! would otherwise shadow.
 //!
@@ -25,7 +25,7 @@
 //! `azure-eventhub` -- because there the ingest pipeline does all the parsing
 //! and fetching the data ourselves loses nothing.
 //!
-//! Which one it is comes from [`detect`], off the first event of each batch.
+//! Which one it is comes from [`detect`], read off each event.
 //! `source.envelope` in the config pins it instead, for the shapes that carry
 //! no marker at all.
 
@@ -321,7 +321,7 @@ impl Envelope {
 
 /// What one event's wrapper turned out to be.
 ///
-/// The family selects the unwrap; the variant names which of that producer's
+/// The family selects the unwrap. The variant names which of that producer's
 /// shapes it is, and is carried so the logs and metrics can report it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Detected {
@@ -375,7 +375,7 @@ pub fn detect(event: &Event) -> Detected {
         return owned(Envelope::Receiver, "_source");
     }
     // OTLP's generic mode tags `_signal` and the Vector gRPC source tags
-    // metrics and traces `_vector_type`; neither writes `_source`.
+    // metrics and traces `_vector_type`. Neither writes `_source`.
     if keys.contains_key("_signal") {
         return Detected {
             family: Envelope::Receiver,
@@ -738,7 +738,7 @@ const VARIANT_MAX: usize = 64;
 /// The value comes off the wire in `_source` or `_source_fetcher` with no
 /// length and no character restriction, and it reaches a log line and an output
 /// field unaltered. Non-graphic bytes are dropped rather than escaped, because
-/// a transport name is ASCII; a value left with nothing after that is reported
+/// a transport name is ASCII. A value left with nothing after that is reported
 /// as [`UNNAMED`], the same as a non-string.
 fn safe_variant(raw: &str) -> Cow<'static, str> {
     let trimmed: String = raw
@@ -838,7 +838,7 @@ fn unwrap_fetcher(event: &mut Event) -> crate::Result<()> {
 ///
 /// `variant` is what detection returned, which is `_source` for the six
 /// transports that write one and the marker key for the ones that do not.
-/// syslog is the only transport that rebuilds a line; the rest pass their
+/// syslog is the only transport that rebuilds a line. The rest pass their
 /// payload through with their own names moved out of ECS's way.
 ///
 /// `_source` itself is READ here and left on the event -- see [`RECEIVER_KEYS`]
@@ -1395,7 +1395,7 @@ fn lift_to_ecs(event: &mut Event) -> crate::Result<()> {
 /// Move each `from` onto its `to`, skipping the fields this event does not
 /// carry.
 ///
-/// A source that feeds a LATER destination as well is cloned; the last
+/// A source that feeds a LATER destination as well is cloned, and the last
 /// destination for a source takes the value itself. Of the eight pairs only
 /// `hostname` has two destinations, so seven events' worth of clone per
 /// receiver event goes away, and every source here is in [`RECEIVER_KEYS`] and

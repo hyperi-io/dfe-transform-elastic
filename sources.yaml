@@ -1,48 +1,9 @@
 # SPDX-License-Identifier: BUSL-1.1
 # Copyright (c) 2026 HYPERI PTY LIMITED
 #
-# Every source this service transforms, and everything about it that its name
-# does not tell you. Four places used to carry their own copy of this and drift
-# apart: the compat capture, the pipeline vendoring, the regeneration driver and
-# the service registry. They all read this file now.
-#
-# Nothing here is derivable. Fortinet's package is `fortinet_fortigate` while
-# its fixtures sit under `fortigate`; one azure package is four of our modules;
-# cisco_meraki's pipelines are at `cisco/meraki` and its fixtures at
-# `cisco/meraki/logs`.
-#
-# Keys, per source:
-#
-#   package      Integration package directory.
-#   data_stream  Data stream directory within that package.
-#   pipelines    Directory under the vendored pipelines tree holding the copy.
-#   fixtures     Directory under dfe-transform-elastic-dev's fixture tree.
-#   beats        Beats module and fileset carrying the same source, if any.
-#   intakes      Every way this source's payload can reach the service. The
-#                transform is the same for all of them; only the wrapper
-#                differs, and `src/envelope.rs` unwraps it.
-#   framing      Receiver intakes only. `line` if the pipeline groks the
-#                syslog header out of `message`, `body` if a prefixed header
-#                would corrupt its first field.
-#   transforms   Generated transforms wired into the registry, as
-#                `filebeat.<source>.<transform>`.
-#
-# The three intakes, and what earns each:
-#
-#   beats    Beats or Elastic Agent. Always, since every source here has an
-#            Elastic integration.
-#   receiver A device pushes the data, so dfe-receiver can take it on any of
-#            its transports. The integration says so by shipping tcp/udp
-#            agent streams.
-#   fetcher  Elastic's agent input is a PURE TRANSPORT -- httpjson, cel,
-#            aws-s3, azure-eventhub, streaming -- so the ingest pipeline does
-#            all the parsing and dfe-fetcher can obtain the same bytes. These
-#            are the sources where the agent adds nothing we would lose.
+# The source catalogue: CONTRIBUTING.md, "The catalogue and the detect tables".
 
-# The shape of this file, for readers outside this repo: the DFE engine
-# offers it as the source catalogue from a release asset and refuses a shape
-# it does not know. Bump it when a per-source key is renamed or removed,
-# never for a new source or a new key.
+# Bump on a renamed or removed per-source key, never for a new source or key.
 catalogue_version: 1
 
 sources:

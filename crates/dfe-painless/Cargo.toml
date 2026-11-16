@@ -20,9 +20,7 @@ publish.workspace = true
 workspace = true
 
 [features]
-# The generator resolves a script to its runner call at generation time by
-# asking this crate, so the two paths cannot diverge. The service never
-# enables it and never compiles the emitters.
+# Generator-time only: the service never enables it.
 codegen = []
 
 [dependencies]

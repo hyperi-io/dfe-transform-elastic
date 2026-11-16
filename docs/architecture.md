@@ -1,377 +1,286 @@
 # Architecture
 
-**Project:** dfe-transform-elastic
-**Purpose:** Rust-optimised transform service for Elastic Stack data (Beats + Elastic Agent) ingested over Kafka or a direct gRPC push
+dfe-transform-elastic applies a source's Elastic ingest pipeline to each event as compiled Rust. The service resolves the configured source name to one generated transform at startup, so there is no interpreter, scripting VM or plugin system, and no lookup per event.
 
-Each transform reimplements one source's ingest pipeline from the ground up, as optimised parser
-tree objects, with grok and regex kept for the patterns the parsers do not cover. Where a source has fixtures, [compat](compat.md)
-scores its output against the real Elastic engine's. One module per source. There is no interpreter, no scripting VM and no
-plugin system: the service resolves a source name to a compiled transform at startup, and the
-hot path carries no dynamic dispatch per event.
+This page is the code map: the parts of the service, the crates, the modules, the envelopes, delivery, and what an event is on the way through. [parity.md](parity.md), [parsers.md](parsers.md), [enrichment.md](enrichment.md), [testing.md](testing.md) and [performance.md](performance.md) cover the rest.
 
-This page is the code map: where the service sits, what the crates are, what the binary does,
-and what an event is on the way through. The neighbouring pages carry the rest --
-[parity.md](parity.md), [parsers.md](parsers.md), [enrichment.md](enrichment.md),
-[testing.md](testing.md) and [performance.md](performance.md).
+## Four steps between the producers and the sink
 
----
+Each batch is parsed, unwrapped, transformed and serialised in that order, and dead letters leave for the DLQ.
 
-## System context
+```mermaid
+flowchart TB
+    accTitle: L3 Components -- dfe-transform-elastic
+    accDescr: Producers send events over Kafka or a direct push. Inside the service each batch is parsed, unwrapped, transformed and serialised in that order. Events go to Kafka or dfe-loader, and dead letters go to the DLQ.
 
-Where dfe-transform-elastic fits in the Data Fusion Engine pipeline:
+    producers["Beats, Agent,<br/>receiver, fetcher"]
+
+    subgraph svc["dfe-transform-elastic"]
+        direction LR
+        parse["Parse NDJSON"] --> unwrap["Unwrap envelope"] --> transform[["Transform"]] --> serialise["Serialise"]
+    end
+
+    sink["Kafka or<br/>dfe-loader"]
+    dlq[("DLQ")]
+
+    producers -->|events| svc
+    svc -->|events| sink
+    svc -.->|dead letters| dlq
+
+    classDef default fill:#F8FAFC,stroke:#64748B,stroke-width:1px,color:#0F172A
+    classDef error fill:#FBE3D6,stroke:#C2410C,stroke-width:1px,color:#4A1A05
+    classDef ext fill:#EEF0F2,stroke:#6B7280,stroke-width:1px,stroke-dasharray:4 3,color:#1F2937
+    classDef group fill:none,stroke:#64748B,stroke-width:1px,stroke-dasharray:2 4
+    class producers,sink ext
+    class dlq error
+    class svc group
+```
+
+*Figure 1. L3 Components -- dfe-transform-elastic. Dashed boxes are external and the dotted arrow is the dead-letter path.* Up: top of dfe-transform-elastic. Down: [L4 Detail -- A failed processor](#a-failed-processor-ends-in-one-of-four-places).
+
+Events arrive from Kafka or over a direct gRPC push, in any of three producer envelopes, and leave the same way. Input that is not JSON, and a record the sink transport would reject, go to the DLQ. In agentless mode a detector picks the transform per event ([configuration.md](configuration.md#agentless-mode-serves-one-syslog-stream-of-many-device-types)).
+
+## Crates and modules
+
+The workspace holds five library crates, the generated transform crates, the PGO workload driver and the root service package.
+
+Every generated transform crate builds on `dfe-runtime`, which builds on the three base crates.
 
 ```mermaid
 flowchart LR
-    subgraph Sources
-        FB[Filebeat]
-        WB[Winlogbeat]
-        AB[Auditbeat]
-        MB[Metricbeat]
-        HB[Heartbeat]
-        PB[Packetbeat]
-        EA[Elastic Agent]
-        RX[dfe-receiver<br/>pushed transports]
-        FX[dfe-fetcher<br/>pulled APIs]
+    accTitle: L4 Detail -- Crate dependencies
+    accDescr: The service depends on dfe-transforms, which re-exports the generated transform crates. They depend on dfe-runtime, which depends on dfe-painless, dfe-parse and dfe-core.
+
+    service["dfe-transform-elastic"]
+    transforms["dfe-transforms"]
+    generated["dfe-transforms-*"]
+    runtime["dfe-runtime"]
+
+    subgraph base["Base crates"]
+        painless["dfe-painless"]
+        parse["dfe-parse"]
+        core["dfe-core"]
     end
-
-    K[Kafka<br/>JSON events]
-
-    subgraph dfe-transform-elastic
-        D[serde_json<br/>Deserialise]
-        T[Rust Transform<br/>Pipeline]
-        E[Enrichment<br/>GeoIP / UA / CID]
-    end
-
-    O[Output<br/>Kafka, or a gRPC push<br/>to dfe-loader]
-
-    FB & WB & AB & MB & HB & PB & EA & RX & FX --> K
-    RX & FX -.->|direct gRPC push| D
-    K --> D --> T --> O
-    T <--> E
-```
-
-JSON events arrive from Kafka or over a direct gRPC push, in any of the three producer
-envelopes, and leave the same way as normalised events. Between the two, Elastic's ingest
-pipeline logic runs as native Rust.
-
----
-
-## Crate dependency graph
-
-The workspace is five library crates, the generated transform crates, and the root service package.
-
-```mermaid
-flowchart TD
-    service[dfe-transform-elastic<br/><i>Service binary: cli, config,<br/>envelope, pipeline, registry</i>]
-    transforms[dfe-transforms<br/><i>Re-exports the generated<br/>modules as filebeat</i>]
-    generated[dfe-transforms-*<br/><i>Generated transform modules,<br/>split by package</i>]
-    runtime[dfe-runtime<br/><i>Grok cache, enrichment,<br/>codegen_api, Transform trait</i>]
-    painless[dfe-painless<br/><i>Painless matchers, bespoke<br/>runners, plan, params</i>]
-    core[dfe-core<br/><i>Event, errors, date formats,<br/>syslog priority, regex cache</i>]
-    parse[dfe-parse<br/><i>High-performance parsers<br/>replacing grok/regex</i>]
 
     service --> transforms
-    service --> runtime
     transforms --> generated
-    transforms --> runtime
     generated --> runtime
-    transforms --> parse
-    runtime --> painless
-    runtime --> core
-    runtime --> parse
-    painless --> core
+    runtime --> base
+
+    classDef default fill:#F8FAFC,stroke:#64748B,stroke-width:1px,color:#0F172A
+    classDef group fill:none,stroke:#64748B,stroke-width:1px,stroke-dasharray:2 4
+    class base group
 ```
 
-| Crate | Type | Purpose |
-|-------|------|---------|
-| `dfe-transform-elastic` | Binary + Library | The service, module by module in the table below |
-| `dfe-transforms` | Library | Transform modules per data source (`filebeat::<source>::<pipeline>`), re-exported from the generated crates |
-| `dfe-transforms-<first>-<last>` | Library | The generated filebeat modules for a contiguous run of packages, compiled in place from `dfe-transforms/src/filebeat` so no rustc holds the whole tree |
-| `dfe-runtime` | Library | Grok caching, enrichment, `codegen_api`, the Transform trait, and the prelude |
-| `dfe-painless` | Library | Painless pattern matching: the `known_patterns` ladder, `plan`, `params`, `patterns.lock`, and `bespoke/` -- one module per source holding hand-written equivalents of its scripts, resolved by script hash ahead of every matcher |
-| `dfe-core` | Library | `Event`, error types, date formats, syslog priority, the regex cache |
-| `dfe-parse` | Library | Zero-copy parsers replacing grok/regex patterns |
+*Figure 2. L4 Detail -- Crate dependencies.* Up: [L3 Components -- dfe-transform-elastic](#four-steps-between-the-producers-and-the-sink).
 
-`dfe-transforms` has no direct edge to `dfe-painless`. It reaches the matchers through
-`dfe-runtime`, which re-exports every moved module at its old `painless_*` path -- which
-is why the thousand generated modules did not change when the split landed.
+The service and `dfe-transforms` depend on `dfe-runtime` directly as well, and `dfe-painless` depends on `dfe-core`. The diagram leaves those edges out to keep each arrow one column long.
 
-`dfe-parse` is reached, but only for two whole-pattern forms: `grok_cache` dispatches
-`^%{IPV4:f}$` and `^%{IPV4:a}:%{PORT:p}$` to it and falls back to the compiled regex for
-everything else. Each call site holds that regex in its own `OnceLock` rather than a shared
-map, for the reason [performance.md](performance.md) measures.
+| Crate | Purpose |
+|---|---|
+| `dfe-transform-elastic` | The service, module by module in the next table |
+| `dfe-transforms` | One module per source pipeline (`filebeat::<package>::<pipeline>`), re-exported from the generated crates |
+| `dfe-transforms-<first>-<last>` | The generated filebeat modules for a contiguous run of packages, compiled from `crates/dfe-transforms/src/filebeat` so no single rustc holds the whole tree |
+| `dfe-runtime` | Grok caching, enrichment, `codegen_api`, the `Transform` trait and the prelude |
+| `dfe-painless` | Painless matching: the `known_patterns` ladder, `plan`, `params`, `patterns.lock`, and `bespoke/`, one module per source of hand-written runners resolved by script hash ahead of every matcher |
+| `dfe-core` | `Event`, error types, date formats, syslog priority and the regex cache |
+| `dfe-parse` | Zero-copy parsers that replace grok and regex patterns |
+| `pgo-driver` | The PGO workload driver, built apart so the workload's build never rebuilds the transforms |
 
-The third-party libraries underneath every crate are
-[Key dependencies](performance.md#key-dependencies).
+The generated transforms reach the Painless matchers through `dfe-runtime`, which re-exports the moved modules at their old `painless_*` paths. Code written against these crates names the crate that holds the code.
 
----
+`grok_cache` sends two whole-pattern IPv4 forms to `dfe-parse` and answers a lone `%{GREEDYDATA}` with a newline scan. Every other pattern runs on its compiled regex ([parsers.md](parsers.md)). The third-party libraries are in [Key dependencies](performance.md#key-dependencies).
 
-## Service binary
-
-`src/` is the service that resolves a configured source name to one compiled transform and
-runs it over every batch on the scalo runtime, over the bus (Kafka) or the direct (gRPC push)
-transport.
+`src/` resolves the configured source name to one compiled transform and runs it over every batch on the scalo runtime, over the bus (Kafka) or the direct (gRPC push) transport.
 
 | Module | Responsibility |
 |---|---|
 | `main.rs` | Entry point, hands off to `cli.rs` |
-| `cli.rs` | Subcommands: `sources` (list registered transforms), `emit-dockerfile`, `emit-compose`, `emit-config`, `emit-catalogue`, plus scalo's `run`, `version`, `config-check`, `config-schema`, `generate-artefacts` and `metrics-manifest` |
-| `config.rs` | The config fields: `source.*`, `sink.*`, `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles. Also `Transport`, the `bus`/`direct` selector on each side |
-| `config/loader.rs` | Reading it, from the scalo cascade or an explicit `--config` file, and `SCALO_SECTIONS` -- the sections scalo reads for itself, which the unread-key warning skips |
-| `config/validate.rs` | Refusing a configuration that cannot work. The range checks run ahead of the idle gate, so a value someone set out of range still refuses while an unconfigured instance idles |
-| `registry.rs` | Source name to `Transform` lookup, plus each source's `Intake` (which envelopes it accepts), `Framing` and dataset |
+| `cli.rs` | Subcommands: `sources`, `emit-dockerfile`, `emit-compose`, `emit-config` and `emit-catalogue`, plus scalo's `run`, `version`, `config-check`, `config-schema`, `generate-artefacts` and `metrics-manifest` |
+| `config.rs` | The config fields: `source.*`, `sink.*` and `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles. Also `Transport`, the `bus`/`direct` selector on each side |
+| `config/loader.rs` | Loading, from the scalo cascade or an explicit `--config` file, and `SCALO_SECTIONS`, the sections scalo reads for itself, which the unread-key warning skips |
+| `config/validate.rs` | Rejecting a configuration that cannot work. The range checks run ahead of the idle gate, so an out-of-range value fails even on an instance with no work |
+| `registry.rs` | Source name to `Transform`, plus each source's `Intake` (the envelopes it accepts), `Framing` and dataset |
 | `envelope.rs` | Detects which of the three producer families wrapped an event and unwraps it into the bare event every transform expects |
+| `agentless.rs`, `detect/` | Agentless mode: names each event's source from the marker table, runs that source's transform and stamps `_source` |
 | `pipeline.rs` | Batch processing: NDJSON parse, envelope unwrap, transform, serialise, with per-batch outcome counts |
-| `service.rs` | Runs `pipeline.rs` on scalo's `BatchEngine` pipeline between the scalo consumer and producer -- Kafka on the bus, a Push listener and a gRPC client on direct -- and maps what the sink answers onto the delivery semantics below |
-| `deployment.rs` | The single deployment contract: Dockerfile, Helm chart, compose fragment and KEDA scaler are all generated from here. Its tests pin the Dockerfile, `config.example.yaml`, `docs/deployment-contract.json` and the `docs/` config artefacts against a fresh regen -- not every artefact, see the README |
+| `service.rs` | Runs `pipeline.rs` on scalo's `BatchEngine` between the scalo consumer and producer, Kafka on the bus and a Push listener and gRPC client on direct, and maps what the sink answers onto the delivery rules below |
+| `deployment.rs` | The deployment contract the Dockerfile, chart, compose fragment and KEDA scaler come from. Its tests pin some of the generated artefacts, [CONTRIBUTING.md](../CONTRIBUTING.md#generated-artefacts) says which |
 | `metrics.rs` | Metric definitions registered with scalo's `MetricsManager` |
 | `error.rs` | The service's top-level error type |
 
-Nothing is hot-reloaded, the two ways in (`--config` against the scalo cascade)
-are not equivalent, and only one env spelling reaches a `--config` file:
-[configuration.md](configuration.md) carries all three, and `src/config.rs` states them at the
-top of the file.
+Nothing is hot-reloaded, `--config` and the scalo cascade are not equivalent, and one env spelling reaches a `--config` file. [configuration.md](configuration.md) covers all three.
 
-## Envelopes: the same pipeline, a different wrapper
+## Envelopes: the same transform, a different wrapper
 
-`source.envelope` selects `auto` (the default), `beats`, `receiver` or `fetcher`.
+`source.envelope` is `auto` (the default), `beats`, `receiver` or `fetcher`.
 
-- **beats** -- the raw vendor payload as a string in `message`, which is what the transforms are
-  written for, and what Elastic Agent and anything passing a Beats document through unaltered
-  also produce.
-- **receiver** -- [dfe-receiver](https://github.com/hyperi-io/dfe-receiver)'s JSON on any of its
-  transports. The syslog arm rebuilds a line into `message`, and the rest pass their payload
-  through with their own field names moved onto the ECS paths those names would otherwise shadow.
-- **fetcher** -- [dfe-fetcher](https://github.com/hyperi-io/dfe-fetcher)'s JSON, the provider's
-  own payload at the top level, for the sources where Elastic's agent input is a pure transport.
+- `beats` -- the raw payload as a string in `message`. The transforms are written for this, and Elastic Agent and anything passing a Beats document through unaltered produce it.
+- `receiver` -- [dfe-receiver](https://github.com/hyperi-io/dfe-receiver)'s JSON on any of its transports. The syslog arm rebuilds a line into `message`, and the rest pass their payload through with the receiver's field names moved onto the ECS paths they would shadow.
+- `fetcher` -- [dfe-fetcher](https://github.com/hyperi-io/dfe-fetcher)'s JSON, the provider's payload at the top level, for sources where Elastic's agent input is a pure transport.
 
-`auto` resolves the family PER EVENT rather than per batch: a scalo `WorkBatch` spans
-partitions, so one batch can carry two producers' wrappers and reading only its first event
-unwrapped every one of them the same way. The cost is a handful of top-level key checks against
-an unwrap measured at 2,740 ns an event.
+`auto` resolves the family per event. A scalo `WorkBatch` spans partitions, so one batch can hold two producers' wrappers. The cost is a few top-level key checks, against an unwrap that cost 2,740 ns an event when benchmarked.
 
-A bare vendor object carrying no producer marker is the one failure that is not loud. Detection
-falls back to `beats`, there is no `message` to unpack, and the transform still runs and emits
-with almost nothing renamed. Output that looks like the input with an `ecs.version` bolted on is
-this.
+A bare payload with no producer marker is the one quiet failure. Detection falls back to `beats`, there is no `message` to unpack, and the transform runs and emits with almost nothing renamed. Output that looks like the input with an `ecs.version` added is this.
 
-Two syslog framings, recorded per source in `registry.rs` as the `Framing` enum:
+`registry.rs` records a syslog framing for every source the receiver can deliver:
 
-- **Body** -- `panw.*` and `cisco_meraki` read `message` as CSV or key-value. The receiver's
-  body goes through with no header, because a prefixed header would corrupt the first field.
-  The receiver's parser takes the first token as the tag even when the device wrote none, so a
-  tagless PAN-OS line arrives with its first CSV field in `appname`. When `appname` is not a
-  valid tag, the body is rebuilt from `appname`, `procid` and `message`. `_raw`, which is
-  opt-in, is read only when there is no parsed message.
-- **Line** -- `fortinet`, `cisco_ios` and `cisco_nexus` grok the header out of `message`, so a
-  line is put back: the receiver's `_raw` verbatim if present, otherwise an RFC 3164 line
-  rebuilt from the parsed fields. Reconstruction is enough for `fortinet` (`<PRI>` only); it is
-  not enough for `cisco_ios` (wants a source IP) or `cisco_nexus` (wants a sequence number),
-  since the receiver keeps neither.
+- `Body` sources, such as `panw` and `cisco_meraki`, read `message` as CSV or key-value, so the body goes through with no header. A tagless PAN-OS line arrives with its first CSV field in `appname`, and when that is not a valid tag the body is rebuilt from `appname`, `procid` and `message`.
+- `Line` sources, such as `fortinet`, `cisco_ios` and `cisco_nexus`, grok the header out of `message`. The line is the receiver's opt-in `_raw` where present, else an RFC 3164 line rebuilt from the parsed fields. That is enough for `fortinet`, which wants `<PRI>`, and not for `cisco_ios` or `cisco_nexus`, which want a source IP and a sequence number the receiver does not keep.
 
-A PINNED envelope a source cannot arrive in is rejected at startup, checked against that
-source's `Intake` -- okta is pulled from an API, so it accepts `beats` and `fetcher` and refuses
-`receiver`. `auto` cannot be checked that way, since there is no event yet, so the same
-mismatch is counted per batch instead.
+A pinned envelope a source cannot arrive in is rejected at startup against the source's `Intake`. okta is pulled from an API, so it accepts `beats` and `fetcher` and rejects `receiver`. `auto` has no event to check at startup, so the same mismatch is counted per batch on `envelope_unaccepted_total`.
 
-## Delivery: at-least-once, held by the pipeline
+## Delivery is at least once
 
-The loop is scalo's `BatchEngine` pipeline (`service.rs::run_loop`): process is parse, transform and serialise, and the sink produces the result. The pipeline holds each block's source acknowledgement -- the Kafka offset commit on the bus, the answer to a push on direct -- until the sink has taken every event built from it. `source.acknowledgements.enabled: false` releases it at receipt instead, and a crash then loses what was in flight.
+The loop is scalo's `BatchEngine` (`service.rs::run_loop`). It holds each block's source acknowledgement, the Kafka offset commit on the bus or the answer to a push on direct, until the sink has taken every event built from it. `source.acknowledgements.enabled: false` releases it at receipt, and a crash then loses what was in flight.
 
-A sink that refuses for now is retried for as long as it refuses, with the block held and nothing after it committed, so a broker outage is waited out rather than crashed on. Only a refusal no retry can fix stops the loop, with the block unreleased for the restarted consumer to read again. The direct listener is built armed, so a push that lands before the loop starts is held rather than answered at enqueue.
+When the sink answers `Backpressured`, the block is held and retried until the sink takes it, and nothing after it is committed. A failure no retry can fix stops the loop with the block unreleased, so the restarted consumer reads it again. The direct listener holds pushes from the moment it binds, so a push that lands before the loop starts waits for delivery rather than being answered on arrival.
 
-A push is held at most 18 s (`PUSH_MAX_HOLD`), inside the 20 s the stage in front waits, and the bytes held are leased on the memory guard. Every send the held block waits on gives up sooner, at 15 s (`NEXT_HOP_SEND_TIMEOUT_MS`): a direct sink's gRPC deadline always, and on the bus the producer's `message.timeout.ms` while a direct source holds its pushes. A send that outlasted the hold would land after the push was answered `unavailable`, so the retry it provokes is a duplicate.
+A push is held at most 18 s (`PUSH_MAX_HOLD`), inside the 20 s the stage in front waits, and the bytes held are leased on the memory guard. Every send a held block waits on gives up at 15 s (`NEXT_HOP_SEND_TIMEOUT_MS`): a direct sink's gRPC deadline, and on the bus the producer's `message.timeout.ms` when a direct source holds its pushes. A send that outlasted the hold would land after the push was answered `unavailable`, and its retry would be a duplicate.
 
-All four `SendResult` variants are handled, and three of them are not delivery:
+Duplicates are the accepted cost: a retried block re-sends the records that landed, so every consumer downstream must be idempotent.
 
-| Variant | Meaning | Response |
+The sink's answer decides what happens to the block:
+
+| `SendResult` | Meaning | Response |
 |---|---|---|
-| `Ok` | The broker accepted it | Count as delivered |
+| `Ok` | The sink took it | Counted delivered |
 | `Backpressured` | A full producer queue, or a broker or listener out of reach | Retried until the sink takes it |
-| `Fatal` | Recoverable (a timeout): as `Backpressured`. Otherwise authorisation, a missing topic, a closed transport | Stop, block unreleased |
-| `FilteredDlq` | The sink transport dead-lettered the send | Dropped and counted on `send_filtered_dlq_total` and `records_filtered_total`, block released as dropped, never counted delivered |
+| `Fatal` | A timeout is retried like `Backpressured`. Anything else, such as authorisation, a missing topic or a closed transport, is not | Stop, block unreleased |
+| `FilteredDlq` | The sink transport dead-lettered the send | Dropped, counted on `send_filtered_dlq_total` and `records_filtered_total`, block released, never counted delivered |
 
-A record the sink transport would refuse -- over its `message.max.bytes`, or matched by an outbound `dlq` filter -- is screened out by the pipeline before the send. Input that is not JSON is refused in process as a dead letter with the reason `payload is not JSON`: a whole record when no line of it parses, otherwise the bad line alone. Both go to the DLQ `dlq` configures, a file DLQ by default, and the block is released once the DLQ confirms it holds them. With `dlq.enabled: false` they are dropped and counted on `pipeline_dead_letters_dropped_total{reason}` and `dlq_dropped_total` (`service.rs::with_dead_letters` builds that engine for the tests).
+A record the sink transport would reject, over its `message.max.bytes` or matched by an outbound `dlq` filter, is screened out before the send. Input that is not JSON is a dead letter with the reason `payload is not JSON`: the whole record when no line parses, else the bad line. Both go to the DLQ `dlq` configures, a file DLQ by default, and the block is released once the DLQ holds them. With `dlq.enabled: false` they are dropped and counted on `pipeline_dead_letters_dropped_total{reason}` and `dlq_dropped_total`.
 
-JSON is the only payload format. MessagePack, supported in DFE/XDR 2.0 and 2.1, is deprecated in DFE 2.2 and no longer accepted: the JSON path (SIMD parsing with sonic-rs, zstd on the wire) is fast enough that MessagePack gave no CPU saving.
+Each event goes out as a separate record. `pipeline.rs::serialise_events` gives each one a payload, and `service.rs::send_blocks` sends them in blocks through `TransportSender::send_batch`, because dfe-loader parses one JSON document per message ([#67](https://github.com/hyperi-io/dfe-transform-elastic/issues/67)). `sink.max_message_bytes`, 8,000,000 bytes by default, bounds each payload under the 16 MiB producer ceiling and each block under gRPC's 16 MiB. An event over the budget is dropped and counted on `events_oversize_total`, because no broker would take it and retrying would block the partition.
 
-**One record per event.** `pipeline.rs::serialise_events` gives each event its own payload and `service.rs::send_blocks` sends them via `TransportSender::send_batch`, because dfe-loader parses exactly one JSON document per message ([#67](https://github.com/hyperi-io/dfe-transform-elastic/issues/67)). `sink.max_message_bytes` (default 8,000,000 bytes, the DFE record cap) bounds each payload under the 16 MiB ceiling the producer and dfe-loader's consumer share, and the `send_batch` block under gRPC's 16 MiB ceiling. An event over the budget is dropped and counted on `events_oversize_total`: no broker would take it, and retrying blocks the partition.
+## One batch through the service
 
-Duplicates are the accepted cost: a retried block re-sends the records that already landed, so every downstream consumer must be idempotent.
-
----
-
-## Event lifecycle
-
-From Kafka message bytes to transformed output:
+With `source.acknowledgements` on, the default, the source is acknowledged after the sink takes the batch.
 
 ```mermaid
 sequenceDiagram
-    participant K as Kafka Consumer
-    participant E as Event
-    participant C as TransformChain
-    participant T1 as Transform 1<br/>(set)
-    participant T2 as Transform 2<br/>(grok to regex)
-    participant T3 as Transform 3<br/>(geoip)
-    participant O as Output
-
-    K->>E: Event::from_bytes(payload)
-    E->>C: chain.execute(&mut event)
-    C->>T1: transform(&mut event)
-    T1->>E: event.set("event.kind", "event")
-    T1-->>C: Ok(Continue)
-    C->>T2: transform(&mut event)
-    T2->>E: event.get_str("message")
-    T2->>E: event.set("source.ip", parsed.ip)
-    T2-->>C: Ok(Continue)
-    C->>T3: transform(&mut event)
-    T3->>E: event.get_str("source.ip")
-    T3->>E: event.set("source.geo.*", geoip_result)
-    T3-->>C: Ok(Continue)
-    C-->>O: TransformResult::Continue
-    O->>O: serde_json::to_vec(&event)
+    accTitle: L4 Detail -- One batch through the service
+    accDescr: The source hands a block to the pipeline. For each event the resolver unwraps the envelope and the transform runs. The pipeline sends one record per surviving event, and acknowledges the source once the sink takes them.
+    autonumber
+    participant source as Source
+    participant pipeline as Pipeline
+    participant resolver as Envelope resolver
+    participant transform as Transform
+    participant sink as Sink
+    source->>pipeline: Block of records
+    loop Each event
+        pipeline->>resolver: Resolve and unwrap
+        pipeline->>transform: Transform event
+        transform-->>pipeline: Continue or Drop
+    end
+    pipeline->>sink: One record per event
+    sink-->>pipeline: SendResult
+    pipeline->>source: Acknowledge block
 ```
 
----
+*Figure 3. L4 Detail -- One batch through the service. Solid arrows are requests, dashed arrows are responses.* Up: [L3 Components -- dfe-transform-elastic](#four-steps-between-the-producers-and-the-sink).
+
+JSON is the one payload format. A MessagePack record, which DFE/XDR 2.0 and 2.1 accepted, is a dead letter like any other binary.
+
+An event that fails to unwrap or transform is counted on `events_errored_total` and left out of the output, and the batch continues. A transform that returns `Continue` has its `event.original` settled as [parity.md](parity.md) describes.
 
 ## Event model
 
-The `Event` type wraps `serde_json::Value` with dotted-path navigation for ECS field access.
+`Event` in `dfe-core` wraps a `serde_json::Value` with dotted-path access for ECS fields.
+
+A transform mutates an `Event` in place and returns `Continue`, `Drop` or an error.
 
 ```mermaid
 classDiagram
+    accTitle: L4 Detail -- Event and Transform types
+    accDescr: A Transform mutates an Event and returns a TransformResult, or a TransformError on failure.
     class Event {
         -inner: serde_json::Value
-        +new(value: Value) Event
         +from_json(json: &str) Result~Event~
-        +from_bytes(buf: &mut [u8]) Result~Event~
-        +as_value(&self) &Value
-        +into_value(self) Value
-        +get(path: &str) Option~&Value~
         +get_str(path: &str) Option~&str~
-        +get_i64(path: &str) Option~i64~
-        +get_f64(path: &str) Option~f64~
-        +get_bool(path: &str) Option~bool~
-        +get_array(path: &str) Option~&Vec~
-        +get_object(path: &str) Option~&Map~
-        +has(path: &str) bool
-        +set(path: &str, value: Value) Result
+        +set(path: &str, value) Result
         +remove(path: &str) Option~Value~
         +rename(from: &str, to: &str) Result
-        +append(path: &str, value: Value) Result
-        +merge(other: &Event, deep: bool) Result
     }
-
-    class TransformResult {
-        <<enumeration>>
-        Continue
-        Drop
-    }
-
     class Transform {
         <<trait>>
         +name(&self) &str
         +transform(&self, event: &mut Event) Result~TransformResult~
     }
-
-    class TransformChain {
-        -transforms: Vec~Box~dyn Transform~~
-        +new(transforms: Vec) TransformChain
-        +execute(&self, event: &mut Event) Result~TransformResult~
+    class TransformResult {
+        <<enumeration>>
+        Continue
+        Drop
     }
-
     class TransformError {
         <<enumeration>>
         FieldNotFound
         TypeMismatch
         ParseError
-        EnrichmentError
         ProcessorError
     }
-
-    TransformChain --> Transform : contains
     Transform --> Event : mutates
     Transform --> TransformResult : returns
     Transform --> TransformError : may return
 ```
 
-### Dotted-path access
+*Figure 4. L4 Detail -- Event and Transform types. The enumerations list the main variants, not all of them.* Up: [L3 Components -- dfe-transform-elastic](#four-steps-between-the-producers-and-the-sink).
 
-All field access uses ECS-style dotted paths (e.g., `source.geo.city_name`). The `set()` method
-auto-creates intermediate objects:
+`set()` creates intermediate objects. A read of a segment that is not a field falls back to a key with the dot inside it, and a numeric segment indexes an array, the way Elastic's templates read `{{_temp.user_parts.0}}`.
 
 ```rust
-// Navigates into {"source": {"geo": {"city_name": ...}}}
+// Reads {"source": {"geo": {"city_name": ...}}}
 event.get_str("source.geo.city_name")
 
 // Creates {"source": {"geo": {}}} if missing, then sets city_name
 event.set("source.geo.city_name", "Sydney")?;
 ```
 
-### Design decisions
+- The map under `serde_json::Value` is an `IndexMap`, because `preserve_order` is on: Elasticsearch's ingest documents keep insertion order and parity rests on it.
+- `Event::from_bytes` parses with `serde_json`, not simd-json. Getting a `serde_json::Value` out of simd-json builds two trees for one document, and `crates/dfe-runtime/benches/json_parse.rs` shows it slower. simd-json stays a dev-dependency of `dfe-runtime` for that bench.
 
-- **`serde_json::Value` over custom types:** Simpler to implement, and the map underneath is an `IndexMap` because `preserve_order` is not optional here -- Elasticsearch's own ingest documents are insertion-ordered and parity rests on it. Typed structs can be layered on later for hot-path fields.
-- **`from_bytes` uses `serde_json`, not simd-json:** measured on this workload and it is the faster of the two, because getting a `serde_json::Value` out of simd-json goes tape to serde deserializer to `Value`, which is strictly more work than parsing straight into the same tree. simd-json is a dev-dependency of `dfe-runtime` now, kept only for `crates/dfe-runtime/benches/json_parse.rs`, which is the measurement. Re-run it before reopening this.
-- **Dotted-path splitting:** Split on `.` with no escaping. ECS field names never contain dots within a single field segment.
+## A failed processor ends in one of four places
 
----
+A generated transform is one function that runs its pipeline's processors in order, each behind its `if` condition. The `Transform` trait is object-safe, and the registry hands out `&'static dyn Transform`.
 
-## Transform pipeline
-
-How transforms compose and handle errors:
+A failed processor is skipped, handled, or ends the pipeline, and the event is lost when the pipeline has no handler.
 
 ```mermaid
-flowchart TD
-    start([Event enters chain]) --> t1
+flowchart LR
+    accTitle: L4 Detail -- A failed processor
+    accDescr: A failed processor with ignore_failure set is skipped. Otherwise the processor's on_failure handlers run if it has any. Failing that, the pipeline's on_failure handlers run and keep the event, and with none the event is dropped and counted.
 
-    subgraph TransformChain
-        t1[Transform 1] -->|Continue| t2[Transform 2]
-        t2 -->|Continue| t3[Transform 3]
-        t3 -->|Continue| tn[Transform N]
-    end
+    ignore{"ignore_failure<br/>set?"}
+    skip(["Next processor"])
+    proc{"Processor's<br/>on_failure?"}
+    handlers(["Its handlers run"])
+    pipe{"Pipeline<br/>on_failure?"}
+    kept(["Pipeline handlers<br/>run, event kept"])
+    dropped(["Dropped and<br/>counted"])
 
-    t1 -->|Drop| dropped([Event dropped])
-    t2 -->|Drop| dropped
-    t3 -->|Drop| dropped
+    ignore -->|yes| skip
+    ignore -->|no| proc
+    proc -->|yes| handlers
+    proc -->|no| pipe
+    pipe -->|yes| kept
+    pipe -->|no| dropped
 
-    t1 -->|Error| err{on_failure<br/>handler?}
-    t2 -->|Error| err
-    t3 -->|Error| err
-
-    err -->|yes| onfail[Run on_failure<br/>transforms]
-    err -->|no / ignore_failure| next[Continue to<br/>next transform]
-    onfail --> next
-
-    tn -->|Continue| output([Event emitted])
+    classDef default fill:#F8FAFC,stroke:#64748B,stroke-width:1px,color:#0F172A
+    classDef decision fill:#FCF1D6,stroke:#9A6700,stroke-width:1px,color:#3D2A00
+    classDef error fill:#FBE3D6,stroke:#C2410C,stroke-width:1px,color:#4A1A05
+    class ignore,proc,pipe decision
+    class dropped error
 ```
 
-### Error handling strategy
+*Figure 5. L4 Detail -- A failed processor. Orange is the event lost to the output.* Up: [L3 Components -- dfe-transform-elastic](#four-steps-between-the-producers-and-the-sink).
 
-Mirrors Elastic ingest pipeline semantics:
-
-| Elastic Behaviour | Rust Implementation |
+| Elastic behaviour | Generated Rust |
 |---|---|
-| `on_failure` block | Nested `TransformChain` executed on error |
-| `ignore_failure: true` | Wrap in `.ok()` / `let _ =`, continue |
-| No error handling | Propagate error, stop chain |
-| `tag` on failure | `event.append("tags", "error_tag")` |
+| `if` | The processor runs inside `if _cond { ... }` |
+| `ignore_failure: true` | The processor runs in a closure whose error is discarded |
+| A processor's `on_failure` | Its handlers run with `_ingest.on_failure_message`, `_ingest.on_failure_processor_type` and `_ingest.on_failure_processor_tag` set, then cleared |
+| The pipeline's `on_failure` | Its handlers run, and the event is emitted |
+| No handler at all | The error leaves the transform, and `pipeline.rs` drops the event and counts it on `events_errored_total` |
+| `drop` | The transform returns `TransformResult::Drop` |
 
-At the service boundary, `pipeline.rs::transform_batch_with` treats a transform error the same
-way as a rejected envelope: the event is counted and left out of the batch output, and
-processing continues with the next event. One malformed record cannot stall a partition.
-
-### Transform trait contract
-
-```rust
-pub trait Transform: Send + Sync {
-    /// Human-readable processor name (for error context)
-    fn name(&self) -> &str;
-
-    /// Apply transform to event, returning Continue or Drop
-    fn transform(&self, event: &mut Event) -> Result<TransformResult>;
-}
-```
-
-- **Object-safe:** `dyn Transform` for heterogeneous chains
-- **`Send + Sync`:** Safe for concurrent use across threads
-- **Infallible transforms** (set, remove, rename) still return `Result` for uniform error propagation
+Most Elastic pipelines declare a pipeline-level `on_failure` that sets `event.kind: pipeline_error`, appends to `error.message` and tags `preserve_original_event`, so the generated transform does the same.

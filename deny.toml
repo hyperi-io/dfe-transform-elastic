@@ -5,17 +5,10 @@
 # License:   BUSL-1.1
 # Copyright: (c) 2026 HYPERI PTY LIMITED
 #
-# Run: cargo deny check
-#
-# Written against cargo-deny 0.20. The 0.14 spelling of this file --
-# `vulnerability`, `notice`, `unlicensed`, `copyleft`, `default`, and
-# `unmaintained` as a lint level -- was rejected outright, so the check
-# reported "issues found" while never actually running.
+# Run: cargo deny check. Written for cargo-deny 0.20, which rejects the 0.14 keys.
 
 [advisories]
 db-urls = ["https://github.com/rustsec/advisory-db"]
-# Advisories are errors by default in 0.20; only the scope of the
-# unmaintained check is still configurable.
 unmaintained = "workspace"
 yanked = "warn"
 
@@ -31,9 +24,7 @@ allow = [
     "Zlib",
     "MPL-2.0",
     "Unicode-3.0",
-    # webpki-root-certs, reached through scalo -> reqwest: the Mozilla root CA
-    # store carried as DATA, under a licence that puts no obligation on what
-    # reads it. scalo-rs and dfe-loader allow it for the same dependency.
+    # webpki-root-certs via scalo: the Mozilla root CA store as data.
     "CDLA-Permissive-2.0",
 ]
 confidence-threshold = 0.8
@@ -41,8 +32,7 @@ confidence-threshold = 0.8
 [bans]
 multiple-versions = "warn"
 wildcards = "deny"
-# The workspace crates depend on each other by path and so carry no version
-# requirement; without this every one of them reads as a wildcard.
+# Path dependencies between workspace crates have no version.
 allow-wildcard-paths = true
 highlight = "all"
 
