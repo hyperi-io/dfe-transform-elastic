@@ -457,6 +457,18 @@ fn push_through(
     payloads: Vec<Vec<u8>>,
     expected: usize,
 ) -> Pushed {
+    let budget = dfe_transform_elastic::config::default_max_message_bytes();
+    push_through_with_budget(capture, engine, payloads, expected, budget)
+}
+
+/// [`push_through`] with `sink.max_message_bytes` set to `budget`.
+fn push_through_with_budget(
+    capture: &SeriesCapture,
+    engine: impl FnOnce(&Config) -> BatchEngine,
+    payloads: Vec<Vec<u8>>,
+    expected: usize,
+    budget: usize,
+) -> Pushed {
     let neighbours = tokio::runtime::Builder::new_multi_thread()
         .worker_threads(1)
         .enable_all()
@@ -480,7 +492,8 @@ fn push_through(
                 .strip_prefix("http://")
                 .expect("endpoint is http")
                 .to_string();
-            let config = direct_config(&listen, &loader_endpoint);
+            let mut config = direct_config(&listen, &loader_endpoint);
+            config.sink.max_message_bytes = budget;
             let consumer = AnyReceiver::Grpc(transform_listener);
             let manager = MetricsManager::with_config(scalo::metrics::MetricsConfig::offline(""));
             let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
@@ -612,6 +625,86 @@ fn a_messagepack_push_lands_in_a_configured_dlq() {
         ),
         (1, 0),
         "refused once, and held rather than dropped"
+    );
+}
+
+/// An event that serialises over `sink.max_message_bytes` is dead-lettered
+/// whole, with its size and the budget as the reason, and the event beside it
+/// still goes. Counting it and dropping it lost it.
+#[test]
+fn an_oversize_event_lands_in_a_configured_dlq() {
+    const BUDGET: usize = 16_384;
+    let dir = tempfile::tempdir().expect("tempdir");
+    let dlq_config = scalo::dlq::DlqConfig {
+        enabled: true,
+        mode: scalo::dlq::DlqMode::FileOnly,
+        file: scalo::dlq::FileDlqConfig {
+            enabled: true,
+            path: dir.path().to_path_buf(),
+            compress_rotated: false,
+            ..scalo::dlq::FileDlqConfig::default()
+        },
+        ..scalo::dlq::DlqConfig::default()
+    };
+    let big = serde_json::json!({ "message": "x".repeat(40_000) });
+    let mut oversize = serde_json::to_vec(&big).expect("event serialises");
+    oversize.push(b'\n');
+
+    let capture = SeriesCapture::default();
+    let pushed = push_through_with_budget(
+        &capture,
+        |config| {
+            let dlq = scalo::dlq::Dlq::spawn(
+                &dlq_config,
+                "dfe-transform-elastic",
+                None,
+                CancellationToken::new(),
+            )
+            .expect("the file DLQ starts");
+            BatchEngine::new(service::engine_config(config)).with_dlq(Arc::new(dlq))
+        },
+        vec![oversize, okta_events(1)],
+        1,
+        BUDGET,
+    );
+
+    assert!(
+        pushed
+            .answers
+            .iter()
+            .all(|a| matches!(a, scalo::transport::SendResult::Ok)),
+        "a dead-lettered push is answered once the DLQ holds it: {:?}",
+        pushed.answers
+    );
+    assert_eq!(pushed.delivered, 1, "the event that fits still goes");
+
+    let written = std::fs::read_to_string(dir.path().join("dfe-transform-elastic/dlq.ndjson"))
+        .expect("the DLQ file exists");
+    let entries: Vec<scalo::dlq::DlqEntry> = written
+        .lines()
+        .map(|line| serde_json::from_str(line).expect("a DLQ line is an entry"))
+        .collect();
+    assert_eq!(entries.len(), 1, "{written}");
+    let body: serde_json::Value =
+        serde_json::from_slice(&entries[0].payload).expect("the event body, whole");
+    assert!(
+        entries[0].payload.len() > BUDGET,
+        "the DLQ holds the serialised event, {} bytes",
+        entries[0].payload.len()
+    );
+    assert!(body.is_object());
+    assert_eq!(
+        entries[0].reason,
+        dfe_transform_elastic::pipeline::oversize_reason(entries[0].payload.len(), BUDGET)
+    );
+    assert_eq!(entries[0].destination.as_deref(), Some(SINK_TOPIC));
+    assert_eq!(
+        (
+            capture.total("events_oversize_total"),
+            capture.total("pipeline_dead_letters_dropped_total"),
+        ),
+        (1, 0),
+        "counted once, and held rather than dropped"
     );
 }
 
