@@ -250,11 +250,11 @@ $defs:
     description: |-
       What the operator said about the envelope.
 
-      `auto` is the default: the family is read off the first event of each batch,
-      so a deployment that changes producer needs no config change. Naming one
+      `auto` is the default: the family is read off each event, so a deployment
+      that changes producer needs no config change. Naming one
       pins it, which is the way through for a shape that carries no marker.
     oneOf:
-    - description: Detect the family from each batch's first event.
+    - description: Detect the family from each event.
       type: string
       const: auto
     - description: Beats, Elastic Agent, or anything passed through unaltered.

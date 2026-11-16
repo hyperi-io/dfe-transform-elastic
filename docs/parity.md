@@ -1,10 +1,10 @@
 # Parity
 
-The goal is the same ECS output Elastic's ingest pipeline gives for each supported Beats and Elastic Agent integration. Parity is scored per source, and some sources match fully and others do not yet. The code map is [architecture.md](architecture.md), and how the scoring works is [compat.md](compat.md) and [compat-policy.md](compat-policy.md).
+The goal is the same ECS output Elastic's ingest pipeline gives for each supported Beats and Elastic Agent integration. Parity is scored per source, and some sources match fully and others do not yet. The code map is [architecture.md](architecture.md), and what counts as a difference is [compat-policy.md](compat-policy.md).
 
 This is an independent transform service, not a port of Elasticsearch. Data sent through DFE should get the field mapping, type coercion and enrichment it would get going straight to Elasticsearch. Where Elasticsearch's output is wrong, the service emits the correct value and records the divergence ([compat-policy.md](compat-policy.md#correct-beats-bug-compatible)).
 
-Parity is checked against documents a running Elasticsearch produced, compared per field ([compat.md](compat.md)). That corpus and its test are not in this repository. [compat-policy.md](compat-policy.md) covers `tests/compare-policy.yaml`, which decides what counts as a difference.
+[compat-policy.md](compat-policy.md) covers `tests/compare-policy.yaml`, which decides what counts as a difference.
 
 This repository's floors run on every clone: `integration/`, `untested_sources.rs` and `unencumbered.rs` in `crates/dfe-transforms/tests/`, over the licence-clean samples in `tests/fixtures/unencumbered/` and the synthetic samples in `tests/fixtures/synthetic/`. They assert no panic, no new errors and enrichment, never parity ([testing.md](testing.md)).
 

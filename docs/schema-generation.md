@@ -5,7 +5,7 @@
 
 Status: partly built, and none of it in this repository. The ECS meta schema in dfe-schemas, `meta/elastic/ecs.yaml`, is generated. Per-source package schemas, the evidence each column records and the Sigma field maps below are design, not code. [#16](https://github.com/hyperi-io/dfe-transform-elastic/issues/16) tracks generating schemas for every Beat and Elastic Agent source.
 
-The Elastic side of DFE needs one place that knows, per data stream, which fields come out. The ingest pipelines declare intent and the parity corpus records what Elasticsearch emitted, so the two meet where the transforms are built. That knowledge goes to [dfe-schemas](https://github.com/hyperi-io/dfe-schemas) as ClickHouse schemas, by pull request. dfe-engine defines how schemas work (`SchemaLoader`, `SchemaBuilderV2`, `MetaSchema`), imports Elastic index templates, and builds the sigma, ecs and cim views in `fieldmap/`.
+The Elastic side of DFE needs one place that knows, per data stream, which fields come out. The ingest pipelines declare intent and the transforms produce the output, so the two meet where the transforms are built. That knowledge goes to [dfe-schemas](https://github.com/hyperi-io/dfe-schemas) as ClickHouse schemas, by pull request. dfe-engine defines how schemas work (`SchemaLoader`, `SchemaBuilderV2`, `MetaSchema`), imports Elastic index templates, and builds the sigma, ecs and cim views in `fieldmap/`.
 
 ## The design
 

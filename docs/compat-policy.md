@@ -1,6 +1,6 @@
 # compat policy -- what counts as a difference
 
-`tests/compare-policy.yaml` is the one definition of which differences between our output and Elasticsearch's are defects. The comparison harness reads it through `crates/dfe-runtime/src/testutil/policy.rs`, which is why it lives here beside the runtime. How the comparison runs is [compat.md](compat.md), and what parity means is [parity.md](parity.md).
+`tests/compare-policy.yaml` is the one definition of which differences between our output and Elasticsearch's are defects. The comparison harness reads it through `crates/dfe-runtime/src/testutil/policy.rs`, which is why it lives here beside the runtime. The known limits are in [compat.md](compat.md), and what parity means is [parity.md](parity.md).
 
 Byte equality is not the goal. Every rule has a `why:` that says why the difference is not a defect, because adding a rule hides that difference from every run. The section a rule lands in decides what follows:
 

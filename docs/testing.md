@@ -1,6 +1,6 @@
 # Testing
 
-Parity is scored by a corpus and a test that are not in this repository ([compat.md](compat.md)). The two tracks here, the floors and the scanners, run on every clone, and neither measures parity. The code map is [architecture.md](architecture.md), and what parity means is [parity.md](parity.md).
+The two test tracks, the floors and the scanners, run on every clone, and neither measures parity. The code map is [architecture.md](architecture.md), and what parity means is [parity.md](parity.md).
 
 The floors read the committed fixtures, and the scanners read the generated tree against the ratchet file.
 
@@ -49,13 +49,13 @@ cargo test -p dfe-runtime --all-features --lib --test date_repro
 cargo test --no-default-features --test envelope --test envelope_detection
 ```
 
-`crates/dfe-transforms/tests/unencumbered.rs` fails when `tests/fixtures/` holds anything but `unencumbered/`, `synthetic/` and the provenance, or when any file there contains one of three marker strings: the paths of Elastic's two source repositories, or its licence's name.
+`crates/dfe-transforms/tests/unencumbered.rs` fails when `tests/fixtures/` holds anything but `unencumbered/`, `synthetic/` and the provenance, or when any file there contains one of its `MARKERS` strings.
 
 The test diff helper's `MatchMode` is defined in `crates/dfe-runtime/src/testutil/diff.rs`:
 
 | Mode | Use | Behaviour |
 |---|---|---|
-| `Exact` | Default | Field-for-field JSON match |
+| `Exact` | Strict comparison | Field-for-field JSON match |
 | `Semantic` | Against Elastic's output | Like `Exact`, skipping every path the compare policy excludes |
 | `Subset` | Fields the Beats runtime sets | Expected is a subset of actual, extra fields allowed |
 

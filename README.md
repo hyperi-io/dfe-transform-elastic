@@ -56,7 +56,7 @@ The source catalogue, `sources.yaml`, is compiled into the binary and `dfe-trans
 
 - [docs/architecture.md](docs/architecture.md): the code map, the envelopes and delivery.
 - [docs/parity.md](docs/parity.md): what the service promises against Elastic's output.
-- [docs/compat.md](docs/compat.md) and [docs/compat-policy.md](docs/compat-policy.md): how parity is scored, and what counts as a difference.
+- [docs/compat.md](docs/compat.md) and [docs/compat-policy.md](docs/compat-policy.md): what counts as a difference from Elastic's output, and the known limits.
 - [docs/configuration.md](docs/configuration.md): the cascade, the env spellings and the sections a file cannot hold.
 - [docs/enrichment.md](docs/enrichment.md): GeoIP, user agent and community ID.
 - [docs/README.md](docs/README.md): every page, including parsers, performance and testing.

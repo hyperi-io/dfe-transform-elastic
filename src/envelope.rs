@@ -208,8 +208,8 @@ const DEFAULT_SEVERITY: u8 = 5;
 
 /// What the operator said about the envelope.
 ///
-/// `auto` is the default: the family is read off the first event of each batch,
-/// so a deployment that changes producer needs no config change. Naming one
+/// `auto` is the default: the family is read off each event, so a deployment
+/// that changes producer needs no config change. Naming one
 /// pins it, which is the way through for a shape that carries no marker.
 #[derive(
     Debug,
@@ -224,7 +224,7 @@ const DEFAULT_SEVERITY: u8 = 5;
 )]
 #[serde(rename_all = "snake_case")]
 pub enum EnvelopeSetting {
-    /// Detect the family from each batch's first event.
+    /// Detect the family from each event.
     #[default]
     Auto,
     /// Beats, Elastic Agent, or anything passed through unaltered.
@@ -665,12 +665,12 @@ fn ingest_time(event: &Event) -> Option<Value> {
     ))
 }
 
-/// Which envelope a batch will be unwrapped with, and what was odd about it.
+/// Which envelope an event will be unwrapped with, and what was odd about it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Resolution {
     /// How to unwrap, and what to stamp back on.
     pub delivery: Delivery,
-    /// What the batch's first event looked like, when there was one.
+    /// What the event looked like, when there was one.
     pub detected: Option<Detected>,
     /// The operator pinned a family the events do not look like.
     pub contradicted: bool,
@@ -678,7 +678,7 @@ pub struct Resolution {
     pub unaccepted: bool,
 }
 
-/// Decide how a batch arrived, from its first event.
+/// Decide how an event arrived.
 ///
 /// A pinned setting wins over what the events look like, because the whole
 /// point of pinning is to name a shape detection cannot see. A contradiction is

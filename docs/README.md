@@ -11,7 +11,7 @@ Everything deeper than the [README](../README.md). Start at [architecture.md](ar
 | [enrichment.md](enrichment.md) | GeoIP, user agent and community ID, the three runtime enrichers |
 | [performance.md](performance.md) | SIMD, borrowed values, the release profile, the benchmarks and the key dependencies |
 | [testing.md](testing.md) | The floors, the scanners and the shared Kafka broker |
-| [compat.md](compat.md) | How a transform is scored against the real Elastic engine, and the known limits |
+| [compat.md](compat.md) | The compare policy this repository holds, and the known limits |
 | [compat-policy.md](compat-policy.md) | What counts as a difference: the `compare-policy.yaml` sections and the divergences kept on purpose |
 | [schema-generation.md](schema-generation.md) | The design for publishing the Elastic-side field knowledge to dfe-schemas |
 | [shared-crates.md](shared-crates.md) | What dfe-transform-splack took a copy of, and what extracting the common half would take |

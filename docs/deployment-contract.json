@@ -393,10 +393,10 @@
         ]
       },
       "EnvelopeSetting": {
-        "description": "What the operator said about the envelope.\n\n`auto` is the default: the family is read off the first event of each batch,\nso a deployment that changes producer needs no config change. Naming one\npins it, which is the way through for a shape that carries no marker.",
+        "description": "What the operator said about the envelope.\n\n`auto` is the default: the family is read off each event, so a deployment\nthat changes producer needs no config change. Naming one\npins it, which is the way through for a shape that carries no marker.",
         "oneOf": [
           {
-            "description": "Detect the family from each batch's first event.",
+            "description": "Detect the family from each event.",
             "type": "string",
             "const": "auto"
           },

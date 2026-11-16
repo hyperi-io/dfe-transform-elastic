@@ -192,7 +192,7 @@ Two traps worth knowing before you burn a run on them:
 
 - **Never set `CARGO_BUILD_JOBS` by hand.** A hand-set value beats the project's
   pinning and any build governor on the host.
-- **The parity corpus is not here, and must never be added.** `unencumbered.rs` fails when `tests/fixtures/` holds anything but `unencumbered/`, `synthetic/` and the provenance, or any file naming Elastic's source repositories or licence.
+- **`tests/fixtures/` holds `unencumbered/` and `synthetic/` and nothing else.** `unencumbered.rs` fails a tree holding anything more, or any file with one of its marker strings.
 
 ## Working in this repo
 

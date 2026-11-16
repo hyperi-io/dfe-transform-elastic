@@ -46,9 +46,7 @@ Every `source` and `sink` key may be left out. `source.name`, `source.topics`, `
 
 Fetcher events hold the provider's payload, so they count as unmatched. Three counters report the split: `events_detected_total{source}`, `events_unmatched_total` and `events_fallback_total`.
 
-Detection cost about 2,080 ns an event (481K events a second on one core) over 20,000 syslog lines averaging 718 bytes, on one AMD EPYC 7302 core with the bench profile, so a 20,000-event batch spends about 42 ms on it. `cargo bench --bench detect` reads the parity corpus, and skips without it.
-
-Run it on the receiver's `_raw` capture where you can. The receiver splits each line with `syslog_loose`, and a marker that straddled the split (`Pleasant Password Server:`, an `amp:` tag) is gone from the parsed fields. Over 8,885 test events of detectable sources the detector identified 8,243 from the raw line and 8,004 from the parsed fields.
+Run it on the receiver's `_raw` capture where you can. The receiver splits each line with `syslog_loose`, and a marker that straddled the split (`Pleasant Password Server:`, an `amp:` tag) is gone from the parsed fields.
 
 `scripts/replay_syslog.py` feeds an agentless stack from the committed fixtures under `tests/fixtures/unencumbered/`, standard library only. `--sources` takes catalogue labels from the table the detector stamps, and `--list` shows the ones with fixtures. A syslog header is added to a fixture line that lacks one, and the `%` the ASA fixtures dropped is put back. UDP sends one datagram per line and TCP is newline framed. There is no `http://` form, because dfe-receiver's `/ingest` takes JSON and not syslog.
 
