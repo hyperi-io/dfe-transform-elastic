@@ -75,7 +75,7 @@ fn the_python_tooling_suite_passes() {
         .and_then(|count| count.parse().ok())
         .unwrap_or(0);
     assert!(
-        ran >= 35,
+        ran >= 24,
         "the script suite ran {ran} tests, under the floor -- discovery is not \
          finding them, so a green result means nothing"
     );

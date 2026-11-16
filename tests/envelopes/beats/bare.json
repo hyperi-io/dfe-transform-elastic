@@ -1,0 +1,21 @@
+{
+  "provenance": {
+    "file": "tests/envelopes/beats/",
+    "producer": "a Beats shipper's bare wrapper",
+    "note": "Written for this repository from the keys a Beats shipper or Elastic Agent documents, around an invented Cisco IOS line."
+  },
+  "shape": {
+    "family": "beats",
+    "variant": "bare"
+  },
+  "detect": {
+    "family": "beats",
+    "variant": "bare"
+  },
+  "event": {
+    "message": "Mar  4 05:06:07 192.0.2.1 000105: Mar  4 05:06:06.900: %SEC-6-IPACCESSLOGP: list 101 denied tcp 198.51.100.5(44123) -> 192.0.2.1(22), 1 packet",
+    "tags": [
+      "preserve_original_event"
+    ]
+  }
+}

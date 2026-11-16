@@ -1,57 +1,46 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Floors over committed fixtures -- no panic, errors pinned, fields emitted.
-//! Parity lives in `tests/compat_corpus.rs`; see `integration/remaining.rs`.
-//!
-//! Azure is 10/10.
+//! Floors over the synthetic samples: no panic, errors pinned, fields emitted.
 
 use dfe_transforms::filebeat::{azure_activitylogs, azure_auditlogs, azure_signinlogs};
 
 floor!(
     azure_activitylogs_raw,
     azure_activitylogs::default::Default,
-    "azure/activitylogs",
-    "test-activitylogs-raw",
+    "azure",
+    "activitylogs-administrative",
     0
 );
 
 floor!(
     azure_activitylogs_identity,
     azure_activitylogs::default::Default,
-    "azure/activitylogs",
-    "test-activitylogs-identity",
-    0
-);
-
-floor!(
-    azure_activitylogs_edgecases,
-    azure_activitylogs::default::Default,
-    "azure/activitylogs",
-    "test-activitylogs-edgecases",
+    "azure",
+    "activitylogs-identity",
     0
 );
 
 floor!(
     azure_auditlogs_raw,
     azure_auditlogs::default::Default,
-    "azure/auditlogs",
-    "test-auditlogs-raw",
+    "azure",
+    "auditlogs",
     0
 );
 
 floor!(
     azure_signinlogs_raw,
     azure_signinlogs::default::Default,
-    "azure/signinlogs",
-    "test-signinlogs-raw",
+    "azure",
+    "signinlogs-interactive",
     0
 );
 
 floor!(
-    azure_signinlogs_sample,
+    azure_signinlogs_non_interactive,
     azure_signinlogs::default::Default,
-    "azure/signinlogs",
-    "test-signinlogs-sample",
+    "azure",
+    "signinlogs-non-interactive",
     0
 );

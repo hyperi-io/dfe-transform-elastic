@@ -170,22 +170,32 @@ fn every_sample_directory_is_mapped_or_declared_unmapped() {
     );
 }
 
-/// Outside `unencumbered/`, `tests/fixtures/` holds the repository's own
-/// fixtures, and none of them carries a reference to Elastic's repositories or
+/// `tests/fixtures/` holds only the unencumbered samples, the synthetic set and
+/// the provenance beside them, and none of it names Elastic's repositories or
 /// licence text.
 #[test]
-fn the_repositorys_own_fixtures_carry_no_elastic_material() {
+fn the_fixture_tree_holds_no_elastic_material() {
+    const ALLOWED: [&str; 3] = ["PROVENANCE.md", "synthetic", "unencumbered"];
     const MARKERS: [&str; 3] = ["elastic/integrations", "elastic/beats", "Elastic License"];
     let root = Path::new(SAMPLES)
         .parent()
         .expect("the samples sit in tests/fixtures");
-    let mut stray = Vec::new();
-    let mut pending: Vec<PathBuf> = std::fs::read_dir(root)
+
+    let mut entries: Vec<String> = std::fs::read_dir(root)
         .unwrap_or_else(|e| panic!("{} reads: {e}", root.display()))
         .flatten()
-        .filter(|entry| entry.file_name() != "unencumbered")
-        .map(|entry| entry.path())
+        .map(|entry| entry.file_name().to_string_lossy().into_owned())
         .collect();
+    entries.sort();
+    assert_eq!(
+        entries,
+        ALLOWED,
+        "{} holds something other than the unencumbered and synthetic samples",
+        root.display()
+    );
+
+    let mut stray = Vec::new();
+    let mut pending = vec![root.to_path_buf()];
     let mut scanned = 0usize;
     while let Some(path) = pending.pop() {
         if path.is_dir() {
@@ -207,7 +217,7 @@ fn the_repositorys_own_fixtures_carry_no_elastic_material() {
     stray.sort();
 
     assert!(
-        scanned > 1_000,
+        scanned > 40,
         "only {scanned} fixture files under {}",
         root.display()
     );

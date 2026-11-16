@@ -1,0 +1,59 @@
+{
+  "provenance": {
+    "file": "tests/envelopes/beats/",
+    "producer": "a Beats shipper's module wrapper",
+    "note": "Written for this repository from the keys a Beats shipper or Elastic Agent documents, around an invented Cisco IOS line."
+  },
+  "shape": {
+    "family": "beats",
+    "variant": "module"
+  },
+  "detect": {
+    "family": "beats",
+    "variant": "module"
+  },
+  "event": {
+    "@metadata": {
+      "beat": "filebeat",
+      "pipeline": "filebeat-8.17.0-cisco-ios-pipeline",
+      "type": "_doc",
+      "version": "8.17.0"
+    },
+    "@timestamp": "2026-03-04T05:06:07.000Z",
+    "agent": {
+      "ephemeral_id": "3d4e5f60-7182-4a93-8b4c-5d6e7f809a1b",
+      "id": "9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d",
+      "name": "shipper-syn-01",
+      "type": "filebeat",
+      "version": "8.17.0"
+    },
+    "ecs": {
+      "version": "8.0.0"
+    },
+    "event": {
+      "dataset": "cisco.ios",
+      "module": "cisco",
+      "timezone": "+00:00"
+    },
+    "fileset": {
+      "name": "ios"
+    },
+    "input": {
+      "type": "log"
+    },
+    "log": {
+      "file": {
+        "path": "/var/log/network/ios.log"
+      },
+      "offset": 0
+    },
+    "message": "Mar  4 05:06:07 192.0.2.1 000105: Mar  4 05:06:06.900: %SEC-6-IPACCESSLOGP: list 101 denied tcp 198.51.100.5(44123) -> 192.0.2.1(22), 1 packet",
+    "service": {
+      "type": "cisco"
+    },
+    "tags": [
+      "preserve_original_event",
+      "forwarded"
+    ]
+  }
+}

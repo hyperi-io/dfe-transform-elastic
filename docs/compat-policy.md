@@ -1,13 +1,10 @@
 # compat policy -- what counts as a difference
 
-The ratchet that holds per-source scores, the rule sections in
-`tests/compare-policy.yaml` that decide which differences are defects, and the divergences kept
-on purpose. The how-to that produces the corpus is [compat.md](compat.md), and what parity
-means in the first place is [parity.md](parity.md).
+The ratchet that holds per-source scores, the rule sections in `tests/compare-policy.yaml` that decide which differences are defects, and the divergences kept on purpose. The corpus test and its baseline run in the private dfe-transform-elastic-dev repository. The compare policy stays here, because the runtime's test support reads it. The how-to that produces the corpus is [compat.md](compat.md), and what parity means in the first place is [parity.md](parity.md).
 
 ## The ratchet
 
-`tests/compat-baseline.json` is the ratchet the corpus test asserts, and the
+The compat baseline is the ratchet the corpus test asserts, and the
 test prints the exact line for every source that improved. A fall needs a
 stated reason and is never mechanical.
 
@@ -27,7 +24,7 @@ which leaves those scores unenforced for that run and is why it has to be typed.
 
 ## The second ratchet: patterns that never apply
 
-`never_ran` in `tests/compat-baseline.json` holds the count of scripts that
+`never_ran` in the compat baseline holds the count of scripts that
 bound a pattern and never once ran it. A pattern can MATCH a script and decline
 every event, so only running the corpus shows whether it applied. It is not a
 defect count: a script can legitimately never run because no event carries its
@@ -128,7 +125,7 @@ ASN hit DB-IP Lite has where MaxMind's GeoLite2 does not makes that rename land
 on an occupied target -- which fails the document and skips the twenty-nine
 removes behind it, costing 262 events. Comparing against output built from a
 database we do not have means running without one. The fixture floors still
-exercise enrichment, over the Elastic fixtures kept outside this repository and the samples in `tests/fixtures/unencumbered/`.
+exercise enrichment, over the Elastic fixtures in dfe-transform-elastic-dev and the samples in this repository's `tests/fixtures/`.
 
 ## Correct beats bug-compatible
 

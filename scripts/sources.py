@@ -36,7 +36,7 @@ class Source:
         package: Integration package directory name.
         data_stream: Data stream directory name within the package.
         pipelines: Directory under the vendored pipelines tree holding the copy.
-        fixture_dir: Fixture directory, relative to ``tests/fixtures``.
+        fixture_dir: Fixture directory in dfe-transform-elastic-dev's fixture tree.
         intakes: Every way this source's payload can reach the service.
         framing: ``line`` or ``body`` for a syslog intake, else None.
         transforms: Generated transforms wired into the registry.

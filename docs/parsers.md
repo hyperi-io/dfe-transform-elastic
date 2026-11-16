@@ -206,15 +206,9 @@ key each script by it.
 
 **Two measurements, and only the second is honest about reach.**
 
-`crates/dfe-transforms/tests/painless_coverage.rs` drives a few dozen fixture files and holds a
-floor of 100%, none skipped. That floor is real but its driver is narrow, so it says those
-fixtures are fully covered, not that the runtime is.
+`painless_coverage.rs` drives a few dozen fixture files and holds a floor of 100%, none skipped. That floor is real but its driver is narrow, so it says those fixtures are fully covered, not that the runtime is.
 
-The corpus test in `crates/dfe-transforms/tests/compat_corpus.rs` runs the same counters over
-every confirmed capture it can load and score, and that is what says it. Both figures are run
-outputs rather than constants, so derive them rather than quoting a number from here: the
-corpus run prints handled, skipped and distinct-script counts, and `never_ran` is ratcheted in
-`tests/compat-baseline.json`.
+The corpus test, `compat_corpus.rs`, runs the same counters over every confirmed capture it can load and score, and that is what says it. Both tests run in dfe-transform-elastic-dev, beside the Elastic fixtures they read. Both figures are run outputs rather than constants, so derive them rather than quoting a number from here: the corpus run prints handled, skipped and distinct-script counts, and `never_ran` is ratcheted in the compat baseline.
 
 The gap between the two is the point. A pattern can MATCH a script statically and then decline at
 run time, which reads as covered from everywhere except the corpus run.
