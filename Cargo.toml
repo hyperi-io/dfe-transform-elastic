@@ -288,7 +288,7 @@ fancy-regex = ">=0.20.0, <0.21"
 # processor is a PSL lookup, and the last-two-labels heuristic it replaced was
 # wrong in both directions: `a.co.uk` came out registered to `co.uk`, and
 # `host.tld` got a registered domain Elasticsearch writes nothing for.
-psl = ">=2.1.246"
+psl = ">=2.1.248"
 
 # Timestamp handling. chrono-tz carries the IANA database, which chrono
 # deliberately does not ship: a pipeline configured with `America/Denver`
