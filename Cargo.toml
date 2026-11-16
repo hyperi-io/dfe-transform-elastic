@@ -240,7 +240,7 @@ regex = ">=1.13.1"
 fancy-regex = ">=0.20.0, <0.21"
 
 # Elasticsearch's registered_domain is a Public Suffix List lookup.
-psl = ">=2.1.246"
+psl = ">=2.1.248"
 
 # chrono-tz has the IANA database chrono lacks, for a zone's offset at the event.
 chrono = { version = ">=0.4.45, <0.5", features = ["serde"] }

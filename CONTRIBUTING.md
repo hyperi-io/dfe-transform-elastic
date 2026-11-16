@@ -68,51 +68,7 @@ This project follows [Semantic Versioning 2.0.0](https://semver.org/):
 Versions are automatically determined by semantic-release based on commit
 messages. Do not manually update version numbers.
 
-## Developer Certificate of Origin
-
-This project uses the Developer Certificate of Origin (DCO) as the record that
-each contributor has the right to submit their contribution.
-
-By making a contribution to this project, you certify that:
-
-1. The contribution was created in whole or in part by you and you have the
-   right to submit it under the license indicated in the file; or
-
-2. The contribution is based upon previous work that, to the best of your
-   knowledge, is covered under an appropriate open source license and you
-   have the right under that license to submit that work with modifications;
-   or
-
-3. The contribution was provided directly to me by some other person who
-   certified (1), (2) or (3) and you have not modified it.
-
-4. You understand and agree that this project and the contribution are public
-   and that a record of the contribution (including all personal information
-   you submit with it, including your sign-off) is maintained indefinitely
-   and may be redistributed consistent with this project or the license(s)
-   involved.
-
-You must sign off each commit to indicate your acceptance of the DCO. Combine
-the signoff with your conventional commit message:
-
-```bash
-git commit --signoff -m "feat(auth): add two-factor authentication"
-```
-
-This produces:
-
-```text
-feat(auth): add two-factor authentication
-
-Signed-off-by: Your Name <your.email@example.com>
-```
-
-Make sure your Git configuration has your correct name and email:
-
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "your.email@example.com"
-```
+## License for Contributions
 
 All contributions to this project are licensed under the Business Source
 License 1.1 (BUSL-1.1), the same license that covers the project.
@@ -125,16 +81,14 @@ anniversary of its release.
 
 1. Fork the repository and create your branch from `main`.
 2. Make your changes, following the commit message format above.
-3. Sign off your commits with the DCO.
-4. Run the tests below.
-5. Open a pull request that says what the change does.
+3. Run the tests below.
+4. Open a pull request that says what the change does.
 
 A question goes in an issue.
 
 Before you open it, check:
 
 - [ ] Commits follow the conventional commit format
-- [ ] All commits are signed off (DCO)
 - [ ] Tests pass (if applicable)
 - [ ] Documentation is updated (if applicable)
 
