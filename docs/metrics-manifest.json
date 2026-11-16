@@ -875,7 +875,7 @@
     {
       "name": "events_oversize_total",
       "type": "counter",
-      "description": "Events too large for one Kafka record, dropped",
+      "description": "Events too large for one Kafka record, dead-lettered",
       "unit": "",
       "labels": [],
       "group": "custom"
