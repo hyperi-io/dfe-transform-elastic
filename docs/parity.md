@@ -1,84 +1,49 @@
-# Parity
+# What dfe-transform-elastic does
 
-What this service promises against Elastic's own output, what it deliberately leaves alone, and
-how the claim is measured. The code map it sits beside is [architecture.md](architecture.md),
-and the mechanics of the measurement are [compat.md](compat.md) and
-[compat-policy.md](compat-policy.md).
+dfe-transform-elastic turns Beats and Elastic Agent events, and syslog from firewalls, switches and other devices, into the ECS output Elastic's ingest pipeline gives for the same integration. Field names, types and enrichment match, apart from the differences named below, so dashboards, rules and queries built for that output keep working. Where Elasticsearch's output is wrong, you get the correct value instead ([compat-policy.md](compat-policy.md#correct-beats-bug-compatible)).
 
-**Goal:** 1:1 (or better) parity with Elastic ingest pipeline output for the supported
-Beats and Elastic Agent integrations. Parity is measured per source against Elastic's
-output on the compat corpus and ratcheted in `tests/compat-baseline.json`, so some
-sources match fully and others do not yet.
+It is deliberately not a reverse-engineered copy of the Elasticsearch pipeline engine. Elastic runs each pipeline on an ingest node as a chain of generic processors, with Painless scripts and grok and regex doing most of the parsing, and every event pays that CPU cost. dfe-transform-elastic compiles each integration's pipeline into native Rust ahead of time. The output is the same or better, and the hot path pays only for the work each event needs.
 
-This is NOT reverse engineering Elasticsearch. We are building an independent transform
-service that produces the same normalised ECS output as the Elastic ingest pipeline would.
-Customers sending Beats/Agent data through DFE should get identical field mapping, type
-coercion, and enrichment as if the data went directly to Elasticsearch.
+## Pick what each source pays for
 
-**"Or better" means:** Where Elastic pipelines have known limitations (regex-only parsing,
-single-threaded Painless execution, per-document GeoIP lookups), we can exceed their
-performance while maintaining output compatibility.
+Each level costs more CPU than the one above it, and each source sits at whichever level it needs:
 
----
+- No transform: the source names none, and its events land as sent. Nothing is parsed, so this costs least.
+- One integration: the source names it, such as `filebeat.cisco_asa.default`, and every event runs that one compiled pipeline.
+- Agentless: one syslog stream carries many device types. A detector reads a marker off each line, runs the matching integration and stamps the source. A line no marker claims passes through unparsed ([configuration.md](configuration.md#agentless-mode-serves-one-syslog-stream-of-many-device-types)).
 
-## What we replicate
+## How each part of an ingest pipeline runs
 
-The Elastic ingest pipeline is the primary transform layer. Data arrives from Beats/Agent
-as JSON events, and the ingest pipeline applies processors sequentially to normalise,
-enrich, and route the data.
+| In Elastic | In dfe-transform-elastic |
+|---|---|
+| Ingest processors | Compiled Rust per processor, in the pipeline's order. Every processor a shipped pipeline uses is covered ([parsers.md](parsers.md#processor-taxonomy)) |
+| Grok | Each pattern is compiled once and reused. Whole-line patterns skip the regex for a native parser: 29 ns against 214 ns for an IPv4 address, 11 ns against 1,098 ns for a whole line ([parsers.md](parsers.md)) |
+| Painless scripts | A script with a Rust equivalent runs as Rust. One without is skipped, so the fields it would set are missing. `painless_handled_total` and `painless_unhandled_total` count both ([parsers.md](parsers.md#painless-coverage)) |
+| Pipeline calls | The called pipeline is built into the caller, so there is no call per event |
+| `foreach` | A loop |
+| Conditions | A native `if`. A condition with no Rust equivalent never runs the processor it guards |
+| `on_failure` | Runs as Elastic runs it, beside `ignore_failure` |
+| GeoIP | One MMDB lookup with a bounded cache, on DB-IP Lite in place of MaxMind GeoLite2, so geo fields can differ from Elastic's |
+| User agent | Compiled regexes, with small differences from Elastic's parser |
+| Community ID | The same flow hash |
 
-| Elastic Component | dfe-transform-elastic Equivalent | Status |
-|-------------------|----------------------------------|--------|
-| **Ingest processors** (27 used) | Rust processor implementations, one per Elastic processor type | Done |
-| **Painless scripts** | A hand-transcribed runner from `crates/dfe-painless/src/bespoke/` where one is registered for that script, otherwise pattern-matched against `params.rs` and the ladder in `common.rs`; unrecognised scripts are skipped | see [Painless coverage](parsers.md#painless-coverage) -- the figure is a corpus-run output, not a constant, so re-derive it rather than quoting one from here |
-| **Foreach processor** | Per-event loop inside the transform function | Okta, O365 |
-| **Pipeline chaining** | A nested pipeline is INLINED into the calling module between `// Begin nested pipeline` / `// End nested pipeline` markers, so there is no call and no dispatch on the hot path | Done. `rg -c "Begin nested pipeline" crates/dfe-transforms/src/` counts today's call sites |
-| **GeoIP enrichment** | Global MMDB enricher, auto-detected at startup, behind a bounded cache | Done (DB-IP Lite) |
-| **User Agent parsing** | Regex-based parser | Done (minor diffs from Elastic UA parser) |
-| **Community ID** | Hash-based network flow ID | Done |
-| **Conditional evaluation** | Native Rust `if`/`match` expressions per condition pattern | Nearly. A condition the transpiler cannot read emits `if false`, making the processor it guards dead code -- `skipped_processors` in `tests/ratchets.json` is the live count, with a per-source table beside it |
-| **On-failure handlers** | Wrapped around EVERY processor by the generator, alongside `if` and `ignore_failure`, so a new processor cannot quietly omit them. A raised error runs the handlers and records `_ingest.on_failure_message` and `_ingest.on_failure_processor_type` | Done |
+Elastic keeps the raw line in `event.original` beside the parsed fields. Here it is kept once:
 
----
+- An event tagged `preserve_original_event`, Elastic's own opt-in, keeps `event.original`.
+- An event that parsed into fields drops it, because the fields carry the content.
+- An event where nothing parsed gets the line back in `message`, counted on `events_unparsed_original_restored_total`.
 
-## What we do not replicate
+## What runs elsewhere
 
-| Elastic Component | Why Not | Our Approach |
-|-------------------|---------|--------------|
-| Beat/Agent collection | We receive from Kafka, not from endpoints | Upstream responsibility |
-| Transport parsing (syslog, CEF) | Done by Beat/Agent, or by dfe-receiver for the syslog envelope | Upstream responsibility |
-| Agent-side processors (`add_host_metadata`, `add_cloud_metadata`) | Run on source machine | Fields arrive pre-populated in event |
-| `@custom` pipelines | User-specific, not part of integration | Not applicable |
-| `final_pipeline` | Elasticsearch-specific routing | Not applicable |
-| `enrich` processor | Requires Elasticsearch enrich index | Alternative enrichment via dfe-loader |
-| `inference` processor | ML model execution | Not applicable for DFE |
-| `reroute` processor | Elasticsearch index routing | Kafka topic routing instead |
+Some of Elastic's work happens before or after the ingest pipeline, and in DFE it sits with another component:
 
-The Beat or Agent collects raw data, adds host/cloud metadata, applies its own local
-processors and JSON-encodes the result before it ever reaches Kafka (see
-[System context](architecture.md#system-context) for the full flow). Everything from there is
-this service's job: JSON parse, ingest pipeline logic, enrichment, ECS normalisation.
+| Elastic | In DFE |
+|---|---|
+| Collection by a Beat or Agent | The Beat or Agent still collects. DFE reads what it sends |
+| Syslog and CEF transport parsing | dfe-receiver, or the Beat or Agent |
+| Agent-side processors such as `add_host_metadata` | Run on the source machine, so the fields arrive set |
+| `enrich` processor | dfe-loader's enrichment columns |
+| `reroute` and `final_pipeline` | Kafka topic routing |
+| `@custom` pipelines and the `inference` processor | Not run |
 
-One deliberate difference in the output: `event.original` is not a second copy of the vendor line. Elastic keeps it, but the default output here is the extracted JSON alone. Where `pipeline::run_batch` emits an event:
-
-- Tagged `preserve_original_event` (Elastic's own opt-in, and what its pipelines add on failure): `event.original` stays.
-- Holding any field beyond the static and shipper fields in `ENVELOPE` (`dfe-runtime` `transform.rs`): `event.original` is removed.
-- Holding only those fields, so nothing was parsed: `event.original` moves back to `message`, and `events_unparsed_original_restored_total` counts it.
-
-A transform called directly still sets `event.original`.
-
----
-
-## How parity is verified
-
-**Parity is measured ONLY against the compat corpus.**
-`crates/dfe-transforms/tests/compat_corpus.rs` compares per FIELD against output captured from a
-real Elasticsearch and ratchets `tests/compat-baseline.json`, which holds every per-source score.
-[compat.md](compat.md) and [compat-policy.md](compat-policy.md) are the full account: how the
-corpus is generated, what `tests/compare-policy.yaml` excludes and why, and how the ratchet
-refuses to be lowered.
-
-The `.log` / `-expected.json` fixtures copied from Elastic predate the current pipelines and disagree with what Elasticsearch emits now, so **their parity assertions are retired**. They are Elastic-licensed and kept outside this repository, where a CI job runs `integration/` and `untested_sources.rs` over them as panic, error and enrichment floors. On a fresh clone of this repository, where neither they nor the corpus exist, the floors that hold are `unencumbered.rs` and the `public` cases in `untested_sources.rs`, over the licence-clean samples in `tests/fixtures/unencumbered/`.
-
-Per-processor runtime status and code pattern: see
-[Processor taxonomy](parsers.md#processor-taxonomy).
+o365 and panw need Filebeat's own processors upstream. Part of their parsing runs inside Filebeat, before the ingest pipeline ([compat.md](compat.md#known-limits)).
