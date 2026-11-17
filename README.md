@@ -163,8 +163,8 @@ cargo build --no-default-features
 
 [docs/](docs/README.md) carries everything deeper than this page --
 [architecture.md](docs/architecture.md) for the code map,
-[parity.md](docs/parity.md) for what the service promises against Elastic's own
-output, and [compat.md](docs/compat.md) for working a source towards it.
+[parity.md](docs/parity.md) for what the transform does in place of Elastic's
+ingest pipeline, and [compat.md](docs/compat.md) for working a source towards it.
 
 ## Issues
 
