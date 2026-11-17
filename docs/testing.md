@@ -81,7 +81,7 @@ flowchart LR
   class floors,scanners,ci part
 ```
 
-*Figure 1. L4 Detail -- Floors and scanners. Green is committed data.* Up: [L3 Components -- dfe-transform-elastic](architecture.md#four-steps-between-the-producers-and-the-sink).
+*Figure 1. L4 Detail -- Floors and scanners. Green is committed data.* Up: [L3 Components -- dfe-transform-elastic](architecture.md).
 
 The floors are `integration.rs`, `untested_sources.rs` and `unencumbered.rs`. The scanners are `painless_binding.rs`, `bespoke_registry.rs`, `grok_pattern_coverage.rs` and `skipped_processors.rs`, and `tests/ratchets.json` holds the counts they ratchet, such as `dead_branch_sites` and `skipped_processors`. `tests/compare-policy.yaml` is read through `dfe_runtime::testutil::policy` by the parity comparison.
 

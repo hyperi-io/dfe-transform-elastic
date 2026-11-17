@@ -22,7 +22,7 @@ Beats and Elastic Agent send JSON events, and the ingest pipeline applies its pr
 | User agent parsing | Regex-based parser | Done, with small differences from Elastic's parser |
 | Community ID | Hash-based network flow ID | Done |
 | Conditions | Native Rust `if` per condition. A condition the transpiler cannot read emits `if false`, so the processor it guards never runs | Partial. `skipped_processors` in `tests/ratchets.json` counts them, with a per-source table |
-| `on_failure` handlers | Generated around every processor that declares them, beside `if` and `ignore_failure` ([architecture.md](architecture.md#a-failed-processor-ends-in-one-of-four-places)) | Done |
+| `on_failure` handlers | Generated around every processor that declares them, beside `if` and `ignore_failure` ([transform.md](transform.md#scaling-and-failure)) | Done |
 
 The service leaves these out on purpose:
 

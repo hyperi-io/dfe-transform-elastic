@@ -1,6 +1,6 @@
 # Enrichment
 
-GeoIP, user agent and community ID are the three runtime enrichers in `crates/dfe-runtime/src/enrichment/`, loaded once and shared across every transform. A generated transform calls one where its pipeline has a `geoip`, `user_agent` or `community_id` processor ([parsers.md](parsers.md#processor-taxonomy)). The code map is [architecture.md](architecture.md).
+GeoIP, user agent and community ID are the three runtime enrichers in `crates/dfe-runtime/src/enrichment/`, loaded once and shared across every transform. A generated transform calls one where its pipeline has a `geoip`, `user_agent` or `community_id` processor ([parsers.md](parsers.md#processor-taxonomy)). The step they run in is [Transform](transform.md).
 
 Each enricher reads one kind of field and writes one subtree back onto the same event.
 
@@ -89,7 +89,7 @@ flowchart LR
   style enrichers fill:none,stroke:#0072B2,stroke-width:1.5px,stroke-dasharray:6 4
 ```
 
-*Figure 1. L4 Detail -- Enrichers.* Up: [L3 Components -- dfe-transform-elastic](architecture.md#four-steps-between-the-producers-and-the-sink).
+*Figure 1. L4 Detail -- Enrichers.* Up: [L4 Detail -- Transform](transform.md).
 
 GeoIP provisioning, storage, cache, output and failure:
 

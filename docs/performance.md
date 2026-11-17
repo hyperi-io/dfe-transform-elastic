@@ -1,6 +1,6 @@
 # Performance
 
-What the hot path is built from: SIMD byte search, borrowed values, reused buffers, the release profile and the libraries underneath, plus where the benchmarks live. The code map is [architecture.md](architecture.md), and the grok dispatch and its timings are [parsers.md](parsers.md).
+What the hot path is built from: SIMD byte search, borrowed values, reused buffers, the release profile and the libraries underneath, plus where the benchmarks live. The parts are in [architecture.md](architecture.md), and the grok dispatch and its timings are [parsers.md](parsers.md).
 
 `memchr` scans for delimiters in `crates/dfe-parse/src/string.rs`, and `aho-corasick` finds every agentless marker in one pass over the line. Both dispatch on the CPU features the build targets in `.cargo/config.toml`:
 
@@ -8,7 +8,7 @@ What the hot path is built from: SIMD byte search, borrowed values, reused buffe
 - `aarch64-unknown-linux-gnu`: `-C target-cpu=generic` (the NEON baseline), linked with mold
 - A build with no `--target`: `-C target-cpu=native`
 
-JSON parsing is not SIMD. simd-json lost to `serde_json` on this workload ([architecture.md](architecture.md#event-model)).
+JSON parsing is not SIMD. simd-json lost to `serde_json` on this workload ([transform.md](transform.md#interfaces)).
 
 Values are borrowed where the types allow it. A parser returns `ParseResult<'a, &'a str>`, a slice of its input, and `event.get_str()` returns an `Option<&str>` into the event. A helper that may or may not change a string, such as `url_decode`, returns an `Option<Cow<'_, str>>`, borrowing unchanged input. Events hold their tree: `Event::from_json` parses each NDJSON line into an owned `serde_json::Value`.
 

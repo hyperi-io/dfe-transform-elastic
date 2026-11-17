@@ -1,6 +1,6 @@
 # Parsers and processors
 
-Grok runs on compiled regex at almost every call site. Three whole-pattern forms take a native path instead, and the composite builder and DFA fallback in `dfe-parse` are built but not called by any transform. This page covers that dispatch, every ingest processor the transforms use, and how far the Painless matchers reach. The code map is [architecture.md](architecture.md), and the libraries are [performance.md](performance.md).
+Grok runs on compiled regex at almost every call site. Three whole-pattern forms take a native path instead, and the composite builder and DFA fallback in `dfe-parse` are built but not called by any transform. This page covers that dispatch, every ingest processor the transforms use, and how far the Painless matchers reach. The step these run in is [Transform](transform.md), and the libraries are [performance.md](performance.md).
 
 `grok_cache::native_form` recognises whole-pattern forms and rejects a near-miss rather than guessing at one: a pattern with literal text around its captures stays on the regex.
 
@@ -52,21 +52,33 @@ config:
     .ui .label-icon{color:#D9480F}
     .ext .label-icon{color:#64748B}
 ---
-flowchart LR
+flowchart TB
     accTitle: L4 Detail -- Grok dispatch
     accDescr: A grok call site checks whether its pattern is one of the native whole-pattern forms. If so it runs a dfe-parse parser or a newline scan, otherwise the compiled regex. Both return the captured fields.
 
-    site(["<b>Grok call site</b>"])
-    form{"<b>Native<br/>form?</b>"}
-    native["<b>dfe-parse or<br/>newline scan</b>"]
-    regex["<b>Compiled regex</b>"]
-    fields(["<b>Captured fields</b>"])
+    subgraph IN["Call"]
+        direction LR
+        site(["<b>Grok call site</b>"])
+    end
 
-    site --> form
-    form -->|yes| native
-    form -->|no| regex
-    native --> fields
-    regex --> fields
+    subgraph D["Dispatch"]
+        direction LR
+        form{"<b>Native<br/>form?</b>"}
+        native("<b>dfe-parse or<br/>newline scan</b>")
+        regex("<b>Compiled regex</b>")
+        form -->|yes| native
+        form -->|no| regex
+    end
+
+    subgraph OUT["Result"]
+        direction LR
+        fields(["<b>Captured fields</b>"])
+    end
+
+    IN --> D
+    D --> OUT
+  class form decision
+  class site,native,regex,fields part
   classDef ext fill:#F4F6F8,stroke:#94A3B8,stroke-width:1.5px,stroke-dasharray:5 4,color:#0F172A
   classDef ingest fill:#FFFFFF,stroke:#0E8A7D,stroke-width:3px,color:#0F172A
   classDef xform fill:#FFFFFF,stroke:#7B4FB0,stroke-width:3px,color:#0F172A
@@ -78,11 +90,12 @@ flowchart LR
   classDef error fill:#FFFFFF,stroke:#C2410C,stroke-width:3px,color:#0F172A
   classDef control fill:#FFFFFF,stroke:#334155,stroke-width:3px,color:#0F172A
   classDef part fill:#FFFFFF,stroke:#94A3B8,stroke-width:1.5px,color:#0F172A
-  class form decision
-  class site,native,regex,fields part
+  style IN fill:none,stroke:#0072B2,stroke-width:1.5px,stroke-dasharray:6 4
+  style D fill:none,stroke:#0072B2,stroke-width:1.5px,stroke-dasharray:6 4
+  style OUT fill:none,stroke:#0072B2,stroke-width:1.5px,stroke-dasharray:6 4
 ```
 
-*Figure 1. L4 Detail -- Grok dispatch.* Up: [L3 Components -- dfe-transform-elastic](architecture.md#four-steps-between-the-producers-and-the-sink).
+*Figure 1. L4 Detail -- Grok dispatch.* Up: [L4 Detail -- Transform](transform.md).
 
 | Pattern | Path | Native against regex |
 |---|---|---|
