@@ -9,31 +9,83 @@ This page is the code map: the parts of the service, the crates, the modules, th
 Each batch is parsed, unwrapped, transformed and serialised in that order, and dead letters leave for the DLQ.
 
 ```mermaid
+---
+config:
+  theme: base
+  look: neo
+  fontFamily: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif
+  flowchart:
+    curve: linear
+    nodeSpacing: 40
+    rankSpacing: 64
+    padding: 18
+    wrappingWidth: 280
+    htmlLabels: true
+  elk:
+    preset: modelOrder
+  themeVariables:
+    fontSize: 15px
+    lineColor: "#64748B"
+    primaryTextColor: "#0F172A"
+    clusterBorder: "#0072B2"
+    edgeLabelBackground: "#FFFFFF"
+  themeCSS: >-
+    p{margin:0}
+    .node[data-look] rect,.node[data-look] path,.node[data-look] polygon,.node[data-look] .outer-path{filter:drop-shadow(0 1px 2px rgba(15,23,42,.10)) drop-shadow(0 6px 14px rgba(15,23,42,.10))}
+    .node rect{rx:10px;ry:10px}
+    .cluster rect{rx:16px;ry:16px}
+    .node .label div{min-width:150px}
+    .node.decision .label div{min-width:0}
+    .cluster[data-look] rect{filter:none}
+    .nodeLabel{line-height:1.35}
+    .nodeLabel b{font-weight:600;font-size:15px;letter-spacing:-0.01em}
+    .nodeLabel span{font-size:12.5px;font-weight:400;color:#334155}
+    .cluster-label span.nodeLabel{display:inline-block;background:#FFFFFF;color:#0B2A3F;border:1.5px solid #0072B2;border-radius:999px;padding:2px 12px;font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+    .flowchart-link{stroke-width:1.75px}
+    .labelBkg{background:transparent!important}
+    span.edgeLabel{display:inline-block;background:#FFFFFF!important;color:#1E293B;border:1px solid #94A3B8;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:500}
+    span.edgeLabel p{background:transparent!important}
+    .label-icon{width:20px;height:20px;vertical-align:-4px;margin-right:6px}
+    .ingest .label-icon{color:#0E8A7D}
+    .xform .label-icon{color:#7B4FB0}
+    .load .label-icon{color:#0072B2}
+    .bus .label-icon{color:#A8517F}
+    .store .label-icon{color:#00785A}
+    .ui .label-icon{color:#D9480F}
+    .ext .label-icon{color:#64748B}
+---
 flowchart TB
     accTitle: L3 Components -- dfe-transform-elastic
     accDescr: Producers send events over Kafka or a direct push. Inside the service each batch is parsed, unwrapped, transformed and serialised in that order. Events go to Kafka or dfe-loader, and dead letters go to the DLQ.
 
-    producers["Beats, Agent,<br/>receiver, fetcher"]
+    producers["<b>Beats, Agent,<br/>receiver, fetcher</b>"]
 
     subgraph svc["dfe-transform-elastic"]
         direction LR
-        parse["Parse NDJSON"] --> unwrap["Unwrap envelope"] --> transform[["Transform"]] --> serialise["Serialise"]
+        parse["<b>Parse NDJSON</b>"] --> unwrap["<b>Unwrap envelope</b>"] --> transform[["<b>Transform</b>"]] --> serialise["<b>Serialise</b>"]
     end
 
-    sink["Kafka or<br/>dfe-loader"]
-    dlq[("DLQ")]
+    sink["<b>Kafka or<br/>dfe-loader</b>"]
+    dlq[("<b>DLQ</b>")]
 
     producers -->|events| svc
     svc -->|events| sink
     svc -.->|dead letters| dlq
-
-    classDef default fill:#F8FAFC,stroke:#64748B,stroke-width:1px,color:#0F172A
-    classDef error fill:#FBE3D6,stroke:#C2410C,stroke-width:1px,color:#4A1A05
-    classDef ext fill:#EEF0F2,stroke:#6B7280,stroke-width:1px,stroke-dasharray:4 3,color:#1F2937
-    classDef group fill:none,stroke:#64748B,stroke-width:1px,stroke-dasharray:2 4
-    class producers,sink ext
-    class dlq error
-    class svc group
+  classDef ext fill:#F4F6F8,stroke:#94A3B8,stroke-width:1.5px,stroke-dasharray:5 4,color:#0F172A
+  classDef ingest fill:#FFFFFF,stroke:#0E8A7D,stroke-width:3px,color:#0F172A
+  classDef xform fill:#FFFFFF,stroke:#7B4FB0,stroke-width:3px,color:#0F172A
+  classDef load fill:#FFFFFF,stroke:#0072B2,stroke-width:3px,color:#0F172A
+  classDef bus fill:#FFFFFF,stroke:#A8517F,stroke-width:3px,color:#0F172A
+  classDef store fill:#FFFFFF,stroke:#00785A,stroke-width:3px,color:#0F172A
+  classDef ui fill:#FFFFFF,stroke:#D9480F,stroke-width:3px,color:#0F172A
+  classDef decision fill:#FFFFFF,stroke:#9A6700,stroke-width:3px,color:#0F172A
+  classDef error fill:#FFFFFF,stroke:#C2410C,stroke-width:3px,color:#0F172A
+  classDef control fill:#FFFFFF,stroke:#334155,stroke-width:3px,color:#0F172A
+  classDef part fill:#FFFFFF,stroke:#94A3B8,stroke-width:1.5px,color:#0F172A
+  class producers ext
+  class parse,unwrap,transform,serialise part
+  class sink,dlq bus
+  style svc fill:none,stroke:#0072B2,stroke-width:1.5px,stroke-dasharray:6 4
 ```
 
 *Figure 1. L3 Components -- dfe-transform-elastic. Dashed boxes are external and the dotted arrow is the dead-letter path.* Up: top of dfe-transform-elastic. Down: [L4 Detail -- A failed processor](#a-failed-processor-ends-in-one-of-four-places).
@@ -47,29 +99,84 @@ The workspace holds five library crates, the generated transform crates, the PGO
 Every generated transform crate builds on `dfe-runtime`, which builds on the three base crates.
 
 ```mermaid
+---
+config:
+  theme: base
+  look: neo
+  fontFamily: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif
+  flowchart:
+    curve: linear
+    nodeSpacing: 40
+    rankSpacing: 64
+    padding: 18
+    wrappingWidth: 280
+    htmlLabels: true
+  elk:
+    preset: modelOrder
+  themeVariables:
+    fontSize: 15px
+    lineColor: "#64748B"
+    primaryTextColor: "#0F172A"
+    clusterBorder: "#0072B2"
+    edgeLabelBackground: "#FFFFFF"
+  themeCSS: >-
+    p{margin:0}
+    .node[data-look] rect,.node[data-look] path,.node[data-look] polygon,.node[data-look] .outer-path{filter:drop-shadow(0 1px 2px rgba(15,23,42,.10)) drop-shadow(0 6px 14px rgba(15,23,42,.10))}
+    .node rect{rx:10px;ry:10px}
+    .cluster rect{rx:16px;ry:16px}
+    .node .label div{min-width:150px}
+    .node.decision .label div{min-width:0}
+    .cluster[data-look] rect{filter:none}
+    .nodeLabel{line-height:1.35}
+    .nodeLabel b{font-weight:600;font-size:15px;letter-spacing:-0.01em}
+    .nodeLabel span{font-size:12.5px;font-weight:400;color:#334155}
+    .cluster-label span.nodeLabel{display:inline-block;background:#FFFFFF;color:#0B2A3F;border:1.5px solid #0072B2;border-radius:999px;padding:2px 12px;font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+    .flowchart-link{stroke-width:1.75px}
+    .labelBkg{background:transparent!important}
+    span.edgeLabel{display:inline-block;background:#FFFFFF!important;color:#1E293B;border:1px solid #94A3B8;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:500}
+    span.edgeLabel p{background:transparent!important}
+    .label-icon{width:20px;height:20px;vertical-align:-4px;margin-right:6px}
+    .ingest .label-icon{color:#0E8A7D}
+    .xform .label-icon{color:#7B4FB0}
+    .load .label-icon{color:#0072B2}
+    .bus .label-icon{color:#A8517F}
+    .store .label-icon{color:#00785A}
+    .ui .label-icon{color:#D9480F}
+    .ext .label-icon{color:#64748B}
+---
 flowchart LR
     accTitle: L4 Detail -- Crate dependencies
     accDescr: The service depends on dfe-transforms, which re-exports the generated transform crates. They depend on dfe-runtime, which depends on dfe-painless, dfe-parse and dfe-core.
 
-    service["dfe-transform-elastic"]
-    transforms["dfe-transforms"]
-    generated["dfe-transforms-*"]
-    runtime["dfe-runtime"]
+    service["<b>dfe-transform-elastic</b>"]
+    transforms["<b>dfe-transforms</b>"]
+    generated["<b>dfe-transforms-*</b>"]
+    runtime["<b>dfe-runtime</b>"]
 
     subgraph base["Base crates"]
-        painless["dfe-painless"]
-        parse["dfe-parse"]
-        core["dfe-core"]
+        painless["<b>dfe-painless</b>"]
+        parse["<b>dfe-parse</b>"]
+        core["<b>dfe-core</b>"]
     end
 
     service --> transforms
     transforms --> generated
     generated --> runtime
     runtime --> base
-
-    classDef default fill:#F8FAFC,stroke:#64748B,stroke-width:1px,color:#0F172A
-    classDef group fill:none,stroke:#64748B,stroke-width:1px,stroke-dasharray:2 4
-    class base group
+  classDef ext fill:#F4F6F8,stroke:#94A3B8,stroke-width:1.5px,stroke-dasharray:5 4,color:#0F172A
+  classDef ingest fill:#FFFFFF,stroke:#0E8A7D,stroke-width:3px,color:#0F172A
+  classDef xform fill:#FFFFFF,stroke:#7B4FB0,stroke-width:3px,color:#0F172A
+  classDef load fill:#FFFFFF,stroke:#0072B2,stroke-width:3px,color:#0F172A
+  classDef bus fill:#FFFFFF,stroke:#A8517F,stroke-width:3px,color:#0F172A
+  classDef store fill:#FFFFFF,stroke:#00785A,stroke-width:3px,color:#0F172A
+  classDef ui fill:#FFFFFF,stroke:#D9480F,stroke-width:3px,color:#0F172A
+  classDef decision fill:#FFFFFF,stroke:#9A6700,stroke-width:3px,color:#0F172A
+  classDef error fill:#FFFFFF,stroke:#C2410C,stroke-width:3px,color:#0F172A
+  classDef control fill:#FFFFFF,stroke:#334155,stroke-width:3px,color:#0F172A
+  classDef part fill:#FFFFFF,stroke:#94A3B8,stroke-width:1.5px,color:#0F172A
+  class service xform
+  class transforms,generated,runtime,painless,parse,core part
+  style base fill:none,stroke:#0072B2,stroke-width:1.5px,stroke-dasharray:6 4
 ```
 
 *Figure 2. L4 Detail -- Crate dependencies.* Up: [L3 Components -- dfe-transform-elastic](#four-steps-between-the-producers-and-the-sink).
@@ -158,6 +265,34 @@ Each event goes out as a separate record. `pipeline.rs::serialise_events_with_ov
 With `source.acknowledgements` on, the default, the source is acknowledged after the sink takes the batch.
 
 ```mermaid
+---
+config:
+  theme: base
+  look: neo
+  fontFamily: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif
+  themeVariables:
+    fontSize: 15px
+    lineColor: "#64748B"
+    primaryTextColor: "#0F172A"
+    clusterBorder: "#0072B2"
+    edgeLabelBackground: "#FFFFFF"
+    actorBkg: "#FFFFFF"
+    actorBorder: "#94A3B8"
+    actorTextColor: "#0F172A"
+    actorLineColor: "#94A3B8"
+    signalColor: "#64748B"
+    signalTextColor: "#64748B"
+    labelBoxBkgColor: "#FFFFFF"
+    labelBoxBorderColor: "#94A3B8"
+    labelTextColor: "#0F172A"
+    loopTextColor: "#64748B"
+    noteBkgColor: "#FFFFFF"
+    noteTextColor: "#0F172A"
+    noteBorderColor: "#94A3B8"
+    activationBkgColor: "#F4F6F8"
+    activationBorderColor: "#94A3B8"
+    sequenceNumberColor: "#FFFFFF"
+---
 sequenceDiagram
     accTitle: L4 Detail -- One batch through the service
     accDescr: The source hands a block to the pipeline. For each event the resolver unwraps the envelope and the transform runs. The pipeline sends one record per surviving event, and acknowledges the source once the sink takes them.
@@ -191,6 +326,21 @@ An event that fails to unwrap or transform is counted on `events_errored_total` 
 A transform mutates an `Event` in place and returns `Continue`, `Drop` or an error.
 
 ```mermaid
+---
+config:
+  theme: base
+  look: neo
+  fontFamily: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif
+  themeVariables:
+    fontSize: 15px
+    lineColor: "#64748B"
+    primaryTextColor: "#0F172A"
+    clusterBorder: "#0072B2"
+    edgeLabelBackground: "#FFFFFF"
+    primaryColor: "#FFFFFF"
+    primaryBorderColor: "#94A3B8"
+    tertiaryColor: "#F4F6F8"
+---
 classDiagram
     accTitle: L4 Detail -- Event and Transform types
     accDescr: A Transform mutates an Event and returns a TransformResult, or a TransformError on failure.
@@ -246,17 +396,62 @@ A generated transform is one function that runs its pipeline's processors in ord
 A failed processor is skipped, handled, or ends the pipeline, and the event is lost when the pipeline has no handler.
 
 ```mermaid
+---
+config:
+  theme: base
+  look: neo
+  fontFamily: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif
+  flowchart:
+    curve: linear
+    nodeSpacing: 40
+    rankSpacing: 64
+    padding: 18
+    wrappingWidth: 280
+    htmlLabels: true
+  elk:
+    preset: modelOrder
+  themeVariables:
+    fontSize: 15px
+    lineColor: "#64748B"
+    primaryTextColor: "#0F172A"
+    clusterBorder: "#0072B2"
+    edgeLabelBackground: "#FFFFFF"
+  themeCSS: >-
+    p{margin:0}
+    .node[data-look] rect,.node[data-look] path,.node[data-look] polygon,.node[data-look] .outer-path{filter:drop-shadow(0 1px 2px rgba(15,23,42,.10)) drop-shadow(0 6px 14px rgba(15,23,42,.10))}
+    .node rect{rx:10px;ry:10px}
+    .cluster rect{rx:16px;ry:16px}
+    .node .label div{min-width:150px}
+    .node.decision .label div{min-width:0}
+    .cluster[data-look] rect{filter:none}
+    .nodeLabel{line-height:1.35}
+    .nodeLabel b{font-weight:600;font-size:15px;letter-spacing:-0.01em}
+    .nodeLabel span{font-size:12.5px;font-weight:400;color:#334155}
+    .cluster-label span.nodeLabel{display:inline-block;background:#FFFFFF;color:#0B2A3F;border:1.5px solid #0072B2;border-radius:999px;padding:2px 12px;font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+    .flowchart-link{stroke-width:1.75px}
+    .labelBkg{background:transparent!important}
+    span.edgeLabel{display:inline-block;background:#FFFFFF!important;color:#1E293B;border:1px solid #94A3B8;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:500}
+    span.edgeLabel p{background:transparent!important}
+    .label-icon{width:20px;height:20px;vertical-align:-4px;margin-right:6px}
+    .ingest .label-icon{color:#0E8A7D}
+    .xform .label-icon{color:#7B4FB0}
+    .load .label-icon{color:#0072B2}
+    .bus .label-icon{color:#A8517F}
+    .store .label-icon{color:#00785A}
+    .ui .label-icon{color:#D9480F}
+    .ext .label-icon{color:#64748B}
+---
 flowchart LR
     accTitle: L4 Detail -- A failed processor
     accDescr: A failed processor with ignore_failure set is skipped. Otherwise the processor's on_failure handlers run if it has any. Failing that, the pipeline's on_failure handlers run and keep the event, and with none the event is dropped and counted.
 
-    ignore{"ignore_failure<br/>set?"}
-    skip(["Next processor"])
-    proc{"Processor's<br/>on_failure?"}
-    handlers(["Its handlers run"])
-    pipe{"Pipeline<br/>on_failure?"}
-    kept(["Pipeline handlers<br/>run, event kept"])
-    dropped(["Dropped and<br/>counted"])
+    ignore{"<b>ignore_failure<br/>set?</b>"}
+    skip(["<b>Next processor</b>"])
+    proc{"<b>Processor's<br/>on_failure?</b>"}
+    handlers(["<b>Its handlers run</b>"])
+    pipe{"<b>Pipeline<br/>on_failure?</b>"}
+    kept(["<b>Pipeline handlers<br/>run, event kept</b>"])
+    dropped(["<b>Dropped and<br/>counted</b>"])
 
     ignore -->|yes| skip
     ignore -->|no| proc
@@ -264,12 +459,20 @@ flowchart LR
     proc -->|no| pipe
     pipe -->|yes| kept
     pipe -->|no| dropped
-
-    classDef default fill:#F8FAFC,stroke:#64748B,stroke-width:1px,color:#0F172A
-    classDef decision fill:#FCF1D6,stroke:#9A6700,stroke-width:1px,color:#3D2A00
-    classDef error fill:#FBE3D6,stroke:#C2410C,stroke-width:1px,color:#4A1A05
-    class ignore,proc,pipe decision
-    class dropped error
+  classDef ext fill:#F4F6F8,stroke:#94A3B8,stroke-width:1.5px,stroke-dasharray:5 4,color:#0F172A
+  classDef ingest fill:#FFFFFF,stroke:#0E8A7D,stroke-width:3px,color:#0F172A
+  classDef xform fill:#FFFFFF,stroke:#7B4FB0,stroke-width:3px,color:#0F172A
+  classDef load fill:#FFFFFF,stroke:#0072B2,stroke-width:3px,color:#0F172A
+  classDef bus fill:#FFFFFF,stroke:#A8517F,stroke-width:3px,color:#0F172A
+  classDef store fill:#FFFFFF,stroke:#00785A,stroke-width:3px,color:#0F172A
+  classDef ui fill:#FFFFFF,stroke:#D9480F,stroke-width:3px,color:#0F172A
+  classDef decision fill:#FFFFFF,stroke:#9A6700,stroke-width:3px,color:#0F172A
+  classDef error fill:#FFFFFF,stroke:#C2410C,stroke-width:3px,color:#0F172A
+  classDef control fill:#FFFFFF,stroke:#334155,stroke-width:3px,color:#0F172A
+  classDef part fill:#FFFFFF,stroke:#94A3B8,stroke-width:1.5px,color:#0F172A
+  class ignore,proc,pipe decision
+  class skip,handlers,kept part
+  class dropped error
 ```
 
 *Figure 5. L4 Detail -- A failed processor. Orange is the event lost to the output.* Up: [L3 Components -- dfe-transform-elastic](#four-steps-between-the-producers-and-the-sink).
