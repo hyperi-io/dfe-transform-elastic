@@ -55,7 +55,7 @@ The source catalogue, `sources.yaml`, is compiled into the binary and `dfe-trans
 ## Documentation
 
 - [docs/architecture.md](docs/architecture.md): the parts, how data flows and why. Its Components table links each part's page.
-- [docs/parity.md](docs/parity.md): what the service promises against Elastic's output.
+- [docs/parity.md](docs/parity.md): what the transform does in place of Elastic's ingest pipeline.
 - [docs/compat.md](docs/compat.md) and [docs/compat-policy.md](docs/compat-policy.md): what counts as a difference from Elastic's output, and the known limits.
 - [docs/configuration.md](docs/configuration.md): the cascade, the env spellings and the sections a file cannot hold.
 - [docs/enrichment.md](docs/enrichment.md): GeoIP, user agent and community ID.
