@@ -231,6 +231,129 @@ fn a_relabelled_panw_delivery_parses_without_raw_capture() {
     }
 }
 
+/// `line` as dfe-receiver delivers it over syslog, parsed by the same
+/// `syslog_loose`, under the `_source` the event carries.
+fn receiver_delivery(line: &str, label: &str) -> Value {
+    let m = syslog_loose::parse_message(line, syslog_loose::Variant::Either);
+    let mut event = json!({
+        "message": m.msg,
+        "facility": "local0",
+        "severity": "info",
+        "timestamp": "2026-03-03T10:30:00+11:00",
+        "_source": label,
+    });
+    for (key, value) in [
+        ("hostname", m.hostname),
+        ("appname", m.appname),
+        ("msgid", m.msgid),
+    ] {
+        if let Some(value) = value {
+            event[key] = json!(value);
+        }
+    }
+    event
+}
+
+/// A routing rule relabels `_source` to the catalogue name, and the unwrap must
+/// not change. Each source takes real device lines from the unencumbered
+/// samples through the registry's transform: the output under the label equals
+/// the output under `syslog`.
+///
+/// `prefix` is what the sample lacks of a syslog header. `max_errors` is the
+/// lines the sample itself breaks, and no more carry `error.message`: the first
+/// opensoc PAN-OS record is cut off mid-row, and six NX-OS lines put a year
+/// where no pipeline pattern takes one.
+#[test]
+fn a_relabelled_syslog_delivery_matches_the_unlabelled_one_for_real_samples() {
+    let samples: [(&str, &str, &str, usize); 6] = [
+        (
+            "filebeat.cisco_asa.default",
+            "cisco_asa/logstash-cisco-asa.log",
+            "<166>Nov  3 10:30:00 fw01 : %",
+            0,
+        ),
+        (
+            "filebeat.fortinet.default",
+            "fortinet/fortigate-event.log",
+            "<134>",
+            0,
+        ),
+        ("filebeat.panw.default", "panw/opensoc-panos-csv.log", "", 1),
+        (
+            "filebeat.cisco_ios.default",
+            "cisco_ios/cisco-ios-syslog.log",
+            "",
+            0,
+        ),
+        // Meraki's documented BSD header ahead of its own `1 <epoch>`.
+        (
+            "filebeat.cisco_meraki.default",
+            "cisco_meraki/meraki-events.log",
+            "<134>",
+            0,
+        ),
+        (
+            "filebeat.cisco_nexus.default",
+            "cisco_nexus/cisco-nxos-syslog.log",
+            "",
+            6,
+        ),
+    ];
+
+    for (source, fixture, prefix, max_errors) in samples {
+        let path = format!(
+            "{}/tests/fixtures/unencumbered/{fixture}",
+            env!("CARGO_MANIFEST_DIR")
+        );
+        let text = std::fs::read_to_string(&path).expect("the sample reads");
+        let lines: Vec<String> = text
+            .lines()
+            .filter(|line| !line.trim().is_empty())
+            // The ios sample also holds header-less show-logging lines.
+            .filter(|line| !fixture.starts_with("cisco_ios") || line.starts_with('<'))
+            .take(200)
+            .map(|line| format!("{prefix}{line}"))
+            .collect();
+        assert!(!lines.is_empty(), "{fixture}: no lines");
+
+        let mut errors = 0;
+        for line in &lines {
+            let plain = run(
+                source,
+                Envelope::Receiver,
+                receiver_delivery(line, "syslog"),
+            )
+            .expect("the syslog path emitted");
+            let mut relabelled = run(
+                source,
+                Envelope::Receiver,
+                receiver_delivery(line, "demo-syslog"),
+            )
+            .expect("the relabelled path emitted");
+
+            assert_eq!(
+                relabelled.get("_source").and_then(Value::as_str),
+                Some("demo-syslog"),
+                "{source}: {line}"
+            );
+            relabelled
+                .as_object_mut()
+                .expect("an object")
+                .insert("_source".into(), json!("syslog"));
+            assert_eq!(relabelled, plain, "{source}: {line}");
+
+            if plain.pointer("/error/message").is_some() {
+                errors += 1;
+            }
+        }
+        assert!(
+            errors <= max_errors,
+            "{source}: {errors} of {} lines carry error.message, allowed {max_errors}",
+            lines.len()
+        );
+    }
+}
+
 /// What a `Framing::Line` source is handed: a `<PRI>`-prefixed line, rebuilt
 /// when the receiver kept no raw one.
 ///
