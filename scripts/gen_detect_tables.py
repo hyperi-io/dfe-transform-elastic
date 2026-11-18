@@ -16,8 +16,8 @@ Output from `--from` names no release, so `--check` refuses it.
 
 The wheel is read from `DFE_SCHEMAS_WHEEL` when set, else from
 `$XDG_CACHE_HOME/dfe-schemas-wheels/<sha256>.whl` (`~/.cache` by default), else
-downloaded from PyPI into that cache. Each is held to the pinned sha256. Exit 3
-means none was available.
+downloaded from PyPI into that cache, retrying a failed read. Each is held to the
+pinned sha256. Exit 3 means none was available.
 """
 
 import argparse
@@ -27,6 +27,7 @@ import json
 import os
 import re
 import sys
+import time
 import tomllib
 import urllib.request
 import zipfile
@@ -54,6 +55,11 @@ MAX_ALL_LITERALS = 8
 
 # The detector numbers SIGNATURES entries with a u16.
 MAX_SIGNATURES = 65_534
+
+# Reads of PyPI tried before the wheel is declared unavailable, and the pause
+# before the first retry. Each later pause doubles.
+ATTEMPTS = 4
+BACKOFF_SECONDS = 2.0
 
 # Exit status when the wheel is in no cache and PyPI cannot be reached.
 EXIT_UNAVAILABLE = 3
@@ -87,15 +93,29 @@ def _checked(*, body: bytes, sha256: str, where: str) -> bytes:
     return body
 
 
-def _https_get(url: str, *, timeout: int) -> bytes:
-    """The body at *url*, refused unless it is https, so no file:// or other scheme is read."""
-    if not url.startswith("https://"):
-        raise CatalogueError(f"{url!r} is not an https URL")
-    # Risk accepted: the scheme is checked above and the body is held to the pinned sha256.
+def _read_once(url: str, *, timeout: int) -> bytes:
+    """The body at *url*, one attempt."""
+    # Risk accepted: the caller checked the scheme and the body is held to the pinned sha256.
     # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected
     response = urllib.request.urlopen(url, timeout=timeout)
     with response:
         return response.read()
+
+
+def _https_get(url: str, *, timeout: int) -> bytes:
+    """The body at *url*, refused unless it is https, so no file:// or other scheme is read.
+
+    A network error is retried, ATTEMPTS tries in all with a doubling pause, and
+    the last one is raised.
+    """
+    if not url.startswith("https://"):
+        raise CatalogueError(f"{url!r} is not an https URL")
+    for retry in range(ATTEMPTS - 1):
+        try:
+            return _read_once(url, timeout=timeout)
+        except OSError:
+            time.sleep(BACKOFF_SECONDS * 2**retry)
+    return _read_once(url, timeout=timeout)
 
 
 def fetch_wheel(*, version: str, sha256: str) -> bytes:
