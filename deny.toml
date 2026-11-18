@@ -11,6 +11,10 @@
 db-urls = ["https://github.com/rustsec/advisory-db"]
 unmaintained = "workspace"
 yanked = "warn"
+ignore = [
+    { id = "RUSTSEC-2026-0543", reason = "chrono is unmaintained, not vulnerable, and no patched release exists. dfe-core, dfe-painless, dfe-parse and dfe-runtime use it directly, and scalo, file-rotate and syslog_loose depend on it too. Drop when the lock no longer resolves chrono." },
+    { id = "RUSTSEC-2026-0555", reason = "chrono-tz is unmaintained, not vulnerable, and no patched release exists. dfe-core uses it directly. Drop when the lock no longer resolves chrono-tz." },
+]
 
 [licenses]
 allow = [
