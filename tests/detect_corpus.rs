@@ -4,7 +4,8 @@
 //! Scores the agentless detector against the compat corpus.
 //!
 //! Each captured event is detected twice: as the raw line, and as the fields
-//! dfe-receiver delivers after `syslog_loose` has split it. An OWN event is one
+//! `syslog_loose` splits it, as a stand-in for dfe-receiver, which reads RFC 3164
+//! with its own parser. An OWN event is one
 //! whose source the table can name. It is MISSED when the detector names another
 //! source or none. A FOREIGN event belongs to a source the table cannot name and
 //! is CLAIMED when the detector names anything, since that sends it to the wrong
