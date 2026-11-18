@@ -210,16 +210,9 @@ source_case!(
     5000
 );
 
-// Every line carries a BSD syslog header before Meraki's own `1 <epoch>`, and
-// the pipeline's timestamp parse fails on all 27 of them.
-source_case!(
-    public,
-    raw_cisco_meraki_sample,
-    dfe_transforms::filebeat::cisco_meraki::default::Default,
-    "cisco_meraki/meraki-events.log",
-    27,
-    0
-);
+// The Meraki events sample carries a BSD syslog header before Meraki's own
+// `1 <epoch>`. dfe-receiver strips it, so that floor runs through the receiver
+// envelope, in `tests/envelope.rs`.
 
 // Six of the seven lines put a year-first timestamp straight after the
 // priority, a header none of the pipeline's syslog patterns accepts.
@@ -232,13 +225,16 @@ source_case!(
     1
 );
 
+// A whole PAN-OS line goes through `default`, which strips the seven-field
+// prefix the per-type transforms expect to be gone. One TRAFFIC record in the
+// sample is cut off mid-row.
 source_case!(
     public,
     raw_panw_traffic_sample,
-    dfe_transforms::filebeat::panw::traffic::Traffic,
+    dfe_transforms::filebeat::panw::default::Default,
     "panw/opensoc-panos-csv.log",
-    0,
-    100
+    1,
+    99
 );
 
 source_case!(
