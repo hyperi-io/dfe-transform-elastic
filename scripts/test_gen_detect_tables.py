@@ -310,6 +310,9 @@ class WheelTests(unittest.TestCase):
         self.env = mock.patch.dict(os.environ, env)
         self.env.start()
         os.environ.pop("DFE_SCHEMAS_WHEEL", None)
+        sleep = mock.patch.object(gen.time, "sleep")
+        self.sleep = sleep.start()
+        self.addCleanup(sleep.stop)
         self.body = _wheel(self.FILES)
         self.sha = hashlib.sha256(self.body).hexdigest()
 
@@ -395,6 +398,29 @@ class WheelTests(unittest.TestCase):
         ):
             self.assertEqual(gen.main(["--check"]), gen.EXIT_UNAVAILABLE)
         self.assertIn("PyPI is unreachable", err.getvalue())
+
+    def test_a_read_that_times_out_is_retried_with_a_doubling_pause(self):
+        release = (
+            b'{"urls": [{"packagetype": "bdist_wheel", "url": "https://files/w"}]}'
+        )
+        replies = [TimeoutError("timed out"), TimeoutError("timed out")]
+        replies += [_Response(release), _Response(self.body)]
+        with mock.patch.object(
+            gen.urllib.request, "urlopen", side_effect=replies
+        ) as urlopen:
+            fetched = gen.fetch_wheel(version="1.0.0", sha256=self.sha)
+        self.assertEqual(fetched, self.body)
+        self.assertEqual(urlopen.call_count, 4)
+        self.assertEqual(
+            [c.args[0] for c in self.sleep.call_args_list],
+            [gen.BACKOFF_SECONDS, gen.BACKOFF_SECONDS * 2],
+        )
+
+    def test_a_read_that_never_succeeds_is_retried_then_raised(self):
+        with self._offline() as urlopen, self.assertRaises(OSError):
+            gen._https_get("https://files/w", timeout=1)
+        self.assertEqual(urlopen.call_count, gen.ATTEMPTS)
+        self.assertEqual(self.sleep.call_count, gen.ATTEMPTS - 1)
 
     def test_check_refuses_a_local_checkout(self):
         with self.assertRaises(SystemExit), mock.patch("sys.stderr", io.StringIO()):
