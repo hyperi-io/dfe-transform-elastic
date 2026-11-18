@@ -312,5 +312,5 @@ Most Elastic pipelines declare a pipeline-level `on_failure` that sets `event.ki
 
 - [parsers.md](parsers.md), the grok dispatch, every processor the transforms use and the Painless coverage
 - [enrichment.md](enrichment.md), GeoIP, user agent and community ID
-- [parity.md](parity.md), how close the output is to Elastic's
+- [parity.md](parity.md), what the transform does in place of Elastic's ingest pipeline
 - [performance.md](performance.md), the benchmarks and the libraries

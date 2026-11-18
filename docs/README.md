@@ -1,6 +1,6 @@
 # docs
 
-Everything deeper than the [README](../README.md). Start at [architecture.md](architecture.md) for the parts and how data flows, and at [parity.md](parity.md) to see what it promises against Elastic's output.
+Everything deeper than the [README](../README.md). Start at [architecture.md](architecture.md) for the parts and how data flows, and at [parity.md](parity.md) for what it does in place of Elastic's ingest pipeline.
 
 | Page | What it is for |
 |---|---|
@@ -9,7 +9,7 @@ Everything deeper than the [README](../README.md). Start at [architecture.md](ar
 | [transform.md](transform.md) | Transform: the generated pipeline, the `Event` model and what a failed processor does |
 | [delivery.md](delivery.md) | One batch through the service, the sink's answers and the dead letters |
 | [configuration.md](configuration.md) | Where the values come from, which env spelling reaches a `--config` file, the `bus`/`direct` transport, agentless mode, and the sections the file cannot hold |
-| [parity.md](parity.md) | What the service promises against Elastic's output, what it leaves alone, and how parity is checked |
+| [parity.md](parity.md) | What the transform does in place of Elastic's ingest pipeline, what each source pays for, and what runs elsewhere in DFE |
 | [parsers.md](parsers.md) | The grok dispatch, the parsers in `dfe-parse`, every ingest processor the transforms use, and how far the Painless matchers reach |
 | [enrichment.md](enrichment.md) | GeoIP, user agent and community ID, the three runtime enrichers |
 | [performance.md](performance.md) | SIMD, borrowed values, the release profile, the benchmarks and the key dependencies |
