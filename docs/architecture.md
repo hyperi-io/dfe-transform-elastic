@@ -162,7 +162,7 @@ An instance with no source name or no topics starts and idles. The chart scales 
 
 **Compiled, not interpreted.** Each Elastic ingest pipeline is generated into a Rust module. A pipeline change is a release, which is the trade for no per-event interpretation. For a transform that has to change without a release, use dfe-transform-vrl.
 
-**Same output as Elastic.** The goal is the ECS output Elastic's pipeline gives for each source, scored per source ([parity.md](parity.md)). Correct beats bug-compatible ([compat-policy.md](compat-policy.md)).
+**Same output as Elastic.** Each source gets the ECS output Elastic's pipeline gives for it ([parity.md](parity.md)). Correct beats bug-compatible ([compat-policy.md](compat-policy.md)).
 
 **Envelope per event.** A scalo batch spans partitions, so one batch can hold two producers' wrappers. A few top-level key checks per event cost far less than the unwrap itself.
 
@@ -184,6 +184,6 @@ An instance with no source name or no topics starts and idles. The chart scales 
 ## What's next
 
 - [config.example.yaml](../config.example.yaml) and [configuration.md](configuration.md), the config and where its values come from
-- [parity.md](parity.md), what the service promises against Elastic's output
+- [parity.md](parity.md), what the transform does in place of Elastic's ingest pipeline
 - [docs/README.md](README.md), every page in this directory
 - [CONTRIBUTING.md](../CONTRIBUTING.md#working-in-this-repo), the crates, the generated artefacts and the commands that test a change
