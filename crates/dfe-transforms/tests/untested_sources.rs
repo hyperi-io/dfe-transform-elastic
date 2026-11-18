@@ -215,14 +215,14 @@ source_case!(
 // envelope, in `tests/envelope.rs`.
 
 // Six of the seven lines put a year-first timestamp straight after the
-// priority, a header none of the pipeline's syslog patterns accepts.
+// priority, which the pipeline's last syslog pattern takes through a patch.
 source_case!(
     public,
     raw_cisco_nexus_sample,
     dfe_transforms::filebeat::cisco_nexus::default::Default,
     "cisco_nexus/cisco-nxos-syslog.log",
-    6,
-    1
+    0,
+    7
 );
 
 // A whole PAN-OS line goes through `default`, which strips the seven-field
