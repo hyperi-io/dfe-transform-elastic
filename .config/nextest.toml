@@ -1,0 +1,19 @@
+# Project:   dfe-transform-elastic
+# File:      .config/nextest.toml
+# Purpose:   cargo-nextest configuration: stop a hung test with a log
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+[profile.default]
+# A test still running after five minutes is hung.
+slow-timeout = { period = "60s", terminate-after = 5 }
+
+# These two hold an outage or a record cap for minutes on purpose.
+[[profile.default.overrides]]
+filter = "test(a_sink_outage_longer_than_a_retry_budget_is_held_not_crashed)"
+slow-timeout = { period = "60s", terminate-after = 10 }
+
+[[profile.default.overrides]]
+filter = "test(a_record_of_tiny_lines_at_the_record_cap_stays_inside_the_pod_limit)"
+slow-timeout = { period = "60s", terminate-after = 10 }
