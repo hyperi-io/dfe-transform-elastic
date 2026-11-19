@@ -3,6 +3,23 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.33](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.32...v1.1.33) (2026-11-19)
+
+### Bug Fixes
+
+* **ci:** say why the catalogue-asset job names its runner ([#188](https://github.com/hyperi-io/dfe-transform-elastic/issues/188)) ([fd67c7a](https://github.com/hyperi-io/dfe-transform-elastic/commit/fd67c7a4fa57dd44784527236c1f685920aea9c6))
+* **cisco_nexus:** take priority before year-first timestamp ([#198](https://github.com/hyperi-io/dfe-transform-elastic/issues/198)) ([e3374cb](https://github.com/hyperi-io/dfe-transform-elastic/commit/e3374cb608edd38628277bef52db6dbe45c81c8a)), closes [#182](https://github.com/hyperi-io/dfe-transform-elastic/issues/182)
+* **ci:** stop hung tests and log their output ([#201](https://github.com/hyperi-io/dfe-transform-elastic/issues/201)) ([679e21f](https://github.com/hyperi-io/dfe-transform-elastic/commit/679e21f31438e2406050742f8606157033ff8464))
+* **deps:** update Rust crate psl to >=2.1.248 ([8155771](https://github.com/hyperi-io/dfe-transform-elastic/commit/8155771969786c4f451ce015931b4b018254c7d6))
+* **fixtures:** move Elastic sample data out of the public tree ([#181](https://github.com/hyperi-io/dfe-transform-elastic/issues/181)) ([20ee59d](https://github.com/hyperi-io/dfe-transform-elastic/commit/20ee59d84a59f74167eefe523ff654ae9e697458))
+* **scalo:** rebuild on 2.14.32 ([cf380b0](https://github.com/hyperi-io/dfe-transform-elastic/commit/cf380b00761a7a2b5a4bf29aac57b2e389294130)), closes [#168](https://github.com/hyperi-io/dfe-transform-elastic/issues/168)
+* **security:** bump libz-sys to 1.1.33 ([651061f](https://github.com/hyperi-io/dfe-transform-elastic/commit/651061f6007e901768cdac40a93b4ea9ff3bb053))
+* **sink:** dead-letter events over the per-message budget ([#187](https://github.com/hyperi-io/dfe-transform-elastic/issues/187)) ([0f8617b](https://github.com/hyperi-io/dfe-transform-elastic/commit/0f8617b8e649fb34a84195f411b0e487f556d78e))
+* **test:** match dfe-receiver on year-first lines ([#199](https://github.com/hyperi-io/dfe-transform-elastic/issues/199)) ([0d08b52](https://github.com/hyperi-io/dfe-transform-elastic/commit/0d08b52482a9f9202840aed1b2bc073ed89f8f45)), closes [#182](https://github.com/hyperi-io/dfe-transform-elastic/issues/182)
+* **test:** retry the pinned dfe-schemas wheel download ([#194](https://github.com/hyperi-io/dfe-transform-elastic/issues/194)) ([c091f2c](https://github.com/hyperi-io/dfe-transform-elastic/commit/c091f2cd2f0bb896aa5e8bf1921050a0341c0214)), closes [#193](https://github.com/hyperi-io/dfe-transform-elastic/issues/193)
+* **test:** strip the panw floor's prefix ([#197](https://github.com/hyperi-io/dfe-transform-elastic/issues/197)) ([aa27403](https://github.com/hyperi-io/dfe-transform-elastic/commit/aa274037bb1cbb153ce3c78bdd78dd75a7e65356)), closes [#182](https://github.com/hyperi-io/dfe-transform-elastic/issues/182) [#183](https://github.com/hyperi-io/dfe-transform-elastic/issues/183)
+* **test:** test syslog unwrap with six relabelled samples ([#195](https://github.com/hyperi-io/dfe-transform-elastic/issues/195)) ([4f51672](https://github.com/hyperi-io/dfe-transform-elastic/commit/4f516724cd8b8b195931f6178e4198d5a38b8a23)), closes [#133](https://github.com/hyperi-io/dfe-transform-elastic/issues/133) [#182](https://github.com/hyperi-io/dfe-transform-elastic/issues/182) [#183](https://github.com/hyperi-io/dfe-transform-elastic/issues/183)
+
 ## [1.1.32](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.31...v1.1.32) (2026-11-15)
 
 ### Bug Fixes
