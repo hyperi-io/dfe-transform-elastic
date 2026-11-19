@@ -43,7 +43,7 @@ use scalo::transport::{
     PieceFinalizer, Record, RecordMeta, SendResult, TransportConfig, TransportError,
     TransportSender, TransportType, WorkBatch,
 };
-use scalo::worker::engine::BlockPieces;
+use scalo::worker::engine::{BlockPieces, Refusals};
 use scalo::worker::{BatchEngine, BatchProcessingConfig, EngineError};
 use tokio_util::sync::CancellationToken;
 
@@ -62,16 +62,32 @@ use crate::pipeline::{
 /// the lag on a topic that has stopped producing.
 const SCALING_SIGNAL_INTERVAL: Duration = Duration::from_secs(5);
 
-/// Longest a push is held for delivery: inside the stage in front's 20 s send
-/// deadline, so it is answered before that sender gives up.
-pub const PUSH_MAX_HOLD: Duration = Duration::from_secs(18);
+/// This stage's depth on the hold ladder: the stage in front is depth 0 and
+/// pushes to this one.
+const HOLD_DEPTH: usize = 1;
+
+/// This stage's rung of the default hold ladder.
+fn hold_rung() -> scalo::transport::hold::Rung {
+    let Some(rung) = scalo::transport::hold::HoldLadder::DEFAULT.rung(HOLD_DEPTH) else {
+        unreachable!("invariant: the default hold ladder has a rung at depth {HOLD_DEPTH}")
+    };
+    rung
+}
+
+/// Longest a push is held for delivery, so it is answered before the stage in
+/// front gives up.
+pub fn push_max_hold() -> Duration {
+    hold_rung().hold
+}
 
 /// Send deadline to the next hop -- a push listener, or a Kafka delivery report
-/// while a push is held: inside [`PUSH_MAX_HOLD`], so a slow hop is retried
+/// while a push is held: inside [`push_max_hold`], so a slow hop is retried
 /// before the hold runs out.
-pub const NEXT_HOP_SEND_TIMEOUT_MS: u64 = 15_000;
+pub fn next_hop_send_timeout_ms() -> u64 {
+    u64::try_from(hold_rung().next_hop_deadline.as_millis()).unwrap_or(u64::MAX)
+}
 
-/// The librdkafka producer property [`NEXT_HOP_SEND_TIMEOUT_MS`] caps.
+/// The librdkafka producer property [`next_hop_send_timeout_ms`] caps.
 #[cfg(feature = "kafka")]
 const MESSAGE_TIMEOUT: &str = "message.timeout.ms";
 
@@ -295,7 +311,7 @@ async fn build_receiver(
 /// Unarmed, a push that lands before the loop starts is answered at enqueue,
 /// with nothing yet able to deliver it, so the listener is armed at
 /// construction rather than by the loop. A push is held at most
-/// [`PUSH_MAX_HOLD`], and the bytes it holds are leased on the memory guard.
+/// [`push_max_hold`], and the bytes it holds are leased on the memory guard.
 #[cfg(feature = "grpc")]
 async fn armed_listener(
     grpc: &GrpcConfig,
@@ -306,7 +322,7 @@ async fn armed_listener(
     let builder = GrpcTransport::builder(grpc)
         .acknowledgements(acknowledgements)
         .armed(true)
-        .max_hold(PUSH_MAX_HOLD)
+        .max_hold(push_max_hold())
         .memory_guard(Arc::clone(memory_guard));
     match governor {
         Some(governor) => builder.pressure(governor.pressure()),
@@ -371,13 +387,13 @@ fn source_transport(config: &Config) -> crate::Result<TransportConfig> {
 }
 
 /// The outbound half of the same, with each direct send bounded by
-/// [`NEXT_HOP_SEND_TIMEOUT_MS`] rather than scalo's 30 s default.
+/// [`next_hop_send_timeout_ms`] rather than scalo's 30 s default.
 fn sink_transport(config: &Config) -> crate::Result<TransportConfig> {
     match config.sink.transport {
         #[cfg(feature = "grpc")]
         Transport::Direct => {
             let mut grpc = GrpcConfig::client(&config.sink.endpoint);
-            grpc.send_timeout_ms = NEXT_HOP_SEND_TIMEOUT_MS;
+            grpc.send_timeout_ms = next_hop_send_timeout_ms();
             Ok(TransportConfig {
                 transport_type: TransportType::Grpc,
                 grpc: Some(grpc),
@@ -582,6 +598,7 @@ pub async fn run_loop<S: TransportSender>(
                     out.records.clone(),
                     budget,
                     pieces.piece(),
+                    pieces.refusals(),
                 )
             },
         )
@@ -954,71 +971,95 @@ fn blocks(records: &[Record], max_bytes: usize) -> Vec<&[Record]> {
 /// duplicate half of at-least-once; the other half is never counting a record
 /// delivered until the send it went in returned `Ok`.
 ///
-/// `piece` reports `Dropped` when the sink dead-lettered a send, which releases
-/// the source without calling those records delivered. Otherwise it reports
-/// `Delivered`, the floor of the merge, and leaves the block's status to the
-/// loop's own piece.
+/// A send answered `FilteredDlq` sent every record it could and dead-lettered
+/// at least one, without saying which. Its records are sent again one at a
+/// time, and the one answered `FilteredDlq` goes back to the pipeline through
+/// `refusals`, which writes it to the DLQ before the source is released. The
+/// records already sent go out a second time: a duplicate, never a loss.
+///
+/// `piece` reports `Delivered`, the floor of the merge, and leaves the block's
+/// status to the loop's own piece.
 async fn send_blocks<S: TransportSender>(
     producer: &S,
     metrics: &TransformMetrics,
     records: Vec<Record>,
     budget: usize,
     piece: PieceFinalizer,
+    refusals: Refusals,
 ) -> Result<(), EngineError> {
-    let mut filtered = false;
-    let result = send_each(producer, metrics, &records, budget, &mut filtered).await;
-    piece.report(if filtered {
-        DeliveryStatus::Dropped
-    } else {
-        DeliveryStatus::Delivered
-    });
+    let result = send_each(producer, metrics, &records, budget, &refusals).await;
+    piece.report(DeliveryStatus::Delivered);
     result
 }
 
-/// The sends behind [`send_blocks`], setting `filtered` when the sink
-/// dead-lettered one.
+/// The sends behind [`send_blocks`].
 async fn send_each<S: TransportSender>(
     producer: &S,
     metrics: &TransformMetrics,
     records: &[Record],
     budget: usize,
-    filtered: &mut bool,
+    refusals: &Refusals,
 ) -> Result<(), EngineError> {
     for block in blocks(records, budget) {
-        let count = block.len() as u64;
         match producer.send_batch(block).await {
-            SendResult::Ok => {
-                // The sink transport counts its own `transport_*` series.
-                let bytes: u64 = block.iter().map(|r| r.payload.len() as u64).sum();
-                metrics.app.bytes_written.increment(bytes);
-                metrics.dfe.records_delivered(count);
+            SendResult::Ok => delivered(metrics, block),
+            // A block of one names its record: it is the dead letter.
+            SendResult::FilteredDlq if block.len() == 1 => {
+                dead_letter(metrics, &block[0], refusals);
             }
-            // The NORMAL response from a slow sink, and what a Kafka or gRPC
-            // sink answers while its broker or listener is unreachable.
-            SendResult::Backpressured => {
-                metrics.send_backpressure.increment(1);
-                return Err(EngineError::Transport(TransportError::Backpressure));
-            }
-            SendResult::Fatal(e) if e.is_recoverable() => return Err(EngineError::Transport(e)),
-            SendResult::Fatal(e) => {
-                metrics.send_failures.increment(1);
-                return Err(EngineError::Transport(e));
-            }
-            // The pipeline screens out what the sink would dead-letter before
-            // the send, so this is a refusal the screen could not foresee.
             SendResult::FilteredDlq => {
-                *filtered = true;
-                metrics.send_filtered_dlq.increment(1);
-                metrics.dfe.records_filtered(count);
-                tracing::warn!(
-                    records = count,
-                    "the sink transport dead-lettered a send the screen let through; \
-                     its records are dropped and not counted delivered"
-                );
+                for record in block {
+                    match producer.send_batch(std::slice::from_ref(record)).await {
+                        SendResult::Ok => delivered(metrics, std::slice::from_ref(record)),
+                        SendResult::FilteredDlq => dead_letter(metrics, record, refusals),
+                        refused => return Err(refusal(metrics, refused)),
+                    }
+                }
             }
+            refused => return Err(refusal(metrics, refused)),
         }
     }
     Ok(())
+}
+
+/// Count a block the sink took.
+fn delivered(metrics: &TransformMetrics, block: &[Record]) {
+    // The sink transport counts its own `transport_*` series.
+    let bytes: u64 = block.iter().map(|r| r.payload.len() as u64).sum();
+    metrics.app.bytes_written.increment(bytes);
+    metrics.dfe.records_delivered(block.len() as u64);
+}
+
+/// Hand one record the sink transport dead-lettered back to the pipeline, and
+/// count it filtered rather than delivered.
+fn dead_letter(metrics: &TransformMetrics, record: &Record, refusals: &Refusals) {
+    refusals.dead_letter(record, "the sink transport dead-lettered the record");
+    metrics.send_filtered_dlq.increment(1);
+    metrics.dfe.records_filtered(1);
+    tracing::warn!(
+        "the sink transport dead-lettered a record the screen let through; it goes to the DLQ"
+    );
+}
+
+/// The error for a send that was neither taken nor dead-lettered.
+fn refusal(metrics: &TransformMetrics, result: SendResult) -> EngineError {
+    match result {
+        // The NORMAL response from a slow sink, and what a Kafka or gRPC
+        // sink answers while its broker or listener is unreachable.
+        SendResult::Backpressured => {
+            metrics.send_backpressure.increment(1);
+            EngineError::Transport(TransportError::Backpressure)
+        }
+        SendResult::Fatal(e) if e.is_recoverable() => EngineError::Transport(e),
+        SendResult::Fatal(e) => {
+            metrics.send_failures.increment(1);
+            EngineError::Transport(e)
+        }
+        // Taken or dead-lettered sends never reach here.
+        SendResult::Ok | SendResult::FilteredDlq => {
+            unreachable!("invariant: only a refused send is turned into an error")
+        }
+    }
 }
 
 /// How far behind this pod's assigned partitions are, where that has meaning.
@@ -1182,7 +1223,7 @@ fn pin_record_ceiling(mut producer: KafkaConfig) -> KafkaConfig {
     producer
 }
 
-/// Cap `message.timeout.ms` at [`NEXT_HOP_SEND_TIMEOUT_MS`] while a direct
+/// Cap `message.timeout.ms` at [`next_hop_send_timeout_ms`] while a direct
 /// source holds its pushes, unless the producer config already sets it.
 ///
 /// A delivery report that comes after the hold is spent is a duplicate in
@@ -1193,7 +1234,7 @@ fn cap_delivery_timeout(mut producer: KafkaConfig, holds: bool) -> KafkaConfig {
     if holds && !producer.librdkafka_overrides.contains_key(MESSAGE_TIMEOUT) {
         producer.librdkafka_overrides.insert(
             MESSAGE_TIMEOUT.to_string(),
-            NEXT_HOP_SEND_TIMEOUT_MS.to_string(),
+            next_hop_send_timeout_ms().to_string(),
         );
     }
     producer
@@ -1428,8 +1469,8 @@ mod tests {
                 .expect("a held push caps the delivery timeout")
                 .parse()
                 .unwrap();
-            assert_eq!(capped, NEXT_HOP_SEND_TIMEOUT_MS);
-            assert!(u128::from(capped) < PUSH_MAX_HOLD.as_millis());
+            assert_eq!(capped, next_hop_send_timeout_ms());
+            assert!(u128::from(capped) < push_max_hold().as_millis());
 
             c.source.acknowledgements = AcknowledgementsConfig::new(false);
             assert_eq!(
@@ -1611,6 +1652,10 @@ mod tests {
         Fatal,
         Timeout,
         FilteredDlq,
+        /// A block holding the record `{"i":1}` is answered `FilteredDlq`
+        /// whole, and a single record answers for itself: every record but
+        /// that one is sent.
+        PartlySent,
     }
 
     struct Scripted {
@@ -1634,7 +1679,8 @@ mod tests {
             self.attempts
                 .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
             match self.answer {
-                Answer::Ok => SendResult::Ok,
+                // `PartlySent` answers through `send_batch` alone.
+                Answer::Ok | Answer::PartlySent => SendResult::Ok,
                 Answer::Backpressured => SendResult::Backpressured,
                 Answer::Fatal => {
                     SendResult::Fatal(TransportError::Connection("broker gone".into()))
@@ -1666,9 +1712,18 @@ mod tests {
             std::future::ready(self.reply())
         }
 
-        /// Answer the BLOCK directly: scalo's per-record default absorbs a
-        /// filtered record and answers `Ok`.
-        fn send_batch(&self, _records: &[Record]) -> impl Future<Output = SendResult> + Send {
+        /// Answer the BLOCK directly.
+        fn send_batch(&self, records: &[Record]) -> impl Future<Output = SendResult> + Send {
+            if matches!(self.answer, Answer::PartlySent) {
+                self.attempts
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                let dead = records.iter().any(|r| r.payload.as_ref() == br#"{"i":1}"#);
+                return std::future::ready(if dead {
+                    SendResult::FilteredDlq
+                } else {
+                    SendResult::Ok
+                });
+            }
             std::future::ready(self.reply())
         }
     }
@@ -1707,9 +1762,41 @@ mod tests {
         (piece, merged)
     }
 
+    /// `send_blocks` with a piece nothing reads, and the records it handed back
+    /// as dead letters.
+    async fn send_counting(
+        sink: &Scripted,
+        records: Vec<Record>,
+        budget: usize,
+    ) -> (Result<(), EngineError>, usize) {
+        let refusals = Refusals::default();
+        let result = send_blocks(
+            sink,
+            &test_metrics(),
+            records,
+            budget,
+            one_piece().0,
+            refusals.clone(),
+        )
+        .await;
+        (result, handed_back(&refusals))
+    }
+
     /// `send_blocks` with a piece nothing reads.
     async fn send(sink: &Scripted, records: Vec<Record>, budget: usize) -> Result<(), EngineError> {
-        send_blocks(sink, &test_metrics(), records, budget, one_piece().0).await
+        send_counting(sink, records, budget).await.0
+    }
+
+    /// How many records `refusals` holds: its `Debug` is the only reader.
+    fn handed_back(refusals: &Refusals) -> usize {
+        let shown = format!("{refusals:?}");
+        let (_, count) = shown
+            .split_once("records: ")
+            .expect("Refusals shows its count");
+        count
+            .trim_end_matches(" }")
+            .parse()
+            .expect("the count is a number")
     }
 
     /// Backpressure is the NORMAL answer from a slow or unreachable sink, so it
@@ -1746,23 +1833,37 @@ mod tests {
         assert!(!is_transient(&error), "a permanent refusal was retried");
     }
 
-    /// A send the sink dead-letters is dropped and counted, and the rest of the
-    /// block still goes: a deterministic refusal retried is a stalled partition.
+    /// A send the sink dead-letters is handed back as a dead letter, and the
+    /// rest of the block still goes: a deterministic refusal retried is a
+    /// stalled partition.
     #[tokio::test]
     async fn a_dead_lettered_send_does_not_stall_the_block() {
         let sink = Scripted::new(Answer::FilteredDlq);
         let payload = records(1)[0].payload.len();
 
-        send(&sink, records(3), payload)
-            .await
-            .expect("a dead-lettered send is handled");
+        let (result, dead_letters) = send_counting(&sink, records(3), payload).await;
+        result.expect("a dead-lettered send is handled");
         assert_eq!(sink.attempts(), 3, "every block must still be offered");
+        assert_eq!(dead_letters, 3, "each block of one names its record");
     }
 
-    /// A block with a dead-lettered send still releases its source, so it is
-    /// not sent again, but as dropped: those records were not delivered.
+    /// A block answered `FilteredDlq` names no record, so its records are sent
+    /// one at a time: the records the sink took are delivered, and only the one
+    /// it dead-letters goes to the DLQ.
     #[tokio::test]
-    async fn a_dead_lettered_block_is_released_dropped_not_delivered() {
+    async fn a_partly_sent_block_hands_back_only_its_dead_letter() {
+        let sink = Scripted::new(Answer::PartlySent);
+
+        let (result, dead_letters) = send_counting(&sink, records(3), 1_000_000).await;
+        result.expect("a partly sent block is handled");
+        assert_eq!(sink.attempts(), 4, "the block, then each of its records");
+        assert_eq!(dead_letters, 1);
+    }
+
+    /// A block with a dead letter still releases its source, as delivered: the
+    /// dead letter went to the DLQ through the refusals, and the rest was sent.
+    #[tokio::test]
+    async fn a_block_with_a_dead_letter_is_released_delivered() {
         let released = |answer| async move {
             let (piece, merged) = one_piece();
             let verdict = send_blocks(
@@ -1771,20 +1872,15 @@ mod tests {
                 records(3),
                 1_000_000,
                 piece,
+                Refusals::default(),
             )
             .await;
             (verdict, merged.try_recv().expect("the piece reported"))
         };
 
-        let (verdict, status) = released(Answer::FilteredDlq).await;
-        assert!(
-            verdict.is_ok(),
-            "a dead-lettered block is not retried: {verdict:?}"
-        );
-        assert_eq!(status, DeliveryStatus::Dropped);
-
-        // Any other answer leaves the block's status to the loop's own piece.
         for answer in [
+            Answer::FilteredDlq,
+            Answer::PartlySent,
             Answer::Ok,
             Answer::Backpressured,
             Answer::Timeout,
@@ -1806,6 +1902,13 @@ mod tests {
         assert_eq!(sink.attempts(), 1);
     }
 
+    /// The ladder has a rung at this stage's depth, and its next hop is given
+    /// up on inside the hold.
+    #[test]
+    fn the_hold_ladder_has_a_rung_for_this_stage() {
+        assert!(Duration::from_millis(next_hop_send_timeout_ms()) < push_max_hold());
+    }
+
     /// A direct send gives up inside the hold, so a slow next hop is retried
     /// before the push in front of it is answered.
     #[cfg(feature = "grpc")]
@@ -1816,9 +1919,9 @@ mod tests {
         c.sink.endpoint = "http://loader:50051".into();
 
         let grpc = sink_transport(&c).unwrap().grpc.unwrap();
-        assert_eq!(grpc.send_timeout_ms, NEXT_HOP_SEND_TIMEOUT_MS);
+        assert_eq!(grpc.send_timeout_ms, next_hop_send_timeout_ms());
         assert!(
-            u128::from(grpc.send_timeout_ms) < PUSH_MAX_HOLD.as_millis(),
+            u128::from(grpc.send_timeout_ms) < push_max_hold().as_millis(),
             "a send outlasting the hold lands after its push was answered"
         );
     }

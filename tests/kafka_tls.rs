@@ -16,7 +16,7 @@ use scalo::deployment::test_support::shared_service::Suite;
 use scalo::transport::kafka::test_support::{
     SCRAM_USER, TlsBroker, require_docker, scram_password,
 };
-use scalo::transport::kafka::{KafkaConfig, KafkaTransport};
+use scalo::transport::kafka::{KafkaAdmin, KafkaConfig, KafkaTransport};
 use scalo::transport::{TransportReceiver, TransportSender};
 
 const SUITE: Suite = Suite {
@@ -35,9 +35,9 @@ impl Drop for Service {
     }
 }
 
-/// A client of `broker`'s `SASL_SSL` listener that names the CA itself.
-async fn client(broker: &TlsBroker, group: &str, topics: Vec<String>) -> KafkaTransport {
-    KafkaTransport::new(&KafkaConfig {
+/// A client config for `broker`'s `SASL_SSL` listener that names the CA itself.
+fn client_config(broker: &TlsBroker, group: &str, topics: Vec<String>) -> KafkaConfig {
+    KafkaConfig {
         brokers: vec![broker.sasl_ssl.clone()],
         group: group.to_string(),
         client_id: group.to_string(),
@@ -50,9 +50,14 @@ async fn client(broker: &TlsBroker, group: &str, topics: Vec<String>) -> KafkaTr
         ssl_ca_location: Some(broker.pki.file("ca.crt")),
         ssl_skip_verify: false,
         ..KafkaConfig::devtest()
-    })
-    .await
-    .expect("a SASL_SSL client connects")
+    }
+}
+
+/// A client of `broker`'s `SASL_SSL` listener that names the CA itself.
+async fn client(broker: &TlsBroker, group: &str, topics: Vec<String>) -> KafkaTransport {
+    KafkaTransport::new(&client_config(broker, group, topics))
+        .await
+        .expect("a SASL_SSL client connects")
 }
 
 fn free_port() -> u16 {
@@ -72,6 +77,14 @@ async fn events_flow_over_sasl_ssl_with_the_ca_from_ssl_cert_file() {
         .expect("TLS broker");
     let id = std::process::id();
     let (source, sink) = (format!("tls-src-{id}"), format!("tls-sink-{id}"));
+
+    // A producer no longer creates its topic, so the service's sink and the
+    // test's seed have their topics before either writes.
+    KafkaAdmin::new(&client_config(&broker, "tls-admin", Vec::new()))
+        .expect("an admin client for the SASL_SSL listener")
+        .create_topics(&[(&source, 1, 1), (&sink, 1, 1)])
+        .await
+        .expect("the broker creates the topics");
 
     let dir = tempfile::tempdir().expect("config dir");
     let config_path = dir.path().join("config.yaml");

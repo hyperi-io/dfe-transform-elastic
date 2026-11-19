@@ -649,57 +649,17 @@
       "group": "custom"
     },
     {
-      "name": "batch_engine_messages_dlq_total",
+      "name": "engine_filter_dlq_discarded_total",
       "type": "counter",
-      "description": "Messages routed to DLQ",
+      "description": "DLQ entries discarded under FilterDlqPolicy::DiscardWithMetric",
       "unit": "",
       "labels": [],
       "group": "custom"
     },
     {
-      "name": "batch_engine_parse_errors_total",
-      "type": "counter",
-      "description": "Parse failures",
-      "unit": "",
-      "labels": [],
-      "group": "custom"
-    },
-    {
-      "name": "batch_engine_parse_duration_seconds",
-      "type": "histogram",
-      "description": "SIMD parse time per chunk",
-      "unit": "seconds",
-      "labels": [],
-      "group": "custom"
-    },
-    {
-      "name": "batch_engine_transform_duration_seconds",
-      "type": "histogram",
-      "description": "App transform time per chunk",
-      "unit": "seconds",
-      "labels": [],
-      "group": "custom"
-    },
-    {
-      "name": "batch_engine_chunk_size",
-      "type": "histogram",
-      "description": "Actual items per chunk",
-      "unit": "seconds",
-      "labels": [],
-      "group": "custom"
-    },
-    {
-      "name": "batch_engine_pre_route_duration_seconds",
-      "type": "histogram",
-      "description": "Pre-route extraction time per chunk",
-      "unit": "seconds",
-      "labels": [],
-      "group": "custom"
-    },
-    {
-      "name": "batch_engine_intern_table_size",
+      "name": "batch_engine_max_chunk_size",
       "type": "gauge",
-      "description": "Interned field name count",
+      "description": "Configured batch_processing.max_chunk_size",
       "unit": "",
       "labels": [],
       "group": "custom"
