@@ -313,6 +313,7 @@ async fn a_batch_survives_in_transform_out() {
     let source_topic = common::topic("src");
     let sink_topic = common::topic("sink");
     let group = common::topic("cg");
+    broker.create_topics(&[&source_topic, &sink_topic]).await;
 
     let seed = broker.producer("seed").await;
     let sent = seed
@@ -396,6 +397,7 @@ async fn offsets_commit_after_the_batch_is_sent() {
     let source_topic = common::topic("commit-src");
     let sink_topic = common::topic("commit-sink");
     let group = common::topic("commit-cg");
+    broker.create_topics(&[&source_topic, &sink_topic]).await;
 
     let seed = broker.producer("seed").await;
     seed.send(&source_topic, bytes::Bytes::from(okta_events(3)))
@@ -447,6 +449,7 @@ async fn a_batch_larger_than_one_kafka_record_arrives() {
     let source_topic = common::topic("big-src");
     let sink_topic = common::topic("big-sink");
     let group = common::topic("big-cg");
+    broker.create_topics(&[&source_topic, &sink_topic]).await;
 
     let seed = broker.producer("seed").await;
     let payload = okta_events(EVENTS);
@@ -519,6 +522,8 @@ async fn a_sink_outage_longer_than_a_retry_budget_is_held_not_crashed() {
     let source_topic = common::topic("outage-src");
     let sink_topic = common::topic("outage-sink");
     let group = common::topic("outage-cg");
+    source.create_topics(&[&source_topic]).await;
+    downstream.create_topics(&[&sink_topic]).await;
 
     let mut config = config(source.list(), &source_topic, &sink_topic, &group);
     config.sink.brokers = Some(downstream.list());
@@ -603,6 +608,7 @@ async fn a_record_the_sink_refuses_is_counted_not_delivered() {
     let source_topic = common::topic("refused-src");
     let sink_topic = common::topic("refused-sink");
     let group = common::topic("refused-cg");
+    broker.create_topics(&[&source_topic, &sink_topic]).await;
 
     let seed = broker.producer("seed").await;
     for payload in [
@@ -779,6 +785,7 @@ async fn a_receiver_batch_reaches_the_sink_as_one_routable_record_per_event() {
     let source_topic = common::topic("rcv-src");
     let sink_topic = common::topic("rcv-sink");
     let group = common::topic("rcv-cg");
+    broker.create_topics(&[&source_topic, &sink_topic]).await;
 
     let seed = broker.producer("seed").await;
     for record in receiver_cisco_ios_records(EVENTS) {
@@ -895,6 +902,7 @@ async fn a_stock_broker_refuses_an_oversize_record_as_a_dead_letter() {
         return;
     };
     let topic = common::topic("oversize-record");
+    broker.create_topics(&[&topic]).await;
     let producer = broker.producer("oversize-record").await;
 
     let sent = producer
@@ -927,6 +935,7 @@ async fn an_event_over_one_megabyte_arrives_on_a_broker_at_the_stack_ceiling() {
     let source_topic = common::topic("large-src");
     let sink_topic = common::topic("large-sink");
     let group = common::topic("large-cg");
+    broker.create_topics(&[&source_topic, &sink_topic]).await;
 
     let seed = broker.producer("seed").await;
     let sent = seed
