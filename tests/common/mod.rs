@@ -16,7 +16,7 @@ use scalo::deployment::test_support::shared_service::{
     OwnedContainer, Suite, container_name, start_alone,
 };
 use scalo::transport::kafka::test_support::{KAFKA_PORT, docker_answers, kafka_spec, shared_kafka};
-use scalo::transport::kafka::{KafkaConfig, KafkaProfile, KafkaTransport};
+use scalo::transport::kafka::{KafkaAdmin, KafkaConfig, KafkaProfile, KafkaTransport};
 
 /// Names and labels every container this suite starts, and keeps its run log.
 pub const SUITE: Suite = Suite {
@@ -128,6 +128,50 @@ impl Broker {
             Held::Live => None,
             Held::Shared(name) => Some(name.clone()),
             Held::Owned(owned) => Some(owned.container.name.clone()),
+        }
+    }
+
+    /// Create `topics` on this broker, one partition each and with the broker's
+    /// own ceilings. A producer no longer creates the topic it writes to, so a
+    /// test makes the topics its service and its seed produce to first.
+    pub async fn create_topics(&self, topics: &[&str]) {
+        let Some(container) = self.container_name() else {
+            let admin = KafkaAdmin::new(&KafkaConfig {
+                profile: KafkaProfile::DevTest,
+                brokers: self.list(),
+                ..KafkaConfig::devtest()
+            })
+            .expect("an admin client for the live broker");
+            let wanted: Vec<(&str, i32, i32)> = topics.iter().map(|t| (*t, 1, 1)).collect();
+            admin
+                .create_topics(&wanted)
+                .await
+                .expect("the live broker creates the topics");
+            return;
+        };
+        for topic in topics {
+            // The BROKER listener advertises `localhost:9093`, the one address
+            // that resolves from inside the container.
+            let status = tokio::process::Command::new("docker")
+                .args([
+                    "exec",
+                    &container,
+                    "/opt/kafka/bin/kafka-topics.sh",
+                    "--bootstrap-server",
+                    "localhost:9093",
+                    "--create",
+                    "--if-not-exists",
+                    "--topic",
+                    topic,
+                ])
+                .stdout(std::process::Stdio::null())
+                .status()
+                .await
+                .expect("docker runs");
+            assert!(
+                status.success(),
+                "creating topic {topic} on {container} failed"
+            );
         }
     }
 

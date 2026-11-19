@@ -176,7 +176,7 @@ dfe-transforms-trellix-zoom = { path = "crates/dfe-transforms-trellix-zoom" }
 dfe-transforms-zscaler = { path = "crates/dfe-transforms-zscaler" }
 
 # crates.io, never a path dependency. The floor moves with `release.helm.library` in .hyperi-ci.yaml.
-scalo = { version = ">=2.14.30, <3", features = [
+scalo = { version = ">=2.14.32, <3", features = [
     "cli-service",
     "config",
     "config-schema",

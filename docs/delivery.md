@@ -71,13 +71,13 @@ The sink's answer decides what happens to the block:
 | `Ok` | The sink took it | Counted delivered |
 | `Backpressured` | A full producer queue, or a broker or listener out of reach | Retried until the sink takes it |
 | `Fatal` | A timeout is retried like `Backpressured`. Anything else, such as authorisation, a missing topic or a closed transport, is not | Stop, block unreleased |
-| `FilteredDlq` | The sink transport dead-lettered the send | Dropped, counted on `send_filtered_dlq_total` and `records_filtered_total`, block released, never counted delivered |
+| `FilteredDlq` | The sink transport sent a block's records and dead-lettered at least one, without naming it | Its records are sent one at a time, each counted delivered or, for the one answered `FilteredDlq`, filtered on `send_filtered_dlq_total` and `records_filtered_total` and written to the DLQ, then the block is released |
 
 ## Scaling and failure
 
 When the sink answers `Backpressured`, the block is held and retried until the sink takes it, and nothing after it is committed. A failure no retry can fix stops the loop with the block unreleased, so the restarted consumer reads it again. The direct listener holds pushes from the moment it binds, so a push that lands before the loop starts waits for delivery rather than being answered on arrival.
 
-A push is held at most 18 s (`PUSH_MAX_HOLD`), inside the 20 s the stage in front waits, and the bytes held are leased on the memory guard. Every send a held block waits on gives up at 15 s (`NEXT_HOP_SEND_TIMEOUT_MS`): a direct sink's gRPC deadline, and on the bus the producer's `message.timeout.ms` when a direct source holds its pushes. A send that outlasted the hold would land after the push was answered `unavailable`, and its retry would be a duplicate.
+A push is held at most the hold of this stage's rung on scalo's hold ladder (`push_max_hold`), inside the deadline the stage in front waits, and the bytes held are leased on the memory guard. Every send a held block waits on gives up at that rung's next-hop deadline (`next_hop_send_timeout_ms`): a direct sink's gRPC deadline, and on the bus the producer's `message.timeout.ms` when a direct source holds its pushes. A send that outlasted the hold would land after the push was answered `unavailable`, and its retry would be a duplicate.
 
 Duplicates are the accepted cost: a retried block re-sends the records that landed, so every consumer downstream must be idempotent.
 
