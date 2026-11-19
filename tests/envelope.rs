@@ -14,6 +14,7 @@
 // A test asserts by panicking; the workspace lints ban that in library code.
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
+use dfe_runtime::syslog_pri;
 use dfe_transform_elastic::envelope::{self, Delivery, Envelope};
 use dfe_transform_elastic::pipeline::transform_batch_with;
 use dfe_transform_elastic::registry;
@@ -175,9 +176,10 @@ fn the_variant_id_survives_a_whole_transform() {
     assert_eq!(out.get("_source").and_then(Value::as_str), Some("syslog"));
 }
 
-/// What dfe-receiver delivers for `line` once a routing rule has relabelled
-/// `_source`, with no `_raw`: the tagless PAN-OS line split by `syslog_loose`
-/// at its first space, so `appname` holds the first CSV field.
+/// A `syslog_loose` stand-in for what dfe-receiver delivers for `line` once a
+/// routing rule has relabelled `_source`, with no `_raw`: the tagless PAN-OS
+/// line split at its first space, so `appname` holds the first CSV field.
+/// dfe-receiver's own RFC 3164 parser keeps that field in `message`.
 fn relabelled_panw_delivery(label: &str) -> Value {
     let line = format!("<134>Mar  3 10:30:00 fw01 {PANW_BODY}");
     let m = syslog_loose::parse_message(&line, syslog_loose::Variant::Either);
@@ -231,10 +233,32 @@ fn a_relabelled_panw_delivery_parses_without_raw_capture() {
     }
 }
 
-/// `line` as dfe-receiver delivers it over syslog, parsed by the same
-/// `syslog_loose`, under the `_source` the event carries.
+/// `line` as dfe-receiver delivers it over syslog, under the `_source` the
+/// event carries.
+///
+/// The header comes from `syslog_loose`, a stand-in: dfe-receiver reads RFC 3164
+/// with its own parser (`parse_3164` in `convert.rs`) and RFC 5424 with
+/// `syslog_loose`. Where `syslog_loose` reads no header, the receiver still
+/// takes the PRI off the front and delivers the rest as `message` with the
+/// PRI's facility and severity and no timestamp, which is how a year-first
+/// NX-OS line arrives. Where it reads one, the receiver differs: it keeps a
+/// tagless line's first word in `message` and writes no `appname`.
 fn receiver_delivery(line: &str, label: &str) -> Value {
     let m = syslog_loose::parse_message(line, syslog_loose::Variant::Either);
+    let headerless = m.timestamp.is_none() && m.hostname.is_none() && m.appname.is_none();
+    if headerless {
+        let pri = line
+            .strip_prefix('<')
+            .and_then(|rest| rest.split_once('>'))
+            .and_then(|(code, rest)| Some((code.parse::<u8>().ok()?, rest)));
+        let mut event = json!({ "message": pri.map_or(line, |(_, rest)| rest), "_source": label });
+        if let Some((code, _)) = pri {
+            event["facility"] = json!(syslog_pri::facility_name(code >> 3));
+            event["severity"] = json!(syslog_pri::severity_name(code & 7));
+        }
+        return event;
+    }
+
     let mut event = json!({
         "message": m.msg,
         "facility": "local0",
@@ -261,8 +285,7 @@ fn receiver_delivery(line: &str, label: &str) -> Value {
 ///
 /// `prefix` is what the sample lacks of a syslog header. `max_errors` is the
 /// lines the sample itself breaks, and no more carry `error.message`: the first
-/// opensoc PAN-OS record is cut off mid-row, and six NX-OS lines put a year
-/// where no pipeline pattern takes one.
+/// opensoc PAN-OS record is cut off mid-row.
 #[test]
 fn a_relabelled_syslog_delivery_matches_the_unlabelled_one_for_real_samples() {
     let samples: [(&str, &str, &str, usize); 6] = [
@@ -296,7 +319,7 @@ fn a_relabelled_syslog_delivery_matches_the_unlabelled_one_for_real_samples() {
             "filebeat.cisco_nexus.default",
             "cisco_nexus/cisco-nxos-syslog.log",
             "",
-            6,
+            0,
         ),
     ];
 

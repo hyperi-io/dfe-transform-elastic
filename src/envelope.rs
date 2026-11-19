@@ -1051,10 +1051,13 @@ fn is_tag(app: &str) -> bool {
 
 /// The body the receiver's parsed fields describe, when its split was wrong.
 ///
-/// dfe-receiver parses with `syslog_loose`, which takes the first token of the
-/// message as the tag even when the device wrote none, ending it at a space or
-/// a colon and dropping that one separator. A tagless PAN-OS line therefore
-/// arrives with `1,2015/01/05` as `appname`. When `appname` is not a tag, the
+/// dfe-receiver reads an RFC 3164 header with its own parser, which takes a tag
+/// only when the token after the host reads `name:` or `name[pid]:`
+/// (`header_fields` in `convert.rs`), and uses `syslog_loose` for RFC 5424.
+/// `syslog_loose` alone takes the first token of a tagless line as the tag,
+/// ending it at a space or a colon and dropping that one separator, so a
+/// tagless PAN-OS line arrives with `1,2015/01/05` as `appname`. When `appname`
+/// is not a tag, the
 /// body is `appname[procid]`, a space and `message`. The space is exact when
 /// the token ended at one, which is how every tagless device line seen ends it.
 ///
@@ -1732,6 +1735,61 @@ mod tests {
         );
     }
 
+    /// What a line-framed transform is handed for the events dfe-receiver
+    /// writes (`dfe-receiver/src/server/syslog/convert.rs`). The receiver
+    /// reads the header only where it finds a stamp at the front of what follows
+    /// the PRI. A year-first NX-OS line has none, so the whole text arrives as
+    /// `message` with the PRI's facility and severity and no stamp, host or tag.
+    #[test]
+    fn reconstruct_hands_the_transform_the_line_the_device_sent() {
+        let rows: [(&str, Value, &str); 5] = [
+            (
+                "a full BSD header",
+                json!({
+                    "message": "hello", "facility": "local0", "severity": "info",
+                    "timestamp": "2026-03-03T10:30:00+00:00",
+                    "hostname": "fw01", "appname": "sshd", "procid": "12",
+                }),
+                "<134>Mar  3 10:30:00 fw01 sshd[12]: hello",
+            ),
+            (
+                "an RFC 5424 line, rewritten as RFC 3164",
+                json!({
+                    "message": "the body", "facility": "local4", "severity": "notice",
+                    "timestamp": "2026-03-03T10:30:00+00:00", "hostname": "web01",
+                    "appname": "nginx", "procid": "1234", "msgid": "ID47",
+                }),
+                "<165>Mar  3 10:30:00 web01 nginx[1234]: the body",
+            ),
+            (
+                "a year-first NX-OS line, no header read",
+                json!({
+                    "message": "2018 Apr 20 13:15:07 nexus-switch %ETHPORT-5-IF_DOWN_LINK_FAILURE: Interface Ethernet1/33 is down (Link failure)",
+                    "facility": "local7", "severity": "info",
+                }),
+                "<190>2018 Apr 20 13:15:07 nexus-switch %ETHPORT-5-IF_DOWN_LINK_FAILURE: Interface Ethernet1/33 is down (Link failure)",
+            ),
+            (
+                "a line with a PRI and no header",
+                json!({ "message": "plain text", "facility": "user", "severity": "info" }),
+                "<14>plain text",
+            ),
+            (
+                "a line with no PRI and no header",
+                json!({ "message": "plain text" }),
+                "<13>plain text",
+            ),
+        ];
+        for (name, delivered, want) in rows {
+            let mut event = Event::new(delivered);
+            event.set("_source", json!("syslog")).unwrap();
+            Envelope::Receiver
+                .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
+                .unwrap();
+            assert_eq!(event.get_str("message"), Some(want), "{name}");
+        }
+    }
+
     /// A body-framed pipeline reads `message` as CSV or key-value, so a
     /// prefixed header corrupts its first field. The body must come through
     /// untouched while the header still reaches the ECS fields.
@@ -1854,8 +1912,10 @@ mod tests {
         }
     }
 
-    /// The event dfe-receiver builds from `line`, parsed by the same
-    /// `syslog_loose` it uses. Only the fields it writes when they are set.
+    /// A `syslog_loose` stand-in for the event dfe-receiver builds from `line`,
+    /// with only the fields it writes when they are set. dfe-receiver reads
+    /// RFC 3164 with its own parser, so the two differ on a tagless line, where
+    /// `syslog_loose` takes the first body word as the tag.
     fn parsed_event(line: &str) -> Event {
         use syslog_loose::{ProcId, Variant};
         let m = syslog_loose::parse_message(line, Variant::Either);
