@@ -52,6 +52,7 @@ build:
 
 release:
   enabled: true
+  candidates: true
   # Keep `library` at the scalo version in Cargo.toml (CONTRIBUTING.md, "Generated artefacts").
   helm:
     enabled: true
