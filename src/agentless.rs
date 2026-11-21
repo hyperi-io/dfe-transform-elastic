@@ -13,6 +13,7 @@ use dfe_runtime::{Event, Transform};
 use metrics::Counter;
 use serde_json::Value;
 
+use crate::conf::SourceConf;
 use crate::config::{Mode, SourceConfig, Unmatched};
 use crate::detect::{Detector, detectable, label};
 use crate::envelope::{Envelope, EnvelopeSetting, Resolver, detect as detect_envelope};
@@ -54,9 +55,13 @@ impl Target {
     }
 
     /// Run the group through this source's transform and stamp the label.
-    fn run(&self, events: Vec<Event>) -> (Vec<Event>, BatchOutcome, EnvelopeOutcome) {
+    fn run(
+        &self,
+        conf: &SourceConf,
+        events: Vec<Event>,
+    ) -> (Vec<Event>, BatchOutcome, EnvelopeOutcome) {
         let (mut out, outcome, envelopes) =
-            transform_batch_resolved(self.transform, &self.resolver, events);
+            transform_batch_resolved(self.transform, &self.resolver, conf, events);
         for event in &mut out {
             if let Some(fields) = event.as_value_mut().as_object_mut() {
                 fields.insert("_source".into(), Value::from(self.label));
@@ -73,6 +78,8 @@ pub struct Agentless {
     targets: Vec<Option<Target>>,
     unmatched: Unmatched,
     fallback: Option<Target>,
+    /// `source.conf`, set as `_conf` on every event before its transform runs.
+    conf: SourceConf,
     events_unmatched: Counter,
     events_fallback: Counter,
 }
@@ -122,6 +129,7 @@ impl Agentless {
             targets,
             unmatched: source.detect.unmatched,
             fallback,
+            conf: SourceConf::new(&source.conf),
             events_unmatched: metrics.events_unmatched.clone(),
             events_fallback: metrics.events_fallback.clone(),
         }))
@@ -170,7 +178,7 @@ impl Agentless {
         for (group, target) in groups.into_iter().zip(&self.targets) {
             if let (false, Some(target)) = (group.is_empty(), target) {
                 target.detected.increment(group.len() as u64);
-                add(target.run(group));
+                add(target.run(&self.conf, group));
             }
         }
         if !unmatched.is_empty() {
@@ -190,7 +198,7 @@ impl Agentless {
         match (&self.fallback, self.unmatched) {
             (Some(target), _) => {
                 self.events_fallback.increment(events.len() as u64);
-                Ok(target.run(events))
+                Ok(target.run(&self.conf, events))
             }
             (None, Unmatched::Stop) => Err(Stopped {
                 count: events.len(),
@@ -342,6 +350,46 @@ mod tests {
                 (got, want) => panic!("{name}: got {:?}, wanted {want:?}", got.map(|g| g.1)),
             }
         }
+    }
+
+    /// The map reaches the detected source's transform: a nexus line stamped `AEST` parses
+    /// with a `tz_map` and is a pipeline error without one.
+    #[test]
+    fn the_conf_is_set_on_events_a_detected_source_transforms() {
+        const NEXUS: &str = "filebeat.cisco_nexus.default";
+        const LINE: &str = "<189>Jun 14 15:10:05 192.0.2.10 6031594: Jun 14 15:10:00.123 AEST: \
+                            %ETHPORT-5-IF_UP: Interface Ethernet1/10 is up in mode access";
+        let tz_map = json!({"tz_map": [{"tz_short": "AEST", "tz_long": "Australia/Sydney"}]});
+        let serde_json::Value::Object(conf) = tz_map else {
+            panic!("an object literal");
+        };
+        let mut config = SourceConfig {
+            mode: Mode::Agentless,
+            detect: DetectConfig {
+                candidates: vec![NEXUS.into()],
+                ..DetectConfig::default()
+            },
+            ..SourceConfig::default()
+        };
+        let metrics = TransformMetrics::register(&MetricsManager::new("test"), "0", "0");
+        let kinds: Vec<Option<String>> = [serde_json::Map::new(), conf]
+            .into_iter()
+            .map(|settings| {
+                config.conf = settings;
+                let agentless = Agentless::new(&config, &metrics)
+                    .expect("the config builds")
+                    .expect("agentless mode");
+                // The receiver keeps the original line in `_raw`, which the nexus
+                // pipeline needs whole.
+                let mut event = receiver(LINE);
+                event
+                    .set("_raw", json!(LINE))
+                    .expect("an object takes a key");
+                let (out, _, _) = agentless.transform(vec![event]).expect("not stopped");
+                out[0].get_str("event.kind").map(str::to_owned)
+            })
+            .collect();
+        assert_eq!(kinds, [Some("pipeline_error".into()), Some("event".into())]);
     }
 
     #[test]

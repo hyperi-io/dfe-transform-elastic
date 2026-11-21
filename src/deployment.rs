@@ -191,6 +191,9 @@ fn shipped_config() -> Config {
             // Held until every event built from a record is delivered: a Kafka
             // offset commits, or a push is answered, only then.
             acknowledgements: scalo::transport::AcknowledgementsConfig::new(true),
+            // None by default. The key is left out of the rendered config
+            // while empty.
+            conf: serde_json::Map::new(),
         },
         sink: SinkConfig {
             topic: "normalised_events".into(),
@@ -267,6 +270,10 @@ pub fn default_config_yaml() -> String {
 # `source.max_batch_bytes` caps one inbound fetch, the way
 # `sink.max_message_bytes` caps one outbound record. Raise the pod's memory
 # limit with it: the parsed documents are several times the raw bytes.
+#
+# `source.conf` sets the settings an integration's pipeline reads from `_conf`,
+# such as cisco_nexus's `tz_map`, which turns a zone abbreviation like `AEST`
+# into `Australia/Sydney`. It is left out of this file while it is empty.
 #
 # `source.acknowledgements.enabled` holds the Kafka offset commit, or the answer
 # to a push, until every event built from a record is delivered. A sink outage

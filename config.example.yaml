@@ -22,6 +22,10 @@
 # `sink.max_message_bytes` caps one outbound record. Raise the pod's memory
 # limit with it: the parsed documents are several times the raw bytes.
 #
+# `source.conf` sets the settings an integration's pipeline reads from `_conf`,
+# such as cisco_nexus's `tz_map`, which turns a zone abbreviation like `AEST`
+# into `Australia/Sydney`. It is left out of this file while it is empty.
+#
 # `source.acknowledgements.enabled` holds the Kafka offset commit, or the answer
 # to a push, until every event built from a record is delivered. A sink outage
 # is waited out, not crashed on. `false` acknowledges at receipt instead, and a

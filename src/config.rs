@@ -300,6 +300,27 @@ pub struct SourceConfig {
     /// before the transform runs, and loses what was in flight.
     #[serde(default)]
     pub acknowledgements: scalo::transport::AcknowledgementsConfig,
+
+    /// Settings the integration's pipeline reads, set as `_conf` on every event
+    /// before the transform runs. Elastic Agent sets the same map from the
+    /// integration's settings, such as cisco_nexus's `tz_map`, which turns a
+    /// zone abbreviation like `AEST` into `Australia/Sydney`:
+    ///
+    /// ```yaml
+    /// conf:
+    ///   tz_map:
+    ///     - {tz_short: AEST, tz_long: Australia/Sydney}
+    /// ```
+    ///
+    /// Empty by default, and an empty map costs nothing per event. Startup
+    /// refuses a top-level key the selected transform never reads, a key named
+    /// `secret`, `password`, `token`, `api_key` or `client_secret` at any depth,
+    /// and a map over 16 KiB. In agentless mode every detected source gets the
+    /// map and ignores the keys it does not read, and a key none of the
+    /// candidates read is refused. A `_conf` an event already carries keeps the
+    /// keys this does not name.
+    #[serde(default, skip_serializing_if = "serde_json::Map::is_empty")]
+    pub conf: serde_json::Map<String, serde_json::Value>,
 }
 
 /// Outbound configuration.
@@ -355,6 +376,7 @@ impl Default for SourceConfig {
             group_id: String::new(),
             brokers: Vec::new(),
             acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
+            conf: serde_json::Map::new(),
         }
     }
 }
@@ -466,6 +488,7 @@ fn valid() -> Config {
             group_id: "g".into(),
             brokers: vec!["localhost:9092".into()],
             acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
+            conf: serde_json::Map::new(),
         },
         sink: SinkConfig {
             topic: "out".into(),

@@ -16,6 +16,7 @@
 // A test asserts by panicking; the workspace lints ban that in library code.
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
+use dfe_transform_elastic::conf::SourceConf;
 use dfe_transform_elastic::config::Config;
 use dfe_transform_elastic::envelope::Resolver;
 use dfe_transform_elastic::metrics::TransformMetrics;
@@ -71,7 +72,8 @@ fn the_service_starts_on_the_shipped_config() {
     assert_eq!(parsed.parsed, 1, "the seeded line must parse");
     assert_eq!(parsed.bad_lines, 0);
 
-    let (out, outcome, envelopes) = transform_batch_resolved(transform, &resolver, events);
+    let (out, outcome, envelopes) =
+        transform_batch_resolved(transform, &resolver, &SourceConf::default(), events);
     assert_eq!(outcome.errored, 0, "the transform raised on a clean event");
     assert_eq!(outcome.emitted, 1);
     assert!(

@@ -53,6 +53,24 @@ Run it on the receiver's `_raw` capture where you can. The receiver splits each 
     scripts/replay_syslog.py --list
     scripts/replay_syslog.py --target udp://dfe-receiver:514 --sources cisco-asa,fortinet,panw --rate 50 --loop --duration 120
 
+## `source.conf` sets the settings an integration's pipeline reads
+
+Elastic Agent sets an integration's settings on every event as `_conf`, and the pipelines read them there. cisco_nexus maps a zone abbreviation through `_conf.tz_map`, and most sources read `_conf.tz_offset`. Nothing sets `_conf` here unless `source.conf` does, so a nexus line stamped `AEST` has no zone to resolve to. With the map below `event.timezone` is `Australia/Sydney`.
+
+    source:
+      name: filebeat.cisco_nexus.default
+      conf:
+        tz_map:
+          - {tz_short: AEST, tz_long: Australia/Sydney}
+
+- The map is set as `_conf` on each event after the envelope unwraps and before the transform runs. A pipeline drops `_conf` itself when it finishes.
+- It is empty by default, and an empty map costs nothing per event. A non-empty one is cloned onto each event.
+- A `_conf` an event already carries keeps the keys `source.conf` does not name. Where both name a key, `source.conf` wins.
+- Startup refuses a top-level key the selected transform never reads, and names the keys it does read. `src/conf_keys.rs` holds the table, which `scripts/gen_conf_keys.py` reads off the generated transforms, and `tests/scripts_suite.rs` runs it with `--check`. A transform that reads no `_conf` refuses every key.
+- In agentless mode every detected source gets the map and ignores the keys it does not read. Startup refuses a key that none of the candidates and the fallback read.
+- A key named `secret`, `password`, `token`, `api_key` or `client_secret` is refused at any depth, in any case. The map is written into the deployment's config in plain text, and there is no machine-readable list of which keys the integrations mark secret. cisco_meraki's events source reads `secret`, so it takes no plain value.
+- The map may serialise to 16 KiB at most and nest 16 levels. Only the file form sets it, with no flat env variable.
+
 ## `source.acknowledgements` holds the source until delivery
 
 `source.acknowledgements.enabled` (default `true`) holds the source's acknowledgement, the Kafka offset commit on the bus or the answer to a push on direct, until every event built from a record is delivered, or dropped and counted. A sink outage is then waited out, and a crash redelivers rather than loses. `false` acknowledges at receipt, before the transform runs, and a crash loses what was in flight. The flat env form is `DFE_TRANSFORM_ELASTIC_SOURCE_ACKNOWLEDGEMENTS_ENABLED`.
