@@ -5,7 +5,7 @@
 //!
 //! Elastic Agent sets an integration's settings on every event as root fields
 //! under `_conf` (`fields_under_root: true`), and the pipelines read them there:
-//! cisco_nexus maps a zone abbreviation through `_conf.tz_map`, and most read
+//! `cisco_nexus` maps a zone abbreviation through `_conf.tz_map`, and most read
 //! `_conf.tz_offset`. `source.conf` is that map. It is checked once at start,
 //! then set as `_conf` on each event after the envelope unwraps and before the
 //! transform runs.

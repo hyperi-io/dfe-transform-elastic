@@ -303,7 +303,7 @@ pub struct SourceConfig {
 
     /// Settings the integration's pipeline reads, set as `_conf` on every event
     /// before the transform runs. Elastic Agent sets the same map from the
-    /// integration's settings, such as cisco_nexus's `tz_map`, which turns a
+    /// integration's settings, such as `cisco_nexus`'s `tz_map`, which turns a
     /// zone abbreviation like `AEST` into `Australia/Sydney`:
     ///
     /// ```yaml
