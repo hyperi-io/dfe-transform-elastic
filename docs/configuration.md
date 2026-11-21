@@ -48,7 +48,7 @@ Fetcher events hold the provider's payload, so they count as unmatched. Three co
 
 Run it on the receiver's `_raw` capture where you can. The receiver splits each line with `syslog_loose`, and a marker that straddled the split (`Pleasant Password Server:`, an `amp:` tag) is gone from the parsed fields.
 
-`scripts/replay_syslog.py` feeds an agentless stack from the committed fixtures under `tests/fixtures/unencumbered/`, standard library only. `--sources` takes catalogue labels from the table the detector stamps, and `--list` shows the ones with fixtures. A syslog header is added to a fixture line that lacks one, and the `%` the ASA fixtures dropped is put back. UDP sends one datagram per line and TCP is newline framed. There is no `http://` form, because dfe-receiver's `/ingest` takes JSON and not syslog.
+`scripts/replay_syslog.py` feeds an agentless stack from the committed fixtures under `tests/fixtures/unencumbered/`, standard library only. `--sources` takes catalogue labels from the table the detector stamps, and `--list` shows the ones with fixtures. A syslog header is added to a fixture line that lacks one, and the `%` the ASA fixtures dropped is put back. A fixture line's `date=` and `time=` fields are set to the send time in UTC. UDP sends one datagram per line and TCP is newline framed. There is no `http://` form, because dfe-receiver's `/ingest` takes JSON and not syslog.
 
     scripts/replay_syslog.py --list
     scripts/replay_syslog.py --target udp://dfe-receiver:514 --sources cisco-asa,fortinet,panw --rate 50 --loop --duration 120
