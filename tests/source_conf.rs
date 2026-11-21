@@ -3,7 +3,7 @@
 
 //! `source.conf` through a real transform.
 //!
-//! cisco_nexus resolves a zone abbreviation such as `AEST` through
+//! `cisco_nexus` resolves a zone abbreviation such as `AEST` through
 //! `_conf.tz_map`. With nothing setting `_conf` the date processors fail and
 //! the event leaves as a pipeline error, which is what `source.conf` fixes.
 //! The lines are invented, with documentation-range addresses.
