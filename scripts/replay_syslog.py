@@ -22,6 +22,7 @@ import re
 import socket
 import sys
 import time
+from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -36,6 +37,9 @@ PRI = re.compile(r"<\d{1,3}>")
 BSD_STAMP = re.compile(r"[A-Z][a-z]{2} [ \d]\d \d\d:\d\d:\d\d")
 BARE_ASA_ID = re.compile(r"ASA-\d-\d{6}:")
 LABEL_ROW = re.compile(r'\(\s*"filebeat\.([a-z0-9_]+)\.default",\s*"([^"]+)"\s*,?\s*\)')
+# Fortinet body fields that the pipeline reads as @timestamp, set to the send time.
+DATE_FIELD = re.compile(r"\bdate=\d{4}-\d{2}-\d{2}\b")
+TIME_FIELD = re.compile(r"\btime=\d{2}:\d{2}:\d{2}\b")
 
 
 def label_table() -> dict[str, str]:
@@ -58,8 +62,26 @@ def labels_with_fixtures(table: dict[str, str]) -> dict[str, list[Path]]:
     }
 
 
+def restamp(line: str, now: datetime) -> str:
+    """Set the date= and time= fields of `line` to `now`, in UTC.
+
+    Args:
+        line: A replayed line, with or without a syslog header.
+        now: The send time. Must be timezone-aware, or it is read as local time.
+
+    Returns:
+        The line, with each field it has rewritten and every other byte kept.
+    """
+    utc = now.astimezone(UTC)
+    day = utc.strftime("%Y-%m-%d")
+    clock = utc.strftime("%H:%M:%S")
+    line = DATE_FIELD.sub(f"date={day}", line)
+    return TIME_FIELD.sub(f"time={clock}", line)
+
+
 def wrap(line: str, host: str = "replay") -> str:
-    """Give `line` a syslog header only if the fixture lacks one."""
+    """Restamp the body, then add a syslog header if the fixture lacks one."""
+    line = restamp(line, datetime.now(UTC))
     if BARE_ASA_ID.match(line):
         # A device writes %ASA-n-id and the logstash fixtures dropped the percent sign.
         line = "%" + line
