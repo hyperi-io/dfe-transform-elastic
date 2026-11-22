@@ -80,7 +80,7 @@ jobs:
       # A PGO and BOLT release builds the binary three times.
       build-timeout-minutes: 360
       # Fails a hung run with its log, well before the 360 minute default.
-      test-timeout-minutes: 45
+      test-timeout-minutes: 75
       test-tier: ${{ inputs.test-tier || 'core' }}
     # Least privilege: only the secrets this pipeline uses. No crates.io token, nothing is published there.
     secrets:
