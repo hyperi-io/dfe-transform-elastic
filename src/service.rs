@@ -48,6 +48,7 @@ use scalo::worker::{BatchEngine, BatchProcessingConfig, EngineError};
 use tokio_util::sync::CancellationToken;
 
 use crate::agentless::{Agentless, Stopped};
+use crate::conf::SourceConf;
 use crate::config::{Config, Transport};
 use crate::metrics::TransformMetrics;
 use crate::pipeline::{
@@ -529,6 +530,7 @@ pub async fn run_loop<S: TransportSender>(
             Work::One {
                 transform,
                 resolver,
+                conf: SourceConf::new(&config.source.conf),
             },
             transform.name(),
         )
@@ -651,6 +653,8 @@ enum Work {
     One {
         transform: &'static (dyn dfe_runtime::Transform + Sync),
         resolver: crate::envelope::Resolver,
+        /// `source.conf`, set as `_conf` on every event.
+        conf: SourceConf,
     },
     /// The source is detected per event.
     Agentless(Box<Agentless>),
@@ -836,7 +840,8 @@ impl Stage<'_> {
             Work::One {
                 transform,
                 resolver,
-            } => transform_batch_resolved(*transform, resolver, events),
+                conf,
+            } => transform_batch_resolved(*transform, resolver, conf, events),
             Work::Agentless(agentless) => agentless.transform(events)?,
         };
         let max_bytes = self.config.sink.max_message_bytes;
@@ -1365,6 +1370,7 @@ mod tests {
                 group_id: "g".into(),
                 brokers: vec!["localhost:9092".into()],
                 acknowledgements: AcknowledgementsConfig::default(),
+                conf: serde_json::Map::new(),
             },
             sink: SinkConfig {
                 topic: "out".into(),

@@ -13,6 +13,7 @@ use std::borrow::Cow;
 use dfe_runtime::transform::{Original, settle_original};
 use dfe_runtime::{Event, Transform, TransformError, TransformResult};
 
+use crate::conf::SourceConf;
 use crate::envelope::{Delivery, Resolution, Resolver};
 
 /// What a batch produced.
@@ -101,25 +102,33 @@ pub fn transform_batch_with(
     delivery: &Delivery,
     events: Vec<Event>,
 ) -> (Vec<Event>, BatchOutcome) {
-    let (out, outcome, _) = run_batch(transform, &Route::Fixed(delivery), events);
+    let (out, outcome, _) = run_batch(
+        transform,
+        &Route::Fixed(delivery),
+        &SourceConf::default(),
+        events,
+    );
     (out, outcome)
 }
 
-/// Detect each event's envelope, unwrap it, then apply `transform`.
+/// Detect each event's envelope, unwrap it, set `conf` as `_conf`, then apply
+/// `transform`.
 ///
 /// The service path. A scalo `WorkBatch` spans partitions, so the family is
 /// read per event rather than off the batch's first one.
 pub fn transform_batch_resolved(
     transform: &dyn Transform,
     resolver: &Resolver,
+    conf: &SourceConf,
     events: Vec<Event>,
 ) -> (Vec<Event>, BatchOutcome, EnvelopeOutcome) {
-    run_batch(transform, &Route::PerEvent(resolver), events)
+    run_batch(transform, &Route::PerEvent(resolver), conf, events)
 }
 
 fn run_batch(
     transform: &dyn Transform,
     route: &Route<'_>,
+    conf: &SourceConf,
     events: Vec<Event>,
 ) -> (Vec<Event>, BatchOutcome, EnvelopeOutcome) {
     let mut out = Vec::with_capacity(events.len());
@@ -151,6 +160,7 @@ fn run_batch(
             }
             continue;
         }
+        conf.apply(&mut event);
         match transform.transform(&mut event) {
             Ok(TransformResult::Continue) => {
                 if settle_original(&mut event) == Original::Restored {

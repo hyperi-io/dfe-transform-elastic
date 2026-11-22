@@ -11,6 +11,8 @@
 
 pub mod agentless;
 pub mod cli;
+pub mod conf;
+mod conf_keys;
 pub mod config;
 pub mod deployment;
 pub mod detect;

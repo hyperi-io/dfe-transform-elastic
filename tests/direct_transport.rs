@@ -145,6 +145,7 @@ fn direct_config(listen: &str, endpoint: &str) -> Config {
             group_id: String::new(),
             brokers: Vec::new(),
             acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
+            conf: serde_json::Map::new(),
         },
         sink: SinkConfig {
             topic: SINK_TOPIC.into(),
