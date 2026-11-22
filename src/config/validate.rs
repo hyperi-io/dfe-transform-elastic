@@ -53,6 +53,7 @@ impl Config {
                 self.sink.max_message_bytes
             )));
         }
+        crate::conf::check_shape(&self.source.conf)?;
         // Emptiness is not invalidity. An instance deployed before anything
         // names a source idles instead of refusing, so every check below runs
         // only once the configuration actually gives the transform work.
@@ -121,7 +122,7 @@ impl Config {
             )));
         }
 
-        Ok(())
+        crate::conf::check_readers(&self.source.conf, &[&self.source.name], &self.source.name)
     }
 
     /// The checks agentless mode adds: the source is detected, so none is named.
@@ -167,7 +168,23 @@ impl Config {
                     .into(),
             ),
             (_, true) => Ok(()),
+        }?;
+
+        // Every detected source gets the map, so a key must be read by at least one of them.
+        let mut runnable: Vec<&str> = if source.detect.candidates.is_empty() {
+            crate::detect::detectable().to_vec()
+        } else {
+            source
+                .detect
+                .candidates
+                .iter()
+                .map(String::as_str)
+                .collect()
+        };
+        if source.detect.unmatched == Unmatched::Fallback {
+            runnable.push(fallback);
         }
+        crate::conf::check_readers(&source.conf, &runnable, "any source this instance detects")
     }
 }
 
@@ -477,5 +494,125 @@ mod tests {
             ["filebeat.cisco_asa.default"]
         );
         assert!(parsed.validate().is_ok());
+    }
+
+    /// Each row sets `source.conf` on a config and names the text its refusal
+    /// must carry, or `None` where it must pass.
+    #[test]
+    fn source_conf_is_checked_against_the_selected_source() {
+        use crate::config::{Mode, Unmatched};
+        let nexus = "filebeat.cisco_nexus.default";
+        let tz_map = r#"{"tz_map": [{"tz_short": "AEST", "tz_long": "Australia/Sydney"}]}"#;
+        let oversize = format!(r#"{{"tz_offset": "{}"}}"#, "x".repeat(20_000));
+        let rows: &[(&str, &str, &str, Mode, Option<&str>)] = &[
+            ("a key the source reads", nexus, tz_map, Mode::Agent, None),
+            ("no settings", nexus, "{}", Mode::Agent, None),
+            (
+                "a typo",
+                nexus,
+                r#"{"tz_mapp": []}"#,
+                Mode::Agent,
+                Some("source.conf.tz_mapp is read by no part of filebeat.cisco_nexus.default"),
+            ),
+            (
+                "a key another source reads",
+                "filebeat.okta.default",
+                tz_map,
+                Mode::Agent,
+                Some("source.conf.tz_map"),
+            ),
+            (
+                "a secret",
+                nexus,
+                r#"{"tz_offset": "+10:00", "extra": {"password": "p"}}"#,
+                Mode::Agent,
+                Some("source.conf.extra.password names a secret"),
+            ),
+            (
+                "over the size limit",
+                nexus,
+                &oversize,
+                Mode::Agent,
+                Some("byte limit"),
+            ),
+            (
+                "agentless, a key a candidate reads",
+                "",
+                tz_map,
+                Mode::Agentless,
+                None,
+            ),
+            (
+                "agentless, a key none reads",
+                "",
+                r#"{"tz_mapp": []}"#,
+                Mode::Agentless,
+                Some("any source this instance detects"),
+            ),
+            (
+                "agentless, a secret",
+                "",
+                r#"{"token": "t"}"#,
+                Mode::Agentless,
+                Some("source.conf.token names a secret"),
+            ),
+        ];
+        for (name, source, conf, mode, refusal) in rows {
+            let mut c = valid();
+            c.source.name = (*source).into();
+            c.source.mode = *mode;
+            c.source.envelope = crate::envelope::EnvelopeSetting::Auto;
+            c.source.detect.unmatched = Unmatched::Passthrough;
+            c.source.conf = serde_json::from_str(conf).expect("a conf row is a JSON object");
+            match (c.validate(), refusal) {
+                (Ok(()), None) => {}
+                (Err(e), Some(text)) => assert!(e.to_string().contains(text), "{name}: {e}"),
+                (got, want) => panic!("{name}: got {got:?}, wanted {want:?}"),
+            }
+        }
+    }
+
+    /// A secret and an oversize map are refused even when nothing names work yet, as an
+    /// out-of-range number is. Which keys a source reads is unknowable without a name.
+    #[test]
+    fn source_conf_shape_is_checked_on_an_idle_config() {
+        let mut c = valid();
+        c.source.name.clear();
+        c.source.conf = serde_json::from_str(r#"{"tz_mapp": []}"#).expect("an object");
+        assert!(c.work_state().is_idle());
+        assert!(
+            c.validate().is_ok(),
+            "no name, so no key list to check against"
+        );
+
+        c.source.conf = serde_json::from_str(r#"{"token": "t"}"#).expect("an object");
+        assert!(
+            c.validate().is_err(),
+            "a secret is refused whatever the source"
+        );
+    }
+
+    #[test]
+    fn source_conf_loads_from_yaml_and_is_left_out_when_empty() {
+        let parsed: crate::config::Config = scalo::yaml::from_str(
+            "source:\n  name: filebeat.cisco_nexus.default\n  topics: [in]\n  group_id: g\n  \
+             brokers: [b:9092]\n  conf:\n    tz_offset: '+10:00'\n    tz_map:\n      \
+             - {tz_short: AEST, tz_long: Australia/Sydney}\nsink:\n  topic: out\n",
+            "config.yaml",
+            scalo::yaml::Profile::Config,
+        )
+        .expect("a conf map parses");
+        assert!(parsed.validate().is_ok());
+        assert_eq!(parsed.source.conf["tz_offset"], "+10:00");
+        assert_eq!(
+            parsed.source.conf["tz_map"][0]["tz_long"],
+            "Australia/Sydney"
+        );
+
+        let rendered = serde_json::to_value(valid()).expect("a config serialises");
+        assert!(
+            rendered["source"].get("conf").is_none(),
+            "an empty conf is not rendered"
+        );
     }
 }

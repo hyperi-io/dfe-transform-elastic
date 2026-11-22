@@ -65,6 +65,7 @@ fn config_sized(
             group_id: group.to_string(),
             brokers: brokers.clone(),
             acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
+            conf: serde_json::Map::new(),
         },
         sink: SinkConfig {
             topic: sink_topic.to_string(),

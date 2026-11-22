@@ -421,6 +421,7 @@ fn a_pinned_envelope_beats_detection_and_is_counted() {
 /// first event was.
 #[test]
 fn a_batch_carrying_two_producers_unwraps_each_event_as_itself() {
+    use dfe_transform_elastic::conf::SourceConf;
     use dfe_transform_elastic::pipeline::transform_batch_resolved;
     use dfe_transform_elastic::registry;
 
@@ -445,7 +446,8 @@ fn a_batch_carrying_two_producers_unwraps_each_event_as_itself() {
         })),
     ];
 
-    let (out, outcome, envelopes) = transform_batch_resolved(transform, &resolver, events);
+    let (out, outcome, envelopes) =
+        transform_batch_resolved(transform, &resolver, &SourceConf::default(), events);
 
     assert_eq!(outcome.total(), 2);
     assert_eq!(out.len(), 2, "neither event may be dropped");
