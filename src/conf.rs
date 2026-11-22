@@ -219,7 +219,10 @@ mod tests {
             keys_read("filebeat.cisco_nexus.default"),
             ["tz_map", "tz_offset"]
         );
-        assert_eq!(keys_read("filebeat.no_such_source.default"), [] as [&str; 0]);
+        assert_eq!(
+            keys_read("filebeat.no_such_source.default"),
+            [] as [&str; 0]
+        );
     }
 
     #[test]
