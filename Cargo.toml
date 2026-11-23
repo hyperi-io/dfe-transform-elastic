@@ -176,7 +176,7 @@ dfe-transforms-trellix-zoom = { path = "crates/dfe-transforms-trellix-zoom" }
 dfe-transforms-zscaler = { path = "crates/dfe-transforms-zscaler" }
 
 # crates.io, never a path dependency. The floor moves with `release.helm.library` in .hyperi-ci.yaml.
-scalo = { version = ">=2.14.32, <3", features = [
+scalo = { version = ">=2.14.33, <3", features = [
     "cli-service",
     "config",
     "config-schema",
@@ -237,17 +237,17 @@ regex-automata = ">=0.4.18, <0.5"
 regex = ">=1.13.1"
 
 # Fallback for the lookaround `regex` rejects. Bounded because 0.x minors break.
-fancy-regex = ">=0.20.0, <0.21"
+fancy-regex = ">=0.20.2, <0.21"
 
 # Elasticsearch's registered_domain is a Public Suffix List lookup.
-psl = ">=2.1.248"
+psl = ">=2.1.255"
 
 # chrono-tz has the IANA database chrono lacks, for a zone's offset at the event.
 chrono = { version = ">=0.4.45, <0.5", features = ["serde"] }
 chrono-tz = { version = ">=0.10.4, <0.11" }
 
 # Bounded because 0.x minors break.
-maxminddb = { version = ">=0.32.0, <0.33", features = ["mmap"] }
+maxminddb = { version = ">=0.33.0, <0.34", features = ["mmap"] }
 
 thiserror = ">=2.0.21"
 
