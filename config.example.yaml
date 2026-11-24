@@ -83,5 +83,6 @@ dlq:
     path: /var/spool/scalo/dlq
     rotation: hourly
     max_age_days: 30
-    compress_rotated: true
+    compress_rotated:
+      codec: gzip
     durable: false

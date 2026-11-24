@@ -266,6 +266,10 @@ tempfile = ">=3.27.0, <4"
 # Test only. The shipped path runs one transform thread per block.
 rayon = ">=1.12.0, <2"
 
+# Full debuginfo takes the generated transforms' rustc and the test-binary links past a 16 GiB CI runner.
+[profile.test]
+debug = "line-tables-only"
+
 [profile.release]
 lto = "thin"
 codegen-units = 1
