@@ -577,7 +577,7 @@ fn a_messagepack_push_lands_in_a_configured_dlq() {
         file: scalo::dlq::FileDlqConfig {
             enabled: true,
             path: dir.path().to_path_buf(),
-            compress_rotated: false,
+            compress_rotated: scalo::compression::Compression::new(scalo::compression::Codec::None),
             ..scalo::dlq::FileDlqConfig::default()
         },
         ..scalo::dlq::DlqConfig::default()
@@ -642,7 +642,7 @@ fn an_oversize_event_lands_in_a_configured_dlq() {
         file: scalo::dlq::FileDlqConfig {
             enabled: true,
             path: dir.path().to_path_buf(),
-            compress_rotated: false,
+            compress_rotated: scalo::compression::Compression::new(scalo::compression::Codec::None),
             ..scalo::dlq::FileDlqConfig::default()
         },
         ..scalo::dlq::DlqConfig::default()

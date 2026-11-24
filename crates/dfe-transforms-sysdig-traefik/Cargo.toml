@@ -16,6 +16,11 @@ repository.workspace = true
 rust-version.workspace = true
 publish.workspace = true
 
+# No tests live here, so `cargo test` would build the whole crate again as an empty harness.
+[lib]
+test = false
+doctest = false
+
 # The same table as dfe-transforms, for the same generated code.
 [lints.clippy]
 all = "warn"
