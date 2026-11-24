@@ -33,6 +33,9 @@ const LINE: &[u8] = br#"{"message":"{}"}"#;
 /// Sent after the record, so its arrival says every event before it went.
 const MARKER: &[u8] = br#"{"message":"{\"uuid\":\"fanout-marker\"}"}"#;
 
+/// Inside nextest's 10 minute kill for this test, so a stall fails with a count.
+const MARKER_DEADLINE: Duration = Duration::from_secs(480);
+
 /// A sink that counts what it is given and keeps none of it, so the peak is
 /// the service's and not the sink's.
 #[derive(Default)]
@@ -119,14 +122,20 @@ async fn a_record_of_tiny_lines_at_the_record_cap_stays_inside_the_pod_limit() {
         &config, &engine, &consumer, &sink, &shutdown, &metrics, None,
     );
     tokio::pin!(run);
-    let delivered = async {
+    let delivered = tokio::time::timeout(MARKER_DEADLINE, async {
         while !sink.marker.load(Ordering::Acquire) {
             tokio::time::sleep(Duration::from_millis(20)).await;
         }
-    };
+    });
     tokio::select! {
         result = &mut run => panic!("the loop stopped: {result:?}"),
-        () = delivered => {}
+        arrived = delivered => arrived.unwrap_or_else(|_| {
+            panic!(
+                "the marker did not reach the sink within {MARKER_DEADLINE:?}: {} of {} records sent",
+                sink.records.load(Ordering::Relaxed),
+                lines + 1,
+            )
+        }),
     }
     shutdown.cancel();
     run.await.expect("the loop stops cleanly on shutdown");
