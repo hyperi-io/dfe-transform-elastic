@@ -22,6 +22,9 @@ test:
   rust:
     # Required: the memory and cascade tests need a process each (docs/testing.md).
     nextest: true
+  # Logs memory every 30 s, and fails the step with its log on a sustained stall rather than losing the runner.
+  memory_watch:
+    enabled: true
 
 build:
   enabled: true
