@@ -1199,10 +1199,8 @@ fn consumer_config(config: &Config) -> KafkaConfig {
     let partition_bytes = fetch_bytes / 4;
 
     let defaults = transport_defaults();
-    // The SIZING knobs, not only the plain fields: `KafkaTransport::new` writes
-    // the plain fields first and then applies `sizing.resolved_consumer_map()`,
-    // which sets `fetch.max.bytes` unconditionally and would put the 50 MiB
-    // default back over the top of ours.
+    // Sizing sets `fetch.max.bytes` unconditionally, so its 50 MiB default
+    // must be replaced here.
     let mut sizing = defaults.sizing.clone();
     sizing.consumer.fetch_max_bytes = Some(fetch_bytes);
     sizing.consumer.max_partition_fetch_bytes = Some(partition_bytes);
@@ -1212,8 +1210,6 @@ fn consumer_config(config: &Config) -> KafkaConfig {
         group: config.source.group_id.clone(),
         client_id: "dfe-transform-elastic-consumer".to_string(),
         topics: config.source.topics.clone(),
-        fetch_max_bytes: fetch_bytes,
-        max_partition_fetch_bytes: partition_bytes,
         sizing,
         ..defaults
     }
@@ -1614,11 +1610,8 @@ mod tests {
             c.source.max_batch_bytes = 32 * 1024 * 1024;
             let kc = consumer_config(&c);
 
-            assert_eq!(kc.fetch_max_bytes, 32 * 1024 * 1024);
-            // No single partition may fill the whole fetch.
-            assert_eq!(kc.max_partition_fetch_bytes, 8 * 1024 * 1024);
-            // And the sizing surface, which the transport applies LAST.
             assert_eq!(kc.sizing.consumer.fetch_max_bytes, Some(32 * 1024 * 1024));
+            // No single partition may fill the whole fetch.
             assert_eq!(
                 kc.sizing.consumer.max_partition_fetch_bytes,
                 Some(8 * 1024 * 1024)
