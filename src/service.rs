@@ -1009,14 +1009,16 @@ async fn send_each<S: TransportSender>(
         match producer.send_batch(block).await {
             SendResult::Ok => delivered(metrics, block),
             // A block of one names its record: it is the dead letter.
-            SendResult::FilteredDlq if block.len() == 1 => {
-                dead_letter(metrics, &block[0], refusals);
+            answer @ (SendResult::FilteredDlq | SendResult::Reject(_)) if block.len() == 1 => {
+                dead_letter(metrics, &block[0], refusals, &answer);
             }
-            SendResult::FilteredDlq => {
+            SendResult::FilteredDlq | SendResult::Reject(_) => {
                 for record in block {
                     match producer.send_batch(std::slice::from_ref(record)).await {
                         SendResult::Ok => delivered(metrics, std::slice::from_ref(record)),
-                        SendResult::FilteredDlq => dead_letter(metrics, record, refusals),
+                        answer @ (SendResult::FilteredDlq | SendResult::Reject(_)) => {
+                            dead_letter(metrics, record, refusals, &answer);
+                        }
                         refused => return Err(refusal(metrics, refused)),
                     }
                 }
@@ -1035,12 +1037,24 @@ fn delivered(metrics: &TransformMetrics, block: &[Record]) {
     metrics.dfe.records_delivered(block.len() as u64);
 }
 
-/// Hand one record the sink transport dead-lettered back to the pipeline, and
-/// count it filtered rather than delivered.
-fn dead_letter(metrics: &TransformMetrics, record: &Record, refusals: &Refusals) {
+/// Hand one record the sink transport dead-lettered, or the sink refused for
+/// good with `Reject`, back to the pipeline, and count it filtered rather than
+/// delivered.
+fn dead_letter(
+    metrics: &TransformMetrics,
+    record: &Record,
+    refusals: &Refusals,
+    answer: &SendResult,
+) {
+    metrics.dfe.records_filtered(1);
+    if let SendResult::Reject(e) = answer {
+        refusals.dead_letter(record, format!("the sink refused the record for good: {e}"));
+        metrics.send_failures.increment(1);
+        tracing::warn!(error = %e, "the sink refused a record for good; it goes to the DLQ");
+        return;
+    }
     refusals.dead_letter(record, "the sink transport dead-lettered the record");
     metrics.send_filtered_dlq.increment(1);
-    metrics.dfe.records_filtered(1);
     tracing::warn!(
         "the sink transport dead-lettered a record the screen let through; it goes to the DLQ"
     );
@@ -1051,7 +1065,7 @@ fn refusal(metrics: &TransformMetrics, result: SendResult) -> EngineError {
     match result {
         // The NORMAL response from a slow sink, and what a Kafka or gRPC
         // sink answers while its broker or listener is unreachable.
-        SendResult::Backpressured => {
+        SendResult::Backpressured | SendResult::RetryAfter(_) => {
             metrics.send_backpressure.increment(1);
             EngineError::Transport(TransportError::Backpressure)
         }
@@ -1061,7 +1075,7 @@ fn refusal(metrics: &TransformMetrics, result: SendResult) -> EngineError {
             EngineError::Transport(e)
         }
         // Taken or dead-lettered sends never reach here.
-        SendResult::Ok | SendResult::FilteredDlq => {
+        SendResult::Ok | SendResult::FilteredDlq | SendResult::Reject(_) => {
             unreachable!("invariant: only a refused send is turned into an error")
         }
     }
@@ -1658,6 +1672,8 @@ mod tests {
         Fatal,
         Timeout,
         FilteredDlq,
+        RetryAfter,
+        Reject,
         /// A block holding the record `{"i":1}` is answered `FilteredDlq`
         /// whole, and a single record answers for itself: every record but
         /// that one is sent.
@@ -1693,6 +1709,8 @@ mod tests {
                 }
                 Answer::Timeout => SendResult::Fatal(TransportError::Timeout),
                 Answer::FilteredDlq => SendResult::FilteredDlq,
+                Answer::RetryAfter => SendResult::RetryAfter(Duration::from_millis(50)),
+                Answer::Reject => SendResult::Reject(TransportError::Send("refused".into())),
             }
         }
     }
@@ -1706,6 +1724,9 @@ mod tests {
         }
         fn name(&self) -> &'static str {
             "scripted"
+        }
+        fn delivery_guarantee(&self) -> scalo::transport::DeliveryGuarantee {
+            scalo::transport::DeliveryGuarantee::Acknowledged
         }
     }
 
@@ -1809,13 +1830,15 @@ mod tests {
     /// must reach the pipeline as something it retries, and never as delivery.
     #[tokio::test]
     async fn backpressure_is_handed_back_for_the_pipeline_to_retry() {
-        let sink = Scripted::new(Answer::Backpressured);
-        let error = send(&sink, records(3), 1_000_000)
-            .await
-            .expect_err("backpressure is not delivery");
+        for answer in [Answer::Backpressured, Answer::RetryAfter] {
+            let sink = Scripted::new(answer);
+            let error = send(&sink, records(3), 1_000_000)
+                .await
+                .expect_err("backpressure is not delivery");
 
-        assert!(is_transient(&error), "the pipeline would stop on {error}");
-        assert_eq!(sink.attempts(), 1, "the pipeline retries, not the sink");
+            assert!(is_transient(&error), "the pipeline would stop on {error}");
+            assert_eq!(sink.attempts(), 1, "the pipeline retries, not the sink");
+        }
     }
 
     /// A timeout reads the same way: the sink may take it next time.
@@ -1844,13 +1867,15 @@ mod tests {
     /// stalled partition.
     #[tokio::test]
     async fn a_dead_lettered_send_does_not_stall_the_block() {
-        let sink = Scripted::new(Answer::FilteredDlq);
-        let payload = records(1)[0].payload.len();
+        for answer in [Answer::FilteredDlq, Answer::Reject] {
+            let sink = Scripted::new(answer);
+            let payload = records(1)[0].payload.len();
 
-        let (result, dead_letters) = send_counting(&sink, records(3), payload).await;
-        result.expect("a dead-lettered send is handled");
-        assert_eq!(sink.attempts(), 3, "every block must still be offered");
-        assert_eq!(dead_letters, 3, "each block of one names its record");
+            let (result, dead_letters) = send_counting(&sink, records(3), payload).await;
+            result.expect("a dead-lettered send is handled");
+            assert_eq!(sink.attempts(), 3, "every block must still be offered");
+            assert_eq!(dead_letters, 3, "each block of one names its record");
+        }
     }
 
     /// A block answered `FilteredDlq` names no record, so its records are sent
@@ -2024,6 +2049,9 @@ mod tests {
         }
         fn name(&self) -> &'static str {
             "flaky"
+        }
+        fn delivery_guarantee(&self) -> scalo::transport::DeliveryGuarantee {
+            scalo::transport::DeliveryGuarantee::Acknowledged
         }
     }
 
@@ -2219,6 +2247,9 @@ mod tests {
         fn name(&self) -> &'static str {
             "sampling"
         }
+        fn delivery_guarantee(&self) -> scalo::transport::DeliveryGuarantee {
+            scalo::transport::DeliveryGuarantee::Acknowledged
+        }
     }
 
     impl TransportSender for Sampling {
@@ -2326,6 +2357,9 @@ mod tests {
         }
         fn name(&self) -> &'static str {
             "calls"
+        }
+        fn delivery_guarantee(&self) -> scalo::transport::DeliveryGuarantee {
+            scalo::transport::DeliveryGuarantee::Acknowledged
         }
     }
 
