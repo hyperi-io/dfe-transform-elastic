@@ -84,7 +84,7 @@ jobs:
       test-tier: ${{ inputs.test-tier || 'core' }}
     # Least privilege: only the secrets this pipeline uses. No crates.io token, nothing is published there.
     secrets:
-      GITLEAKS_GH_ACTIONS_KEY: ${{ secrets.GITLEAKS_GH_ACTIONS_KEY }}
+      CI_TOOLS_APP_PRIVATE_KEY: ${{ secrets.CI_TOOLS_APP_PRIVATE_KEY }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       CONTAINER_MGT_APP_PRIVATE_KEY: ${{ secrets.CONTAINER_MGT_APP_PRIVATE_KEY }}
