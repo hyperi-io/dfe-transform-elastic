@@ -84,3 +84,4 @@ dlq:
     rotation: hourly
     max_age_days: 30
     compress_rotated: true
+    durable: false

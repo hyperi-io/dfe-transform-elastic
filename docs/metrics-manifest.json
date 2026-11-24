@@ -109,6 +109,56 @@
       "group": "platform"
     },
     {
+      "name": "transport_truncated_total",
+      "type": "counter",
+      "description": "Messages cut to a sender's size ceiling and sent",
+      "unit": "",
+      "labels": [
+        "transport"
+      ],
+      "group": "platform"
+    },
+    {
+      "name": "transport_coalesced_calls_total",
+      "type": "counter",
+      "description": "gRPC RouteBatch calls that joined send_batch blocks",
+      "unit": "",
+      "labels": [
+        "transport"
+      ],
+      "group": "platform"
+    },
+    {
+      "name": "transport_coalesced_blocks_total",
+      "type": "counter",
+      "description": "send_batch blocks the joined gRPC calls carried",
+      "unit": "",
+      "labels": [
+        "transport"
+      ],
+      "group": "platform"
+    },
+    {
+      "name": "transport_coalesced_records_total",
+      "type": "counter",
+      "description": "Records the joined gRPC calls carried",
+      "unit": "",
+      "labels": [
+        "transport"
+      ],
+      "group": "platform"
+    },
+    {
+      "name": "transport_coalesced_timeouts_total",
+      "type": "counter",
+      "description": "gRPC send_batch blocks answered at send_timeout_ms before their joined call did",
+      "unit": "",
+      "labels": [
+        "transport"
+      ],
+      "group": "platform"
+    },
+    {
       "name": "transport_recv_errors_total",
       "type": "counter",
       "description": "Receive failures by class (transient: retried, permanent: returned)",

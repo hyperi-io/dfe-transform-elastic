@@ -21,8 +21,8 @@ use dfe_transform_elastic::metrics::TransformMetrics;
 use dfe_transform_elastic::service::{engine_config, run_loop, with_dead_letters};
 use scalo::transport::memory::MemoryTransport;
 use scalo::transport::{
-    AnyReceiver, MemoryConfig, Record, SendResult, TransportBase, TransportError, TransportResult,
-    TransportSender,
+    AnyReceiver, DeliveryGuarantee, MemoryConfig, Record, SendResult, TransportBase,
+    TransportError, TransportResult, TransportSender,
 };
 use scalo::worker::BatchEngine;
 use tokio_util::sync::CancellationToken;
@@ -51,6 +51,9 @@ impl TransportBase for Counting {
     }
     fn name(&self) -> &'static str {
         "counting"
+    }
+    fn delivery_guarantee(&self) -> DeliveryGuarantee {
+        DeliveryGuarantee::Acknowledged
     }
 }
 
