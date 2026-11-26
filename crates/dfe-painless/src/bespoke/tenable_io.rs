@@ -221,15 +221,14 @@ fn related_from_scan_details(event: &mut Event, _params: &Value) {
 
     let hostnames: Vec<String> = event
         .get_array(&format!("{SCAN_DETAILS}.hosts"))
-        .map(|hosts| {
+        .map_or_default(|hosts| {
             hosts
                 .iter()
                 .filter_map(|host| host.get("hostname").and_then(Value::as_str))
                 .filter(|hostname| !hostname.is_empty())
                 .map(str::to_owned)
                 .collect()
-        })
-        .unwrap_or_default();
+        });
     for hostname in hostnames {
         relate(event, &hostname);
     }

@@ -207,7 +207,7 @@ pub fn collect_params_rows(
 /// Every id the source names, in the order the script would read them.
 fn ids(event: &Event, source: &RowSource) -> Vec<String> {
     match source {
-        RowSource::Path(path) => event.get(path).map(flatten).unwrap_or_default(),
+        RowSource::Path(path) => event.get(path).map_or_default(flatten),
         RowSource::Member { list, member } => {
             let Some(Value::Array(items)) = event.get(list) else {
                 return Vec::new();

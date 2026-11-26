@@ -107,8 +107,7 @@ mod tests {
         let keys: Vec<&String> = event
             .as_value()
             .as_object()
-            .map(|root| root.keys().collect())
-            .unwrap_or_default();
+            .map_or_default(|root| root.keys().collect());
         assert_eq!(keys, [r"a\\b"]);
         assert_eq!(event.get(r"a\\b"), Some(&json!(r"c\d")));
     }

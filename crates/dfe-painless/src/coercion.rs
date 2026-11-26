@@ -142,16 +142,16 @@ fn stringify_member_list(event: &mut Event, list: &str, member: &str) {
             let Value::Object(mut fields) = item else {
                 return item;
             };
-            let strings: Vec<Value> = fields
-                .get(member)
-                .and_then(Value::as_array)
-                .map(|ids| {
-                    ids.iter()
-                        .filter_map(scalar_text)
-                        .map(Value::from)
-                        .collect()
-                })
-                .unwrap_or_default();
+            let strings: Vec<Value> =
+                fields
+                    .get(member)
+                    .and_then(Value::as_array)
+                    .map_or_default(|ids| {
+                        ids.iter()
+                            .filter_map(scalar_text)
+                            .map(Value::from)
+                            .collect()
+                    });
             if !strings.is_empty() {
                 // `insert` keeps the key where it was, which is where Painless
                 // leaves it and what a later render over the map depends on.

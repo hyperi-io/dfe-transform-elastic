@@ -5591,8 +5591,7 @@ fn run_normalise_map_values(
         params
             .get(name)
             .and_then(Value::as_array)
-            .map(|names| names.iter().filter_map(Value::as_str).collect())
-            .unwrap_or_default()
+            .map_or_default(|names| names.iter().filter_map(Value::as_str).collect())
     };
     let hex_keys = list(&pattern.hex_keys);
     let boolean_keys = list(&pattern.boolean_keys);

@@ -164,8 +164,7 @@ pub fn parse_armed_table(script: &str) -> Option<ArmedTable> {
     let otherwise = skip_trivia(after)
         .strip_prefix("else")
         .and_then(|rest| balanced(skip_trivia(rest), '{', '}'))
-        .map(|(block, _)| block)
-        .unwrap_or_default();
+        .map_or_default(|(block, _)| block);
 
     let columns = row_columns(then, row);
     if columns.is_empty() {

@@ -4228,7 +4228,7 @@ fn run_resources_rename_dedup(event: &mut Event, source: &str) -> bool {
         if let Some(value) = resource.shift_remove("accountId") {
             resource.insert("account_id".into(), value);
         }
-        let part = |k: &str| resource.get(k).map(painless_to_string).unwrap_or_default();
+        let part = |k: &str| resource.get(k).map_or_default(painless_to_string);
         let key = format!("{}_{}_{}", part("arn"), part("account_id"), part("type"));
         let value = Value::Object(resource);
         if let Some(existing) = unique.iter_mut().find(|(k, _)| *k == key) {
@@ -18067,12 +18067,11 @@ fn run_epoch_nanos_to_datetime(event: &mut Event, pattern: &EpochNanosToDateTime
         };
         let rendered = nanos
             .filter(|value| value.to_string().len() == 19)
-            .map(|value| {
+            .map_or_default(|value| {
                 chrono::DateTime::from_timestamp_nanos(value)
                     .format("%Y-%m-%dT%H:%M:%S%.9fZ")
                     .to_string()
-            })
-            .unwrap_or_default();
+            });
         let _ = event.set(field, Value::String(rendered));
     }
     true

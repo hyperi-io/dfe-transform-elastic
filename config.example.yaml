@@ -85,4 +85,5 @@ dlq:
     max_age_days: 30
     compress_rotated:
       codec: gzip
+    naming: stamped
     durable: false

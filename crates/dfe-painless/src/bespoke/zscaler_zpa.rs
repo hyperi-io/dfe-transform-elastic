@@ -72,8 +72,7 @@ fn map_audit_values(event: &mut Event, _params: &Value) {
             let _ = event.set("user.target", Value::Object(Map::new()));
             let roles: Vec<Value> = member(&values, "roles")
                 .as_array()
-                .map(|listed| listed.iter().map(|role| member(role, "name")).collect())
-                .unwrap_or_default();
+                .map_or_default(|listed| listed.iter().map(|role| member(role, "name")).collect());
             let _ = event.set("user.target.roles", Value::Array(roles));
             let _ = event.set("user.target.email", member(&values, "email"));
         }

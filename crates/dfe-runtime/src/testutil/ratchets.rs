@@ -133,13 +133,12 @@ impl Ratchets {
         self.values
             .get(key)
             .and_then(Value::as_object)
-            .map(|entries| {
+            .map_or_default(|entries| {
                 entries
                     .iter()
                     .filter_map(|(name, count)| count.as_u64().map(|n| (name.clone(), n as usize)))
                     .collect()
             })
-            .unwrap_or_default()
     }
 
     /// Write the file back if anything moved and the update flag is set.
