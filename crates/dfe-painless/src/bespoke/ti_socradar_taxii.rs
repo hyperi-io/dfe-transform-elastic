@@ -86,8 +86,7 @@ mod tests {
 
         let keys: Vec<&String> = event
             .get_object("event")
-            .map(|subtree| subtree.keys().collect())
-            .unwrap_or_default();
+            .map_or_default(|subtree| subtree.keys().collect());
         assert_eq!(keys, ["kind", "dataset", "original"]);
     }
 

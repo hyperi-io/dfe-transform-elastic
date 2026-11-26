@@ -686,8 +686,7 @@ fn read_column(
     let literals = script
         .find(&format!("{accumulator}.size() > 0"))
         .and_then(|at| block(&script[at..]))
-        .map(|(terminal, _)| literal_assignments(terminal))
-        .unwrap_or_default();
+        .map_or_default(|(terminal, _)| literal_assignments(terminal));
 
     Some((
         at,

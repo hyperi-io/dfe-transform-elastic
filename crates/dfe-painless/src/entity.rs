@@ -845,8 +845,7 @@ fn eval_action<'v>(event: &'v Event, action: &Action, scope: &mut Scope<'v>, out
             if ids.len() == 1 && ids[0] == "*" {
                 ids = event
                     .get_str("json.recipientAccountId")
-                    .map(|account| vec![account.to_string()])
-                    .unwrap_or_default();
+                    .map_or_default(|account| vec![account.to_string()]);
             }
             for id in ids {
                 if !id.is_empty() {
@@ -883,8 +882,7 @@ fn prefixes<'p>(params: &'p Map<String, Value>, list: &str) -> Vec<&'p str> {
     params
         .get(list)
         .and_then(Value::as_array)
-        .map(|items| items.iter().filter_map(Value::as_str).collect())
-        .unwrap_or_default()
+        .map_or_default(|items| items.iter().filter_map(Value::as_str).collect())
 }
 
 /// An ARN's resource type: field 6 of the colon split, up to its first `/`.

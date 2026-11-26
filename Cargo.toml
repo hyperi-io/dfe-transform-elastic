@@ -151,7 +151,7 @@ edition = "2024"
 publish = false
 license = "BUSL-1.1"
 repository = "https://github.com/hyperi-io/dfe-transform-elastic"
-rust-version = "1.95"
+rust-version = "1.100"
 
 [workspace.dependencies]
 dfe-core = { path = "crates/dfe-core" }
@@ -176,7 +176,7 @@ dfe-transforms-trellix-zoom = { path = "crates/dfe-transforms-trellix-zoom" }
 dfe-transforms-zscaler = { path = "crates/dfe-transforms-zscaler" }
 
 # crates.io, never a path dependency. The floor moves with `release.helm.library` in .hyperi-ci.yaml.
-scalo = { version = ">=2.14.34, <3", features = [
+scalo = { version = ">=2.14.40, <3", features = [
     "cli-service",
     "config",
     "config-schema",

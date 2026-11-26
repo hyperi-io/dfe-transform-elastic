@@ -47,7 +47,11 @@ fn client_config(broker: &TlsBroker, group: &str, topics: Vec<String>) -> KafkaC
         sasl_mechanism: Some("SCRAM-SHA-512".to_string()),
         sasl_username: Some(SCRAM_USER.to_string()),
         sasl_password: Some(scalo::SensitiveString::new(scram_password())),
-        ssl_ca_location: Some(broker.pki.file("ca.crt")),
+        tls: scalo::tls_config::ClientTlsConfig {
+            trust: scalo::tls_config::TrustChoice::Bundle,
+            ca_paths: vec![broker.pki.file("ca.crt").into()],
+            ..Default::default()
+        },
         ssl_skip_verify: false,
         ..KafkaConfig::devtest()
     }

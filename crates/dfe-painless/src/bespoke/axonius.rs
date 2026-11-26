@@ -94,16 +94,13 @@ fn process_associated_entities(event: &mut Event, _params: &Value) {
 
 /// The non-null members of a list, each as the string `toString` makes of it.
 fn listed(value: Option<&Value>) -> Vec<Value> {
-    value
-        .and_then(Value::as_array)
-        .map(|items| {
-            items
-                .iter()
-                .filter(|item| !item.is_null())
-                .map(|item| Value::from(painless_to_string(item)))
-                .collect()
-        })
-        .unwrap_or_default()
+    value.and_then(Value::as_array).map_or_default(|items| {
+        items
+            .iter()
+            .filter(|item| !item.is_null())
+            .map(|item| Value::from(painless_to_string(item)))
+            .collect()
+    })
 }
 
 /// `axonius/identity`, processor `script_process_breaches_data`: every breach
@@ -181,14 +178,13 @@ fn names(params: &Value, key: &str) -> Vec<String> {
     params
         .get(key)
         .and_then(Value::as_array)
-        .map(|items| {
+        .map_or_default(|items| {
             items
                 .iter()
                 .filter_map(Value::as_str)
                 .map(str::to_owned)
                 .collect()
         })
-        .unwrap_or_default()
 }
 
 /// One breach date in either spelling the vendor uses, as a UTC instant.
