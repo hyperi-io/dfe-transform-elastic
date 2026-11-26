@@ -25,7 +25,7 @@
 //!
 //! **This file measured a different marker until 2026-09-03 and had read ZERO
 //! since 2026-08-19.** It counted `// TODO: conditional: `, left where a guard
-//! was dropped and the body ran UNGUARDED. `8fd4e550` regenerated the six
+//! was dropped and the body ran UNGUARDED. `8b209ba0` regenerated the six
 //! sources it ceilinged and the new codegen stopped emitting that marker
 //! entirely -- so both tests passed on an empty scan, and the ceilings said
 //! nothing. The unguarded class is now closed by construction; this counts its
