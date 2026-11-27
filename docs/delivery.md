@@ -27,6 +27,9 @@ config:
     actorLineColor: "#64748B"
     signalColor: "#64748B"
     signalTextColor: "#0F172A"
+    noteBkgColor: "#FFFFFF"
+    noteBorderColor: "#94A3B8"
+    noteTextColor: "#0F172A"
   themeCSS: >-
     .messageText{paint-order:stroke;stroke:#FFFFFF;stroke-width:3px;stroke-linejoin:round}
 ---
@@ -50,7 +53,7 @@ sequenceDiagram
     pipeline->>source: Acknowledge block
 ```
 
-*Figure 1. L4 Detail -- One batch through the service. Solid arrows are requests, dashed arrows are responses.* Up: [L3 Components -- dfe-transform-elastic](architecture.md).
+*Figure 1. L4 Detail -- One batch through the service. Continue or Drop and SendResult are responses.* Up: [L3 Components -- dfe-transform-elastic](architecture.md).
 
 ## How it works
 
