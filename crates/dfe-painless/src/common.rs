@@ -11260,10 +11260,10 @@ pub fn extract_process_fields(
 /// Convert an epoch timestamp to ISO8601 string and set on event.
 ///
 /// Auto-detects epoch precision by magnitude (ported from dfe-loader):
-/// - > 1e18 → nanoseconds
-/// - > 1e15 → microseconds
-/// - > 1e12 → milliseconds
-/// - else   → seconds
+/// - > 1e18 -> nanoseconds
+/// - > 1e15 -> microseconds
+/// - > 1e12 -> milliseconds
+/// - else   -> seconds
 pub fn epoch_to_timestamp(event: &mut Event, source_field: &str, target_field: &str) -> Result<()> {
     let epoch = match event.get(source_field) {
         Some(Value::Number(n)) => n.as_f64().unwrap_or(0.0),
@@ -25815,7 +25815,7 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     // From here down: the matchers keyed on a vendor's FIELD NAMES rather than
     // on a Painless construct, plus the two catch-alls.
 
-    // Pattern: CommandLine → process fields
+    // Pattern: CommandLine -> process fields
     if normalised.contains("CommandLine") && normalised.contains("process") {
         patterns.push(KnownPattern::CommandLine {
             parent: normalised.contains("ParentCommandLine"),
@@ -25823,7 +25823,7 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
-    // Pattern: ProcessStartTime epoch → @timestamp or process.start
+    // Pattern: ProcessStartTime epoch -> @timestamp or process.start
     if normalised.contains("ProcessStartTime") || normalised.contains("processStartTime") {
         patterns.push(KnownPattern::ProcessStartTime);
         return patterns;
@@ -25846,7 +25846,7 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
-    // Pattern: Azure category → event type/category mapping via params lookup
+    // Pattern: Azure category -> event type/category mapping via params lookup
     if normalised.contains("activitylogs")
         && normalised.contains("category")
         && normalised.contains("params.get")
@@ -25869,7 +25869,7 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     }
 
     // Pattern: okta.target array key renames + user/group extraction
-    // Renames alternateId→alternate_id, displayName→display_name in each element,
+    // Renames alternateId->alternate_id, displayName->display_name in each element,
     // filters detailEntry, extracts first user/usergroup targets
     if normalised.contains("alternateId")
         && normalised.contains("alternate_id")
@@ -27678,10 +27678,10 @@ fn try_risk_behaviors(event: &mut Event) -> bool {
 /// Handle the Okta target array key rename + user/group extraction pattern.
 ///
 /// The Painless script:
-/// 1. Renames `alternateId→alternate_id`, `displayName→display_name` in each target element
+/// 1. Renames `alternateId -> alternate_id`, `displayName -> display_name` in each target element
 /// 2. Filters detailEntry to only keep methodTypeUsed and methodUsedVerifiedProperties
-/// 3. Extracts first "User" type target → `okta_target_user`
-/// 4. Extracts first "`UserGroup`" type target → `okta_target_group`
+/// 3. Extracts first "User" type target -> `okta_target_user`
+/// 4. Extracts first "`UserGroup`" type target -> `okta_target_group`
 fn try_okta_target_rename(event: &mut Event) -> bool {
     // No target array -- the script returns early.
     let Some(Value::Array(target)) = event.get("okta.target").cloned() else {
@@ -27753,14 +27753,14 @@ fn try_okta_target_rename(event: &mut Event) -> bool {
     true
 }
 
-/// Azure category → event type mapping.
+/// Azure category -> event type mapping.
 ///
 /// Maps activitylogs.category to event.type via params lookup:
-/// write/action → `["change"]`, read → `["access"]`, delete → `["deletion"]`
+/// write/action -> `["change"]`, read -> `["access"]`, delete -> `["deletion"]`
 fn try_azure_category_to_event_type(event: &mut Event) -> bool {
     let category = match event.get_str("azure.activitylogs.category") {
         Some(c) => c.to_lowercase(),
-        None => return true, // No category — script returns early
+        None => return true, // No category -- script returns early
     };
 
     let event_types: Option<Vec<&str>> = match category.as_str() {
@@ -27819,7 +27819,7 @@ fn try_azure_event_category(event: &mut Event, script: &str) -> bool {
 
 /// Replace dots with underscores in map keys at a given field path.
 ///
-/// Common Azure pattern — identity claims have dots in URLs that Elastic normalises.
+/// Common Azure pattern -- identity claims have dots in URLs that Elastic normalises.
 fn try_replace_dots_in_keys(event: &mut Event, script: &str) -> bool {
     // Extract the field path by finding `ctx.<path>.keySet()`
     let field_path = if let Some(keyset_pos) = script.find(".keySet()") {

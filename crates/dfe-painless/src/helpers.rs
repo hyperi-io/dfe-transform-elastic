@@ -10,7 +10,7 @@
 
 use serde_json::{Map, Value, json};
 
-/// Painless truthiness: `null`/`false`/`0`/`""` → false, everything else → true.
+/// Painless truthiness: `null`/`false`/`0`/`""` -> false, everything else -> true.
 ///
 /// Matches Painless/Java boolean coercion semantics.
 #[inline]
@@ -404,7 +404,7 @@ pub(crate) fn java_map_values(map: &Map<String, Value>, table: usize) -> Vec<Val
         .collect()
 }
 
-/// Painless equality — null-safe, with type coercion for numbers.
+/// Painless equality -- null-safe, with type coercion for numbers.
 pub fn painless_eq(a: &Value, b: &Value) -> bool {
     if a == b {
         return true;
@@ -429,7 +429,7 @@ pub fn painless_eq(a: &Value, b: &Value) -> bool {
     false
 }
 
-/// Painless comparison — returns ordering for `<`, `<=`, `>`, `>=`.
+/// Painless comparison -- returns ordering for `<`, `<=`, `>`, `>=`.
 pub fn painless_cmp(a: &Value, b: &Value) -> Option<std::cmp::Ordering> {
     let a_f = painless_to_f64(a);
     let b_f = painless_to_f64(b);

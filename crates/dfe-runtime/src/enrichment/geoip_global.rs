@@ -37,7 +37,7 @@ use tracing::{debug, info, warn};
 use super::geoip::GeoIpEnrichment;
 use super::geoip_cache::{Cache, Database, Fields, Stats, no_fields};
 
-/// Global enrichers — one per database type.
+/// Global enrichers -- one per database type.
 struct GlobalGeoIp {
     city: Option<GeoIpEnrichment>,
     asn: Option<GeoIpEnrichment>,
@@ -154,7 +154,7 @@ fn init_global() -> GlobalGeoIp {
     });
 
     if city.is_none() && asn.is_none() {
-        debug!("no GeoIP databases found — enrichment disabled");
+        debug!("no GeoIP databases found -- enrichment disabled");
     }
 
     GlobalGeoIp {
@@ -338,7 +338,7 @@ mod tests {
         // 8.8.8.8 (Google DNS) should have GeoIP data if DB is loaded
         let result = geoip_lookup("geoip_city", "8.8.8.8");
         eprintln!("GeoIP 8.8.8.8 result: {result:?}");
-        // Don't assert on specific values — DB may or may not be present
+        // Don't assert on specific values -- DB may or may not be present
         // This test verifies the lookup path doesn't panic
     }
 

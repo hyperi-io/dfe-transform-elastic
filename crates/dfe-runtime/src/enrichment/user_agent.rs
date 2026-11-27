@@ -14,7 +14,7 @@ use serde_json::json;
 use crate::error::{Result, TransformError};
 use crate::event::Event;
 
-// Pre-compiled regexes — compiled once on first use, reused for all events.
+// Pre-compiled regexes -- compiled once on first use, reused for all events.
 macro_rules! static_regex {
     ($name:ident, $pattern:expr) => {
         fn $name() -> &'static Regex {
@@ -104,7 +104,7 @@ pub fn parse(ua: &str) -> UserAgentResult {
         && !ua.contains("CriOS")
         && !ua.contains("Version/")
     {
-        // Mobile Safari variants — no Version/ means embedded WebView, not full Safari
+        // Mobile Safari variants -- no Version/ means embedded WebView, not full Safari
         if ua.contains("WKWebView") {
             result.name = Some("Mobile Safari UI/WKWebView".into());
         } else {

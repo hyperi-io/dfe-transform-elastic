@@ -121,7 +121,7 @@ pub fn run_transform_test(
         } else if let Some(expected_map) = expected_flat {
             JsonDiff::compare_flat_expected(expected_map, event.as_value(), mode)
         } else {
-            // More events than expected outputs — mark as a diff
+            // More events than expected outputs -- mark as a diff
             JsonDiff {
                 diffs: vec![super::diff::FieldDiff {
                     path: "<event count>".to_string(),
@@ -201,7 +201,7 @@ pub fn load_integration_expected(path: &Path) -> crate::error::Result<Vec<Value>
 /// - `input_path`: path to JSON file with `{"events": [...]}`
 /// - `expected_path`: path to JSON file with `{"expected": [...]}`
 /// - `transform`: the transform to test
-/// - `mode`: comparison strictness (Semantic recommended — skips timestamps)
+/// - `mode`: comparison strictness (Semantic recommended -- skips timestamps)
 pub fn run_integration_test(
     input_path: &Path,
     expected_path: &Path,

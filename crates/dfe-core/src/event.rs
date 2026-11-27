@@ -1541,7 +1541,7 @@ mod tests {
     #[test]
     fn set_rejects_object_path_through_primitive() {
         let mut event = Event::new(json!({"a": "string"}));
-        // Setting a.b when a is a string returns TypeMismatch — it won't
+        // Setting a.b when a is a string returns TypeMismatch -- it won't
         // silently overwrite a primitive with an object hierarchy.
         // This is correct: prevents accidental data loss.
         let result = event.set("a.b", json!("value"));
@@ -1558,7 +1558,7 @@ mod tests {
     fn from_json_non_object_returns_error() {
         // JSON arrays and primitives are not valid events
         let result = Event::from_json("[1,2,3]");
-        // Depends on implementation — may wrap or error
+        // Depends on implementation -- may wrap or error
         // At minimum, should not panic
         let _ = result;
     }

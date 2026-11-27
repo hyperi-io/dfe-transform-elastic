@@ -24,10 +24,8 @@ const SAMPLES: &str = concat!(
 /// Sample directories with no transform, and none planned: they are here
 /// because the upstream corpus carries them, not because a source needs them.
 ///
-/// Declared rather than skipped. `transform_for` used to spell these in an arm
-/// directly above its `_` catch-all, which made the arm dead and let ANY
-/// unmapped directory pass as though it were deliberate -- the opposite of
-/// what the comment on it said.
+/// Declared here rather than as an arm above `transform_for`'s `_` catch-all,
+/// where the arm would be dead and any unmapped directory would pass.
 const UNMAPPED: &[&str] = &["cisco_asa", "cisco_umbrella"];
 
 /// The transform each sample directory feeds. A directory with no entry here
@@ -149,8 +147,8 @@ fn no_sample_panics_a_transform() {
     }
 }
 
-/// A sample nobody consumes is dead weight in the tree, and one that USED to
-/// be consumed is a transform that quietly stopped being exercised.
+/// A sample nobody consumes is dead weight in the tree, or a transform that
+/// stopped being exercised.
 ///
 /// Both look identical from inside the other tests here, which skip an
 /// unmapped directory and carry on.

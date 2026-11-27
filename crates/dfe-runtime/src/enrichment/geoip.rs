@@ -16,7 +16,7 @@ use serde_json::{Value, json};
 use crate::error::{Result, TransformError};
 use crate::event::Event;
 
-/// `GeoIP` lookup result as a flat map of property → value.
+/// `GeoIP` lookup result as a flat map of property -> value.
 pub type GeoIpResult = HashMap<String, Value>;
 
 /// `GeoIP` enrichment engine wrapping a `MaxMind` MMDB reader.

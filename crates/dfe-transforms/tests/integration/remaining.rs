@@ -117,8 +117,8 @@ fn panw_routes_and_parses_its_csv() {
     assert_eq!(event.get_str("rule.name"), Some("allow-outbound-web"));
     assert_eq!(event.get_i64("event.duration"), Some(45_000_000_000));
 
-    // The columns that used to land one field to the left, putting an
-    // interface name on `destination.port`.
+    // Each column lands in its own field, so no interface name reaches
+    // `destination.port`.
     assert_eq!(
         event.get_str("observer.egress.interface.name"),
         Some("ethernet1/1")

@@ -700,9 +700,8 @@ fn closing_paren(expanded: &str, from: usize) -> Option<usize> {
 /// Rewrite an expanded grok pattern from Elasticsearch's dialect into Rust's.
 ///
 /// Four rules, each with its own function and its own reason below. They are
-/// collected here so `grok_compiles.rs` can compile the pattern that actually
-/// ships: it used to compile the raw expansion, which is not what any call site
-/// runs, so a rule that broke a pattern would have gone unseen.
+/// collected here so `grok_compiles.rs` compiles the pattern a call site runs,
+/// not the raw expansion, and a rule that breaks a pattern fails that test.
 #[must_use]
 pub fn to_rust_dialect(expanded: &str) -> String {
     let literal_angles = ruby_literal_angles(expanded);

@@ -501,15 +501,7 @@ pub fn parse_json_field_to_root(event: &mut Event, field: &str, merge: bool) -> 
             // Anything that is not two objects: the incoming value WINS, which
             // is what `add_to_root_conflict_strategy: merge` does -- it recurses
             // only where both sides are maps and returns the incoming otherwise.
-            // This used to raise instead, and raising abandoned the loop, so
-            // every key after the conflicting one was never inserted at all.
-            // ti_ticura carries `tags` before `ticura` in the feed line, so one
-            // array meeting another array cost it the whole `ticura` namespace,
-            // the `drop` on a missing uuid then fired, and 7 of 13 events
-            // vanished. Its own pipeline comment states the behaviour: the feed
-            // line's `tags` "replaces ctx.tags and drops the
-            // preserve_original_event tag", which is why the next processor
-            // appends that tag back.
+            // Raising here would abandon the loop and lose every later key.
             (_, incoming) => {
                 root.insert(key, incoming);
             }
@@ -1249,7 +1241,7 @@ pub fn grok_to_regex_typed(
                     let _ = write!(result, "(?:{sub_pattern})");
                 }
             } else {
-                // Strip Elastic type suffix (e.g., "source.ip:ip" → "source.ip")
+                // Strip Elastic type suffix (e.g., "source.ip:ip" -> "source.ip")
                 let mut parts = field.splitn(2, ':');
                 let field_name = parts.next().unwrap_or(&field);
                 // Java allows one field name in several alternation branches
@@ -1737,13 +1729,8 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // the common one.
         "WORD" => r"\b\w+\b",
         "MONTH" => MONTH,
-        // Elastic's `MAC` is `(?:%{CISCOMAC}|%{WINDOWSMAC}|%{COMMONMAC})`, and
-        // the Cisco form is the one this used to miss. `0200.0000.0000` failed
-        // cisco_aironet's whole AWIPS grok, which took `cisco.ap_name`, both
-        // MACs and the alarm fields with it, raised a `pipeline_error`
-        // Elasticsearch does not, and left the `_temp_` scratch unpruned
-        // because the prune sits after the step that failed -- 42 events and
-        // 399 extra fields on one missing alternative.
+        // Elastic's `MAC` is `(?:%{CISCOMAC}|%{WINDOWSMAC}|%{COMMONMAC})`, so
+        // the dotted Cisco form `0200.0000.0000` must match too.
         // Wrapped, because an unnamed `%{MAC}` substitutes BARE and a top-level
         // `|` would then split the whole enclosing pattern rather than itself.
         "MAC" => {
@@ -3301,7 +3288,7 @@ mod tests {
             "id.resp_h": "192.168.86.1", "id.resp_p": 53
         }));
         // The pipeline's own order: the ports and the responder expand around
-        // the originator, which is the case that used to be lost.
+        // the originator, and none of the four may be lost.
         for field in ["id.orig_p", "id.orig_h", "id.resp_h", "id.resp_p"] {
             dot_expand(&mut event, "", field).unwrap();
         }
@@ -4393,8 +4380,8 @@ mod tests {
         assert!(user.is_match("_svc.account"));
     }
 
-    /// `%{IPV4}` may not start or end part-way through a digit run, which is
-    /// what a greedy `%{GREEDYDATA}` in front of it used to do.
+    /// `%{IPV4}` may not start or end part-way through a digit run, even behind
+    /// a greedy `%{GREEDYDATA}`.
     #[test]
     fn an_ipv4_cannot_begin_inside_a_digit_run() {
         let re =
@@ -4454,7 +4441,7 @@ mod tests {
 
     #[test]
     fn grok_type_suffix_stripped() {
-        // Elastic grok uses %{IP:field:type} — the :type must be stripped
+        // Elastic grok uses %{IP:field:type} -- the :type must be stripped
         let (regex, map) = grok_to_regex_with_map("%{IP:source.ip:ip}");
         assert!(regex.contains("(?P<source_ip>"));
         assert!(!regex.contains(":ip"));
@@ -4519,7 +4506,7 @@ mod tests {
     #[test]
     fn community_id_unknown_protocol_errors() {
         let result = community_id_v1("1.2.3.4", "5.6.7.8", 80, 80, "unknown_protocol");
-        // Unknown protocols are rejected, not defaulted — correct behaviour
+        // Unknown protocols are rejected, not defaulted -- correct behaviour
         assert!(result.is_err());
     }
 
@@ -4560,7 +4547,7 @@ mod tests {
     #[test]
     fn grok_type_suffix_compiles_as_valid_regex() {
         let (regex, _) = grok_to_regex_with_map("%{IP:source.ip:ip}:%{POSINT:port:long}");
-        // This MUST compile — if type suffix isn't stripped, it won't
+        // This MUST compile -- if type suffix isn't stripped, it won't
         let re = regex::Regex::new(&regex);
         assert!(
             re.is_ok(),
