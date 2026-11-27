@@ -6,7 +6,7 @@
 //! Simulates the Elastic ingest pipeline test framework:
 //! - Raw events from .log files are wrapped into the `message` field as JSON strings
 //! - Config YAML provides pre-set fields (@timestamp, tags, etc.)
-//! - The transform then processes message → event.original → json.* → ECS fields
+//! - The transform then processes message -> event.original -> json.* -> ECS fields
 
 use std::path::Path;
 
@@ -75,7 +75,7 @@ fn load_and_wrap_events(path: &Path, config_fields: &Map<String, Value>) -> Vec<
 enum RawEvent {
     /// JSON string to put in message field
     JsonString(String),
-    /// Already structured — serialise to string for message field
+    /// Already structured -- serialise to string for message field
     Structured(Value),
 }
 

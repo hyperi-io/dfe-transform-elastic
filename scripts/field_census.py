@@ -83,7 +83,7 @@ def main() -> int:
     if not args.corpus.is_dir():
         sys.exit(
             f"no corpus at {args.corpus}.\n"
-            "Generate it with `python3 scripts/compat.py generate --all`."
+            "Name the compat corpus directory with --corpus."
         )
 
     events, everything, per_package, per_stream = census(args.corpus)

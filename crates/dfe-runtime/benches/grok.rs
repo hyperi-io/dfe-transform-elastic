@@ -148,7 +148,7 @@ fn word_boundaries(c: &mut Criterion) {
     group.finish();
 }
 
-/// `%{IPV4}` without its word boundaries, which is what it used to be.
+/// `%{IPV4}` without its word boundaries, as the baseline for the shipped form.
 const IPV4_BARE: &str = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}";
 
 /// The shipped form, which refuses a start or an end inside a digit run.

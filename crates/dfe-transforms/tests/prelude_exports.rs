@@ -39,11 +39,9 @@ use regex::Regex;
 /// The walk has to actually reach both trees.
 ///
 /// Properties of this test, not of the code under test: reading zero symbols
-/// is indistinguishable from scanning zero files, and that is how a scanner
-/// passes for a fortnight while measuring nothing.
+/// is indistinguishable from scanning zero files.
 const MIN_PUBLIC_SYMBOLS: usize = 60;
-/// The generated tree holds about 2,210 files that a `mod.rs` declares; the
-/// 653 that nothing compiled are gone, and the floor follows the walk.
+/// Set below the count of generated files a `mod.rs` declares.
 const MIN_FILES_SCANNED: usize = 1_900;
 /// Five modules write a `direct_call` today. A floor rather than the count, so
 /// adding a sixth does not fail this and deleting four does.

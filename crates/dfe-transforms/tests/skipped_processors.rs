@@ -20,17 +20,10 @@
 //!
 //! The counts live in `tests/ratchets.json` and this test writes them under
 //! `DFE_UPDATE_RATCHETS=1`, so teaching the transpiler a condition lowers them
-//! without anyone retyping a number. `scripts/skipped_debt.py` ranks what is
-//! left by the parity debt of the source it sits in.
+//! without anyone retyping a number.
 //!
-//! **This file measured a different marker until 2026-09-03 and had read ZERO
-//! since 2026-08-19.** It counted `// TODO: conditional: `, left where a guard
-//! was dropped and the body ran UNGUARDED. `8b209ba0` regenerated the six
-//! sources it ceilinged and the new codegen stopped emitting that marker
-//! entirely -- so both tests passed on an empty scan, and the ceilings said
-//! nothing. The unguarded class is now closed by construction; this counts its
-//! successor. Hence `FILES_SCANNED`: a scan that finds nothing must fail
-//! rather than pass.
+//! A scan that reaches no generated file reads zero markers and would pass, so
+//! `FILES_SCANNED` fails a walk that finds too few files.
 
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
@@ -40,16 +33,11 @@ use dfe_runtime::testutil::ratchets::Ratchets;
 /// The marker the generator leaves where a condition defeated the transpiler.
 const MARKER: &str = "// SKIPPED: the pipeline's condition has no equivalent here";
 
-/// The walk has to actually reach the generated tree.
+/// The fewest generated files the walk must reach, because zero markers read
+/// the same as zero files scanned.
 ///
-/// Not a property of the code under test -- a property of this test. Reading
-/// zero markers is indistinguishable from scanning zero files, and that is
-/// exactly how the previous version of this file passed for a fortnight while
-/// measuring nothing.
-///
-/// Was 2,500 against 2,863 files, 653 of which no `mod.rs` declared and
-/// nothing compiled. The walk sees the disk, so the floor follows the 2,210
-/// the crate actually builds, at the same ratio.
+/// Set below the count of files a `mod.rs` declares, which is what the walk
+/// finds on disk.
 const FILES_SCANNED: usize = 1_900;
 
 /// Where the ratchets live, relative to this crate.

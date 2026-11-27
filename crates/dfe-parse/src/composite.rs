@@ -9,7 +9,7 @@
 //! - **Capture**: run a Layer 1 parser and store the result under a field name
 //! - **Skip**: consume characters matching a predicate (e.g., whitespace)
 //!
-//! The builder executes steps sequentially with no backtracking — if any step
+//! The builder executes steps sequentially with no backtracking -- if any step
 //! fails, the entire composite parse fails. This gives predictable O(n)
 //! performance for a grok-equivalent pattern expressed as literals and
 //! Layer 1 parser captures.

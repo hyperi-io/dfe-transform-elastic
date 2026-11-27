@@ -104,7 +104,7 @@ pub fn parse_ipv6(input: &str) -> ParseResult<'_, &str> {
             pos += 1;
         }
         if pos == group_start {
-            // No digits found — only valid if we saw `::` and have enough groups.
+            // No digits found -- only valid if we saw `::` and have enough groups.
             if saw_double_colon && groups > 0 {
                 return Ok((&input[pos..], &input[..pos]));
             }
@@ -130,16 +130,16 @@ pub fn parse_ipv6(input: &str) -> ParseResult<'_, &str> {
                     break;
                 }
             } else {
-                // Single colon — next group.
+                // Single colon -- next group.
                 pos += 1;
                 if pos >= len || (!is_hex(bytes[pos])) {
-                    // Trailing colon without digits — back up.
+                    // Trailing colon without digits -- back up.
                     pos -= 1;
                     break;
                 }
             }
         } else {
-            // Non-colon character — end of address.
+            // Non-colon character -- end of address.
             break;
         }
 

@@ -3,10 +3,9 @@
 
 //! `tests/compare-policy.yaml`, as the comparison harness reads it.
 //!
-//! The file is the single definition of which differences are defects, shared
-//! with `scripts/compat.py`. Two definitions drift, so this one is read rather
-//! than restated -- a rule added for the compat corpus takes effect here on the
-//! next run, and a rule removed stops hiding anything on both sides at once.
+//! The file is the single definition of which differences are defects, so the
+//! harness reads it rather than restating it, and a rule added or removed there
+//! takes effect here on the next run.
 
 use std::collections::BTreeSet;
 use std::sync::OnceLock;

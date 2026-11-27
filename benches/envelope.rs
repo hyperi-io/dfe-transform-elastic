@@ -15,26 +15,6 @@
 //! built at startup from a spec. If the third is within noise of the first, a
 //! declared list costs nothing and the flexibility is free.
 //!
-//! Measured 2026-08-20 on the dev box, `--measurement-time 3`:
-//!
-//! | bench | ns | rate |
-//! |---|---|---|
-//! | `detect/receiver` | 53 | per BATCH |
-//! | `detect/beats_bare` | 80 | per BATCH |
-//! | `unwrap/beats` | 6.7 | per event |
-//! | `unwrap/receiver_body` | 2,094 | per event |
-//! | `unwrap/receiver_line` | 2,740 | per event |
-//! | `renames/hand_written` | 1,689 | per event |
-//! | `renames/static_list` | 1,688 | per event |
-//! | `renames/compiled_spec` | 1,708 | per event |
-//! | `renames/collected_vec` | 1,818 | per event |
-//!
-//! A declared spec costs 1% over hand-written arms, so config-driven unwrapping
-//! is affordable. The `Vec` the library used to build per event cost 7.7%, and
-//! is gone. What dominates all four is `Event::get` and `Event::set` walking a
-//! dotted path -- roughly 210 ns a pair -- so that, not the spec format, is
-//! where the next order of magnitude is.
-//!
 //! Run with: `cargo bench --bench envelope`
 
 // criterion_group! expands to an undocumented function, and a bench asserts its

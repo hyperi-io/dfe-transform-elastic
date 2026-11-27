@@ -194,10 +194,10 @@ pub(crate) enum ParamsPattern {
     /// A NAMED params table read with a default, in either of the two
     /// spellings the tree ships.
     ///
-    /// `jamf_protect` writes the ternary one per telemetry field -- 40 sites
-    /// over 13 files -- and qualys writes the `getOrDefault` one over its
-    /// severity table. Sibling to [`ParamsPattern::UppercaseLookupDefault`],
-    /// which folds case, reads the whole `params` map, and defaults to the KEY.
+    /// `jamf_protect` writes the ternary one per telemetry field, and qualys
+    /// writes the `getOrDefault` one over its severity table. Sibling to
+    /// [`ParamsPattern::UppercaseLookupDefault`], which folds case, reads the
+    /// whole `params` map, and defaults to the KEY.
     TableLookupOrLiteral {
         source: String,
         /// The params key holding the rows, or `None` where the rows ARE the
@@ -8705,7 +8705,7 @@ enum Rhs {
     /// list, which is how a script promotes a scalar into an ECS array field.
     FieldInList(String),
     /// `ctx.<path>.size()` -- how many members a list holds, which a script
-    /// writes to a `_count` field beside it. 37 sites over 31 files.
+    /// writes to a `_count` field beside it.
     SizeOf(String),
     /// `ctx.<path> / 1000000` -- rescale a number by a whole factor, which is
     /// how a script moves an epoch between units.
@@ -10390,9 +10390,8 @@ fn parse_test_rhs(text: &str) -> Option<Guard> {
 /// a longer script. Where both can read a script the ladder decides, and a
 /// `Program` that can write promotes `GuardedCopy` above `ConcatAssignment` --
 /// fortimanager's date join goes that way. That costs nothing because the two
-/// agree on the answer, including writing NOTHING when a part is absent; it
-/// would cost a source the day they stop agreeing, which is what the pins in
-/// `tests/which_matcher.rs` are for.
+/// agree on the answer, including writing NOTHING when a part is absent, and it
+/// would cost a source the day they stop agreeing.
 fn parse_concat(text: &str) -> Option<Vec<ConcatPiece>> {
     // This reader runs ahead of every other, so the overwhelmingly common
     // right-hand side -- one quoted literal -- gets a byte scan rather than a
