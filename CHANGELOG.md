@@ -3,6 +3,10 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.35](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.34...v1.1.35) (2026-11-28)
+
+
+
 ## [1.1.34](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.33...v1.1.34) (2026-11-23)
 
 ### What's Changed
